@@ -10,10 +10,10 @@ Techically it's a fork of the original MediaPipe repository, reverted to the v0.
 This repository would be between a prerequisite and a starting point for deriving a mediapipe-framework liberated C++ implementation of the hand tracking pipeline, which is the topic of the sibling repository [hand-tracking-cpp](https://github.com/nui-ai/mediapipe-liberation)
 
 - Success means:
-  - A build command that's more specific than the original MediaPipe build instructions to avoid more errors from unnecessary build targets
+  - A build command that's more specific than the original MediaPipe build instructions to avoid build time or even errors from unnecessary build targets which the hand tracking pipeline does not require.
   - Building a docker image to have the necessary OS dependencies for reproducibly running the build independently of the host system environment
   - Actually running the build inside a docker container using that docker image
-  - Running the resulting Python verification script inside the container as well (if desired)
+  - Running the included Python verification script inside the container as well (if desired)
 
 # Why this is never 100% future proof
 - The build process relies recursively on dependencies being fetched from over the internet. These dependencies may change, be removed, or otherwise become incompatible with the build process. Which is why we needed the changes comited on this forked repository, and why other changes may arise as necessary in the future. 
