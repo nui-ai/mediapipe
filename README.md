@@ -34,6 +34,8 @@ To stabilize the MediaPipe build process, follow this step-by-step approach:
 
 ### 1. Stabilize the build on your Local Ubuntu Machine
 
+Stabilizing it without docker means faster turn-over times.
+
 ```bash
 # Build the specific target
 bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv4 mediapipe/python/solutions:hands
@@ -41,21 +43,29 @@ bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv
 
 You may choose to skip this step if you prefer to go directly to the Docker environment. Maybe that's a good idea. 
 
-### 2. Stabilize Docker Build which also uses Ubuntu as its base image
+### 2. Stabilize a Docker image that succeeds in building the target
 
 Once a local build works, or if you think your local machine is dirty or just prefer to skip it:
 
-1. Update the Dockerfile if you want it to match your local environment if you had succeeded with the former local build. Different versions of Ubuntu can play out differently in which versions of what they agree to install ― meaning different complexities, different bugs.
-2. Build the Docker image:
+A Dockerfile already exists in this repository, which you can modify as needed or start from scratch.
+
+1. Different versions of Ubuntu can play out differently in which versions of what they agree to install ― meaning different complexities, different bugs.
+2. To build the Docker image:
    ```bash
    docker build --no-cache -t mediapipe-build .
    ```
-3. Test the build inside the container:
+3. To test the bazel build inside the container at par with how you would run it outside of a docker container:
    ```bash
-   docker run --rm -it -v "$PWD":/mediapipe mediapipe-build /bin/bash -c "cd /mediapipe && bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv4 mediapipe/python/solutions:hands"
+   docker run --rm -it -v "$PWD":/mediapipe mediapipe-build /bin/bash -c
+   ```
+   then inside the running container's interactive prompt:
+   ```bash
+   "cd /mediapipe && bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv4 mediapipe/python/solutions:hands"
    ```
 
 ### 3. Build and Use the MediaPipe Python Solution (Meaning, Stabilize that last step) 
+
+When we want to change the mediapipe original C++ pipeline such as for developing a non-mediapipe-framework port of it in C++, we only care about building mediapipe as above. But if we want to use the python solution for verification of its building python bindings, we need to also stabilize the last step of building and installing a python package ― the repository has its original implementation for this build, but it needs to be restabilized as per the reasoning of the beginning of this document about why that stability drifted away since v0.10.13 was released.
 
 **Modern pip restrictions**: You will have to address the consequence of stricter dependency handling in newer pip versions, which were not an issue at the time of v0.10.13's release.
 
