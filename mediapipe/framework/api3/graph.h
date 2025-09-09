@@ -275,7 +275,7 @@ class GenericGraph {
   GraphNode<NodeContractT, NodeContractTs...>& AddNodeByContract(
       absl::string_view name) {
     auto node = std::make_unique<GraphNode<NodeContractT, NodeContractTs...>>(
-        builder_, name);
+        graph_, name);
     GraphNode<NodeContractT, NodeContractTs...>* result = node.get();
     nodes_.emplace_back(std::move(node));
     return *result;
@@ -293,29 +293,25 @@ class GenericGraph {
   AddLegacyPacketGenerator() {
     auto node =
         std::make_unique<GraphLegacyPacketGenerator<NodeT::template Contract>>(
-            builder_, NodeT::GetRegistrationName());
+            graph_, NodeT::GetRegistrationName());
     GraphLegacyPacketGenerator<NodeT::template Contract>* result = node.get();
     generators_.emplace_back(std::move(node));
     return *result;
   }
 
   builder::Executor& AddLegacyExecutor(absl::string_view name) {
-    return builder_.AddExecutor(name);
+    return graph_.AddExecutor(name);
   }
 
   absl::StatusOr<mediapipe::CalculatorGraphConfig> GetConfig() {
-    return builder_.GetConfig();
+    return graph_.GetConfig();
   }
 
  protected:
-  builder::GraphBuilder builder_;
-
+  builder::GraphBuilder graph_;
   std::vector<std::unique_ptr<internal_graph::GraphNodeBase>> nodes_;
   std::vector<std::unique_ptr<internal_graph::GraphLegacyPacketGeneratorBase>>
       generators_;
-
-  template <typename BuildGraphFnT>
-  friend class FunctionRunnerBuilder;
 };
 
 template <template <typename, typename...> typename ContractT, typename... Ts>
@@ -327,9 +323,7 @@ class Graph : public ContractT<GraphSpecializer, Ts...>,
     ContractT<GraphSpecializer, Ts...>* ptr = this;
     auto field_ptrs = ContractToFieldPtrTuple(*ptr);
     std::apply(
-        [&](auto&... args) {
-          ((internal_port::SetGraph(*args, builder_)), ...);
-        },
+        [&](auto&... args) { ((internal_port::SetGraph(*args, graph_)), ...); },
         field_ptrs);
   }
 };

@@ -40,8 +40,6 @@ namespace mediapipe::api3 {
 template <typename T>
 class Packet {
  public:
-  using PayloadT = T;
-
   explicit Packet() = default;
   explicit Packet(mediapipe::Packet p) : packet_(std::move(p)) {}
 
