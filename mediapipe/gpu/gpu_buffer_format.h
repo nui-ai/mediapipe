@@ -92,8 +92,6 @@ struct GlTextureInfo {
 const GlTextureInfo& GlTextureInfoForGpuBufferFormat(GpuBufferFormat format,
                                                      int plane,
                                                      GlVersion gl_version);
-
-GpuBufferFormat GpuBufferFormatForGlFormat(GLenum format);
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
 ImageFormat::Format ImageFormatForGpuBufferFormat(GpuBufferFormat format);
