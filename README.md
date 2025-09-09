@@ -137,9 +137,9 @@ python3 mediapipe/python/verify.py
 
 - Check `mediapipe/python/verified-detections.json` for results after running `verify.py`.
 
-# Versioning
+# Python Package Versioning
 
-The Python package version is now automatically set at build time to `0.10.13+git.{commit_hash}` (where `{commit_hash}` is the current short git commit hash). This ensures every build is uniquely versioned and PEP 440 compliant. No manual version fix is needed.
+The Python package version is now automatically set at build time to `0.10.13+git.{commit_hash}` (where `{commit_hash}` is the current short git commit hash). This ensures every build is uniquely versioned and PEP 440 compliant. You can use AI to reproduce this feature, and add whether git is dirty or not to the version string.
 
 ## Additional Notes
 
