@@ -1,6 +1,6 @@
 # MediaPipe v0.10.13 Build Guide 
 
-This guide explains how to reproducibly build MediaPipe v0.10.13 for just the hand tracking target, at revision tag v0.10.13 of mediapipe which this forked repository was reverted to.
+This guide explains how to work towards reproducibly building MediaPipe v0.10.13 for just the hand tracking target, at revision tag v0.10.13 of mediapipe which this forked repository was reverted to.
 Judging from experience you need to work a few days to make it happen, as the build code will fail with modern Bazel, versions of dependencies it will fetch from the Internet which are not the same as when this build was originally working at the time of v0.10.13 release, and similar issues with its last-mile pip install for python proof of concept. Sometimes AI gets it right after just one day of careful iteration. 
 
 - Success means:
@@ -10,7 +10,11 @@ Judging from experience you need to work a few days to make it happen, as the bu
   - Running the resulting Python verification script inside the container as well (if desired)
 
 # Why this is never 100% future proof
-The build process relies recursively on dependencies being fetched from over the internet. These dependencies may change, be removed, or otherwise become incompatible with the build process. Which is why we needed the changes comited on this forked repository, and why other changes may arise as necessary in the future.
+- The build process relies recursively on dependencies being fetched from over the internet. These dependencies may change, be removed, or otherwise become incompatible with the build process. Which is why we needed the changes comited on this forked repository, and why other changes may arise as necessary in the future. 
+- We can pin down specific versions all across and hope they keep served on the Internet for long enough, to change the tradeoff a little.
+
+# Why this is hard
+Its a tug of war between old versions that can no longer install or work against the Internet repositories as they are today, and new versions that don't like elements of how the build (which was coded to old versions) is. this statement applies to both the Bazel and the pip parts in equal amounts!
 
 # Guidelines for Stabilizing the Build Process
 
@@ -35,7 +39,7 @@ To stabilize the MediaPipe build process, follow this step-by-step approach:
 bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv4 mediapipe/python/solutions:hands
 ```
 
-You may choose to skip this step if you prefer to go directly to the Docker environment.
+You may choose to skip this step if you prefer to go directly to the Docker environment. Maybe that's a good idea. 
 
 ### 2. Stabilize Docker Build which also uses Ubuntu as its base image
 
@@ -51,31 +55,31 @@ Once a local build works, or if you think your local machine is dirty or just pr
    docker run --rm -it -v "$PWD":/mediapipe mediapipe-build /bin/bash -c "cd /mediapipe && bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv4 mediapipe/python/solutions:hands"
    ```
 
-### 4. Stabilize Python Package Installation
+### 3. Build and Use the MediaPipe Python Solution (Meaning, Stabilize that last step) 
 
-After the build succeeds:
+**Modern pip restrictions**: You will have to address the consequence of stricter dependency handling in newer pip versions, which were not an issue at the time of v0.10.13's release.
 
-1. Test the Python package build:
-   ```bash
-   python setup.py bdist_wheel
-   ```
-2. Address any pip/setuptools compatibility issues
-3. Test installation in a virtual environment:
-   ```bash
-   python -m venv test_env
-   source test_env/bin/activate
-   pip install dist/mediapipe-*.whl
-   ```
-   - **Modern pip restrictions**: You will have to address the consequence of stricter dependency handling in newer pip versions, which were not an issue at the time of v0.10.13's release.
+Building MediaPipe using the legacy `setup.py bdist_wheel` mechanism is deprecated and will be removed in a future version of pip. To future-proof your build process, use the standardized build interface by running:
 
-## Common Issues
+    pip install . --use-pep517
 
-The build issues arise from both modern versions of Bazel behaving a little differently and from more recent versions of dependencies pulled by Bazel, for dependencies which were previously not hard-pinned to specific versions. Common issues include:
+see [pip issue #6334](https://github.com/pypa/pip/issues/6334).
 
-- **Dependency cycles**: Often fixed by rearranging dependency declarations in WORKSPACE
-- **Missing symbols**: May require specific versions of dependencies
-- **Python compatibility**: Ensure compatibility with target Python versions
+## Last Issue Encountered
 
+Having pip reuse the already Bazel built OpenCV instead of trying to build OpenCV from source from scratch, is a good idea. However:
+To build and install the MediaPipe Python package using the already bazel built OpenCV (recommended for faster builds):
+
+```bash
+MEDIAPIPE_LINK_OPENCV=1 pip install . --use-pep517
+```
+
+- This will instruct the build to use your system OpenCV and skip building OpenCV from source.
+- Make sure OpenCV and its development headers are installed in your environment.
+- Do **not** use `--install-option` with pip, as it is not supported with modern builds.
+
+However its some work to get to that working.
+  
 ## Why this Recipe Matters
 
 By following this structured approach:
@@ -123,18 +127,6 @@ bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv
 
 > **Note:** Sandboxed Bazel builds (e.g., with `--sandbox_debug`) may fail due to upstream or environment issues. Use the regular build command above for reliable results.
 
-## Build and Use the MediaPipe Python Solution (Inside Container)
-
-To build and install the MediaPipe Python package using the already bazel built OpenCV (recommended for faster builds):
-
-```bash
-MEDIAPIPE_LINK_OPENCV=1 pip install . --use-pep517
-```
-
-- This will instruct the build to use your system OpenCV and skip building OpenCV from source.
-- Make sure OpenCV and its development headers are installed in your environment.
-- Do **not** use `--install-option` with pip, as it is not supported with modern builds.
-
 ## Run the Python Example (Inside Container)
 
 To verify the built mediapipe with a video file (place `input.avi` in `mediapipe/python/`):
@@ -149,17 +141,8 @@ python3 mediapipe/python/verify.py
 
 The Python package version is now automatically set at build time to `0.10.13+git.{commit_hash}` (where `{commit_hash}` is the current short git commit hash). This ensures every build is uniquely versioned and PEP 440 compliant. No manual version fix is needed.
 
-# Pip Build Last Issue
-
-**Deprecation Warning:**
-
-Building MediaPipe using the legacy `setup.py bdist_wheel` mechanism is deprecated and will be removed in a future version of pip. To future-proof your build process, use the standardized build interface by running:
-
-    pip install . --use-pep517
-
-see [pip issue #6334](https://github.com/pypa/pip/issues/6334).
-
 ## Additional Notes
 
 - The Docker image can build all MediaPipe targets; adjust Bazel build targets as needed.
 - All patching and setup steps should be ultimately captured by a working Dockerfile for short-term reproducibility (up until the reasons for no 100% stability work for a long enough time again out there).
+
