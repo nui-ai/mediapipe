@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//mediapipe/tasks:internal"])
 
 licenses(["notice"])
 
@@ -20,6 +20,7 @@ cc_library(
     name = "language_detector",
     srcs = ["language_detector.cc"],
     hdrs = ["language_detector.h"],
+    visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/framework/api2:builder",
         "//mediapipe/tasks/cc/components/containers:category",

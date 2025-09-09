@@ -14,7 +14,7 @@
 
 load("@org_tensorflow//tensorflow/lite:build_def.bzl", "tflite_copts")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//mediapipe/tasks:internal"])
 
 licenses(["notice"])
 
