@@ -25,6 +25,8 @@ load(
     "MPP_TASK_MINIMUM_OS_VERSION",
 )
 
+package(default_visibility = ["//mediapipe/tasks:internal"])
+
 licenses(["notice"])
 
 # Default tags for filtering iOS targets. Targets are restricted to Apple platforms.
