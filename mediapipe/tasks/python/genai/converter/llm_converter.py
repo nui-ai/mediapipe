@@ -144,7 +144,6 @@ class ConversionConfig(object):
           'GEMMA3_4B',
           'GEMMA3_12B',
           'GEMMA3_27B',
-          'GEMMA3_300M',
       ]
       if model_type not in lora_applicable_models:
         raise ValueError(
