@@ -20,8 +20,19 @@ import os
 import shutil
 import setuptools
 
+def get_git_version(base_version="0.10.13"):
+    import subprocess
+    try:
+        commit_hash = (
+            subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL)
+            .decode("ascii")
+            .strip()
+        )
+        return f"{base_version}+git.{commit_hash}"
+    except Exception:
+        return base_version
 
-__version__ = 'dev'
+__version__ = get_git_version()
 MM_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 # Build dir to copy all necessary files and build package
 SRC_NAME = 'pip_src'

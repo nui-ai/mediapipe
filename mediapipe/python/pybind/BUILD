@@ -193,8 +193,8 @@ pybind_library(
         "//conditions:default": [],
         ":enable_odml_converter": [
             "//mediapipe/tasks/cc/text/utils:vocab_convert_utils",
-            "@odml//odml/infra/genai/inference/ml_drift/llm/tensor_loaders:model_ckpt_util",
-            "@odml//odml/infra/genai/inference/utils/xnn_utils:model_ckpt_util",
+            # "@odml//odml/infra/genai/inference/ml_drift/llm/tensor_loaders:model_ckpt_util",
+            # "@odml//odml/infra/genai/inference/utils/xnn_utils:model_ckpt_util",
         ],
     }),
 )

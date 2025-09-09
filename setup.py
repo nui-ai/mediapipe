@@ -30,7 +30,23 @@ from setuptools.command import build_ext
 from setuptools.command import build_py
 from setuptools.command import install
 
-__version__ = 'dev'
+# Helper to check env var for OpenCV linking
+def get_env_link_opencv():
+    return os.environ.get('MEDIAPIPE_LINK_OPENCV', '').lower() in ('1', 'true', 'yes')
+
+def get_git_version(base_version="0.10.13"):
+    try:
+        commit_hash = (
+            subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL)
+            .decode("ascii")
+            .strip()
+        )
+        return f"{base_version}+git.{commit_hash}"
+    except Exception:
+        return base_version
+
+__version__ = get_git_version()
+
 MP_DISABLE_GPU = os.environ.get('MEDIAPIPE_DISABLE_GPU') != '0'
 IS_WINDOWS = (platform.system() == 'Windows')
 IS_MAC = (platform.system() == 'Darwin')
@@ -242,7 +258,7 @@ class BuildModules(build_ext.build_ext):
   boolean_options = build_ext.build_ext.boolean_options + ['link-opencv']
 
   def initialize_options(self):
-    self.link_opencv = False
+    self.link_opencv = get_env_link_opencv()
     build_ext.build_ext.initialize_options(self)
 
   def finalize_options(self):
@@ -371,7 +387,7 @@ class BuildExtension(build_ext.build_ext):
   boolean_options = build_ext.build_ext.boolean_options + ['link-opencv']
 
   def initialize_options(self):
-    self.link_opencv = False
+    self.link_opencv = get_env_link_opencv()
     build_ext.build_ext.initialize_options(self)
 
   def finalize_options(self):
@@ -453,7 +469,7 @@ class BuildPy(build_py.build_py):
   boolean_options = build_py.build_py.boolean_options + ['link-opencv']
 
   def initialize_options(self):
-    self.link_opencv = False
+    self.link_opencv = get_env_link_opencv()
     build_py.build_py.initialize_options(self)
 
   def finalize_options(self):
@@ -483,7 +499,7 @@ class Install(install.install):
   boolean_options = install.install.boolean_options + ['link-opencv']
 
   def initialize_options(self):
-    self.link_opencv = False
+    self.link_opencv = get_env_link_opencv()
     install.install.initialize_options(self)
 
   def finalize_options(self):

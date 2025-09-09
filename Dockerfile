@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
-MAINTAINER <mediapipe@google.com>
+LABEL maintainer="matan@nui.ai"
 
 WORKDIR /io
 WORKDIR /mediapipe
@@ -48,21 +48,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Clang 16
-RUN wget https://apt.llvm.org/llvm.sh
-RUN chmod +x llvm.sh
-RUN ./llvm.sh 16
-RUN ln -sf /usr/bin/clang-16 /usr/bin/clang
-RUN ln -sf /usr/bin/clang++-16 /usr/bin/clang++
-RUN ln -sf /usr/bin/clang-format-16 /usr/bin/clang-format
+# Remove broken Clang 16 install, use Ubuntu's clang instead
+RUN apt-get update && apt-get install -y clang clang-format
 
-RUN pip3 install --upgrade setuptools
-RUN pip3 install wheel
-RUN pip3 install future
-RUN pip3 install absl-py "numpy<2" jax[cpu] opencv-contrib-python protobuf==3.20.1
-RUN pip3 install six==1.14.0
-RUN pip3 install tensorflow
-RUN pip3 install tf_slim
+RUN apt-get update && apt-get install -y python3-venv
+
+# Create a virtual environment
+RUN python3 -m venv /opt/venv
+
+# Use the virtual environment for all subsequent commands
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy Bazel configuration for C++17
+COPY .bazelrc /mediapipe/.bazelrc
+
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install future
+RUN pip install absl-py "numpy<2" jax[cpu] opencv-contrib-python protobuf==3.20.1
+RUN pip install six==1.14.0
+RUN pip install tensorflow
+RUN pip install tf_slim
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
@@ -77,6 +82,28 @@ azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
     rm -f /bazel/installer.sh
 
 COPY . /mediapipe/
+
+# Fetch dependencies so XNNPACK is available for patching
+#
+# XNNPACK is a TensorFlow Lite dependency that sometimes tries to build microkernels
+# for very new instruction sets (e.g., AVX-VNNI-INT8) that are not supported by all CPUs or GCC versions.
+# This can cause build failures on CPUs (like Intel i7-14700) that do not support these instructions,
+# or with compilers that do not recognize the relevant flags (e.g., -mavxvnniint8).
+#
+# We fetch dependencies here so we can patch the problematic build rules before the actual build.
+RUN bazel fetch --experimental_repo_remote_exec //mediapipe/python/solutions:hands
+
+# Patch XNNPACK BUILD.bazel files to remove avxvnniint8 kernels and flags
+#
+# The following commands search all BUILD.bazel files in the Bazel cache and remove any lines
+# containing 'avxvnniint8' or the problematic '-mavxvnniint8' compiler flag. This prevents Bazel
+# from trying to build those microkernels, which would otherwise cause the build to fail.
+#
+# This patch is necessary because XNNPACK is not vendored in our repository and is pulled in as
+# an external dependency, so we cannot patch it directly in our codebase. Automating this step
+# here ensures reproducible, hands-off builds.
+RUN find /root/.cache/bazel -type f -name BUILD.bazel -exec sed -i '/avxvnniint8/d' {} +
+RUN find /root/.cache/bazel -type f -name BUILD.bazel -exec sed -i '/-mavxvnniint8/d' {} +
 
 # If we want the docker image to contain the pre-built object_detection_offline_demo binary, do the following
 # RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/demo:object_detection_tensorflow_demo

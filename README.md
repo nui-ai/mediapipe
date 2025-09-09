@@ -1,158 +1,180 @@
----
-layout: forward
-target: https://developers.google.com/mediapipe
-title: Home
-nav_order: 1
----
+# MediaPipe Docker Build & Workflow Guide
 
-----
+This guide explains how to build and use a Docker image for building MediaPipe for just the hand tracking target, at revision tag v0.10.13 of mediapipe which this forked repository was reverted to. 
 
-**Attention:** *We have moved to
-[https://developers.google.com/mediapipe](https://developers.google.com/mediapipe)
-as the primary developer documentation site for MediaPipe as of April 3, 2023.*
+- This entails a build command that's more specific than the original MediaPipe build instructions
+- Building a docker image to have the necessary OS dependencies
+- Running the build inside a docker container running that image
+- Running the resulting Python verification script inside the container as well (if desired)
 
-![MediaPipe](https://developers.google.com/static/mediapipe/images/home/hero_01_1920.png)
+# Why this is never 100% future proof
+The build process relies recursively on dependencies being fetched from over the internet. These dependencies may change, be removed, or otherwise become incompatible with the build process. Which is why we needed the changes comited on this forked repository, and why other changes may arise as necessary in the future.
 
-**Attention**: MediaPipe Solutions Preview is an early release. [Learn
-more](https://developers.google.com/mediapipe/solutions/about#notice).
+# Stabilizing MediaPipe Build Process
 
-**On-device machine learning for everyone**
+## Understanding `bazel clean --expunge`
 
-Delight your customers with innovative machine learning features. MediaPipe
-contains everything that you need to customize and deploy to mobile (Android,
-iOS), web, desktop, edge devices, and IoT, effortlessly.
+When facing build issues with MediaPipe, it's crucial to understand Bazel's caching mechanism:
 
-*   [See demos](https://goo.gle/mediapipe-studio)
-*   [Learn more](https://developers.google.com/mediapipe/solutions)
+- **`bazel clean`**: Removes build outputs but keeps the Bazel cache intact
+- **`bazel clean --expunge`**: Performs a complete cleanup by removing:
+  - All build outputs
+  - The entire Bazel cache (including downloaded dependencies)
+  - Any cached state that might be causing dependency conflicts or cycles
 
-## Get started
+The `--expunge` flag is essential when dependency conflicts occur, as it forces Bazel to start from a clean state and rebuild the dependency tree correctly.
 
-You can get started with MediaPipe Solutions by by checking out any of the
-developer guides for
-[vision](https://developers.google.com/mediapipe/solutions/vision/object_detector),
-[text](https://developers.google.com/mediapipe/solutions/text/text_classifier),
-and
-[audio](https://developers.google.com/mediapipe/solutions/audio/audio_classifier)
-tasks. If you need help setting up a development environment for use with
-MediaPipe Tasks, check out the setup guides for
-[Android](https://developers.google.com/mediapipe/solutions/setup_android), [web
-apps](https://developers.google.com/mediapipe/solutions/setup_web), and
-[Python](https://developers.google.com/mediapipe/solutions/setup_python).
+### Why Use `clean --expunge` on Every Run?
 
-## Solutions
+For critical production builds and CI/CD pipelines, it's recommended to use `bazel clean --expunge` before every build to ensure:
 
-MediaPipe Solutions provides a suite of libraries and tools for you to quickly
-apply artificial intelligence (AI) and machine learning (ML) techniques in your
-applications. You can plug these solutions into your applications immediately,
-customize them to your needs, and use them across multiple development
-platforms. MediaPipe Solutions is part of the MediaPipe [open source
-project](https://github.com/google/mediapipe), so you can further customize the
-solutions code to meet your application needs.
+1. **Full reproducibility**: Each build starts from a pristine state
+2. **Elimination of cached problems**: No lingering issues from previous builds
+3. **Validation of the entire dependency chain**: Confirms that all dependencies can be properly resolved
+4. **Confidence in the build process**: What works once will work again
 
-These libraries and resources provide the core functionality for each MediaPipe
-Solution:
+While this approach increases build time (as dependencies must be re-downloaded and rebuilt), it provides the highest level of confidence that your build process is reliable and reproducible. For development environments where quick iteration is needed, you can skip this step, but always return to a clean build before finalizing changes.
 
-*   **MediaPipe Tasks**: Cross-platform APIs and libraries for deploying
-    solutions. [Learn
-    more](https://developers.google.com/mediapipe/solutions/tasks).
-*   **MediaPipe models**: Pre-trained, ready-to-run models for use with each
-    solution.
+## Build Stabilization Recipe
 
-These tools let you customize and evaluate solutions:
+To stabilize the MediaPipe build process, follow this step-by-step approach:
 
-*   **MediaPipe Model Maker**: Customize models for solutions with your data.
-    [Learn more](https://developers.google.com/mediapipe/solutions/model_maker).
-*   **MediaPipe Studio**: Visualize, evaluate, and benchmark solutions in your
-    browser. [Learn
-    more](https://developers.google.com/mediapipe/solutions/studio).
+### 1. Stabilize the build on your Local Ubuntu Machine
 
-### Legacy solutions
+```bash
+# Build the specific target
+bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv4 mediapipe/python/solutions:hands
+```
 
-We have ended support for [these MediaPipe Legacy Solutions](https://developers.google.com/mediapipe/solutions/guide#legacy)
-as of March 1, 2023. All other MediaPipe Legacy Solutions will be upgraded to
-a new MediaPipe Solution. See the [Solutions guide](https://developers.google.com/mediapipe/solutions/guide#legacy)
-for details. The [code repository](https://github.com/google/mediapipe/tree/master/mediapipe)
-and prebuilt binaries for all MediaPipe Legacy Solutions will continue to be
-provided on an as-is basis.
+If build errors occur:
+1. Identify dependency issues in the WORKSPACE file
+2. Fix one issue at a time
+3. Test the build after each fix
+4. Run `bazel clean --expunge` between major changes
 
-For more on the legacy solutions, see the [documentation](https://github.com/google/mediapipe/tree/master/docs/solutions).
+### 2. Stabilize Docker Build which also uses Ubuntu as its base image
 
-## Framework
+Once the direct build works:
 
-To start using MediaPipe Framework, [install MediaPipe
-Framework](https://developers.google.com/mediapipe/framework/getting_started/install)
-and start building example applications in C++, Android, and iOS.
+1. Update the Dockerfile if necessary to match the environment where the direct build succeeded
+2. Build the Docker image:
+   ```bash
+   docker build --no-cache -t mediapipe-build .
+   ```
+3. Test the build inside the container:
+   ```bash
+   docker run --rm -it -v "$PWD":/mediapipe mediapipe-build /bin/bash -c "cd /mediapipe && bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv4 mediapipe/python/solutions:hands"
+   ```
 
-[MediaPipe Framework](https://developers.google.com/mediapipe/framework) is the
-low-level component used to build efficient on-device machine learning
-pipelines, similar to the premade MediaPipe Solutions.
+### 4. Stabilize Python Package Installation
 
-Before using MediaPipe Framework, familiarize yourself with the following key
-[Framework
-concepts](https://developers.google.com/mediapipe/framework/framework_concepts/overview.md):
+After the build succeeds:
 
-*   [Packets](https://developers.google.com/mediapipe/framework/framework_concepts/packets.md)
-*   [Graphs](https://developers.google.com/mediapipe/framework/framework_concepts/graphs.md)
-*   [Calculators](https://developers.google.com/mediapipe/framework/framework_concepts/calculators.md)
+1. Test the Python package build:
+   ```bash
+   python setup.py bdist_wheel
+   ```
+2. Address any pip/setuptools compatibility issues
+3. Test installation in a virtual environment:
+   ```bash
+   python -m venv test_env
+   source test_env/bin/activate
+   pip install dist/mediapipe-*.whl
+   ```
+   - **Modern pip restrictions**: You will have to address the consequence of stricter dependency handling in newer pip versions, which were not an issue at the time of v0.10.13's release.
 
-## Community
+## Common Issues
 
-*   [Slack community](https://mediapipe.page.link/joinslack) for MediaPipe
-    users.
-*   [Discuss](https://groups.google.com/forum/#!forum/mediapipe) - General
-    community discussion around MediaPipe.
-*   [Awesome MediaPipe](https://mediapipe.page.link/awesome-mediapipe) - A
-    curated list of awesome MediaPipe related frameworks, libraries and
-    software.
+The build issues arise from both modern versions of Bazel behaving a little differently and from more recent versions of dependencies pulled by Bazel, for dependencies which were previously not hard-pinned to specific versions. Common issues include:
 
-## Contributing
+- **Dependency cycles**: Often fixed by rearranging dependency declarations in WORKSPACE
+- **Missing symbols**: May require specific versions of dependencies
+- **Python compatibility**: Ensure compatibility with target Python versions
 
-We welcome contributions. Please follow these
-[guidelines](https://github.com/google/mediapipe/blob/master/CONTRIBUTING.md).
+## Why this Recipe Matters
 
-We use GitHub issues for tracking requests and bugs. Please post questions to
-the MediaPipe Stack Overflow with a `mediapipe` tag.
+By following this structured approach:
+1. We isolate build issues from dependency problems
+2. We create a reproducible build process
+3. We ensure both direct builds and containerized builds work consistently
+4. We maintain compatibility with Python packaging systems
 
-## Resources
+**Important**: Always start from the the v0.10.13 tag commit level of the originlal MediaPipe repository, which is our target version.
 
-### Publications
+## Prerequisites
 
-*   [Bringing artworks to life with AR](https://developers.googleblog.com/2021/07/bringing-artworks-to-life-with-ar.html)
-    in Google Developers Blog
-*   [Prosthesis control via Mirru App using MediaPipe hand tracking](https://developers.googleblog.com/2021/05/control-your-mirru-prosthesis-with-mediapipe-hand-tracking.html)
-    in Google Developers Blog
-*   [SignAll SDK: Sign language interface using MediaPipe is now available for
-    developers](https://developers.googleblog.com/2021/04/signall-sdk-sign-language-interface-using-mediapipe-now-available.html)
-    in Google Developers Blog
-*   [MediaPipe Holistic - Simultaneous Face, Hand and Pose Prediction, on
-    Device](https://ai.googleblog.com/2020/12/mediapipe-holistic-simultaneous-face.html)
-    in Google AI Blog
-*   [Background Features in Google Meet, Powered by Web ML](https://ai.googleblog.com/2020/10/background-features-in-google-meet.html)
-    in Google AI Blog
-*   [MediaPipe 3D Face Transform](https://developers.googleblog.com/2020/09/mediapipe-3d-face-transform.html)
-    in Google Developers Blog
-*   [Instant Motion Tracking With MediaPipe](https://developers.googleblog.com/2020/08/instant-motion-tracking-with-mediapipe.html)
-    in Google Developers Blog
-*   [BlazePose - On-device Real-time Body Pose Tracking](https://ai.googleblog.com/2020/08/on-device-real-time-body-pose-tracking.html)
-    in Google AI Blog
-*   [MediaPipe Iris: Real-time Eye Tracking and Depth Estimation](https://ai.googleblog.com/2020/08/mediapipe-iris-real-time-iris-tracking.html)
-    in Google AI Blog
-*   [MediaPipe KNIFT: Template-based feature matching](https://developers.googleblog.com/2020/04/mediapipe-knift-template-based-feature-matching.html)
-    in Google Developers Blog
-*   [Alfred Camera: Smart camera features using MediaPipe](https://developers.googleblog.com/2020/03/alfred-camera-smart-camera-features-using-mediapipe.html)
-    in Google Developers Blog
-*   [Real-Time 3D Object Detection on Mobile Devices with MediaPipe](https://ai.googleblog.com/2020/03/real-time-3d-object-detection-on-mobile.html)
-    in Google AI Blog
-*   [AutoFlip: An Open Source Framework for Intelligent Video Reframing](https://ai.googleblog.com/2020/02/autoflip-open-source-framework-for.html)
-    in Google AI Blog
-*   [MediaPipe on the Web](https://developers.googleblog.com/2020/01/mediapipe-on-web.html)
-    in Google Developers Blog
-*   [Object Detection and Tracking using MediaPipe](https://developers.googleblog.com/2019/12/object-detection-and-tracking-using-mediapipe.html)
-    in Google Developers Blog
-*   [On-Device, Real-Time Hand Tracking with MediaPipe](https://ai.googleblog.com/2019/08/on-device-real-time-hand-tracking-with.html)
-    in Google AI Blog
-*   [MediaPipe: A Framework for Building Perception Pipelines](https://arxiv.org/abs/1906.08172)
+- **Docker** must be installed and ready for use on the host system.
 
-### Videos
+## Build the Docker Image
 
-*   [YouTube Channel](https://www.youtube.com/c/MediaPipe)
+From the project root (where the `Dockerfile` is located):
+
+```bash
+docker build --no-cache -t mediapipe-build .
+```
+
+- The `--no-cache` flag ensures all patches and updates are applied.
+
+## Start an Interactive Container
+
+Mount your project directory and start a shell:
+
+```bash
+docker run --rm -it -v "$PWD":/mediapipe mediapipe-build /bin/bash
+```
+
+- Your files are available at `/mediapipe` inside the container.
+
+## Build MediaPipe Targets (Inside Container)
+
+To build the Python hand landmarks solution (the only target built in the Docker image):
+
+```bash
+bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv4 mediapipe/python/solutions:hands
+```
+
+- This command builds only the hand landmarks solution for Python, matching the Docker image build step.
+- The `--copt=-I/usr/include/opencv4` flag is needed for OpenCV 4.x on Ubuntu 24.04+.
+
+> **Note:** Sandboxed Bazel builds (e.g., with `--sandbox_debug`) may fail due to upstream or environment issues. Use the regular build command above for reliable results.
+
+## Build and Use the MediaPipe Python Solution (Inside Container)
+
+To build and install the MediaPipe Python package using the already bazel built OpenCV (recommended for faster builds):
+
+```bash
+MEDIAPIPE_LINK_OPENCV=1 pip install . --use-pep517
+```
+
+- This will instruct the build to use your system OpenCV and skip building OpenCV from source.
+- Make sure OpenCV and its development headers are installed in your environment.
+- Do **not** use `--install-option` with pip, as it is not supported with modern builds.
+
+## Run the Python Example (Inside Container)
+
+To verify the built mediapipe with a video file (place `input.avi` in `mediapipe/python/`):
+
+```bash
+python3 mediapipe/python/verify.py
+```
+
+- Check `mediapipe/python/verified-detections.json` for results after running `verify.py`.
+
+# Versioning
+
+The Python package version is now automatically set at build time to `0.10.13+git.{commit_hash}` (where `{commit_hash}` is the current short git commit hash). This ensures every build is uniquely versioned and PEP 440 compliant. No manual version fix is needed.
+
+# Pip Build Last Issue
+
+**Deprecation Warning:**
+
+Building MediaPipe using the legacy `setup.py bdist_wheel` mechanism is deprecated and will be removed in a future version of pip. To future-proof your build process, use the standardized build interface by running:
+
+    pip install . --use-pep517
+
+see [pip issue #6334](https://github.com/pypa/pip/issues/6334).
+
+## Additional Notes
+
+- The Docker image can build all MediaPipe targets; adjust Bazel build targets as needed.
+- All patching and setup steps should be ultimately captured by a working Dockerfile for short-term reproducibility (up until the reasons for no 100% stability work for a long enough time again out there).

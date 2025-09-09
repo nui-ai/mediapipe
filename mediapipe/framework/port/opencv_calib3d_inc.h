@@ -15,12 +15,30 @@
 #ifndef MEDIAPIPE_FRAMEWORK_PORT_OPENCV_CALIB3D_INC_H_
 #define MEDIAPIPE_FRAMEWORK_PORT_OPENCV_CALIB3D_INC_H_
 
+#if __has_include(<opencv2/core/version.hpp>)
 #include <opencv2/core/version.hpp>
+#elif __has_include(<opencv4/opencv2/core/version.hpp>)
+#include <opencv4/opencv2/core/version.hpp>
+#else
+#error "Cannot find OpenCV version.hpp header!"
+#endif
 
 #ifdef CV_VERSION_EPOCH  // for OpenCV 2.x
+#if __has_include(<opencv2/calib3d/calib3d.hpp>)
 #include <opencv2/calib3d/calib3d.hpp>
+#elif __has_include(<opencv4/opencv2/calib3d/calib3d.hpp>)
+#include <opencv4/opencv2/calib3d/calib3d.hpp>
 #else
+#error "Cannot find OpenCV calib3d/calib3d.hpp header!"
+#endif
+#else
+#if __has_include(<opencv2/calib3d.hpp>)
 #include <opencv2/calib3d.hpp>
+#elif __has_include(<opencv4/opencv2/calib3d.hpp>)
+#include <opencv4/opencv2/calib3d.hpp>
+#else
+#error "Cannot find OpenCV calib3d.hpp header!"
+#endif
 #endif
 
 #endif  // MEDIAPIPE_FRAMEWORK_PORT_OPENCV_CALIB3D_INC_H_

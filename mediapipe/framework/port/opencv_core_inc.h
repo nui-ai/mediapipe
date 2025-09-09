@@ -15,16 +15,38 @@
 #ifndef MEDIAPIPE_PORT_OPENCV_CORE_INC_H_
 #define MEDIAPIPE_PORT_OPENCV_CORE_INC_H_
 
+#if __has_include(<opencv2/core/version.hpp>)
 #include <opencv2/core/version.hpp>
-
-#ifdef CV_VERSION_EPOCH  // for OpenCV 2.x
-#include <opencv2/core/core.hpp>
+#elif __has_include(<opencv4/opencv2/core/version.hpp>)
+#include <opencv4/opencv2/core/version.hpp>
 #else
-#if CV_VERSION_MAJOR == 3
-#include <opencv2/cvconfig.h>
+#error "Cannot find OpenCV version.hpp header!"
 #endif
 
+#ifdef CV_VERSION_EPOCH  // for OpenCV 2.x
+#if __has_include(<opencv2/core/core.hpp>)
+#include <opencv2/core/core.hpp>
+#elif __has_include(<opencv4/opencv2/core/core.hpp>)
+#include <opencv4/opencv2/core/core.hpp>
+#else
+#error "Cannot find OpenCV core/core.hpp header!"
+#endif
+#else
+#if CV_VERSION_MAJOR == 3
+#if __has_include(<opencv2/cvconfig.h>)
+#include <opencv2/cvconfig.h>
+#elif __has_include(<opencv4/opencv2/cvconfig.h>)
+#include <opencv4/opencv2/cvconfig.h>
+#endif
+#endif
+
+#if __has_include(<opencv2/core.hpp>)
 #include <opencv2/core.hpp>
+#elif __has_include(<opencv4/opencv2/core.hpp>)
+#include <opencv4/opencv2/core.hpp>
+#else
+#error "Cannot find OpenCV core.hpp header!"
+#endif
 #endif
 
 #endif  // MEDIAPIPE_PORT_OPENCV_CORE_INC_H_

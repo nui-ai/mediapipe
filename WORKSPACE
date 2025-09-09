@@ -2,12 +2,7 @@ workspace(name = "mediapipe")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-# Protobuf expects an //external:python_headers target
-bind(
-    name = "python_headers",
-    actual = "@local_config_python//:python_headers",
-)
-
+# Add the bazel_skylib dependency before loading it
 http_archive(
     name = "bazel_skylib",
     sha256 = "74d544d96f4a5bb630d465ca8bbcfe231e3594e5aae57e1edbf17a6eb3ca2506",
@@ -17,13 +12,22 @@ http_archive(
     ],
 )
 
+# Load skylib workspace first, before defining other dependencies
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
-
 bazel_skylib_workspace()
 
+# Now load versions.bzl after workspace is initialized
 load("@bazel_skylib//lib:versions.bzl", "versions")
-
 versions.check(minimum_bazel_version = "3.7.2")
+
+# Define rules_cc using a newer version that's compatible with TensorFlow
+http_archive(
+    name = "rules_cc",
+    sha256 = "4dccbfd22c0def164c8f47458bd50e0c7148f3d92002cdb459c2a96a68498241",
+    urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.1/rules_cc-0.0.1.tar.gz"],
+)
+
+# No need for explicit rules_cc_dependencies() at version 0.0.1
 
 # ABSL on 2023-10-18
 http_archive(
@@ -34,9 +38,9 @@ http_archive(
     patches = [
         "@//third_party:com_google_absl_windows_patch.diff",
     ],
-    sha256 = "f841f78243f179326f2a80b719f2887c38fe226d288ecdc46e2aa091e6aa43bc",
-    strip_prefix = "abseil-cpp-9687a8ea750bfcddf790372093245a1d041b21a3",
-    urls = ["https://github.com/abseil/abseil-cpp/archive//9687a8ea750bfcddf790372093245a1d041b21a3.tar.gz"],
+    sha256 = "9b2b72d4e8367c0b843fa2bcfa2b08debbe3cee34f7aaa27de55a6cbb3e843db",
+    strip_prefix = "abseil-cpp-20250814.0",
+    urls = ["https://github.com/abseil/abseil-cpp/archive/refs/tags/20250814.0.tar.gz"],
 )
 
 http_archive(
@@ -66,6 +70,13 @@ rules_shell_dependencies()
 rules_shell_toolchains()
 
 load("@rules_android_ndk//:rules.bzl", "android_ndk_repository")  # @unused
+
+# Define android_ndk_repository to satisfy Bazel dependency for @androidndk
+android_ndk_repository(
+    name = "androidndk",
+    path = "/android-ndk",  # This path can be non-existent for non-Android builds
+    api_level = 21,
+)
 
 http_archive(
     name = "build_bazel_rules_apple",
@@ -595,10 +606,12 @@ new_local_repository(
     path = "/usr/local/opt/ffmpeg",
 )
 
-new_local_repository(
+http_archive(
     name = "windows_opencv",
     build_file = "@//third_party:opencv_windows.BUILD",
-    path = "C:\\opencv\\build",
+    strip_prefix = "opencv-3.4.11",
+    type = "zip",
+    url = "https://github.com/opencv/opencv/releases/download/3.4.11/opencv-3.4.11-vc14_vc15.zip",
 )
 
 http_archive(
@@ -855,3 +868,17 @@ http_archive(
     strip_prefix = "skia-226ae9d866748a2e68b6dbf114b37129c380a298/include/config",
     urls = ["https://github.com/google/skia/archive/226ae9d866748a2e68b6dbf114b37129c380a298.zip"],
 )
+
+# Commenting out duplicate rules_cc declarations that were causing errors
+# http_archive(
+#     name = "rules_cc",
+#     sha256 = "ae46b722a8b8e9b62170f83bfb040cbf12adb732144e689985a66b26410a7d6f",
+#     strip_prefix = "rules_cc-0.0.8",
+#     urls = ["https://github.com/bazelbuild/rules_cc/archive/refs/tags/0.0.8.tar.gz"],
+# )
+
+# The local repository is kept commented out to avoid duplication
+# local_repository(
+#     name = "rules_cc",
+#     path = "third_party/rules_cc",
+# )
