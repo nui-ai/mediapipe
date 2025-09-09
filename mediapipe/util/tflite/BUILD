@@ -18,8 +18,6 @@ load(
     "cc_library_with_tflite",
     "cc_test_with_tflite",
 )
-load("@rules_cc//cc:cc_library.bzl", "cc_library")
-load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
 licenses(["notice"])
 
