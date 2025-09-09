@@ -12,20 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "mediapipe/calculators/core/merge_calculator.h"
-
+#include <memory>
 #include <vector>
 
-#include "mediapipe/framework/api3/any.h"
-#include "mediapipe/framework/api3/graph.h"
-#include "mediapipe/framework/api3/stream.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/calculator_runner.h"
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe {
 namespace {
 
 // Checks that the calculator fails if no input streams are provided.
@@ -62,24 +58,14 @@ TEST(InvariantMergeInputStreamsCalculator, ExpectExactlyOneOutputStream) {
 }
 
 // Ensures two streams with differing types can be merged correctly.
-TEST(MergeCalculatorTest, TestMergingTwoStreams) {
-  Graph<MergeNode::Contract> graph;
-  {
-    Stream<Any> input1 = graph.in.Add().SetName("input1");
-    Stream<Any> input2 = graph.in.Add().SetName("input2");
-
-    Stream<Any> output = [&]() {
-      auto& merge_node = graph.AddNode<MergeNode>();
-      merge_node.in.Add(input1);
-      merge_node.in.Add(input2);
-      return merge_node.out.Get();
-    }();
-
-    graph.out.Set(output.SetName("combined_output"));
-  }
-  MP_ASSERT_OK_AND_ASSIGN(CalculatorGraphConfig config, graph.GetConfig());
-
-  CalculatorRunner runner(config.node(0));
+TEST(MediaPipeDetectionToSoapboxDetectionCalculatorTest,
+     TestMergingTwoStreams) {
+  CalculatorRunner runner(ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
+    calculator: "MergeCalculator"
+    input_stream: "input1"
+    input_stream: "input2"
+    output_stream: "combined_output"
+  )pb"));
 
   // input1: integers 10, 20, 30, occurring at times 10, 20, 30.
   runner.MutableInputs()->Index(0).packets.push_back(
@@ -116,26 +102,15 @@ TEST(MergeCalculatorTest, TestMergingTwoStreams) {
 }
 
 // Ensures three streams with differing types can be merged correctly.
-TEST(MergeCalculatorTest, TestMergingThreeStreams) {
-  Graph<MergeNode::Contract> graph;
-  {
-    Stream<Any> input1 = graph.in.Add().SetName("input1");
-    Stream<Any> input2 = graph.in.Add().SetName("input2");
-    Stream<Any> input3 = graph.in.Add().SetName("input3");
-
-    Stream<Any> output = [&]() {
-      auto& merge_node = graph.AddNode<MergeNode>();
-      merge_node.in.Add(input1);
-      merge_node.in.Add(input2);
-      merge_node.in.Add(input3);
-      return merge_node.out.Get();
-    }();
-
-    graph.out.Set(output.SetName("combined_output"));
-  }
-  MP_ASSERT_OK_AND_ASSIGN(CalculatorGraphConfig config, graph.GetConfig());
-
-  CalculatorRunner runner(config.node(0));
+TEST(MediaPipeDetectionToSoapboxDetectionCalculatorTest,
+     TestMergingThreeStreams) {
+  CalculatorRunner runner(ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
+    calculator: "MergeCalculator"
+    input_stream: "input1"
+    input_stream: "input2"
+    input_stream: "input3"
+    output_stream: "combined_output"
+  )pb"));
 
   // input1: integer 30 occurring at time 30.
   runner.MutableInputs()->Index(0).packets.push_back(
@@ -163,4 +138,4 @@ TEST(MergeCalculatorTest, TestMergingThreeStreams) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api3
+}  // namespace mediapipe
