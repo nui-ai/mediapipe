@@ -35,15 +35,11 @@ To stabilize the MediaPipe build process, follow this step-by-step approach:
 bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv4 mediapipe/python/solutions:hands
 ```
 
-If build errors occur:
-1. Identify dependency issues in the WORKSPACE file
-2. Fix one issue at a time
-3. Test the build after each fix
-4. Run `bazel clean --expunge` between major changes
+You may choose to skip this step if you prefer to go directly to the Docker environment.
 
 ### 2. Stabilize Docker Build which also uses Ubuntu as its base image
 
-Once the direct build works:
+Once a local build works, or if you think your local machine is dirty or just prefer to skip it:
 
 1. Update the Dockerfile if necessary to match the environment where the direct build succeeded
 2. Build the Docker image:
