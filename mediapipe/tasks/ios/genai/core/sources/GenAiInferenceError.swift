@@ -25,7 +25,6 @@ public enum GenAiInferenceError: Error {
   case failedToPredictSync(String?)
   case failedToPredictAsync(String?)
   case failedToCloneSession(String?)
-  case failedToCancelAsyncPrediction(String?)
 }
 
 extension GenAiInferenceError: LocalizedError {
@@ -62,9 +61,6 @@ extension GenAiInferenceError: LocalizedError {
     case .failedToCloneSession(let message):
       let explanation = message.flatMap { $0 } ?? "An internal error occurred."
       return "Failed to clone LlmInference session: \(explanation)"
-    case .failedToCancelAsyncPrediction(let message):
-      let explanation = message.flatMap { $0 } ?? "An internal error occurred."
-      return "Failed to cancel async prediction: \(explanation)"
     }
   }
 }
@@ -95,8 +91,6 @@ extension GenAiInferenceError: CustomNSError {
       return 7
     case .failedToCloneSession:
       return 8
-    case .failedToCancelAsyncPrediction:
-      return 9
     }
   }
 }
