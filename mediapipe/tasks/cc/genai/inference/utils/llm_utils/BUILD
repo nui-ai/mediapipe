@@ -14,8 +14,6 @@
 
 # Utilities to help optimize Large Language Models (LLM).
 
-# Placeholder for internal Python strict binary compatibility macro.
-
 package(default_visibility = [
     "//mediapipe/tasks/cc:__subpackages__",
     "//third_party/odml/infra/genai/inference:__subpackages__",
