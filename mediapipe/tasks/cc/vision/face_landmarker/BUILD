@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = [
+    "//mediapipe/tasks:internal",
+])
 
 licenses(["notice"])
 
@@ -121,6 +123,7 @@ cc_library(
     name = "face_landmarker_result",
     srcs = ["face_landmarker_result.cc"],
     hdrs = ["face_landmarker_result.h"],
+    visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/framework/formats:classification_cc_proto",
         "//mediapipe/framework/formats:landmark_cc_proto",
@@ -135,6 +138,7 @@ cc_library(
     name = "face_landmarker",
     srcs = ["face_landmarker.cc"],
     hdrs = ["face_landmarker.h"],
+    visibility = ["//visibility:public"],
     deps = [
         ":face_landmarker_graph",
         ":face_landmarker_result",

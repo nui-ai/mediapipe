@@ -16,16 +16,18 @@ load("@org_tensorflow//tensorflow/lite/core/shims:cc_library_with_tflite.bzl", "
 
 licenses(["notice"])
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//mediapipe/tasks:internal"])
 
 cc_library(
     name = "running_mode",
     hdrs = ["running_mode.h"],
+    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "image_processing_options",
     hdrs = ["image_processing_options.h"],
+    visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/tasks/cc/components/containers:rect",
     ],

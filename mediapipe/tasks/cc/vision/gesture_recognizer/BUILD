@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = [
+    "//mediapipe/tasks:internal",
+])
 
 licenses(["notice"])
 
@@ -22,6 +24,7 @@ cc_library(
     name = "gesture_recognizer",
     srcs = ["gesture_recognizer.cc"],
     hdrs = ["gesture_recognizer.h"],
+    visibility = ["//visibility:public"],
     deps = [
         ":gesture_recognizer_graph",
         ":gesture_recognizer_result",
@@ -169,6 +172,7 @@ cc_library(
 cc_library(
     name = "gesture_recognizer_result",
     hdrs = ["gesture_recognizer_result.h"],
+    visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/framework/formats:classification_cc_proto",
         "//mediapipe/framework/formats:landmark_cc_proto",

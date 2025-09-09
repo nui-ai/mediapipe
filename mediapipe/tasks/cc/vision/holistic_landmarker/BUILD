@@ -13,7 +13,6 @@
 # limitations under the License.
 
 package(
-    default_visibility = ["//visibility:public"],
     licenses = ["notice"],  # Apache 2.0
 )
 
@@ -116,7 +115,7 @@ cc_library(
 cc_library(
     name = "holistic_landmarker_graph",
     srcs = ["holistic_landmarker_graph.cc"],
-    # Visibility is public until we have a C++ API.
+    visibility = ["//visibility:public"],  # Visibility is public until we have a C++ API.
     deps = [
         ":holistic_face_tracking",
         ":holistic_hand_tracking",

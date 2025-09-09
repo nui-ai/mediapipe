@@ -18,13 +18,14 @@ load("//mediapipe/framework/port:build_config.bzl", "mediapipe_proto_library")
 
 licenses(["notice"])
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//mediapipe/tasks:internal"])
 
 config_setting(
     name = "disable_gpu",
     define_values = {
         "MEDIAPIPE_DISABLE_GPU": "1",
     },
+    visibility = ["//visibility:public"],
 )
 
 more_selects.config_setting_negation(

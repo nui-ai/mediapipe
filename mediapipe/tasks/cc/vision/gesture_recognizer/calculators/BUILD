@@ -14,7 +14,10 @@
 
 load("//mediapipe/framework/port:build_config.bzl", "mediapipe_proto_library")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = [
+    "//mediapipe/app/xeno:__subpackages__",
+    "//mediapipe/tasks:internal",
+])
 
 mediapipe_proto_library(
     name = "landmarks_to_matrix_calculator_proto",
@@ -94,6 +97,7 @@ cc_test(
 mediapipe_proto_library(
     name = "combined_prediction_calculator_proto",
     srcs = ["combined_prediction_calculator.proto"],
+    visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/framework:calculator_options_proto",
         "//mediapipe/framework:calculator_proto",
