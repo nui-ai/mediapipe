@@ -1,5 +1,3 @@
-load("@rules_cc//cc:cc_test.bzl", "cc_test")
-
 package(
     default_visibility = ["//visibility:private"],
     licenses = ["notice"],  # Apache 2.0
