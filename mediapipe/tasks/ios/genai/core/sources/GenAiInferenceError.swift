@@ -22,7 +22,6 @@ public enum GenAiInferenceError: Error {
   case failedToInitializeSession(String?)
   case failedToInitializeEngine(String?)
   case failedToAddQueryToSession(String, String?)
-  case failedToAddAudioToSession(String?)
   case failedToPredictSync(String?)
   case failedToPredictAsync(String?)
   case failedToCloneSession(String?)
@@ -54,9 +53,6 @@ extension GenAiInferenceError: LocalizedError {
     case .failedToAddQueryToSession(let query, let message):
       let explanation = message.flatMap { $0 } ?? "An internal error occurred."
       return "Failed to add query: \(query) to LlmInference session: \(explanation)"
-    case .failedToAddAudioToSession(let message):
-      let explanation = message.flatMap { $0 } ?? "An internal error occurred."
-      return "Failed to add audio to LlmInference session: \(explanation)"
     case .failedToPredictSync(let message):
       let explanation = message.flatMap { $0 } ?? "An internal error occurred."
       return "Failed to predict sync: \(explanation)"
@@ -101,8 +97,6 @@ extension GenAiInferenceError: CustomNSError {
       return 8
     case .failedToCancelAsyncPrediction:
       return 9
-    case .failedToAddAudioToSession:
-      return 10
     }
   }
 }
