@@ -17,7 +17,6 @@
 #include <utility>
 
 #include "absl/status/status.h"
-#include "absl/status/statusor.h"
 #include "mediapipe/framework/port/logging.h"
 
 #ifndef MEDIAPIPE_FRAMEWORK_DEPS_MMAPPED_FILE_H_

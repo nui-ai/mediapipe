@@ -125,7 +125,6 @@ cc_library(
     deps = [
         "//mediapipe/framework/port:logging",
         "@com_google_absl//absl/status",
-        "@com_google_absl//absl/status:statusor",
     ],
 )
 
