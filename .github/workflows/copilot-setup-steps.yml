@@ -1,0 +1,106 @@
+name: Copilot Setup Steps
+
+permissions:
+  contents: read
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-24.04
+
+    steps:
+
+      - name: sudo apt update
+        run: sudo apt update
+
+      - name: Install OS-level build dependencies
+        run: |
+          # Core development tools
+          sudo apt install -y \
+            build-essential \
+            cmake \
+            pkg-config \
+            git \
+            curl \
+            wget
+
+      - name: Install additional OS-level utilities for build
+        run: |
+          # Essential utilities for build process
+          sudo apt install -y \
+            unzip \
+            wget \
+            curl
+          
+          # Install Bazel 
+          wget -q https://github.com/bazelbuild/bazel/releases/download/7.1.0/bazel-7.1.0-linux-x86_64 -O /tmp/bazel
+          chmod +x /tmp/bazel
+          sudo mv /tmp/bazel /usr/local/bin/bazel
+          bazel version
+
+      - name: Detect CPU vendor to install C++ OpenBlas accordingly
+        run: |
+          # Detect CPU vendor for optimized library selection
+          CPU_VENDOR=$(lscpu | grep "Vendor ID" | awk '{print $3}' || echo "Unknown")
+          echo "Detected CPU vendor: $CPU_VENDOR"
+          
+          # OpenCV development libraries (vendor-independent)
+          sudo apt install -y \
+            libopencv-dev \
+            libopencv-contrib-dev
+
+          # Python development headers (vendor-independent)
+          sudo apt install -y \
+            python3-dev \
+            python3-pip \
+            python3-venv
+
+          # Install optimized math libraries based on CPU vendor
+          echo "Installing CPU-optimized math libraries..."
+          
+          # Start timing for OpenBLAS installation
+          OPENBLAS_START_TIME=$(date +%s)
+          echo "🕐 OpenBLAS installation started at: $(date)"
+          
+          case "$CPU_VENDOR" in
+            "AuthenticAMD")
+              echo "AMD CPU detected - OpenBLAS installation (DISABLED - was taking too long)"
+              echo "Would install: libopenblas-dev, libblas-dev, liblapack-dev"
+              # DISABLED: OpenBLAS installation takes too long in CI
+              # sudo apt install -y \
+              #   libopenblas-dev \
+              #   libblas-dev \
+              #   liblapack-dev
+              echo "⚠️  AMD-optimized OpenBLAS libraries installation SKIPPED"
+              ;;
+            "GenuineIntel")
+              echo "Intel CPU detected - OpenBLAS installation (DISABLED - was taking too long)"
+              echo "Would install: libopenblas-dev, libblas-dev, liblapack-dev"
+              # For Intel CPUs, we can use OpenBLAS as well, but Intel MKL would be optimal
+              # Since Intel MKL is not readily available in Ubuntu repos, fall back to OpenBLAS
+              # NOTE: This Intel CPU path is UNTESTED - GitHub runners use AMD EPYC processors
+              # DISABLED: OpenBLAS installation takes too long in CI
+              # sudo apt install -y \
+              #   libopenblas-dev \
+              #   libblas-dev \
+              #   liblapack-dev
+              echo "⚠️  Intel-compatible OpenBLAS libraries installation SKIPPED"
+              echo "ℹ️  Note: For optimal Intel performance, consider Intel MKL"
+              ;;
+            *)
+              echo "Unknown or unsupported CPU vendor: $CPU_VENDOR"
+              echo "Generic BLAS libraries installation (DISABLED - was taking too long)"
+              echo "Would install: libblas-dev, liblapack-dev"
+              # DISABLED: BLAS installation takes too long in CI
+              # sudo apt install -y \
+              #   libblas-dev \
+              #   liblapack-dev
+              echo "⚠️  Generic BLAS libraries installation SKIPPED"
+              ;;
+          esac
+          
+          # End timing for OpenBLAS installation
+          OPENBLAS_END_TIME=$(date +%s)
+          OPENBLAS_DURATION=$((OPENBLAS_END_TIME - OPENBLAS_START_TIME))
+          echo "🕐 OpenBLAS installation completed at: $(date)"
+          echo "⏱️  OpenBLAS installation duration: ${OPENBLAS_DURATION} seconds"
+
