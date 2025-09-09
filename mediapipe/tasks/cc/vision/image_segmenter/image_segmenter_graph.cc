@@ -154,16 +154,12 @@ absl::StatusOr<LabelItems> GetLabelItemsIfAny(
   const std::string labels_filename =
       ModelMetadataExtractor::FindFirstAssociatedFileName(
           tensor_metadata, tflite::AssociatedFileType_TENSOR_AXIS_LABELS);
-
-  absl::StatusOr<absl::string_view> labels_file;
-  if (!labels_filename.empty()) {
-    labels_file = metadata_extractor.GetAssociatedFile(labels_filename);
-  }
-  if (labels_filename.empty() || !labels_file.ok()) {
+  if (labels_filename.empty()) {
     LabelItems empty_label_items;
     return empty_label_items;
   }
-
+  MP_ASSIGN_OR_RETURN(absl::string_view labels_file,
+                      metadata_extractor.GetAssociatedFile(labels_filename));
   const std::string display_names_filename =
       ModelMetadataExtractor::FindFirstAssociatedFileName(
           tensor_metadata, tflite::AssociatedFileType_TENSOR_AXIS_LABELS,
@@ -174,7 +170,7 @@ absl::StatusOr<LabelItems> GetLabelItemsIfAny(
         display_names_file,
         metadata_extractor.GetAssociatedFile(display_names_filename));
   }
-  return mediapipe::BuildLabelMapFromFiles(*labels_file, display_names_file);
+  return mediapipe::BuildLabelMapFromFiles(labels_file, display_names_file);
 }
 
 absl::Status ConfigureTensorsToSegmentationCalculator(
