@@ -1,37 +1,26 @@
-# MediaPipe Docker Build & Workflow Guide
+# MediaPipe v0.10.13 Build Guide 
 
-This guide explains how to build and use a Docker image for building MediaPipe for just the hand tracking target, at revision tag v0.10.13 of mediapipe which this forked repository was reverted to. 
+This guide explains how to reproducibly build MediaPipe v0.10.13 for just the hand tracking target, at revision tag v0.10.13 of mediapipe which this forked repository was reverted to.
+Judging from experience you need to work a few days to make it happen, as the build code will fail with modern Bazel, versions of dependencies it will fetch from the Internet which are not the same as when this build was originally working at the time of v0.10.13 release, and similar issues with its last-mile pip install for python proof of concept. Sometimes AI gets it right after just one day of careful iteration. 
 
-- This entails a build command that's more specific than the original MediaPipe build instructions
-- Building a docker image to have the necessary OS dependencies
-- Running the build inside a docker container running that image
-- Running the resulting Python verification script inside the container as well (if desired)
+- Success means:
+  - A build command that's more specific than the original MediaPipe build instructions to avoid more errors from unnecessary build targets
+  - Building a docker image to have the necessary OS dependencies for reproducibly running the build independently of the host system environment
+  - Actually running the build inside a docker container using that docker image
+  - Running the resulting Python verification script inside the container as well (if desired)
 
 # Why this is never 100% future proof
 The build process relies recursively on dependencies being fetched from over the internet. These dependencies may change, be removed, or otherwise become incompatible with the build process. Which is why we needed the changes comited on this forked repository, and why other changes may arise as necessary in the future.
 
-# Stabilizing MediaPipe Build Process
+# Guidelines for Stabilizing the Build Process
 
-## Understanding `bazel clean --expunge`
+## Understanding the role of `bazel clean --expunge`
 
-When facing build issues with MediaPipe, it's crucial to understand Bazel's caching mechanism:
-
-- **`bazel clean`**: Removes build outputs but keeps the Bazel cache intact
-- **`bazel clean --expunge`**: Performs a complete cleanup by removing:
-  - All build outputs
-  - The entire Bazel cache (including downloaded dependencies)
-  - Any cached state that might be causing dependency conflicts or cycles
-
-The `--expunge` flag is essential when dependency conflicts occur, as it forces Bazel to start from a clean state and rebuild the dependency tree correctly.
-
-### Why Use `clean --expunge` on Every Run?
-
-For critical production builds and CI/CD pipelines, it's recommended to use `bazel clean --expunge` before every build to ensure:
+Use `bazel clean --expunge` before every build to ensure:
 
 1. **Full reproducibility**: Each build starts from a pristine state
-2. **Elimination of cached problems**: No lingering issues from previous builds
+2. **Elimination of cached problems**: No lingering issues from previous builds, no false success which only works due to cached artifacts
 3. **Validation of the entire dependency chain**: Confirms that all dependencies can be properly resolved
-4. **Confidence in the build process**: What works once will work again
 
 While this approach increases build time (as dependencies must be re-downloaded and rebuilt), it provides the highest level of confidence that your build process is reliable and reproducible. For development environments where quick iteration is needed, you can skip this step, but always return to a clean build before finalizing changes.
 
