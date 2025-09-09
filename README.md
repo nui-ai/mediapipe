@@ -141,7 +141,7 @@ python3 mediapipe/python/verify.py
 
 The Python package version is now automatically set at build time to `0.10.13+git.{commit_hash}` (where `{commit_hash}` is the current short git commit hash). This ensures every build is uniquely versioned and PEP 440 compliant. You can use AI to reproduce this feature, and add whether git is dirty or not to the version string. As much as versioning it is relevant for the use case.
 
-## Additional Notes
+# Additional Notes
 
 - The Docker image can build all MediaPipe targets; adjust Bazel build targets as needed.
 - All patching and setup steps should be ultimately captured by a working Dockerfile for short-term reproducibility (up until the reasons for no 100% stability work for a long enough time again out there).
