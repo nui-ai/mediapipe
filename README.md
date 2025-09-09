@@ -65,7 +65,7 @@ Building MediaPipe using the legacy `setup.py bdist_wheel` mechanism is deprecat
 
 see [pip issue #6334](https://github.com/pypa/pip/issues/6334).
 
-## Last Issue Encountered
+#### Last Pip Issue Encountered
 
 Having pip reuse the already Bazel built OpenCV instead of trying to build OpenCV from source from scratch, is a good idea. However:
 To build and install the MediaPipe Python package using the already bazel built OpenCV (recommended for faster builds):
