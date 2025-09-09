@@ -154,7 +154,7 @@ static const float kSimilarityDiffTolerance = 1e-4;
       [self assertFloatEmbeddingResultsOfEmbedText:kText1
                                  usingTextEmbedder:textEmbedder
                                           hasCount:512
-                                        firstValue:21.178509f];
+                                                               firstValue:21.178507f];
 
   MPPEmbedding *embedding2 = [self assertFloatEmbeddingResultsOfEmbedText:kText2
                                                         usingTextEmbedder:textEmbedder
@@ -164,7 +164,8 @@ static const float kSimilarityDiffTolerance = 1e-4;
                                                                     andEmbedding2:embedding2
                                                                             error:nil];
 
-  XCTAssertGreaterThanOrEqual(cosineSimilarity.doubleValue, 0.95f);
+  XCTAssertEqualWithAccuracy(cosineSimilarity.doubleValue, 0.96235f,
+  kSimilarityDiffTolerance);
 }
 
 - (void)testEmbedWithRegexSucceeds {
@@ -212,7 +213,7 @@ static const float kSimilarityDiffTolerance = 1e-4;
                                                                             error:nil];
 
   // TODO: The similarity should likely be lower
-  XCTAssertGreaterThanOrEqual(cosineSimilarity.doubleValue, 0.97f);
+  XCTAssertEqualWithAccuracy(cosineSimilarity.doubleValue, 0.97564f, kSimilarityDiffTolerance);
 }
 
 - (void)testEmbedWithQuantizeSucceeds {
@@ -237,7 +238,7 @@ static const float kSimilarityDiffTolerance = 1e-4;
   NSNumber *cosineSimilarity = [MPPTextEmbedder cosineSimilarityBetweenEmbedding1:embedding1
                                                                     andEmbedding2:embedding2
                                                                             error:nil];
-  XCTAssertGreaterThanOrEqual(cosineSimilarity.doubleValue, 0.84f);
+  XCTAssertEqualWithAccuracy(cosineSimilarity.doubleValue, 0.86805f, kSimilarityDiffTolerance);
 }
 
 @end
