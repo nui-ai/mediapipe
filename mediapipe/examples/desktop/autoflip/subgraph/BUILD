@@ -16,6 +16,8 @@ load("//mediapipe/framework/tool:mediapipe_graph.bzl", "mediapipe_simple_subgrap
 
 licenses(["notice"])
 
+package(default_visibility = ["//mediapipe/examples:__subpackages__"])
+
 FACE_DETECTION_DEPS = [
     "//mediapipe/calculators/image:image_transformation_calculator",
     "//mediapipe/calculators/tflite:ssd_anchors_calculator",
