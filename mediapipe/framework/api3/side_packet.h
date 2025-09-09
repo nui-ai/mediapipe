@@ -18,7 +18,6 @@
 #include <string>
 #include <utility>
 
-#include "mediapipe/framework/api3/any.h"
 #include "mediapipe/framework/api3/internal/graph_builder.h"
 
 namespace mediapipe::api3 {
@@ -56,13 +55,6 @@ class /*ABSL_ATTRIBUTE_VIEW*/ SidePacket {
   }
 
   const std::string& Name() const { return side_source_->name; }
-
-  template <typename CastT>
-  SidePacket<CastT> Cast() {
-    static_assert(std::is_same_v<T, Any> || std::is_same_v<CastT, Any>,
-                  "Cast is only allowed if either T or CastT is Any.");
-    return SidePacket<CastT>(*side_source_);
-  }
 
  protected:
   builder::SideSource* GetBase() const { return side_source_; }
