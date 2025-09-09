@@ -45,7 +45,7 @@ You may choose to skip this step if you prefer to go directly to the Docker envi
 
 Once a local build works, or if you think your local machine is dirty or just prefer to skip it:
 
-1. Update the Dockerfile if necessary to match the environment where the direct build succeeded
+1. Update the Dockerfile if you want it to match your local environment if you had succeeded with the former local build. Different versions of Ubuntu can play out differently in which versions of what they agree to install.
 2. Build the Docker image:
    ```bash
    docker build --no-cache -t mediapipe-build .
