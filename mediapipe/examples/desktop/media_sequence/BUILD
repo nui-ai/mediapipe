@@ -19,6 +19,8 @@ load("@rules_cc//cc:cc_library.bzl", "cc_library")
 
 licenses(["notice"])
 
+package(default_visibility = ["//mediapipe/examples:__subpackages__"])
+
 cc_library(
     name = "run_graph_file_io_main",
     srcs = ["run_graph_file_io_main.cc"],
