@@ -105,20 +105,18 @@ mediapipe_proto_library(
 cc_library(
     name = "combined_prediction_calculator",
     srcs = ["combined_prediction_calculator.cc"],
-    hdrs = ["combined_prediction_calculator.h"],
     deps = [
         ":combined_prediction_calculator_cc_proto",
+        "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:collection",
-        "//mediapipe/framework/api3:calculator",
-        "//mediapipe/framework/api3:calculator_context",
-        "//mediapipe/framework/api3:calculator_contract",
-        "//mediapipe/framework/api3:contract",
-        "//mediapipe/framework/api3:node",
+        "//mediapipe/framework/api2:node",
+        "//mediapipe/framework/api2:packet",
+        "//mediapipe/framework/api2:port",
         "//mediapipe/framework/formats:classification_cc_proto",
         "@com_google_absl//absl/container:btree",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/status",
-        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
     ],
     alwayslink = 1,
 )
@@ -133,7 +131,6 @@ cc_test(
         "//mediapipe/framework/formats:classification_cc_proto",
         "//mediapipe/framework/port:gtest",
         "//mediapipe/framework/port:gtest_main",
-        "//mediapipe/framework/port:status",
         "@com_google_absl//absl/strings",
     ],
 )
