@@ -46,13 +46,3 @@ flatbuffer_py_library(
     name = "object_detector_metadata_schema_py",
     srcs = ["object_detector_metadata_schema.fbs"],
 )
-
-flatbuffer_cc_library(
-    name = "face_detector_metadata_schema_cc",
-    srcs = ["face_detector_metadata_schema.fbs"],
-)
-
-flatbuffer_py_library(
-    name = "face_detector_metadata_schema_py",
-    srcs = ["face_detector_metadata_schema.fbs"],
-)
