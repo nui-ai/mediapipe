@@ -14,14 +14,10 @@ def mediapipe_files(srcs):
 
     for src in srcs:
         archive_name = "com_google_mediapipe_%s" % src.replace("/", "_").replace(".", "_").replace("+", "_")
-
-        if native.glob([src]):
-            native.exports_files([src])
-        else:
-            native.genrule(
-                name = "%s_ln" % archive_name,
-                srcs = ["@%s//file" % archive_name],
-                outs = [src],
-                output_to_bindir = 1,
-                cmd = "ln $< $@",
-            )
+        native.genrule(
+            name = "%s_ln" % archive_name,
+            srcs = ["@%s//file" % archive_name],
+            outs = [src],
+            output_to_bindir = 1,
+            cmd = "ln $< $@",
+        )
