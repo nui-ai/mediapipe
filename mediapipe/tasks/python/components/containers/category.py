@@ -51,8 +51,7 @@ class Category:
         index=self.index,
         score=self.score,
         label=self.category_name,
-        display_name=self.display_name if self.display_name else None,
-    )
+        display_name=self.display_name)
 
   @classmethod
   @doc_controls.do_not_generate_docs

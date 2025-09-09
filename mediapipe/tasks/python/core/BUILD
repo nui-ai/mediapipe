@@ -42,12 +42,6 @@ py_library(
 )
 
 py_library(
-    name = "base_options_c",
-    srcs = ["base_options_c.py"],
-    deps = [":base_options"],
-)
-
-py_library(
     name = "task_info",
     srcs = ["task_info.py"],
     deps = [
