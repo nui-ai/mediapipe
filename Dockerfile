@@ -66,16 +66,8 @@ RUN apt-get update && apt-get install -y clang clang-format
 
 RUN apt-get update && apt-get install -y python3-venv
 
-# Create a virtual environment
-RUN python3 -m venv /opt/venv
-
-# Use the virtual environment for all subsequent commands
-ENV PATH="/opt/venv/bin:$PATH"
-
 # Copy Bazel configuration for C++17
 COPY .bazelrc /mediapipe/.bazelrc
-
-RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Install bazel
 ARG BAZEL_VERSION=6.5.0
@@ -90,23 +82,21 @@ COPY . /mediapipe/
 
 # Github self-hosted runner installation (download only, no registration or running as root)
 
-# create a non-root user for the runner
+# Dedicated non-root user and directory for GitHub Actions runner
 RUN useradd -m runner && \
-    mkdir -p /mediapipe/actions-runner && \
-    chown runner:runner /mediapipe/actions-runner
+    mkdir -p /github-runner && \
+    chown runner:runner /github-runner
 
 USER runner
-WORKDIR /mediapipe/actions-runner
+WORKDIR /github-runner
 
-# Download and extract the github actions runner as non-root user
+# Download and extract the github actions runner as non-root user in /github-runner.
+# This will only be useful as long as that runner version is supported by github,
+# and otherwise just install the latest version of it as per https://github.com/nui-ai/mediapipe/settings/actions/runners/new,
+# or as per the github instructions from its runners page's "New self-hosted runner" button, the page is currently at https://github.com/nui-ai/mediapipe/settings/actions/runners.
 ENV RUNNER_VERSION=2.328.0
-RUN curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
+RUN cd /github-runner && \
+    curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
     echo "01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e  actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz" | shasum -a 256 -c && \
     tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
     rm actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
-
-# switch back to root for further instructions or leave as runner if desired
-USER root
-WORKDIR /mediapipe
-
-# --- end Dockerfile ---

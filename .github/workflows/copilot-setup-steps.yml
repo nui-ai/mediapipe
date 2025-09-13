@@ -7,42 +7,42 @@ jobs:
   copilot-setup-steps:
     runs-on: self-hosted
 
-    steps:
-      - name: Update package lists
-        run: sudo apt update
-
-      - name: Update certificates and install system dependencies for MediaPipe CPU-only build
-        run: |
-          sudo apt update
-          sudo apt install -y \
-            build-essential \
-            clang \
-            cmake \
-            git \
-            python3 \
-            python3-dev \
-            python3-pip \
-            pkg-config \
-            zip \
-            unzip \
-            wget \
-            curl \
-            libopencv-dev \
-            libopencv-contrib-dev \
-            gpg \
-            ca-certificates \
-            ca-certificates-java
-
-      - name: Install Bazelisk (for automatic Bazel version management)
-        run: |
-          # Download bazelisk which can manage Bazel versions automatically
-          wget -O /tmp/bazelisk https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64
-          chmod +x /tmp/bazelisk
-          sudo mv /tmp/bazelisk /usr/local/bin/bazel
-          # Set environment variable to bypass blocked releases.bazel.build
-          echo "BAZELISK_BASE_URL=https://github.com/bazelbuild/bazel/releases/download" >> $GITHUB_ENV
-          # Test installation
-          /usr/local/bin/bazel --version
+#    steps:
+#      - name: Update package lists
+#        run: sudo apt update
+#
+#      - name: Update certificates and install system dependencies for MediaPipe CPU-only build
+#        run: |
+#          sudo apt update
+#          sudo apt install -y \
+#            build-essential \
+#            clang \
+#            cmake \
+#            git \
+#            python3 \
+#            python3-dev \
+#            python3-pip \
+#            pkg-config \
+#            zip \
+#            unzip \
+#            wget \
+#            curl \
+#            libopencv-dev \
+#            libopencv-contrib-dev \
+#            gpg \
+#            ca-certificates \
+#            ca-certificates-java
+#
+#      - name: Install Bazelisk (for automatic Bazel version management)
+#        run: |
+#          # Download bazelisk which can manage Bazel versions automatically
+#          wget -O /tmp/bazelisk https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64
+#          chmod +x /tmp/bazelisk
+#          sudo mv /tmp/bazelisk /usr/local/bin/bazel
+#          # Set environment variable to bypass blocked releases.bazel.build
+#          echo "BAZELISK_BASE_URL=https://github.com/bazelbuild/bazel/releases/download" >> $GITHUB_ENV
+#          # Test installation
+#          /usr/local/bin/bazel --version
 
 #      - name: Try the build
 #        run: |
