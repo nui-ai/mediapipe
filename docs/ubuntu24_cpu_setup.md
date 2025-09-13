@@ -2,6 +2,16 @@
 
 this guide covers setting up mediapipe for cpu-only hand inference on ubuntu 24.04.
 
+## dependency compatibility updates (2024-09-13)
+
+**critical fixes applied:**
+- ✅ abseil-cpp updated from future-dated `20250814.0` to stable `20240116.2`
+- ✅ rules_cc updated from ancient `0.0.1` to current `0.0.9`
+- ✅ bazel_skylib updated from `1.3.0` to current `1.5.0`  
+- ✅ protobuf updated from `3.19.1` to more recent `23.4`
+- ✅ zlib url changed from insecure http to https with github fallback
+- ✅ removed blocked tensorflow mirror urls
+
 ## system dependencies
 
 install required system packages:
@@ -27,12 +37,15 @@ sudo apt install -y \
 
 ## bazel installation
 
-install bazel 6.5.0:
+**note:** `releases.bazel.build` is currently blocked. use github actions setup or alternative installation:
+
+install bazel 6.5.0 via apt repository:
 
 ```bash
-wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-installer-linux-x86_64.sh
-chmod +x bazel-6.5.0-installer-linux-x86_64.sh
-sudo ./bazel-6.5.0-installer-linux-x86_64.sh
+curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
+sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+sudo apt update && sudo apt install -y bazel-6.5.0
 ```
 
 verify installation:
@@ -104,5 +117,6 @@ if you encounter build errors:
 1. ensure opencv4 headers are in `/usr/include/opencv4`
 2. verify bazel version matches `.bazelversion` file
 3. check that `MEDIAPIPE_DISABLE_GPU=1` is set
+4. verify internet connectivity to github.com for dependency downloads
 
-for network issues during build, bazel will download dependencies automatically on first build.
+**updated dependencies should resolve c++ header compatibility issues with modern compilers.**
