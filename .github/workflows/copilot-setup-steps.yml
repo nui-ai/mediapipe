@@ -47,59 +47,11 @@ jobs:
       - name: Test CPU-only build target and document SSL issue
         run: |
           bazel version
-          echo "=== Dependency Updates Applied ==="
-          echo "✅ Abseil-cpp: Updated from future-dated 20250814.0 to stable 20240116.2"
-          echo "✅ rules_cc: Updated from ancient 0.0.1 to current 0.0.9"  
-          echo "✅ bazel_skylib: Updated from 1.3.0 to stable version with SSL fixes"
-          echo "✅ protobuf: Updated from 3.19.1 to more recent 23.4"
-          echo "✅ zlib: Fixed HTTP URL to HTTPS with GitHub fallback"
-          echo "✅ TensorFlow mirrors: Removed blocked storage.googleapis.com URLs"
-          echo "✅ Bazel installation: Using GitHub releases instead of blocked domains"
-          echo "✅ SSL certificates: Updated for proper HTTPS access"
-          echo ""
-          echo "=== Testing CPU-Only Hand Tracking Build Command ==="
-          echo "🔧 Attempting: bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu"
-          
-          # Set environment variable as documented in README
           export BAZELISK_BASE_URL=https://github.com/bazelbuild/bazel/releases/download
-          
-          # Test the build command from README - expect it to fail with SSL issue
           ( bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu 2>&1 | tee build_output.log; exit ${PIPESTATUS[0]} )
           BUILD_EXIT_CODE=$?
-          
           if [ $BUILD_EXIT_CODE -eq 0 ]; then
             echo "✅ BUILD SUCCESS: CPU-only hand tracking build completed successfully"
             echo "✅ The SSL certificate issue has been resolved!"
           else
             echo "❌ BUILD FAILED: SSL certificate verification issue confirmed"
-            echo ""
-            echo "=== SSL Certificate Issue Analysis ==="
-            if grep -q "PKIX path building failed" build_output.log; then
-              echo "⚠️  Confirmed: Java SSL certificate verification fails for GitHub downloads in Bazel context"
-              echo "⚠️  Error: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target"
-              echo "⚠️  This is a persistent issue in CI environments that requires additional configuration"
-              echo ""
-              echo "=== Verification: Manual Download Works ==="
-              if wget -q --spider https://github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz; then
-                echo "✅ Manual HTTPS download works - issue is specific to Bazel's Java context"
-              else
-                echo "❌ Network connectivity issue detected"
-              fi
-              echo ""
-              echo "=== Solutions for Local Development ==="
-              echo "1. Use local development environment with proper SSL setup"
-              echo "2. Pre-download dependencies offline"
-              echo "3. Configure Java certificate store for GitHub certificates"
-              echo "4. Use Docker environment with certificates properly configured"
-            else
-              echo "❌ Unexpected build failure - check build_output.log for details"
-            fi
-          fi
-          
-          echo ""
-          echo "=== Environment Verification ==="
-          echo "✅ Bazel installation: Working"
-          echo "✅ Bazelisk version management: Working"
-          echo "✅ GitHub releases access: Working (outside Bazel context)"
-          echo "✅ Environment setup: Complete"
-          echo "✅ CPU-only build configuration: Available"
