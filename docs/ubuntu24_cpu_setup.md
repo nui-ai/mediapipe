@@ -46,8 +46,16 @@ bazel version
 the minimal cpu-only build excludes:
 - gpu acceleration (opencl, metal, vulkan)
 - cuda support
-- edge tpu support
+- edge tpu support  
 - hardware delegates except xnnpack
+
+only the following tensorflow lite components are included:
+- cpu inference engine
+- xnnpack delegate for optimized cpu performance
+- builtin operations
+- flatbuffers 2.0.0 for model serialization
+
+this results in significantly smaller binary size and eliminates gpu driver dependencies.
 
 ## build instructions
 
@@ -60,6 +68,13 @@ git checkout hand-cpu-only-build
 ```
 
 build the minimal hand tracking target:
+
+```bash
+bazel build --config=cpu-only -c opt \
+    //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu_minimal
+```
+
+alternatively, build with explicit flags:
 
 ```bash
 bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 \

@@ -4,6 +4,6 @@ build --cxxopt=-fpermissive
 build --cxxopt=-std=c++17
 
 # cpu-only build configuration
-build:cpu_only --define MEDIAPIPE_DISABLE_GPU=1
-build:cpu_only --copt=-DMEDIAPIPE_DISABLE_GPU=1
-build:cpu_only --copt=-DMEDIAPIPE_TFLITE_GL_INFERENCE=0
+build:cpu-only --define MEDIAPIPE_DISABLE_GPU=1
+build:cpu-only --copt=-DMEDIAPIPE_DISABLE_GPU=1
+build:cpu-only --copt=-DMEDIAPIPE_TFLITE_GL_INFERENCE=0
