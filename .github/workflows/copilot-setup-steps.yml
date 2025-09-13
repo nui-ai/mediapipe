@@ -44,14 +44,9 @@ jobs:
           # Test installation
           /usr/local/bin/bazel --version
 
-      - name: Test CPU-only build target and document SSL issue
+      - name: Try the build
         run: |
           bazel version
           export BAZELISK_BASE_URL=https://github.com/bazelbuild/bazel/releases/download
-          ( bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu 2>&1 | tee build_output.log; exit ${PIPESTATUS[0]} )
-          BUILD_EXIT_CODE=$?
-          if [ $BUILD_EXIT_CODE -eq 0 ]; then
-            echo "✅ BUILD SUCCESS: CPU-only hand tracking build completed successfully"
-            echo "✅ The SSL certificate issue has been resolved!"
-          else
-            echo "❌ BUILD FAILED: SSL certificate verification issue confirmed"
+          bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
+
