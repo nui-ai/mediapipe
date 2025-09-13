@@ -1,3 +1,14 @@
+#
+# docker image for this repository's objective of building the mediapipe hands solution (build target) from scratch.
+# it includes a step readying it to serve as a container for running a github self-hosted runner that can execute workflows
+# for github copilot, since the github cloud environment gives copilot an impossibly hard time in network restrictions
+# and configuration which is prohibitive to working with a complex bazel build that needs to pull a lot of dependencies
+# from the internet.
+#
+# so you can use this image as such a container for a self-hosted github workflows runner for developing that building to work,
+# or just as one that can build mediapipe from source (when that goal will have been accoplished).
+#
+
 # Copyright 2019 The MediaPipe Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +52,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libopencv-video-dev \
         libopencv-calib3d-dev \
         libopencv-features2d-dev \
-        software-properties-common && \
+        software-properties-common \
+        curl \
+        tar && \
     apt-get update && apt-get install -y openjdk-21-jdk && \
     apt-get install -y mesa-common-dev libegl1-mesa-dev libgles2-mesa-dev && \
     apt-get install -y mesa-utils && \
@@ -62,20 +75,12 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy Bazel configuration for C++17
 COPY .bazelrc /mediapipe/.bazelrc
 
-RUN pip install --upgrade pip setuptools wheel
-RUN pip install future
-RUN pip install absl-py "numpy<2" jax[cpu] opencv-contrib-python protobuf==3.20.1
-RUN pip install six==1.14.0
-RUN pip install tensorflow
-RUN pip install tf_slim
-
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Install bazel
 ARG BAZEL_VERSION=6.5.0
 RUN mkdir /bazel && \
-    wget --no-check-certificate -O /bazel/installer.sh "https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/b\
-azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
+    wget --no-check-certificate -O /bazel/installer.sh "https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
     wget --no-check-certificate -O  /bazel/LICENSE.txt "https://raw.githubusercontent.com/bazelbuild/bazel/master/LICENSE" && \
     chmod +x /bazel/installer.sh && \
     /bazel/installer.sh  && \
@@ -83,4 +88,25 @@ azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
 
 COPY . /mediapipe/
 
+# Github self-hosted runner installation (download only, no registration or running as root)
 
+# create a non-root user for the runner
+RUN useradd -m runner && \
+    mkdir -p /mediapipe/actions-runner && \
+    chown runner:runner /mediapipe/actions-runner
+
+USER runner
+WORKDIR /mediapipe/actions-runner
+
+# Download and extract the github actions runner as non-root user
+ENV RUNNER_VERSION=2.328.0
+RUN curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
+    echo "01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e  actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz" | shasum -a 256 -c && \
+    tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
+    rm actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
+
+# switch back to root for further instructions or leave as runner if desired
+USER root
+WORKDIR /mediapipe
+
+# --- end Dockerfile ---
