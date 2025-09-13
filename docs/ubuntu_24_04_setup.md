@@ -71,6 +71,13 @@ bazel build --config=cpu_minimal \
 # Alternative: Use the minimal workspace directly
 bazel --bazelrc=.bazelrc.cpu_minimal build \
     //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu_minimal
+
+# For production builds with maximum optimization
+bazel build --config=cpu_minimal \
+    --copt=-march=native \
+    --copt=-mtune=native \
+    --copt=-O3 \
+    //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu_minimal
 ```
 
 ## Running Hand Inference
