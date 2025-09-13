@@ -83,27 +83,4 @@ azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
 
 COPY . /mediapipe/
 
-# Fetch dependencies so XNNPACK is available for patching
-#
-# XNNPACK is a TensorFlow Lite dependency that sometimes tries to build microkernels
-# for very new instruction sets (e.g., AVX-VNNI-INT8) that are not supported by all CPUs or GCC versions.
-# This can cause build failures on CPUs (like Intel i7-14700) that do not support these instructions,
-# or with compilers that do not recognize the relevant flags (e.g., -mavxvnniint8).
-#
-# We fetch dependencies here so we can patch the problematic build rules before the actual build.
-RUN bazel fetch --experimental_repo_remote_exec //mediapipe/python/solutions:hands
 
-# Patch XNNPACK BUILD.bazel files to remove avxvnniint8 kernels and flags
-#
-# The following commands search all BUILD.bazel files in the Bazel cache and remove any lines
-# containing 'avxvnniint8' or the problematic '-mavxvnniint8' compiler flag. This prevents Bazel
-# from trying to build those microkernels, which would otherwise cause the build to fail.
-#
-# This patch is necessary because XNNPACK is not vendored in our repository and is pulled in as
-# an external dependency, so we cannot patch it directly in our codebase. Automating this step
-# here ensures reproducible, hands-off builds.
-RUN find /root/.cache/bazel -type f -name BUILD.bazel -exec sed -i '/avxvnniint8/d' {} +
-RUN find /root/.cache/bazel -type f -name BUILD.bazel -exec sed -i '/-mavxvnniint8/d' {} +
-
-# If we want the docker image to contain the pre-built object_detection_offline_demo binary, do the following
-# RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/demo:object_detection_tensorflow_demo
