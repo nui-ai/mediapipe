@@ -37,16 +37,19 @@ sudo apt install -y \
 
 ## bazel installation
 
-**note:** `releases.bazel.build` is currently blocked. use github actions setup or alternative installation:
+**note:** `releases.bazel.build` and `storage.googleapis.com` are currently blocked. use github direct download or github actions setup:
 
-install bazel 6.5.0 via apt repository:
+### option 1: direct github download
 
 ```bash
-curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
-sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
-sudo apt update && sudo apt install -y bazel-6.5.0
+wget -O bazel-6.5.0-linux-x86_64 https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-linux-x86_64
+chmod +x bazel-6.5.0-linux-x86_64
+sudo mv bazel-6.5.0-linux-x86_64 /usr/local/bin/bazel
 ```
+
+### option 2: use github actions (recommended for ci/cd)
+
+the updated `.github/workflows/copilot-setup-steps.yml` handles this automatically.
 
 verify installation:
 
