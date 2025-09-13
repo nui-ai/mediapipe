@@ -1,0 +1,32 @@
+# Bazel configuration for minimal CPU-only MediaPipe hand inference build
+# Optimizes for Ubuntu 24.04 with CPU-only TensorFlow Lite
+
+# CPU optimization
+build:cpu_minimal --cpu=k8
+build:cpu_minimal --compilation_mode=opt
+build:cpu_minimal --copt=-O3
+build:cpu_minimal --copt=-march=native
+
+# Disable GPU and hardware accelerators
+build:cpu_minimal --define MEDIAPIPE_DISABLE_GPU=1
+build:cpu_minimal --define MEDIAPIPE_DISABLE_OPENCV_GPU=1  
+build:cpu_minimal --define NO_CUDA=1
+build:cpu_minimal --define NO_OPENCL=1
+build:cpu_minimal --define NO_METAL=1
+build:cpu_minimal --define NO_VULKAN=1
+
+# Use CPU-only TensorFlow Lite
+build:cpu_minimal --define TFLITE_CPU_ONLY=1
+build:cpu_minimal --define WITH_XNNPACK=1
+
+# Minimal feature set
+build:cpu_minimal --define MEDIAPIPE_MINIMAL_BUILD=1
+build:cpu_minimal --define MEDIAPIPE_DISABLE_PYTHON=1
+
+# Linux-specific optimizations for Ubuntu 24.04
+build:cpu_minimal --linkopt=-Wl,--as-needed
+build:cpu_minimal --host_copt=-w
+build:cpu_minimal --copt=-w
+
+# Use current directory workspace (remove this line to use default WORKSPACE)
+# build:cpu_minimal --override_repository=mediapipe=/path/to/WORKSPACE.cpu_minimal

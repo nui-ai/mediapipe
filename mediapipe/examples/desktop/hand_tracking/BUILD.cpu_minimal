@@ -1,0 +1,39 @@
+# Minimal CPU-only hand tracking example
+# Strips GPU, delegate, and hardware accelerator dependencies
+
+licenses(["notice"])
+
+# Minimal CPU-only hand tracking binary
+# BUILD: bazel build --config=cpu_minimal //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu_minimal
+# RUN: bazel-bin/mediapipe/examples/desktop/hand_tracking/hand_tracking_cpu_minimal \
+#   --calculator_graph_config_file=mediapipe/graphs/hand_tracking/hand_tracking_desktop_live.pbtxt \
+#   --input_video_path=<input_path> --output_video_path=<output_path>
+cc_binary(
+    name = "hand_tracking_cpu_minimal",
+    data = [
+        "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite", 
+        "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
+    ],
+    deps = [
+        ":hand_tracking_minimal_main",
+        "//mediapipe/graphs/hand_tracking:cpu_minimal_calculators",
+    ],
+)
+
+# Simplified main function for CPU-only hand tracking
+cc_library(
+    name = "hand_tracking_minimal_main",
+    srcs = ["hand_tracking_minimal_main.cc"],
+    deps = [
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/formats:image_frame",
+        "//mediapipe/framework/formats:image_frame_opencv",
+        "//mediapipe/framework/port:file_helpers",
+        "//mediapipe/framework/port:parse_text_proto",
+        "//mediapipe/framework/port:status",
+        "@linux_opencv//:opencv",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/log",
+    ],
+)

@@ -1,0 +1,44 @@
+# Minimal CPU-only hand tracking calculators
+# Excludes GPU, delegate, and hardware accelerator dependencies
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files(glob([
+    "*.pbtxt",
+]))
+
+# CPU-only calculators for minimal hand tracking
+cc_library(
+    name = "cpu_minimal_calculators", 
+    deps = [
+        # Core calculators (CPU-only)
+        "//mediapipe/calculators/core:constant_side_packet_calculator",
+        "//mediapipe/calculators/core:flow_limiter_calculator", 
+        "//mediapipe/calculators/core:gate_calculator",
+        "//mediapipe/calculators/core:immediate_mux_calculator",
+        "//mediapipe/calculators/core:merge_calculator",
+        "//mediapipe/calculators/core:packet_inner_join_calculator",
+        "//mediapipe/calculators/core:previous_loopback_calculator",
+        
+        # Video processing (OpenCV CPU-only)
+        "//mediapipe/calculators/video:opencv_video_decoder_calculator",
+        "//mediapipe/calculators/video:opencv_video_encoder_calculator",
+        
+        # Hand tracking CPU modules
+        "//mediapipe/modules/hand_landmark:hand_landmark_tracking_cpu",
+        "//mediapipe/graphs/hand_tracking/subgraphs:hand_renderer_cpu",
+    ],
+)
+
+# Minimal CPU-only palm detection calculators
+cc_library(
+    name = "cpu_minimal_detection_calculators",
+    deps = [
+        "//mediapipe/calculators/core:flow_limiter_calculator",
+        "//mediapipe/calculators/util:annotation_overlay_calculator", 
+        "//mediapipe/calculators/util:detections_to_render_data_calculator",
+        "//mediapipe/modules/palm_detection:palm_detection_cpu",
+    ],
+)
