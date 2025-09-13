@@ -20,7 +20,7 @@ This repository would be between a prerequisite and a starting point for derivin
 - We can pin down specific versions all across and hope they keep served on the Internet for long enough, to change the tradeoff a little.
 
 # Why this is hard
-Its a tug of war between old versions that can no longer install or work against the Internet repositories as they are today, and new versions that don't like elements of how the build (which was coded to old versions) is. this statement applies to both the Bazel and the pip parts in equal amounts!
+Its a tug of war between old versions that can no longer install or work against the Internet repositories as they are today, and new versions that don't like elements of how the build (which was coded to old versions) is. this statement applies to both the Bazel and the pip parts in equal amounts! See also https://github.com/copilot/c/090b58a9-b989-4d7c-afaa-a7e0f5131239 for why it is hard (unstable tflite and tflite dependencies ecosystem in recent years).
 
 # Guidelines for Stabilizing the Build Process
 
