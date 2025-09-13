@@ -5,11 +5,7 @@ permissions:
 
 jobs:
   copilot-setup-steps:
-    runs-on: self-hosted
-
-    steps:
-      - name: local start message
-        run: echo "started"
+    runs-on: ubuntu-24.04
 
 #    steps:
 #
