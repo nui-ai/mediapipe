@@ -44,9 +44,9 @@ jobs:
           # Test installation
           /usr/local/bin/bazel --version
 
-      - name: Try the build
-        run: |
-          bazel version
-          export BAZELISK_BASE_URL=https://github.com/bazelbuild/bazel/releases/download
-          bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
+#      - name: Try the build
+#        run: |
+#          bazel version
+#          export BAZELISK_BASE_URL=https://github.com/bazelbuild/bazel/releases/download
+#          bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
 
