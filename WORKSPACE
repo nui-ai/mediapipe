@@ -672,57 +672,57 @@ http_archive(
     url = "https://github.com/google/google-toolbox-for-mac/archive/v2.2.1.zip",
 )
 
-# Hermetic CUDA
-load(
-    "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_json_init_repository.bzl",
-    "cuda_json_init_repository",
-)
+# Hermetic CUDA - disabled for minimal CPU-only build
+# load(
+#     "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_json_init_repository.bzl",
+#     "cuda_json_init_repository",
+# )
 
-cuda_json_init_repository()
+# cuda_json_init_repository()
 
-load(
-    "@cuda_redist_json//:distributions.bzl",
-    "CUDA_REDISTRIBUTIONS",
-    "CUDNN_REDISTRIBUTIONS",
-)
-load(
-    "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_redist_init_repositories.bzl",
-    "cuda_redist_init_repositories",
-    "cudnn_redist_init_repository",
-)
+# load(
+#     "@cuda_redist_json//:distributions.bzl",
+#     "CUDA_REDISTRIBUTIONS",
+#     "CUDNN_REDISTRIBUTIONS",
+# )
+# load(
+#     "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_redist_init_repositories.bzl",
+#     "cuda_redist_init_repositories",
+#     "cudnn_redist_init_repository",
+# )
 
-cuda_redist_init_repositories(
-    cuda_redistributions = CUDA_REDISTRIBUTIONS,
-)
+# cuda_redist_init_repositories(
+#     cuda_redistributions = CUDA_REDISTRIBUTIONS,
+# )
 
-cudnn_redist_init_repository(
-    cudnn_redistributions = CUDNN_REDISTRIBUTIONS,
-)
+# cudnn_redist_init_repository(
+#     cudnn_redistributions = CUDNN_REDISTRIBUTIONS,
+# )
 
-load(
-    "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_configure.bzl",
-    "cuda_configure",
-)
+# load(
+#     "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_configure.bzl",
+#     "cuda_configure",
+# )
 
-cuda_configure(name = "local_config_cuda")
+# cuda_configure(name = "local_config_cuda")
 
-# Edge TPU
-http_archive(
-    name = "libedgetpu",
-    sha256 = "14d5527a943a25bc648c28a9961f954f70ba4d79c0a9ca5ae226e1831d72fe80",
-    strip_prefix = "libedgetpu-3164995622300286ef2bb14d7fdc2792dae045b7",
-    urls = [
-        "https://github.com/google-coral/libedgetpu/archive/3164995622300286ef2bb14d7fdc2792dae045b7.tar.gz",
-    ],
-)
+# Edge TPU - disabled for minimal CPU-only build  
+# http_archive(
+#     name = "libedgetpu",
+#     sha256 = "14d5527a943a25bc648c28a9961f954f70ba4d79c0a9ca5ae226e1831d72fe80",
+#     strip_prefix = "libedgetpu-3164995622300286ef2bb14d7fdc2792dae045b7",
+#     urls = [
+#         "https://github.com/google-coral/libedgetpu/archive/3164995622300286ef2bb14d7fdc2792dae045b7.tar.gz",
+#     ],
+# )
 
-load("@libedgetpu//:workspace.bzl", "libedgetpu_dependencies")
+# load("@libedgetpu//:workspace.bzl", "libedgetpu_dependencies")
 
-libedgetpu_dependencies()
+# libedgetpu_dependencies()
 
-load("@coral_crosstool//:configure.bzl", "cc_crosstool")
+# load("@coral_crosstool//:configure.bzl", "cc_crosstool")
 
-cc_crosstool(name = "crosstool")
+# cc_crosstool(name = "crosstool")
 
 # Node dependencies
 http_archive(
