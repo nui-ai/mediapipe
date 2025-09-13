@@ -96,7 +96,24 @@ MEDIAPIPE_LINK_OPENCV=1 pip install . --use-pep517
 
 However its some work to get to that working.
   
-## Why this Recipe Matters
+## CPU-Only Hand Tracking Build Command
+
+This PR implements a minimal CPU-only build configuration. Use this command to build the hand tracking target:
+
+```bash
+# Set environment variable to bypass blocked releases.bazel.build
+export BAZELISK_BASE_URL=https://github.com/bazelbuild/bazel/releases/download
+
+# Build the CPU-only hand tracking target
+bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
+```
+
+**Note**: The build may fail due to SSL certificate verification issues when Bazel downloads dependencies from GitHub. This is a known issue documented in the CI workflow and requires either:
+- Pre-downloaded dependencies approach
+- Proper Java certificate configuration in CI environments
+- Local development environment with proper SSL setup
+
+# Why this Recipe Matters
 
 By following this structured approach:
 1. We isolate build issues from dependency problems
