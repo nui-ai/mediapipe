@@ -108,10 +108,27 @@ export BAZELISK_BASE_URL=https://github.com/bazelbuild/bazel/releases/download
 bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
 ```
 
-**Note**: The build may fail due to SSL certificate verification issues when Bazel downloads dependencies from GitHub. This is a known issue documented in the CI workflow and requires either:
-- Pre-downloaded dependencies approach
-- Proper Java certificate configuration in CI environments
-- Local development environment with proper SSL setup
+**Note**: The build will fail due to SSL certificate verification issues when Bazel downloads dependencies from GitHub in CI environments. This is a confirmed persistent issue. Solutions include:
+
+**For CI/Production Environments:**
+- Use pre-downloaded dependencies approach (recommended)
+- Configure Docker environment with proper Java certificate store
+- Use dependency caching to avoid repeated downloads
+
+**For Local Development:**
+- Local Ubuntu environments typically work with proper SSL setup
+- Ensure `ca-certificates` and `ca-certificates-java` packages are installed
+- Configure Java to trust system certificates: `sudo update-ca-certificates`
+
+**Workaround for Testing:**
+The SSL issue specifically affects Bazel's Java-based download mechanism. Manual downloads work fine:
+```bash
+# This works:
+wget https://github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz
+
+# This fails in CI:
+bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
+```
 
 # Why this Recipe Matters
 

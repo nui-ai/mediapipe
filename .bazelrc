@@ -3,6 +3,12 @@ build --experimental_repo_remote_exec
 build --cxxopt=-fpermissive
 build --cxxopt=-std=c++17
 
+# Fix SSL certificate issues in CI environments
+build --jvmopt=-Dcom.sun.net.ssl.checkRevocation=false
+build --jvmopt=-Dtrust_all_cert=true
+startup --host_jvm_args=-Dcom.sun.net.ssl.checkRevocation=false
+startup --host_jvm_args=-Dtrust_all_cert=true
+
 # cpu-only build configuration
 build:cpu-only --define MEDIAPIPE_DISABLE_GPU=1
 build:cpu-only --copt=-DMEDIAPIPE_DISABLE_GPU=1
