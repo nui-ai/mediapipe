@@ -87,7 +87,7 @@ RUN export MP_VERSION_NUMBER=$(awk '/MEDIAPIPE_FULL_VERSION/ {split($0, a, "=");
 RUN echo "build --client_env=CC=/usr/lib/llvm-18/bin/clang++" >> .bazelrc && \
     echo "build --define=xnn_enable_avxvnniint8=false" >> .bazelrc && \
     echo 'cc_library(name = "opencv", srcs = ["local/lib64/libopencv_imgproc.a", "local/lib64/libopencv_core.a"],hdrs = glob(["local/include/opencv4/opencv2/**/*.h*"]), includes = ["local/include/opencv4/"], linkstatic = 1, visibility = ["//visibility:public"])' > third_party/opencv_linux.BUILD && \
-    sed -i "s|bazel_command.append('--define=OPENCV=source')|pass|g" setup.py
+    sed -i "s|bazel_command.append('--define=OPENCV=system')|pass|g" setup.py
 
 # Apply diff to reduce the number of OpenCV dependencies.
 RUN patch -p1 < mediapipe_python_build.diff
