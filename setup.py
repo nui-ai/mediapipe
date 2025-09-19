@@ -30,7 +30,13 @@ from setuptools.command import build_ext
 from setuptools.command import build_py
 from setuptools.command import install
 
-__version__ = 'dev'
+git_hash = subprocess.check_output(
+    ['git', 'rev-parse', '--short', 'HEAD'],
+    cwd = os.path.dirname(os.path.abspath(__file__))
+    ).decode('utf-8').strip()
+
+__version__ = f"0.10.0.dev0+{git_hash}"
+
 MP_DISABLE_GPU = os.environ.get('MEDIAPIPE_DISABLE_GPU') != '0'
 IS_WINDOWS = (platform.system() == 'Windows')
 IS_MAC = (platform.system() == 'Darwin')
@@ -305,12 +311,13 @@ class BuildModules(build_ext.build_ext):
         'build',
         '--compilation_mode=opt',
         '--copt=-DNDEBUG',
+        '--copt=-I/usr/include/opencv4',
         '--action_env=PYTHON_BIN_PATH=' + _normalize_path(sys.executable),
         binary_graph_target,
     ] + GPU_OPTIONS
 
     if not self.link_opencv and not IS_WINDOWS:
-      bazel_command.append('--define=OPENCV=source')
+      bazel_command.append('--define=OPENCV=system')
 
     _invoke_shell_command(bazel_command)
     _copy_to_build_lib_dir(self.build_lib, binary_graph_target)
@@ -420,6 +427,7 @@ class BuildExtension(build_ext.build_ext):
         'build',
         '--compilation_mode=opt',
         '--copt=-DNDEBUG',
+        '--copt=-I/usr/include/opencv4',
         '--keep_going',
         '--action_env=PYTHON_BIN_PATH=' + _normalize_path(sys.executable),
         str(ext.bazel_target + '.so'),
@@ -428,7 +436,7 @@ class BuildExtension(build_ext.build_ext):
     if extra_args:
       bazel_command += extra_args
     if not self.link_opencv and not IS_WINDOWS:
-      bazel_command.append('--define=OPENCV=source')
+      bazel_command.append('--define=OPENCV=system')
 
     _invoke_shell_command(bazel_command)
     ext_bazel_bin_path = os.path.join('bazel-bin', ext.relpath,
