@@ -60,9 +60,9 @@ While this approach increases build time (as dependencies must be re-downloaded 
 
 To stabilize the MediaPipe build process, follow this step-by-step approach:
 
-### 1. Stabilize the build on your Local Ubuntu Machine
+### 1. Stabilize the build on your Local Ubuntu Machine ― Done.
 
-Stabilizing it without docker means faster turn-over times.
+Stabilizing it without docker means faster turn-over times. Done.
 
 ```bash
 # Build the specific target
@@ -71,7 +71,7 @@ bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv
 
 You may choose to skip this step if you prefer to go directly to the Docker environment. Maybe that's a good idea. 
 
-### 2. Stabilize a Docker image that succeeds in building the target
+### 2. Stabilize a Docker image that succeeds in building the target ― Done.
 
 Once a local build works, or if you think your local machine is dirty or just prefer to skip it:
 
@@ -82,7 +82,7 @@ A Dockerfile already exists in this repository, which you can modify as needed o
    ```bash
    docker build --no-cache -t mediapipe-build .
    ```
-3. To test the bazel build inside the container at par with how you would run it outside of a docker container:
+3. To test the bazel build inside a container started from that image:
    ```bash
    docker run --rm -it -v "$PWD":/mediapipe mediapipe-build /bin/bash
    ```
@@ -94,6 +94,8 @@ A Dockerfile already exists in this repository, which you can modify as needed o
 4. Fix up the __init__.py file in the installed mediapipe package inside the venv if it has duplicate code blocks in it as explained above, as described at the top of this doc. 
 
 5. you only need `pip install .`, which builds all necessary mediapipe targets as per the setup.py instructions. if it worked, you're done. no need to run a bazel build yourself.
+
+6. The resulting docker image is tagged as `mediapipe-build` and stored in your local machine's Docker image registry. It does not push the image to any remote repository; it only exists on your local system unless you explicitly push it elsewhere, unless we uploaded it to e.g. serve from github's ghcr.io or dockerhub. Rebuilding it from the current repository takes only a few minutes, but having an image on the cloud can give more assurance because it does not rely on Internet servers being available to serve all OS, bazel and pip dependencies which it needs to fetch.
 
 ### 3. Build and Use the MediaPipe Python Solution (Meaning, Stabilize that last step) 
 
