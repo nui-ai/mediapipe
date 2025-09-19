@@ -56,10 +56,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
         tar && \
     apt-get update && apt-get install -y openjdk-21-jdk && \
+    apt-get install sudo apt install -y protobuf-compiler && \
     apt-get install -y mesa-common-dev libegl1-mesa-dev libgles2-mesa-dev && \
     apt-get install -y mesa-utils && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# Stuff enabling mediapipe linking aginst its source-built OpenCV, which is how its default is (thought with some changes this can be overridden)
+RUN sudo apt-get update \
+    sudo apt-get install \
+      libopenexr-dev libimath-dev \
+      libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev \
+      libdc1394-dev \
+      libjpeg-dev libpng-dev libtiff-dev \
+      build-essential pkg-config cmake
 
 # Remove broken Clang 16 install, use Ubuntu's clang instead
 RUN apt-get update && apt-get install -y clang clang-format
