@@ -1,6 +1,10 @@
-## Using the Docker Image as a GitHub Actions Self-Hosted Runner
+## The Ubuntu 24.04 Docker Image
 
-This repository's Docker image is prepared for use as a GitHub Actions self-hosted runner. The GitHub Actions runner binary is downloaded and extracted in the image as a non-root user, but registration and execution must be performed at runtime.
++ This repository's Dockerfile has two roles:
+  1. and for reproducing the mediapipe build in a clean container ― this shows reproducibility in building mediapipe as no host system dependencies/configurations are involved.
+  2. It was also adapted for use as a GitHub Actions self-hosted runner, but that part of it is commented now, as it failed on the github side without proper error messages.
+ 
++ The GitHub Actions runner binary is downloaded and extracted in the image as a non-root user, but registration and execution must be performed at runtime.
 
 ### Steps to Launch a Self-Hosted Runner
 
