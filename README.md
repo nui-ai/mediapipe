@@ -1,3 +1,25 @@
+# Update About Successful building on Ubuntu 24.04:
+
+1. make and enter a venv.
+2. run the python build, which triggers bazel to build the hand pipelines and underlying mediapipe framework before building and installing the python wheel connecting python to it. this triggers the include setup.py which runs bazel under the hood.
+    ```
+    pip install -r requirements.txt
+    pip install .
+3. if you like run the standalone build of the C++ part only (not the python bindings and cumbersome fiddles that setup.py does on top of it in the former flow above).
+    ```
+    bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
+    ```
+4. place a video file with hands in it, as video.avi, in the project root path, and run the following python test which should run with exit code 0:
+    ```
+    python -P test-on-video-file.p
+    ```
+
+Notes:
+1. The included Ubuntu 24.04 Dockerfile was updated to contain the necessary extra dependencies needed, but not tested as of yet to reproduce a successful build (only tested on my local machine without isolation but with `bazel clean expunge`).
+2. The changes having been made are documented in the latest git commits.
+3. It likely builds a bit more than we need as we didn't modify setup.py to only build only the hands target as `bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu` would.
+4. Much of the below should be taken as obsolete given that this simply works today ― but lets test this in a docker container too before concluding. 
+
 # MediaPipe v0.10.13 Build Guide 
 
 This guide explains how to work towards reproducibly building MediaPipe v0.10.13 for just the hand tracking target, at revision tag v0.10.13 of mediapipe which this forked repository was reverted to.
@@ -195,4 +217,3 @@ The Python package version is now automatically set at build time to `0.10.13+gi
 
 - The Docker image can build all MediaPipe targets; adjust Bazel build targets as needed.
 - All patching and setup steps should be ultimately captured by a working Dockerfile for short-term reproducibility (up until the reasons for no 100% stability work for a long enough time again out there).
-
