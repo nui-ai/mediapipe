@@ -138,19 +138,25 @@ def _modify_opencv_cmake_rule(link_opencv):
 
 
 def _add_mp_init_files():
-  """Add __init__.py to mediapipe root directories to make the subdirectories indexable."""
+  """Add __init__.py to mediapipe root directories to make the subdirectories indexable, without duplicating content."""
   open(MP_ROOT_INIT_PY, 'w').close()
   # Save the original mediapipe/__init__.py file.
   shutil.copyfile(MP_DIR_INIT_PY, _get_backup_file(MP_DIR_INIT_PY))
-  mp_dir_init_file = open(MP_DIR_INIT_PY, 'a')
-  mp_dir_init_file.writelines([
+  content_to_add = [
       '\n', 'from mediapipe.python import *\n',
       'import mediapipe.python.solutions as solutions \n',
       'import mediapipe.tasks.python as tasks\n', '\n\n', 'del framework\n',
       'del gpu\n', 'del modules\n', 'del python\n', 'del mediapipe\n',
-      'del util\n', '__version__ = \'{}\''.format(__version__), '\n'
-  ])
-  mp_dir_init_file.close()
+      'del util\n', "__version__ = '{}".format(__version__), "'\n"
+  ]
+  # Read current content
+  with open(MP_DIR_INIT_PY, 'r') as f:
+    current_content = f.read()
+  # Only add if not already present
+  content_str = ''.join(content_to_add)
+  if content_str not in current_content:
+    with open(MP_DIR_INIT_PY, 'a') as mp_dir_init_file:
+      mp_dir_init_file.writelines(content_to_add)
 
 
 def _copy_to_build_lib_dir(build_lib, file):
