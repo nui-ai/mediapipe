@@ -1,5 +1,5 @@
 #
-# docker image for this repository's objective of building the mediapipe hands solution (build target) from scratch.
+# docker image for this repository's objective of building the mediapipe hands solution (build target) from scratch, specifically in a Ubuntu 24.04 container.
 # it includes a step readying it to serve as a container for running a github self-hosted runner that can execute workflows
 # for github copilot, since the github cloud environment gives copilot an impossibly hard time in network restrictions
 # and configuration which is prohibitive to working with a complex bazel build that needs to pull a lot of dependencies
@@ -33,48 +33,50 @@ WORKDIR /mediapipe
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential \
-        gcc g++ \
-        ca-certificates \
-        curl \
-        ffmpeg \
-        git \
-        wget \
-        unzip \
-        nodejs \
-        npm \
-        python3-dev \
-        python3-opencv \
-        python3-pip \
-        libopencv-core-dev \
-        libopencv-highgui-dev \
-        libopencv-imgproc-dev \
-        libopencv-video-dev \
-        libopencv-calib3d-dev \
-        libopencv-features2d-dev \
-        software-properties-common \
-        curl \
-        tar && \
-    apt-get update && apt-get install -y openjdk-21-jdk && \
-    apt-get install sudo apt install -y protobuf-compiler && \
-    apt-get install -y mesa-common-dev libegl1-mesa-dev libgles2-mesa-dev && \
-    apt-get install -y mesa-utils && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Stuff enabling mediapipe linking aginst its source-built OpenCV, which is how its default is (thought with some changes this can be overridden)
-RUN sudo apt-get update \
-    sudo apt-get install \
-      libopenexr-dev libimath-dev \
-      libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev \
-      libdc1394-dev \
-      libjpeg-dev libpng-dev libtiff-dev \
-      build-essential pkg-config cmake
-
-# Remove broken Clang 16 install, use Ubuntu's clang instead
-RUN apt-get update && apt-get install -y clang clang-format
-
-RUN apt-get update && apt-get install -y python3-venv
+    build-essential \
+    gcc g++ \
+    ca-certificates \
+    curl \
+    ffmpeg \
+    git \
+    wget \
+    unzip \
+    nodejs \
+    npm \
+    python3-dev \
+    python3-opencv \
+    python3-pip \
+    libopencv-core-dev \
+    libopencv-highgui-dev \
+    libopencv-imgproc-dev \
+    libopencv-video-dev \
+    libopencv-calib3d-dev \
+    libopencv-features2d-dev \
+    software-properties-common \
+    tar \
+    openjdk-21-jdk \
+    protobuf-compiler \
+    mesa-common-dev \
+    libegl1-mesa-dev \
+    libgles2-mesa-dev \
+    mesa-utils \
+    libopenexr-dev \
+    libimath-dev \
+    libavcodec-dev \
+    libavformat-dev \
+    libavutil-dev \
+    libswscale-dev \
+    libswresample-dev \
+    libdc1394-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libtiff-dev \
+    pkg-config \
+    cmake \
+    clang \
+    clang-format \
+    python3-venv \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy Bazel configuration for C++17
 COPY .bazelrc /mediapipe/.bazelrc
@@ -88,25 +90,24 @@ RUN mkdir /bazel && \
     /bazel/installer.sh  && \
     rm -f /bazel/installer.sh
 
+# Include the repository's code directory, this is actually too much if e.g. you have locally built mediapipe in the same directory, thus many build files will be included.
 COPY . /mediapipe/
 
-# Github self-hosted runner installation (download only, no registration or running as root)
+# Dedicated non-root user and directory for GitHub Actions runner; this failed entirely the other day so parking it.
+# Also, running within a container is it necessary not to run as root within the container itself these days?
+#RUN useradd -m runner && \
+#    mkdir -p /github-runner && \
+#    chown runner:runner /github-runner
+#
+#USER runner
+#WORKDIR /github-runner
 
-# Dedicated non-root user and directory for GitHub Actions runner
-RUN useradd -m runner && \
-    mkdir -p /github-runner && \
-    chown runner:runner /github-runner
-
-USER runner
-WORKDIR /github-runner
-
-# Download and extract the github actions runner as non-root user in /github-runner.
-# This will only be useful as long as that runner version is supported by github,
-# and otherwise just install the latest version of it as per https://github.com/nui-ai/mediapipe/settings/actions/runners/new,
+# Download and extract the github actions runner as non-root user in /github-runner, for the case that we want copilot agent mode (or other github workflows) to use a self-hosted local github runner within this container.
+# This will only be useful as long as that runner version is supported by github, and otherwise just install the latest version of it as per https://github.com/nui-ai/mediapipe/settings/actions/runners/new,
 # or as per the github instructions from its runners page's "New self-hosted runner" button, the page is currently at https://github.com/nui-ai/mediapipe/settings/actions/runners.
-ENV RUNNER_VERSION=2.328.0
-RUN cd /github-runner && \
-    curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
-    echo "01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e  actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz" | shasum -a 256 -c && \
-    tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
-    rm actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
+#ENV RUNNER_VERSION=2.328.0
+#RUN cd /github-runner && \
+#    curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
+#    echo "01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e  actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz" | shasum -a 256 -c && \
+#    tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
+#    rm actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
