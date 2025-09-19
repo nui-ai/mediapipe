@@ -1,3 +1,4 @@
+# Bazel / project specific ignores
 bazel-*
 mediapipe/MediaPipe.xcodeproj
 mediapipe/MediaPipe.tulsiproj/*.tulsiconf-user
@@ -8,11 +9,29 @@ node_modules/
 .user.bazelrc
 build/
 
+# Python ignores
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.mypy_cache/
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+.DS_Store
+
+# PyCharm ignores
 .idea/
-# PyCharm project files
 *.iml
-# PyCharm workspace files
 *.iws
-# PyCharm misc
 .idea/**
-# End PyCharm ignores
