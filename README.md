@@ -3,15 +3,15 @@
 1. make and enter a python 3.12 venv.
 2. run the python build, which triggers bazel to build the hand pipelines and underlying mediapipe framework before building and installing the python wheel connecting python to it. this triggers the include setup.py which runs bazel under the hood.
     ```
-    pip install -r requirements.txt
     pip install .
-3. if you like run the standalone build of the C++ part only (not the python bindings and cumbersome fiddles that setup.py does on top of it in the former flow above).
+3. make sure that mediapipe/__init__.py does not have duplicate code blocks in it ― it both comes with the repo and is appended to by the pip install's run of setup.py, which should be fixed by taking it out of git, or figuring why every pin install appends its designated imports content every time run. but for now just deduplciate its conetents manually after running pip install, otherwise you get wierd import errors. 
+4. if you like run the standalone build of the C++ part only (not the python bindings and cumbersome fiddles that setup.py does on top of it in the former flow above).
     ```
     bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
     ```
 4. place a video file with hands in it, as video.avi, in the project root path, and run the following python test which should run with exit code 0:
     ```
-    python -P test-on-video-file.p
+    python -P test-on-video-file.py
     ```
 
 Notes:
