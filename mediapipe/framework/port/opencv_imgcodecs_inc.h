@@ -15,30 +15,14 @@
 #ifndef MEDIAPIPE_PORT_OPENCV_IMGCODECS_INC_H_
 #define MEDIAPIPE_PORT_OPENCV_IMGCODECS_INC_H_
 
-#if __has_include(<opencv2/core/version.hpp>)
 #include <opencv2/core/version.hpp>
-#elif __has_include(<opencv4/opencv2/core/version.hpp>)
-#include <opencv4/opencv2/core/version.hpp>
-#else
-#error "Cannot find OpenCV version.hpp header!"
-#endif
 
 #include "mediapipe/framework/port/opencv_core_inc.h"
 
 #ifdef CV_VERSION_EPOCH  // for OpenCV 2.x
-#if __has_include(<opencv2/highgui/highgui.hpp>)
 #include <opencv2/highgui/highgui.hpp>
-#elif __has_include(<opencv4/opencv2/highgui/highgui.hpp>)
-#include <opencv4/opencv2/highgui/highgui.hpp>
-#endif
 #else
-#if __has_include(<opencv2/imgcodecs.hpp>)
 #include <opencv2/imgcodecs.hpp>
-#elif __has_include(<opencv4/opencv2/imgcodecs.hpp>)
-#include <opencv4/opencv2/imgcodecs.hpp>
-#else
-#error "Cannot find OpenCV imgcodecs.hpp header!"
-#endif
 #endif
 
 #endif  // MEDIAPIPE_PORT_OPENCV_IMGCODECS_INC_H_

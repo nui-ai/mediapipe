@@ -15,38 +15,16 @@
 #ifndef MEDIAPIPE_PORT_OPENCV_IMGPROC_INC_H_
 #define MEDIAPIPE_PORT_OPENCV_IMGPROC_INC_H_
 
-#if __has_include(<opencv2/core/version.hpp>)
 #include <opencv2/core/version.hpp>
-#elif __has_include(<opencv4/opencv2/core/version.hpp>)
-#include <opencv4/opencv2/core/version.hpp>
-#else
-#error "Cannot find OpenCV version.hpp header!"
-#endif
 
 #include "mediapipe/framework/port/opencv_core_inc.h"
 
 #ifdef CV_VERSION_EPOCH  // for OpenCV 2.x
-#if __has_include(<opencv2/imgproc/imgproc.hpp>)
 #include <opencv2/imgproc/imgproc.hpp>
-#elif __has_include(<opencv4/opencv2/imgproc/imgproc.hpp>)
-#include <opencv4/opencv2/imgproc/imgproc.hpp>
 #else
-#error "Cannot find OpenCV imgproc/imgproc.hpp header!"
-#endif
-#else
-#if __has_include(<opencv2/imgproc.hpp>)
 #include <opencv2/imgproc.hpp>
-#elif __has_include(<opencv4/opencv2/imgproc.hpp>)
-#include <opencv4/opencv2/imgproc.hpp>
-#else
-#error "Cannot find OpenCV imgproc.hpp header!"
-#endif
 #if CV_VERSION_MAJOR == 4
-#if __has_include(<opencv2/imgproc/types_c.h>)
 #include <opencv2/imgproc/types_c.h>
-#elif __has_include(<opencv4/opencv2/imgproc/types_c.h>)
-#include <opencv4/opencv2/imgproc/types_c.h>
-#endif
 #endif
 #endif
 

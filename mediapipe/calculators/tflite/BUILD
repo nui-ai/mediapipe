@@ -262,30 +262,6 @@ cc_library(
     alwayslink = 1,
 )
 
-# minimal cpu-only version of tflite inference calculator
-cc_library(
-    name = "tflite_inference_calculator_cpu_only",
-    srcs = ["tflite_inference_calculator.cc"],
-    defines = ["MEDIAPIPE_DISABLE_GPU=1"],
-    deps = [
-        ":tflite_inference_calculator_cc_proto",
-        "//mediapipe/framework:calculator_framework",
-        "//mediapipe/framework/port:logging",
-        "//mediapipe/framework/port:ret_check",
-        "//mediapipe/framework/stream_handler:fixed_size_input_stream_handler",
-        "//mediapipe/util/tflite:config",
-        "//mediapipe/util/tflite:tflite_model_loader",
-        "@com_google_absl//absl/log:absl_check",
-        "@com_google_absl//absl/log:absl_log",
-        "@com_google_absl//absl/memory",
-        "@org_tensorflow//tensorflow/lite:framework",
-        "@org_tensorflow//tensorflow/lite/delegates/xnnpack:xnnpack_delegate",
-        "@org_tensorflow//tensorflow/lite/kernels:builtin_ops",
-        "//mediapipe/util:cpu_util",
-    ],
-    alwayslink = 1,
-)
-
 cc_library(
     name = "tflite_converter_calculator",
     srcs = ["tflite_converter_calculator.cc"],

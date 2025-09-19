@@ -33,9 +33,8 @@ cc_binary(
     ],
 )
 
-# minimal cpu-only build for hand inference pipeline
 # BUILD:
-# bazel build --config=cpu-only -c opt \
+# bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 \
 #   //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
 # RUN:
 # bazel-bin/mediapipe/examples/desktop/hand_tracking/hand_tracking_cpu \
@@ -50,19 +49,19 @@ cc_binary(
     ],
     deps = [
         "//mediapipe/examples/desktop:demo_run_graph_main",
-        "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators_cpu_only",
+        "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
     ],
 )
 
-# minimal cpu-only build for hand inference pipeline
+# Linux only
 cc_binary(
-    name = "hand_tracking_cpu_minimal",
+    name = "hand_tracking_gpu",
     data = [
         "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
         "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
     ],
     deps = [
-        "//mediapipe/examples/desktop:demo_run_graph_main",
-        "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators_cpu_only",
+        "//mediapipe/examples/desktop:demo_run_graph_main_gpu",
+        "//mediapipe/graphs/hand_tracking:mobile_calculators",
     ],
 )

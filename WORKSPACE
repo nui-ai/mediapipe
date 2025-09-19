@@ -2,34 +2,30 @@ workspace(name = "mediapipe")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-# Add the bazel_skylib dependency - using more stable version 1.3.0 to avoid SSL issues
+# Protobuf expects an //external:python_headers target
+bind(
+    name = "python_headers",
+    actual = "@local_config_python//:python_headers",
+)
+
 http_archive(
     name = "bazel_skylib",
     sha256 = "74d544d96f4a5bb630d465ca8bbcfe231e3594e5aae57e1edbf17a6eb3ca2506",
     urls = [
+        "https://storage.googleapis.com/mirror.tensorflow.org/github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz",
         "https://github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz",
     ],
 )
 
-# Load skylib workspace first, before defining other dependencies
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
 bazel_skylib_workspace()
 
-# Now load versions.bzl after workspace is initialized
 load("@bazel_skylib//lib:versions.bzl", "versions")
+
 versions.check(minimum_bazel_version = "3.7.2")
 
-# Define rules_cc using a current stable version
-http_archive(
-    name = "rules_cc",
-    sha256 = "2037875b9a4456dce4a79d112a8ae885bbc4aad968e6587dca6e64f3a0900cdf",
-    strip_prefix = "rules_cc-0.0.9",
-    urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.9/rules_cc-0.0.9.tar.gz"],
-)
-
-# No need for explicit rules_cc_dependencies() at version 0.0.1
-
-# ABSL on 2024-01-16 (updated from future-dated 20250814.0)
+# ABSL on 2023-10-18
 http_archive(
     name = "com_google_absl",
     patch_args = [
@@ -38,15 +34,15 @@ http_archive(
     patches = [
         "@//third_party:com_google_absl_windows_patch.diff",
     ],
-    sha256 = "3c743204df78366ad2eaf236d6631d83f6bc928d1705dd0000b872e53b73dc6a",
-    strip_prefix = "abseil-cpp-20240116.2",
-    urls = ["https://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz"],
+    sha256 = "f841f78243f179326f2a80b719f2887c38fe226d288ecdc46e2aa091e6aa43bc",
+    strip_prefix = "abseil-cpp-9687a8ea750bfcddf790372093245a1d041b21a3",
+    urls = ["https://github.com/abseil/abseil-cpp/archive//9687a8ea750bfcddf790372093245a1d041b21a3.tar.gz"],
 )
 
 http_archive(
     name = "rules_java",
-    sha256 = "f8ae9ed3887df02f40de9f4f7ac3873e6dd7a471f9cddf63952538b94b59aeb3",
-    url = "https://github.com/bazelbuild/rules_java/releases/download/7.6.1/rules_java-7.6.1.tar.gz",
+    sha256 = "c73336802d0b4882e40770666ad055212df4ea62cfa6edf9cb0f9d29828a0934",
+    url = "https://github.com/bazelbuild/rules_java/releases/download/5.3.5/rules_java-5.3.5.tar.gz",
 )
 
 http_archive(
@@ -71,13 +67,6 @@ rules_shell_toolchains()
 
 load("@rules_android_ndk//:rules.bzl", "android_ndk_repository")  # @unused
 
-# Define android_ndk_repository to satisfy Bazel dependency for @androidndk
-android_ndk_repository(
-    name = "androidndk",
-    path = "/android-ndk",  # This path can be non-existent for non-Android builds
-    api_level = 21,
-)
-
 http_archive(
     name = "build_bazel_rules_apple",
     patch_args = [
@@ -101,9 +90,9 @@ http_archive(
     patches = [
         "@//third_party:com_google_protobuf_fixes.diff",
     ],
-    sha256 = "8ff511a64fc46ee792d3fe49a5a1bcad6f7dc50dfbba5a28b0e5b979c17f9871",
-    strip_prefix = "protobuf-23.4",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v23.4.tar.gz"],
+    sha256 = "87407cd28e7a9c95d9f61a098a53cf031109d451a7763e7dd1253abf8b4df422",
+    strip_prefix = "protobuf-3.19.1",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.19.1.tar.gz"],
 )
 
 # GoogleTest/GoogleMock framework. Used by most unit-tests.
@@ -128,10 +117,7 @@ http_archive(
     ],
     sha256 = "b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30",
     strip_prefix = "zlib-1.2.13",
-    urls = [
-        "https://github.com/madler/zlib/archive/refs/tags/v1.2.13.tar.gz",
-        "https://zlib.net/fossils/zlib-1.2.13.tar.gz",
-    ],
+    url = "http://zlib.net/fossils/zlib-1.2.13.tar.gz",
 )
 
 # gflags needed by glog
@@ -250,6 +236,7 @@ http_archive(
     sha256 = "e0a111000aeed2051f29fcc7a3f83be3ad8c6c93c186e64beb1ad313f0c7f9f9",
     strip_prefix = "rules_closure-cf1e44edb908e9616030cc83d085989b8e6cd6df",
     urls = [
+        "http://mirror.tensorflow.org/github.com/bazelbuild/rules_closure/archive/cf1e44edb908e9616030cc83d085989b8e6cd6df.tar.gz",
         "https://github.com/bazelbuild/rules_closure/archive/cf1e44edb908e9616030cc83d085989b8e6cd6df.tar.gz",  # 2019-04-04
     ],
 )
@@ -481,9 +468,9 @@ http_archive(
 # ...but the Java download is currently broken, so we use the "source" download.
 http_archive(
     name = "com_google_protobuf_javalite",
-    sha256 = "8ff511a64fc46ee792d3fe49a5a1bcad6f7dc50dfbba5a28b0e5b979c17f9871",
-    strip_prefix = "protobuf-23.4",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v23.4.tar.gz"],
+    sha256 = "87407cd28e7a9c95d9f61a098a53cf031109d451a7763e7dd1253abf8b4df422",
+    strip_prefix = "protobuf-3.19.1",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.19.1.tar.gz"],
 )
 
 load("@//third_party/flatbuffers:workspace.bzl", flatbuffers = "repo")
@@ -608,12 +595,10 @@ new_local_repository(
     path = "/usr/local/opt/ffmpeg",
 )
 
-http_archive(
+new_local_repository(
     name = "windows_opencv",
     build_file = "@//third_party:opencv_windows.BUILD",
-    strip_prefix = "opencv-3.4.11",
-    type = "zip",
-    url = "https://github.com/opencv/opencv/releases/download/3.4.11/opencv-3.4.11-vc14_vc15.zip",
+    path = "C:\\opencv\\build",
 )
 
 http_archive(
@@ -674,57 +659,57 @@ http_archive(
     url = "https://github.com/google/google-toolbox-for-mac/archive/v2.2.1.zip",
 )
 
-# Hermetic CUDA - disabled for minimal CPU-only build
-# load(
-#     "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_json_init_repository.bzl",
-#     "cuda_json_init_repository",
-# )
+# Hermetic CUDA
+load(
+    "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_json_init_repository.bzl",
+    "cuda_json_init_repository",
+)
 
-# cuda_json_init_repository()
+cuda_json_init_repository()
 
-# load(
-#     "@cuda_redist_json//:distributions.bzl",
-#     "CUDA_REDISTRIBUTIONS",
-#     "CUDNN_REDISTRIBUTIONS",
-# )
-# load(
-#     "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_redist_init_repositories.bzl",
-#     "cuda_redist_init_repositories",
-#     "cudnn_redist_init_repository",
-# )
+load(
+    "@cuda_redist_json//:distributions.bzl",
+    "CUDA_REDISTRIBUTIONS",
+    "CUDNN_REDISTRIBUTIONS",
+)
+load(
+    "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_redist_init_repositories.bzl",
+    "cuda_redist_init_repositories",
+    "cudnn_redist_init_repository",
+)
 
-# cuda_redist_init_repositories(
-#     cuda_redistributions = CUDA_REDISTRIBUTIONS,
-# )
+cuda_redist_init_repositories(
+    cuda_redistributions = CUDA_REDISTRIBUTIONS,
+)
 
-# cudnn_redist_init_repository(
-#     cudnn_redistributions = CUDNN_REDISTRIBUTIONS,
-# )
+cudnn_redist_init_repository(
+    cudnn_redistributions = CUDNN_REDISTRIBUTIONS,
+)
 
-# load(
-#     "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_configure.bzl",
-#     "cuda_configure",
-# )
+load(
+    "@org_tensorflow//third_party/gpus/cuda/hermetic:cuda_configure.bzl",
+    "cuda_configure",
+)
 
-# cuda_configure(name = "local_config_cuda")
+cuda_configure(name = "local_config_cuda")
 
-# Edge TPU - disabled for minimal CPU-only build  
-# http_archive(
-#     name = "libedgetpu",
-#     sha256 = "14d5527a943a25bc648c28a9961f954f70ba4d79c0a9ca5ae226e1831d72fe80",
-#     strip_prefix = "libedgetpu-3164995622300286ef2bb14d7fdc2792dae045b7",
-#     urls = [
-#         "https://github.com/google-coral/libedgetpu/archive/3164995622300286ef2bb14d7fdc2792dae045b7.tar.gz",
-#     ],
-# )
+# Edge TPU
+http_archive(
+    name = "libedgetpu",
+    sha256 = "14d5527a943a25bc648c28a9961f954f70ba4d79c0a9ca5ae226e1831d72fe80",
+    strip_prefix = "libedgetpu-3164995622300286ef2bb14d7fdc2792dae045b7",
+    urls = [
+        "https://github.com/google-coral/libedgetpu/archive/3164995622300286ef2bb14d7fdc2792dae045b7.tar.gz",
+    ],
+)
 
-# load("@libedgetpu//:workspace.bzl", "libedgetpu_dependencies")
+load("@libedgetpu//:workspace.bzl", "libedgetpu_dependencies")
 
-# libedgetpu_dependencies()
+libedgetpu_dependencies()
 
-# load("@coral_crosstool//:configure.bzl", "cc_crosstool")
+load("@coral_crosstool//:configure.bzl", "cc_crosstool")
 
-# cc_crosstool(name = "crosstool")
+cc_crosstool(name = "crosstool")
 
 # Node dependencies
 http_archive(
@@ -870,17 +855,3 @@ http_archive(
     strip_prefix = "skia-226ae9d866748a2e68b6dbf114b37129c380a298/include/config",
     urls = ["https://github.com/google/skia/archive/226ae9d866748a2e68b6dbf114b37129c380a298.zip"],
 )
-
-# Commenting out duplicate rules_cc declarations that were causing errors
-# http_archive(
-#     name = "rules_cc",
-#     sha256 = "ae46b722a8b8e9b62170f83bfb040cbf12adb732144e689985a66b26410a7d6f",
-#     strip_prefix = "rules_cc-0.0.8",
-#     urls = ["https://github.com/bazelbuild/rules_cc/archive/refs/tags/0.0.8.tar.gz"],
-# )
-
-# The local repository is kept commented out to avoid duplication
-# local_repository(
-#     name = "rules_cc",
-#     path = "third_party/rules_cc",
-# )

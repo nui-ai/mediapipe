@@ -15,28 +15,14 @@
 #ifndef MEDIAPIPE_PORT_OPENCV_VIDEO_INC_H_
 #define MEDIAPIPE_PORT_OPENCV_VIDEO_INC_H_
 
-#if __has_include(<opencv2/core/version.hpp>)
 #include <opencv2/core/version.hpp>
-#elif __has_include(<opencv4/opencv2/core/version.hpp>)
-#include <opencv4/opencv2/core/version.hpp>
-#else
-#error "Cannot find OpenCV version.hpp header!"
-#endif
 
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/port/opencv_core_inc.h"
 
 #ifdef CV_VERSION_EPOCH  // for OpenCV 2.x
-#if __has_include(<opencv2/highgui/highgui.hpp>)
 #include <opencv2/highgui/highgui.hpp>
-#elif __has_include(<opencv4/opencv2/highgui/highgui.hpp>)
-#include <opencv4/opencv2/highgui/highgui.hpp>
-#endif
-#if __has_include(<opencv2/video/video.hpp>)
 #include <opencv2/video/video.hpp>
-#elif __has_include(<opencv4/opencv2/video/video.hpp>)
-#include <opencv4/opencv2/video/video.hpp>
-#endif
 // Copied from "opencv2/videoio.hpp" in OpenCV 4.0.1
 namespace cv {
 enum VideoCaptureProperties {
@@ -95,22 +81,11 @@ inline int fourcc(char c1, char c2, char c3, char c4) {
 }  // namespace mediapipe
 
 #else
-#if __has_include(<opencv2/video.hpp>)
 #include <opencv2/video.hpp>
-#elif __has_include(<opencv4/opencv2/video.hpp>)
-#include <opencv4/opencv2/video.hpp>
-#endif
-#if __has_include(<opencv2/videoio.hpp>)
 #include <opencv2/videoio.hpp>
-#elif __has_include(<opencv4/opencv2/videoio.hpp>)
-#include <opencv4/opencv2/videoio.hpp>
-#endif
+
 #if CV_VERSION_MAJOR == 4 && !defined(MEDIAPIPE_MOBILE)
-#if __has_include(<opencv2/optflow.hpp>)
 #include <opencv2/optflow.hpp>
-#elif __has_include(<opencv4/opencv2/optflow.hpp>)
-#include <opencv4/opencv2/optflow.hpp>
-#endif
 
 namespace cv {
 inline Ptr<DenseOpticalFlow> createOptFlow_DualTVL1() {
