@@ -56,6 +56,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tar \
     openjdk-21-jdk \
     protobuf-compiler \
+    libprotobuf-dev \
     mesa-common-dev \
     libegl1-mesa-dev \
     libgles2-mesa-dev \

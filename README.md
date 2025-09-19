@@ -84,12 +84,15 @@ A Dockerfile already exists in this repository, which you can modify as needed o
    ```
 3. To test the bazel build inside the container at par with how you would run it outside of a docker container:
    ```bash
-   docker run --rm -it -v "$PWD":/mediapipe mediapipe-build /bin/bash -c
+   docker run --rm -it -v "$PWD":/mediapipe mediapipe-build /bin/bash
    ```
    then inside the running container's interactive prompt:
    ```bash
-   "cd /mediapipe && bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv4 mediapipe/python/solutions:hands"
+   git config --global --add safe.directory /mediapipe
+   pip install .
    ```
+
+4. you only need pip install ., which builds all necessary mediapipe targets as per the setup.py instructions. if it worked, you're done.
 
 ### 3. Build and Use the MediaPipe Python Solution (Meaning, Stabilize that last step) 
 
