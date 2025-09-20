@@ -1,18 +1,20 @@
 # Update About Successful building on Ubuntu 24.04 as well as building a Docker image (Ubuntu 22.04 based) that can build mediapipe as well.
 
 1. make and enter a python 3.12 venv.
-2. run the python build, which triggers bazel to build the hand pipelines and underlying mediapipe framework before building and installing the python wheel connecting python to it. this triggers the include setup.py which runs bazel under the hood.
+2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. this triggers the included `setup.py` which runs bazel under the hood. this not only builds the required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package).
     ```
     pip install .
 
-3. if you like run the standalone build of the C++ part only (not the python bindings and cumbersome fiddles that setup.py does on top of it in the former flow above).
-    ```
-    bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
-    ```
-4. place a video file with hands in it, as video.avi, in the project root path, and run the following python test which should run with exit code 0:
+3. place a video file with hands in it, as video.avi, in the project root path, and run the following python test which should run with exit code 0:
     ```
     python3 -P test-on-video-file.py
     ```
+   
+if you wish to only build the C++ part, maybe for isolation that it builds without errors:
+```
+bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
+```
+
 
 Notes:
 1. The included Ubuntu 24.04 Dockerfile was updated to contain the necessary extra dependencies needed, but not tested as of yet to reproduce a successful build (only tested on my local machine without isolation but with `bazel clean expunge`).
