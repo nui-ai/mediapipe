@@ -13,7 +13,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 Setup for MediaPipe package with setuptools.
-"""
+
+============================================
+
+Modified in various ways, see the commit log.
+All attempts to make it make bazel only build incrementally failed (see https://chatgpt.com/s/t_68ce836619f081919425794cc031a8c4)
+to avoid it building the C++ parts from scratch even when no source code has changed. """
 
 import glob
 import os
@@ -138,48 +143,48 @@ def _modify_opencv_cmake_rule(link_opencv):
 
 
 def _add_mp_init_files():
-  """Overwrite mediapipe/__init__.py with the intended content, printing if the file existed and its previous contents."""
-  open(MP_ROOT_INIT_PY, 'w').close()
-  return
+    """Ensure mediapipe/__init__.py has the intended content, but not touching it if it already does"""
 
-  # Save the original mediapipe/__init__.py file.
-  shutil.copyfile(MP_DIR_INIT_PY, _get_backup_file(MP_DIR_INIT_PY))
-  file_existed = os.path.exists(MP_DIR_INIT_PY)
-  if file_existed:
-    with open(MP_DIR_INIT_PY, 'r') as f:
-      previous_content = f.read()
-    print(f"{MP_DIR_INIT_PY} existed before writing. Previous content:\n{previous_content}")
-  else:
-    print(f"{MP_DIR_INIT_PY} did not exist before writing.")
-  content_to_write = [
-      '# Copyright 2019 - 2022 The MediaPipe Authors.\n',
-      '#\n',
-      '# Licensed under the Apache License, Version 2.0 (the "License");\n',
-      '# you may not use this file except in compliance with the License.\n',
-      '# You may obtain a copy of the License at\n',
-      '#\n',
-      '#      http://www.apache.org/licenses/LICENSE-2.0\n',
-      '#\n',
-      '# Unless required by applicable law or agreed to in writing, software\n',
-      '# distributed under the License is distributed on an "AS IS" BASIS,\n',
-      '# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n',
-      '# See the License for the specific language governing permissions and\n',
-      '# limitations under the License.\n',
-      '\n',
-      'from mediapipe.python import *\n',
-      'import mediapipe.python.solutions as solutions \n',
-      'import mediapipe.tasks.python as tasks\n',
-      '\n',
-      'del framework\n',
-      'del gpu\n',
-      'del modules\n',
-      'del python\n',
-      'del mediapipe\n',
-      'del util\n',
-      f"__version__ = '{__version__}'\n"
-  ]
-  with open(MP_DIR_INIT_PY, 'w') as mp_dir_init_file:
-    mp_dir_init_file.writelines(content_to_write)
+    content_to_write = [
+        '# Copyright 2019 - 2022 The MediaPipe Authors.\n',
+        '#\n',
+        '# Licensed under the Apache License, Version 2.0 (the "License");\n',
+        '# you may not use this file except in compliance with the License.\n',
+        '# You may obtain a copy of the License at\n',
+        '#\n',
+        '#      http://www.apache.org/licenses/LICENSE-2.0\n',
+        '#\n',
+        '# Unless required by applicable law or agreed to in writing, software\n',
+        '# distributed under the License is distributed on an "AS IS" BASIS,\n',
+        '# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n',
+        '# See the License for the specific language governing permissions and\n',
+        '# limitations under the License.\n',
+        '\n',
+        'from mediapipe.python import *\n',
+        'import mediapipe.python.solutions as solutions \n',
+        'import mediapipe.tasks.python as tasks\n',
+        '\n',
+        'del framework\n',
+        'del gpu\n',
+        'del modules\n',
+        'del python\n',
+        'del mediapipe\n',
+        'del util\n',
+        f"__version__ = '{__version__}'\n"
+    ]
+    expected_content = ''.join(content_to_write)
+
+    current_content = None
+    if os.path.exists(MP_DIR_INIT_PY):
+        with open(MP_DIR_INIT_PY, 'r') as f:
+            current_content = f.read()
+    if current_content == expected_content:
+        print(f"{MP_DIR_INIT_PY} already up-to-date, not modified.", flush=True)
+        return
+
+    with open(MP_DIR_INIT_PY, 'w') as mp_dir_init_file:
+        mp_dir_init_file.writelines(content_to_write)
+    print(f"generated {MP_DIR_INIT_PY}.", flush=True)
 
 
 def _copy_to_build_lib_dir(build_lib, file):
