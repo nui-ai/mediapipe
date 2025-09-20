@@ -4,14 +4,14 @@
 2. run the python build, which triggers bazel to build the hand pipelines and underlying mediapipe framework before building and installing the python wheel connecting python to it. this triggers the include setup.py which runs bazel under the hood.
     ```
     pip install .
-3. make sure that inside the virtual environment, e.g. in `.venv/lib/python3.12/site-packages/mediapipe/__init__.py` does not have duplicate code blocks in it ― which should be fixed by figuring a pip install run of setup.py appends its designated content (imports) into this source file twice! but for now just deduplciate its conetents manually after running pip install, otherwise you get wierd import errors when trying to import mediapipe in python. this should be automated by analyzing why setup.py appends to it every time run
-4. if you like run the standalone build of the C++ part only (not the python bindings and cumbersome fiddles that setup.py does on top of it in the former flow above).
+
+3. if you like run the standalone build of the C++ part only (not the python bindings and cumbersome fiddles that setup.py does on top of it in the former flow above).
     ```
     bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
     ```
 4. place a video file with hands in it, as video.avi, in the project root path, and run the following python test which should run with exit code 0:
     ```
-    python -P test-on-video-file.py
+    python3 -P test-on-video-file.py
     ```
 
 Notes:
@@ -91,11 +91,9 @@ A Dockerfile already exists in this repository, which you can modify as needed o
    git config --global --add safe.directory /mediapipe
    pip install .
    ```
-4. Fix up the __init__.py file in the installed mediapipe package inside the venv if it has duplicate code blocks in it as explained above, as described at the top of this doc. 
-
 5. you only need `pip install .`, which builds all necessary mediapipe targets as per the setup.py instructions. if it worked, you're done. no need to run a bazel build yourself.
 
-6. The resulting docker image is tagged as `mediapipe-build` and stored in your local machine's Docker image registry. The above does not push the image to any remote repository; it only exists on your local system unless you explicitly push it elsewhere, unless we uploaded it to e.g. serve from github's ghcr.io or dockerhub. Rebuilding it from the current repository takes only a few minutes, but having an image on the cloud can give more assurance because it does not rely on Internet servers being available to serve all OS, bazel and pip dependencies which it needs to fetch, which are already baked into a successfully built image. Actually, we'd better make the image prebuild mediapipe as part of its Dockerfile, so that all Internet dependencies are baked into the image, and then rebuilding with only code changes does not need to fetch anything from the Internet ― this can make it stand the test of time as the Internet repositories of dependencies phase out old versions of dependencies. For this we need to figure why it screws up the __init__.py file in the installed mediapipe package inside the venv as explained above, as described at the top of this doc.
+6. The resulting docker image is tagged as `mediapipe-build` and stored in your local machine's Docker image registry. The above does not push the image to any remote repository; it only exists on your local system unless you explicitly push it elsewhere, unless we uploaded it to e.g. serve from github's ghcr.io or dockerhub. Rebuilding it from the current repository takes only a few minutes, but having an image on the cloud can give more assurance because it does not rely on Internet servers being available to serve all OS, bazel and pip dependencies which it needs to fetch, which are already baked into a successfully built image. Actually, we'd better make the image prebuild mediapipe as part of its Dockerfile, so that all Internet dependencies are baked into the image, and then rebuilding with only code changes does not need to fetch anything from the Internet ― this can make it stand the test of time as the Internet repositories of dependencies phase out old versions of dependencies. 
 
 ### 3. Build and Use the MediaPipe Python Solution (Meaning, Stabilize that last step) 
 
