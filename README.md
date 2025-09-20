@@ -37,9 +37,10 @@ This repository would be between a prerequisite and a starting point for derivin
   - Actually running the build inside a docker container using that docker image
   - Running the included Python verification script inside the container as well (if desired)
 
-# Why this is never 100% future proof
+# Why this is never 100% future proof (outside the case of a docker image)
 - The build process relies recursively on dependencies being fetched from over the internet. These dependencies may change, be removed, or otherwise become incompatible with the build process. Which is why we needed the changes comited on this forked repository, and why other changes may arise as necessary in the future. 
 - We can pin down specific versions all across and hope they keep served on the Internet for long enough, to change the tradeoff a little.
+- In a docker image built as per the docker image build command included below, all these dependencies become baked into the image and thus future proof one level more deeply ― as long as we can run that built image they are baked in, regardless their availability on the Internet or how newer versions of pip or bazel behave differently against the Internet repositories of dependencies where they come from.
 
 # Why this is hard
 Its a tug of war between old versions that can no longer install or work against the Internet repositories as they are today, and new versions that don't like elements of how the build (which was coded to old versions) is. this statement applies to both the Bazel and the pip parts in equal amounts! See also https://github.com/copilot/c/090b58a9-b989-4d7c-afaa-a7e0f5131239 for why it is hard (unstable tflite and tflite dependencies ecosystem in recent years).
