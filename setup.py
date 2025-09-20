@@ -35,7 +35,7 @@ git_hash = subprocess.check_output(
     cwd = os.path.dirname(os.path.abspath(__file__))
     ).decode('utf-8').strip()
 
-__version__ = f"0.10.0.dev0+{git_hash}"
+__version__ = f"0.10.13.dev0+{git_hash}"
 
 MP_DISABLE_GPU = os.environ.get('MEDIAPIPE_DISABLE_GPU') != '0'
 IS_WINDOWS = (platform.system() == 'Windows')
