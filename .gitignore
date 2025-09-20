@@ -8,6 +8,7 @@ node_modules/
 .configure.bazelrc
 .user.bazelrc
 build/
+BUILD.backup
 
 # Python ignores
 __pycache__/

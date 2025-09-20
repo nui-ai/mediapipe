@@ -13,12 +13,21 @@ build --enable_platform_specific_config
 # just a git ignored path in the project root, which can be tried later, for easier clearing and so on.
 # a project-specific cache dir can be useful to avoid conflicts when multiple projects or copies of
 # this project are built from different copies of the project on the same file system.
+# the following block make bazel use that stable cache dir under.
+# see https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35 for reference, simple it's not.
 build  --disk_cache=/tmp/bazel-${USER}/disk
 build  --repository_cache=/tmp/bazel-${USER}/repos
+# stable env variables, for the same puprose of incremental building
 common --repo_env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 build  --action_env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 common --repo_env=PYTHON_BIN_PATH
 build  --action_env=PYTHON_BIN_PATH
+# for the same sake, using this strict flag has the consequence that no tmp build path is used
+# in some build targets which otherwise somehow inherit one from the pip isolated build env,
+# which makes a build after no changes go down from 30 to 5 seconds. it also makes a full build
+# go down to 22 seconds on the same machine, so we'll keep it for now, but remove this if in
+# doubt about build completeness (or correctness) as this feels too quick.
+build  --incompatible_strict_action_env
 
 # Enable stack traces
 test --test_env="GTEST_INSTALL_FAILURE_SIGNAL_HANDLER=1"
