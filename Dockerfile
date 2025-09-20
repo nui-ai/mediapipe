@@ -22,6 +22,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# ------------------------------------------------------------------------------
+# note that the built image will be close to 10GB in size, so not a small image.
+#
 
 FROM ubuntu:24.04
 
