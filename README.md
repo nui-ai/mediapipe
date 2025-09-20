@@ -6,7 +6,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
 
 0. clone this repository.
 1. make and activate a python 3.12 venv.
-2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. this triggers the included `setup.py` which runs bazel under the hood. this not only builds the required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package).
+2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. the included `setup.py`, triggered to run by the below `pip install` runs bazel under the hood to build all C++ dependencies required for the hands model. this not only builds all required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package).
     ```
     pip install .
     ```
@@ -24,6 +24,8 @@ if you wish to only build the C++ part, maybe for isolation that it builds witho
 ```
 bazel build -c opt --copt=-I/usr/include/opencv4 --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
 ```
+
+unfortunately, pip install fails to enable its bazel build commands to make bazel build incrementally, so you wait 2.5 minutes on every pip install.
 
 Notes:
 1. The included Ubuntu 24.04-based [Dockerfile](Dockerfile) was created and tested to contain the OS-level dependencies needed for a successful mediapipe v0.10.13 build, and fully tested to reproduce a successful build, so this process is reproducible and not an artefact of special conditions on my machine ― the docker image fully reproduces the error-less build of mediapipe at its v0.10.13 commit level. 
