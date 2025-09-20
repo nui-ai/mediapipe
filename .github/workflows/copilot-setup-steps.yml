@@ -3,6 +3,10 @@ name: Copilot Setup Steps
 permissions:
   contents: read
 
+# an `on` section must be included, so we include only `workflow_dispatch` to allow triggering only by copilot sessions give or take manually dispatching
+on:
+  workflow_dispatch:
+
 jobs:
   copilot-setup-steps:
     runs-on: self-hosted
