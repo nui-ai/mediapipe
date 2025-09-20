@@ -1,4 +1,4 @@
-# Update About Successful building on Ubuntu 24.04:
+# Update About Successful building on Ubuntu 24.04 as well as building a Docker image (Ubuntu 22.04 based) that can build mediapipe as well.
 
 1. make and enter a python 3.12 venv.
 2. run the python build, which triggers bazel to build the hand pipelines and underlying mediapipe framework before building and installing the python wheel connecting python to it. this triggers the include setup.py which runs bazel under the hood.
