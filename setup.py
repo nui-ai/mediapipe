@@ -138,25 +138,46 @@ def _modify_opencv_cmake_rule(link_opencv):
 
 
 def _add_mp_init_files():
-  """Add __init__.py to mediapipe root directories to make the subdirectories indexable, without duplicating content."""
+  """Overwrite mediapipe/__init__.py with the intended content, printing if the file existed and its previous contents."""
   open(MP_ROOT_INIT_PY, 'w').close()
   # Save the original mediapipe/__init__.py file.
   shutil.copyfile(MP_DIR_INIT_PY, _get_backup_file(MP_DIR_INIT_PY))
-  content_to_add = [
-      '\n', 'from mediapipe.python import *\n',
+  file_existed = os.path.exists(MP_DIR_INIT_PY)
+  if file_existed:
+    with open(MP_DIR_INIT_PY, 'r') as f:
+      previous_content = f.read()
+    print(f"{MP_DIR_INIT_PY} existed before writing. Previous content:\n{previous_content}")
+  else:
+    print(f"{MP_DIR_INIT_PY} did not exist before writing.")
+  content_to_write = [
+      '# Copyright 2019 - 2022 The MediaPipe Authors.\n',
+      '#\n',
+      '# Licensed under the Apache License, Version 2.0 (the "License");\n',
+      '# you may not use this file except in compliance with the License.\n',
+      '# You may obtain a copy of the License at\n',
+      '#\n',
+      '#      http://www.apache.org/licenses/LICENSE-2.0\n',
+      '#\n',
+      '# Unless required by applicable law or agreed to in writing, software\n',
+      '# distributed under the License is distributed on an "AS IS" BASIS,\n',
+      '# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n',
+      '# See the License for the specific language governing permissions and\n',
+      '# limitations under the License.\n',
+      '\n',
+      'from mediapipe.python import *\n',
       'import mediapipe.python.solutions as solutions \n',
-      'import mediapipe.tasks.python as tasks\n', '\n\n', 'del framework\n',
-      'del gpu\n', 'del modules\n', 'del python\n', 'del mediapipe\n',
-      'del util\n', "__version__ = '{}".format(__version__), "'\n"
+      'import mediapipe.tasks.python as tasks\n',
+      '\n',
+      'del framework\n',
+      'del gpu\n',
+      'del modules\n',
+      'del python\n',
+      'del mediapipe\n',
+      'del util\n',
+      f"__version__ = '{__version__}'\n"
   ]
-  # Read current content
-  with open(MP_DIR_INIT_PY, 'r') as f:
-    current_content = f.read()
-  # Only add if not already present
-  content_str = ''.join(content_to_add)
-  if content_str not in current_content:
-    with open(MP_DIR_INIT_PY, 'a') as mp_dir_init_file:
-      mp_dir_init_file.writelines(content_to_add)
+  with open(MP_DIR_INIT_PY, 'w') as mp_dir_init_file:
+    mp_dir_init_file.writelines(content_to_write)
 
 
 def _copy_to_build_lib_dir(build_lib, file):

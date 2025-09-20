@@ -94,11 +94,15 @@ RUN mkdir /bazel && \
 # Include the repository's code directory, this is actually too much if e.g. you have locally built mediapipe in the same directory, thus many build files will be included.
 COPY . /mediapipe/
 
-# Build mediapipe
+# Build mediapipe ― this makes sure that the image contains all the bazel and pip dependencies needed to build mediapipe, future proofing them inside the image.
 RUN \
+    cd /mediapipe && \
     git config --global --add safe.directory /mediapipe && \
-    python3 -m venv .venv && source .venv/bin/activate && \
-    pip install .
+    python3 -m venv .venv && \
+    .venv/bin/python --version && \
+    .venv/bin/pip --version && \
+    .venv/bin/pip install --upgrade pip setuptools wheel && \
+    .venv/bin/pip install --verbose .
 
 # Dedicated non-root user and directory for GitHub Actions runner; this failed entirely the other day so parking it.
 # Also, running within a container is it necessary not to run as root within the container itself these days?
