@@ -191,7 +191,7 @@ def _copy_to_build_lib_dir(build_lib, file):
 
 def _invoke_shell_command(shell_commands):
   """Invokes shell command from the list of arguments."""
-  print('Invoking:', shlex.join(shell_commands))
+  print('Invoking shell command:', shlex.join(shell_commands), flush=True)
   try:
     subprocess.run(shell_commands, check=True)
   except subprocess.CalledProcessError as e:
@@ -346,7 +346,7 @@ class BuildModules(build_ext.build_ext):
     if not self.link_opencv and not IS_WINDOWS:
       bazel_command.append('--define=OPENCV=system')
 
-    print(f'\nBuilding {binary_graph_target} ... the bazel command being issued for it follows.', end='', flush=True)
+    print(f'\nBuilding {binary_graph_target} ... the bazel command being issued for it follows.', flush=True)
     _invoke_shell_command(bazel_command)
     _copy_to_build_lib_dir(self.build_lib, binary_graph_target)
 
@@ -370,7 +370,7 @@ class GenerateMetadataSchema(build_ext.build_ext):
           '//mediapipe/tasks/metadata:' + target,
       ] + GPU_OPTIONS
 
-      print(f'\nBuilding {target} ... the bazel command being issued for it follows.', end='', flush=True)
+      print(f'\nBuilding {target} ... the bazel command being issued for it follows.', flush=True)
       _invoke_shell_command(bazel_command)
       _copy_to_build_lib_dir(
           self.build_lib,
@@ -467,7 +467,7 @@ class BuildExtension(build_ext.build_ext):
     if not self.link_opencv and not IS_WINDOWS:
       bazel_command.append('--define=OPENCV=system')
 
-    print(f'\nBuilding {ext.bazel_target} ... the bazel command being issued for it follows.', end='', flush=True)
+    print(f'\nBuilding {ext.bazel_target} ... the bazel command being issued for it follows.', flush=True)
     _invoke_shell_command(bazel_command)
     ext_bazel_bin_path = os.path.join('bazel-bin', ext.relpath,
                                       ext.target_name + '.so')
