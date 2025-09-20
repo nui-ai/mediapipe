@@ -22,7 +22,8 @@ Notes:
 3. It likely builds a bit more than we need as we didn't modify setup.py to only build only the hands target as `bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu` would.
 4. Much of the below should be taken as obsolete given that this simply works today ― but lets test this in a docker container too before concluding. 
 
-# MediaPipe v0.10.13 Build Guide 
+
+# MediaPipe v0.10.13 Build Guide ― Deprecated by the above success status (but has some gems in it)
 
 This guide explains how to work towards reproducibly building MediaPipe v0.10.13 for just the hand tracking target, at revision tag v0.10.13 of mediapipe which this forked repository was reverted to.
 Judging from experience you need to work a few days to make it happen, as the build code will fail with modern Bazel, versions of dependencies it will fetch from the Internet which are not the same as when this build was originally working at the time of v0.10.13 release, and similar issues with its last-mile pip install for python proof of concept. Sometimes AI gets it right after just one day of careful iteration.
