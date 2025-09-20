@@ -19,7 +19,7 @@ Setup for MediaPipe package with setuptools.
 Notes:
 
 1. Modified in various ways to make it work for this v0.10.13 code version at the current time, see the commit log and readme.
-2. All attempts to make it make bazel only build incrementally failed (see https://chatgpt.com/s/t_68ce836619f081919425794cc031a8c4)
+2. All attempts to make it make bazel only build incrementally failed (see https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35)
 to avoid it building the C++ parts from scratch even when no source code has changed.
 3. Modern pip swallows all bazel stdout/stderr output, unless you attach -v in the pip command """
 
@@ -33,6 +33,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 import setuptools
 from setuptools.command import build_ext
@@ -218,6 +219,7 @@ def _build_bazel_command(target, extra_bazel_args=None):
     which it would if the build command is invoked with different options each time, in which case bazel will rebuild
     everything from scratch on every bazel command rather than use its analysis cache to determine what is already
     up-to-date and what needs to be rebuilt when starting a bazel build command. """
+
     bazel_command = [
         'bazel',
         'build',
@@ -225,8 +227,8 @@ def _build_bazel_command(target, extra_bazel_args=None):
         '--compilation_mode=opt',
         '--copt=-DNDEBUG',
         '--copt=-I/usr/include/opencv4',
-        '--keep_going',
-        '--action_env=PYTHON_BIN_PATH=' + _normalize_path(sys.executable),
+        '--explain=/tmp/bazel.explain',
+    "--verbose_explanations",
         target,
     ] + GPU_OPTIONS
     if extra_bazel_args:
@@ -374,7 +376,7 @@ class BuildModules(build_ext.build_ext):
 
 
 class GenerateMetadataSchema(build_ext.build_ext):
-  """Generate metadata python schema files."""
+  """Generate metadata python schema files. This steps does not use bazel's build cache, it rebuilds every time from scratch. """
 
   user_options = build_ext.build_ext.user_options + [
       ('link-opencv', None, 'if true, build opencv from source.'),

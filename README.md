@@ -5,17 +5,20 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
 # Building Instructions
 
 0. clone this repository.
-1. make and activate a python 3.12 venv.
-2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. the included `setup.py`, triggered to run by the below `pip install` runs bazel under the hood to build all C++ dependencies required for the hands model. this not only builds all required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package).
+1. make and activate a python 3.12 venv:
     ```
-    pip install .
+    python3.12 -m venv .venv
+    source .venv/bin/activate
     ```
-    or for more verbose output which includes print statements made by setup.py, because otherwise due to pip's build isolation stdout is swallowed when the build does not fail:
+2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. the included `setup.py`, triggered to run by the below `pip install` runs bazel under the hood to build all C++ dependencies required for the hands model. this not only builds all required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package). note that we export your venv's python executable because bazel (via our [bazelrc](.bazelrc)) hinges on it as a stable name/position for its action_env value, which is how we pin it down to reuse its analysis cache for incremental building. without this export every `pip install` run builds all its bazel targets always from scratch (no incremental building reusing previous analysis results) which takes 2.5 minutes on a very strong dev machine. pip install runs setup.py within an isolated cloned temp environment which prevents this bazel caching unless we pin down a fixed bazel cache location via this export.
     ```
-    pip install . --v
+    export MEDIAPIPE_PYTHON_BIN=$(which python)
+    pip install . 
     ```
+    for a verbose output which includes print statements made by setup.py, add `-v` to the pip command as otherwise due to pip's build isolation stdout is swallowed when the build does not fai.:
+4. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, if they have content it may reveal why incremental building is not happening for any target.
 
-3. place a video file with hands in it, as video.avi, in the project root path, and run the following python test which should run with exit code 0:
+5. place a video file with hands in it, as video.avi, in the project root path, and run the following python test which should run with exit code 0:
     ```
     python3 -P test-on-video-file.py
     ```
@@ -64,11 +67,16 @@ Its a tug of war between old versions that can no longer install or work against
 
 ## Understanding the role of `bazel clean --expunge`
 
-Use `bazel clean --expunge` before every build to ensure:
+Use `bazel clean --expunge` and a manual cache clean before a build to ensure:
 
 1. **Full reproducibility**: Each build starts from a pristine state
 2. **Elimination of cached problems**: No lingering issues from previous builds, no false success which only works due to cached artifacts
 3. **Validation of the entire dependency chain**: Confirms that all dependencies can be properly resolved
+
+You must also manually clear the local cache that we made bazel use for enabling incremental building:
+```bash
+rm -rf ~/.cache/bazel/repository_cache
+```
 
 While this approach increases build time (as dependencies must be re-downloaded and rebuilt), it provides the highest level of confidence that your build process is reliable and reproducible. For development environments where quick iteration is needed, you can skip this step, but always return to a clean build before finalizing changes.
 

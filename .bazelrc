@@ -8,9 +8,17 @@ build --jobs 128
 build --define='absl=1'  # for gtest
 build --enable_platform_specific_config
 
-# Use the same cache across bazel commands (maybe this happens anyway)
-build --disk_cache=${BAZEL_DISK_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/bazel/disk}
-build --repository_cache=${BAZEL_REPOSITORY_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/bazel/repos}
+# Stable cache dirs to enable caching across runs (incremental building) even when run by pip in an isolated temp dir
+# which modern pip does by default under the new PEP-517 build system. Maybe we can later make those cache dirs
+# just a git ignored path in the project root, which can be tried later, for easier clearing and so on.
+# a project-specific cache dir can be useful to avoid conflicts when multiple projects or copies of
+# this project are built from different copies of the project on the same file system.
+build  --disk_cache=/tmp/bazel-${USER}/disk
+build  --repository_cache=/tmp/bazel-${USER}/repos
+common --repo_env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+build  --action_env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+common --repo_env=PYTHON_BIN_PATH
+build  --action_env=PYTHON_BIN_PATH
 
 # Enable stack traces
 test --test_env="GTEST_INSTALL_FAILURE_SIGNAL_HANDLER=1"
