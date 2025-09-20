@@ -4,7 +4,8 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
 
 # Building Instructions
 
-0. clone this repository.
+0. clone this repository and cd into it.
+
 1. make and activate a python 3.12 venv:
     ```
     python3.12 -m venv .venv
