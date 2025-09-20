@@ -22,4 +22,4 @@ del modules
 del python
 del mediapipe
 del util
-__version__ = '0.10.0.dev0+eaaa4735a'
+__version__ = '0.10.13.dev0'

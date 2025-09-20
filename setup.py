@@ -35,7 +35,7 @@ git_hash = subprocess.check_output(
     cwd = os.path.dirname(os.path.abspath(__file__))
     ).decode('utf-8').strip()
 
-__version__ = f"0.10.13.dev0+{git_hash}"
+__version__ = f"0.10.13.dev0"  # +{git_hash}"
 
 MP_DISABLE_GPU = os.environ.get('MEDIAPIPE_DISABLE_GPU') != '0'
 IS_WINDOWS = (platform.system() == 'Windows')
@@ -140,6 +140,8 @@ def _modify_opencv_cmake_rule(link_opencv):
 def _add_mp_init_files():
   """Overwrite mediapipe/__init__.py with the intended content, printing if the file existed and its previous contents."""
   open(MP_ROOT_INIT_PY, 'w').close()
+  return
+
   # Save the original mediapipe/__init__.py file.
   shutil.copyfile(MP_DIR_INIT_PY, _get_backup_file(MP_DIR_INIT_PY))
   file_existed = os.path.exists(MP_DIR_INIT_PY)
@@ -336,6 +338,7 @@ class BuildModules(build_ext.build_ext):
     bazel_command = [
         'bazel',
         'build',
+        '--nostamp',
         '--compilation_mode=opt',
         '--copt=-DNDEBUG',
         '--copt=-I/usr/include/opencv4',
@@ -365,6 +368,7 @@ class GenerateMetadataSchema(build_ext.build_ext):
       bazel_command = [
           'bazel',
           'build',
+          '--nostamp',
           '--compilation_mode=opt',
           '--action_env=PYTHON_BIN_PATH=' + _normalize_path(sys.executable),
           '//mediapipe/tasks/metadata:' + target,
@@ -377,7 +381,7 @@ class GenerateMetadataSchema(build_ext.build_ext):
           'mediapipe/tasks/metadata/' + target + '_generated.py')
     for schema_file in [
         'mediapipe/tasks/metadata/metadata_schema.fbs',
-        # 'mediapipe/tasks/metadata/object_detector_metadata_schema.fbs',
+        # 'mediapipe/tasks/metadata/object_detector_metadata_sbazechema.fbs',
         # 'mediapipe/tasks/metadata/image_segmenter_metadata_schema.fbs',
     ]:
       shutil.copyfile(schema_file,
@@ -454,6 +458,7 @@ class BuildExtension(build_ext.build_ext):
     bazel_command = [
         'bazel',
         'build',
+        '--nostamp',
         '--compilation_mode=opt',
         '--copt=-DNDEBUG',
         '--copt=-I/usr/include/opencv4',
@@ -545,6 +550,7 @@ class Restore(setuptools.Command):
     pass
 
   def run(self):
+    return
     # Restore the original init file from the backup.
     if os.path.exists(_get_backup_file(MP_DIR_INIT_PY)):
       os.remove(MP_DIR_INIT_PY)
