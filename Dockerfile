@@ -30,7 +30,7 @@ LABEL maintainer="matan@nui.ai"
 WORKDIR /io
 WORKDIR /mediapipe
 
-# ENV DEBIAN_FRONTEND=noninteractive  <== might this have blocked use as a github actions runner within the container?
+# ENV DEBIAN_FRONTEND=noninteractive  <== might this have blocked use as a github actions runner within the container? surely not.
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
