@@ -95,7 +95,8 @@ RUN mkdir /bazel && \
     /bazel/installer.sh  && \
     rm -f /bazel/installer.sh
 
-# Include the repository's code directory, this is actually too much if e.g. you have locally built mediapipe in the same directory, thus many build files will be included.
+# Include the repository's code directory, this is actually too much if e.g. you have locally built mediapipe in the same directory, thus many build files will be included:
+# without this step (and the mediapipe build step below) the image size goes down from up to 10GB to about 2.5GB.
 COPY . /mediapipe/
 
 # Build mediapipe ― this makes sure that the image contains all the bazel and pip dependencies needed to build mediapipe, future proofing them inside the image.
