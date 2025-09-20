@@ -30,7 +30,7 @@ LABEL maintainer="matan@nui.ai"
 WORKDIR /io
 WORKDIR /mediapipe
 
-ENV DEBIAN_FRONTEND=noninteractive
+# ENV DEBIAN_FRONTEND=noninteractive  <== might this have blocked use as a github actions runner within the container?
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
@@ -106,8 +106,8 @@ RUN \
     .venv/bin/pip install --verbose .
 
 # Don't try to install the Github actions runner, which is easy from the github page instructions, but just ready a user for it to use as it will refuse to start as root,
-# but it refuses to start this way too, complaining that it should not run with sudo.
-# RUN adduser --disabled-password --gecos "" github-runner && usermod -aG sudo github-runner
+RUN adduser --disabled-password --gecos "" github-runner  \
+# usermod -aG sudo github-runner
 
 # Dedicated non-root user and directory for GitHub Actions runner; this failed entirely the other day so parking it.
 # Also, running within a container is it necessary not to run as root within the container itself these days?
