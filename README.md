@@ -1,5 +1,9 @@
 # Update About Successful building on Ubuntu 24.04 as well as building a Docker image (Ubuntu 22.04 based) that can build mediapipe as well.
 
+The current commit reflects the exact code revision of git tag v0.10.13 of the original MediaPipe repository, with some patches applied to make it buildable again, and it now successfully builds the hand tracking pipeline target as well as the python package that provides the python mediapipe api.
+
+# Building Instructions
+
 1. make and activate a python 3.12 venv.
 2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. this triggers the included `setup.py` which runs bazel under the hood. this not only builds the required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package).
     ```
@@ -16,12 +20,12 @@ if you wish to only build the C++ part, maybe for isolation that it builds witho
 bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
 ```
 
-
 Notes:
-1. The included Ubuntu 24.04 Dockerfile was updated to contain the necessary extra dependencies needed, and fully tested to reproduce a successful build, so this process is reproducible and not an artefact of special conditions on my machine ― the docker image fully reproduces the error-less build of mediapipe at its v0.10.13 commit level. 
+1. The included Ubuntu 24.04-based [Dockerfile](Dockerfile) was created and tested to contain the OS-level dependencies needed for a successful mediapipe v0.10.13 build, and fully tested to reproduce a successful build, so this process is reproducible and not an artefact of special conditions on my machine ― the docker image fully reproduces the error-less build of mediapipe at its v0.10.13 commit level. 
 2. The changes having been made are documented in the latest git commits.
 3. It likely builds a bit more than we need as we didn't modify setup.py to only build only the hands target as `bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu` would.
-4. Much of the below should be taken as obsolete given that this simply works today ― but lets test this in a docker container too before concluding. 
+4. Much of the below should be taken as obsolete given that this simply works now.
+5. [The other included docker files](Dockerfile.md), provided originally by mediapipe's original codebase, were not tested.
 
 
 # MediaPipe v0.10.13 Build Guide ― Deprecated by the above success status (but has some gems in it)
