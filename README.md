@@ -4,6 +4,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
 
 # Building Instructions
 
+0. clone this repository.
 1. make and activate a python 3.12 venv.
 2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. this triggers the included `setup.py` which runs bazel under the hood. this not only builds the required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package).
     ```
