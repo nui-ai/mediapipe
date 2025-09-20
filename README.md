@@ -10,6 +10,10 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     ```
     pip install .
     ```
+    or for more verbose output which includes print statements made by setup.py, because otherwise due to pip's build isolation stdout is swallowed when the build does not fail:
+    ```
+    pip install . --v
+    ```
 
 3. place a video file with hands in it, as video.avi, in the project root path, and run the following python test which should run with exit code 0:
     ```

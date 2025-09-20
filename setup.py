@@ -305,19 +305,19 @@ class BuildModules(build_ext.build_ext):
       self._download_external_file(external_file)
 
     binary_graphs = [
-        'face_detection/face_detection_short_range_cpu.binarypb',
-        'face_detection/face_detection_full_range_cpu.binarypb',
-        'face_landmark/face_landmark_front_cpu.binarypb',
+        # 'face_detection/face_detection_short_range_cpu.binarypb',
+        # 'face_detection/face_detection_full_range_cpu.binarypb',
+        # 'face_landmark/face_landmark_front_cpu.binarypb',
         'hand_landmark/hand_landmark_tracking_cpu.binarypb',
-        'holistic_landmark/holistic_landmark_cpu.binarypb',
-        'objectron/objectron_cpu.binarypb',
-        'pose_landmark/pose_landmark_cpu.binarypb',
-        'selfie_segmentation/selfie_segmentation_cpu.binarypb'
+        # 'holistic_landmark/holistic_landmark_cpu.binarypb',
+        # 'objectron/objectron_cpu.binarypb',
+        # 'pose_landmark/pose_landmark_cpu.binarypb',
+        # 'selfie_segmentation/selfie_segmentation_cpu.binarypb'
     ]
     for elem in binary_graphs:
       binary_graph = os.path.join('mediapipe/modules/', elem)
       sys.stderr.write('generating binarypb: %s\n' % binary_graph)
-      self._generate_binary_graph(binary_graph)
+      self._build_mediapipe_graph_target(binary_graph)
 
   def _download_external_file(self, external_file):
     """Download an external file from GCS via Bazel."""
@@ -330,7 +330,7 @@ class BuildModules(build_ext.build_ext):
     _invoke_shell_command(fetch_model_command)
     _copy_to_build_lib_dir(self.build_lib, external_file)
 
-  def _generate_binary_graph(self, binary_graph_target):
+  def _build_mediapipe_graph_target(self, binary_graph_target):
     """Generate binary graph for a particular MediaPipe binary graph target."""
 
     bazel_command = [
@@ -346,6 +346,7 @@ class BuildModules(build_ext.build_ext):
     if not self.link_opencv and not IS_WINDOWS:
       bazel_command.append('--define=OPENCV=system')
 
+    print(f'\nBuilding {binary_graph_target} ... the bazel command being issued for it follows.', end='', flush=True)
     _invoke_shell_command(bazel_command)
     _copy_to_build_lib_dir(self.build_lib, binary_graph_target)
 
@@ -355,9 +356,9 @@ class GenerateMetadataSchema(build_ext.build_ext):
 
   def run(self):
     for target in [
-        'image_segmenter_metadata_schema_py',
-        'metadata_schema_py',
-        'object_detector_metadata_schema_py',
+        # 'image_segmenter_metadata_schema_py',
+        # 'metadata_schema_py',
+        # 'object_detector_metadata_schema_py',
         'schema_py',
     ]:
 
@@ -369,14 +370,15 @@ class GenerateMetadataSchema(build_ext.build_ext):
           '//mediapipe/tasks/metadata:' + target,
       ] + GPU_OPTIONS
 
+      print(f'\nBuilding {target} ... the bazel command being issued for it follows.', end='', flush=True)
       _invoke_shell_command(bazel_command)
       _copy_to_build_lib_dir(
           self.build_lib,
           'mediapipe/tasks/metadata/' + target + '_generated.py')
     for schema_file in [
         'mediapipe/tasks/metadata/metadata_schema.fbs',
-        'mediapipe/tasks/metadata/object_detector_metadata_schema.fbs',
-        'mediapipe/tasks/metadata/image_segmenter_metadata_schema.fbs',
+        # 'mediapipe/tasks/metadata/object_detector_metadata_schema.fbs',
+        # 'mediapipe/tasks/metadata/image_segmenter_metadata_schema.fbs',
     ]:
       shutil.copyfile(schema_file,
                       os.path.join(self.build_lib + '/', schema_file))
@@ -465,6 +467,7 @@ class BuildExtension(build_ext.build_ext):
     if not self.link_opencv and not IS_WINDOWS:
       bazel_command.append('--define=OPENCV=system')
 
+    print(f'\nBuilding {ext.bazel_target} ... the bazel command being issued for it follows.', end='', flush=True)
     _invoke_shell_command(bazel_command)
     ext_bazel_bin_path = os.path.join('bazel-bin', ext.relpath,
                                       ext.target_name + '.so')
