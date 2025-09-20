@@ -16,9 +16,13 @@ Setup for MediaPipe package with setuptools.
 
 ============================================
 
-Modified in various ways, see the commit log.
-All attempts to make it make bazel only build incrementally failed (see https://chatgpt.com/s/t_68ce836619f081919425794cc031a8c4)
-to avoid it building the C++ parts from scratch even when no source code has changed. """
+Notes:
+
+1. Modified in various ways to make it work for this v0.10.13 code version at the current time, see the commit log and readme.
+2. All attempts to make it make bazel only build incrementally failed (see https://chatgpt.com/s/t_68ce836619f081919425794cc031a8c4)
+to avoid it building the C++ parts from scratch even when no source code has changed.
+3. Modern pip swallows all bazel stdout/stderr output, unless you attach -v in the pip command """
+
 
 import glob
 import os
@@ -42,7 +46,7 @@ git_hash = subprocess.check_output(
 
 __version__ = f"0.10.13.dev0"  # +{git_hash}"
 
-MP_DISABLE_GPU = os.environ.get('MEDIAPIPE_DISABLE_GPU') != '0'
+
 IS_WINDOWS = (platform.system() == 'Windows')
 IS_MAC = (platform.system() == 'Darwin')
 MP_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -50,8 +54,10 @@ MP_DIR_INIT_PY = os.path.join(MP_ROOT_PATH, 'mediapipe/__init__.py')
 MP_THIRD_PARTY_BUILD = os.path.join(MP_ROOT_PATH, 'third_party/BUILD')
 MP_ROOT_INIT_PY = os.path.join(MP_ROOT_PATH, '__init__.py')
 
-GPU_OPTIONS_DISBALED = ['--define=MEDIAPIPE_DISABLE_GPU=1']
 
+# take in the environment variable affecting whether to build for the GPU code path too
+MP_DISABLE_GPU = os.environ.get('MEDIAPIPE_DISABLE_GPU') != '0'
+GPU_OPTIONS_DISBALED = ['--define=MEDIAPIPE_DISABLE_GPU=1']
 GPU_OPTIONS_ENBALED = [
     '--copt=-DTFLITE_GPU_EXTRA_GLES_DEPS',
     '--copt=-DMEDIAPIPE_OMIT_EGL_WINDOW_BIT',
@@ -59,12 +65,11 @@ GPU_OPTIONS_ENBALED = [
     '--copt=-DEGL_NO_X11',
 ]
 if IS_MAC:
-  GPU_OPTIONS_ENBALED.append(
-      '--copt=-DMEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER'
-  )
-
+  GPU_OPTIONS_ENBALED.append('--copt=-DMEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER')
 GPU_OPTIONS = GPU_OPTIONS_DISBALED if MP_DISABLE_GPU else GPU_OPTIONS_ENBALED
 
+# Global OpenCV linking option, set early
+link_opencv = os.environ.get('MEDIAPIPE_LINK_OPENCV', '0') == '1'
 
 def _normalize_path(path):
   return path.replace('\\', '/') if IS_WINDOWS else path
@@ -123,7 +128,7 @@ def _check_bazel():
     sys.exit(-1)
 
 
-def _modify_opencv_cmake_rule(link_opencv):
+def _maybe_modify_opencv_cmake_rule():
   """Modify opencv_cmake rule to build the static opencv libraries."""
 
   # Ask the opencv_cmake rule to build the static opencv libraries for the
@@ -204,6 +209,32 @@ def _invoke_shell_command(shell_commands):
   except subprocess.CalledProcessError as e:
     print(e)
     sys.exit(e.returncode)
+
+
+def _build_bazel_command(target, extra_bazel_args=None):
+    """ Constructs a consistent Bazel build command for all build invocations.
+    This avoids Bazel discarding the analysis cache due to option changes between the different bazel build invocations made
+    by the current source file, as otherwise seen in messages like: "INFO: Build options --action_env, --compilation_mode, --copt, and 1 more have changed, discarding analysis cache"
+    which it would if the build command is invoked with different options each time, in which case bazel will rebuild
+    everything from scratch on every bazel command rather than use its analysis cache to determine what is already
+    up-to-date and what needs to be rebuilt when starting a bazel build command. """
+    bazel_command = [
+        'bazel',
+        'build',
+        '--nostamp',
+        '--compilation_mode=opt',
+        '--copt=-DNDEBUG',
+        '--copt=-I/usr/include/opencv4',
+        '--keep_going',
+        '--action_env=PYTHON_BIN_PATH=' + _normalize_path(sys.executable),
+        target,
+    ] + GPU_OPTIONS
+    if extra_bazel_args:
+        bazel_command += extra_bazel_args
+        print(f'extra args provided for the current bazel build command:\n{extra_bazel_args}', flush=True)
+    if not link_opencv and not IS_WINDOWS:
+        bazel_command.append('--define=OPENCV=system')
+    return bazel_command
 
 
 class GeneratePyProtos(build_ext.build_ext):
@@ -327,32 +358,15 @@ class BuildModules(build_ext.build_ext):
       self._build_mediapipe_graph_target(binary_graph)
 
   def _download_external_file(self, external_file):
-    """Download an external file from GCS via Bazel."""
-
-    fetch_model_command = [
-        'bazel',
-        'build',
-        external_file,
-    ]
-    _invoke_shell_command(fetch_model_command)
-    _copy_to_build_lib_dir(self.build_lib, external_file)
+        """Download an external file from GCS via Bazel."""
+        fetch_model_command = _build_bazel_command(external_file)
+        _invoke_shell_command(fetch_model_command)
+        _copy_to_build_lib_dir(self.build_lib, external_file)
 
   def _build_mediapipe_graph_target(self, binary_graph_target):
     """Generate binary graph for a particular MediaPipe binary graph target."""
 
-    bazel_command = [
-        'bazel',
-        'build',
-        '--nostamp',
-        '--compilation_mode=opt',
-        '--copt=-DNDEBUG',
-        '--copt=-I/usr/include/opencv4',
-        '--action_env=PYTHON_BIN_PATH=' + _normalize_path(sys.executable),
-        binary_graph_target,
-    ] + GPU_OPTIONS
-
-    if not self.link_opencv and not IS_WINDOWS:
-      bazel_command.append('--define=OPENCV=system')
+    bazel_command = _build_bazel_command(binary_graph_target)
 
     print(f'\nBuilding {binary_graph_target} ... the bazel command being issued for it follows.', flush=True)
     _invoke_shell_command(bazel_command)
@@ -362,6 +376,15 @@ class BuildModules(build_ext.build_ext):
 class GenerateMetadataSchema(build_ext.build_ext):
   """Generate metadata python schema files."""
 
+  user_options = build_ext.build_ext.user_options + [
+      ('link-opencv', None, 'if true, build opencv from source.'),
+  ]
+  boolean_options = build_ext.build_ext.boolean_options + ['link-opencv']
+
+  def initialize_options(self):
+    self.link_opencv = False
+    build_ext.build_ext.initialize_options(self)
+
   def run(self):
     for target in [
         # 'image_segmenter_metadata_schema_py',
@@ -370,14 +393,8 @@ class GenerateMetadataSchema(build_ext.build_ext):
         'schema_py',
     ]:
 
-      bazel_command = [
-          'bazel',
-          'build',
-          '--nostamp',
-          '--compilation_mode=opt',
-          '--action_env=PYTHON_BIN_PATH=' + _normalize_path(sys.executable),
-          '//mediapipe/tasks/metadata:' + target,
-      ] + GPU_OPTIONS
+      bazel_target = f'//mediapipe/tasks/metadata:{target}'
+      bazel_command = _build_bazel_command(bazel_target)
 
       print(f'\nBuilding {target} ... the bazel command being issued for it follows.', flush=True)
       _invoke_shell_command(bazel_command)
@@ -460,23 +477,7 @@ class BuildExtension(build_ext.build_ext):
   def _build_binary(self, ext, extra_args=None):
     if not os.path.exists(self.build_temp):
       os.makedirs(self.build_temp)
-    bazel_command = [
-        'bazel',
-        'build',
-        '--nostamp',
-        '--compilation_mode=opt',
-        '--copt=-DNDEBUG',
-        '--copt=-I/usr/include/opencv4',
-        '--keep_going',
-        '--action_env=PYTHON_BIN_PATH=' + _normalize_path(sys.executable),
-        str(ext.bazel_target + '.so'),
-    ] + GPU_OPTIONS
-
-    if extra_args:
-      bazel_command += extra_args
-    if not self.link_opencv and not IS_WINDOWS:
-      bazel_command.append('--define=OPENCV=system')
-
+    bazel_command = _build_bazel_command(str(ext.bazel_target + '.so'), extra_args)
     print(f'\nBuilding {ext.bazel_target} ... the bazel command being issued for it follows.', flush=True)
     _invoke_shell_command(bazel_command)
     ext_bazel_bin_path = os.path.join('bazel-bin', ext.relpath,
@@ -508,12 +509,8 @@ class BuildPy(build_py.build_py):
     build_py.build_py.finalize_options(self)
 
   def run(self):
-    _modify_opencv_cmake_rule(self.link_opencv)
+    _maybe_modify_opencv_cmake_rule()
     _add_mp_init_files()
-    build_modules_obj = self.distribution.get_command_obj('build_modules')
-    build_modules_obj.link_opencv = self.link_opencv
-    build_ext_obj = self.distribution.get_command_obj('build_ext')
-    build_ext_obj.link_opencv = self.link_opencv
     self.run_command('gen_protos')
     self.run_command('generate_metadata_schema')
     self.run_command('build_modules')
@@ -538,8 +535,7 @@ class Install(install.install):
     install.install.finalize_options(self)
 
   def run(self):
-    build_py_obj = self.distribution.get_command_obj('build_py')
-    build_py_obj.link_opencv = self.link_opencv
+    self.run_command('build_py')
     install.install.run(self)
 
 

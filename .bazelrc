@@ -8,6 +8,10 @@ build --jobs 128
 build --define='absl=1'  # for gtest
 build --enable_platform_specific_config
 
+# Use the same cache across bazel commands (maybe this happens anyway)
+build --disk_cache=${BAZEL_DISK_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/bazel/disk}
+build --repository_cache=${BAZEL_REPOSITORY_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/bazel/repos}
+
 # Enable stack traces
 test --test_env="GTEST_INSTALL_FAILURE_SIGNAL_HANDLER=1"
 
