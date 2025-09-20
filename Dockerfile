@@ -105,6 +105,9 @@ RUN \
     .venv/bin/pip install --upgrade pip setuptools wheel && \
     .venv/bin/pip install --verbose .
 
+# Don't try to install the Github actions runner, which is easy from the github page instructions, but just ready a user for it to use as it will refuse to start as root:
+RUN RUN adduser --disabled-password --gecos "" github-runner
+
 # Dedicated non-root user and directory for GitHub Actions runner; this failed entirely the other day so parking it.
 # Also, running within a container is it necessary not to run as root within the container itself these days?
 #RUN useradd -m runner && \
