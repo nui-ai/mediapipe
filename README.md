@@ -4,6 +4,7 @@
 2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. this triggers the included `setup.py` which runs bazel under the hood. this not only builds the required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package).
     ```
     pip install .
+    ```
 
 3. place a video file with hands in it, as video.avi, in the project root path, and run the following python test which should run with exit code 0:
     ```
