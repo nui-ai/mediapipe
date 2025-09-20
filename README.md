@@ -18,7 +18,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
    
 if you wish to only build the C++ part, maybe for isolation that it builds without errors:
 ```
-bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
+bazel build -c opt --copt=-I/usr/include/opencv4 --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
 ```
 
 Notes:
