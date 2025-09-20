@@ -95,6 +95,7 @@ RUN mkdir /bazel && \
 COPY . /mediapipe/
 
 # Build mediapipe ― this makes sure that the image contains all the bazel and pip dependencies needed to build mediapipe, future proofing them inside the image.
+# maybe upgrading pip, setuptools and wheel is overdoing it, as it worked without it, and upgrading to the latest Internet available versions may not help here.
 RUN \
     cd /mediapipe && \
     git config --global --add safe.directory /mediapipe && \
