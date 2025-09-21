@@ -69,8 +69,7 @@ class MediaPipePipelineParser:
         Returns:
             MediaPipeGraph object representing the parsed graph
         """
-        self.print_with_ident(f"Parsing {pbtxt_path}")
-        
+
         with open(pbtxt_path, 'r') as f:
             content = f.read()
         
@@ -373,7 +372,7 @@ class MediaPipePipelineParser:
                 subgraph_mapping[node_name] = node_source
                 self.print_with_ident(f'✅ sub-graph node \'{node_name}\' is defined in source file {node_source}')
 
-                self.print_with_ident(f'🔁 analyzing the sub-graph \'{node_name}\'')
+                self.print_with_ident(f'🔁 \'{node_name}\' is a sub-graph of the current one')
                 self.ident += 1
                 self.analyze_pipeline(node_name)
                 self.ident -= 1
