@@ -1,0 +1,2402 @@
+{
+  "analysis_info": {
+    "analyzed_graphs": [
+      "palm_detection_cpu",
+      "hand_tracking",
+      "hand_detector_result_one_hand_rotated",
+      "hand_roi_refinement_generated_graph",
+      "male_full_height_hands_result_cpu",
+      "hand_landmark_tracking_gpu",
+      "hand_tracking_mobile",
+      "hand_landmarks_to_roi",
+      "hand_wrist_for_pose",
+      "hand_landmarks_from_pose_gpu",
+      "hand_recrop_by_roi_gpu",
+      "hand_landmarks_left_and_right_gpu",
+      "hand_detector_result_one_hand",
+      "hand_tracking_desktop",
+      "hand_landmarks_from_pose_cpu",
+      "hand_landmark_tracking_cpu",
+      "hand_landmark_tracking_gpu_image",
+      "hand_detection_desktop",
+      "hand_tracking_desktop_live_gpu",
+      "hand_landmark_model_loader",
+      "hand_landmark_tracking_cpu_image",
+      "holistic_hand_tracking_left_hand_graph",
+      "hand_renderer_cpu",
+      "hand_detection_desktop_live",
+      "hand_tracking_desktop_live",
+      "hand_landmarks_left_and_right_cpu",
+      "hand_landmark_landmarks_to_roi",
+      "hand_visibility_from_hand_landmarks_from_pose",
+      "hand_landmark_cpu",
+      "palm_detection_detection_to_roi",
+      "hand_recrop_by_roi_cpu",
+      "hand_landmark_gpu",
+      "hand_detector_result_two_hands",
+      "hand_renderer_gpu",
+      "hand_detection_mobile",
+      "hand_landmarks_from_pose_to_recrop_roi"
+    ],
+    "mediapipe_version": "v0.10.13",
+    "source_path": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13",
+    "total_components": 81
+  },
+  "components": {
+    "AlignHandToPoseInWorldCalculator": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/calculators/util/align_hand_to_pose_in_world_calculator.h",
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/calculators/util/align_hand_to_pose_in_world_calculator.pb.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/align_hand_to_pose_in_world_calculator.h",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/align_hand_to_pose_in_world_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "AlignmentPointsRectsCalculator": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "AnnotationOverlayCalculator": {
+      "class_name": "AnnotationOverlayCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/gpu/gl_calculator_helper.h",
+        "mediapipe/gpu/gl_simple_shaders.h",
+        "mediapipe/framework/formats/image_frame.h",
+        "mediapipe/framework/formats/image_frame_opencv.h",
+        "mediapipe/gpu/shader_util.h",
+        "mediapipe/calculators/util/annotation_overlay_calculator.pb.h",
+        "mediapipe/gpu/gpu_buffer_format.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/util/render_data.pb.h",
+        "mediapipe/util/annotation_renderer.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/annotation_overlay_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "HasImageTag",
+        "RenderToCpu",
+        "glDrawArrays",
+        "glUseProgram",
+        "VideoHeader",
+        "Open",
+        "glBindBuffer",
+        "GlSetup",
+        "CreateRenderTargetGpu",
+        "RenderToGpu",
+        "GlRender",
+        "CreateRenderTargetCpuImage",
+        "glDisableVertexAttribArray",
+        "RoundUp",
+        "Process",
+        "CreateRenderTargetCpu",
+        "main",
+        "Close",
+        "GetContract"
+      ],
+      "type": "calculator"
+    },
+    "AssociationNormRectCalculator": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/calculator_context.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/calculators/util/association_calculator.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/formats/rect.pb.h",
+        "mediapipe/framework/port/rectangle.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/association_norm_rect_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Close",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "BeginLoopDetectionCalculator": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "BeginLoopNormalizedLandmarkListVectorCalculator": {
+      "class_name": "UniversalSentenceEncoderPreprocessorCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/framework/calculator_context.h",
+        "mediapipe/framework/memory_manager_service.h",
+        "mediapipe/tasks/cc/core/utils.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/tasks/cc/metadata/metadata_extractor.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/memory_manager.h",
+        "mediapipe/framework/api2/port.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/universal_sentence_encoder_preprocessor_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Process",
+        "UpdateContract"
+      ],
+      "type": "calculator"
+    },
+    "BeginLoopNormalizedRectCalculator": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "ClassificationListVectorHasMinSizeCalculator": {
+      "class_name": "UniversalSentenceEncoderPreprocessorCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/framework/calculator_context.h",
+        "mediapipe/framework/memory_manager_service.h",
+        "mediapipe/tasks/cc/core/utils.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/tasks/cc/metadata/metadata_extractor.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/memory_manager.h",
+        "mediapipe/framework/api2/port.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/universal_sentence_encoder_preprocessor_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Process",
+        "UpdateContract"
+      ],
+      "type": "calculator"
+    },
+    "ClipDetectionVectorSizeCalculator": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "ConstantSidePacketCalculator": {
+      "class_name": "ConstantSidePacketCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/collection_item_id.h",
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/formats/classification.pb.h",
+        "mediapipe/framework/port/canonical_errors.h",
+        "mediapipe/calculators/core/constant_side_packet_calculator.pb.h",
+        "mediapipe/framework/formats/matrix_data.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/formats/time_series_header.pb.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/constant_side_packet_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "DetectionLetterboxRemovalCalculator": {
+      "class_name": "DetectionLetterboxRemovalCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/location.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/formats/detection.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/detection_letterbox_removal_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "DetectionsToRectsCalculator": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/calculators/util/detections_to_rects_calculator.pb.h",
+        "mediapipe/framework/calculator_options.pb.h",
+        "mediapipe/framework/formats/detection.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/calculators/util/detections_to_rects_calculator.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/formats/rect.pb.h",
+        "mediapipe/framework/formats/location_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/detections_to_rects_calculator.h",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/detections_to_rects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "RectFromBox",
+        "NormRectFromKeyPoints"
+      ],
+      "type": "calculator"
+    },
+    "DetectionsToRenderDataCalculator": {
+      "class_name": "DetectionsToRenderDataCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/util/render_data.pb.h",
+        "mediapipe/framework/calculator_options.pb.h",
+        "mediapipe/framework/formats/detection.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/util/color.pb.h",
+        "mediapipe/framework/formats/location_data.pb.h",
+        "mediapipe/calculators/util/detections_to_render_data_calculator.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/detections_to_render_data_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "AddDetectionToRenderData",
+        "SetRenderAnnotationColorThickness",
+        "SetRectCoordinate",
+        "AddLabels",
+        "AddLocationData",
+        "GetContract",
+        "Process",
+        "AddFeatureTag",
+        "SetTextCoordinate"
+      ],
+      "type": "calculator"
+    },
+    "EndLoopClassificationListCalculator": {
+      "class_name": "LandmarksToFrameAnnotationCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/landmarks_to_frame_annotation_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process",
+        "AddLandmarksToFrameAnnotation"
+      ],
+      "type": "calculator"
+    },
+    "EndLoopLandmarkListVectorCalculator": {
+      "class_name": "LandmarksToFrameAnnotationCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/landmarks_to_frame_annotation_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process",
+        "AddLandmarksToFrameAnnotation"
+      ],
+      "type": "calculator"
+    },
+    "EndLoopNormalizedLandmarkListVectorCalculator": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/framework/formats/matrix.h",
+        "mediapipe/util/render_data.pb.h",
+        "mediapipe/framework/formats/classification.pb.h",
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/formats/rect.pb.h",
+        "mediapipe/tasks/cc/components/containers/proto/classifications.pb.h",
+        "mediapipe/framework/formats/detection.pb.h",
+        "mediapipe/gpu/gpu_buffer.h",
+        "mediapipe/framework/formats/image_frame.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/cc/components/calculators/end_loop_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/end_loop_calculator.h",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/end_loop_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "EndLoopNormalizedRectCalculator": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "EndLoopRenderDataCalculator": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "FlowLimiterCalculator": {
+      "class_name": "FlowLimiterCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/port/status.h",
+        "mediapipe/calculators/core/flow_limiter_calculator.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/util/header_util.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/flow_limiter_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "ProcessAuxiliaryInputs",
+        "IsAllowed",
+        "ProcessingAllowed",
+        "SendAllow",
+        "InputTimestampBound",
+        "SetNextTimestampBound",
+        "GetContract",
+        "LedgerSize"
+      ],
+      "type": "calculator"
+    },
+    "FromImageCalculator": {
+      "class_name": "FromImageCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/gpu/gl_calculator_helper.h",
+        "mediapipe/framework/port/vector.h",
+        "mediapipe/framework/port/logging.h",
+        "mediapipe/framework/calculator_options.pb.h",
+        "mediapipe/framework/formats/image_frame.h",
+        "mediapipe/framework/formats/image.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/formats/image_format.pb.h",
+        "mediapipe/framework/port/status.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/from_image_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "RenderCpu",
+        "Close",
+        "GetContract",
+        "RenderGpu",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "GateCalculator": {
+      "class_name": "GateCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/calculators/core/gate_calculator.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/util/header_util.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/gate_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "CheckAndInitAllowDisallowInputs",
+        "ToString"
+      ],
+      "type": "calculator"
+    },
+    "HandDetectionsFromPoseToRectsCalculator": {
+      "class_name": "HandDetectionsFromPoseToRectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/calculators/util/detections_to_rects_calculator.pb.h",
+        "mediapipe/framework/calculator_options.pb.h",
+        "mediapipe/framework/formats/detection.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/calculators/util/detections_to_rects_calculator.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/formats/rect.pb.h",
+        "mediapipe/framework/formats/location_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/calculators/hand_detections_from_pose_to_rects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "ComputeRotation",
+        "DetectionToNormalizedRect"
+      ],
+      "type": "calculator"
+    },
+    "HandLandmarkCpu": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "HandLandmarkGpu": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "HandLandmarkLandmarksToRoi": {
+      "class_name": "LandmarksToFrameAnnotationCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/landmarks_to_frame_annotation_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process",
+        "AddLandmarksToFrameAnnotation"
+      ],
+      "type": "calculator"
+    },
+    "HandLandmarkModelLoader": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "HandLandmarkTrackingCpu": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "HandLandmarkTrackingGpu": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "HandLandmarksFromPoseCpu": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "HandLandmarksFromPoseGpu": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "HandLandmarksFromPoseToRecropRoi": {
+      "class_name": "OpenCvEncodedImageToImageFrameCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/image_frame_opencv.h",
+        "mediapipe/framework/port/opencv_imgcodecs_inc.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status_builder.h",
+        "mediapipe/calculators/image/opencv_encoded_image_to_image_frame_calculator.pb.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/opencv_imgproc_inc.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/image/opencv_encoded_image_to_image_frame_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "HandLandmarksToRectCalculator": {
+      "class_name": "HandLandmarksToRectCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/calculator_options.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/formats/rect.pb.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/hand_landmark/calculators/hand_landmarks_to_rect_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "ComputeRotation",
+        "NormalizedLandmarkListToRect",
+        "NormalizeRadians",
+        "GetPartialLandmarks",
+        "GetContract",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "HandLandmarksToRoi": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "HandRecropByRoiCpu": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "HandRecropByRoiGpu": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "HandRendererSubgraph": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "HandTracking": {
+      "class_name": "SwitchDemuxCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/collection_item_id.h",
+        "mediapipe/framework/port/logging.h",
+        "mediapipe/framework/tool/container_util.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/tool/switch_container.pb.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/switch_demux_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "SettledTimestamp",
+        "ChannelSettledTimestamp",
+        "SendActivePackets",
+        "RecordPackets",
+        "ChannelIndex",
+        "GetContract",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "HandVisibilityFromHandLandmarksFromPose": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [],
+      "implementation_files": [],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "ImageCloneCalculator": {
+      "class_name": "ImageCloneCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/gpu/gl_calculator_helper.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/framework/formats/image.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/calculators/image/image_clone_calculator.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/image/image_clone_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Process",
+        "UpdateContract"
+      ],
+      "type": "calculator"
+    },
+    "ImagePropertiesCalculator": {
+      "class_name": "ImagePropertiesCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/gpu/gpu_buffer.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/framework/formats/image.h",
+        "mediapipe/framework/formats/image_frame.h",
+        "mediapipe/framework/calculator_framework.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/image/image_properties_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Process",
+        "UpdateContract"
+      ],
+      "type": "calculator"
+    },
+    "ImageToTensorCalculator": {
+      "class_name": "ImageToTensorCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/gpu/gl_calculator_helper.h",
+        "mediapipe/calculators/tensor/image_to_tensor_calculator.pb.h",
+        "mediapipe/framework/formats/image_frame.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/memory_manager.h",
+        "mediapipe/framework/port/statusor.h",
+        "mediapipe/calculators/tensor/image_to_tensor_converter_metal.h",
+        "mediapipe/framework/memory_manager_service.h",
+        "mediapipe/framework/port.h",
+        "mediapipe/framework/port/canonical_errors.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/image_to_tensor_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "InitConverterIfNecessary",
+        "MP_RETURN_IF_ERROR",
+        "UpdateContract",
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "InferenceCalculator": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/tool/subgraph_expansion.h",
+        "mediapipe/framework/api2/packet.h",
+        "mediapipe/util/tflite/tflite_model_loader.h",
+        "mediapipe/calculators/tensor/inference_calculator.pb.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/calculators/tensor/inference_calculator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/inference_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/inference_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "kSideInModel"
+      ],
+      "type": "calculator"
+    },
+    "InferenceCalculatorCpu": {
+      "class_name": "SwitchDemuxCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/collection_item_id.h",
+        "mediapipe/framework/port/logging.h",
+        "mediapipe/framework/tool/container_util.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/tool/switch_container.pb.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/switch_demux_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "SettledTimestamp",
+        "ChannelSettledTimestamp",
+        "SendActivePackets",
+        "RecordPackets",
+        "ChannelIndex",
+        "GetContract",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "LabelsToRenderDataCalculator": {
+      "class_name": "LabelsToRenderDataCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/calculators/util/labels_to_render_data_calculator.pb.h",
+        "mediapipe/util/render_data.pb.h",
+        "mediapipe/framework/formats/classification.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/util/color.pb.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/formats/video_stream_header.h",
+        "mediapipe/framework/port/statusor.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/labels_to_render_data_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "LandmarkLetterboxRemovalCalculator": {
+      "class_name": "LandmarkLetterboxRemovalCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/calculator_framework.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmark_letterbox_removal_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "LandmarkProjectionCalculator": {
+      "class_name": "LandmarkProjectionCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/formats/rect.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/calculators/util/landmark_projection_calculator.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmark_projection_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "ProjectXY",
+        "GetContract",
+        "Process",
+        "CalculateZScale"
+      ],
+      "type": "calculator"
+    },
+    "LandmarkVisibilityCalculator": {
+      "class_name": "LandmarkVisibilityCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/calculator_framework.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmark_visibility_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "LandmarksToDetectionCalculator": {
+      "class_name": "LandmarksToDetectionCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/formats/detection.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/formats/location_data.pb.h",
+        "mediapipe/calculators/util/landmarks_to_detection_calculator.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmarks_to_detection_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "ConvertLandmarksToDetection",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "LandmarksToRenderDataCalculator": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/util/render_data.pb.h",
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/calculator_options.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/formats/location_data.pb.h",
+        "mediapipe/calculators/util/landmarks_to_render_data_calculator.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/util/color.pb.h",
+        "mediapipe/calculators/util/landmarks_to_render_data_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmarks_to_render_data_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmarks_to_render_data_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "DefaultMinDepthLineColor",
+        "IsLandmarkVisibleAndPresent",
+        "AddPointRenderData",
+        "DefaultMaxDepthLineColor",
+        "Remap",
+        "AddConnectionsWithDepth",
+        "AddConnections",
+        "SetColorSizeValueFromZ",
+        "SetColor",
+        "MixColors",
+        "AddConnectionToRenderData",
+        "GetMinMaxZ"
+      ],
+      "type": "calculator"
+    },
+    "LocalFileContentsCalculator": {
+      "class_name": "LocalFileContentsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/port/status.h",
+        "mediapipe/util/resource_util.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/calculators/util/local_file_contents_calculator.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/local_file_contents_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "ModelResourcesCalculator": {
+      "class_name": "ModelResourcesCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/tasks/cc/core/proto/external_file.pb.h",
+        "mediapipe/tasks/cc/core/proto/model_resources_calculator.pb.h",
+        "mediapipe/tasks/cc/core/model_resources.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/tasks/cc/metadata/metadata_extractor.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/tasks/cc/core/model_resources_cache.h",
+        "mediapipe/framework/api2/port.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/cc/core/model_resources_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Process",
+        "UpdateContract"
+      ],
+      "type": "calculator"
+    },
+    "NonMaxSuppressionCalculator": {
+      "class_name": "NonMaxSuppressionCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/calculators/util/non_max_suppression_calculator.pb.h",
+        "mediapipe/framework/formats/detection.pb.h",
+        "mediapipe/framework/formats/image_frame.h",
+        "mediapipe/framework/formats/location.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/rectangle.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/non_max_suppression_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Detections",
+        "OverlapSimilarity",
+        "NonMaxSuppression",
+        "RetainMaxScoringLabelOnly",
+        "SortBySecond",
+        "WeightedNonMaxSuppression",
+        "GetContract",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "NormalizedRectVectorHasMinSizeCalculator": {
+      "class_name": "FrameAnnotationToTimedBoxListCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/util/tracking/box_tracker.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/box_util.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/port/opencv_imgproc_inc.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/frame_annotation_to_timed_box_list_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Close",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "OpenCvVideoDecoderCalculator": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "OpenCvVideoEncoderCalculator": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "PalmDetectionCpu": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "PalmDetectionDetectionToRoi": {
+      "class_name": "FrameAnnotationToTimedBoxListCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/util/tracking/box_tracker.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/box_util.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/port/opencv_imgproc_inc.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/frame_annotation_to_timed_box_list_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Close",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "PalmDetectionGpu": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "PalmDetectionModelLoader": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "PassThroughCalculator": {
+      "class_name": "PassThroughCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/canonical_errors.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/pass_through_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract"
+      ],
+      "type": "calculator"
+    },
+    "PreviousLoopbackCalculator": {
+      "class_name": "PreviousLoopbackCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/timestamp.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/previous_loopback_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "UpdateContract"
+      ],
+      "type": "calculator"
+    },
+    "RectToRenderDataCalculator": {
+      "class_name": "RectToRenderDataCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/calculators/util/rect_to_render_data_calculator.pb.h",
+        "mediapipe/util/render_data.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/util/color.pb.h",
+        "mediapipe/framework/formats/rect.pb.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/rect_to_render_data_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "NewRect",
+        "SetRect",
+        "Open",
+        "GetContract",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "RectTransformationCalculator": {
+      "class_name": "RectTransformationCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/rect.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/calculators/util/rect_transformation_calculator.pb.h",
+        "mediapipe/framework/calculator_options.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/rect_transformation_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "NormalizeRadians",
+        "TransformRect",
+        "TransformNormalizedRect",
+        "GetContract",
+        "Process",
+        "ComputeNewRotation"
+      ],
+      "type": "calculator"
+    },
+    "RoiTrackingCalculator": {
+      "class_name": "RoiTrackingCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/port/logging.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/formats/rect.pb.h",
+        "mediapipe/framework/port/rectangle.h",
+        "mediapipe/modules/holistic_landmark/calculators/roi_tracking_calculator.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/calculators/roi_tracking_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "RectRequirementsSatisfied",
+        "IouRequirementsSatisfied",
+        "LandmarksRequirementsSatisfied",
+        "Process",
+        "GetContract"
+      ],
+      "type": "calculator"
+    },
+    "SetLandmarkVisibilityCalculator": {
+      "class_name": "SetLandmarkVisibilityCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/calculator_framework.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/set_landmark_visibility_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "SidePacketToStreamCalculator": {
+      "class_name": "SidePacketToStreamCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/logging.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/calculator_framework.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/side_packet_to_stream_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetOutputTag",
+        "Open",
+        "Close",
+        "GetContract",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "SplitClassificationListVectorCalculator": {
+      "class_name": "FrameAnnotationToTimedBoxListCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/util/tracking/box_tracker.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/box_util.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/port/opencv_imgproc_inc.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/frame_annotation_to_timed_box_list_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Close",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "SplitNormalizedLandmarkListCalculator": {
+      "class_name": "FrameAnnotationToTimedBoxListCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/util/tracking/box_tracker.pb.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/box_util.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/port/opencv_imgproc_inc.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/frame_annotation_to_timed_box_list_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Close",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "SplitTensorVectorCalculator": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "SsdAnchorsCalculator": {
+      "class_name": "SsdAnchorsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/object_detection/anchor.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/calculators/tflite/ssd_anchors_calculator.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tflite/ssd_anchors_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "CalculateScale",
+        "CalculateAnchorBox",
+        "GetFeatureMapDimensions",
+        "NormalizeAnchor",
+        "for",
+        "GenerateMultiScaleAnchors",
+        "GetNumLayers",
+        "GetContract",
+        "GenerateAnchors",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "SwitchContainer": {
+      "class_name": "TensorsToObjectsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/modules/objectron/calculators/tensor_util.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/modules/objectron/calculators/decoder.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.pb.h",
+        "mediapipe/framework/port/opencv_core_inc.h",
+        "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "Project3DTo2D",
+        "GetNextObjectId",
+        "Close",
+        "GetContract",
+        "AssignObjectIdAndTimestamp",
+        "Process",
+        "LoadOptions",
+        "ProcessCPU"
+      ],
+      "type": "calculator"
+    },
+    "TensorsToClassificationCalculator": {
+      "class_name": "TensorsToClassificationCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/calculators/tensor/tensors_to_classification_calculator.pb.h",
+        "mediapipe/framework/formats/classification.pb.h",
+        "mediapipe/util/resource_util.h",
+        "mediapipe/util/android/file/base/helpers.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/util/android/file/base/file.h",
+        "mediapipe/util/label_map.pb.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/tensors_to_classification_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "SetClassificationLabel",
+        "IsClassIndexAllowed",
+        "Close",
+        "Open",
+        "stream",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "TensorsToDetectionsCalculator": {
+      "class_name": "TensorsToDetectionsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/framework/formats/object_detection/anchor.pb.h",
+        "mediapipe/gpu/gl_calculator_helper.h",
+        "mediapipe/framework/formats/tensor_mtl_buffer_view.h",
+        "mediapipe/framework/deps/file_path.h",
+        "mediapipe/framework/port.h",
+        "mediapipe/gpu/MPPMetalUtil.h",
+        "mediapipe/framework/formats/detection.pb.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/framework/formats/location.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "ConvertToDetection",
+        "optional_sigmoid",
+        "IsClassIndexAllowed",
+        "UpdateContract",
+        "uint",
+        "glUseProgram",
+        "Open",
+        "ConvertRawValuesToAnchors",
+        "CanUseGpu",
+        "LoadOptions",
+        "GetBoxFormat",
+        "MP_RETURN_IF_ERROR",
+        "ConvertToDetections",
+        "DecodeBoxes",
+        "switch",
+        "ProcessCPU",
+        "Process",
+        "ProcessGPU",
+        "CheckCustomTensorMapping",
+        "GpuInit"
+      ],
+      "type": "calculator"
+    },
+    "TensorsToFloatsCalculator": {
+      "class_name": "TensorsToFloatsCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/calculators/tensor/tensors_to_floats_calculator.pb.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/tensors_to_floats_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Sigmoid",
+        "UpdateContract"
+      ],
+      "type": "calculator"
+    },
+    "TensorsToLandmarksCalculator": {
+      "class_name": "TensorsToLandmarksCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/tensor.h",
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/calculators/tensor/tensors_to_landmarks_calculator.pb.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/tensors_to_landmarks_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Sigmoid",
+        "Process",
+        "Open",
+        "ApplyActivation",
+        "LoadOptions"
+      ],
+      "type": "calculator"
+    },
+    "TfLiteCustomOpResolverCalculator": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/output_side_packet.h",
+        "mediapipe/framework/packet_set.h",
+        "mediapipe/framework/calculator_registry.h",
+        "mediapipe/framework/packet_generator.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/calculator_base.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h",
+        "mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h"
+      ],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "TfLiteModelCalculator": {
+      "class_name": "SwitchMuxCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/collection_item_id.h",
+        "mediapipe/framework/input_stream_shard.h",
+        "mediapipe/framework/port/logging.h",
+        "mediapipe/framework/tool/container_util.h",
+        "mediapipe/framework/output_stream_shard.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/tool/switch_container.pb.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/status_macros.h",
+        "mediapipe/framework/port/ret_check.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/switch_mux_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "Open",
+        "SettledTimestamp",
+        "ChannelSettledTimestamp",
+        "SendActivePackets",
+        "RecordPackets",
+        "GetContract",
+        "Process",
+        "RecordChannel"
+      ],
+      "type": "calculator"
+    },
+    "ThresholdingCalculator": {
+      "class_name": "ThresholdingCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/calculators/util/thresholding_calculator.pb.h",
+        "mediapipe/framework/calculator_framework.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/thresholding_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "WorldLandmarkProjectionCalculator": {
+      "class_name": "WorldLandmarkProjectionCalculator",
+      "definition_file": null,
+      "dependencies": [
+        "mediapipe/framework/formats/landmark.pb.h",
+        "mediapipe/framework/formats/rect.pb.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/calculator_framework.h"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/world_landmark_projection_calculator.cc"
+      ],
+      "is_analyzed": true,
+      "methods": [
+        "GetContract",
+        "Open",
+        "Process"
+      ],
+      "type": "calculator"
+    },
+    "mediapipe.tasks.vision.hand_landmarker.HandRoiRefinementGraph": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [],
+      "implementation_files": [],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    },
+    "mediapipe.tasks.vision.hand_landmarker.SingleHandLandmarksDetectorGraph": {
+      "class_name": "",
+      "definition_file": null,
+      "dependencies": [],
+      "implementation_files": [],
+      "is_analyzed": true,
+      "methods": [],
+      "type": "calculator"
+    }
+  },
+  "cpp_files": [
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/gate_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/frame_annotation_to_timed_box_list_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/tensors_to_objects_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/packet_generator_wrapper_calculator.h",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/image/image_properties_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/association_norm_rect_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/calculators/landmarks_to_frame_annotation_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/cc/components/calculators/end_loop_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/end_loop_calculator.h",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/end_loop_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/previous_loopback_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/flow_limiter_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/from_image_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/image_to_tensor_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/inference_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/inference_calculator.h",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tflite/ssd_anchors_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/non_max_suppression_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/detection_letterbox_removal_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/detections_to_rects_calculator.h",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/detections_to_rects_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/rect_transformation_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/tensors_to_floats_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/thresholding_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/tensors_to_classification_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/tensors_to_landmarks_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmark_letterbox_removal_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmark_projection_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/world_landmark_projection_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/hand_landmark/calculators/hand_landmarks_to_rect_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/local_file_contents_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/switch_mux_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmarks_to_detection_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/constant_side_packet_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/side_packet_to_stream_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/set_landmark_visibility_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/image/opencv_encoded_image_to_image_frame_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/switch_demux_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/calculators/roi_tracking_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/calculators/hand_detections_from_pose_to_rects_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmark_visibility_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/image/image_clone_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/core/pass_through_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/cc/core/model_resources_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/align_hand_to_pose_in_world_calculator.h",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/align_hand_to_pose_in_world_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/detections_to_render_data_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/annotation_overlay_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/rect_to_render_data_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/universal_sentence_encoder_preprocessor_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmarks_to_render_data_calculator.cc",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/landmarks_to_render_data_calculator.h",
+    "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/util/labels_to_render_data_calculator.cc"
+  ],
+  "execution_flow": {
+    "calculators": [
+      "GateCalculator",
+      "NormalizedRectVectorHasMinSizeCalculator",
+      "PalmDetectionCpu",
+      "ClipDetectionVectorSizeCalculator",
+      "ImagePropertiesCalculator",
+      "BeginLoopDetectionCalculator",
+      "PalmDetectionDetectionToRoi",
+      "EndLoopNormalizedRectCalculator",
+      "AssociationNormRectCalculator",
+      "BeginLoopNormalizedRectCalculator",
+      "HandLandmarkCpu",
+      "EndLoopClassificationListCalculator",
+      "HandLandmarkLandmarksToRoi",
+      "EndLoopNormalizedLandmarkListVectorCalculator",
+      "EndLoopLandmarkListVectorCalculator",
+      "PreviousLoopbackCalculator",
+      "FlowLimiterCalculator",
+      "FromImageCalculator",
+      "HandLandmarkTrackingCpu",
+      "ImageToTensorCalculator",
+      "TfLiteCustomOpResolverCalculator",
+      "PalmDetectionModelLoader",
+      "InferenceCalculator",
+      "SsdAnchorsCalculator",
+      "TensorsToDetectionsCalculator",
+      "NonMaxSuppressionCalculator",
+      "DetectionLetterboxRemovalCalculator",
+      "DetectionsToRectsCalculator",
+      "RectTransformationCalculator",
+      "HandLandmarkModelLoader",
+      "SplitTensorVectorCalculator",
+      "TensorsToFloatsCalculator",
+      "ThresholdingCalculator",
+      "TensorsToClassificationCalculator",
+      "TensorsToLandmarksCalculator",
+      "LandmarkLetterboxRemovalCalculator",
+      "LandmarkProjectionCalculator",
+      "WorldLandmarkProjectionCalculator",
+      "HandLandmarksToRectCalculator",
+      "HandLandmarkTrackingGpu",
+      "PalmDetectionGpu",
+      "HandLandmarkGpu",
+      "SwitchContainer",
+      "LocalFileContentsCalculator",
+      "TfLiteModelCalculator",
+      "LandmarksToDetectionCalculator",
+      "AlignmentPointsRectsCalculator",
+      "ConstantSidePacketCalculator",
+      "SidePacketToStreamCalculator",
+      "SplitNormalizedLandmarkListCalculator",
+      "SetLandmarkVisibilityCalculator",
+      "HandVisibilityFromHandLandmarksFromPose",
+      "HandLandmarksFromPoseToRecropRoi",
+      "HandRecropByRoiCpu",
+      "HandTracking",
+      "HandLandmarksFromPoseCpu",
+      "HandLandmarksFromPoseGpu",
+      "HandLandmarksToRoi",
+      "RoiTrackingCalculator",
+      "HandDetectionsFromPoseToRectsCalculator",
+      "HandRecropByRoiGpu",
+      "LandmarkVisibilityCalculator",
+      "ImageCloneCalculator",
+      "PassThroughCalculator",
+      "ModelResourcesCalculator",
+      "InferenceCalculatorCpu",
+      "mediapipe.tasks.vision.hand_landmarker.HandRoiRefinementGraph",
+      "mediapipe.tasks.vision.hand_landmarker.SingleHandLandmarksDetectorGraph",
+      "AlignHandToPoseInWorldCalculator",
+      "HandRendererSubgraph",
+      "DetectionsToRenderDataCalculator",
+      "AnnotationOverlayCalculator",
+      "OpenCvVideoDecoderCalculator",
+      "OpenCvVideoEncoderCalculator",
+      "RectToRenderDataCalculator",
+      "BeginLoopNormalizedLandmarkListVectorCalculator",
+      "LandmarksToRenderDataCalculator",
+      "EndLoopRenderDataCalculator",
+      "ClassificationListVectorHasMinSizeCalculator",
+      "SplitClassificationListVectorCalculator",
+      "LabelsToRenderDataCalculator"
+    ],
+    "subgraphs": []
+  },
+  "graph_definitions": {
+    "autoflip_graph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt",
+    "autoflip_graph_development": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/examples/desktop/autoflip/autoflip_graph_development.pbtxt",
+    "autoflip_object_detection_subgraph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/examples/desktop/autoflip/subgraph/autoflip_object_detection_subgraph.pbtxt",
+    "axis": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_effect/data/axis.pbtxt",
+    "box_landmark_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/box_landmark_cpu.pbtxt",
+    "box_landmark_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/box_landmark_gpu.pbtxt",
+    "box_tracking_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/tracking/subgraphs/box_tracking_cpu.pbtxt",
+    "box_tracking_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/tracking/subgraphs/box_tracking_gpu.pbtxt",
+    "clipped_images_from_file_at_24fps": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/media_sequence/clipped_images_from_file_at_24fps.pbtxt",
+    "dub_quad_test_subgraph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/testdata/dub_quad_test_subgraph.pbtxt",
+    "edge_detection_mobile_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/edge_detection/edge_detection_mobile_gpu.pbtxt",
+    "expected_detection": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/testdata/expected_detection.pbtxt",
+    "face_blendshapes_generated_graph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/face_blendshapes_generated_graph.pbtxt",
+    "face_detection": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection.pbtxt",
+    "face_detection_desktop_live": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/examples/coral/graphs/face_detection_desktop_live.pbtxt",
+    "face_detection_front_detection_to_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/face_detection_front_detection_to_roi.pbtxt",
+    "face_detection_front_detections_to_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/face_detection_front_detections_to_roi.pbtxt",
+    "face_detection_full_range": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection_full_range.pbtxt",
+    "face_detection_full_range_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection_full_range_cpu.pbtxt",
+    "face_detection_full_range_desktop_live": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_detection/face_detection_full_range_desktop_live.pbtxt",
+    "face_detection_full_range_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection_full_range_gpu.pbtxt",
+    "face_detection_full_range_image": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection_full_range_image.pbtxt",
+    "face_detection_full_range_mobile_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_detection/face_detection_full_range_mobile_gpu.pbtxt",
+    "face_detection_mobile_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_detection/face_detection_mobile_cpu.pbtxt",
+    "face_detection_mobile_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_detection/face_detection_mobile_gpu.pbtxt",
+    "face_detection_short_range": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection_short_range.pbtxt",
+    "face_detection_short_range_by_roi_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection_short_range_by_roi_cpu.pbtxt",
+    "face_detection_short_range_by_roi_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection_short_range_by_roi_gpu.pbtxt",
+    "face_detection_short_range_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection_short_range_cpu.pbtxt",
+    "face_detection_short_range_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection_short_range_gpu.pbtxt",
+    "face_detection_short_range_image": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection_short_range_image.pbtxt",
+    "face_detection_subgraph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/examples/desktop/autoflip/subgraph/face_detection_subgraph.pbtxt",
+    "face_detection_test": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/tensor/testdata/face_detection_test.pbtxt",
+    "face_detection_without_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_detection/face_detection_without_roi.pbtxt",
+    "face_effect_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_effect/face_effect_gpu.pbtxt",
+    "face_geometry": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_geometry/face_geometry.pbtxt",
+    "face_geometry_expected_out": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/face_geometry_expected_out.pbtxt",
+    "face_geometry_from_detection": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_geometry/face_geometry_from_detection.pbtxt",
+    "face_geometry_from_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_geometry/face_geometry_from_landmarks.pbtxt",
+    "face_landmark_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/face_landmark_cpu.pbtxt",
+    "face_landmark_front_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/face_landmark_front_cpu.pbtxt",
+    "face_landmark_front_cpu_image": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/face_landmark_front_cpu_image.pbtxt",
+    "face_landmark_front_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/face_landmark_front_gpu.pbtxt",
+    "face_landmark_front_gpu_image": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/face_landmark_front_gpu_image.pbtxt",
+    "face_landmark_front_side_model_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/face_landmark_front_side_model_cpu.pbtxt",
+    "face_landmark_front_side_model_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/face_landmark_front_side_model_gpu.pbtxt",
+    "face_landmark_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/face_landmark_gpu.pbtxt",
+    "face_landmark_landmarks_to_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/face_landmark_landmarks_to_roi.pbtxt",
+    "face_landmarks_from_pose_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/face_landmarks_from_pose_cpu.pbtxt",
+    "face_landmarks_from_pose_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/face_landmarks_from_pose_gpu.pbtxt",
+    "face_landmarks_from_pose_to_recrop_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/face_landmarks_from_pose_to_recrop_roi.pbtxt",
+    "face_landmarks_model_loader": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/face_landmarks_model_loader.pbtxt",
+    "face_landmarks_smoothing": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_effect/subgraphs/face_landmarks_smoothing.pbtxt",
+    "face_landmarks_to_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/face_landmarks_to_roi.pbtxt",
+    "face_mesh_desktop": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_mesh/face_mesh_desktop.pbtxt",
+    "face_mesh_desktop_live": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_mesh/face_mesh_desktop_live.pbtxt",
+    "face_mesh_desktop_live_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_mesh/face_mesh_desktop_live_gpu.pbtxt",
+    "face_mesh_mobile": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_mesh/face_mesh_mobile.pbtxt",
+    "face_renderer_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_mesh/subgraphs/face_renderer_cpu.pbtxt",
+    "face_renderer_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_mesh/subgraphs/face_renderer_gpu.pbtxt",
+    "face_tracking": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/face_tracking.pbtxt",
+    "feature_extraction": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/youtube8m/feature_extraction.pbtxt",
+    "fist_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/fist_landmarks.pbtxt",
+    "front_face_detection_subgraph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/examples/desktop/autoflip/subgraph/front_face_detection_subgraph.pbtxt",
+    "geometry_pipeline_metadata_detection": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/cc/vision/face_geometry/data/geometry_pipeline_metadata_detection.pbtxt",
+    "geometry_pipeline_metadata_including_iris_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_geometry/data/geometry_pipeline_metadata_including_iris_landmarks.pbtxt",
+    "geometry_pipeline_metadata_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/cc/vision/face_geometry/data/geometry_pipeline_metadata_landmarks.pbtxt",
+    "glasses": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_effect/data/glasses.pbtxt",
+    "hair_segmentation_desktop_live": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/hair_segmentation/hair_segmentation_desktop_live.pbtxt",
+    "hair_segmentation_mobile_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/hair_segmentation/hair_segmentation_mobile_gpu.pbtxt",
+    "hand_detection_desktop": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/hand_tracking/hand_detection_desktop.pbtxt",
+    "hand_detection_desktop_live": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/hand_tracking/hand_detection_desktop_live.pbtxt",
+    "hand_detection_mobile": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/hand_tracking/hand_detection_mobile.pbtxt",
+    "hand_detector_result_one_hand": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/hand_detector_result_one_hand.pbtxt",
+    "hand_detector_result_one_hand_rotated": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/hand_detector_result_one_hand_rotated.pbtxt",
+    "hand_detector_result_two_hands": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/hand_detector_result_two_hands.pbtxt",
+    "hand_landmark_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/hand_landmark/hand_landmark_cpu.pbtxt",
+    "hand_landmark_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/hand_landmark/hand_landmark_gpu.pbtxt",
+    "hand_landmark_landmarks_to_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/hand_landmark/hand_landmark_landmarks_to_roi.pbtxt",
+    "hand_landmark_model_loader": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/hand_landmark/hand_landmark_model_loader.pbtxt",
+    "hand_landmark_tracking_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/hand_landmark/hand_landmark_tracking_cpu.pbtxt",
+    "hand_landmark_tracking_cpu_image": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/hand_landmark/hand_landmark_tracking_cpu_image.pbtxt",
+    "hand_landmark_tracking_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/hand_landmark/hand_landmark_tracking_gpu.pbtxt",
+    "hand_landmark_tracking_gpu_image": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/hand_landmark/hand_landmark_tracking_gpu_image.pbtxt",
+    "hand_landmarks_from_pose_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/hand_landmarks_from_pose_cpu.pbtxt",
+    "hand_landmarks_from_pose_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/hand_landmarks_from_pose_gpu.pbtxt",
+    "hand_landmarks_from_pose_to_recrop_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/hand_landmarks_from_pose_to_recrop_roi.pbtxt",
+    "hand_landmarks_left_and_right_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/hand_landmarks_left_and_right_cpu.pbtxt",
+    "hand_landmarks_left_and_right_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/hand_landmarks_left_and_right_gpu.pbtxt",
+    "hand_landmarks_to_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/hand_landmarks_to_roi.pbtxt",
+    "hand_recrop_by_roi_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/hand_recrop_by_roi_cpu.pbtxt",
+    "hand_recrop_by_roi_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/hand_recrop_by_roi_gpu.pbtxt",
+    "hand_renderer_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/hand_tracking/subgraphs/hand_renderer_cpu.pbtxt",
+    "hand_renderer_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/hand_tracking/subgraphs/hand_renderer_gpu.pbtxt",
+    "hand_roi_refinement_generated_graph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/hand_roi_refinement_generated_graph.pbtxt",
+    "hand_tracking": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/hand_tracking.pbtxt",
+    "hand_tracking_desktop": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/hand_tracking/hand_tracking_desktop.pbtxt",
+    "hand_tracking_desktop_live": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/hand_tracking/hand_tracking_desktop_live.pbtxt",
+    "hand_tracking_desktop_live_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/hand_tracking/hand_tracking_desktop_live_gpu.pbtxt",
+    "hand_tracking_mobile": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/hand_tracking/hand_tracking_mobile.pbtxt",
+    "hand_visibility_from_hand_landmarks_from_pose": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/hand_visibility_from_hand_landmarks_from_pose.pbtxt",
+    "hand_wrist_for_pose": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/hand_wrist_for_pose.pbtxt",
+    "holistic_hand_tracking_left_hand_graph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/holistic_hand_tracking_left_hand_graph.pbtxt",
+    "holistic_landmark_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/holistic_landmark_cpu.pbtxt",
+    "holistic_landmark_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/holistic_landmark/holistic_landmark_gpu.pbtxt",
+    "holistic_pose_tracking_graph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/holistic_pose_tracking_graph.pbtxt",
+    "holistic_tracking_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/holistic_tracking/holistic_tracking_cpu.pbtxt",
+    "holistic_tracking_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/holistic_tracking/holistic_tracking_gpu.pbtxt",
+    "holistic_tracking_to_render_data": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/holistic_tracking/holistic_tracking_to_render_data.pbtxt",
+    "index_building": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/template_matching/index_building.pbtxt",
+    "instant_motion_tracking": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/instant_motion_tracking/instant_motion_tracking.pbtxt",
+    "iris_and_depth_renderer_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/iris_tracking/subgraphs/iris_and_depth_renderer_cpu.pbtxt",
+    "iris_and_depth_renderer_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/iris_tracking/subgraphs/iris_and_depth_renderer_gpu.pbtxt",
+    "iris_depth_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/iris_tracking/iris_depth_cpu.pbtxt",
+    "iris_landmark_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/iris_landmark/iris_landmark_cpu.pbtxt",
+    "iris_landmark_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/iris_landmark/iris_landmark_gpu.pbtxt",
+    "iris_landmark_landmarks_to_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/iris_landmark/iris_landmark_landmarks_to_roi.pbtxt",
+    "iris_landmark_left_and_right_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/iris_landmark/iris_landmark_left_and_right_cpu.pbtxt",
+    "iris_landmark_left_and_right_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/iris_landmark/iris_landmark_left_and_right_gpu.pbtxt",
+    "iris_renderer_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/iris_tracking/subgraphs/iris_renderer_cpu.pbtxt",
+    "iris_tracking_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/iris_tracking/iris_tracking_cpu.pbtxt",
+    "iris_tracking_cpu_video_input": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/iris_tracking/iris_tracking_cpu_video_input.pbtxt",
+    "iris_tracking_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/iris_tracking/iris_tracking_gpu.pbtxt",
+    "local_video_model_inference": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/youtube8m/local_video_model_inference.pbtxt",
+    "male_full_height_hands_result_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/male_full_height_hands_result_cpu.pbtxt",
+    "nested_test_subgraph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/testdata/nested_test_subgraph.pbtxt",
+    "object_detection_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/tracking/subgraphs/object_detection_cpu.pbtxt",
+    "object_detection_desktop_live": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/examples/coral/graphs/object_detection_desktop_live.pbtxt",
+    "object_detection_desktop_tensorflow_graph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/object_detection/object_detection_desktop_tensorflow_graph.pbtxt",
+    "object_detection_desktop_tflite_graph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/object_detection/object_detection_desktop_tflite_graph.pbtxt",
+    "object_detection_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/tracking/subgraphs/object_detection_gpu.pbtxt",
+    "object_detection_mobile_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/object_detection/object_detection_mobile_cpu.pbtxt",
+    "object_detection_mobile_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/object_detection/object_detection_mobile_gpu.pbtxt",
+    "object_detection_oid_v4_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/object_detection_oid_v4_cpu.pbtxt",
+    "object_detection_oid_v4_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/object_detection_oid_v4_gpu.pbtxt",
+    "object_detection_tracking_desktop_live": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/tracking/object_detection_tracking_desktop_live.pbtxt",
+    "object_detection_tracking_mobile_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/tracking/object_detection_tracking_mobile_gpu.pbtxt",
+    "object_occlusion_tracking": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/object_detection_3d/object_occlusion_tracking.pbtxt",
+    "object_occlusion_tracking_1stage": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/object_detection_3d/object_occlusion_tracking_1stage.pbtxt",
+    "object_tracking_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/tracking/subgraphs/object_tracking_cpu.pbtxt",
+    "object_tracking_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/tracking/subgraphs/object_tracking_gpu.pbtxt",
+    "objectron_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/objectron_cpu.pbtxt",
+    "objectron_desktop_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/object_detection_3d/objectron_desktop_cpu.pbtxt",
+    "objectron_detection_1stage_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/objectron_detection_1stage_gpu.pbtxt",
+    "objectron_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/objectron_gpu.pbtxt",
+    "objectron_tracking_1stage_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/objectron/objectron_tracking_1stage_gpu.pbtxt",
+    "palm_detection_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/palm_detection/palm_detection_cpu.pbtxt",
+    "palm_detection_detection_to_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/hand_landmark/palm_detection_detection_to_roi.pbtxt",
+    "palm_detection_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/palm_detection/palm_detection_gpu.pbtxt",
+    "palm_detection_model_loader": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/palm_detection/palm_detection_model_loader.pbtxt",
+    "parallel_tracker_graph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/video/testdata/parallel_tracker_graph.pbtxt",
+    "perfetto_memory": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/testdata/perfetto_memory.pbtxt",
+    "perfetto_minimal": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/testdata/perfetto_minimal.pbtxt",
+    "pointing_up_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/pointing_up_landmarks.pbtxt",
+    "pointing_up_rotated_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/pointing_up_rotated_landmarks.pbtxt",
+    "portrait_expected_blendshapes": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/portrait_expected_blendshapes.pbtxt",
+    "portrait_expected_detection": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/portrait_expected_detection.pbtxt",
+    "portrait_expected_face_geometry": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/portrait_expected_face_geometry.pbtxt",
+    "portrait_expected_face_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/portrait_expected_face_landmarks.pbtxt",
+    "portrait_rotated_expected_detection": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/portrait_rotated_expected_detection.pbtxt",
+    "pose_detection_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_detection/pose_detection_cpu.pbtxt",
+    "pose_detection_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_detection/pose_detection_gpu.pbtxt",
+    "pose_detection_to_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_landmark/pose_detection_to_roi.pbtxt",
+    "pose_expected_detection": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/pose_expected_detection.pbtxt",
+    "pose_expected_expanded_rect": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/pose_expected_expanded_rect.pbtxt",
+    "pose_landmark_by_roi_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_landmark/pose_landmark_by_roi_cpu.pbtxt",
+    "pose_landmark_by_roi_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_landmark/pose_landmark_by_roi_gpu.pbtxt",
+    "pose_landmark_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_landmark/pose_landmark_cpu.pbtxt",
+    "pose_landmark_filtering": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_landmark/pose_landmark_filtering.pbtxt",
+    "pose_landmark_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_landmark/pose_landmark_gpu.pbtxt",
+    "pose_landmark_model_loader": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_landmark/pose_landmark_model_loader.pbtxt",
+    "pose_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/pose_landmarks.pbtxt",
+    "pose_landmarks_and_segmentation_inverse_projection": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_landmark/pose_landmarks_and_segmentation_inverse_projection.pbtxt",
+    "pose_landmarks_to_render_data": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/pose_tracking/subgraphs/pose_landmarks_to_render_data.pbtxt",
+    "pose_landmarks_to_roi": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_landmark/pose_landmarks_to_roi.pbtxt",
+    "pose_renderer_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/pose_tracking/subgraphs/pose_renderer_cpu.pbtxt",
+    "pose_renderer_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/pose_tracking/subgraphs/pose_renderer_gpu.pbtxt",
+    "pose_segmentation_filtering": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_landmark/pose_segmentation_filtering.pbtxt",
+    "pose_tracking_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/pose_tracking/pose_tracking_cpu.pbtxt",
+    "pose_tracking_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/pose_tracking/pose_tracking_gpu.pbtxt",
+    "profile_latency_test": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/profiler/testdata/profile_latency_test.pbtxt",
+    "profile_opencv_0": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/profiler/testdata/profile_opencv_0.pbtxt",
+    "profile_opencv_1": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/profiler/testdata/profile_opencv_1.pbtxt",
+    "profile_process_test": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/profiler/testdata/profile_process_test.pbtxt",
+    "region_tracking": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/instant_motion_tracking/subgraphs/region_tracking.pbtxt",
+    "renderer_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/tracking/subgraphs/renderer_cpu.pbtxt",
+    "renderer_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/tracking/subgraphs/renderer_gpu.pbtxt",
+    "selfie_segmentation_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/selfie_segmentation/selfie_segmentation_cpu.pbtxt",
+    "selfie_segmentation_cpu_image": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/selfie_segmentation/selfie_segmentation_cpu_image.pbtxt",
+    "selfie_segmentation_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/selfie_segmentation/selfie_segmentation_gpu.pbtxt",
+    "selfie_segmentation_gpu_image": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/selfie_segmentation/selfie_segmentation_gpu_image.pbtxt",
+    "selfie_segmentation_model_loader": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/selfie_segmentation/selfie_segmentation_model_loader.pbtxt",
+    "single_face_geometry_from_detection_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_effect/subgraphs/single_face_geometry_from_detection_gpu.pbtxt",
+    "single_face_geometry_from_landmarks_gpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/face_effect/subgraphs/single_face_geometry_from_landmarks_gpu.pbtxt",
+    "template_matching_desktop": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/template_matching/template_matching_desktop.pbtxt",
+    "template_matching_mobile_cpu": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/template_matching/template_matching_mobile_cpu.pbtxt",
+    "tensors_to_face_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/tensors_to_face_landmarks.pbtxt",
+    "tensors_to_face_landmarks_with_attention": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/face_landmark/tensors_to_face_landmarks_with_attention.pbtxt",
+    "tensors_to_pose_landmarks_and_segmentation": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/modules/pose_landmark/tensors_to_pose_landmarks_and_segmentation.pbtxt",
+    "test": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/framework/tool/testdata/test.pbtxt",
+    "test_sobel": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/objc/testdata/test_sobel.pbtxt",
+    "thumb_up_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/thumb_up_landmarks.pbtxt",
+    "thumb_up_rotated_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/thumb_up_rotated_landmarks.pbtxt",
+    "tracker_graph": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/calculators/video/testdata/tracker_graph.pbtxt",
+    "tvl1_flow_and_rgb_from_file": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/media_sequence/tvl1_flow_and_rgb_from_file.pbtxt",
+    "victory_landmarks": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/tasks/testdata/vision/victory_landmarks.pbtxt",
+    "yt8m_dataset_model_inference": "/tmp/mediapipe_source_04igf6en/mediapipe_v0.10.13/mediapipe/graphs/youtube8m/yt8m_dataset_model_inference.pbtxt"
+  }
+}

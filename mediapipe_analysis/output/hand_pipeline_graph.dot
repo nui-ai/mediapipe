@@ -1,0 +1,101 @@
+digraph MediaPipeHandInference {
+  rankdir=LR;
+  node [shape=box, style=filled];
+
+  // Color scheme:
+  // Blue: Core hand tracking calculators
+  // Green: Palm detection calculators
+  // Orange: Landmark processing calculators
+  // Yellow: Utility calculators
+  // Red: Model loading calculators
+
+  "AlignHandToPoseInWorldCalculator" [fillcolor="lightblue"];
+  "AlignmentPointsRectsCalculator" [fillcolor="lightyellow"];
+  "AnnotationOverlayCalculator" [fillcolor="lightyellow"];
+  "AssociationNormRectCalculator" [fillcolor="lightyellow"];
+  "BeginLoopDetectionCalculator" [fillcolor="lightgreen"];
+  "BeginLoopNormalizedLandmarkListVectorCalculator" [fillcolor="lightorange"];
+  "BeginLoopNormalizedRectCalculator" [fillcolor="lightyellow"];
+  "ClassificationListVectorHasMinSizeCalculator" [fillcolor="lightyellow"];
+  "ClipDetectionVectorSizeCalculator" [fillcolor="lightgreen"];
+  "ConstantSidePacketCalculator" [fillcolor="lightyellow"];
+  "DetectionLetterboxRemovalCalculator" [fillcolor="lightgreen"];
+  "DetectionsToRectsCalculator" [fillcolor="lightgreen"];
+  "DetectionsToRenderDataCalculator" [fillcolor="lightgreen"];
+  "EndLoopClassificationListCalculator" [fillcolor="lightyellow"];
+  "EndLoopLandmarkListVectorCalculator" [fillcolor="lightorange"];
+  "EndLoopNormalizedLandmarkListVectorCalculator" [fillcolor="lightorange"];
+  "EndLoopNormalizedRectCalculator" [fillcolor="lightyellow"];
+  "EndLoopRenderDataCalculator" [fillcolor="lightyellow"];
+  "FlowLimiterCalculator" [fillcolor="lightyellow"];
+  "FromImageCalculator" [fillcolor="lightyellow"];
+  "GateCalculator" [fillcolor="lightyellow"];
+  "HandDetectionsFromPoseToRectsCalculator" [fillcolor="lightgreen"];
+  "HandLandmarkCpu" [fillcolor="lightorange"];
+  "HandLandmarkGpu" [fillcolor="lightorange"];
+  "HandLandmarkLandmarksToRoi" [fillcolor="lightorange"];
+  "HandLandmarkModelLoader" [fillcolor="lightorange"];
+  "HandLandmarkTrackingCpu" [fillcolor="lightorange"];
+  "HandLandmarkTrackingGpu" [fillcolor="lightorange"];
+  "HandLandmarksFromPoseCpu" [fillcolor="lightorange"];
+  "HandLandmarksFromPoseGpu" [fillcolor="lightorange"];
+  "HandLandmarksFromPoseToRecropRoi" [fillcolor="lightorange"];
+  "HandLandmarksToRectCalculator" [fillcolor="lightorange"];
+  "HandLandmarksToRoi" [fillcolor="lightorange"];
+  "HandRecropByRoiCpu" [fillcolor="lightblue"];
+  "HandRecropByRoiGpu" [fillcolor="lightblue"];
+  "HandRendererSubgraph" [fillcolor="lightblue"];
+  "HandTracking" [fillcolor="lightblue"];
+  "HandVisibilityFromHandLandmarksFromPose" [fillcolor="lightorange"];
+  "ImageCloneCalculator" [fillcolor="lightyellow"];
+  "ImagePropertiesCalculator" [fillcolor="lightyellow"];
+  "ImageToTensorCalculator" [fillcolor="lightyellow"];
+  "InferenceCalculator" [fillcolor="lightyellow"];
+  "InferenceCalculatorCpu" [fillcolor="lightyellow"];
+  "LabelsToRenderDataCalculator" [fillcolor="lightyellow"];
+  "LandmarkLetterboxRemovalCalculator" [fillcolor="lightorange"];
+  "LandmarkProjectionCalculator" [fillcolor="lightorange"];
+  "LandmarkVisibilityCalculator" [fillcolor="lightorange"];
+  "LandmarksToDetectionCalculator" [fillcolor="lightgreen"];
+  "LandmarksToRenderDataCalculator" [fillcolor="lightorange"];
+  "LocalFileContentsCalculator" [fillcolor="lightyellow"];
+  "ModelResourcesCalculator" [fillcolor="lightcoral"];
+  "NonMaxSuppressionCalculator" [fillcolor="lightyellow"];
+  "NormalizedRectVectorHasMinSizeCalculator" [fillcolor="lightyellow"];
+  "OpenCvVideoDecoderCalculator" [fillcolor="lightyellow"];
+  "OpenCvVideoEncoderCalculator" [fillcolor="lightyellow"];
+  "PalmDetectionCpu" [fillcolor="lightgreen"];
+  "PalmDetectionDetectionToRoi" [fillcolor="lightgreen"];
+  "PalmDetectionGpu" [fillcolor="lightgreen"];
+  "PalmDetectionModelLoader" [fillcolor="lightgreen"];
+  "PassThroughCalculator" [fillcolor="lightyellow"];
+  "PreviousLoopbackCalculator" [fillcolor="lightyellow"];
+  "RectToRenderDataCalculator" [fillcolor="lightyellow"];
+  "RectTransformationCalculator" [fillcolor="lightyellow"];
+  "RoiTrackingCalculator" [fillcolor="lightblue"];
+  "SetLandmarkVisibilityCalculator" [fillcolor="lightorange"];
+  "SidePacketToStreamCalculator" [fillcolor="lightyellow"];
+  "SplitClassificationListVectorCalculator" [fillcolor="lightyellow"];
+  "SplitNormalizedLandmarkListCalculator" [fillcolor="lightorange"];
+  "SplitTensorVectorCalculator" [fillcolor="lightyellow"];
+  "SsdAnchorsCalculator" [fillcolor="lightyellow"];
+  "SwitchContainer" [fillcolor="lightyellow"];
+  "TensorsToClassificationCalculator" [fillcolor="lightyellow"];
+  "TensorsToDetectionsCalculator" [fillcolor="lightgreen"];
+  "TensorsToFloatsCalculator" [fillcolor="lightyellow"];
+  "TensorsToLandmarksCalculator" [fillcolor="lightorange"];
+  "TfLiteCustomOpResolverCalculator" [fillcolor="lightyellow"];
+  "TfLiteModelCalculator" [fillcolor="lightcoral"];
+  "ThresholdingCalculator" [fillcolor="lightyellow"];
+  "WorldLandmarkProjectionCalculator" [fillcolor="lightorange"];
+  "mediapipe.tasks.vision.hand_landmarker.HandRoiRefinementGraph" [fillcolor="lightorange"];
+  "mediapipe.tasks.vision.hand_landmarker.SingleHandLandmarksDetectorGraph" [fillcolor="lightorange"];
+
+  // Dependencies and relationships
+  "ImagePropertiesCalculator" -> "PalmDetectionCpu";
+  "PalmDetectionCpu" -> "ClipDetectionVectorSizeCalculator";
+  "ClipDetectionVectorSizeCalculator" -> "PalmDetectionDetectionToRoi";
+  "PalmDetectionDetectionToRoi" -> "HandLandmarkCpu";
+  "HandLandmarkCpu" -> "HandLandmarksToRectCalculator";
+  "HandLandmarksToRectCalculator" -> "HandLandmarkLandmarksToRoi";
+}

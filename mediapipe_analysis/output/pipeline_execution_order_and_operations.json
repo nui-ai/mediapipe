@@ -1,0 +1,264 @@
+{
+  "analysis_timestamp": "1757343648.548012",
+  "bazel_targets": {},
+  "calculators": {
+    "AssociationNormRectCalculator": {
+      "bazel_target": "",
+      "class_name": "",
+      "dependencies": [
+        "mediapipe/framework/calculator_context.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/calculators/util/association_calculator.h",
+        "mediapipe/framework/formats/rect.pb.h",
+        "mediapipe/framework/port/rectangle.h"
+      ],
+      "header_files": [],
+      "methods": [
+        "Open",
+        "GetContract",
+        "Process",
+        "Close"
+      ],
+      "source_files": [
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/util/association_norm_rect_calculator.cc"
+      ]
+    },
+    "FlowLimiterCalculator": {
+      "bazel_target": "",
+      "class_name": "AtomicSemaphore",
+      "dependencies": [
+        "mediapipe/framework/port/gmock.h",
+        "mediapipe/util/packet_test_util.h",
+        "mediapipe/framework/port/gtest.h",
+        "mediapipe/calculators/core/flow_limiter_calculator.pb.h",
+        "mediapipe/framework/calculator_runner.h",
+        "mediapipe/framework/tool/simulation_clock_executor.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/timestamp.h",
+        "mediapipe/util/header_util.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/tool/sink.h",
+        "mediapipe/framework/formats/image_frame.h",
+        "mediapipe/framework/port/status_matchers.h",
+        "mediapipe/framework/tool/simulation_clock.h",
+        "mediapipe/framework/port/parse_text_proto.h"
+      ],
+      "header_files": [],
+      "methods": [
+        "SetUp",
+        "LedgerSize",
+        "InflightGraphConfig",
+        "Allow",
+        "GetDefaultNode",
+        "callback",
+        "InputTimestampBound",
+        "SetUpRealClock",
+        "SetUpInputData",
+        "PassthroughFunction",
+        "SendAllow",
+        "ProcessAuxiliaryInputs",
+        "SetNextTimestampBound",
+        "ProcessingAllowed",
+        "ParseTime",
+        "SourceString",
+        "Acquire",
+        "Process",
+        "GetContract",
+        "InitializeGraph",
+        "AddPacket",
+        "IsAllowed",
+        "Close",
+        "StartTime",
+        "SetUpSimulationClock",
+        "Release"
+      ],
+      "source_files": [
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/flow_limiter_calculator.cc",
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/real_time_flow_limiter_calculator_test.cc",
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/real_time_flow_limiter_calculator.cc",
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/flow_limiter_calculator_test.cc"
+      ]
+    },
+    "FromImageCalculator": {
+      "bazel_target": "",
+      "class_name": "FromImageCalculator",
+      "dependencies": [
+        "mediapipe/framework/port/logging.h",
+        "mediapipe/framework/formats/image.h",
+        "mediapipe/gpu/gl_calculator_helper.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/calculator_options.pb.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/port/vector.h",
+        "mediapipe/framework/formats/image_frame.h",
+        "mediapipe/framework/formats/image_format.pb.h"
+      ],
+      "header_files": [],
+      "methods": [
+        "Open",
+        "GetContract",
+        "RenderCpu",
+        "Close",
+        "RenderGpu",
+        "Process"
+      ],
+      "source_files": [
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/util/from_image_calculator.cc"
+      ]
+    },
+    "GateCalculator": {
+      "bazel_target": "",
+      "class_name": "GateCalculator",
+      "dependencies": [
+        "mediapipe/framework/port/gtest.h",
+        "mediapipe/framework/calculator_runner.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/calculators/core/gate_calculator.pb.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/util/header_util.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/port/status_matchers.h",
+        "mediapipe/framework/port/parse_text_proto.h"
+      ],
+      "header_files": [],
+      "methods": [
+        "RunGraph",
+        "GetContract",
+        "CheckAndInitAllowDisallowInputs",
+        "ToString",
+        "SetRunner",
+        "RunTimeStep",
+        "runner",
+        "RunTimeStepWithoutDataStream"
+      ],
+      "source_files": [
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/gate_calculator_test.cc",
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/gate_calculator.cc"
+      ]
+    },
+    "ImagePropertiesCalculator": {
+      "bazel_target": "",
+      "class_name": "ImagePropertiesCalculator",
+      "dependencies": [
+        "mediapipe/gpu/gpu_buffer.h",
+        "mediapipe/framework/formats/image.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/framework/formats/image_frame.h"
+      ],
+      "header_files": [],
+      "methods": [
+        "Process",
+        "UpdateContract"
+      ],
+      "source_files": [
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/image/image_properties_calculator.cc"
+      ]
+    },
+    "PreviousLoopbackCalculator": {
+      "bazel_target": "",
+      "class_name": "PreviousLoopbackCalculator",
+      "dependencies": [
+        "mediapipe/framework/port/gmock.h",
+        "mediapipe/framework/port/gtest.h",
+        "mediapipe/framework/calculator_runner.h",
+        "mediapipe/framework/calculator_framework.h",
+        "mediapipe/framework/port/status.h",
+        "mediapipe/framework/timestamp.h",
+        "mediapipe/framework/port/ret_check.h",
+        "mediapipe/framework/tool/sink.h",
+        "mediapipe/framework/api2/node.h",
+        "mediapipe/framework/port/status_matchers.h",
+        "mediapipe/framework/port/parse_text_proto.h"
+      ],
+      "header_files": [],
+      "methods": [
+        "SendPackets",
+        "GetContract",
+        "SetUp",
+        "UpdateContract"
+      ],
+      "source_files": [
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/previous_loopback_calculator_test.cc",
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/previous_loopback_calculator.cc"
+      ]
+    }
+  },
+  "call_graph": {
+    "FlowLimiterCalculator": {
+      "called_by": [
+        "HandLandmarkTrackingCpu"
+      ],
+      "calls": [
+        "FromImageCalculator"
+      ],
+      "implementation_files": [
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/flow_limiter_calculator.cc",
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/real_time_flow_limiter_calculator_test.cc",
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/real_time_flow_limiter_calculator.cc",
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/flow_limiter_calculator_test.cc"
+      ],
+      "line_number": 67,
+      "type": "calculator"
+    },
+    "FromImageCalculator": {
+      "called_by": [
+        "FlowLimiterCalculator"
+      ],
+      "calls": [],
+      "implementation_files": [
+        "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/util/from_image_calculator.cc"
+      ],
+      "line_number": 85,
+      "type": "calculator"
+    },
+    "HandLandmarkTrackingCpu": {
+      "called_by": [],
+      "calls": [
+        "FlowLimiterCalculator"
+      ],
+      "implementation_files": [],
+      "line_number": 104,
+      "type": "calculator"
+    }
+  },
+  "cpp_files_by_calculator": {
+    "AssociationNormRectCalculator": [
+      "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/util/association_norm_rect_calculator.cc"
+    ],
+    "FlowLimiterCalculator": [
+      "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/flow_limiter_calculator.cc",
+      "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/real_time_flow_limiter_calculator_test.cc",
+      "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/real_time_flow_limiter_calculator.cc",
+      "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/flow_limiter_calculator_test.cc"
+    ],
+    "FromImageCalculator": [
+      "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/util/from_image_calculator.cc"
+    ],
+    "GateCalculator": [
+      "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/gate_calculator_test.cc",
+      "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/gate_calculator.cc"
+    ],
+    "ImagePropertiesCalculator": [
+      "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/image/image_properties_calculator.cc"
+    ],
+    "PreviousLoopbackCalculator": [
+      "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/previous_loopback_calculator_test.cc",
+      "/tmp/mediapipe_source_ko2yz9n3/mediapipe_v0.10.13/mediapipe/calculators/core/previous_loopback_calculator.cc"
+    ]
+  },
+  "execution_order": [
+    "FromImageCalculator",
+    "FlowLimiterCalculator",
+    "HandLandmarkTrackingCpu"
+  ],
+  "mediapipe_version": "v0.10.13",
+  "pipeline_summary": {
+    "execution_order_length": 3,
+    "main_graph_nodes": 3,
+    "main_graph_subgraphs": 0,
+    "total_calculators_analyzed": 6
+  }
+}
