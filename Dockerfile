@@ -23,15 +23,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# ------------------------------------------------------------------------------
-# note that the built image will be close to 10GB in size, so not a small image.
+# -----------------------------------------------------------------------------------------------------------------
+# note that the built image will be close to 10GB in size if the copy of the local mediapipe path and the mediapipe
+# build steps at the bottom of the current Dockerfile are not commented out, so not a small image.
 #
 
 FROM ubuntu:24.04
 
 LABEL maintainer="matan@nui.ai"
 
-WORKDIR /io
+USER root
 WORKDIR /mediapipe
 
 # ENV DEBIAN_FRONTEND=noninteractive  <== might this have blocked use as a github actions runner within the container? surely not.
@@ -96,7 +97,8 @@ RUN mkdir /bazel && \
     rm -f /bazel/installer.sh
 
 # Include the repository's code directory, this is actually too much if e.g. you have locally built mediapipe in the same directory, thus many build files will be included:
-# without this step (and the mediapipe build step below) the image size goes down from up to 10GB to about 2.5GB.
+# without this step (and the mediapipe build step below) the image size goes down from up to 10GB to about 2.5GB. If the image is to be used for builds though, this verifies
+# that all dependencies for a successful build are indeed included in the image.
 COPY . /mediapipe/
 
 # Build mediapipe ― this makes sure that the image contains all the bazel and pip dependencies needed to build mediapipe, future proofing them inside the image.
@@ -110,18 +112,19 @@ RUN \
     .venv/bin/pip install --upgrade pip setuptools wheel && \
     .venv/bin/pip install --verbose .
 
-# Don't try to install the Github actions runner, which is easy from the github page instructions, but just ready a user for it to use as it will refuse to start as root,
-RUN adduser --disabled-password --gecos "" github-runner  \
-# usermod -aG sudo github-runner
-
-# Dedicated non-root user and directory for GitHub Actions runner; this failed entirely the other day so parking it.
-# Also, running within a container is it necessary not to run as root within the container itself these days?
-#RUN useradd -m runner && \
-#    mkdir -p /github-runner && \
-#    chown runner:runner /github-runner
-#
-#USER runner
-#WORKDIR /github-runner
+# The following block enables an entirely orthogonal use case for this image:
+# it creates a password-less sudo-enabled user github-runner, for optionally running a self-hosted github actions runner
+# within this container (in a dedicated file path /github-runner owned by this separate non-root user).
+# Which you may only want to use if you let copilot work on tasks requiring a buildable mediapipe.
+# In which case the .github/workflows/copilot-setup-steps.yml should omit all its installation steps,
+# as this image already has them, and should use `runs-on: self-hosted` instead (see examples).
+RUN apt-get update && apt-get install -y sudo passwd adduser
+RUN adduser --disabled-password --gecos "" github-runner && \
+    usermod -aG sudo github-runner && \
+    mkdir -p /github-runner && \
+    chown github-runner /github-runner
+USER github-runner
+WORKDIR /github-runner
 
 # Download and extract the github actions runner as non-root user in /github-runner, for the case that we want copilot agent mode (or other github workflows) to use a self-hosted local github runner within this container.
 # This will only be useful as long as that runner version is supported by github, and otherwise just install the latest version of it as per https://github.com/nui-ai/mediapipe/settings/actions/runners/new,
