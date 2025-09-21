@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 import json
 from collections import defaultdict
 
-from pipeline_parser import MediaPipePipelineParser, CalculatorNode, SubGraph, MediaPipeGraph
+from pipeline_parser import MediaPipePipelineParser, GraphNode, SubGraph, MediaPipeGraph
 
 @dataclass 
 class CalculatorInfo:
@@ -71,7 +71,7 @@ class MediaPipeCallGraphAnalyzer:
         print("Starting comprehensive hand inference pipeline analysis...")
         
         # Get basic pipeline structure
-        pipeline_analysis = self.parser.analyze_hand_pipeline()
+        pipeline_analysis = self.parser.analyze_pipeline()
         main_graph = pipeline_analysis['main_graph']
         
         print(f"Analyzing pipeline with {len(main_graph.nodes)} nodes and {len(main_graph.subgraphs)} subgraphs")
@@ -117,7 +117,7 @@ class MediaPipeCallGraphAnalyzer:
         
         return None
     
-    def _analyze_calculators(self, nodes: List[CalculatorNode]):
+    def _analyze_calculators(self, nodes: List[GraphNode]):
         """Analyze calculator implementations."""
         print(f"Analyzing {len(nodes)} calculator nodes...")
         
@@ -698,7 +698,7 @@ def main():
     """Analyze the MediaPipe hand inference pipeline."""
 
     # Download MediaPipe source
-    source_path = 'mediapipe'
+    source_path = Path('mediapipe').resolve()
     
 
     # Analyze the pipeline

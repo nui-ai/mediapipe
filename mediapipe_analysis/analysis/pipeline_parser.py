@@ -8,15 +8,14 @@ graph structure and identify all calculator nodes and their connections.
 
 import re
 from pathlib import Path
-from typing import Dict, List, Set, Optional, Tuple
+from typing import Dict, List, Optional
 from dataclasses import dataclass
-import os
+
 
 @dataclass
-class CalculatorNode:
+class GraphNode:
     """Represents a calculator node in the MediaPipe graph."""
     name: str
-    calculator: str
     input_streams: List[str]
     output_streams: List[str]
     input_side_packets: List[str]
@@ -24,15 +23,15 @@ class CalculatorNode:
     node_options: Dict[str, str]
     line_number: int
 
-@dataclass
-class SubGraph:
-    """Represents a sub-graph within the MediaPipe graph."""
-    type: str
-    input_streams: List[str]
-    output_streams: List[str]
-    input_side_packets: List[str]
-    output_side_packets: List[str]
-    line_number: int
+# @dataclass
+# class SubGraph:
+#     """Represents a sub-graph within the MediaPipe graph."""
+#     type: str
+#     input_streams: List[str]
+#     output_streams: List[str]
+#     input_side_packets: List[str]
+#     output_side_packets: List[str]
+#     line_number: int
 
 @dataclass
 class MediaPipeGraph:
@@ -41,21 +40,24 @@ class MediaPipeGraph:
     output_streams: List[str]
     input_side_packets: List[str]
     output_side_packets: List[str]
-    nodes: List[CalculatorNode]
-    subgraphs: List[SubGraph]
+    nodes: List[GraphNode]
     packet_generators: List[Dict[str, str]]
 
+
 class MediaPipePipelineParser:
+
+    def print_with_ident(self, text: str):
+        print(4 * ' ' * self.ident + text)
+
     def __init__(self, mediapipe_source_path: Path):
-        """
-        Initialize the parser with MediaPipe source path.
-        
-        Args:
-            mediapipe_source_path: Path to MediaPipe source directory
-        """
+
         self.mediapipe_source = Path(mediapipe_source_path)
-        self.calculator_registry: Dict[str, Path] = {}
-        self.graph_registry: Dict[str, Path] = {}
+
+        # map all calculator and graph sources across the mediapipe source code
+        self.calculators_source_mapping, self.graph_source_files = self.map_node_sources()
+
+        self.ident = 0
+
         
     def parse_pbtxt_file(self, pbtxt_path: Path) -> MediaPipeGraph:
         """
@@ -67,7 +69,7 @@ class MediaPipePipelineParser:
         Returns:
             MediaPipeGraph object representing the parsed graph
         """
-        print(f"Parsing {pbtxt_path}")
+        self.print_with_ident(f"Parsing {pbtxt_path}")
         
         with open(pbtxt_path, 'r') as f:
             content = f.read()
@@ -80,34 +82,30 @@ class MediaPipePipelineParser:
             input_side_packets=[],
             output_side_packets=[],
             nodes=[],
-            subgraphs=[],
             packet_generators=[]
         )
         
         # Parse top-level streams and packets
-        graph.input_streams = self._extract_list_field(content, "input_stream")
-        graph.output_streams = self._extract_list_field(content, "output_stream")
-        graph.input_side_packets = self._extract_list_field(content, "input_side_packet")
-        graph.output_side_packets = self._extract_list_field(content, "output_side_packet")
+        graph.input_streams = self._extract_pbtxt_field(content, "input_stream")
+        graph.output_streams = self._extract_pbtxt_field(content, "output_stream")
+        graph.input_side_packets = self._extract_pbtxt_field(content, "input_side_packet")
+        graph.output_side_packets = self._extract_pbtxt_field(content, "output_side_packet")
         
         # Parse nodes
         graph.nodes = self._parse_nodes(content, lines)
-        
-        # Parse subgraphs  
-        graph.subgraphs = self._parse_subgraphs(content, lines)
         
         # Parse packet generators
         graph.packet_generators = self._parse_packet_generators(content)
         
         return graph
     
-    def _extract_list_field(self, content: str, field_name: str) -> List[str]:
+    def _extract_pbtxt_field(self, content: str, field_name: str) -> List[str]:
         """Extract list field values from pbtxt content."""
-        pattern = rf'{field_name}\s*:\s*"([^"]*)"'
+        pattern = rf'^{field_name}\s*:\s*"([^"]*)"'
         matches = re.findall(pattern, content)
         return matches
     
-    def _parse_nodes(self, content: str, lines: List[str]) -> List[CalculatorNode]:
+    def _parse_nodes(self, content: str, lines: List[str]) -> List[GraphNode]:
         """Parse calculator nodes from the graph."""
         nodes = []
         
@@ -125,7 +123,7 @@ class MediaPipePipelineParser:
         
         return nodes
     
-    def _parse_single_node(self, lines: List[str], start_line: int) -> Optional[CalculatorNode]:
+    def _parse_single_node(self, lines: List[str], start_line: int) -> Optional[GraphNode]:
         """Parse a single node block."""
         # Find the end of this node block
         brace_count = 0
@@ -141,16 +139,15 @@ class MediaPipePipelineParser:
         node_content = '\n'.join(lines[start_line:end_line+1])
         
         # Extract node fields
-        name = self._extract_field(node_content, "name")
-        calculator = self._extract_field(node_content, "calculator")
+        name = self._extract_field(node_content, "calculator")
         
-        if not calculator:
+        if not name:
             return None
         
-        input_streams = self._extract_list_field(node_content, "input_stream")
-        output_streams = self._extract_list_field(node_content, "output_stream")
-        input_side_packets = self._extract_list_field(node_content, "input_side_packet")
-        output_side_packets = self._extract_list_field(node_content, "output_side_packet")
+        input_streams = self._extract_pbtxt_field(node_content, "input_stream")
+        output_streams = self._extract_pbtxt_field(node_content, "output_stream")
+        input_side_packets = self._extract_pbtxt_field(node_content, "input_side_packet")
+        output_side_packets = self._extract_pbtxt_field(node_content, "output_side_packet")
         
         # Extract node options (simplified)
         node_options = {}
@@ -166,9 +163,8 @@ class MediaPipePipelineParser:
                         value = key_value[1].strip().strip('"')
                         node_options[key] = value
         
-        return CalculatorNode(
+        return GraphNode(
             name=name or "",
-            calculator=calculator,
             input_streams=input_streams,
             output_streams=output_streams,
             input_side_packets=input_side_packets,
@@ -176,55 +172,7 @@ class MediaPipePipelineParser:
             node_options=node_options,
             line_number=start_line + 1
         )
-    
-    def _parse_subgraphs(self, content: str, lines: List[str]) -> List[SubGraph]:
-        """Parse subgraph definitions."""
-        subgraphs = []
-        
-        # Find subgraph blocks
-        subgraph_pattern = r'node\s*\{\s*calculator\s*:\s*"([^"]*Graph)"'
-        
-        for i, line in enumerate(lines):
-            match = re.search(subgraph_pattern, line)
-            if match:
-                graph_type = match.group(1) + "Graph"
-                
-                # Find the full node block for this subgraph
-                brace_count = 0
-                start_line = i
-                end_line = i
-                
-                # Find the start of the node block
-                while start_line > 0 and 'node {' not in lines[start_line]:
-                    start_line -= 1
-                
-                # Find the end of the node block
-                for j in range(start_line, len(lines)):
-                    line_content = lines[j]
-                    brace_count += line_content.count('{') - line_content.count('}')
-                    if brace_count == 0 and j > start_line:
-                        end_line = j
-                        break
-                
-                subgraph_content = '\n'.join(lines[start_line:end_line+1])
-                
-                input_streams = self._extract_list_field(subgraph_content, "input_stream")
-                output_streams = self._extract_list_field(subgraph_content, "output_stream")
-                input_side_packets = self._extract_list_field(subgraph_content, "input_side_packet")
-                output_side_packets = self._extract_list_field(subgraph_content, "output_side_packet")
-                
-                subgraph = SubGraph(
-                    type=graph_type,
-                    input_streams=input_streams,
-                    output_streams=output_streams,
-                    input_side_packets=input_side_packets,
-                    output_side_packets=output_side_packets,
-                    line_number=start_line + 1
-                )
-                subgraphs.append(subgraph)
-        
-        return subgraphs
-    
+
     def _parse_packet_generators(self, content: str) -> List[Dict[str, str]]:
         """Parse packet generator definitions."""
         generators = []
@@ -252,107 +200,208 @@ class MediaPipePipelineParser:
         match = re.search(pattern, content)
         return match.group(1) if match else None
     
-    def find_calculator_sources(self) -> Dict[str, List[Path]]:
-        """Find all calculator C++ source files in MediaPipe."""
-        calculator_files = {}
-        
-        # Search for calculator files
-        for root, dirs, files in os.walk(self.mediapipe_source):
+    def map_node_sources(self) -> tuple[dict[str, Path], dict[str, Path]]:
+
+        """ Scan the entire mediapipe source tree to map node names to the source files defining them.
+
+          this is accomplished for two types of nodes:
+            + nodes which are calculators
+            + nodes which are graphs
+
+         the scan compiles this mapping for all such nodes, so that the caller
+         is sure to find the source file defining any node by its name through
+         this returned mapping. """
+
+        cpp_suffixes = [
+            # Source files
+            ".cc", ".cpp", ".cxx", ".c++", ".C", ".cp", ".CPP",
+            # Header files
+            ".h", ".hpp", ".hh", ".hxx", ".H",
+            # Other includable fragments
+            ".inc", ".inl"
+            ]
+
+        calculator_source_files = dict[str, Path]()
+        graph_source_files = dict[str, Path]()
+
+        # scan the source tree to associate node names to their source files definition locations
+        for root, dirs, files in self.mediapipe_source.walk():
             for file in files:
-                if file.endswith('_calculator.cc') or file.endswith('_calculator.h'):
-                    path = Path(root) / file
-                    calculator_name = file.replace('_calculator.cc', '').replace('_calculator.h', '')
-                    calculator_name = self._camel_case(calculator_name)
-                    
-                    if calculator_name not in calculator_files:
-                        calculator_files[calculator_name] = []
-                    calculator_files[calculator_name].append(path)
+
+                source_file = root / file
+                file_suffix = Path(file).suffix
+
+                # associate calculator and pipeline nodes defined in c++ source files
+                if file_suffix in cpp_suffixes:
+
+                    source_code = source_file.read_text()
+                    # associate all calculators defined in this source file by the REGISTER_CALCULATOR macro.
+                    # (the REGISTER_CALCULATOR itself is defined in mediapipe/framework/calculator_registry.h.
+                    # a code comment mentions that MEDIAPIPE_REGISTER_FACTORY_FUNCTION_QUALIFIED should be migrated to
+                    # so if calculators are not all found by the current function explore scanning the mediapipe source
+                    # code for also MEDIAPIPE_REGISTER_FACTORY_FUNCTION_QUALIFIED.
+                    for calculator_name in re.findall(r'REGISTER_CALCULATOR\((.*)\)', source_code):
+                        if str(source_file.with_suffix('')).endswith('test'):
+                            pass
+                        else:
+                            if calculator_name in calculator_source_files:
+                                calculator_source_files[calculator_name] = [calculator_source_files[calculator_name]] + [source_file]
+                            else:
+                                calculator_source_files[calculator_name] = source_file
+
+                    # associate all calculators defined by the MEDIAPIPE_REGISTER_NODE macro, whose own comments (search define MEDIAPIPE_REGISTER_NODE)
+                    # say is deprecated, but still is used for defining a few calculators.
+                    for calculator_name in re.findall(r'MEDIAPIPE_REGISTER_NODE\((.*)\)', source_code):
+                        if str(source_file.with_suffix('')).endswith('test'):
+                            pass
+                        else:
+                            if calculator_name in calculator_source_files:
+                                calculator_source_files[calculator_name] = [calculator_source_files[calculator_name]] + [source_file]
+                            else:
+                                calculator_source_files[calculator_name] = source_file
+
+                    # associate pipelines nodes defined in .cc files
+                    for source_graph_name in re.findall(r'REGISTER_MEDIAPIPE_GRAPH\((.*)\)', source_code):
+                        if str(source_file.with_suffix('')).endswith('test'):
+                            pass
+                        else:
+                            if source_graph_name in graph_source_files:
+                                graph_source_files[source_graph_name] = [graph_source_files[source_graph_name]] + [source_file]
+                            else:
+                                graph_source_files[source_graph_name] = source_file
+
+                # associate pipeline nodes defined in .pbtxt files
+                if file_suffix == '.pbtxt':
+
+                    graph_source_file = root / file
+                    graph_source_code = graph_source_file.read_text()
+
+                    matches = re.findall(r'type\s*:\s*"([^"]+)"', graph_source_code)
+                    if len(matches) == 1:
+                        graph_name = matches[0]
+                        graph_source_files[graph_name] = graph_source_file
+
+        # redact any calculator name which had more than one source file found for it
+        for calculator_name in list(calculator_source_files.keys()):
+            if isinstance(calculator_source_files[calculator_name], list):
+                print(f'🤷 the calculator name \'{calculator_name}\' is defined in more than one source file and will be ignored; should switch to yielding calculator source files by fully qualified module paths, or filter the source directories being searched. '
+                      f'this name is currently defined as a calculator in the following source files:')
+                for source_file in calculator_source_files[calculator_name]:
+                    print(f'  - {source_file}')
+                del calculator_source_files[calculator_name]
+
+        print(f'🛈 mapped {len(calculator_source_files)} calculator names to the source file defining them')
+        print(f'🛈 mapped {len(graph_source_files)} graph definitions to the source file defining them')
+
+
+        # sanity review the the resulting associations from names to source files
+        # for calculator_name, paths in calculator_source_files.items():
+        #     if len(paths) == 0:
+        #         raise Exception(f'internal error')
+        #     elif len(paths) == 1:
+        #         print(f'⚠️️️ calculator \'{calculator_name}\' was associated with a single source file and not a .cc and .h pair: {paths[0]}')
+        #     elif len(paths) == 2:
+        #         if paths[0].with_suffix('') == paths[1].with_suffix(''):
+        #             continue
+        #         else:
+        #             print(f'⚠️ calculator \'{calculator_name}\' was associated with two source files which are not a .cc and .h pair:')
+        #             for path in paths:
+        #                 print(f'  - {path}')
+        #     else:
+        #         print(f'⚠️ calculator \'{calculator_name}\' was associated with a plurality of source files:')
+        #         for path in paths:
+        #             print(f'  - {path}')
         
-        return calculator_files
+        return calculator_source_files, graph_source_files
     
-    def find_graph_definitions(self) -> Dict[str, Path]:
-        """Find all graph definition .pbtxt files."""
-        graph_files = {}
-        
-        for root, dirs, files in os.walk(self.mediapipe_source):
-            for file in files:
-                if file.endswith('.pbtxt'):
-                    path = Path(root) / file
-                    graph_name = file.replace('.pbtxt', '')
-                    graph_files[graph_name] = path
-        
-        return graph_files
+    # def find_graph_definitions(self) -> Dict[str, Path]:
+    #     """Find all graph definition .pbtxt files."""
+    #     graph_files = {}
+    #
+    #     for root, dirs, files in os.walk(self.mediapipe_source):
+    #         for file in files:
+    #             if file.endswith('.pbtxt'):
+    #                 path = Path(root) / file
+    #                 graph_name = file.replace('.pbtxt', '')
+    #                 graph_files[graph_name] = path
+    #
+    #     return graph_files
     
     def _camel_case(self, snake_str: str) -> str:
         """Convert snake_case to CamelCase."""
         components = snake_str.split('_')
         return ''.join(x.capitalize() for x in components)
-    
-    def analyze_hand_pipeline(self) -> Dict:
+
+    def analyze_pipeline(self, pipeline_name: str) -> dict:
+
         """Analyze the specific hand landmark tracking pipeline."""
-        # Find the hand landmark tracking graph
-        graph_files = self.find_graph_definitions()
-        hand_graph_path = None
-        
-        for name, path in graph_files.items():
-            if 'hand_landmark_tracking_cpu' in name:
-                hand_graph_path = path
-                break
-        
-        if not hand_graph_path:
-            raise FileNotFoundError("Could not find hand_landmark_tracking_cpu.pbtxt")
-        
-        # Parse the main graph
-        main_graph = self.parse_pbtxt_file(hand_graph_path)
-        
-        # Find calculator sources
-        calculator_sources = self.find_calculator_sources()
-        
-        # Map calculators to their source files
-        calculator_mapping = {}
-        for node in main_graph.nodes:
-            calc_name = node.calculator
-            if calc_name in calculator_sources:
-                calculator_mapping[calc_name] = calculator_sources[calc_name]
-            else:
-                # Try to find by partial match
-                for source_name, paths in calculator_sources.items():
-                    if calc_name.lower() in source_name.lower() or source_name.lower() in calc_name.lower():
-                        calculator_mapping[calc_name] = paths
-                        break
-        
-        return {
-            'main_graph': main_graph,
-            'hand_graph_path': hand_graph_path,
-            'calculator_mapping': calculator_mapping,
-            'all_calculator_sources': calculator_sources,
-            'all_graph_files': graph_files
-        }
+
+        if pipeline_name in self.graph_source_files:
+            self.print_with_ident(f'analyzing the pipeline definition of \'{pipeline_name}\' found at {self.graph_source_files[pipeline_name]}')
+        else:
+            raise FileNotFoundError(f'could not find a pipeline graph definition of {pipeline_name} in mediapipe source code')
+
+        # parse the givne graph
+        if str(self.graph_source_files[pipeline_name]).endswith('.pbtxt'):
+            graph = self.parse_pbtxt_file(self.graph_source_files[pipeline_name])
+        else:
+            self.print_with_ident(f'⚠️ pipeline {pipeline_name} is defined by C++ code and not a .pbtxt file; its content will be ignored from analysis.')
+            return
+
+        # Map all nodes used in the gvien graph to their source files. graphs don't say whether
+        # a node they name is a calculator or a graph itself, so we determine this here per node
+        # referenced in the given graph.
+        calculator_mapping = dict[str, Path]()
+        subgraph_mapping = dict[str, Path]()
+
+        for node in graph.nodes:
+            node_name = node.name
+            node_source = None
+
+            # self.print_with_ident(f'analyzing node \'{node_name}\' used in graph \'{pipeline_name}\'')
+
+            if node_name in self.calculators_source_mapping:
+                node_source = self.calculators_source_mapping[node_name]
+                calculator_mapping[node_name] = node_source
+                self.print_with_ident(f'✅ calculator node \'{node_name}\' is defined in source file {node_source}')
+
+            if node_name in self.graph_source_files:
+                if node_source:
+                    self.print_with_ident(f'❌️️️ node \'{node_name}\' is found to be both a calculator and a sub-graph; this case is not currently handled downstream!')
+
+                node_source = self.graph_source_files[node_name]
+                subgraph_mapping[node_name] = node_source
+                self.print_with_ident(f'✅ sub-graph node \'{node_name}\' is defined in source file {node_source}')
+
+                self.print_with_ident(f'🔁 analyzing the sub-graph \'{node_name}\'')
+                self.ident += 1
+                self.analyze_pipeline(node_name)
+                self.ident -= 1
+
+            if not node_source:
+                match node_name:
+                    case 'InferenceCalculator':
+                        self.print_with_ident(f'⚠️ node \'{node_name}\' is a node name not associated to one implementation, but a generic name which has multiple implementions in mediapipe/calculators/tensor/inference_calculator.h '
+                              f'one per each target inference stack (e.g. cpu, xnnpack, and more) which subclass it in that source file. assume the one selected at runtime matches the target inference type used '
+                              f'by the pipeline being run ')
+                    case 'LandmarkProjectionCalculator':
+                        self.print_with_ident(f'⚠️ node \'{node_name}\' is a node name not associated to one implementation, but a generic name which has an implemention per pipeline each '
+                              f'defined by the form graph.AddNode("LandmarkProjectionCalculator"), its content will be ignored from analysis, but you can manually locate '
+                              f'all specific implementions of it by searching the occurences of graph.AddNode("LandmarkProjectionCalculator") in the mediapipe source tree.'
+                              f'AddNode is defined in builder.h and elsewhere and dynamically instantiates a LandmarkProjectionCalculator instance based on context.')
+                    case 'WorldLandmarkProjectionCalculator':
+                        self.print_with_ident(f'⚠️ node \'{node_name}\' is a node name not associated to one implementation, but a generic name which has an implemention per pipeline each '
+                              f'defined by the form graph.AddNode("WorldLandmarkProjectionCalculator"), its content will be ignored from analysis, but you can manually locate '
+                              f'all specific implementions of it by searching the occurences of graph.AddNode("WorldLandmarkProjectionCalculator") in the mediapipe source tree. '
+                              f'AddNode is defined in builder.h and elsewhere and dynamically instantiates a WorldLandmarkProjectionCalculator instance based on context.')
+                    case _:
+                        self.print_with_ident(f'❌ could not locate the source code for node \'{node_name}\'')
 
 def main():
     """Test the pipeline parser."""
 
-    source_path = 'mediapipe'
-    
-    # Parse the hand pipeline
-    parser = MediaPipePipelineParser(source_path)
-    analysis = parser.analyze_hand_pipeline()
-
-    print(f"Found hand pipeline at: {analysis['hand_graph_path']}")
-    print(f"Main graph has {len(analysis['main_graph'].nodes)} nodes")
-    print(f"Main graph has {len(analysis['main_graph'].subgraphs)} subgraphs")
-
-    print("\nCalculator nodes:")
-    for node in analysis['main_graph'].nodes:
-        print(f"  - {node.calculator} (line {node.line_number})")
-
-    print("\nSubgraphs:")
-    for subgraph in analysis['main_graph'].subgraphs:
-        print(f"  - {subgraph.type} (line {subgraph.line_number})")
-
-    print(f"\nFound {len(analysis['calculator_mapping'])} calculator mappings")
-    print(f"Found {len(analysis['all_calculator_sources'])} total calculator sources")
-
+    parser = MediaPipePipelineParser(Path('mediapipe').resolve())
+    parser.analyze_pipeline('HandLandmarkTrackingCpu')
 
 if __name__ == "__main__":
     main()

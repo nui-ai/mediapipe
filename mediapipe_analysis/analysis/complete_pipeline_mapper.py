@@ -398,7 +398,7 @@ class CompletePipelineMapper:
 def main():
     """Map the complete MediaPipe hand inference pipeline."""
     # Download MediaPipe source
-    source_path = 'mediapipe'
+    source_path = Path('mediapipe').resolve()
     
 
     # Map the complete pipeline
