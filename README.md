@@ -19,12 +19,12 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     for a verbose output which includes print statements made by setup.py, add `-v` to the pip command as otherwise due to pip's build isolation stdout is swallowed when the build does not fai.:
 4. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
 
-5. place a video file with hands in it, as video.avi, in the project root path, and run the following python test which should run with exit code 0:
+5. place a video file with hands in it, as sample-video.avi, in the project root path, and run the following python test which should run with exit code 0:
     ```
     python3 -P test-on-video-file.py
     ```
    
-if you wish to only build the C++ part, maybe for isolation that it builds without errors:
+if you wish to only build the C++ part, maybe for isolation that it builds without errors, or for C++ development:
 ```
 bazel build -c opt --copt=-I/usr/include/opencv4 --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
 ```
@@ -33,8 +33,8 @@ bazel build -c opt --copt=-I/usr/include/opencv4 --define MEDIAPIPE_DISABLE_GPU=
 ```bash
 bazel clean --expunge && trash /tmp/bazel-\$\{USER\}/ && trash ~/.cache/bazel/
 ```
-
-This should be stressed: a mere bazel clean --expunge is not enough to clear _all_ bazel caches. See the end parts of https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35 for a delination of what it clears.
++ This should be stressed: a mere bazel clean --expunge is not enough to clear _all_ bazel caches. See the end parts of https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35 for a delination of what it clears.
++ This does not clear the wheel installed binary of mediapipe which `pip install .` installs! only `pip uninstall mediapipe` does that.
 
 Notes:
 1. The included Ubuntu 24.04-based [Dockerfile](Dockerfile) was created and tested to contain the OS-level dependencies needed for a successful mediapipe v0.10.13 build, and fully tested to reproduce a successful build, so this process is reproducible and not an artefact of special conditions on my machine ― the docker image fully reproduces the error-less build of mediapipe at its v0.10.13 commit level. 
