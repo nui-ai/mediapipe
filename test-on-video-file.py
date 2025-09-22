@@ -56,13 +56,14 @@ def _process_video(input_video, model_complexity, max_num_hands=1):
                 for idx, landmarks in enumerate(result.multi_hand_landmarks):
                     landmarks = _landmarks_list_to_array(landmarks, frame_shape)
                     frame_landmarks[idx] = landmarks
+                # print(frame_landmarks)
+
             if result.multi_hand_world_landmarks:
                 for idx, w_landmarks in enumerate(result.multi_hand_world_landmarks):
                     w_landmarks = _world_landmarks_list_to_array(w_landmarks)
                     frame_w_landmarks[idx] = w_landmarks
+                # print(frame_w_landmarks)
 
-            # print(frame_landmarks)
-            # print(frame_w_landmarks)
 
     if processed_frames < total_frames:
         raise RuntimeError(f"Video processing stopped early: processed {processed_frames} out of {total_frames} frames. Possible bad/corrupt frame encountered.")
