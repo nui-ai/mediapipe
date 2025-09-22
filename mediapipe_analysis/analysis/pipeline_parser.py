@@ -378,21 +378,24 @@ class MediaPipePipelineParser:
                 self.ident -= 1
 
             if not node_source:
+                # see also: https://ai.google.dev/edge/mediapipe/framework/framework_concepts/graphs
                 match node_name:
                     case 'InferenceCalculator':
                         self.print_with_ident(f'⚠️ node \'{node_name}\' is a node name not associated to one implementation, but a generic name which has multiple implementions in mediapipe/calculators/tensor/inference_calculator.h '
                               f'one per each target inference stack (e.g. cpu, xnnpack, and more) which subclass it in that source file. assume the one selected at runtime matches the target inference type used '
-                              f'by the pipeline being run ')
+                              f'by the pipeline being run. all implementations of it run a neural network ℹ️ see also https://ai.google.dev/edge/mediapipe/framework/framework_concepts/graphs_cpp')
                     case 'LandmarkProjectionCalculator':
                         self.print_with_ident(f'⚠️ node \'{node_name}\' is a node name not associated to one implementation, but a generic name which has an implemention per pipeline each '
                               f'defined by the form graph.AddNode("LandmarkProjectionCalculator"), its content will be ignored from analysis, but you can manually locate '
                               f'all specific implementions of it by searching the occurences of graph.AddNode("LandmarkProjectionCalculator") in the mediapipe source tree.'
-                              f'AddNode is defined in builder.h and elsewhere and dynamically instantiates a LandmarkProjectionCalculator instance based on context.')
+                              f'AddNode is defined in builder.h and elsewhere and dynamically instantiates a LandmarkProjectionCalculator instance based on context '
+                              f'ℹ️ see also https://ai.google.dev/edge/mediapipe/framework/framework_concepts/graphs')
                     case 'WorldLandmarkProjectionCalculator':
                         self.print_with_ident(f'⚠️ node \'{node_name}\' is a node name not associated to one implementation, but a generic name which has an implemention per pipeline each '
                               f'defined by the form graph.AddNode("WorldLandmarkProjectionCalculator"), its content will be ignored from analysis, but you can manually locate '
                               f'all specific implementions of it by searching the occurences of graph.AddNode("WorldLandmarkProjectionCalculator") in the mediapipe source tree. '
-                              f'AddNode is defined in builder.h and elsewhere and dynamically instantiates a WorldLandmarkProjectionCalculator instance based on context.')
+                              f'AddNode is defined in builder.h and elsewhere and dynamically instantiates a WorldLandmarkProjectionCalculator instance based on context '
+                              f'ℹ️ see also https://ai.google.dev/edge/mediapipe/framework/framework_concepts/graphs')
                     case _:
                         self.print_with_ident(f'❌ could not locate the source code for node \'{node_name}\'')
 
