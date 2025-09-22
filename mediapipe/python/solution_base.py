@@ -354,21 +354,18 @@ class SolutionBase:
 
     # Implementation Steps:
     #
-    # 1. per each graph defined input stream of the current graph, translate the current input provided for it
-    #    to a mediapipe framework Packet object which is bazel-protobuf generated for each input type and strongly
-    #    typed at runtime within the framework as much as we care. this code just wraps around that with some
-    #    input validation. the framework actually generates C++ code for populating and for reading each of
-    #    its supported input object types, not just defines a protobuf message for each type. which is
-    #    typical (or just sensible) for bazel based projects which have multi-language aspirations,
-    #    though, this just makes the project feel clumsy to work with due to too many layers of code
-    #    for just this simple aspect of it. the input data to the graph here is always an ndarray image,
-    #    but that entire generic workflow is taking place because a Packet is also the input type sent
-    #    across the graph's internal nodes for input and output packets, so this generic dance is
-    #    repeated here at the entry point to the graph just because it's the same data type
-    #    (a mediapipe framework Packet).
+    # 1. per each graph defined input stream of the current graph, translate the current input provided for it to a mediapipe framework Packet object
+    #    which is bazel-protobuf generated for each project allowed input type and strongly typed at runtime within the framework as much as we care.
+    #    this code just wraps around that with some input validation. the framework actually generates C++ code for populating and for reading each
+    #    of its supported input object types, not just defines a protobuf message for each type. which is typical (or just sensible) for bazel based
+    #    projects which have multi-language aspirations, though, this just makes the project feel clumsy to work with due to too many layers of code
+    #    for just this simple aspect of it. the input data to the graph here is always an ndarray image, but that entire generic workflow is taking place
+    #    because a Packet is also the input type sent across the graph's internal nodes for input and output packets, so this generic dance is repeated
+    #    here at the entry point to the graph just because it's the same data type (a mediapipe framework Packet) even though it's always an image
+    #    for most mediapipe provided pipelines, ours included.
     #
-    # 2. once added to the input streams, the graph has started processing the input data, and then we
-    #    wait for it to finish its run for this single ingestion of input data per each stream.
+    # 2. once added to the input streams, the graph has started processing the input data, and then
+    #    we wait for it to finish its run for this single ingestion of input data per each stream.
     #
     # 3. when its done we extract its output data for the current round, per each output stream,
     #    and return a python (dynamically typed NamedTuple) object with the output data
