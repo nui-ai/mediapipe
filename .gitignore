@@ -39,3 +39,7 @@ htmlcov/
 
 # Ignore analysis output directory
 mediapipe_analysis/analysis/output/
+
+# Clion ignores
+.clwb/
+
