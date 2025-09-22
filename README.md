@@ -25,13 +25,13 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     ``` 
     note that without `-P` python will try loading python modules from the `mediapipe` directory under the project's tree root, which is essentially our python "source directory", which is a horrible entanglement, and is also bound to fail since some of the mediapipe python modules are only dynamically built & placed (into the active python environment) by the pip install process ― because most of mediapipe python-exposed sub-packages are either pybind generated or bazel generated from protobuf definitions or both (e.g. mediapipe.python._framework_bindings). So the python source tree _never_ contains all the modules that the mediapipe python api expects to find, but it can sure throw you off track with cryptic module loading errors if you try to run without -P and thus let python first look for modules under the python source directory `mediapipe`. With this project you only want python to run from the active python environment, not from its "source" path, which is what `-P` does.
    
-if you wish to only build the C++ part, maybe for isolation that it builds without errors, or for C++ development:
-```
-bazel build -c opt --copt=-I/usr/include/opencv4 --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
-```
-just remember it doesn't get deployed for python use in that case.
+6. if you wish to only build the C++ part, maybe for isolation that it builds without errors, or for C++ development:
+    ```
+    bazel build -c opt --copt=-I/usr/include/opencv4 --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
+    ```
+    just remember it doesn't get deployed for python use in that case.
 
-6. to clear all bazel build caching:
+7. to clear all bazel build caching:
 ```bash
 bazel clean --expunge && trash /tmp/bazel-\$\{USER\}/ && trash ~/.cache/bazel/
 ```
