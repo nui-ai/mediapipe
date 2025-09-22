@@ -1,4 +1,4 @@
-# Bazel / project specific ignores
+f# Bazel / project specific ignores
 bazel-*
 mediapipe/MediaPipe.xcodeproj
 mediapipe/MediaPipe.tulsiproj/*.tulsiconf-user
@@ -36,3 +36,6 @@ htmlcov/
 *.iml
 *.iws
 .idea/**
+
+# Ignore analysis output directory
+mediapipe_analysis/analysis/output/
