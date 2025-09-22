@@ -607,8 +607,8 @@ def main():
     json_dir = output_dir_abs / 'json'
     yaml_dir = output_dir_abs / 'yaml'
     outputs = [
-        (md_dir / "pipeline.basic.md", "Tree with hyperlinks to each node's source (no line numbers)"),
-        (md_dir / "pipeline.basic.noline.md", "Tree with hyperlinks to each node's source (no line numbers)"),
+        (md_dir / "pipeline.basic.noline.md", "Tree with hyperlinks to each node's source"),
+        (md_dir / "pipeline.basic.md", "Tree with hyperlinks to each node's source (with also line numbers included in source file hyperlinks)"),
         (md_dir / "pipeline.verbose.md", "Tree with more node fields (streams, packets, options), hyperlinks to each node's source (with line numbers)"),
         (json_dir / "pipeline.basic.json", "Tree in JSON format"),
         (json_dir / "pipeline.verbose.json", "Tree with more node fields (streams, packets, options) in JSON format"),
@@ -619,7 +619,7 @@ def main():
     maxlen = max(len(f"file://{str(path)}") for path, _ in outputs)
     # Print as table by format
     print(f"\nthe pipeline analysis output shown above is also available in multiple formats and levels of verbosity under file://{output_dir_abs}/.\n"
-          f"use the markdown variants for quick navigation to source files, and the data formats for machine consumption")
+          f"use the markdown variants for quick navigation to source files, and the data formats for machine consumption:\n")
     print("MARKDOWN:")
     for path, desc in outputs[:3]:
         print(f"  {'file://' + str(path):<{maxlen}}  :  {desc}")
