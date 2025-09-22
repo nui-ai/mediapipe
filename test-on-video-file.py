@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 from mediapipe.python.solutions import hands as mp_hands
 
+num_landmarks=21
+num_dimensions=3
 
 def _landmarks_list_to_array(landmark_list, image_shape):
     rows, cols, _ = image_shape
@@ -20,11 +22,11 @@ def _world_landmarks_list_to_array(landmark_list):
         )
 
 
-def _process_video(input_video, model_complexity, max_num_hands=1, num_landmarks=21, num_dimensions=3):
+def _process_video(input_video, model_complexity, max_num_hands=1):
     # Predict pose landmarks for each frame.
     video_cap = cv2.VideoCapture(input_video)
     total_frames = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    print(f"processing video {input_video} having {total_frames} frames")
+    print(f"processing video {input_video} consisting of {total_frames} frames")
     landmarks_per_frame = []
     w_landmarks_per_frame = []
     processed_frames = 0
@@ -46,14 +48,9 @@ def _process_video(input_video, model_complexity, max_num_hands=1, num_landmarks
             input_frame = cv2.cvtColor(input_frame, cv2.COLOR_BGR2RGB)
             frame_shape = input_frame.shape
             result = hands.process(image = input_frame)
-            frame_landmarks = np.zeros(
-                [max_num_hands,
-                 num_landmarks, num_dimensions]
-                ) * np.nan
-            frame_w_landmarks = np.zeros(
-                [max_num_hands,
-                 num_landmarks, num_dimensions]
-                ) * np.nan
+
+            frame_landmarks = np.empty([max_num_hands, num_landmarks, num_dimensions]) * np.nan
+            frame_w_landmarks = np.empty([max_num_hands, num_landmarks, num_dimensions]) * np.nan
 
             if result.multi_hand_landmarks:
                 for idx, landmarks in enumerate(result.multi_hand_landmarks):
@@ -66,6 +63,7 @@ def _process_video(input_video, model_complexity, max_num_hands=1, num_landmarks
 
             # print(frame_landmarks)
             # print(frame_w_landmarks)
+
     if processed_frames < total_frames:
         raise RuntimeError(f"Video processing stopped early: processed {processed_frames} out of {total_frames} frames. Possible bad/corrupt frame encountered.")
 
