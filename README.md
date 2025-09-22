@@ -22,7 +22,8 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
 5. place a video file with hands in it, as sample-video.avi, in the project root path, and run the following python test which should run with exit code 0:
     ```
     python3 -P test-on-video-file.py
-    ```
+    ``` 
+    note that without `-P` python will try loading python modules from the `mediapipe` directory under the project's tree root, which is essentially our python "source directory", which is a horrible entanglement, and is also bound to fail since some of the mediapipe python modules are only dynamically built & placed (into the active python environment) by the pip install process ― because most of mediapipe python-exposed sub-packages are either pybind generated or bazel generated from protobuf definitions or both (e.g. mediapipe.python._framework_bindings). So the python source tree _never_ contains all the modules that the mediapipe python api expects to find, but it can sure throw you off track with cryptic module loading errors if you try to run without -P and thus let python first look for modules under the python source directory `mediapipe`. With this project you only want python to run from the active python environment, not from its "source" path, which is what `-P` does.
    
 if you wish to only build the C++ part, maybe for isolation that it builds without errors, or for C++ development:
 ```
@@ -34,7 +35,7 @@ bazel build -c opt --copt=-I/usr/include/opencv4 --define MEDIAPIPE_DISABLE_GPU=
 bazel clean --expunge && trash /tmp/bazel-\$\{USER\}/ && trash ~/.cache/bazel/
 ```
 + This should be stressed: a mere bazel clean --expunge is not enough to clear _all_ bazel caches. See the end parts of https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35 for a delination of what it clears.
-+ This does not clear the wheel installed binary of mediapipe which `pip install .` installs! only `pip uninstall mediapipe` does that.
++ This does not clear the wheel installed binary of mediapipe which `pip install .` installs into the active python environment! only `pip uninstall mediapipe` does that.
 
 Notes:
 1. The included Ubuntu 24.04-based [Dockerfile](Dockerfile) was created and tested to contain the OS-level dependencies needed for a successful mediapipe v0.10.13 build, and fully tested to reproduce a successful build, so this process is reproducible and not an artefact of special conditions on my machine ― the docker image fully reproduces the error-less build of mediapipe at its v0.10.13 commit level. 
