@@ -7,3 +7,4 @@ Subgraphs|Details
 [`FaceLandmarkFrontCpu`](https://github.com/google-ai-edge/mediapipe/tree/master/mediapipe/modules/face_landmark/face_landmark_front_cpu.pbtxt)| Detects and tracks landmarks on multiple faces. (CPU input, and inference is executed on CPU)
 [`FaceLandmarkFrontGpu`](https://github.com/google-ai-edge/mediapipe/tree/master/mediapipe/modules/face_landmark/face_landmark_front_gpu.pbtxt)| Detects and tracks landmarks on multiple faces. (GPU input, and inference is executed on GPU.)
 
+

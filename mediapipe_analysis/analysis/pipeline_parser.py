@@ -302,7 +302,7 @@ class MediaPipePipelineParser:
             graph_path = str(src_info[0])
             graph_line_number = src_info[1]
             graph_line_code = src_info[2]
-            self.print_with_ident(f'analyzing the pipeline definition of \'{pipeline_name}\' found at {graph_path}')
+            self.print_with_ident(f'analyzing the pipeline definition of \'{pipeline_name}\' found at {Path(graph_path).relative_to(Path.cwd())}')
         else:
             raise FileNotFoundError(f'could not find a pipeline graph definition of {pipeline_name} in mediapipe source code')
         # parse the given graph
@@ -348,7 +348,8 @@ class MediaPipePipelineParser:
                 source_line_code = src_info[2]
                 calculator_mapping[node_name] = node_source
                 node_type = 'calculator'
-                self.print_with_ident(f'✅ calculator node \'{node_name}\' is defined in source file {node_source}')
+                node_source_rel = str(Path(node_source).relative_to(Path.cwd())) if node_source else node_source
+                self.print_with_ident(f'✅ calculator node \'{node_name}\' : {node_source_rel}')
             if is_subgraph:
                 src_info = self.graph_source_files[node_name]
                 node_source = str(src_info[0])
@@ -356,7 +357,8 @@ class MediaPipePipelineParser:
                 source_line_code = src_info[2]
                 subgraph_mapping[node_name] = node_source
                 node_type = 'subgraph'
-                self.print_with_ident(f'✅ sub-graph node \'{node_name}\' is defined in source file {node_source}')
+                node_source_rel = str(Path(node_source).relative_to(Path.cwd())) if node_source else node_source
+                self.print_with_ident(f'✅ sub-graph node \'{node_name}\' : {node_source_rel}')
                 self.print_with_ident(f'🔁 \'{node_name}\' is a sub-graph of the current one')
                 self.ident += 1
                 sub_children = [self.analyze_pipeline(node_name, parent_output_dir)]
@@ -417,35 +419,98 @@ class MediaPipePipelineParser:
 
     def write_pipeline_outputs(self, root_node: PipelineNode, output_dir: Path):
         """Write the pipeline hierarchy to markdown (with and without line numbers), JSON, and YAML files in output_dir."""
-        output_dir.mkdir(parents=True, exist_ok=True)
+        # Group outputs by format
+        md_dir = output_dir / 'markdown'
+        json_dir = output_dir / 'json'
+        yaml_dir = output_dir / 'yaml'
+        md_dir.mkdir(parents=True, exist_ok=True)
+        json_dir.mkdir(parents=True, exist_ok=True)
+        yaml_dir.mkdir(parents=True, exist_ok=True)
         # Write JSON (basic)
-        json_basic_path = output_dir / 'pipeline.basic.json'
+        json_basic_path = json_dir / 'pipeline.basic.json'
         with open(json_basic_path, 'w') as f:
             json.dump(self._node_to_dict_rel(root_node), f, indent=2)
         # Write YAML (basic)
-        yaml_basic_path = output_dir / 'pipeline.basic.yaml'
+        yaml_basic_path = yaml_dir / 'pipeline.basic.yaml'
         with open(yaml_basic_path, 'w') as f:
             yaml.dump(self._node_to_dict_rel(root_node), f, sort_keys=False, allow_unicode=True)
         # Write Markdown (basic, with line numbers)
-        md_basic_path = output_dir / 'pipeline.basic.md'
+        md_basic_path = md_dir / 'pipeline.basic.md'
         with open(md_basic_path, 'w') as f:
-            f.write(self._node_to_markdown_with_links(root_node, 0, json_basic_path, yaml_basic_path, True))
+            f.write(self._node_to_markdown_with_links(root_node, 0, json_basic_path, yaml_basic_path, True, script_name='pipeline_parser.py', use_absolute_links=True))
         # Write Markdown (basic, no line numbers)
-        md_basic_noline_path = output_dir / 'pipeline.basic.noline.md'
+        md_basic_noline_path = md_dir / 'pipeline.basic.noline.md'
         with open(md_basic_noline_path, 'w') as f:
-            f.write(self._node_to_markdown_with_links(root_node, 0, json_basic_path, yaml_basic_path, False))
+            f.write(self._node_to_markdown_with_links(root_node, 0, json_basic_path, yaml_basic_path, False, script_name='pipeline_parser.py', use_absolute_links=True))
         # Write JSON (verbose)
-        json_verbose_path = output_dir / 'pipeline.verbose.json'
+        json_verbose_path = json_dir / 'pipeline.verbose.json'
         with open(json_verbose_path, 'w') as f:
             json.dump(self._node_to_dict_verbose(root_node), f, indent=2)
         # Write YAML (verbose)
-        yaml_verbose_path = output_dir / 'pipeline.verbose.yaml'
+        yaml_verbose_path = yaml_dir / 'pipeline.verbose.yaml'
         with open(yaml_verbose_path, 'w') as f:
             yaml.dump(self._node_to_dict_verbose(root_node), f, sort_keys=False, allow_unicode=True)
         # Write Markdown (verbose, with line numbers)
-        md_verbose_path = output_dir / 'pipeline.verbose.md'
+        md_verbose_path = md_dir / 'pipeline.verbose.md'
         with open(md_verbose_path, 'w') as f:
-            f.write(self._node_to_markdown_with_links_verbose(root_node, 0, json_verbose_path, yaml_verbose_path, md_basic_path, md_basic_noline_path, json_basic_path, yaml_basic_path, True, md_verbose_path, yaml_verbose_path, json_verbose_path))
+            f.write(self._node_to_markdown_with_links_verbose(root_node, 0, json_verbose_path, yaml_verbose_path, md_basic_path, md_basic_noline_path, json_basic_path, yaml_basic_path, True, md_verbose_path, yaml_verbose_path, json_verbose_path, script_name='pipeline_parser.py', use_absolute_links=True))
+        # Store output paths for printing
+        self._output_paths = {
+            'md_basic': md_basic_path,
+            'md_basic_noline': md_basic_noline_path,
+            'md_verbose': md_verbose_path,
+            'json_basic': json_basic_path,
+            'json_verbose': json_verbose_path,
+            'yaml_basic': yaml_basic_path,
+            'yaml_verbose': yaml_verbose_path,
+        }
+
+    def _formats_table(self, abs_dir, script_name):
+        # Helper to generate the formats table for markdown (relative links to grouped outputs)
+        return (
+            '# More Formats\n\n'
+            '| Format | Description |\n'
+            '|--------|-------------|\n'
+            f'| [Basic Markdown (with line numbers)](pipeline.basic.md) | Tree with hyperlinks to each node\'s source (with line numbers) |\n'
+            f'| [Basic Markdown (no line numbers)](pipeline.basic.noline.md) | Tree with hyperlinks to each node\'s source (no line numbers) |\n'
+            f'| [Verbose Markdown](pipeline.verbose.md) | Tree with more node fields (streams, packets, options) |\n'
+            f'| [Basic JSON](../json/pipeline.basic.json) | Tree in JSON format |\n'
+            f'| [Basic YAML](../yaml/pipeline.basic.yaml) | Tree in YAML format |\n'
+            f'| [Verbose JSON](../json/pipeline.verbose.json) | Tree with more node fields (streams, packets, options) |\n'
+            f'| [Verbose YAML](../yaml/pipeline.verbose.yaml) | Tree with more node fields (streams, packets, options) |\n\n'
+            f'To regenerate this analysis for the mediapipe directory, run `{script_name}`.\n'
+        )
+
+    def _node_to_markdown_with_links(self, node: PipelineNode, level: int, json_path: Path, yaml_path: Path, with_line_numbers: bool, script_name='pipeline_parser.py', use_absolute_links=False) -> str:
+        indent = '    ' * level
+        if level == 0:
+            abs_dir = Path(json_path).parent.resolve()
+            md = f'# Pipeline {node.name}\n\n'
+        else:
+            md = ''
+        # Node name as link or description
+        def abspath(p):
+            return str(Path(p).resolve()) if p else ''
+        if node.node_type == 'calculator' and node.source and node.source_line_number:
+            if with_line_numbers:
+                link = f"{abspath(node.source)}#L{node.source_line_number}" if use_absolute_links else f"{Path(node.source).relative_to(Path.cwd())}#L{node.source_line_number}"
+                md += f'{indent}- [{node.name}]({link})'
+            else:
+                link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
+                md += f'{indent}- [{node.name}]({link})'
+        elif node.source:
+            link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
+            md += f'{indent}- [{node.name}]({link})'
+        elif node.description:
+            md += f'{indent}- **{node.name}**: {node.description}'
+        else:
+            md += f'{indent}- **{node.name}**'
+        md += '\n'
+        for child in node.children:
+            md += self._node_to_markdown_with_links(child, level + 1, json_path, yaml_path, with_line_numbers, script_name=script_name, use_absolute_links=use_absolute_links)
+        if level == 0:
+            md += '\n' + self._formats_table(abs_dir, script_name)
+        return md
 
     def _node_to_dict_rel(self, node: PipelineNode) -> dict:
         """Recursively convert a PipelineNode tree to a dictionary, making 'source' fields relative to cwd, and using 'nodes' instead of 'children'."""
@@ -464,107 +529,71 @@ class MediaPipePipelineParser:
             'nodes': [self._node_to_dict_rel(child) for child in node.children]
         }
 
-    def _node_to_dict(self, node: PipelineNode) -> dict:
-        """Recursively convert a PipelineNode tree to a dictionary for serialization, using 'nodes' instead of 'children'."""
-        return {
-            'name': node.name,
-            'type': node.node_type,
-            'source': node.source,
-            'description': node.description,
-            'nodes': [self._node_to_dict(child) for child in node.children]
-        }
-
     def _node_to_dict_verbose(self, node: PipelineNode) -> dict:
-        """Recursively convert a PipelineNode tree to a dictionary for verbose serialization (all fields), using 'nodes' instead of 'children'."""
-        return {
+        """Recursively convert a PipelineNode tree to a dictionary for verbose serialization (all fields), omitting empty stream/packet/options fields."""
+        d = {
             'name': node.name,
             'type': node.node_type,
             'source': node.source,
             'description': node.description,
             'source_line_number': node.source_line_number,
-            'input_streams': node.input_streams,
-            'output_streams': node.output_streams,
-            'input_side_packets': node.input_side_packets,
-            'output_side_packets': node.output_side_packets,
-            'node_options': node.node_options,
-            'nodes': [self._node_to_dict_verbose(child) for child in node.children]
         }
+        if node.input_streams:
+            d['input_streams'] = node.input_streams
+        if node.output_streams:
+            d['output_streams'] = node.output_streams
+        if node.input_side_packets:
+            d['input_side_packets'] = node.input_side_packets
+        if node.output_side_packets:
+            d['output_side_packets'] = node.output_side_packets
+        if node.node_options and node.node_options != {}:
+            d['node_options'] = node.node_options
+        d['nodes'] = [self._node_to_dict_verbose(child) for child in node.children]
+        return d
 
-    def _node_to_markdown_with_links(self, node: PipelineNode, level: int, json_path: Path, yaml_path: Path, with_line_numbers: bool) -> str:
-        indent = '    ' * level
-        if level == 0:
-            abs_dir = Path(json_path).parent.resolve()
-            md = f'# Pipeline Hierarchy for `{node.name}`\n\n'
-            md += '| Format | Description | Link |\n'
-            md += '|--------|-------------|------|\n'
-            md += f'| Basic Markdown (with line numbers) | Tree with hyperlinks to each node\'s source (with line numbers) | [pipeline.basic.md](file://{abs_dir}/pipeline.basic.md) |\n'
-            md += f'| Basic Markdown (no line numbers) | Tree with hyperlinks to each node\'s source (no line numbers) | [pipeline.basic.noline.md](file://{abs_dir}/pipeline.basic.noline.md) |\n'
-            md += f'| Basic JSON | Tree in JSON format | [pipeline.basic.json](file://{abs_dir}/pipeline.basic.json) |\n'
-            md += f'| Basic YAML | Tree in YAML format | [pipeline.basic.yaml](file://{abs_dir}/pipeline.basic.yaml) |\n'
-            md += f'| Verbose Markdown | Tree with more node fields (streams, packets, options) | [pipeline.verbose.md](file://{abs_dir}/pipeline.verbose.md) |\n'
-            md += f'| Verbose JSON | Tree with more node fields (streams, packets, options) | [pipeline.verbose.json](file://{abs_dir}/pipeline.verbose.json) |\n'
-            md += f'| Verbose YAML | Tree with more node fields (streams, packets, options) | [pipeline.verbose.yaml](file://{abs_dir}/pipeline.verbose.yaml) |\n\n'
-        else:
-            md = ''
-        # Node name as link or description
-        if node.node_type == 'calculator' and node.source and node.source_line_number:
-            if with_line_numbers:
-                link = f"{Path(node.source).resolve()}#L{node.source_line_number}"
-                md += f'{indent}- [{node.name}]({link})'
-            else:
-                md += f'{indent}- [{node.name}]({Path(node.source).resolve()})'
-        elif node.source:
-            md += f'{indent}- [{node.name}]({Path(node.source).resolve()})'
-        elif node.description:
-            md += f'{indent}- **{node.name}**: {node.description}'
-        else:
-            md += f'{indent}- **{node.name}**'
-        md += '\n'
-        for child in node.children:
-            md += self._node_to_markdown_with_links(child, level + 1, json_path, yaml_path, with_line_numbers)
-        return md
-
-    def _node_to_markdown_with_links_verbose(self, node: PipelineNode, level: int, json_verbose_path: Path, yaml_verbose_path: Path, md_basic_path: Path, md_basic_noline_path: Path, json_basic_path: Path, yaml_basic_path: Path, with_line_numbers: bool, md_verbose_path: Path, yaml_verbose_path2: Path, json_verbose_path2: Path) -> str:
+    def _node_to_markdown_with_links_verbose(self, node: PipelineNode, level: int, json_verbose_path: Path, yaml_verbose_path: Path, md_basic_path: Path, md_basic_noline_path: Path, json_basic_path: Path, yaml_basic_path: Path, with_line_numbers: bool, md_verbose_path: Path, yaml_verbose_path2: Path, json_verbose_path2: Path, script_name='pipeline_parser.py', use_absolute_links=False) -> str:
         indent = '    ' * level
         if level == 0:
             abs_dir = Path(json_verbose_path).parent.resolve()
             md = f'# Pipeline Hierarchy for `{node.name}` (verbose)\n\n'
-            md += '| Format | Description | Link |\n'
-            md += '|--------|-------------|------|\n'
-            md += f'| Basic Markdown (with line numbers) | Tree with hyperlinks to each node\'s source (with line numbers) | [pipeline.basic.md](file://{abs_dir}/pipeline.basic.md) |\n'
-            md += f'| Basic Markdown (no line numbers) | Tree with hyperlinks to each node\'s source (no line numbers) | [pipeline.basic.noline.md](file://{abs_dir}/pipeline.basic.noline.md) |\n'
-            md += f'| Basic JSON | Tree in JSON format | [pipeline.basic.json](file://{abs_dir}/pipeline.basic.json) |\n'
-            md += f'| Basic YAML | Tree in YAML format | [pipeline.basic.yaml](file://{abs_dir}/pipeline.basic.yaml) |\n'
-            md += f'| Verbose Markdown | Tree with all node fields (streams, packets, options) | [pipeline.verbose.md](file://{abs_dir}/pipeline.verbose.md) |\n'
-            md += f'| Verbose JSON | Tree with all node fields (streams, packets, options) | [pipeline.verbose.json](file://{abs_dir}/pipeline.verbose.json) |\n'
-            md += f'| Verbose YAML | Tree with all node fields (streams, packets, options) | [pipeline.verbose.yaml](file://{abs_dir}/pipeline.verbose.yaml) |\n\n'
         else:
             md = ''
+        def abspath(p):
+            return str(Path(p).resolve()) if p else ''
         # Node name as link or description
         if node.node_type == 'calculator' and node.source and node.source_line_number:
             if with_line_numbers:
-                link = f"{Path(node.source).resolve()}#L{node.source_line_number}"
+                link = f"{abspath(node.source)}#L{node.source_line_number}" if use_absolute_links else f"{Path(node.source).relative_to(Path.cwd())}#L{node.source_line_number}"
                 md += f'{indent}- [{node.name}]({link})'
             else:
-                md += f'{indent}- [{node.name}]({Path(node.source).resolve()})'
+                link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
+                md += f'{indent}- [{node.name}]({link})'
         elif node.source:
-            md += f'{indent}- [{node.name}]({Path(node.source).resolve()})'
+            link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
+            md += f'{indent}- [{node.name}]({link})'
         elif node.description:
             md += f'{indent}- **{node.name}**: {node.description}'
         else:
             md += f'{indent}- **{node.name}**'
-        md += f'\n{indent}  - **input_streams:** {node.input_streams if node.input_streams is not None else []}'
-        md += f'\n{indent}  - **output_streams:** {node.output_streams if node.output_streams is not None else []}'
-        md += f'\n{indent}  - **input_side_packets:** {node.input_side_packets if node.input_side_packets is not None else []}'
-        md += f'\n{indent}  - **output_side_packets:** {node.output_side_packets if node.output_side_packets is not None else []}'
-        md += f'\n{indent}  - **node_options:** {json.dumps(node.node_options, indent=2) if node.node_options else {}}'
+        # Only show non-empty fields
+        if node.input_streams:
+            md += f'\n{indent}  - **input_streams:** {node.input_streams}'
+        if node.output_streams:
+            md += f'\n{indent}  - **output_streams:** {node.output_streams}'
+        if node.input_side_packets:
+            md += f'\n{indent}  - **input_side_packets:** {node.input_side_packets}'
+        if node.output_side_packets:
+            md += f'\n{indent}  - **output_side_packets:** {node.output_side_packets}'
+        if node.node_options and node.node_options != {}:
+            md += f'\n{indent}  - **node_options:** {json.dumps(node.node_options, indent=2)}'
         md += '\n'
         for child in node.children:
-            md += self._node_to_markdown_with_links_verbose(child, level + 1, json_verbose_path, yaml_verbose_path, md_basic_path, md_basic_noline_path, json_basic_path, yaml_basic_path, with_line_numbers, md_verbose_path, yaml_verbose_path2, json_verbose_path2)
+            md += self._node_to_markdown_with_links_verbose(child, level + 1, json_verbose_path, yaml_verbose_path, md_basic_path, md_basic_noline_path, json_basic_path, yaml_basic_path, with_line_numbers, md_verbose_path, yaml_verbose_path2, json_verbose_path2, script_name=script_name, use_absolute_links=use_absolute_links)
+        if level == 0:
+            md += '\n' + self._formats_table(abs_dir, script_name)
         return md
 
 def main():
-    """ run the pipeline parser  """
     parser = MediaPipePipelineParser(Path('mediapipe').resolve())
     print()
     root_node = parser.analyze_pipeline('HandLandmarkTrackingCpu')
@@ -574,21 +603,33 @@ def main():
         output_dir = Path('mediapipe_analysis/analysis/output')
     parser.write_pipeline_outputs(root_node, output_dir)
     output_dir_abs = output_dir.resolve()
-    print(f"\nPipeline parsing outputs are available in:\nfile://{output_dir_abs}/\n")
-    print("Markdown with hyperlinks to each node's source ― without line numbers for source hyperlinks, as they are not a standard markdown feature:")
-    print(f"file://{output_dir_abs}/pipeline.basic.noline.md")
-    print("Markdown with hyperlinks to each node's source ― source hyperlinks include line numbers:")
-    print(f"file://{output_dir_abs}/pipeline.basic.md")
-    print("Markdown (verbose): includes more graph node fields: input/output streams, side packets, and node options:")
-    print(f"file://{output_dir_abs}/pipeline.verbose.md")
+    md_dir = output_dir_abs / 'markdown'
+    json_dir = output_dir_abs / 'json'
+    yaml_dir = output_dir_abs / 'yaml'
+    outputs = [
+        (md_dir / "pipeline.basic.md", "Tree with hyperlinks to each node's source (no line numbers)"),
+        (md_dir / "pipeline.basic.noline.md", "Tree with hyperlinks to each node's source (no line numbers)"),
+        (md_dir / "pipeline.verbose.md", "Tree with more node fields (streams, packets, options), hyperlinks to each node's source (with line numbers)"),
+        (json_dir / "pipeline.basic.json", "Tree in JSON format"),
+        (json_dir / "pipeline.verbose.json", "Tree with more node fields (streams, packets, options) in JSON format"),
+        (yaml_dir / "pipeline.basic.yaml", "Tree in YAML format"),
+        (yaml_dir / "pipeline.verbose.yaml", "Tree with more node fields (streams, packets, options) in YAML format"),
+    ]
+    # Find max path length for alignment
+    maxlen = max(len(f"file://{str(path)}") for path, _ in outputs)
+    # Print as table by format
+    print(f"\nthe pipeline analysis output shown above is also available in multiple formats and levels of verbosity under file://{output_dir_abs}/.\n"
+          f"use the markdown variants for quick navigation to source files, and the data formats for machine consumption")
+    print("MARKDOWN:")
+    for path, desc in outputs[:3]:
+        print(f"  {'file://' + str(path):<{maxlen}}  :  {desc}")
     print("\nJSON:")
-    print(f"file://{output_dir_abs}/pipeline.basic.json")
-    print("JSON (verbose): includes more graph node fields: input/output streams, side packets, and node options:")
-    print(f"file://{output_dir_abs}/pipeline.verbose.json")
+    for path, desc in outputs[3:5]:
+        print(f"  {'file://' + str(path):<{maxlen}}  :  {desc}")
     print("\nYAML:")
-    print(f"file://{output_dir_abs}/pipeline.basic.yaml")
-    print("YAML (verbose): includes more graph node fields: input/output streams, side packets, and node options:")
-    print(f"file://{output_dir_abs}/pipeline.verbose.yaml")
+    for path, desc in outputs[5:]:
+        print(f"  {'file://' + str(path):<{maxlen}}  :  {desc}")
+    print()
 
 if __name__ == "__main__":
     main()
