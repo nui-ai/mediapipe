@@ -16,7 +16,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     export MEDIAPIPE_PYTHON_BIN=$(which python)
     pip install . 
     ```
-    for a verbose output which includes print statements made by setup.py, add `-v` to the pip command as otherwise due to pip's build isolation stdout is swallowed when the build does not fai.:
+    for a verbose output which includes print statements made by `setup.py`, add `-v` to the pip command as otherwise due to pip's build isolation stdout is swallowed when the build does not fai.:
 4. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
 
 5. place a video file with hands in it, as sample-video.avi, in the project root path, and run the following python test which should run with exit code 0:
@@ -44,7 +44,7 @@ Notes:
     - A todo item is to upload that built docker image to future-proof it from reliance on Internet repositories of dependencies which may change or disappear in the future. 
     - [The other included docker files](Dockerfile.md), provided originally by mediapipe's original codebase, were not tested.
 2. The changes having been made for current-day buildability are documented in git commits.
-3. Maybe `pip install` builds a bit more than we need as we didn't modify setup.py to only build only the hands target as `bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu` would, though most of the bazel build time is the shared mediapipe framework anyway. 
+3. Maybe `pip install` builds a bit more than we need as we didn't modify `setup.py` to only build only the hands target as `bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu` would, though most of the bazel build time is the shared mediapipe framework anyway. 
 
 
 
@@ -104,7 +104,7 @@ A Dockerfile already exists in this repository, which you can modify as needed o
    git config --global --add safe.directory /mediapipe
    pip install .
    ```
-5. you only need `pip install .`, which builds all necessary mediapipe targets as per the setup.py instructions. if it worked, you're done. no need to run a bazel build yourself.
+5. you only need `pip install .`, which builds all necessary mediapipe targets as per the `setup.py` instructions. if it worked, you're done. no need to run a bazel build yourself.
 
 6. The resulting docker image is tagged as `mediapipe-build` and stored in your local machine's Docker image registry. The above does not push the image to any remote repository; it only exists on your local system unless you explicitly push it elsewhere, unless we uploaded it to e.g. serve from github's ghcr.io or dockerhub. Rebuilding it from the current repository takes only a few minutes, but having an image on the cloud can give more assurance because it does not rely on Internet servers being available to serve all OS, bazel and pip dependencies which it needs to fetch, which are already baked into a successfully built image. Actually, the image now prebuilds mediapipe as part of its Dockerfile, so that all Internet dependencies are baked into the image, and then rebuilding with only code changes does not need to fetch anything from the Internet ― this can make it stand the test of time as the Internet repositories of dependencies phase out old versions of dependencies. 
 
