@@ -29,6 +29,7 @@ if you wish to only build the C++ part, maybe for isolation that it builds witho
 ```
 bazel build -c opt --copt=-I/usr/include/opencv4 --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
 ```
+just remember it doesn't get deployed for python use in that case.
 
 6. to clear all bazel build caching:
 ```bash
