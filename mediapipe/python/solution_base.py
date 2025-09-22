@@ -274,6 +274,7 @@ class SolutionBase:
       self._set_extension(canonical_graph_config_proto.graph_options,
                           graph_options)
 
+    # initialize the underlying calculator graph.
     self._graph = calculator_graph.CalculatorGraph(
         graph_config=canonical_graph_config_proto)
     if extra_settings:
@@ -283,24 +284,26 @@ class SolutionBase:
     self._graph_outputs = {}
 
     def callback(stream_name: str, output_packet: packet.Packet) -> None:
+      # fills the output packets dict for the given stream when called.
       self._graph_outputs[stream_name] = output_packet
 
+    # Sets up polling the output streams from the underlying calculator graph.
     for stream_name in self._output_stream_type_info.keys():
       self._graph.observe_output_stream(stream_name, callback, True)
 
+    # an optional side input packets
     self._input_side_packets = {
         name: self._make_packet(self._side_input_type_info[name], data)
         for name, data in (side_inputs or {}).items()
     }
+
+    # start the underlying calculator graph.
     self._graph.start_run(self._input_side_packets)
 
-  # TODO: Use "inspect.Parameter" to fetch the input argument names and
-  # types from "_input_stream_type_info" and then auto generate the process
-  # method signature by "inspect.Signature" in __init__.
+
+  # noinspection PyTypeHints
   def process(
-      self, input_data: Union[np.ndarray, Mapping[str, Union[np.ndarray,
-                                                             message.Message]]]
-  ) -> NamedTuple:
+      self, input_data: Union[np.ndarray, Mapping[str, Union[np.ndarray, message.Message]]]) -> NamedTuple:
     """Processes a set of RGB image data and output SolutionOutputs.
 
     Args:
@@ -329,6 +332,7 @@ class SolutionBase:
     """
     self._graph_outputs.clear()
 
+    # the input data to the graph must always be an ndarray image.
     if isinstance(input_data, np.ndarray):
       if self._input_stream_type_info is None:
         raise ValueError('_input_stream_type_info is None in SolutionBase')
@@ -341,11 +345,34 @@ class SolutionBase:
     else:
       input_dict = input_data
 
-    # Set the timestamp increment to 33333 us to simulate the 30 fps video
-    # input.
+    # Set the timestamp increment to 33333 us to simulate the 30 fps video input
+    # (not sure it really makes anything assume 30 fps or not).
     self._simulated_timestamp += 33333
+
     if self._graph is None:
       raise ValueError('_graph is None in SolutionBase')
+
+    # Implementation Steps:
+    #
+    # 1. per each graph defined input stream of the current graph, translate the current input provided for it
+    #    to a mediapipe framework Packet object which is bazel-protobuf generated for each input type and strongly
+    #    typed at runtime within the framework as much as we care. this code just wraps around that with some
+    #    input validation. the framework actually generates C++ code for populating and for reading each of
+    #    its supported input object types, not just defines a protobuf message for each type. which is
+    #    typical (or just sensible) for bazel based projects which have multi-language aspirations,
+    #    though, this just makes the project feel clumsy to work with due to too many layers of code
+    #    for just this simple aspect of it. the input data to the graph here is always an ndarray image,
+    #    but that entire generic workflow is taking place because a Packet is also the input type sent
+    #    across the graph's internal nodes for input and output packets, so this generic dance is
+    #    repeated here at the entry point to the graph just because it's the same data type
+    #    (a mediapipe framework Packet).
+    #
+    # 2. once added to the input streams, the graph has started processing the input data, and then we
+    #    wait for it to finish its run for this single ingestion of input data per each stream.
+    #
+    # 3. when its done we extract its output data for the current round, per each output stream,
+    #    and return a python (dynamically typed NamedTuple) object with the output data
+    #    to the python caller.
     for stream_name, data in input_dict.items():
       input_stream_type = self._input_stream_type_info[stream_name]
       if input_stream_type == PacketDataType.PROTO_LIST:
@@ -356,25 +383,23 @@ class SolutionBase:
       elif input_stream_type == PacketDataType.AUDIO:
         self._graph.add_packet_to_input_stream(
             stream=stream_name,
-            packet=self._make_packet(input_stream_type,
-                                     data).at(self._simulated_timestamp))
+            packet=self._make_packet(input_stream_type, data).at(self._simulated_timestamp))
       elif (input_stream_type == PacketDataType.IMAGE_FRAME or
             input_stream_type == PacketDataType.IMAGE):
         if data.shape[2] != RGB_CHANNELS:
           raise ValueError('Input image must contain three channel rgb data.')
         self._graph.add_packet_to_input_stream(
             stream=stream_name,
-            packet=self._make_packet(input_stream_type,
-                                     data).at(self._simulated_timestamp))
+            packet=self._make_packet(input_stream_type, data).at(self._simulated_timestamp))
       else:
         self._graph.add_packet_to_input_stream(
             stream=stream_name,
-            packet=self._make_packet(input_stream_type,
-                                     data).at(self._simulated_timestamp))
+            packet=self._make_packet(input_stream_type, data).at(self._simulated_timestamp))
 
+    # wait for the graph to finish processing the input data (at which point it becomes idle,
+    # and
     self._graph.wait_until_idle()
-    # Create a NamedTuple object where the field names are mapping to the graph
-    # output stream names.
+    # Create a NamedTuple object where the field names are mapping to the graph output stream names.
     if self._output_stream_type_info is None:
       raise ValueError('_output_stream_type_info is None in SolutionBase')
     solution_outputs = collections.namedtuple(
