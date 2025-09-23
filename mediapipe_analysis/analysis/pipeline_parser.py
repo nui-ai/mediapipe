@@ -105,12 +105,15 @@ class MediaPipePipelineParser:
         
         return graph, header_comment
 
+    def extract_stream_fields(self, content: str, field_name: str) -> list:
+        """Extract list field values for a given field from any content (pbtxt or comment block)."""
+        pattern = rf'{field_name}\s*:\s*"([^"]*)"'
+        return re.findall(pattern, content)
+
     def _extract_pbtxt_field(self, content: str, field_name: str) -> List[str]:
-        """Extract list field values from pbtxt content."""
-        pattern = rf'^{field_name}\s*:\s*"([^"]*)"'
-        matches = re.findall(pattern, content, re.MULTILINE)
-        return matches
-    
+        """(Deprecated) Use extract_stream_fields instead."""
+        return self.extract_stream_fields(content, field_name)
+
     def _parse_nodes(self, content: str, lines: List[str]) -> list:
         """Parse calculator nodes from the graph."""
         nodes = []
@@ -149,7 +152,7 @@ class MediaPipePipelineParser:
                 result += line
             return result.strip()
         inline_pbtxt_comment = squash_comment_lines(description_lines) if description_lines else None
-        description = inline_pbtxt_comment  # for backward compatibility, but we will use inline_pbtxt_comment explicitly
+        description = inline_pbtxt_comment
         # Find the end of this node block
         brace_count = 0
         end_line = start_line
@@ -160,14 +163,24 @@ class MediaPipePipelineParser:
                 end_line = j
                 break
         node_content = '\n'.join(lines[start_line:end_line+1])
-        # Extract node fields
+        # Extract node fields from pbtxt
         name = self._extract_field(node_content, "calculator")
         if not name:
             return None
-        input_streams = self._extract_pbtxt_field(node_content, "input_stream")
-        output_streams = self._extract_pbtxt_field(node_content, "output_stream")
-        input_side_packets = self._extract_pbtxt_field(node_content, "input_side_packet")
-        output_side_packets = self._extract_pbtxt_field(node_content, "output_side_packet")
+        input_streams = self.extract_stream_fields(node_content, "input_stream")
+        output_streams = self.extract_stream_fields(node_content, "output_stream")
+        input_side_packets = self.extract_stream_fields(node_content, "input_side_packet")
+        output_side_packets = self.extract_stream_fields(node_content, "output_side_packet")
+        # Extract node fields from comment block if not present in pbtxt
+        comment_block = '\n'.join(description_lines)
+        if not input_streams:
+            input_streams = self.extract_stream_fields(comment_block, "input_stream")
+        if not output_streams:
+            output_streams = self.extract_stream_fields(comment_block, "output_stream")
+        if not input_side_packets:
+            input_side_packets = self.extract_stream_fields(comment_block, "input_side_packet")
+        if not output_side_packets:
+            output_side_packets = self.extract_stream_fields(comment_block, "output_side_packet")
         # Enhanced node_options parsing (handles nested braces, simple key-value pairs)
         node_options = {}
         options_match = re.search(r'node_options\s*\{([^}]*)\}', node_content, re.DOTALL)
@@ -198,7 +211,6 @@ class MediaPipePipelineParser:
             'node_options': node_options,
             'line_number': start_line + 1,
             'description': description,
-            'inline_pbtxt_comment': inline_pbtxt_comment  # <-- new field
         }
 
     def _parse_packet_generators(self, content: str) -> List[Dict[str, str]]:
@@ -753,14 +765,12 @@ code, pre {{ background: #222; color: #eee; }}
             md = ''
         def abspath(p):
             return str(Path(p).resolve()) if p else ''
-        # Prepare display name
         display_name = node.name
         if node.node_type == 'graph':
             display_name += ' (graph)'
-        # Always render node as hyperlink
         if node.node_type == 'calculator' and node.source and node.source_line_number:
             if with_line_numbers:
-                link = f"{abspath(node.source)}#L{node.source_line_number}" if use_absolute_links else f"{Path(node.source).relative_to(Path.cwd())}#L{node.source_line_number}"
+                link = f"{abspath(node.source)}#L{node.source_line_number}" if use_absolute_links else f"{Path(node.source).relative_to(Path.cwd())}#L{node.source.line_number}"
                 md += f'{indent}- [{display_name}]({link})'
             else:
                 link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
@@ -770,18 +780,21 @@ code, pre {{ background: #222; color: #eee; }}
             md += f'{indent}- [{display_name}]({link})'
         else:
             md += f'{indent}- [{display_name}](#)'
-        # Append warning if present
         if node.warning:
             md += f': {node.warning}'
-        # Only show non-empty fields
+        # Format lists as newline-delimited items
+        def fmt_newline_list(lst):
+            if not lst:
+                return ''
+            return '\n' + '\n'.join(f'{indent}    - {str(x)}' for x in lst)
         if node.input_streams:
-            md += f'\n{indent}  - **input_streams:** {node.input_streams}'
+            md += f'\n{indent}  - **input_streams:**{fmt_newline_list(node.input_streams)}'
         if node.output_streams:
-            md += f'\n{indent}  - **output_streams:** {node.output_streams}'
+            md += f'\n{indent}  - **output_streams:**{fmt_newline_list(node.output_streams)}'
         if node.input_side_packets:
-            md += f'\n{indent}  - **input_side_packets:** {node.input_side_packets}'
+            md += f'\n{indent}  - **input_side_packets:**{fmt_newline_list(node.input_side_packets)}'
         if node.output_side_packets:
-            md += f'\n{indent}  - **output_side_packets:** {node.output_side_packets}'
+            md += f'\n{indent}  - **output_side_packets:**{fmt_newline_list(node.output_side_packets)}'
         if node.node_options and node.node_options != {}:
             import json as _json
             md += f'\n{indent}  - **node_options:** {_json.dumps(node.node_options, indent=2)}'

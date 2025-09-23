@@ -53,8 +53,8 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
 Notes:
 1. Reproducibility:
    - The included Ubuntu 24.04-based [Dockerfile](Dockerfile) was created and tested to contain the OS-level dependencies needed for a successful mediapipe v0.10.13 build, and fully tested to reproduce a successful build, so this process is reproducible by this Dockerfile and not an artefact of special conditions on my machine ― the built docker image fully reproduces the error-less build of mediapipe at its v0.10.13 commit level, however for even more future proofing:
-    - A todo item is to upload that built docker image to future-proof it from reliance on Internet repositories of dependencies which may change or disappear in the future. 
-    - [The other included docker files](Dockerfile.md), provided originally by mediapipe's original codebase, were not tested.
+   - A todo item is to upload that built docker image to future-proof it from reliance on Internet repositories of dependencies which may change or disappear in the future. 
+   - [The other included docker files](Dockerfile.md), provided originally by mediapipe's original codebase, were not tested.
 2. The changes having been made for current-day buildability are documented in git commits.
 3. Maybe `pip install` builds a bit more than we need as we didn't modify `setup.py` to only build only the hands target as `bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu` would, though most of the bazel build time is the shared mediapipe framework anyway. 
 
