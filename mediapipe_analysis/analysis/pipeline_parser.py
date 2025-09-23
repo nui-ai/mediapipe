@@ -137,22 +137,18 @@ class MediaPipePipelineParser:
         while i >= 0 and lines[i].strip().startswith('#'):
             description_lines.insert(0, lines[i].strip()[1:].strip())
             i -= 1
-        # Join comment lines into a single elegant line
-        def join_elegant(lines):
+        # Squashes a comment block into a single line
+        def squash_comment_lines(lines):
             result = ''
             for idx, line in enumerate(lines):
                 line = line.strip()
                 if not line:
                     continue
                 if result:
-                    # Add ". " if previous line doesn't end with punctuation, else just a space
-                    if result[-1] not in '.!?':
-                        result += '. '
-                    else:
-                        result += ' '
+                    result += ' '
                 result += line
             return result.strip()
-        inline_pbtxt_comment = join_elegant(description_lines) if description_lines else None
+        inline_pbtxt_comment = squash_comment_lines(description_lines) if description_lines else None
         description = inline_pbtxt_comment  # for backward compatibility, but we will use inline_pbtxt_comment explicitly
         # Find the end of this node block
         brace_count = 0
@@ -387,7 +383,7 @@ class MediaPipePipelineParser:
                         f' *️this calculator has multiple implementions one per each target inference stack (e.g. cpu, xnnpack, and more). '
                         f'all implementations of it run a neural network ℹ️ see also https://ai.google.dev/edge/mediapipe/framework/framework_concepts/graphs_cpp '
                         'assume the one selected at runtime matches the target inference type used by the pipeline being run. '
-                        'the current source association is hard-wired and not auto-discovered. ')
+                        'the current source association of it is hard-wired and not auto-discovered. ')
                     is_calc = True
                     node_source_rel = 'mediapipe/calculators/tensor/inference_calculator_cpu.cc'
                     node_source = str(Path.cwd() / node_source_rel)
@@ -396,7 +392,7 @@ class MediaPipePipelineParser:
                     is_calc = True
                     warning = (
                         f' *️this calculator is defined in the source tree by C++ code (not in a pipeline\'s .pbtxt definition file) per pipeline each '
-                        f'defined by the C++ api call graph.AddNode("\'{node_name}\'"). the current source association is hard-wired and not auto-discovered. ')
+                        f'defined by the C++ api call graph.AddNode("\'{node_name}\'"). the current source association of it is hard-wired and not auto-discovered. ')
                     node_source_rel = 'mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarks_detector_graph.cc'
                     node_source = str(Path.cwd() / node_source_rel)
                     source_line_number = 344
@@ -404,7 +400,7 @@ class MediaPipePipelineParser:
                     is_calc = True
                     warning = (
                         f' *️this calculator is defined in the source tree by C++ code (not in a pipeline\'s .pbtxt definition file) per pipeline each '
-                        f'defined by the C++ api call graph.AddNode("\'{node_name}\'") the current source association is hard-wired and not auto-discovered. ')
+                        f'defined by the C++ api call graph.AddNode("\'{node_name}\'") the current source association of it is hard-wired and not auto-discovered. ')
                     node_source_rel = 'mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarks_detector_graph.cc'
                     node_source = str(Path.cwd() / node_source_rel)
                     source_line_number = 356
@@ -559,7 +555,9 @@ class MediaPipePipelineParser:
         def render_node(node, level):
             indent = '    ' * level
             link = make_link(node)
-            desc = esc(getattr(node, 'inline_pbtxt_comment', None)) if getattr(node, 'inline_pbtxt_comment', None) else ''
+            # Ensure description is a single line for hoverbox
+            desc_raw = getattr(node, 'inline_pbtxt_comment', None)
+            desc = esc(desc_raw.replace('\n', ' ')) if desc_raw else ''
             warning = esc(getattr(node, 'warning', None)) if getattr(node, 'warning', None) else ''
             hover = ''
             if desc or warning:
@@ -578,7 +576,7 @@ class MediaPipePipelineParser:
             if node.node_type == 'graph':
                 display_name += ' (graph)'
             if link:
-                node_html += f'{indent}<span class="node-container{has_warning_class}"><a href="{link}" target="_blank">{display_name}</a>{hover}</span>'
+                node_html += f'{indent}<span class="node-container{has_warning_class}"><a href="{link}">{display_name}</a>{hover}</span>'
             else:
                 node_html += f'{indent}<span class="node-container{has_warning_class}">{display_name}{hover}</span>'
             if node.children:
@@ -596,9 +594,9 @@ class MediaPipePipelineParser:
 <style>
 body {{ font-family: sans-serif; background: #111; color: #eee; }}
 ul {{ list-style-type: none; }}
-/* Hierarchy links: green shade for visibility over black */
-ul > li > .node-container > a, ul > li > .node-container {{ color: #7CFC00; }}
-ul > li > .node-container > a {{ text-decoration: underline; }}
+/* Hierarchy links: green shade, bold, no underline */
+ul > li > .node-container > a, ul > li > .node-container {{ color: #7CFC00; font-weight: bold; }}
+ul > li > .node-container > a {{ text-decoration: none; }}
 ul, li {{ line-height: 1.7; }}
 /* Table links: keep current blue */
 table a {{ color: #4fc3f7; text-decoration: underline; }}
@@ -613,8 +611,9 @@ table a {{ color: #4fc3f7; text-decoration: underline; }}
   color: #eee;
   border: 1px solid #555;
   padding: 8px;
-  min-width: 200px;
-  max-width: 400px;
+  min-width: 400px;
+  width: 600px;
+  max-width: 1000px;
   box-shadow: 2px 2px 8px #222;
   white-space: pre-line;
 }}
