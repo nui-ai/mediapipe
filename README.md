@@ -26,26 +26,17 @@ Mediapipe framework code (and its use in specific calculators, graphs, and solut
 1. Calculator Framework Layer:<BR>
 e.g. MediaPipe's CalculatorBase and contract system, requiring input/output stream setup and option parsing.
 
-
 2. Options/Configuration Layer:<BR>
 Relies on SplitVectorCalculatorOptions protobuf for specifying split ranges and behaviors (element_only, combine_outputs).
-
 
 3. Type Traits Layer:<BR>
 Uses C++ type traits (is_copy_constructible, is_move_constructible) to select copy/move logic and enforce constraints.
 
-
 4. Error Checking Layer:<BR>
 Extensive use of RET_CHECK, RET_CHECK_OK, and error returns to validate configuration and input correctness.
 
-
 5. Output Type Selection Layer:<BR>
 Dynamically sets output types based on options, supporting both element and vector outputs.
-
-
-6. Range Overlap Validation Layer:<BR>
-Checks for overlapping ranges when required, adding extra logic for safety.
-
 
 7. Template Specialization Layer<BR>
 Uses template specialization to handle copyable vs. movable types, with separate code paths and error handling.
@@ -54,10 +45,12 @@ Uses template specialization to handle copyable vs. movable types, with separate
 8. Packet/Stream Abstraction Layer<BR>
 Wraps outputs in MediaPipe packets and streams, rather than returning raw vectors.
 
-9. Status/Result Layer<BR>
-Returns absl::Status for all operations, propagating errors through the framework.
+9. In addition, the grain-of-sand level approach of modularity entails layers abstracting over different memory management strategies (copy vs. move semantics).
 
-All these layers make mediapipe code modular down to grain of sand, and provide safety, but also make it significantly complex for a developer to review for a rather simple vector split, until you get familiar with all those layers to be able to skip them by glossing when you're not interested.
+10. Status/Result Layer<BR>
+Returns absl::Status for all operations, propagating errors through the framework. 
+
+All these layers make mediapipe code modular down to grain of sand, and provide safety, but also make it significantly complex for a developer to review for things as small as a vector splitting function, until you get familiar with all those layers to be able to skip them by glossing when you're not interested, as not all of these layers are abstractions but rather explicitly cast into the smallest pieces of code.
 
 Explaining the concepts of synchronized processing in stream-processing, which the mediapipe framework forces calculators code into, is way beyond the scope of a readme, but you can best learn them by informed ChatGPT conversations, as the official documentation stops half-way only.
 
