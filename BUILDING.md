@@ -16,7 +16,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     python3.12 -m venv .venv
     source .venv/bin/activate
     ```
-2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. the included `setup.py`, triggered to run by the below `pip install` runs bazel under the hood to build all C++ dependencies required for the hands model. this not only builds all required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package). 
+2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. the included `setup.py`, triggered to run by the below `pip install` runs bazel under the hood to build all C++ dependencies required for the hands model. this not only builds all required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package and installing it to the current python environment). Note that without the preceding export of the python environment variable, `pip install` will fail bazel's incremental building feature, making it rebuild from scratch for any source change, so you want that export command before you pip install:  
     ```
     export MEDIAPIPE_PYTHON_BIN=$(which python)
     pip install . 
