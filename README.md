@@ -54,7 +54,7 @@ All these layers make mediapipe code modular down to grain of sand, and provide 
 
 The same goes for why and how Bazel is used for building classes from protobuf definitions as a foundation for much of how the code is organized for multi-lingual use.
 
-Explaining the concepts of synchronized processing in stream-processing, which the mediapipe framework forces calculators code into, is way beyond the scope of a readme, but you can best learn them by informed ChatGPT conversations, as the official documentation stops half-way only.
+Explaining the concepts of synchronized processing in stream-processing, which the mediapipe framework forces calculators code into, is way beyond the scope of a readme, but you can best learn them by informed ChatGPT conversations, as the official documentation stops really only half-way.
 
 
 
