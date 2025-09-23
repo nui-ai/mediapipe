@@ -52,7 +52,9 @@ Returns absl::Status for all operations, propagating errors through the framewor
 
 All these layers make mediapipe code modular down to grain of sand, and provide safety, but also make it significantly complex for a developer to review for things as small as a vector splitting function, until you get familiar with all those layers to be able to skip them by glossing when you're not interested, as not all of these layers are abstractions but rather explicitly cast into the smallest pieces of code.
 
+The same goes for why and how Bazel is used for building classes from protobuf definitions as a foundation for much of how the code is organized for multi-lingual use.
+
 Explaining the concepts of synchronized processing in stream-processing, which the mediapipe framework forces calculators code into, is way beyond the scope of a readme, but you can best learn them by informed ChatGPT conversations, as the official documentation stops half-way only.
 
-The same goes for why and how Bazel is used for building classes from protobuf definitions as a foundation for much of how the code is organized for multi-lingual use.
+
 
