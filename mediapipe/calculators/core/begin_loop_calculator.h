@@ -81,6 +81,13 @@ namespace mediapipe {
 //     unvectorized (see SplitVectorCalculator).
 //   - Iterable packets have to be consumable (have a unique owner) or items
 //     items have to be copyable, which is not the case e.g. for Tensors.
+//
+// Better explanation: The Process method emits a new packet on the ITEM output stream for each element in the input iterable, each with a unique, incremented timestamp (loop_internal_timestamp_).
+// In MediaPipe, each output packet (with its own timestamp) triggers downstream nodes to process that packet at that timestamp. Thus, nodes connected to the ITEM output stream will run once for each
+// element in the iterable, each time receiving a packet with a different timestamp, effectively iterating over the collection. this is just a clever yet natural use of MediaPipe's timestamping and
+// packet processing model to implement iteration by inventing unique timestamps ― as in MediaPipe, timestamps are logical markers used to coordinate data flow and execution order within the graph.
+// They do not represent real-world time or the actual start/finish times of node processing. Instead, they are used to synchronize packets, trigger node execution, and manage iteration
+// or batching semantics.
 
 template <typename IterableT>
 class BeginLoopCalculator : public CalculatorBase {
