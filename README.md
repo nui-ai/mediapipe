@@ -38,16 +38,16 @@ Extensive use of RET_CHECK, RET_CHECK_OK, and error returns to validate configur
 5. Output Type Selection Layer:<BR>
 Dynamically sets output types based on options, supporting both element and vector outputs.
 
-7. Template Specialization Layer<BR>
-Uses template specialization to handle copyable vs. movable types, with separate code paths and error handling.
+6. Template Specialization Layer<BR>
+ses template specialization to handle copyable vs. movable types, with separate code paths and error handling.
 
-
-8. Packet/Stream Abstraction Layer<BR>
+7. Packet/Stream Abstraction Layer<BR>
 Wraps outputs in MediaPipe packets and streams, rather than returning raw vectors.
 
-9. In addition, the grain-of-sand level approach of modularity entails layers abstracting over different memory management strategies (copy vs. move semantics).
+8. Hyper-modularity
+In addition, the grain-of-sand level approach of modularity entails layers abstracting over different memory management strategies (copy vs. move semantics).
 
-10. Status/Result Layer<BR>
+9. Status/Result Layer<BR>
 Returns absl::Status for all operations, propagating errors through the framework. 
 
 All these layers make mediapipe code modular down to grain of sand, and provide safety, but also make it significantly complex for a developer to review for things as small as a vector splitting function, until you get familiar with all those layers to be able to skip them by glossing when you're not interested, as not all of these layers are abstractions but rather explicitly cast into the smallest pieces of code.
