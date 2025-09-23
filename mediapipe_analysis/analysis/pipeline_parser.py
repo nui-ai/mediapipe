@@ -643,11 +643,11 @@ code, pre {{ background: #222; color: #eee; }}
             '<tr><td><a href="../markdown/pipeline.basic.md">Basic Markdown (with line numbers)</a></td><td>Tree with hyperlinks to each node\'s source (with line numbers)</td></tr>'
             '<tr><td><a href="../markdown/pipeline.basic.nolines.md">Basic Markdown (no line numbers)</a></td><td>Tree with hyperlinks to each node\'s source (no line numbers)</td></tr>'
             '<tr><td><a href="../markdown/pipeline.verbose.md">Verbose Markdown</a></td><td>Tree with more node fields (streams, packets, options)</td></tr>'
+            '<tr><td><a href="../html/pipeline.basic.html">HTML</a></td><td>HTML format with node descriptions upon hover</td></tr>'
             '<tr><td><a href="../json/pipeline.basic.json">Basic JSON</a></td><td>Tree in JSON format</td></tr>'
             '<tr><td><a href="../yaml/pipeline.basic.yaml">Basic YAML</a></td><td>Tree in YAML format</td></tr>'
             '<tr><td><a href="../json/pipeline.verbose.json">Verbose JSON</a></td><td>Tree with more node fields (streams, packets, options)</td></tr>'
             '<tr><td><a href="../yaml/pipeline.verbose.yaml">Verbose YAML</a></td><td>Tree with more node fields (streams, packets, options)</td></tr>'
-            '<tr><td><a href="pipeline.basic.html">Basic HTML</a></td><td>HTML format with node descriptions from pipeline inline documentation (hover for details)</td></tr>'
             '</table>'
         )
 
@@ -660,11 +660,11 @@ code, pre {{ background: #222; color: #eee; }}
             f'| [Basic Markdown (with line numbers)](pipeline.basic.md) | Tree with hyperlinks to each node\'s source (with line numbers) |\n'
             f'| [Basic Markdown (no line numbers)](pipeline.basic.nolines.md) | Tree with hyperlinks to each node\'s source (no line numbers) |\n'
             f'| [Verbose Markdown](pipeline.verbose.md) | Tree with more node fields (streams, packets, options) |\n'
+            f'| [HTML](../html/pipeline.basic.html) | HTML format with node descriptions upon hover |\n'            
             f'| [Basic JSON](../json/pipeline.basic.json) | Tree in JSON format |\n'
             f'| [Basic YAML](../yaml/pipeline.basic.yaml) | Tree in YAML format |\n'
             f'| [Verbose JSON](../json/pipeline.verbose.json) | Tree with more node fields (streams, packets, options) |\n'
             f'| [Verbose YAML](../yaml/pipeline.verbose.yaml) | Tree with more node fields (streams, packets, options) |\n'
-            f'| [Basic HTML](../html/pipeline.basic.html) | HTML format with node descriptions from pipeline inline documentation (hover for details) |\n'
             f'To regenerate this analysis for the mediapipe directory, run `{script_name}`.\n'
         )
 
