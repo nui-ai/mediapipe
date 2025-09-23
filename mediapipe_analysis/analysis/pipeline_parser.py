@@ -528,19 +528,24 @@ class MediaPipePipelineParser:
         def render_node(node, level):
             indent = '    ' * level
             link = make_link(node)
-            # Use inline_pbtxt_comment for hover, fallback to description
-            desc = esc(node.inline_pbtxt_comment) if getattr(node, 'inline_pbtxt_comment', None) else esc(node.warning) if node.warning else ''
+            desc = esc(getattr(node, 'inline_pbtxt_comment', None)) if getattr(node, 'inline_pbtxt_comment', None) else ''
+            warning = esc(getattr(node, 'warning', None)) if getattr(node, 'warning', None) else ''
             hover = ''
-            if desc:
-                hover = f'<div class="hoverbox">{desc}'
-                if link:
-                    hover += '<hr style="margin:4px 0;">' + esc(link)
+            if desc or warning:
+                hover = '<div class="hoverbox">'
+                if desc:
+                    hover += desc
+                if warning:
+                    if desc:
+                        hover += '<hr style="margin:4px 0;">'
+                    hover += f'<span style="color:gray;font-weight:bold;">{warning}</span>'
                 hover += '</div>'
+            has_warning_class = ' has-warning' if warning else ''
             node_html = ''
             if link:
-                node_html += f'{indent}<span class="node-container"><a href="{link}" target="_blank">{esc(node.name)}</a>{hover}</span>'
+                node_html += f'{indent}<span class="node-container{has_warning_class}"><a href="{link}" target="_blank">{esc(node.name)}</a>{hover}</span>'
             else:
-                node_html += f'{indent}<span class="node-container">{esc(node.name)}{hover}</span>'
+                node_html += f'{indent}<span class="node-container{has_warning_class}">{esc(node.name)}{hover}</span>'
             if node.children:
                 node_html += '\n' + indent + '<ul>\n'
                 for child in node.children:
@@ -575,6 +580,7 @@ ul {{ list-style-type: none; }}
   display: block;
 }}
 hr {{ border: none; border-top: 1px solid #ccc; margin: 6px 0; }}
+.has-warning a {{ color: gray !important; }}
 </style>
 </head>
 <body>
