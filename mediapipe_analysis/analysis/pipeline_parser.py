@@ -20,7 +20,7 @@ class PipelineNode:
     name: str
     node_type: str  # 'calculator' or 'subgraph'
     source: Optional[str]
-    description: Optional[str]
+    warning: Optional[str]
     children: List['PipelineNode']
     source_line_number: Optional[int] = None
     source_line_code: Optional[str] = None
@@ -29,6 +29,7 @@ class PipelineNode:
     input_side_packets: Optional[list] = None
     output_side_packets: Optional[list] = None
     node_options: Optional[dict] = None
+    inline_pbtxt_comment: Optional[str] = None  # <-- moved after non-default fields
 
 @dataclass
 class MediaPipeGraph:
@@ -120,15 +121,23 @@ class MediaPipePipelineParser:
         return nodes
     
     def _parse_single_node(self, lines: List[str], start_line: int) -> Optional[dict]:
-        """Parse a single node block."""
+        """Parse a single node block, including extracting comment block above as description."""
+        # Extract comment block above node
+        description_lines = []
+        i = start_line - 1
+        while i >= 0 and lines[i].strip().startswith('#'):
+            description_lines.insert(0, lines[i].strip()[1:].strip())
+            i -= 1
+        inline_pbtxt_comment = '\n'.join(description_lines) if description_lines else None
+        description = inline_pbtxt_comment  # for backward compatibility, but we will use inline_pbtxt_comment explicitly
         # Find the end of this node block
         brace_count = 0
         end_line = start_line
-        for i in range(start_line, len(lines)):
-            line = lines[i]
+        for j in range(start_line, len(lines)):
+            line = lines[j]
             brace_count += line.count('{') - line.count('}')
-            if brace_count == 0 and i > start_line:
-                end_line = i
+            if brace_count == 0 and j > start_line:
+                end_line = j
                 break
         node_content = '\n'.join(lines[start_line:end_line+1])
         # Extract node fields
@@ -167,7 +176,9 @@ class MediaPipePipelineParser:
             'input_side_packets': input_side_packets,
             'output_side_packets': output_side_packets,
             'node_options': node_options,
-            'line_number': start_line + 1
+            'line_number': start_line + 1,
+            'description': description,
+            'inline_pbtxt_comment': inline_pbtxt_comment  # <-- new field
         }
 
     def _parse_packet_generators(self, content: str) -> List[Dict[str, str]]:
@@ -309,12 +320,12 @@ class MediaPipePipelineParser:
         if graph_path.endswith('.pbtxt'):
             graph = self.parse_pbtxt_file(graph_path)
         else:
-            self.print_with_ident(f'⚠️ pipeline {pipeline_name} is defined by C++ code and not a .pbtxt file; its content will be ignored from analysis.')
+            self.print_with_ident(f'⚠️ pipeline {pipeline_name} is defined by C++ code, not by a .pbtxt file. its nodes are therefore not shown here.')
             return PipelineNode(
                 name=pipeline_name,
                 node_type='subgraph',
                 source=graph_path,
-                description='Defined in C++ code, not a .pbtxt file.',
+                warning = '⚠️ this graph is defined in C++ code, not by a .pbtxt file. its nodes are therefore not shown here.',
                 children=[],
                 source_line_number=graph_line_number,
                 source_line_code=graph_line_code
@@ -324,74 +335,102 @@ class MediaPipePipelineParser:
         subgraph_mapping = dict[str, Path]()
         children = []
         for node in graph.nodes:
-            # Extract stream/packet/options fields from the node (which is a dict)
+
             node_name = getattr(node, 'name', None) or node.get('name')
             input_streams = getattr(node, 'input_streams', None) or node.get('input_streams')
             output_streams = getattr(node, 'output_streams', None) or node.get('output_streams')
             input_side_packets = getattr(node, 'input_side_packets', None) or node.get('input_side_packets')
             output_side_packets = getattr(node, 'output_side_packets', None) or node.get('output_side_packets')
             node_options = getattr(node, 'node_options', None) or node.get('node_options')
+            inline_pbtxt_comment = getattr(node, 'inline_pbtxt_comment', None) if hasattr(node, 'inline_pbtxt_comment') else node.get('inline_pbtxt_comment', None)
             node_type = 'other'
-            description = None
+            warning = None
             sub_children = []
             source_line_number = None
             source_line_code = None
-            node_source = None  # Always initialize
-            is_calc = node_name in self.calculators_source_mapping
-            is_subgraph = node_name in self.graph_source_files
+            node_source = None
+
+            is_calc = is_subgraph = False
+            node_source_rel = None
+
+            # handle special cases filled by hand, as our current parsing implementation won't resolve them.
+            # (though this can fully be automated to be extracted generically with a couple of hours' work)
+            match node_name:
+                case 'InferenceCalculator':
+                    warning = (
+                        f' *️this calculator has multiple implementions one per each target inference stack (e.g. cpu, xnnpack, and more). '
+                        f'all implementations of it run a neural network ℹ️ see also https://ai.google.dev/edge/mediapipe/framework/framework_concepts/graphs_cpp '
+                        'assume the one selected at runtime matches the target inference type used by the pipeline being run. '
+                        'the current source association is hard-wired and not auto-discovered. ')
+                    is_calc = True
+                    node_source_rel = 'mediapipe/calculators/tensor/inference_calculator_cpu.cc'
+                    node_source = str(Path.cwd() / node_source_rel)
+                    source_line_number = None
+                case 'LandmarkProjectionCalculator':
+                    is_calc = True
+                    warning = (
+                        f' *️this calculator is defined in the source tree by C++ code (not in a pipeline\'s .pbtxt definition file) per pipeline each '
+                        f'defined by the C++ api call graph.AddNode("\'{node_name}\'"). the current source association is hard-wired and not auto-discovered. ')
+                    node_source_rel = 'mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarks_detector_graph.cc'
+                    node_source = str(Path.cwd() / node_source_rel)
+                    source_line_number = 344
+                case 'WorldLandmarkProjectionCalculator':
+                    is_calc = True
+                    warning = (
+                        f' *️this calculator is defined in the source tree by C++ code (not in a pipeline\'s .pbtxt definition file) per pipeline each '
+                        f'defined by the C++ api call graph.AddNode("\'{node_name}\'") the current source association is hard-wired and not auto-discovered. ')
+                    node_source_rel = 'mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarks_detector_graph.cc'
+                    node_source = str(Path.cwd() / node_source_rel)
+                    source_line_number = 356
+
+            is_calc = is_calc or node_name in self.calculators_source_mapping
+            is_subgraph = is_subgraph or node_name in self.graph_source_files
+
             if is_calc and is_subgraph:
                 self.print_with_ident(f'❌️️️ node \'{node_name}\' is found to be both a calculator and a sub-graph; this case is not currently handled downstream!')
+
             if is_calc:
-                src_info = self.calculators_source_mapping[node_name]
-                node_source = str(src_info[0])
-                source_line_number = src_info[1]
-                source_line_code = src_info[2]
-                calculator_mapping[node_name] = node_source
                 node_type = 'calculator'
-                node_source_rel = str(Path(node_source).relative_to(Path.cwd())) if node_source else node_source
-                self.print_with_ident(f'✅ calculator node \'{node_name}\' : {node_source_rel}')
+
+                # fill the source information for the nodes not already handled above as special cases
+                if node_name in self.calculators_source_mapping:
+
+                    src_info = self.calculators_source_mapping[node_name]
+                    node_source = str(src_info[0])
+                    source_line_number = src_info[1]
+                    source_line_code = src_info[2]
+
+                    node_source_rel = str(Path(node_source).relative_to(Path.cwd())) if node_source else node_source
+
+                if node_source_rel:
+                    calculator_mapping[node_name] = node_source
+                    self.print_with_ident(f'✅ calculator node \'{node_name}\' : {node_source_rel}')
+                else:
+                    self.print_with_ident(f'❌ could not locate the source code for node \'{node_name}\'')
+
             if is_subgraph:
+                node_type = 'subgraph'
                 src_info = self.graph_source_files[node_name]
                 node_source = str(src_info[0])
                 source_line_number = src_info[1]
                 source_line_code = src_info[2]
                 subgraph_mapping[node_name] = node_source
-                node_type = 'subgraph'
                 node_source_rel = str(Path(node_source).relative_to(Path.cwd())) if node_source else node_source
                 self.print_with_ident(f'✅ sub-graph node \'{node_name}\' : {node_source_rel}')
                 self.print_with_ident(f'🔁 \'{node_name}\' is a sub-graph of the current one')
                 self.ident += 1
                 sub_children = [self.analyze_pipeline(node_name, parent_output_dir)]
                 self.ident -= 1
-            if not (is_calc or is_subgraph):
-                match node_name:
-                    case 'InferenceCalculator':
-                        description = (
-                            f'⚠️ node \'{node_name}\' is a node name not associated to one implementation, but a generic name which has multiple implementions in mediapipe/calculators/tensor/inference_calculator.h '
-                            f'one per each target inference stack (e.g. cpu, xnnpack, and more) which subclass it in that source file. assume the one selected at runtime matches the target inference type used '
-                            f'by the pipeline being run. all implementations of it run a neural network ℹ️ see also https://ai.google.dev/edge/mediapipe/framework/framework_concepts/graphs_cpp')
-                    case 'LandmarkProjectionCalculator':
-                        description = (
-                            f'⚠️ node \'{node_name}\' is a node name not associated to one implementation, but a generic name which has an implemention per pipeline each '
-                            f'defined by the form graph.AddNode("LandmarkProjectionCalculator"), its content will be ignored from analysis, but you can manually locate '
-                            f'all specific implementions of it by searching the occurences of graph.AddNode("LandmarkProjectionCalculator") in the mediapipe source tree.'
-                            f'AddNode is defined in builder.h and elsewhere and dynamically instantiates a LandmarkProjectionCalculator instance based on context '
-                            f'ℹ️ see also https://ai.google.dev/edge/mediapipe/framework/framework_concepts/graphs')
-                    case 'WorldLandmarkProjectionCalculator':
-                        description = (
-                            f'⚠️ node \'{node_name}\' is a node name not associated to one implementation, but a generic name which has an implemention per pipeline each '
-                            f'defined by the form graph.AddNode("WorldLandmarkProjectionCalculator"), its content will be ignored from analysis, but you can manually locate '
-                            f'all specific implementions of it by searching the occurences of graph.AddNode("WorldLandmarkProjectionCalculator") in the mediapipe source tree. '
-                            f'AddNode is defined in builder.h and elsewhere and dynamically instantiates a WorldLandmarkProjectionCalculator instance based on context '
-                            f'ℹ️ see also https://ai.google.dev/edge/mediapipe/framework/framework_concepts/graphs')
-                    case _:
-                        description = f'❌ could not locate the source code for node \'{node_name}\''
-                node_type = 'other'
+
+            if warning:
+                self.print_with_ident(f'{warning}')
+
             children.append(PipelineNode(
                 name=node_name,
                 node_type=node_type,
                 source=node_source,
-                description=description,
+                warning=warning,
+                inline_pbtxt_comment =inline_pbtxt_comment,
                 children=sub_children,
                 source_line_number=source_line_number,
                 source_line_code=source_line_code,
@@ -401,12 +440,12 @@ class MediaPipePipelineParser:
                 output_side_packets=output_side_packets,
                 node_options=node_options
             ))
-        # Set top-level streams/packets on the root node
+
         return PipelineNode(
             name=pipeline_name,
             node_type='subgraph',
             source=graph_path,
-            description=None,
+            warning =None,
             children=children,
             source_line_number=graph_line_number,
             source_line_code=graph_line_code,
@@ -418,14 +457,16 @@ class MediaPipePipelineParser:
         )
 
     def write_pipeline_outputs(self, root_node: PipelineNode, output_dir: Path):
-        """Write the pipeline hierarchy to markdown (with and without line numbers), JSON, and YAML files in output_dir."""
+        """Write the pipeline hierarchy to markdown (with and without line numbers), JSON, YAML, and HTML files in output_dir."""
         # Group outputs by format
         md_dir = output_dir / 'markdown'
         json_dir = output_dir / 'json'
         yaml_dir = output_dir / 'yaml'
+        html_dir = output_dir / 'html'
         md_dir.mkdir(parents=True, exist_ok=True)
         json_dir.mkdir(parents=True, exist_ok=True)
         yaml_dir.mkdir(parents=True, exist_ok=True)
+        html_dir.mkdir(parents=True, exist_ok=True)
         # Write JSON (basic)
         json_basic_path = json_dir / 'pipeline.basic.json'
         with open(json_basic_path, 'w') as f:
@@ -454,6 +495,10 @@ class MediaPipePipelineParser:
         md_verbose_path = md_dir / 'pipeline.verbose.md'
         with open(md_verbose_path, 'w') as f:
             f.write(self._node_to_markdown_with_links_verbose(root_node, 0, json_verbose_path, yaml_verbose_path, md_basic_path, md_basic_nolines_path, json_basic_path, yaml_basic_path, True, md_verbose_path, yaml_verbose_path, json_verbose_path, script_name='pipeline_parser.py', use_absolute_links=True))
+        # Write HTML (basic)
+        html_basic_path = html_dir / 'pipeline.basic.html'
+        with open(html_basic_path, 'w') as f:
+            f.write(self._node_to_html_with_hover(root_node, 0, script_name='pipeline_parser.py'))
         # Store output paths for printing
         self._output_paths = {
             'md_basic': md_basic_path,
@@ -463,7 +508,97 @@ class MediaPipePipelineParser:
             'json_verbose': json_verbose_path,
             'yaml_basic': yaml_basic_path,
             'yaml_verbose': yaml_verbose_path,
+            'html_basic': html_basic_path,
         }
+
+    def _node_to_html_with_hover(self, node: PipelineNode, level: int, script_name='pipeline_parser.py') -> str:
+        """Render the pipeline as an HTML tree with hover tooltips for node descriptions."""
+        # Helper for HTML escaping
+        import html
+        def esc(s):
+            return html.escape(s) if s else ''
+        # Helper for hyperlinks (no line numbers)
+        def make_link(node):
+            if node.node_type == 'calculator' and node.source:
+                return esc(str(node.source))
+            elif node.source:
+                return esc(str(node.source))
+            return None
+        # Recursive rendering
+        def render_node(node, level):
+            indent = '    ' * level
+            link = make_link(node)
+            # Use inline_pbtxt_comment for hover, fallback to description
+            desc = esc(node.inline_pbtxt_comment) if getattr(node, 'inline_pbtxt_comment', None) else esc(node.warning) if node.warning else ''
+            hover = ''
+            if desc:
+                hover = f'<div class="hoverbox">{desc}'
+                if link:
+                    hover += '<hr style="margin:4px 0;">' + esc(link)
+                hover += '</div>'
+            node_html = ''
+            if link:
+                node_html += f'{indent}<span class="node-container"><a href="{link}" target="_blank">{esc(node.name)}</a>{hover}</span>'
+            else:
+                node_html += f'{indent}<span class="node-container">{esc(node.name)}{hover}</span>'
+            if node.children:
+                node_html += '\n' + indent + '<ul>\n'
+                for child in node.children:
+                    node_html += indent + '  <li>' + render_node(child, level + 1) + '</li>\n'
+                node_html += indent + '</ul>'
+            return node_html
+        # HTML header, styles, and table
+        html_head = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pipeline {name}</title>
+<style>
+body {{ font-family: sans-serif; }}
+ul {{ list-style-type: none; }}
+.node-container {{ position: relative; }}
+.hoverbox {{
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  z-index: 10;
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 8px;
+  min-width: 200px;
+  max-width: 400px;
+  box-shadow: 2px 2px 8px #aaa;
+  white-space: pre-line;
+}}
+.node-container:hover .hoverbox {{
+  display: block;
+}}
+hr {{ border: none; border-top: 1px solid #ccc; margin: 6px 0; }}
+</style>
+</head>
+<body>
+'''.format(name=esc(node.name))
+        html_tail = f'<br><br>{self._formats_table_html(script_name)}<br><div style="color:#888;font-size:small;">To regenerate this analysis for the mediapipe directory, run <code>{script_name}</code>.</div>\n</body>\n</html>'
+        html_body = f'<h1>Pipeline {esc(node.name)}</h1>\n<ul>\n<li>{render_node(node, 0)}</li>\n</ul>'
+        return html_head + html_body + html_tail
+
+    def _formats_table_html(self, script_name):
+        # HTML version of the formats table, with reference to the HTML format
+        return (
+            '<h2>More Formats</h2>'
+            '<table border="1" cellpadding="4" cellspacing="0">'
+            '<tr><th>Format</th><th>Description</th></tr>'
+            '<tr><td><a href="../markdown/pipeline.basic.md">Basic Markdown (with line numbers)</a></td><td>Tree with hyperlinks to each node\'s source (with line numbers)</td></tr>'
+            '<tr><td><a href="../markdown/pipeline.basic.nolines.md">Basic Markdown (no line numbers)</a></td><td>Tree with hyperlinks to each node\'s source (no line numbers)</td></tr>'
+            '<tr><td><a href="../markdown/pipeline.verbose.md">Verbose Markdown</a></td><td>Tree with more node fields (streams, packets, options)</td></tr>'
+            '<tr><td><a href="../json/pipeline.basic.json">Basic JSON</a></td><td>Tree in JSON format</td></tr>'
+            '<tr><td><a href="../yaml/pipeline.basic.yaml">Basic YAML</a></td><td>Tree in YAML format</td></tr>'
+            '<tr><td><a href="../json/pipeline.verbose.json">Verbose JSON</a></td><td>Tree with more node fields (streams, packets, options)</td></tr>'
+            '<tr><td><a href="../yaml/pipeline.verbose.yaml">Verbose YAML</a></td><td>Tree with more node fields (streams, packets, options)</td></tr>'
+            '<tr><td><a href="pipeline.basic.html">Basic HTML</a></td><td>HTML format with node descriptions from pipeline inline documentation (hover for details)</td></tr>'
+            '</table>'
+        )
 
     def _formats_table(self, abs_dir, script_name):
         # Helper to generate the formats table for markdown (relative links to grouped outputs)
@@ -477,40 +612,10 @@ class MediaPipePipelineParser:
             f'| [Basic JSON](../json/pipeline.basic.json) | Tree in JSON format |\n'
             f'| [Basic YAML](../yaml/pipeline.basic.yaml) | Tree in YAML format |\n'
             f'| [Verbose JSON](../json/pipeline.verbose.json) | Tree with more node fields (streams, packets, options) |\n'
-            f'| [Verbose YAML](../yaml/pipeline.verbose.yaml) | Tree with more node fields (streams, packets, options) |\n\n'
+            f'| [Verbose YAML](../yaml/pipeline.verbose.yaml) | Tree with more node fields (streams, packets, options) |\n'
+            f'| [Basic HTML](../html/pipeline.basic.html) | HTML format with node descriptions from pipeline inline documentation (hover for details) |\n'
             f'To regenerate this analysis for the mediapipe directory, run `{script_name}`.\n'
         )
-
-    def _node_to_markdown_with_links(self, node: PipelineNode, level: int, json_path: Path, yaml_path: Path, with_line_numbers: bool, script_name='pipeline_parser.py', use_absolute_links=False) -> str:
-        indent = '    ' * level
-        if level == 0:
-            abs_dir = Path(json_path).parent.resolve()
-            md = f'# Pipeline {node.name}\n\n'
-        else:
-            md = ''
-        # Node name as link or description
-        def abspath(p):
-            return str(Path(p).resolve()) if p else ''
-        if node.node_type == 'calculator' and node.source and node.source_line_number:
-            if with_line_numbers:
-                link = f"{abspath(node.source)}#L{node.source_line_number}" if use_absolute_links else f"{Path(node.source).relative_to(Path.cwd())}#L{node.source_line_number}"
-                md += f'{indent}- [{node.name}]({link})'
-            else:
-                link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
-                md += f'{indent}- [{node.name}]({link})'
-        elif node.source:
-            link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
-            md += f'{indent}- [{node.name}]({link})'
-        elif node.description:
-            md += f'{indent}- **{node.name}**: {node.description}'
-        else:
-            md += f'{indent}- **{node.name}**'
-        md += '\n'
-        for child in node.children:
-            md += self._node_to_markdown_with_links(child, level + 1, json_path, yaml_path, with_line_numbers, script_name=script_name, use_absolute_links=use_absolute_links)
-        if level == 0:
-            md += '\n' + self._formats_table(abs_dir, script_name)
-        return md
 
     def _node_to_dict_rel(self, node: PipelineNode) -> dict:
         """Recursively convert a PipelineNode tree to a dictionary, making 'source' fields relative to cwd, and using 'nodes' instead of 'children'."""
@@ -525,7 +630,7 @@ class MediaPipePipelineParser:
             'name': node.name,
             'type': node.node_type,
             'source': rel(node.source),
-            'description': node.description,
+            'description': node.warning,
             'nodes': [self._node_to_dict_rel(child) for child in node.children]
         }
 
@@ -535,7 +640,7 @@ class MediaPipePipelineParser:
             'name': node.name,
             'type': node.node_type,
             'source': node.source,
-            'description': node.description,
+            'description': node.warning,
             'source_line_number': node.source_line_number,
         }
         if node.input_streams:
@@ -551,16 +656,16 @@ class MediaPipePipelineParser:
         d['nodes'] = [self._node_to_dict_verbose(child) for child in node.children]
         return d
 
-    def _node_to_markdown_with_links_verbose(self, node: PipelineNode, level: int, json_verbose_path: Path, yaml_verbose_path: Path, md_basic_path: Path, md_basic_nolines_path: Path, json_basic_path: Path, yaml_basic_path: Path, with_line_numbers: bool, md_verbose_path: Path, yaml_verbose_path2: Path, json_verbose_path2: Path, script_name='pipeline_parser.py', use_absolute_links=False) -> str:
+    def _node_to_markdown_with_links(self, node: PipelineNode, level: int, json_path: Path, yaml_path: Path, with_line_numbers: bool, script_name='pipeline_parser.py', use_absolute_links=False) -> str:
         indent = '    ' * level
         if level == 0:
-            abs_dir = Path(json_verbose_path).parent.resolve()
-            md = f'# Pipeline Hierarchy for `{node.name}` (verbose)\n\n'
+            abs_dir = Path(json_path).parent.resolve()
+            md = f'# Pipeline {node.name}\n\n'
         else:
             md = ''
         def abspath(p):
             return str(Path(p).resolve()) if p else ''
-        # Node name as link or description
+        # Always render node as hyperlink
         if node.node_type == 'calculator' and node.source and node.source_line_number:
             if with_line_numbers:
                 link = f"{abspath(node.source)}#L{node.source_line_number}" if use_absolute_links else f"{Path(node.source).relative_to(Path.cwd())}#L{node.source_line_number}"
@@ -571,10 +676,44 @@ class MediaPipePipelineParser:
         elif node.source:
             link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
             md += f'{indent}- [{node.name}]({link})'
-        elif node.description:
-            md += f'{indent}- **{node.name}**: {node.description}'
         else:
-            md += f'{indent}- **{node.name}**'
+            # If no source, just link to a placeholder (could be improved)
+            md += f'{indent}- [{node.name}](#)'
+        # Append warning if present
+        if node.warning:
+            md += f': {node.warning}'
+        md += '\n'
+        for child in node.children:
+            md += self._node_to_markdown_with_links(child, level + 1, json_path, yaml_path, with_line_numbers, script_name=script_name, use_absolute_links=use_absolute_links)
+        if level == 0:
+            md += '\n' + self._formats_table(abs_dir, script_name)
+        return md
+
+    def _node_to_markdown_with_links_verbose(self, node: PipelineNode, level: int, json_verbose_path: Path, yaml_verbose_path: Path, md_basic_path: Path, md_basic_nolines_path: Path, json_basic_path: Path, yaml_basic_path: Path, with_line_numbers: bool, md_verbose_path: Path, yaml_verbose_path2: Path, json_verbose_path2: Path, script_name='pipeline_parser.py', use_absolute_links=False) -> str:
+        indent = '    ' * level
+        if level == 0:
+            abs_dir = Path(json_verbose_path).parent.resolve()
+            md = f'# Pipeline Hierarchy for `{node.name}` (verbose)\n\n'
+        else:
+            md = ''
+        def abspath(p):
+            return str(Path(p).resolve()) if p else ''
+        # Always render node as hyperlink
+        if node.node_type == 'calculator' and node.source and node.source_line_number:
+            if with_line_numbers:
+                link = f"{abspath(node.source)}#L{node.source_line_number}" if use_absolute_links else f"{Path(node.source).relative_to(Path.cwd())}#L{node.source_line_number}"
+                md += f'{indent}- [{node.name}]({link})'
+            else:
+                link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
+                md += f'{indent}- [{node.name}]({link})'
+        elif node.source:
+            link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
+            md += f'{indent}- [{node.name}]({link})'
+        else:
+            md += f'{indent}- [{node.name}](#)'
+        # Append warning if present
+        if node.warning:
+            md += f': {node.warning}'
         # Only show non-empty fields
         if node.input_streams:
             md += f'\n{indent}  - **input_streams:** {node.input_streams}'
@@ -585,7 +724,8 @@ class MediaPipePipelineParser:
         if node.output_side_packets:
             md += f'\n{indent}  - **output_side_packets:** {node.output_side_packets}'
         if node.node_options and node.node_options != {}:
-            md += f'\n{indent}  - **node_options:** {json.dumps(node.node_options, indent=2)}'
+            import json as _json
+            md += f'\n{indent}  - **node_options:** {_json.dumps(node.node_options, indent=2)}'
         md += '\n'
         for child in node.children:
             md += self._node_to_markdown_with_links_verbose(child, level + 1, json_verbose_path, yaml_verbose_path, md_basic_path, md_basic_nolines_path, json_basic_path, yaml_basic_path, with_line_numbers, md_verbose_path, yaml_verbose_path2, json_verbose_path2, script_name=script_name, use_absolute_links=use_absolute_links)
@@ -620,13 +760,13 @@ def main():
     # Print as table by format
     print(f"\nthe pipeline analysis output shown above is also available in multiple formats and levels of verbosity under file://{output_dir_abs}/.\n"
           f"use the markdown variants for quick navigation to source files, and the data formats for machine consumption:\n")
-    print("MARKDOWN:")
+    print("markdown:")
     for path, desc in outputs[:3]:
         print(f"  {'file://' + str(path):<{maxlen}}  :  {desc}")
-    print("\nJSON:")
+    print("\njson:")
     for path, desc in outputs[3:5]:
         print(f"  {'file://' + str(path):<{maxlen}}  :  {desc}")
-    print("\nYAML:")
+    print("\nyaml:")
     for path, desc in outputs[5:]:
         print(f"  {'file://' + str(path):<{maxlen}}  :  {desc}")
     print()
