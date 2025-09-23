@@ -1,4 +1,4 @@
-f# Bazel / project specific ignores
+# Bazel / project specific ignores
 bazel-*
 mediapipe/MediaPipe.xcodeproj
 mediapipe/MediaPipe.tulsiproj/*.tulsiconf-user
@@ -9,6 +9,8 @@ node_modules/
 .user.bazelrc
 build/
 BUILD.backup
+/sample-video.avi
+/output_video.mp4
 
 # Python ignores
 __pycache__/

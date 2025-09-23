@@ -19,11 +19,16 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     for a verbose output which includes print statements made by `setup.py`, add `-v` to the pip command as otherwise due to pip's build isolation stdout is swallowed when the build does not fai.:
 4. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
 
-5. place a video file with hands in it, as sample-video.avi, in the project root path, and run the following python test which should run with exit code 0:
-    ```
-    python3 -P test-on-video-file.py
-    ``` 
-    note that without `-P` python will try loading python modules from the `mediapipe` directory under the project's tree root, which is essentially our python "source directory", which is a horrible entanglement, and is also bound to fail since some of the mediapipe python modules are only dynamically built & placed (into the active python environment) by the pip install process ― because most of mediapipe python-exposed sub-packages are either pybind generated or bazel generated from protobuf definitions or both (e.g. mediapipe.python._framework_bindings). So the python source tree _never_ contains all the modules that the mediapipe python api expects to find, but it can sure throw you off track with cryptic module loading errors if you try to run without -P and thus let python first look for modules under the python source directory `mediapipe`. With this project you only want python to run from the active python environment, not from its "source" path, which is what `-P` does.
+5. place a video file with hands in it, as sample-video.avi, in the project root path, and run both of the following tests:
+   1. C++ program built by the bazel build, this program takes in the sample video, and produces a derivative of it which shows the pipeline's predictions (and bounding boxes detected internally by it) per frame of the original video:
+       ```bash
+       bazel-bin/mediapipe/examples/desktop/hand_tracking/hand_tracking_tflite --calculator_graph_config_file=./mediapipe/graphs/hand_tracking/hand_tracking_desktop.pbtxt --input_side_packets=input_video_path=sample-video.avi,output_video_path=output_video.mp4 
+       ```
+   2. The python test which should complete with exit code 0, it doesn't show any fancy results for now, it's a smoke test only:
+       ```
+       python3 -P test-on-video-file.py
+       ``` 
+       note that without `-P` python will try loading python modules from the `mediapipe` directory under the project's tree root, which is essentially our python "source directory", which is a horrible entanglement, and is also bound to fail since some of the mediapipe python modules are only dynamically built & placed (into the active python environment) by the pip install process ― because most of mediapipe python-exposed sub-packages are either pybind generated or bazel generated from protobuf definitions or both (e.g. mediapipe.python._framework_bindings). So the python source tree _never_ contains all the modules that the mediapipe python api expects to find, but it can sure throw you off track with cryptic module loading errors if you try to run without -P and thus let python first look for modules under the python source directory `mediapipe`. With this project you only want python to run from the active python environment, not from its "source" path, which is what `-P` does.
    
 6. if you wish to only build the C++ part, maybe for isolation that it builds without errors, or for C++ development:
     ```

@@ -86,6 +86,9 @@ void CalculatorContext::SetOffset(TimestampDiff offset) {
   }
 }
 
+// the CalculatorContext is filled by the base GraphNode class such that an implementing class
+// like the current one gets its inputs per input stream (or side packet) ready to use from it
+// on its Process method.
 const InputStreamSet& CalculatorContext::InputStreams() const {
   if (!input_streams_) {
     input_streams_ = std::make_unique<InputStreamSet>(inputs_.TagMap());
