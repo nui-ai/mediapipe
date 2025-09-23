@@ -51,7 +51,7 @@ In addition, the grain-of-sand level approach of modularity entails layers abstr
 Returns absl::Status for all operations, propagating errors through the framework. 
 
 All these layers make mediapipe code modular down to grain of sand, and provide safety, but also make it significantly complex for a developer to review for things as small as a vector splitting function, until you get familiar with all those layers to be able to skip them by glossing when you're not interested, because:
-+ not all of these layers are abstractions but rather they explicitly get invoked in leafy layers of the code.  
++ not all of these layers are abstractions but rather they explicitly get invoked in leafy layers of the C++ code.  
 + a large percent of the code is safety asserting (using this macro or another) things that the layers of abstraction (especially in a typed language) should already guarantee, providing no value but obfuscate the flow of code more. 
 
 The same goes for why and how Bazel is used for building classes from protobuf definitions as a foundation for much of how the code is organized for multi-lingual use.
