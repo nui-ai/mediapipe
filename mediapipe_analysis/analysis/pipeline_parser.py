@@ -494,7 +494,7 @@ class MediaPipePipelineParser:
             input_streams=graph.input_streams,
             output_streams=graph.output_streams,
             input_side_packets=graph.input_side_packets,
-            output_side_packets=graph.output_side_packets,
+            output_side_packets=graph.output_streams,
             node_options=None,
             inline_pbtxt_comment=graph_header_comment
         )
@@ -580,13 +580,35 @@ class MediaPipePipelineParser:
             desc = esc(desc_raw.replace('\n', ' ')) if desc_raw else ''
             warning = esc(getattr(node, 'warning', None)) if getattr(node, 'warning', None) else ''
             hover = ''
-            if desc or warning:
+            if desc or warning or node.input_streams or node.output_streams or node.input_side_packets or node.output_side_packets or (node.node_options and node.node_options != {}):
                 hover = '<div class="hoverbox">'
                 if desc:
                     hover += desc
+                # Add table for fields (above warning)
+                def table_row(label, items):
+                    if items:
+                        if isinstance(items, list):
+                            values = '<br>'.join([esc(str(s)) for s in items])
+                        else:
+                            values = esc(str(items))
+                        return f'<tr><td class="hoverbox-label">{label}</td><td class="hoverbox-value">{values}</td></tr>'
+                    return ''
+                table_rows = ''
+                table_rows += table_row('input streams', getattr(node, 'input_streams', None))
+                table_rows += table_row('output streams', getattr(node, 'output_streams', None))
+                table_rows += table_row('input side packets', getattr(node, 'input_side_packets', None))
+                table_rows += table_row('output side packets', getattr(node, 'output_side_packets', None))
+                if node.node_options and node.node_options != {}:
+                    opts = [f'{esc(str(k))}: {esc(str(v))}' for k, v in node.node_options.items()]
+                    table_rows += table_row('node options', opts)
+                table_html = ''
+                if table_rows:
+                    table_html = '<br><table class="hoverbox-fields">' + table_rows + '</table>'
+                if table_html:
+                    hover += table_html
+                if table_html and warning:
+                    hover += '<hr style="margin:4px 0;">'
                 if warning:
-                    if desc:
-                        hover += '<hr style="margin:4px 0;">'
                     hover += f'<span style="color:gray;font-weight:bold;">{warning}</span>'
                 hover += '</div>'
             has_warning_class = ' has-warning' if warning else ''
@@ -618,7 +640,6 @@ ul {{ list-style-type: none; }}
 ul > li > .node-container > a, ul > li > .node-container {{ color: #7CFC00; font-weight: bold; }}
 ul > li > .node-container > a {{ text-decoration: none; }}
 ul, li {{ line-height: 1.7; }}
-/* Table links: keep current blue */
 table a {{ color: #4fc3f7; text-decoration: underline; }}
 .node-container {{ position: relative; }}
 .hoverbox {{
@@ -632,19 +653,42 @@ table a {{ color: #4fc3f7; text-decoration: underline; }}
   border: 1px solid #555;
   padding: 8px;
   min-width: 400px;
-  width: 600px;
-  max-width: 1000px;
+  width: auto;
   box-shadow: 2px 2px 8px #222;
   white-space: pre-line;
 }}
 .node-container:hover .hoverbox {{
   display: block;
 }}
+.hoverbox-fields {{
+  width: auto;
+  border-collapse: collapse;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  table-layout: auto;
+}}
+.hoverbox-fields td {{
+  padding: 2px 8px 2px 0;
+  vertical-align: top;
+}}
+.hoverbox-label {{
+  color: #4fc3f7;
+  font-weight: bold;
+  text-align: right;
+  min-width: 160px;
+  white-space: nowrap;
+}}
+.hoverbox-value {{
+  color: #ffd700;
+  text-align: left;
+  white-space: nowrap;
+  overflow-x: auto;
+  text-overflow: ellipsis;
+}}
 hr {{ border: none; border-top: 1px solid #555; margin: 6px 0; }}
 .has-warning a {{ color: #b0b0b0 !important; }}
 .has-warning {{ color: #b0b0b0 !important; }}
 code, pre {{ background: #222; color: #eee; }}
-/* Adjust any other gray text to be visible on black */
 .pipeline-info, .formats-table, .footer-note {{ color: #aaa; }}
 </style>
 </head>
@@ -781,7 +825,7 @@ code, pre {{ background: #222; color: #eee; }}
         # Node name as bold hyperlink
         if node.node_type == 'calculator' and node.source and node.source_line_number:
             if with_line_numbers:
-                link = f"{abspath(node.source)}#L{node.source_line_number}" if use_absolute_links else f"{Path(node.source).relative_to(Path.cwd())}#L{node.source_line_number}"
+                link = f"{abspath(node.source)}#L{node.source_line_number}" if use_absolute_links else f"{Path(node.source).relative_to(Path.cwd())}#L{node.source.line_number}"
                 md += f'{indent}- **[{display_name}]({link})**\n'
             else:
                 link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
