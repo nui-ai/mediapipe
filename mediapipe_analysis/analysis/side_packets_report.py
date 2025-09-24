@@ -29,78 +29,65 @@ def collect_all_nodes(node: Dict[str, Any], parent_name: str = None) -> List[Dic
 
 def extract_side_packet_relations(all_nodes: List[Dict[str, Any]]) -> List[Dict[str, str]]:
     """
-    For each produced side packet (output_side_packets), find all consumers (input_side_packets) and build the report rows.
-    Implements correct MediaPipe packet resolution rules:
-    - Only output_side_packets and input_side_packets are considered.
-    - A consumer matches a side packet if the name (right side of a:b) matches, regardless of tag.
-    - Optionally, also match full tag:name for strict cases.
-    This logic ensures RESOURCE:model_resource and MODEL_RESOURCE:model_resource are matched by 'model_resource'.
+    For each produced side packet (Tag:name), correlate all consumers that match by MediaPipe rules:
+    - If consumer's input_side_packet is tag:name, match only if producer's output_side_packet is tag:name, or if producer's tag or name matches.
+    - If consumer's input_side_packet is just name, match any producer with that name (regardless of tag).
+    - If consumer's input_side_packet is just tag, match any producer with that tag (regardless of name).
+    Deduplicate consumers per row.
     """
-    # Map: produced side_packet_name -> (producer_name, producer_source, node_type, tag, name)
-    produced_packets = {}
+    produced_packets = []  # List of (node_name, node_type, node_source, tag, name, full_tag_name)
     for node in all_nodes:
         raw = node["raw"]
         node_name = node["name"]
-        node_source = node["source"]
         node_type = node["type"]
+        node_source = node["source"]
         for sp in raw.get(SIDE_PACKET_OUTPUT_KEY, []):
             if ":" in sp:
                 tag, name = sp.split(":", 1)
             else:
                 tag, name = "", sp
-            produced_packets[sp] = (node_name, node_source, node_type, tag, name)
-    # Map: produced side_packet_name -> list of (consumer_name, consumer_source)
-    consumed_by = {sp: [] for sp in produced_packets}
-    # --- Correct MediaPipe packet resolution rules implemented below ---
-    for node in all_nodes:
-        raw = node["raw"]
-        node_name = node["name"]
-        node_source = node["source"]
-        for consumer_ref in raw.get(SIDE_PACKET_INPUT_KEY, []):
-            if ":" in consumer_ref:
-                ctag, cname = consumer_ref.split(":", 1)
-            else:
-                ctag, cname = "", consumer_ref
-            for produced_name, (pnode, psource, ptype, ptag, pname) in produced_packets.items():
-                # Prominent comment: MediaPipe packet resolution is by name (right side of a:b), regardless of tag
-                if cname == pname:
-                    consumed_by[produced_name].append((node_name, node_source))
-                # Optionally, also match full tag:name for strict cases
-                elif consumer_ref == produced_name:
-                    consumed_by[produced_name].append((node_name, node_source))
-    # Now, for each produced side packet, build the report row
+            produced_packets.append((node_name, node_type, node_source, tag, name, sp))
     report_rows = []
-    for sp, (node_name, node_source, node_type, tag, name) in produced_packets.items():
-        consumers = consumed_by.get(sp, [])
-        # Format consumers as hyperlinks, <br>-delimited
-        if consumers:
-            consumers_md = "<br>".join([
-                f"[{cname}]({csource})" if csource else cname
-                for cname, csource in consumers
-            ])
-        else:
-            consumers_md = ""
+    for prod_node, prod_type, prod_source, prod_tag, prod_name, prod_full in produced_packets:
+        consumers_set = set()
+        for node in all_nodes:
+            raw = node["raw"]
+            node_name = node["name"]
+            node_type = node["type"]
+            node_source = node["source"]
+            for sp in raw.get(SIDE_PACKET_INPUT_KEY, []):
+                if ":" in sp:
+                    ctag, cname = sp.split(":", 1)
+                    # Strict match: both tag and name must match
+                    if (ctag == prod_tag and cname == prod_name) or (ctag == prod_tag and not prod_name) or (cname == prod_name and not prod_tag):
+                        consumers_set.add((node_name, node_source))
+                else:
+                    # Only name or only tag present
+                    if sp == prod_name or sp == prod_tag:
+                        consumers_set.add((node_name, node_source))
+        consumers_md = "<br>".join([
+            f"[{cname}]({csource})" if csource else cname
+            for cname, csource in sorted(consumers_set)
+        ])
         report_rows.append({
-            "node": node_name,
-            "type": node_type,
-            "source": node_source,
-            "side_packet": sp,
-            "consumed_by": consumers_md
+            "producer": f"[{prod_node}]({prod_source})" if prod_source else prod_node,
+            "type": prod_type,
+            "side_packet": prod_full,
+            "consumer": consumers_md
         })
     return report_rows
 
 def generate_markdown(rows: List[Dict[str, str]]) -> str:
     """
-    Generates markdown listing all side packets, their producing nodes, node type, and consumers (hyperlinked, <br>-delimited).
+    Generates markdown listing all produced Tag:name packets, their producer node, and all matching consumers (hyperlinked, <br>-delimited).
     """
-    if not rows:
+    if rows is None:
         raise Exception("could not read the input json analysis file, have you run pipeline_parser.py to make it available?")
     md = ["# Side Packets Report\n"]
-    md.append("| Pipeline Producer Node | Type | Output Side Packet | Pipeline Consumer Node |")
-    md.append("|------|-----------|-------------|-------------|")
+    md.append("| Producer Node | Type | Output Side Packet | Consumer Node(s) |")
+    md.append("|--------------|------|-------------------|------------------|")
     for entry in rows:
-        node_link = f"[{entry['node']}]({entry['source']})" if entry['source'] else entry['node']
-        md.append(f"| {node_link} | {entry['type']} | {entry['side_packet']} | {entry['consumed_by']} |")
+        md.append(f"| {entry['producer']} | {entry['type']} | {entry['side_packet']} | {entry['consumer']} |")
     return "\n".join(md)
 
 def main():

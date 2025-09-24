@@ -495,7 +495,7 @@ class MediaPipePipelineParser:
             input_streams=graph.input_streams,
             output_streams=graph.output_streams,
             input_side_packets=graph.input_side_packets,
-            output_side_packets=graph.output_streams,
+            output_side_packets=graph.output_side_packets,
             node_options=None,
             inline_pbtxt_comment=graph_header_comment
         )
