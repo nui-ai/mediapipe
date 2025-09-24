@@ -12,9 +12,8 @@ from collections import defaultdict
 INPUT_JSON_PATH = os.path.join(os.path.dirname(__file__), "output", "json", "pipeline.verbose.json")
 # Path to the output markdown file
 OUTPUT_MD_PATH = os.path.join(os.path.dirname(__file__), "output", "side-packets.md")
-
-SIDE_PACKET_KEYS = ["output_side_packets", "input_side_packets", "side_packets"]
-CONSUMED_PACKET_KEYS = ["input_side_packets", "side_packets"]
+SIDE_PACKET_OUTPUT_KEY = "output_side_packets"
+SIDE_PACKET_INPUT_KEY = "input_side_packets"
 
 # Helper to recursively collect all nodes
 
@@ -30,15 +29,12 @@ def collect_all_nodes(node: Dict[str, Any], parent_name: str = None) -> List[Dic
 
 def extract_side_packet_relations(all_nodes: List[Dict[str, Any]]) -> List[Dict[str, str]]:
     """
-    For each produced side packet, find all consumers and build the report rows.
-    Implements MediaPipe packet resolution rules:
-    - A consumer matches a side packet if:
-      * The full tag:name matches
-      * The name (right side of a:b) matches, regardless of tag
-      * The tag (left side of a:b) matches, regardless of name
-      * The consumer references just the name, and any producer has that name
-      * The consumer references just the tag, and any producer has that tag
-    This logic is crucial for correct MediaPipe packet resolution and will match RESOURCE:model_resource to MODEL_RESOURCE:model_resource by name.
+    For each produced side packet (output_side_packets), find all consumers (input_side_packets) and build the report rows.
+    Implements correct MediaPipe packet resolution rules:
+    - Only output_side_packets and input_side_packets are considered.
+    - A consumer matches a side packet if the name (right side of a:b) matches, regardless of tag.
+    - Optionally, also match full tag:name for strict cases.
+    This logic ensures RESOURCE:model_resource and MODEL_RESOURCE:model_resource are matched by 'model_resource'.
     """
     # Map: produced side_packet_name -> (producer_name, producer_source, node_type, tag, name)
     produced_packets = {}
@@ -47,42 +43,31 @@ def extract_side_packet_relations(all_nodes: List[Dict[str, Any]]) -> List[Dict[
         node_name = node["name"]
         node_source = node["source"]
         node_type = node["type"]
-        for key in SIDE_PACKET_KEYS:
-            for sp in raw.get(key, []):
-                if ":" in sp:
-                    tag, name = sp.split(":", 1)
-                else:
-                    tag, name = sp, sp
-                produced_packets[sp] = (node_name, node_source, node_type, tag, name)
+        for sp in raw.get(SIDE_PACKET_OUTPUT_KEY, []):
+            if ":" in sp:
+                tag, name = sp.split(":", 1)
+            else:
+                tag, name = "", sp
+            produced_packets[sp] = (node_name, node_source, node_type, tag, name)
     # Map: produced side_packet_name -> list of (consumer_name, consumer_source)
     consumed_by = {sp: [] for sp in produced_packets}
-    # --- MediaPipe packet resolution rules implemented below ---
+    # --- Correct MediaPipe packet resolution rules implemented below ---
     for node in all_nodes:
         raw = node["raw"]
         node_name = node["name"]
         node_source = node["source"]
-        for key in CONSUMED_PACKET_KEYS:
-            for consumer_ref in raw.get(key, []):
-                if ":" in consumer_ref:
-                    ctag, cname = consumer_ref.split(":", 1)
-                else:
-                    ctag, cname = consumer_ref, consumer_ref
-                for produced_name, (pnode, psource, ptype, ptag, pname) in produced_packets.items():
-                    # Prominent comment: MediaPipe packet resolution rules
-                    # Match if:
-                    # - Full tag:name matches
-                    # - Name matches (regardless of tag)
-                    # - Tag matches (regardless of name)
-                    # - Consumer references just name, match any producer with that name
-                    # - Consumer references just tag, match any producer with that tag
-                    if (
-                        consumer_ref == produced_name or
-                        consumer_ref == pname or
-                        consumer_ref == ptag or
-                        (":" in consumer_ref and cname == pname) or
-                        (":" in consumer_ref and ctag == ptag)
-                    ):
-                        consumed_by[produced_name].append((node_name, node_source))
+        for consumer_ref in raw.get(SIDE_PACKET_INPUT_KEY, []):
+            if ":" in consumer_ref:
+                ctag, cname = consumer_ref.split(":", 1)
+            else:
+                ctag, cname = "", consumer_ref
+            for produced_name, (pnode, psource, ptype, ptag, pname) in produced_packets.items():
+                # Prominent comment: MediaPipe packet resolution is by name (right side of a:b), regardless of tag
+                if cname == pname:
+                    consumed_by[produced_name].append((node_name, node_source))
+                # Optionally, also match full tag:name for strict cases
+                elif consumer_ref == produced_name:
+                    consumed_by[produced_name].append((node_name, node_source))
     # Now, for each produced side packet, build the report row
     report_rows = []
     for sp, (node_name, node_source, node_type, tag, name) in produced_packets.items():
