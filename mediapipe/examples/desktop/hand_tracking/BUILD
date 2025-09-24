@@ -14,6 +14,8 @@
 
 licenses(["notice"])
 
+# a demo main program that makes an output video with hand landmarks drawn on it
+#
 # BUILD:
 # bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 \
 #   //mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
@@ -33,6 +35,11 @@ cc_binary(
     ],
 )
 
+# accomplisehs the same as above just also uses OpenCV for display,
+# shows you each image as it goes, and takes its arguments a little differently.
+# not much to see there beyond the former, just a mechanically different way
+# of operating the same graph.
+#
 # BUILD:
 # bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 \
 #   //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
