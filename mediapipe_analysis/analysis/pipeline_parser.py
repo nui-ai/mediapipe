@@ -795,9 +795,10 @@ code, pre {{ background: #222; color: #eee; }}
             if p is None:
                 return ''
             try:
-                # Compute relative path from markdown file to source file
-                md_dir = Path('mediapipe_analysis/analysis/output/markdown').resolve()
-                return str(Path(p).resolve().relative_to(md_dir))
+                if use_absolute_links:
+                    return str(Path(p).resolve())
+                md_dir = Path(json_path).parent.resolve()
+                return os.path.relpath(str(Path(p).resolve()), md_dir)
             except Exception:
                 return str(Path(p).name)
         # Prepare display name
@@ -836,8 +837,16 @@ code, pre {{ background: #222; color: #eee; }}
             md = f'# Pipeline Hierarchy for `{node.name}` (verbose)\n\n'
         else:
             md = ''
-        def abspath(p):
-            return str(Path(p).resolve()) if p else ''
+        def relpath(p):
+            if p is None:
+                return ''
+            try:
+                if use_absolute_links:
+                    return str(Path(p).resolve())
+                md_dir = Path(md_verbose_path).parent.resolve()
+                return os.path.relpath(str(Path(p).resolve()), md_dir)
+            except Exception:
+                return str(Path(p).name)
         # Prepare display name
         display_name = node.name
         if node.node_type == 'graph':
@@ -845,13 +854,13 @@ code, pre {{ background: #222; color: #eee; }}
         # Node name as bold hyperlink
         if node.node_type == 'calculator' and node.source and node.source_line_number:
             if with_line_numbers:
-                link = f"{abspath(node.source)}#L{node.source_line_number}" if use_absolute_links else f"{Path(node.source).relative_to(Path.cwd())}#L{node.source.line_number}"
+                link = f"{relpath(node.source)}#L{node.source_line_number}"
                 md += f'{indent}- **[{display_name}]({link})**\n'
             else:
-                link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
+                link = relpath(node.source)
                 md += f'{indent}- **[{display_name}]({link})**\n'
         elif node.source:
-            link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
+            link = relpath(node.source)
             md += f'{indent}- **[{display_name}]({link})**\n'
         else:
             md += f'{indent}- **[{display_name}](#)**\n'
