@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional
 from dataclasses import dataclass
 import json
 import yaml
+import os
 
 
 
@@ -567,9 +568,21 @@ class MediaPipePipelineParser:
         # Helper for hyperlinks (no line numbers)
         def make_link(node):
             if node.node_type == 'calculator' and node.source:
-                return esc(str(node.source))
+                path = str(node.source)
+                html_file_dir = Path('mediapipe_analysis/analysis/output/html').resolve()
+                try:
+                    rel_path = os.path.relpath(Path(path).resolve(), html_file_dir)
+                except Exception:
+                    rel_path = str(Path(path).name)
+                return esc(rel_path)
             elif node.source:
-                return esc(str(node.source))
+                path = str(node.source)
+                html_file_dir = Path('mediapipe_analysis/analysis/output/html').resolve()
+                try:
+                    rel_path = os.path.relpath(Path(path).resolve(), html_file_dir)
+                except Exception:
+                    rel_path = str(Path(path).name)
+                return esc(rel_path)
             return None
         # Recursive rendering
         def render_node(node, level):
@@ -694,7 +707,7 @@ code, pre {{ background: #222; color: #eee; }}
 </head>
 <body>
 '''.format(name=esc(node.name))
-        html_tail = f'<br><br>{self._formats_table_html(script_name)}<br><div class="footer-note" style="color:#aaa;font-size:small;">To regenerate this analysis for the mediapipe directory, run <code>{script_name}</code>.</div>\n</body>\n</html>'
+        html_tail = f'<br><br>{self._formats_table_html(script_name)}<br><div class="footer-note" style="color:#aaa;font-size:small;">To regenerate this analysis for the mediapipe directory, run <code>{script_name}</code>.<br>For best navigation, open this HTML file via a local web server (e.g. <code>python3 -m http.server</code>) from your workspace root.</div>\n</body>\n</html>'
         html_body = f'<h1>Pipeline {esc(node.name)}</h1>\n<ul>\n<li>{render_node(node, 0)}</li>\n</ul>'
         return html_head + html_body + html_tail
 
@@ -778,8 +791,15 @@ code, pre {{ background: #222; color: #eee; }}
             md = f'# Pipeline {node.name}\n\n'
         else:
             md = ''
-        def abspath(p):
-            return str(Path(p).resolve()) if p else ''
+        def relpath(p):
+            if p is None:
+                return ''
+            try:
+                # Compute relative path from markdown file to source file
+                md_dir = Path('mediapipe_analysis/analysis/output/markdown').resolve()
+                return str(Path(p).resolve().relative_to(md_dir))
+            except Exception:
+                return str(Path(p).name)
         # Prepare display name
         display_name = node.name
         if node.node_type == 'graph':
@@ -787,13 +807,13 @@ code, pre {{ background: #222; color: #eee; }}
         # Always render node as hyperlink
         if node.node_type == 'calculator' and node.source and node.source_line_number:
             if with_line_numbers:
-                link = f"{abspath(node.source)}#L{node.source_line_number}" if use_absolute_links else f"{Path(node.source).relative_to(Path.cwd())}#L{node.source_line_number}"
+                link = f"{relpath(node.source)}#L{node.source_line_number}"
                 md += f'{indent}- [{display_name}]({link})'
             else:
-                link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
+                link = relpath(node.source)
                 md += f'{indent}- [{display_name}]({link})'
         elif node.source:
-            link = abspath(node.source) if use_absolute_links else str(Path(node.source).relative_to(Path.cwd()))
+            link = relpath(node.source)
             md += f'{indent}- [{display_name}]({link})'
         else:
             # If no source, just link to a placeholder (could be improved)
