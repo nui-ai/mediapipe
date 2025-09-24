@@ -12,6 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// In TensorFlow Lite (TFLite), op resolving refers to the process of mapping operation names (like Conv2D, Add, etc.) in a TFLite model
+// to their actual implementations (kernels) in code. The OpResolver is responsible for registering and providing these implementations
+// to the TFLite interpreter, so it knows how to execute each operation in the model. This is especially important for custom or
+// non-standard ops that are not built into TFLite by default.
+// In the context of TensorFlow Lite and TfLiteCustomOpResolverCalculator, typical providers of custom ops may include:
+// mediapipe (for MediaPipe-specific custom ops)
+// + tensorflow/lite (for built-in and custom TFLite ops)
+// + GPU libraries (such as OpenGL, Metal, or CUDA for GPU-accelerated ops)
+// + Third-party libraries (for domain-specific or experimental ops)
+// - These libraries implement the actual kernels and registration logic for the ops used in TFLite models.
+// so this calculator basically configures tflite for being able to use the necessary kernels which our models use.
+
 #include <memory>
 
 #include "mediapipe/calculators/tflite/tflite_custom_op_resolver_calculator.pb.h"
