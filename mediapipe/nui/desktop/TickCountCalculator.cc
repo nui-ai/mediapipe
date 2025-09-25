@@ -37,7 +37,6 @@ class TickCountCalculator : public CalculatorBase {
   int counter_ = 0;
 };
 
-// Register without namespace prefix
 REGISTER_CALCULATOR(TickCountCalculator);
 
-}  // namespace mediapipe
+}
