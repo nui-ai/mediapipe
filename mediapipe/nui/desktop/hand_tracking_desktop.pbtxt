@@ -16,6 +16,12 @@ node {
   output_stream: "VIDEO_PRESTREAM:input_video_header"
 }
 
+# Tick counting node making the current frame number available for every other node for debugging or logging.
+node {
+  calculator: "TickCountCalculator"
+  output_stream: "TICK_COUNT:frame_number"
+}
+
 # Generates side packet cotaining max number of hands to detect/track.
 node {
   calculator: "ConstantSidePacketCalculator"

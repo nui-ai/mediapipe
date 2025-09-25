@@ -1,10 +1,24 @@
-# Export the main source file for hand tracking.
-exports_files(["simple_run_graph_main.cc"])
+cc_library(
+    name = "tick_count_calculator",
+    srcs = ["TickCountCalculator.cc"],
+    deps = [
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework:calculator_base",
+        "@com_google_absl//absl/log:absl_log",
+    ],
+    alwayslink = 1,  # Important: Ensures the calculator registration code is always linked
+    visibility = ["//visibility:public"],
+)
 
 cc_library(
     name = "simple_run_graph_main",
-    srcs = ["simple_run_graph_main.cc"],
+    srcs = [
+        "simple_run_graph_main.cc",
+    ],
     hdrs = [],
+    visibility = [
+        "//mediapipe/nui/desktop/hand_tracking:__pkg__",
+    ],
     deps = [
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/port:file_helpers",
@@ -16,6 +30,6 @@ cc_library(
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
         "@com_google_absl//absl/log:absl_log",
-        "@com_google_absl//absl/strings",    ],
-    visibility = ["//mediapipe/nui/desktop/hand_tracking:__pkg__"],
+        "@com_google_absl//absl/strings",
+    ],
 )

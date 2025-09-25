@@ -29,6 +29,7 @@ cc_binary(
     ],
     deps = [
         "//mediapipe/nui/desktop:simple_run_graph_main", # <== our main is this source cc file
+        "//mediapipe/nui/desktop:tick_count_calculator", # Add explicit dependency
         "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
     ],
 )

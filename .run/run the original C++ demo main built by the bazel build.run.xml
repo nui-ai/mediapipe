@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="run our own C++ main" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="bazel-bin/mediapipe/nui/desktop/hand_tracking/hand_tracking_tflite --calculator_graph_config_file=./mediapipe/nui/desktop/hand_tracking_desktop.pbtxt --input_side_packets=input_video_path=sample-video.avi,output_video_path=output_video.mp4" />
+  <configuration default="false" name="run the original C++ demo main built by the bazel build" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="bazel-bin/mediapipe/examples/desktop/hand_tracking/hand_tracking_cpu --calculator_graph_config_file=./mediapipe/graphs/hand_tracking/hand_tracking_desktop_live.pbtxt --input_video_path=sample-video.avi output_video_path=output_video.mp4" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="bazel-bin/mediapipe/examples/desktop/hand_tracking/hand_tracking_tflite --calculator_graph_config_file=./mediapipe/graphs/hand_tracking/hand_tracking_desktop.pbtxt --input_side_packets=input_video_path=sample-video.avi,output_video_path=output_video.mp4" />
     <option name="SCRIPT_OPTIONS" value="" />
