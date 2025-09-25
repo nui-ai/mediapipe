@@ -10,9 +10,12 @@ namespace mediapipe {
 class TickCountCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
-    // Accept IMAGE input stream
+    // Accept the IMAGE input stream, which is necessary in order for this calculator to be actually invoked,
+    // and obviously will only get invoked once per image (as it only appears in the pipeline once).
     cc->Inputs().Tag("IMAGE").Set<ImageFrame>();
-    // Optionally, output the tick count
+    // later, maybe output the tick count for every calculator to consume,
+    // if we don't have this calculator increment a global counter for them
+    // to directly access.
     // cc->Outputs().Tag("TICK_COUNT").Set<int>();
     return absl::OkStatus();
   }
@@ -23,9 +26,8 @@ class TickCountCalculator : public CalculatorBase {
   }
 
   absl::Status Process(CalculatorContext* cc) override {
+    ABSL_LOG(INFO) << "pipeline processing frame number: " << counter_;
     ++counter_;
-    // Removed division by zero
-    ABSL_LOG(INFO) << "Tick count: " << counter_;
     // Optionally, output the tick count
     // cc->Outputs().Tag("TICK_COUNT").Add(new int(counter_), cc->InputTimestamp());
     return absl::OkStatus();
