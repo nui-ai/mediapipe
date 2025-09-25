@@ -1,11 +1,22 @@
 cc_library(
+    name = "shared_calculator_state",
+    srcs = ["SharedCalculatorState.cc"],
+    hdrs = ["SharedCalculatorState.h"],
+    includes = ["mediapipe/nui/desktop"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
     name = "tick_count_calculator",
     srcs = ["TickCountCalculator.cc"],
+    hdrs = ["SharedCalculatorState.h"],
+    includes = ["mediapipe/nui/desktop"],
     deps = [
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:calculator_base",
         "//mediapipe/framework/formats:image",
         "@com_google_absl//absl/log:absl_log",
+        ":shared_calculator_state",
     ],
     alwayslink = 1,  # Important: Ensures the calculator registration code is always linked
     visibility = ["//visibility:public"],

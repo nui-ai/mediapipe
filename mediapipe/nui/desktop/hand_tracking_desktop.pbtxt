@@ -25,12 +25,13 @@ node {
 node {
   calculator: "TickCountCalculator"
   input_stream: "IMAGE:input_video"
-  #  output_stream: "TICK_COUNT:frame_number"
+  output_stream: "COUNTING_DONE:done"
 }
 
 # Detects/tracks hand landmarks.
 node {
   calculator: "HandLandmarkTrackingCpu"
+  input_stream: "COUNTING_DONE:done"
   input_stream: "IMAGE:input_video"
   input_side_packet: "NUM_HANDS:num_hands"
   output_stream: "LANDMARKS:landmarks"

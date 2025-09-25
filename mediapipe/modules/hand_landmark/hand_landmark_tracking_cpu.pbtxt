@@ -8,6 +8,10 @@
 
 type: "HandLandmarkTrackingCpu"
 
+# input stream that only synchronizes that this node does not start before the counting calculator has finished on the current graph invocation,
+# thus making sure that no calculator starts before the counting calculaltor has produced its output packet, which is always just the value 'true'.
+input_stream: "COUNTING_DONE:done"
+
 # CPU image. (ImageFrame)
 input_stream: "IMAGE:image"
 
