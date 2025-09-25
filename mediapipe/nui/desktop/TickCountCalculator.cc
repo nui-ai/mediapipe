@@ -2,6 +2,7 @@
 #include "absl/log/absl_log.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/calculator_base.h"
+#include "mediapipe/framework/formats/image_frame.h"
 
 // MediaPipe calculators should be in the mediapipe namespace
 namespace mediapipe {
@@ -9,8 +10,10 @@ namespace mediapipe {
 class TickCountCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
-    // Output the tick count
-    cc->Outputs().Tag("TICK_COUNT").Set<int>();
+    // Accept IMAGE input stream
+    cc->Inputs().Tag("IMAGE").Set<ImageFrame>();
+    // Optionally, output the tick count
+    // cc->Outputs().Tag("TICK_COUNT").Set<int>();
     return absl::OkStatus();
   }
 
@@ -21,8 +24,10 @@ class TickCountCalculator : public CalculatorBase {
 
   absl::Status Process(CalculatorContext* cc) override {
     ++counter_;
+    // Removed division by zero
     ABSL_LOG(INFO) << "Tick count: " << counter_;
-    cc->Outputs().Tag("TICK_COUNT").Add(new int(counter_), cc->InputTimestamp());
+    // Optionally, output the tick count
+    // cc->Outputs().Tag("TICK_COUNT").Add(new int(counter_), cc->InputTimestamp());
     return absl::OkStatus();
   }
 

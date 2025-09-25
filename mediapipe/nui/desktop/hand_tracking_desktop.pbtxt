@@ -1,11 +1,5 @@
-# MediaPipe graph that performs hands tracking on desktop with TensorFlow Lite
-# on CPU.
-# Used in the example in
-# mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite.
+# a clone of mediapipe/solutions/hand_tracking/hand_tracking_desktop.pbtxt, with our modifications.
 
-# max_queue_size limits the number of packets enqueued on any input stream
-# by throttling inputs to the graph. This makes the graph only process one
-# frame per time.
 max_queue_size: 1
 
 # Decodes an input video file into images and a video header.
@@ -14,12 +8,6 @@ node {
   input_side_packet: "INPUT_FILE_PATH:input_video_path"
   output_stream: "VIDEO:input_video"
   output_stream: "VIDEO_PRESTREAM:input_video_header"
-}
-
-# Tick counting node making the current frame number available for every other node for debugging or logging.
-node {
-  calculator: "TickCountCalculator"
-  output_stream: "TICK_COUNT:frame_number"
 }
 
 # Generates side packet cotaining max number of hands to detect/track.
@@ -31,6 +19,13 @@ node {
       packet { int_value: 2 }
     }
   }
+}
+
+# Tick counting node making the current frame number available for every other node for debugging or logging.
+node {
+  calculator: "TickCountCalculator"
+  input_stream: "IMAGE:input_video"
+  #  output_stream: "TICK_COUNT:frame_number"
 }
 
 # Detects/tracks hand landmarks.

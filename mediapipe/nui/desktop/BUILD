@@ -4,6 +4,7 @@ cc_library(
     deps = [
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:calculator_base",
+        "//mediapipe/framework/formats:image",
         "@com_google_absl//absl/log:absl_log",
     ],
     alwayslink = 1,  # Important: Ensures the calculator registration code is always linked

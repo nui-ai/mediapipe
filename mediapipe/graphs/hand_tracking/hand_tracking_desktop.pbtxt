@@ -1,11 +1,9 @@
-# MediaPipe graph that performs hands tracking on desktop with TensorFlow Lite
-# on CPU.
-# Used in the example in
-# mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite.
-
-# max_queue_size limits the number of packets enqueued on any input stream
-# by throttling inputs to the graph. This makes the graph only process one
-# frame per time.
+# MediaPipe graph that performs hands tracking on desktop with TensorFlow Lite on CPU.
+# Used in the example in mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite.
+# max_queue_size limits the number of packets enqueued on any input stream by throttling inputs to the graph. This makes the graph only process one frame per time.
+# this graph just adds video reading, rendering over the original images, and writing the rendered images, on top of the HandLandmarkTrackingCpu graph
+# which is the actual hand tracking graph ― as seen by the nodes which it consists of below. (as such the filename of the current graph is only confusing,
+# as HandLandmarkTrackingCpu is defined in hand_landmark_tracking_cpu.pbtxt, so the names of the two only obfuscate their actual relationship).
 max_queue_size: 1
 
 # Decodes an input video file into images and a video header.
