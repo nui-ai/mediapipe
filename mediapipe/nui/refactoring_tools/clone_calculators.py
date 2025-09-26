@@ -20,10 +20,6 @@ import argparse
 import json
 import os
 import re
-import shutil
-
-
-
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -128,6 +124,8 @@ def clone_and_rename_file(src_path, dst_path, old_name, new_name, subnode_rename
     # Rename references to subnodes
     for sub_old, sub_new in subnode_renames.items():
         content = re.sub(rf'\b{sub_old}\b', sub_new, content)
+    # Ensure parent directory exists before writing
+    os.makedirs(os.path.dirname(dst_path), exist_ok=True)
     with open(dst_path, 'w') as f:
         f.write(content)
     print(f"cloned & renamed {src_path} --> {dst_path}")

@@ -14,15 +14,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/mediapipe/nui/refactoring_tools/clone_calculators.py" />
-    <option name="PARAMETERS" value="--rewrite=False
-      --pipeline_json=$PROJECT_DIR$/mediapipe_analysis/analysis/output/json/pipeline.verbose.json
-      --pipeline_pbtxt_file=$PROJECT_DIR$/mediapipe/modules/hand_landmark/hand_landmark_tracking_cpu.pbtxt
-      --clones_suffix=New
-      --target_source_dir=$PROJECT_DIR$/mediapipe/nui/desktop/calculators
-      --target_build_file=$PROJECT_DIR$/mediapipe/nui/desktop/build_target/BUILD
-      --calculators_build_file=$PROJECT_DIR$/mediapipe/nui/desktop/BUILD
-      --target_build_library_name=new
-      --verbose=False" />
+    <option name="PARAMETERS" value="--rewrite=False --pipeline_json=$PROJECT_DIR$/mediapipe_analysis/analysis/output/json/pipeline.verbose.json --pipeline_pbtxt_file=$PROJECT_DIR$/mediapipe/modules/hand_landmark/hand_landmark_tracking_cpu.pbtxt --clones_suffix=New --target_source_dir=$PROJECT_DIR$/mediapipe/nui/desktop/calculators --target_build_file=$PROJECT_DIR$/mediapipe/nui/desktop/hand_tracking/BUILD --calculators_build_file=$PROJECT_DIR$/mediapipe/nui/desktop/BUILD --target_build_library_name=new --verbose=False" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />
