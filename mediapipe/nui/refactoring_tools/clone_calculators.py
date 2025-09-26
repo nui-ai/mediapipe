@@ -25,9 +25,19 @@ import shutil
 
 
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
 def main():
     parser = argparse.ArgumentParser(description='Clone a MediaPipe pipeline with a specified suffix.')
-    parser.add_argument('--rewrite', action='store_true', default=False, help='Whether to rewrite existing files (default: False)')
+    parser.add_argument('--rewrite', type=str2bool, default=False, help='Whether to rewrite existing files (default: False)')
     input_group = parser.add_mutually_exclusive_group(required=True)
     input_group.add_argument('--single_calculator_only', help='Path to a single calculator source file to clone (absolute or relative)')
     input_group.add_argument('--pipeline_json', help='Path to the JSON file describing the pipeline hierarchy (absolute or relative) created by our pipeline parsing script. the same pipeline it was run for must be provided as the next argument value:')
@@ -41,7 +51,7 @@ def main():
     parser.add_argument('--calculators_build_file', default=os.path.join("mediapipe/nui/desktop/calculators/BUILD"), help='Path to the calculators BUILD file (absolute or relative) for integrating the cloned entities')
     parser.add_argument('--target_build_library_name', default="new", help='Name for the single cc_library integrating all cloned calculators (default: "new"). Using the same name as the suffix keeps thing simple, but you may use a more descriptive name here when applicable')
 
-    parser.add_argument('--verbose', action='store_true', help='Enable verbose output for debugging')
+    parser.add_argument('--verbose', type=str2bool, default=False, help='Enable verbose output for debugging')
     args = parser.parse_args()
 
     all_cloned_src_files = []
