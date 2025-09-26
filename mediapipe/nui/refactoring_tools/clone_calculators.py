@@ -27,17 +27,21 @@ import shutil
 
 def main():
     parser = argparse.ArgumentParser(description='Clone a MediaPipe pipeline with a specified suffix.')
-    input_group = parser.add_mutually_exclusive_group(required=True)
-    input_group.add_argument('--pipeline_json', help='Path to the JSON file describing the pipeline hierarchy (absolute or relative)')
-    input_group.add_argument('--single_calculator', help='Path to a single calculator source file to clone (absolute or relative)')
-    parser.add_argument('--pbtxt_file', help='Path to the pbtxt file to clone (absolute or relative)')
-    parser.add_argument('--suffix', default="New", help='Suffix to add to calculator names (default: "New")')
-    parser.add_argument('--target_dir', default=os.path.join("mediapipe/nui/desktop/calculators"), help='Target directory for cloned calculator files (absolute or relative)')
-    parser.add_argument('--calculators_build_path', default=os.path.join("mediapipe/nui/desktop/calculators/BUILD"), help='Path to the calculators BUILD file (absolute or relative)')
-    parser.add_argument('--hand_tracking_build_path', default=os.path.join("mediapipe/nui/desktop/hand_tracking/BUILD"), help='Path to the hand tracking BUILD file (absolute or relative)')
     parser.add_argument('--rewrite', action='store_true', default=False, help='Whether to rewrite existing files (default: False)')
+    input_group = parser.add_mutually_exclusive_group(required=True)
+    input_group.add_argument('--single_calculator_only', help='Path to a single calculator source file to clone (absolute or relative)')
+    input_group.add_argument('--pipeline_json', help='Path to the JSON file describing the pipeline hierarchy (absolute or relative) created by our pipeline parsing script. the same pipeline it was run for must be provided as the next argument value:')
+
+    parser.add_argument('--pipeline_pbtxt_file', help='Path to the pbtxt file to clone (absolute or relative) which the provided --pipeline_json describes.')
+
+    parser.add_argument('--clones_suffix', default="New", help='Suffix to add to the cloned calculators and graphs (default: "New")')
+
+    parser.add_argument('--target_source_dir', default=os.path.join("mediapipe/nui/desktop/calculators"), help='Target directory for the cloned calculator and graph files (absolute or relative)')
+    parser.add_argument('--target_build_file', default=os.path.join("mediapipe/nui/desktop/hand_tracking/BUILD"), help='Path to the build file to update for integrating the cloned entities (absolute or relative)')
+    parser.add_argument('--calculators_build_file', default=os.path.join("mediapipe/nui/desktop/calculators/BUILD"), help='Path to the calculators BUILD file (absolute or relative) for integrating the cloned entities')
+    parser.add_argument('--target_build_library_name', default="new", help='Name for the single cc_library integrating all cloned calculators (default: "new"). Using the same name as the suffix keeps thing simple, but you may use a more descriptive name here when applicable')
+
     parser.add_argument('--verbose', action='store_true', help='Enable verbose output for debugging')
-    parser.add_argument('--cloned_library_name', default="new", help='Name for the single cc_library integrating all cloned calculators (default: "new")')
     args = parser.parse_args()
 
     all_cloned_src_files = []
@@ -46,34 +50,34 @@ def main():
     if args.pipeline_json:
         with open(args.pipeline_json, 'r') as f:
             pipeline = json.load(f)
-        nodes = get_all_nodes(pipeline, args.suffix)
+        nodes = get_all_nodes(pipeline, args.clones_suffix)
         name_map = {n['name']: n['new_name'] for n in nodes}
         for node in nodes:
             src_path = node['source']
-            dst_path = os.path.join(args.target_dir, os.path.basename(node['new_source']))
+            dst_path = os.path.join(args.target_source_dir, os.path.basename(node['new_source']))
             subnode_renames = {sub['name']: sub['new_name'] for sub in nodes if sub['name'] != node['name']}
             force_rename = node.get('type', None) == 'calculator'
             clone_and_rename_file(src_path, dst_path, node['name'], node['new_name'], subnode_renames, args.rewrite, args.verbose, force_rename=force_rename)
             if src_path.endswith('.cc') or src_path.endswith('.cpp'):
-                all_cloned_src_files.append(os.path.relpath(dst_path, os.path.dirname(args.calculators_build_path)))
-        if args.pbtxt_file:
-            pbtxt_dst = append_suffix_to_filename(args.pbtxt_file, args.suffix)
-            clone_and_rename_file(args.pbtxt_file, pbtxt_dst, pipeline['name'], pipeline['name'] + args.suffix, name_map, args.rewrite, args.verbose, force_rename=True)
-    elif args.single_calculator:
-        src_path = args.single_calculator
+                all_cloned_src_files.append(os.path.relpath(dst_path, os.path.dirname(args.calculators_build_file)))
+        if args.pipeline_pbtxt_file:
+            pbtxt_dst = append_suffix_to_filename(args.pipeline_pbtxt_file, args.clones_suffix)
+            clone_and_rename_file(args.pipeline_pbtxt_file, pbtxt_dst, pipeline['name'], pipeline['name'] + args.clones_suffix, name_map, args.rewrite, args.verbose, force_rename=True)
+    elif args.single_calculator_only:
+        src_path = args.single_calculator_only
         name = os.path.splitext(os.path.basename(src_path))[0]
-        new_name = name + args.suffix
-        dst_path = os.path.join(args.target_dir, append_suffix_to_filename(os.path.basename(src_path), args.suffix))
+        new_name = name + args.clones_suffix
+        dst_path = os.path.join(args.target_source_dir, append_suffix_to_filename(os.path.basename(src_path), args.clones_suffix))
         clone_and_rename_file(src_path, dst_path, name, new_name, {}, args.rewrite, args.verbose, force_rename=True)
         if src_path.endswith('.cc') or src_path.endswith('.cpp'):
-            all_cloned_src_files.append(os.path.relpath(dst_path, os.path.dirname(args.calculators_build_path)))
+            all_cloned_src_files.append(os.path.relpath(dst_path, os.path.dirname(args.calculators_build_file)))
     else:
         print("No valid input provided.")
 
     # Only add a single cc_library for all cloned calculators
     if all_cloned_src_files:
-        add_cloned_library_to_build(args.calculators_build_path, args.cloned_library_name, all_cloned_src_files, args.verbose)
-        add_cloned_library_dep_to_hand_tracking_build(args.hand_tracking_build_path, args.cloned_library_name, args.verbose)
+        add_cloned_library_to_build(args.calculators_build_file, args.target_build_library_name, all_cloned_src_files, args.verbose)
+        add_cloned_library_dep_to_target_build_file(args.target_build_file, args.target_build_library_name, args.verbose)
 
 def get_all_nodes(node, suffix, nodes=None):
     """Recursively collect all calculators/graphs/sub-graphs from the pipeline JSON."""
@@ -184,13 +188,13 @@ cc_library(
     if verbose:
         print(f"Added single build rule for {library_name} to {build_path}")
 
-def add_cloned_library_dep_to_hand_tracking_build(build_path, cloned_library_name, verbose=False):
+def add_cloned_library_dep_to_target_build_file(build_path, target_build_library_name, verbose=False):
     """
-    Add the new cc_library as a dep in the hand_tracking_tflite cc_binary in the given BUILD file.
+    Add the new cc_library as a dep in the cc_binary in the given BUILD file.
     """
     with open(build_path, 'r') as f:
         lines = f.readlines()
-    dep_line = f'        "//mediapipe/nui/desktop:{cloned_library_name}",\n'
+    dep_line = f'        "//mediapipe/nui/desktop:{target_build_library_name}",\n'
     already_present = any(dep_line.strip() == line.strip() for line in lines)
     if already_present:
         if verbose:
@@ -205,9 +209,9 @@ def add_cloned_library_dep_to_hand_tracking_build(build_path, cloned_library_nam
             inserted = True
     with open(build_path, 'w') as f:
         f.writelines(new_lines)
-    print(f"Added dependency {dep_line.strip()} to hand_tracking_tflite in {build_path}")
+    print(f"Added dependency {dep_line.strip()} to cc_binary in {build_path}")
     if verbose:
-        print(f"Updated deps in hand_tracking_tflite cc_binary")
+        print(f"Updated deps in cc_binary")
 
 if __name__ == "__main__":
     main()
