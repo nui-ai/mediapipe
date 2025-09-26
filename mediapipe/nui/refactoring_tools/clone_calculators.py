@@ -37,13 +37,16 @@ def main():
     parser.add_argument('--hand_tracking_build_path', default=os.path.join("mediapipe/nui/desktop/hand_tracking/BUILD"), help='Path to the hand tracking BUILD file (absolute or relative)')
     parser.add_argument('--rewrite', action='store_true', default=False, help='Whether to rewrite existing files (default: False)')
     parser.add_argument('--verbose', action='store_true', help='Enable verbose output for debugging')
+    parser.add_argument('--cloned_library_name', default="new", help='Name for the single cc_library integrating all cloned calculators (default: "new")')
     args = parser.parse_args()
+
+    all_cloned_src_files = []
+    nodes = []
 
     if args.pipeline_json:
         with open(args.pipeline_json, 'r') as f:
             pipeline = json.load(f)
         nodes = get_all_nodes(pipeline, args.suffix)
-        # Build subnode rename map for each node
         name_map = {n['name']: n['new_name'] for n in nodes}
         for node in nodes:
             src_path = node['source']
@@ -51,10 +54,8 @@ def main():
             subnode_renames = {sub['name']: sub['new_name'] for sub in nodes if sub['name'] != node['name']}
             force_rename = node.get('type', None) == 'calculator'
             clone_and_rename_file(src_path, dst_path, node['name'], node['new_name'], subnode_renames, args.rewrite, args.verbose, force_rename=force_rename)
-            # Only add calculators (not graphs/pbtxt) to BUILD
             if src_path.endswith('.cc') or src_path.endswith('.cpp'):
-                add_calculator_to_build(args.calculators_build_path, node['new_name'].lower(), os.path.relpath(dst_path, os.path.dirname(args.calculators_build_path)), args.verbose)
-        # Clone and update pbtxt file
+                all_cloned_src_files.append(os.path.relpath(dst_path, os.path.dirname(args.calculators_build_path)))
         if args.pbtxt_file:
             pbtxt_dst = append_suffix_to_filename(args.pbtxt_file, args.suffix)
             clone_and_rename_file(args.pbtxt_file, pbtxt_dst, pipeline['name'], pipeline['name'] + args.suffix, name_map, args.rewrite, args.verbose, force_rename=True)
@@ -64,9 +65,15 @@ def main():
         new_name = name + args.suffix
         dst_path = os.path.join(args.target_dir, append_suffix_to_filename(os.path.basename(src_path), args.suffix))
         clone_and_rename_file(src_path, dst_path, name, new_name, {}, args.rewrite, args.verbose, force_rename=True)
-        add_calculator_to_build(args.calculators_build_path, new_name.lower(), os.path.relpath(dst_path, os.path.dirname(args.calculators_build_path)), args.verbose)
+        if src_path.endswith('.cc') or src_path.endswith('.cpp'):
+            all_cloned_src_files.append(os.path.relpath(dst_path, os.path.dirname(args.calculators_build_path)))
     else:
         print("No valid input provided.")
+
+    # Only add a single cc_library for all cloned calculators
+    if all_cloned_src_files:
+        add_cloned_library_to_build(args.calculators_build_path, args.cloned_library_name, all_cloned_src_files, args.verbose)
+        add_cloned_library_dep_to_hand_tracking_build(args.hand_tracking_build_path, args.cloned_library_name, args.verbose)
 
 def get_all_nodes(node, suffix, nodes=None):
     """Recursively collect all calculators/graphs/sub-graphs from the pipeline JSON."""
@@ -93,8 +100,7 @@ def clone_and_rename_file(src_path, dst_path, old_name, new_name, subnode_rename
     If force_rename is True, always rename old_name to new_name everywhere in the file.
     """
     if not rewrite and os.path.exists(dst_path):
-        if verbose:
-            print(f"Skipping {dst_path}, already exists.")
+        print(f"skipping target file {dst_path} because it already exists")
         return
     with open(src_path, 'r') as f:
         content = f.read()
@@ -110,6 +116,7 @@ def clone_and_rename_file(src_path, dst_path, old_name, new_name, subnode_rename
         content = re.sub(rf'\b{sub_old}\b', sub_new, content)
     with open(dst_path, 'w') as f:
         f.write(content)
+    print(f"cloned & renamed {src_path} --> {dst_path}")
     if verbose:
         print(f"Cloned and renamed {src_path} -> {dst_path}")
 
@@ -143,6 +150,64 @@ cc_library(
         f.write(rule)
     if verbose:
         print(f"Added build rule for {calculator_name} to {build_path}")
+
+def add_cloned_library_to_build(build_path, library_name, src_files, verbose=False):
+    """
+    Add a single cc_library rule for all cloned calculators to the BUILD file.
+    """
+    with open(build_path, 'r') as f:
+        build_content = f.read()
+    if f'name = "{library_name}"' in build_content:
+        if verbose:
+            print(f"Library {library_name} already present in {build_path}")
+        return
+    srcs_list = ',\n        '.join([f'"{src}"' for src in src_files])
+    rule = f'''
+cc_library(
+    name = "{library_name}",
+    srcs = [
+        {srcs_list}
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework:calculator_base",
+        "@com_google_absl//absl/log:absl_log",
+        "@com_google_absl//absl/status",
+    ],
+    alwayslink = 1,
+)
+'''
+    with open(build_path, 'a') as f:
+        f.write(rule)
+    print(f"Integrated all cloned calculators into cc_library: {library_name}")
+    if verbose:
+        print(f"Added single build rule for {library_name} to {build_path}")
+
+def add_cloned_library_dep_to_hand_tracking_build(build_path, cloned_library_name, verbose=False):
+    """
+    Add the new cc_library as a dep in the hand_tracking_tflite cc_binary in the given BUILD file.
+    """
+    with open(build_path, 'r') as f:
+        lines = f.readlines()
+    dep_line = f'        "//mediapipe/nui/desktop:{cloned_library_name}",\n'
+    already_present = any(dep_line.strip() == line.strip() for line in lines)
+    if already_present:
+        if verbose:
+            print(f"Dependency {dep_line.strip()} already present in {build_path}")
+        return
+    new_lines = []
+    inserted = False
+    for line in lines:
+        new_lines.append(line)
+        if line.strip() == '"//mediapipe/nui/desktop:tick_count_calculator",' and not inserted:
+            new_lines.append(dep_line)
+            inserted = True
+    with open(build_path, 'w') as f:
+        f.writelines(new_lines)
+    print(f"Added dependency {dep_line.strip()} to hand_tracking_tflite in {build_path}")
+    if verbose:
+        print(f"Updated deps in hand_tracking_tflite cc_binary")
 
 if __name__ == "__main__":
     main()
