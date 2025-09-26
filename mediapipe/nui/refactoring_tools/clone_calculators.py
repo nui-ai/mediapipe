@@ -50,7 +50,7 @@ def main():
     parser.add_argument('--verbose', type=str2bool, default=False, help='Enable verbose output for debugging')
     args = parser.parse_args()
 
-    all_cloned_src_files = []
+    all_cloned_src_files = set()
     nodes = []
 
     if args.pipeline_json:
@@ -65,7 +65,8 @@ def main():
             force_rename = node.get('type', None) == 'calculator'
             clone_and_rename_file(src_path, dst_path, node['name'], node['new_name'], subnode_renames, args.rewrite, args.verbose, force_rename=force_rename)
             if src_path.endswith('.cc') or src_path.endswith('.cpp'):
-                all_cloned_src_files.append(os.path.relpath(dst_path, os.path.dirname(args.calculators_build_file)))
+                rel_path = os.path.relpath(dst_path, os.path.dirname(args.calculators_build_file))
+                all_cloned_src_files.add(rel_path)
         if args.pipeline_pbtxt_file:
             pbtxt_dst = append_suffix_to_filename(args.pipeline_pbtxt_file, args.clones_suffix)
             clone_and_rename_file(args.pipeline_pbtxt_file, pbtxt_dst, pipeline['name'], pipeline['name'] + args.clones_suffix, name_map, args.rewrite, args.verbose, force_rename=True)
@@ -76,13 +77,14 @@ def main():
         dst_path = os.path.join(args.target_source_dir, append_suffix_to_filename(os.path.basename(src_path), args.clones_suffix))
         clone_and_rename_file(src_path, dst_path, name, new_name, {}, args.rewrite, args.verbose, force_rename=True)
         if src_path.endswith('.cc') or src_path.endswith('.cpp'):
-            all_cloned_src_files.append(os.path.relpath(dst_path, os.path.dirname(args.calculators_build_file)))
+            rel_path = os.path.relpath(dst_path, os.path.dirname(args.calculators_build_file))
+            all_cloned_src_files.add(rel_path)
     else:
         print("No valid input provided.")
 
     # Only add a single cc_library for all cloned calculators
     if all_cloned_src_files:
-        add_cloned_library_to_build(args.calculators_build_file, args.target_build_library_name, all_cloned_src_files, args.verbose)
+        add_cloned_library_to_build(args.calculators_build_file, args.target_build_library_name, sorted(all_cloned_src_files), args.verbose)
         add_cloned_library_dep_to_target_build_file(args.target_build_file, args.target_build_library_name, args.verbose)
 
 def get_all_nodes(node, suffix, nodes=None):
@@ -108,12 +110,21 @@ def clone_and_rename_file(src_path, dst_path, old_name, new_name, subnode_rename
     Clone src_path to dst_path, renaming class names and references from old_name to new_name,
     and updating references to subnodes using subnode_renames dict {old: new}.
     If force_rename is True, always rename old_name to new_name everywhere in the file.
+    Also, if src_path is a .cc file, clone and rename the corresponding .h file similarly.
     """
     if not rewrite and os.path.exists(dst_path):
         print(f"skipping target file {dst_path} because it already exists")
         return
     with open(src_path, 'r') as f:
         content = f.read()
+    # Update #include statement for the header if this is a .cc file
+    if src_path.endswith('.cc') or src_path.endswith('.cpp'):
+        # Determine the new header file name and path
+        base_name = os.path.splitext(os.path.basename(src_path))[0]
+        new_header_name = base_name + f'_{new_name[len(old_name):].lower()}.h'
+        new_header_path = f'mediapipe/nui/desktop/calculators/{new_header_name}'
+        # Replace any #include of the original header with the new one
+        content = re.sub(r'#include\s+"[^"]*' + re.escape(base_name) + r'\.h"', f'#include "{new_header_path}"', content)
     # Always rename calculator node name everywhere if force_rename
     if force_rename:
         content = re.sub(rf'\b{re.escape(old_name)}\b', new_name, content)
@@ -131,6 +142,42 @@ def clone_and_rename_file(src_path, dst_path, old_name, new_name, subnode_rename
     print(f"cloned & renamed {src_path} --> {dst_path}")
     if verbose:
         print(f"Cloned and renamed {src_path} -> {dst_path}")
+
+    # If src_path is a .cc file, also clone and rename its .h file
+    if src_path.endswith('.cc') or src_path.endswith('.cpp'):
+        src_dir = os.path.dirname(src_path)
+        base_name = os.path.splitext(os.path.basename(src_path))[0]
+        src_h_path = os.path.join(src_dir, base_name + '.h')
+        if os.path.exists(src_h_path):
+            dst_h_path = os.path.join(os.path.dirname(dst_path), base_name + f'_{new_name[len(old_name):].lower()}.h')
+            with open(src_h_path, 'r') as f:
+                h_content = f.read()
+            # Rename class name in .h file
+            h_content = re.sub(rf'\b{re.escape(old_name)}\b', new_name, h_content)
+            # Rename references to subnodes in .h file
+            for sub_old, sub_new in subnode_renames.items():
+                h_content = re.sub(rf'\b{sub_old}\b', sub_new, h_content)
+            # Robust include guard update
+            guard_match = re.search(r'#ifndef\s+([A-Z0-9_]+)', h_content)
+            if guard_match:
+                old_guard = guard_match.group(1)
+                # Construct new guard from the new header path
+                rel_path = os.path.relpath(dst_h_path, os.path.join(os.getcwd(), ''))
+                new_guard_base = re.sub(r'[^A-Za-z0-9]', '_', rel_path).upper()
+                # Remove trailing _H or _H_ from new_guard_base
+                new_guard_base = re.sub(r'_H_?$', '', new_guard_base)
+                new_guard = new_guard_base + '_H_'
+                # Replace all instances of old_guard with new_guard
+                h_content = re.sub(rf'(#ifndef\s+){old_guard}', rf'\1{new_guard}', h_content)
+                h_content = re.sub(rf'(#define\s+){old_guard}', rf'\1{new_guard}', h_content)
+                h_content = re.sub(rf'(#endif\s*//\s*){old_guard}', rf'\1{new_guard}', h_content)
+                h_content = re.sub(rf'(#endif\s*)//\s*{old_guard}', rf'\1// {new_guard}', h_content)
+            os.makedirs(os.path.dirname(dst_h_path), exist_ok=True)
+            with open(dst_h_path, 'w') as f:
+                f.write(h_content)
+            print(f"cloned & renamed {src_h_path} --> {dst_h_path}")
+            if verbose:
+                print(f"Cloned and renamed {src_h_path} -> {dst_h_path}")
 
 def add_calculator_to_build(build_path, calculator_name, src_file, verbose=False):
     """
@@ -165,7 +212,7 @@ cc_library(
 
 def add_cloned_library_to_build(build_path, library_name, src_files, verbose=False):
     """
-    Add a single cc_library rule for all cloned calculators to the BUILD file.
+    Add a single cc_library rule for all cloned calculators to the BUILD file, including their headers in hdrs if they exist.
     """
     with open(build_path, 'r') as f:
         build_content = f.read()
@@ -173,12 +220,25 @@ def add_cloned_library_to_build(build_path, library_name, src_files, verbose=Fal
         if verbose:
             print(f"Library {library_name} already present in {build_path}")
         return
-    srcs_list = ',\n        '.join([f'"{src}"' for src in src_files])
+    hdrs = []
+    for src in src_files:
+        if src.endswith('.cc') or src.endswith('.cpp'):
+            header_path = src[:-3] + '.h'  # Replace .cc with .h
+            abs_header_path = os.path.join(os.path.dirname(build_path), header_path)
+            if os.path.exists(abs_header_path):
+                hdrs.append(header_path)
+    hdrs_unique = sorted(set(hdrs))
+    srcs_unique = sorted(set(src_files))
+    srcs_list = ',\n        '.join([f'"{src}"' for src in srcs_unique])
+    hdrs_list = ',\n        '.join([f'"{hdr}"' for hdr in hdrs_unique])
     rule = f'''
 cc_library(
     name = "{library_name}",
     srcs = [
         {srcs_list}
+    ],
+    hdrs = [
+        {hdrs_list}
     ],
     visibility = ["//visibility:public"],
     deps = [
@@ -192,13 +252,13 @@ cc_library(
 '''
     with open(build_path, 'a') as f:
         f.write(rule)
-    print(f"Integrated all cloned calculators into cc_library: {library_name}")
+    print(f"Integrated all cloned calculators and their headers into cc_library: {library_name}")
     if verbose:
         print(f"Added single build rule for {library_name} to {build_path}")
 
 def add_cloned_library_dep_to_target_build_file(build_path, target_build_library_name, verbose=False):
     """
-    Add the new cc_library as a dep in the cc_binary in the given BUILD file.
+    Add the new cc_library as a dep in the cc_binary in the given BUILD file, avoiding duplicates.
     """
     with open(build_path, 'r') as f:
         lines = f.readlines()
@@ -213,7 +273,9 @@ def add_cloned_library_dep_to_target_build_file(build_path, target_build_library
     for line in lines:
         new_lines.append(line)
         if line.strip() == '"//mediapipe/nui/desktop:tick_count_calculator",' and not inserted:
-            new_lines.append(dep_line)
+            # Only insert if not already present
+            if not any(f'"//mediapipe/nui/desktop:{target_build_library_name}"' in l for l in lines):
+                new_lines.append(dep_line)
             inserted = True
     with open(build_path, 'w') as f:
         f.writelines(new_lines)
