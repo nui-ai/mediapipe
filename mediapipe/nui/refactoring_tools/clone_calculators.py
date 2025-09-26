@@ -18,8 +18,11 @@ each cloned calculator (not graph) is also made to build same as TickCountCalcul
 
 import argparse
 import json
+import glob
 import os
 import re
+import difflib
+from collections import defaultdict
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -30,6 +33,40 @@ def str2bool(v):
         return False
     else:
         raise argparse.ArgumentTypeError('Boolean value expected.')
+
+def index_mediapipe_simple_subgraphs(modules_root="mediapipe/modules"):
+    """
+    Index all mediapipe_simple_subgraph macros under mediapipe/modules.
+    Returns a dict: register_as -> { 'bazel_target': '//path/to:target', 'deps': [...], 'build_path': ... }
+    """
+    subgraph_map = {}
+    build_files = glob.glob(os.path.join(modules_root, "**/BUILD"), recursive=True)
+    for build_path in build_files:
+        with open(build_path, 'r') as f:
+            content = f.read()
+        # Find all mediapipe_simple_subgraph blocks
+        for m in re.finditer(r"mediapipe_simple_subgraph\((.*?)\)\s*", content, re.DOTALL):
+            block = m.group(1)
+            name = None
+            register_as = None
+            # Parse name, register_as
+            for line in block.splitlines():
+                if 'name' in line:
+                    name_match = re.search(r'name\s*=\s*"([^"]+)"', line)
+                    if name_match:
+                        name = name_match.group(1)
+                if 'register_as' in line:
+                    register_as_match = re.search(r'register_as\s*=\s*"([^"]+)"', line)
+                    if register_as_match:
+                        register_as = register_as_match.group(1)
+            if name and register_as:
+                rel_dir = os.path.relpath(os.path.dirname(build_path), os.getcwd())
+                bazel_target = f"//{rel_dir}:{name}"
+                subgraph_map[register_as] = {
+                    'bazel_target': bazel_target,
+                    'build_path': build_path
+                }
+    return subgraph_map
 
 def main():
     parser = argparse.ArgumentParser(description='Clone a MediaPipe pipeline with a specified suffix.')
@@ -52,7 +89,10 @@ def main():
 
     all_cloned_src_files = set()
     nodes = []
+    subgraph_map = index_mediapipe_simple_subgraphs()
 
+    unmatched_subgraphs = []
+    matched_subgraphs = []
     if args.pipeline_json:
         with open(args.pipeline_json, 'r') as f:
             pipeline = json.load(f)
@@ -67,9 +107,55 @@ def main():
             if src_path.endswith('.cc') or src_path.endswith('.cpp'):
                 rel_path = os.path.relpath(dst_path, os.path.dirname(args.calculators_build_file))
                 all_cloned_src_files.add(rel_path)
+            # If this node is a graph, integrate its Bazel target only (not its deps)
+            if node['type'].lower() == 'graph':
+                reg_name = node['name']
+                if reg_name in subgraph_map:
+                    bazel_target = subgraph_map[reg_name]['bazel_target']
+                    add_external_deps_to_build(args.calculators_build_file, [bazel_target], reg_name, args.verbose)
+                    add_external_deps_to_build(args.target_build_file, [bazel_target], reg_name, args.verbose)
+                    matched_subgraphs.append(reg_name)
+                else:
+                    unmatched_subgraphs.append(reg_name)
+        if unmatched_subgraphs:
+            print("\nWARNING: The following subgraphs do not have Bazel build definitions (mediapipe_simple_subgraph) in mediapipe/modules:")
+            for s in unmatched_subgraphs:
+                print(f"  - {s}")
+                # Show closest matches for each unmatched subgraph
+                close = difflib.get_close_matches(s, subgraph_map.keys(), n=3)
+                if close:
+                    print(f"    Closest matches: {', '.join(close)}")
+            print("\nPlease check for typos or missing build definitions in mediapipe/modules.")
+        if matched_subgraphs:
+            print("\nThe following subgraphs were found and their Bazel build definitions will be integrated:")
+            for s in matched_subgraphs:
+                print(f"  - {s} (Bazel target: {subgraph_map[s]['bazel_target']})")
         if args.pipeline_pbtxt_file:
             pbtxt_dst = append_suffix_to_filename(args.pipeline_pbtxt_file, args.clones_suffix)
             clone_and_rename_file(args.pipeline_pbtxt_file, pbtxt_dst, pipeline['name'], pipeline['name'] + args.clones_suffix, name_map, args.rewrite, args.verbose, force_rename=True)
+            # Ensure a build rule exists for the cloned pbtxt and add it as a dep
+            pbtxt_base = os.path.splitext(os.path.basename(pbtxt_dst))[0]
+            # Assume the build file for the pbtxt is calculators_build_file
+            build_path = args.calculators_build_file
+            with open(build_path, 'r') as f:
+                build_content = f.read()
+            rule_name = pbtxt_base
+            bazel_target = f"//mediapipe/nui/desktop/calculators:{rule_name}"
+            if f'name = "{rule_name}"' not in build_content:
+                # Add a mediapipe_graph rule for the cloned pbtxt
+                rule = f'''
+mediapipe_graph(
+    name = "{rule_name}",
+    graph = "{os.path.basename(pbtxt_dst)}",
+    visibility = ["//visibility:public"],
+)
+'''
+                with open(build_path, 'a') as f:
+                    f.write(rule)
+                if args.verbose:
+                    print(f"Added mediapipe_graph rule for {rule_name} to {build_path}")
+            # Add the Bazel target to the deps in the target build file
+            add_external_deps_to_build(args.target_build_file, [bazel_target], rule_name, args.verbose)
     elif args.single_calculator_only:
         src_path = args.single_calculator_only
         name = os.path.splitext(os.path.basename(src_path))[0]
@@ -86,6 +172,22 @@ def main():
     if all_cloned_src_files:
         add_cloned_library_to_build(args.calculators_build_file, args.target_build_library_name, sorted(all_cloned_src_files), args.verbose)
         add_cloned_library_dep_to_target_build_file(args.target_build_file, args.target_build_library_name, args.verbose)
+        # --- FIX: Add all subgraph Bazel targets (at any depth) to the deps of the 'new' cc_library ---
+        graph_targets = set()
+        if args.pipeline_json:
+            # Add the root pipeline Bazel target if present
+            if args.pipeline_pbtxt_file:
+                pbtxt_dst = append_suffix_to_filename(args.pipeline_pbtxt_file, args.clones_suffix)
+                pbtxt_base = os.path.splitext(os.path.basename(pbtxt_dst))[0]
+                graph_targets.add(f"//mediapipe/nui/desktop/calculators:{pbtxt_base}")
+            # Add all subgraph Bazel targets from all nodes (recursively)
+            for node in nodes:
+                if node.get('type', '').lower() == 'graph':
+                    reg_name = node['name']
+                    if reg_name in subgraph_map:
+                        graph_targets.add(subgraph_map[reg_name]['bazel_target'])
+        if graph_targets:
+            add_graph_targets_to_new_cc_library(args.calculators_build_file, args.target_build_library_name, list(graph_targets), args.verbose)
 
 def get_all_nodes(node, suffix, nodes=None):
     """Recursively collect all calculators/graphs/sub-graphs from the pipeline JSON."""
@@ -112,6 +214,9 @@ def clone_and_rename_file(src_path, dst_path, old_name, new_name, subnode_rename
     If force_rename is True, always rename old_name to new_name everywhere in the file.
     Also, if src_path is a .cc file, clone and rename the corresponding .h file similarly.
     """
+    if not os.path.exists(src_path):
+        print(f"WARNING: source file {src_path} does not exist, skipping.")
+        return
     if not rewrite and os.path.exists(dst_path):
         print(f"skipping target file {dst_path} because it already exists")
         return
@@ -197,8 +302,8 @@ cc_library(
     srcs = ["{src_file}"],
     visibility = ["//visibility:public"],
     deps = [
-        "//mediapipe/framework:calculator_framework",
-        "//mediapipe/framework:calculator_base",
+        # "//mediapipe/framework:calculator_framework",
+        # "//mediapipe/framework:calculator_base",
         "@com_google_absl//absl/log:absl_log",
         "@com_google_absl//absl/status",
     ],
@@ -282,6 +387,96 @@ def add_cloned_library_dep_to_target_build_file(build_path, target_build_library
     print(f"Added dependency {dep_line.strip()} to cc_binary in {build_path}")
     if verbose:
         print(f"Updated deps in cc_binary")
+
+def add_external_deps_to_build(build_path, deps, target_name, verbose=False):
+    """
+    Add external Bazel deps to the cc_library or cc_binary named target_name in the given BUILD file, avoiding duplicates.
+    If the deps field does not exist, create it.
+    """
+    with open(build_path, 'r') as f:
+        lines = f.readlines()
+    new_lines = []
+    in_target = False
+    target_indent = ''
+    found_name = False
+    in_deps = False
+    deps_inserted = False
+    deps_set = set(deps)
+    for i, line in enumerate(lines):
+        # Detect start of cc_library or cc_binary
+        if re.match(r'\s*(cc_library|cc_binary)\s*\(', line):
+            in_target = True
+            target_indent = re.match(r'(\s*)', line).group(1)
+            found_name = False
+        if in_target and not found_name and f'name = "{target_name}"' in line:
+            found_name = True
+        # If inside the correct target, look for deps
+        if in_target and found_name:
+            if 'deps = [' in line:
+                in_deps = True
+                new_lines.append(line)
+                continue
+            if in_deps:
+                if '],' in line:
+                    # Insert new deps before closing ]
+                    for dep in sorted(deps_set):
+                        dep_line = f'{target_indent}    "{dep}",\n'
+                        if dep_line not in lines and dep_line not in new_lines:
+                            new_lines.append(dep_line)
+                    in_deps = False
+                    deps_inserted = True
+            # If end of target and no deps were found, insert deps before closing paren
+            if not in_deps and not deps_inserted and re.match(rf'{target_indent}\)', line):
+                # Insert deps field
+                new_lines.append(f'{target_indent}    deps = [\n')
+                for dep in sorted(deps_set):
+                    new_lines.append(f'{target_indent}        "{dep}",\n')
+                new_lines.append(f'{target_indent}    ],\n')
+                deps_inserted = True
+        # Detect end of target
+        if in_target and re.match(rf'{target_indent}\)', line):
+            in_target = False
+            found_name = False
+            in_deps = False
+        new_lines.append(line)
+    with open(build_path, 'w') as f:
+        f.writelines(new_lines)
+    if verbose:
+        print(f"Added external deps to {build_path} for target {target_name}: {deps}")
+
+def add_graph_targets_to_new_cc_library(build_path, library_name, graph_targets, verbose=False):
+    """
+    Add Bazel targets for all cloned graphs to the deps of the cc_library named 'library_name' in the given BUILD file.
+    """
+    with open(build_path, 'r') as f:
+        lines = f.readlines()
+    new_lines = []
+    in_new_lib = False
+    in_deps = False
+    for line in lines:
+        # Detect start of the cc_library rule for 'library_name'
+        if f'name = "{library_name}"' in line:
+            in_new_lib = True
+        if in_new_lib and 'deps = [' in line:
+            in_deps = True
+            new_lines.append(line)
+            continue
+        if in_deps:
+            if '],' in line:
+                # Insert new graph targets before closing ]
+                for dep in sorted(set(graph_targets)):
+                    dep_line = f'        "{dep}",\n'
+                    if dep_line not in lines and dep_line not in new_lines:
+                        new_lines.append(dep_line)
+                in_deps = False
+        new_lines.append(line)
+        # End of cc_library rule
+        if in_new_lib and line.strip() == ')':
+            in_new_lib = False
+    with open(build_path, 'w') as f:
+        f.writelines(new_lines)
+    if verbose:
+        print(f"Added graph targets to deps of cc_library '{library_name}' in {build_path}: {graph_targets}")
 
 if __name__ == "__main__":
     main()
