@@ -1,0 +1,33 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="clone_calculators" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <module name="mediapipe" />
+    <option name="ENV_FILES" value="" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="PARENT_ENVS" value="true" />
+    <envs>
+      <env name="PYTHONUNBUFFERED" value="1" />
+    </envs>
+    <option name="SDK_HOME" value="" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
+    <option name="IS_MODULE_SDK" value="true" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/mediapipe/nui/refactoring_tools/clone_calculators.py" />
+    <option name="PARAMETERS" value="--rewrite=False \
+      --pipeline_json=$PROJECT_DIR$/mediapipe_analysis/analysis/output/json/pipeline.verbose.json \
+      --pipeline_pbtxt_file=$PROJECT_DIR$/mediapipe/modules/hand_landmark/hand_landmark_tracking_cpu.pbtxt \
+      --clones_suffix=New \
+      --target_source_dir=$PROJECT_DIR$/mediapipe/nui/desktop/calculators \
+      --target_build_file=$PROJECT_DIR$/mediapipe/nui/desktop/build_target/BUILD \
+      --calculators_build_file=$PROJECT_DIR$/mediapipe/nui/desktop/BUILD \
+      --target_build_library_name=new \
+      --verbose=False" />
+    <option name="SHOW_COMMAND_LINE" value="false" />
+    <option name="EMULATE_TERMINAL" value="false" />
+    <option name="MODULE_MODE" value="false" />
+    <option name="REDIRECT_INPUT" value="false" />
+    <option name="INPUT_FILE" value="" />
+    <method v="2" />
+  </configuration>
+</component>
