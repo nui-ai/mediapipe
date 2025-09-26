@@ -117,19 +117,6 @@ def main():
                     matched_subgraphs.append(reg_name)
                 else:
                     unmatched_subgraphs.append(reg_name)
-        if unmatched_subgraphs:
-            print("\nWARNING: The following subgraphs do not have Bazel build definitions (mediapipe_simple_subgraph) in mediapipe/modules:")
-            for s in unmatched_subgraphs:
-                print(f"  - {s}")
-                # Show closest matches for each unmatched subgraph
-                close = difflib.get_close_matches(s, subgraph_map.keys(), n=3)
-                if close:
-                    print(f"    Closest matches: {', '.join(close)}")
-            print("\nPlease check for typos or missing build definitions in mediapipe/modules.")
-        if matched_subgraphs:
-            print("\nThe following subgraphs were found and their Bazel build definitions will be integrated:")
-            for s in matched_subgraphs:
-                print(f"  - {s} (Bazel target: {subgraph_map[s]['bazel_target']})")
         if args.pipeline_pbtxt_file:
             pbtxt_dst = append_suffix_to_filename(args.pipeline_pbtxt_file, args.clones_suffix)
             clone_and_rename_file(args.pipeline_pbtxt_file, pbtxt_dst, pipeline['name'], pipeline['name'] + args.clones_suffix, name_map, args.rewrite, args.verbose, force_rename=True)
@@ -144,7 +131,7 @@ def main():
             if f'name = "{rule_name}"' not in build_content:
                 # Add a mediapipe_graph rule for the cloned pbtxt
                 rule = f'''
-mediapipe_graph(
+mediapipe_simple_subgraph(
     name = "{rule_name}",
     graph = "{os.path.basename(pbtxt_dst)}",
     visibility = ["//visibility:public"],
@@ -188,6 +175,21 @@ mediapipe_graph(
                         graph_targets.add(subgraph_map[reg_name]['bazel_target'])
         if graph_targets:
             add_graph_targets_to_new_cc_library(args.calculators_build_file, args.target_build_library_name, list(graph_targets), args.verbose)
+
+    # Move subgraph summary printout here, after all cloning
+    if unmatched_subgraphs:
+        print("\nWARNING: The following subgraphs do not have Bazel build definitions (mediapipe_simple_subgraph) in mediapipe/modules:")
+        for s in unmatched_subgraphs:
+            print(f"  - {s}")
+            # Show closest matches for each unmatched subgraph
+            close = difflib.get_close_matches(s, subgraph_map.keys(), n=3)
+            if close:
+                print(f"    Closest matches: {', '.join(close)}")
+    if matched_subgraphs:
+        pass
+        # print("\nBazel build definitions for the following graph were not found under mediapipe/modules, so they may not be integrated in the current build:")
+        # for s in set(matched_subgraphs):
+        #     print(f"  - {s} (Bazel target: {subgraph_map[s]['bazel_target']})")
 
 def get_all_nodes(node, suffix, nodes=None):
     """Recursively collect all calculators/graphs/sub-graphs from the pipeline JSON."""
@@ -318,24 +320,58 @@ cc_library(
 def add_cloned_library_to_build(build_path, library_name, src_files, verbose=False):
     """
     Add a single cc_library rule for all cloned calculators to the BUILD file, including their headers in hdrs if they exist.
+    Ensures no duplicate entries in srcs/hdrs.
     """
     with open(build_path, 'r') as f:
-        build_content = f.read()
-    if f'name = "{library_name}"' in build_content:
-        if verbose:
-            print(f"Library {library_name} already present in {build_path}")
-        return
-    hdrs = []
-    for src in src_files:
+        lines = f.readlines()
+    in_target = False
+    target_start = None
+    target_end = None
+    existing_srcs = set()
+    existing_hdrs = set()
+    # Find the cc_library rule for library_name
+    for i, line in enumerate(lines):
+        if re.match(r'\s*cc_library\s*\(', line):
+            in_target = True
+            target_start = i
+        if in_target and f'name = "{library_name}"' in line:
+            # Parse srcs and hdrs in this target
+            for j in range(target_start, len(lines)):
+                l = lines[j]
+                if 'srcs = [' in l:
+                    k = j + 1
+                    while k < len(lines) and ']' not in lines[k]:
+                        src_match = re.search(r'"([^"]+)"', lines[k])
+                        if src_match:
+                            existing_srcs.add(src_match.group(1))
+                        k += 1
+                if 'hdrs = [' in l:
+                    k = j + 1
+                    while k < len(lines) and ']' not in lines[k]:
+                        hdr_match = re.search(r'"([^"]+)"', lines[k])
+                        if hdr_match:
+                            existing_hdrs.add(hdr_match.group(1))
+                        k += 1
+                if l.strip() == ')':
+                    target_end = j
+                    break
+            break
+        if in_target and line.strip() == ')':
+            in_target = False
+    # Prepare new srcs/hdrs
+    new_srcs = set(src_files)
+    new_hdrs = set()
+    for src in new_srcs:
         if src.endswith('.cc') or src.endswith('.cpp'):
-            header_path = src[:-3] + '.h'  # Replace .cc with .h
+            header_path = src[:-3] + '.h'
             abs_header_path = os.path.join(os.path.dirname(build_path), header_path)
             if os.path.exists(abs_header_path):
-                hdrs.append(header_path)
-    hdrs_unique = sorted(set(hdrs))
-    srcs_unique = sorted(set(src_files))
-    srcs_list = ',\n        '.join([f'"{src}"' for src in srcs_unique])
-    hdrs_list = ',\n        '.join([f'"{hdr}"' for hdr in hdrs_unique])
+                new_hdrs.add(header_path)
+    # Merge and sort
+    all_srcs = sorted(existing_srcs.union(new_srcs))
+    all_hdrs = sorted(existing_hdrs.union(new_hdrs))
+    srcs_list = ',\n        '.join([f'"{src}"' for src in all_srcs])
+    hdrs_list = ',\n        '.join([f'"{hdr}"' for hdr in all_hdrs])
     rule = f'''
 cc_library(
     name = "{library_name}",
@@ -355,11 +391,16 @@ cc_library(
     alwayslink = 1,
 )
 '''
-    with open(build_path, 'a') as f:
-        f.write(rule)
+    # Replace or append the rule
+    if target_start is not None and target_end is not None:
+        new_lines = lines[:target_start] + [rule] + lines[target_end+1:]
+    else:
+        new_lines = lines + [rule]
+    with open(build_path, 'w') as f:
+        f.writelines(new_lines)
     print(f"Integrated all cloned calculators and their headers into cc_library: {library_name}")
     if verbose:
-        print(f"Added single build rule for {library_name} to {build_path}")
+        print(f"Added/updated build rule for {library_name} in {build_path}")
 
 def add_cloned_library_dep_to_target_build_file(build_path, target_build_library_name, verbose=False):
     """
