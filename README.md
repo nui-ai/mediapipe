@@ -3,6 +3,7 @@
 ## Current Branch Objective
 + This branch is based off branch "buildable-reference" and shall be used only to expose all output streams of the original mediapipe v0.10.13 relevant entry point pipeline, at the pipeline's exit point. The purpose of this is to enable user code examine the output of each pipeline node when comparing to a liberated pipeline is relevant. 
 + The aforementioned branch it is derived of doesn't expose results of its intermediary nodes at the pipeline exit, and this branch should/would.
++ As such this branch is not meant for active development but for use under that framing ― you can derive a work branch from it if you wished to somehow base development off it ― but there will typically be no reason.
 
 ## Objective
 The objective of this repository is detailed in https://github.com/nui-ai/mediapipe-liberation/blob/main/README.md, which is gradually being ported into the current repository.
