@@ -78,8 +78,10 @@ class TfLiteCustomOpResolverCalculatorNew : public CalculatorBase {
     return absl::OkStatus();
   }
 
-  // sets the cpu operations resolver for tflite always,
-  // by through CpuOpResolver/MediaPipe_RegisterTfLiteOpResolver
+  // sets a cpu operations resolver for tflite always,
+  // through CpuOpResolver/MediaPipe_RegisterTfLiteOpResolver,
+  // which provides implementations for some math operations
+  // for tflite to use.
   absl::Status Open(CalculatorContext* cc) override {
     cc->SetOffset(TimestampDiff(0));
 
