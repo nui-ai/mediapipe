@@ -1,5 +1,9 @@
 # Mediapipe Hand Tracking Radical Improvement Track
 
+## Current Branch Objective
++ This branch is mediapipe v0.10.13 updated to be present-day buildable. Through lots of labor it seamlessly builds the mediapipe code equivalent to its v0.10.13 code revision.
++ It should not be used for development of modifications to mediapipe of that version nor for developing derivatives thereof, but be kept as a reference and proof of build.
+
 ## Objective
 The objective of this repository is detailed in https://github.com/nui-ai/mediapipe-liberation/blob/main/README.md, which is gradually being ported into the current repository.
 
