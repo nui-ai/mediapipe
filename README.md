@@ -3,6 +3,7 @@
 ## Current Branch Objective
 + This branch is mediapipe v0.10.13 updated to be present-day buildable. Through lots of labor it seamlessly builds the mediapipe code equivalent to its v0.10.13 code revision.
 + It is enriched with humble python scripts which parse the main pipeline (which is rather recursive) into human and machine readable formats which help with navigation of its involved structure.
++ The included JetBrains run configurations help with building and testing the mediapipe code.
 + It should not be used for development of modifications to mediapipe of that version nor for developing derivatives thereof, but be kept as a reference and proof of build.
 
 ## Objective
