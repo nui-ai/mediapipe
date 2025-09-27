@@ -1,0 +1,42 @@
+# Copyright 2019 The MediaPipe Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+licenses(["notice"])
+
+# to build:
+# bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 //mediapipe/nui/desktop/hand_tracking:hand_tracking_tflite
+#
+# to run:
+# bazel-bin/mediapipe/nui/desktop/hand_tracking/ \
+#   --calculator_graph_config_file=<...> \
+#   --input_side_packets=input_video_path=<input video path>,output_video_path=<output video path>
+cc_binary(
+    name = "hand_tracking_tflite",
+    data = [
+        "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
+        "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
+    ],
+    deps = [
+        "//mediapipe/nui/desktop:simple_run_graph_main", # <== our main is this source cc file
+        "//mediapipe/nui/desktop:tick_count_calculator",
+
+        "//mediapipe/nui/desktop/calculators:new",
+        "//mediapipe/nui/desktop/calculators:hand_landmark_tracking_cpu_new",
+
+        "//mediapipe/graphs/hand_tracking/subgraphs:hand_renderer_cpu",
+
+        "//mediapipe/calculators/video:opencv_video_encoder_calculator",
+        "//mediapipe/calculators/video:opencv_video_decoder_calculator",
+    ],
+)

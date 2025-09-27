@@ -135,6 +135,7 @@ mediapipe_simple_subgraph(
     name = "{rule_name}",
     graph = "{os.path.basename(pbtxt_dst)}",
     visibility = ["//visibility:public"],
+    register_as = 
 )
 '''
                 with open(build_path, 'a') as f:

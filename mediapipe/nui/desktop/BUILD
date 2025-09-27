@@ -27,7 +27,7 @@ cc_library(
     srcs = [
         "simple_run_graph_main.cc",
     ],
-    hdrs = [],
+    includes = ["mediapipe/nui/desktop"],
     visibility = [
         "//mediapipe/nui/desktop/hand_tracking:__pkg__",
     ],

@@ -30,7 +30,7 @@ node {
 
 # Detects/tracks hand landmarks.
 node {
-  calculator: "HandLandmarkTrackingCpu"
+  calculator: "HandLandmarkTrackingCpuNew"
   input_stream: "COUNTING_DONE:done"
   input_stream: "IMAGE:input_video"
   input_side_packet: "NUM_HANDS:num_hands"

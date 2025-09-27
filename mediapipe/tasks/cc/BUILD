@@ -18,6 +18,7 @@ cc_library(
     name = "common",
     srcs = ["common.cc"],
     hdrs = ["common.h"],
+    visibility = ["//visibility:public"],  # Changed from internal to public
     deps = [
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/strings",

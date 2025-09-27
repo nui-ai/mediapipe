@@ -46,6 +46,7 @@ cc_library(
         "//mediapipe/framework/api2:builder",
         "//mediapipe/framework/api2:port",
     ],
+    visibility = ["//visibility:public"],  # Make this target visible to all
 )
 
 # TODO: Enable this test

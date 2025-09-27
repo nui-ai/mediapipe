@@ -28,6 +28,7 @@ mediapipe_proto_library(
         "//mediapipe/framework:calculator_proto",
         "//mediapipe/tasks/cc/core/proto:base_options_proto",
     ],
+    visibility = ["//visibility:public"],
 )
 
 mediapipe_proto_library(

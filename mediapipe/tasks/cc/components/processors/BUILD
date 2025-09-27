@@ -105,6 +105,7 @@ cc_library_with_tflite(
     name = "image_preprocessing_graph",
     srcs = ["image_preprocessing_graph.cc"],
     hdrs = ["image_preprocessing_graph.h"],
+    visibility = ["//visibility:public"],  # Changed from internal to public
     tflite_deps = [
         "//mediapipe/tasks/cc/core:model_resources",
         "//mediapipe/tasks/cc/vision/utils:image_tensor_specs",
