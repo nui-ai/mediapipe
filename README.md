@@ -1,10 +1,15 @@
 # Mediapipe Hand Tracking Radical Improvement Track
 
 ## Current Branch Objective
-+ This branch is mediapipe v0.10.13 updated to be present-day buildable. Through lots of labor it seamlessly builds the mediapipe code equivalent to its v0.10.13 code revision.
-+ It is enriched with humble python scripts which parse the main pipeline (which is rather recursive) into human and machine readable formats which help with navigation of its involved structure.
-+ The included JetBrains run configurations help with building and testing the mediapipe code.
-+ It should not be used for development of modifications to mediapipe of that version nor for developing derivatives thereof, but be kept as a reference and proof of build.
++ This branch bases off branch "buildable-reference" and such starts as a buildable mediapipe v0.10.13 code level. 
++ It is used for gradually "liberating" the pipeline into a form where the per-image results are obtained from code that runs in a plain C++ execution architecture (not a mediapipe graph) are the same as those obtained from the original v0.10.13 mediapipe graph which can be run by the "buildable-reference" branch. 
++ A fine distinction: the "liberated" outcome may still use some mediapipe api, but should not run as a _mediapipe pipeline_.
++ This branch is meant for active development! 
+  + This branch is meant for active development where you freely modify the mediapipe codebase as needed on your way to a liberated pipeline, which you will likely do since many simple changes to the computation nodes go deep into mediapipe framework code ― which you can freely modify in this branch ― rather than deep cloning classes you'd like to change which will get you nowhere. That's because every new source file needs careful bazel build integration which is very tedious and often doesn't converge with sanity, so modifying mediapipe code directly is the only practical way to go. 
+  + Note: there are no sane ways to have two versions of the same codebase in the same running process, esp. not with a bazel-based elaborate build like mediapipe; you cannot somehow expect that to happen unless you have tinkered object files for 20 years and even then ... don't try that. so don't worry about twisting the source for the purpose, the source code of this branch is not expected to also somehow serve the running of the original mediapipe graph.
+  + If you are doubtful about the last comment, consider that it's a two day journey to learn from experience why you cannot expect to develop the liberation objective while preserving the existing pipeline, that kind of journey will hit into the great wall of deep cloning and build-integrating by hand for every change ― which might converge if you worked with Bazel C++ Protobuf based projects for 20 years, but otherwise is a dead end due to the lack of tooling to facilitate smooth paths at that.
+
+So the development strategy here should be ― twist the entire mediapipe codebase to gradually un-pipeline the hand tracking pipeline, until finally you are left with code that accomplishes the same as the original pipeline, but without being a mediapipe pipeline! Eventually more work can remove any use of any mediapipe class and so on, but that's secondary to just running with complete parity without being a pipeline. 
 
 ## Objective
 The objective of this repository is detailed in https://github.com/nui-ai/mediapipe-liberation/blob/main/README.md, which is gradually being ported into the current repository.
