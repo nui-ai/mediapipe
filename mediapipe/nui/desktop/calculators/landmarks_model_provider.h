@@ -45,12 +45,12 @@ namespace mediapipe::api2 {
 //   ...
 // }
 //
-class ResourceProviderCalculatorNew : public mediapipe::api2::Node {
+class LandmarksModelProvider : public mediapipe::api2::Node {
  public:
   static constexpr api2::SideInput<std::string>::Multiple kIds{"RESOURCE_ID"};
   static constexpr api2::SideOutput<Resource>::Multiple kResources{"RESOURCE"};
 
-  MEDIAPIPE_NODE_INTERFACE(ResourceProviderCalculatorNew, kIds, kResources);
+  MEDIAPIPE_NODE_INTERFACE(LandmarksModelProvider, kIds, kResources);
 
   static absl::Status UpdateContract(CalculatorContext* cc);
 

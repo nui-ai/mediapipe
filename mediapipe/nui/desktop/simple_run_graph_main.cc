@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// A simple main function to run a MediaPipe graph.
+// A main loading and running the MediaPipe graph file given to it as program argument,
+// and optionally piping its output to a local file (which our current graph does itself,
+// without invoking that feature of the current main which is guarded by its ABSL_FLAG flags
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -98,6 +100,7 @@ absl::Status OutputSidePacketsToLocalFile(mediapipe::CalculatorGraph& graph) {
   return absl::OkStatus();
 }
 
+// parses the input args turning them into side-packet inputs to the pipeline to be run
 absl::Status RunMPPGraph() {
   std::string calculator_graph_config_contents;
   MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
@@ -125,8 +128,7 @@ absl::Status RunMPPGraph() {
   MP_RETURN_IF_ERROR(graph.Initialize(config, input_side_packets));
   if (!absl::GetFlag(FLAGS_output_stream).empty() &&
       !absl::GetFlag(FLAGS_output_stream_file).empty()) {
-    MP_ASSIGN_OR_RETURN(auto poller, graph.AddOutputStreamPoller(
-                                         absl::GetFlag(FLAGS_output_stream)));
+    MP_ASSIGN_OR_RETURN(auto poller, graph.AddOutputStreamPoller(absl::GetFlag(FLAGS_output_stream)));
     ABSL_LOG(INFO) << "Start running the calculator graph.";
     MP_RETURN_IF_ERROR(graph.StartRun({}));
     MP_RETURN_IF_ERROR(OutputStreamToLocalFile(poller));

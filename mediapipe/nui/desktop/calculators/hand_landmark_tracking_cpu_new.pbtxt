@@ -65,6 +65,29 @@ output_stream: "HAND_ROIS_FROM_LANDMARKS:hand_rects_from_landmarks"
 # (std::vector<NormalizedRect>)
 output_stream: "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
 
+# All node output_streams also exposed at the top level (excluding those already present above)
+output_stream: "GATED_PREV_HAND_RECTS_FROM_LANDMARKS:gated_prev_hand_rects_from_landmarks"
+output_stream: "PREV_HAS_ENOUGH_HANDS:prev_has_enough_hands"
+output_stream: "PALM_DETECTION_IMAGE:palm_detection_image"
+output_stream: "ALL_PALM_DETECTIONS:all_palm_detections"
+output_stream: "PALM_DETECTION_IMAGE_SIZE:palm_detection_image_size"
+output_stream: "PALM_DETECTION:palm_detection"
+output_stream: "IMAGE_SIZE_FOR_PALMS:image_size_for_palms"
+output_stream: "PALM_DETECTIONS_TIMESTAMP:palm_detections_timestamp"
+output_stream: "HAND_RECT_FROM_PALM_DETECTION:hand_rect_from_palm_detection"
+output_stream: "HAND_RECTS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
+output_stream: "HAND_RECTS:hand_rects"
+output_stream: "IMAGE_SIZE:image_size"
+output_stream: "SINGLE_HAND_RECT:single_hand_rect"
+output_stream: "IMAGE_FOR_LANDMARKS:image_for_landmarks"
+output_stream: "IMAGE_SIZE_FOR_LANDMARKS:image_size_for_landmarks"
+output_stream: "HAND_RECTS_TIMESTAMP:hand_rects_timestamp"
+output_stream: "SINGLE_HAND_LANDMARKS:single_hand_landmarks"
+output_stream: "SINGLE_HAND_WORLD_LANDMARKS:single_hand_world_landmarks"
+output_stream: "SINGLE_HANDEDNESS:single_handedness"
+output_stream: "SINGLE_HAND_RECT_FROM_LANDMARKS:single_hand_rect_from_landmarks"
+output_stream: "PREV_HAND_RECTS_FROM_LANDMARKS:prev_hand_rects_from_landmarks"
+
 # When the optional input side packet "use_prev_landmarks" is either absent or
 # set to true, uses the landmarks on the previous image to help localize
 # landmarks on the current image.

@@ -73,37 +73,24 @@ constexpr char kOpResolverTag[] = "OP_RESOLVER";
 class TfLiteCustomOpResolverCalculatorNew : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
-    if (cc->OutputSidePackets().HasTag(kOpResolverTag)) {
-      cc->OutputSidePackets().Tag(kOpResolverTag).Set<tflite::OpResolver>();
-    } else {
-      cc->OutputSidePackets()
-          .Index(0)
-          .Set<tflite::ops::builtin::BuiltinOpResolver>();
-    }
+    RET_CHECK(cc->OutputSidePackets().HasTag(kOpResolverTag));
+    cc->OutputSidePackets().Tag(kOpResolverTag).Set<tflite::OpResolver>();
     return absl::OkStatus();
   }
 
+  // sets the cpu operations resolver for tflite always,
+  // by through CpuOpResolver/MediaPipe_RegisterTfLiteOpResolver
   absl::Status Open(CalculatorContext* cc) override {
     cc->SetOffset(TimestampDiff(0));
 
-    const TfLiteCustomOpResolverCalculatorOptions& options =
-        cc->Options<TfLiteCustomOpResolverCalculatorOptions>();
-
     std::unique_ptr<tflite::ops::builtin::BuiltinOpResolver> op_resolver;
-    if (options.use_gpu()) {
-      op_resolver = absl::make_unique<mediapipe::OpResolver>();
-    } else {
-      op_resolver = absl::make_unique<mediapipe::CpuOpResolver>();
-    }
+    op_resolver = absl::make_unique<mediapipe::CpuOpResolver>();
 
-    if (cc->OutputSidePackets().HasTag(kOpResolverTag)) {
-      cc->OutputSidePackets()
-          .Tag(kOpResolverTag)
-          .Set(mediapipe::api2::PacketAdopting<tflite::OpResolver>(
-              std::move(op_resolver)));
-    } else {
-      cc->OutputSidePackets().Index(0).Set(Adopt(op_resolver.release()));
-    }
+    RET_CHECK(cc->OutputSidePackets().HasTag(kOpResolverTag));
+    cc->OutputSidePackets()
+        .Tag(kOpResolverTag)
+        .Set(mediapipe::api2::PacketAdopting<tflite::OpResolver>(
+            std::move(op_resolver)));
     return absl::OkStatus();
   }
 

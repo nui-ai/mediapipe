@@ -11,42 +11,41 @@ input_side_packet: "MODEL_COMPLEXITY:model_complexity"
 # (std::unique_ptr<tflite::FlatBufferModel, std::function<void(tflite::FlatBufferModel*)>>)
 output_side_packet: "MODEL:model"
 
-# Determines path to the desired pose landmark model file.
-node {
-  calculator: "SwitchContainer"
-  input_side_packet: "SELECT:model_complexity"
-  output_side_packet: "PACKET:model_path"
-  options: {
-    [mediapipe.SwitchContainerOptions.ext] {
-      select: 1
-      contained_node: {
-        calculator: "ConstantSidePacketCalculator"
-        options: {
-          [mediapipe.ConstantSidePacketCalculatorOptions.ext]: {
-            packet {
-              string_value: "mediapipe/modules/palm_detection/palm_detection_lite.tflite"
-            }
-          }
-        }
-      }
-      contained_node: {
-        calculator: "ConstantSidePacketCalculator"
-        options: {
-          [mediapipe.ConstantSidePacketCalculatorOptions.ext]: {
-            packet {
-              string_value: "mediapipe/modules/palm_detection/palm_detection_full.tflite"
-            }
-          }
-        }
-      }
-    }
-  }
-}
+## Determines path to the desired pose landmark model file.
+#node {
+#  calculator: "SwitchContainer"
+#  input_side_packet: "SELECT:model_complexity"
+#  output_side_packet: "PACKET:model_path"
+#  options: {
+#    [mediapipe.SwitchContainerOptions.ext] {
+#      select: 1
+#      contained_node: {
+#        calculator: "ConstantSidePacketCalculator"
+#        options: {
+#          [mediapipe.ConstantSidePacketCalculatorOptions.ext]: {
+#            packet {
+#              string_value: "mediapipe/modules/palm_detection/palm_detection_lite.tflite"
+#            }
+#          }
+#        }
+#      }
+#      contained_node: {
+#        calculator: "ConstantSidePacketCalculator"
+#        options: {
+#          [mediapipe.ConstantSidePacketCalculatorOptions.ext]: {
+#            packet {
+#              string_value: "mediapipe/modules/palm_detection/palm_detection_full.tflite"
+#            }
+#          }
+#        }
+#      }
+#    }
+#  }
+#}
 
 # Loads the file in the specified path as a resource.
 node {
-  calculator: "ResourceProviderCalculatorNew"
-  input_side_packet: "RESOURCE_ID:model_path"
+  calculator: "DetectionModelProvider"
   output_side_packet: "RESOURCE:model_resource"
 }
 

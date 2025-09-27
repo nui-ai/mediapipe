@@ -26,7 +26,6 @@ mediapipe_simple_subgraph(
         "//mediapipe/calculators/core:constant_side_packet_calculator",
         "//mediapipe/calculators/tflite:tflite_model_calculator",
         "//mediapipe/calculators/util:resource_provider_calculator",
-        "//mediapipe/framework/tool:switch_container",
     ],
 )
 
@@ -118,7 +117,8 @@ cc_library(
         "non_max_suppression_calculator_new.cc",
         "previous_loopback_calculator_new.cc",
         "rect_transformation_calculator_new.cc",
-        "resource_provider_calculator_new.cc",
+        "landmarks_model_provider.cc",
+        "detection_model_provider.cc",
         "split_vector_calculator_new.cc",
         "ssd_anchors_calculator_new.cc",
         "tensors_to_classification_calculator_new.cc",
@@ -132,7 +132,8 @@ cc_library(
     hdrs = [
         "collection_has_min_size_calculator_new.h",
         "detections_to_rects_calculator_new.h",
-        "resource_provider_calculator_new.h",
+        "landmarks_model_provider.h",
+        "detection_model_provider.h",
         "split_vector_calculator_new.h",
     ],
     visibility = ["//visibility:public"],
@@ -157,3 +158,4 @@ cc_library(
     ],
     alwayslink = 1,
 )
+
