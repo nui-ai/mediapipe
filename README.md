@@ -1,5 +1,8 @@
 # Mediapipe Hand Tracking Radical Improvement Track
 
+## Current Branch Objective
+This branch shall be used only to expose all output streams of the original mediapipe v0.10.13 relevant entry point pipeline, at the pipeline's exit point. The purpose of this is to enable user code examine the output of each pipeline node when comparing to a liberated pipeline is relevant.
+
 ## Objective
 The objective of this repository is detailed in https://github.com/nui-ai/mediapipe-liberation/blob/main/README.md, which is gradually being ported into the current repository.
 
