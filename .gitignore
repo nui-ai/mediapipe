@@ -1,24 +1,10 @@
 # Bazel / project specific ignores
 bazel-*
-.bazelrc
-.bazelversion
-bazel-bin/
-bazel-out/
-bazel-testlogs/
 mediapipe/MediaPipe.xcodeproj
 mediapipe/MediaPipe.tulsiproj/*.tulsiconf-user
 mediapipe/provisioning_profile.mobileprovision
 mediapipe.egg-info
 node_modules/
-
-# Yarn Plug'n'Play
-.yarn/*
-!.yarn/patches
-!.yarn/releases
-!.yarn/plugins
-!.yarn/sdks
-!.yarn/versions
-.pnp.*
 .configure.bazelrc
 .user.bazelrc
 build/
@@ -58,3 +44,4 @@ mediapipe_analysis/analysis/output/
 
 # Clion ignores
 .clwb/
+
