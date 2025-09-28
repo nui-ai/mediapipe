@@ -7,6 +7,6 @@ matplotlib==3.8.4
 numpy<2
 opencv-contrib-python==4.6.0.66
 protobuf>=4.25.3,<5
-pyyaml
 sounddevice==0.4.6
 sentencepiece==0.2.0
+pyyaml
