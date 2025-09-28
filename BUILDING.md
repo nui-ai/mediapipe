@@ -15,7 +15,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
   + The editing awareness through these plugins is only materialized after you perform the "Sync" action in the Bazel menu or in context menus ― it basically draws the bazel build graph into the IDE's project model to make the IDE understand the project code.
   + They also enable more fluency with bazel run configurations and stuff in the IDE.
   + Don't install conflicting Clion plugins for Protocol Buffers IDE support, they will make the IDE silently fail on many features and become defunct. Just use the JetBrains one.
-+ As a byproduct of the Bazel for Clion plugin, Clion may use the `.clwb` (Clion With Bazel Acronym) path as the working directory or the console home directory; you usually want to revert to the project root path for running stuff. 
++ As a byproduct of the Bazel for Clion plugin, Clion may use the `.clwb` (Clion With Bazel Acronym) path as the working directory or the console home directory; you usually want to revert to the project root path for running stuff.
 
 # Building 
 
@@ -26,7 +26,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     python3.12 -m venv .venv
     source .venv/bin/activate
     ```
-2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. the included `setup.py`, triggered to run by the below `pip` command runs bazel under the hood to build all C++ dependencies required for the hands model. this not only builds all required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package and installing it to the current python environment). Note that without the preceding export of the python environment variable, `pip` will cause bazel to rebuild from scratch for any source change when used by pip (as a direct consequence of modern pip's build isolation feature) so you want that export command before you use pip here:  
+2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. the included `setup.py`, triggered to run by the below `pip` command runs bazel under the hood to build all C++ dependencies required for the hands model. this not only builds all required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package and installing it to the current python environment. Note that without the preceding export of the python environment variable, `pip` will cause bazel to rebuild from scratch for any source change when used by pip (as a direct consequence of modern pip's build isolation feature). without the export, mediapipe will also fail to run from python. so you want that export command before you use pip here:  
     ```bash
     export MEDIAPIPE_PYTHON_BIN=$(which python)
     pip install . 
@@ -59,6 +59,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     ```
    + This should be stressed: a mere bazel clean --expunge is not enough to clear _all_ bazel caches. See the end parts of https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35 for a delination of what it clears. the above trashing of specific paths is aligned to the way that this repository uses specific caching paths after we added a fixed cache location for it to avoid it from avoiding incremental building by pip's ephemeral isolated build environments. 
    + This does not clear the wheel installed binary of mediapipe which `pip install .` installs into the active python environment! only `pip uninstall mediapipe` does that!
+   + This does not uninstall the mediapipe python package (only a `pip uninstall mediapipe` does, but don't do that, just repeat the pip install for updating, as `pip uninstall` causes the known issue described below).
 
 8. above we dealt with one example C++ main which runs the hands pipeline. but there are three C++ example mains which build and use the hand tracking pipeline, all of which run it over an input video. 
    + their build commands and run commands are originally described in [their shared build file](mediapipe/examples/desktop/hand_tracking/BUILD)
@@ -70,7 +71,35 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     + all defined as said in the same build file. 
     + if you want to only build the hands pipeline (yes, a mediapipe graph should be built, not only fed as a pbtxt file to C++ code running it) you can build the bottom line target of the three, which you find in the `deps` field of their build definitions in the said build file.
 
-Notes:
+# ⚠️ Build Known Issue ⚠️  
+Sometimes you get this error from python, or a similar one from C++ mains:
+```
+Failed to load resource: mediapipe/modules/palm_detection/palm_detection_full.tflite
+```
+Probably only after doing a `pip uninstall mediapipe`, which seems to reproduce this behavior.
+
+**Solution:** rerun the pure bazel build, after repeating the `pip install` for the python environment's sake. somehow this places something where it needs to be to avoid this error happening.  
+
+Conclusions: 
+1. Something must be not perfect enough still, if this can happen.
+2. The pip installed mediapipe is not fully isolated from the (non-pip) Bazel-built mediapipe afterall, even though pip mostly uses build isolation for its bazel building.  
+
+**How to solve it from happening:**<br>
+The tflite model file actually used in the normal non-fail scenario is named `hand_landmark_full.tflite`. It contains both that palm detection model and the landmarks model, and when it's not found, the runtime tries looking for the palm model in default locations where it shouldn't be, and issues that error. This file is available both under the bazel `./build` and under the virtual environment directories alike, but it's not a symlink from one to the other.  
+
+```
+For a Python package installed via pip, the list of installed files is recorded in the package metadata, typically in a file named RECORD (for wheels) or installed-files.txt (for legacy setup.py install). These files are located in the package's .dist-info or .egg-info directory inside your Python environment's site-packages.
+For your mediapipe package, after installation, you will find a directory like mediapipe-0.10.13.dev0.dist-info in site-packages. Inside, the RECORD file lists all files installed by the package, including:
+All Python modules and packages (e.g., mediapipe/__init__.py, other .py files)
+Compiled extensions (e.g., .so files built by Bazel)
+Data files included via include_package_data=True
+Any other files specified in MANIFEST.in or by setuptools
+You can inspect the RECORD file directly to see the full list of installed files for your package.
+```
+
+`pip uninstall` removes `hand_landmark_full.tflite` file from the python venv as part of its action, but it doesn't remove the `./build` copy of it, so something deeper is preventing both non-python and python mediapipe from using that file in this fail scenario, which stems from the `pip uninstall` run (maybe it is leaking some action outside of the python environment domain).
+
+🛈 Notes:
 1. Reproducibility:
    - The included Ubuntu 24.04-based [Dockerfile](Dockerfile) was created and tested to contain the OS-level dependencies needed for a successful mediapipe v0.10.13 build, and fully tested to reproduce a successful build, so this process is reproducible by this Dockerfile and not an artefact of special conditions on my machine ― the built docker image fully reproduces the error-less build of mediapipe at its v0.10.13 commit level, however for even more future proofing:
    - A todo item is to upload that built docker image to future-proof it from reliance on Internet repositories of dependencies which may change or disappear in the future. 
