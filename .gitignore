@@ -1,5 +1,10 @@
-# Bazel / project specific ignores
+# Bazel / build ignores
+# note that some bazel files (and even yarn.lock) we do want tracked in git so they are not defined here to ignore.
+# note that third_party/ is a directory where project dependencies are vendored to the build by the original mediapipe
+# project and it should remain part of the git view of the repo.
 bazel-*
+build/
+BUILD.backup
 mediapipe/MediaPipe.xcodeproj
 mediapipe/MediaPipe.tulsiproj/*.tulsiconf-user
 mediapipe/provisioning_profile.mobileprovision
@@ -7,10 +12,9 @@ mediapipe.egg-info
 node_modules/
 .configure.bazelrc
 .user.bazelrc
-build/
-BUILD.backup
-/sample-video.avi
-/output_video.mp4
+
+# Clion ignores
+.clwb/
 
 # Python ignores
 __pycache__/
@@ -42,6 +46,6 @@ htmlcov/
 # Ignore analysis output directory
 mediapipe_analysis/analysis/output/
 
-# Clion ignores
-.clwb/
-
+# Developer-specific video files
+/sample-video.avi
+/output_video.mp4
