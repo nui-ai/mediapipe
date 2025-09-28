@@ -392,7 +392,6 @@ class MediaPipePipelineParser:
             source_line_code = None
             node_source = None
 
-            node_type = None
             is_calc = is_graph = False
             node_source_rel = None
 
@@ -467,8 +466,7 @@ class MediaPipePipelineParser:
                     node_options=node_options
                 ))
 
-            if is_graph:
-                node_type = 'graph'
+            elif is_graph:
                 src_info = self.graph_source_files[node_name]
                 node_source = str(src_info[0])
                 source_line_number = src_info[1]
@@ -486,7 +484,7 @@ class MediaPipePipelineParser:
 
         return PipelineNode(
             name=pipeline_name,
-            node_type=node_type,
+            node_type='graph',
             source=graph_path,
             warning=None,
             children=child_nodes,
@@ -629,7 +627,7 @@ class MediaPipePipelineParser:
 
             display_name = esc(node.name)
             if node.node_type == 'graph':
-                display_name += ' (graph)'
+                display_name = f'🔁 {display_name} (graph)'
             if link:
                 node_html += f'{indent}<span class="node-container{has_warning_class}"><a href="{link}">{display_name}</a>{hover}</span>'
             else:
