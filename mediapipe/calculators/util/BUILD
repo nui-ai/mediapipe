@@ -19,6 +19,19 @@ licenses(["notice"])
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+    name = "detection_model_provider",
+    srcs = ["detection_model_provider.cc"],
+    hdrs = ["detection_model_provider.h"],
+    deps = [
+        "@com_google_absl//absl/status",
+        "//mediapipe/framework/api2:node",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/calculators/util:resource_provider_calculator_proto"
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
     name = "alignment_points_to_rects_calculator",
     srcs = ["alignment_points_to_rects_calculator.cc"],
     deps = [
