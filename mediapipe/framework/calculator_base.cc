@@ -24,6 +24,13 @@ CalculatorBase::CalculatorBase() {}
 
 CalculatorBase::~CalculatorBase() {}
 
+// Static member definition
+SharedCalculatorState CalculatorBase::shared_state_;
+
+SharedCalculatorState& CalculatorBase::SharedState() {
+    return shared_state_;
+}
+
 Timestamp CalculatorBase::SourceProcessOrder(
     const CalculatorContext* cc) const {
   Timestamp result = Timestamp::Max();

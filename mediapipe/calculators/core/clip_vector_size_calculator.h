@@ -138,7 +138,7 @@ class ClipVectorSizeCalculator : public CalculatorBase {
         "Cannot copy or move input vectors and clip their size.");
   }
 
- private:
+ protected:
   int max_vec_size_ = 0;
 };
 

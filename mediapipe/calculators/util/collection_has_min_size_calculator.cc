@@ -1,4 +1,3 @@
-
 // Copyright 2019 The MediaPipe Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,8 +22,21 @@
 
 namespace mediapipe {
 
-typedef CollectionHasMinSizeCalculator<std::vector<mediapipe::NormalizedRect>>
-    NormalizedRectVectorHasMinSizeCalculator;
+class NormalizedRectVectorHasMinSizeCalculator : public CollectionHasMinSizeCalculator<std::vector<mediapipe::NormalizedRect>> {
+ public:
+  absl::Status Open(CalculatorContext* cc) override {
+    // Call base Open to set min_size_ from options or side packet.
+    MP_RETURN_IF_ERROR(CollectionHasMinSizeCalculator::Open(cc));
+    // Check shared config for "num_hands".
+    const auto& config = CalculatorBase::SharedState().GetConfig();
+    auto it = config.find("num_hands");
+    if (it != config.end()) {
+      // Crash if conversion fails
+      min_size_ = std::stoi(it->second);  // Will throw std::invalid_argument or std::out_of_range if invalid, which will crash
+    }
+    return absl::OkStatus();
+  }
+};
 REGISTER_CALCULATOR(NormalizedRectVectorHasMinSizeCalculator);
 
 typedef CollectionHasMinSizeCalculator<

@@ -27,6 +27,7 @@
 #include "mediapipe/framework/calculator_contract.h"
 #include "mediapipe/framework/deps/registration.h"
 #include "mediapipe/framework/port.h"
+#include "mediapipe/framework/shared_calculator_state.h"
 #include "mediapipe/framework/timestamp.h"
 
 namespace mediapipe {
@@ -168,6 +169,13 @@ class CalculatorBase {
   // TODO: Does this method need to be virtual? No Calculator
   // subclasses override the SourceProcessOrder method.
   virtual Timestamp SourceProcessOrder(const CalculatorContext* cc) const;
+
+  // Accessor for shared calculator state.
+  static SharedCalculatorState& SharedState();
+
+ private:
+  // Shared state across all instances of CalculatorBase.
+  static SharedCalculatorState shared_state_;
 };
 
 namespace api2 {

@@ -195,6 +195,7 @@ cc_library(
         "//mediapipe/framework/port:logging",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/status",
+        ":shared_calculator_state"
     ],
 )
 
@@ -1987,4 +1988,12 @@ cc_library(
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/strings:string_view",
     ],
+)
+
+cc_library(
+    name = "shared_calculator_state",
+    srcs = ["shared_calculator_state.cc"],
+    hdrs = ["shared_calculator_state.h"],
+    includes = ["mediapipe/nui/desktop"],
+    visibility = ["//visibility:public"],
 )

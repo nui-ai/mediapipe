@@ -86,7 +86,7 @@ class CollectionHasMinSizeCalculator : public CalculatorBase {
     return absl::OkStatus();
   }
 
- private:
+ protected:
   int min_size_ = 0;
 };
 

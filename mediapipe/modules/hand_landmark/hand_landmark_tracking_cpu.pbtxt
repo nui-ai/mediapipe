@@ -11,9 +11,6 @@ type: "HandLandmarkTrackingCpu"
 # CPU image. (ImageFrame)
 input_stream: "IMAGE:image"
 
-# Max number of hands to detect/track. (int)
-input_side_packet: "NUM_HANDS:num_hands"
-
 # Complexity of hand landmark and palm detection models: 0 or 1. Accuracy as
 # well as inference latency generally go up with the model complexity. If
 # unspecified, functions as set to 1. (int)
@@ -77,11 +74,10 @@ node {
 }
 
 # Determines if an input vector of NormalizedRect has a size greater than or
-# equal to the provided num_hands.
+# equal to the globally defined num_hands.
 node {
   calculator: "NormalizedRectVectorHasMinSizeCalculator"
   input_stream: "ITERABLE:gated_prev_hand_rects_from_landmarks"
-  input_side_packet: "num_hands"
   output_stream: "prev_has_enough_hands"
 }
 
@@ -113,7 +109,6 @@ node {
   calculator: "ClipDetectionVectorSizeCalculator"
   input_stream: "all_palm_detections"
   output_stream: "palm_detections"
-  input_side_packet: "num_hands"
 }
 
 # Extracts image size.
