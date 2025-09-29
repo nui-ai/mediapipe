@@ -53,6 +53,18 @@ cc_binary(
     ],
 )
 
+cc_binary(
+    name = "hand_tracking_realtime_verification",
+    data = [
+        "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
+        "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
+    ],
+    deps = [
+        "//mediapipe/examples/desktop:hand_tracking_realtime_verification_main",
+        "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
+    ],
+)
+
 # Linux only
 cc_binary(
     name = "hand_tracking_gpu",
