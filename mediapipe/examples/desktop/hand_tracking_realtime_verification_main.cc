@@ -30,7 +30,7 @@
 #include "mediapipe/util/resource_util.h"
 
 constexpr char kInputStream[] = "input_video";
-constexpr char kOutputStream[] = "output_video";
+constexpr char kOutputStream[] = "multi_hand_landmarks";
 constexpr char kWindowName[] = "MediaPipe";
 
 ABSL_FLAG(std::string, calculator_graph_config_file, "",
@@ -122,24 +122,6 @@ absl::Status RunMPPGraph() {
     if (!poller.Next(&packet)) break;
     auto& output_frame = packet.Get<mediapipe::ImageFrame>();
 
-    // Convert back to opencv for display or saving.
-    cv::Mat output_frame_mat = mediapipe::formats::MatView(&output_frame);
-    cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
-    if (save_video) {
-      if (!writer.isOpened()) {
-        ABSL_LOG(INFO) << "Prepare video writer.";
-        writer.open(absl::GetFlag(FLAGS_output_video_path),
-                    mediapipe::fourcc('a', 'v', 'c', '1'),  // .mp4
-                    capture.get(cv::CAP_PROP_FPS), output_frame_mat.size());
-        RET_CHECK(writer.isOpened());
-      }
-      writer.write(output_frame_mat);
-    } else {
-      cv::imshow(kWindowName, output_frame_mat);
-      // Press any key to exit.
-      const int pressed_key = cv::waitKey(5);
-      if (pressed_key >= 0 && pressed_key != 255) grab_frames = false;
-    }
   }
 
   ABSL_LOG(INFO) << "Shutting down.";
