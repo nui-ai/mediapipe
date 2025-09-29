@@ -364,12 +364,13 @@ class MediaPipePipelineParser:
         if graph_path.endswith('.pbtxt'):
             graph, graph_header_comment = self.parse_pbtxt_file(graph_path)
         else:
-            self.print_with_ident(f'⚠️ pipeline {pipeline_name} is defined by C++ code, not by a parseable .pbtxt file. its own nodes are therefore not expanded here.')
+            warning = '⚠️ this graph is defined in C++ code (not by a parseable .pbtxt file). its own nodes are therefore not expanded here, but you can read them in its source code.'
+            self.print_with_ident(warning)
             return PipelineNode(
                 name=pipeline_name,
                 node_type='graph',
                 source=graph_path,
-                warning = '⚠️ this graph is defined in C++ code, not by a parseable .pbtxt file. its own nodes are therefore not expanded here.',
+                warning = warning,
                 children=[],
                 source_line_number=graph_line_number,
                 source_line_code=graph_line_code
