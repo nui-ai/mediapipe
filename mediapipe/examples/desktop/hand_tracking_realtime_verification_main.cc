@@ -29,7 +29,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/util/resource_util.h"
 
-constexpr char kInputStream[] = "input_video";
+constexpr char kInputStream[] = "image";
 constexpr char kOutputStream[] = "multi_hand_landmarks";
 constexpr char kWindowName[] = "MediaPipe";
 
@@ -88,7 +88,9 @@ absl::Status RunMPPGraph() {
   while (grab_frames) {
     // Capture opencv camera or video frame.
     cv::Mat camera_frame_raw;
+    ABSL_LOG(INFO) << "Before grabbing a frame";
     capture >> camera_frame_raw;
+    ABSL_LOG(INFO) << "After grabbing a frame";
     if (camera_frame_raw.empty()) {
       if (!load_video) {
         ABSL_LOG(INFO) << "Ignore empty frames from camera.";
@@ -103,19 +105,24 @@ absl::Status RunMPPGraph() {
       cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
     }
 
+    ABSL_LOG(INFO) << "before make_unique";
     // Wrap Mat into an ImageFrame.
     auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
         mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
         mediapipe::ImageFrame::kDefaultAlignmentBoundary);
+    ABSL_LOG(INFO) << "after make_unique";
     cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
     camera_frame.copyTo(input_frame_mat);
 
+    ABSL_LOG(INFO) << "before sending an image to the graph";
     // Send image packet into the graph.
     size_t frame_timestamp_us =
         (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
     MP_RETURN_IF_ERROR(graph.AddPacketToInputStream(
         kInputStream, mediapipe::Adopt(input_frame.release())
                           .At(mediapipe::Timestamp(frame_timestamp_us))));
+
+    ABSL_LOG(INFO) << "sent image to graph";
 
     // Get the graph result packet, or stop if that fails.
     mediapipe::Packet packet;

@@ -11,11 +11,6 @@ type: "HandLandmarkTrackingCpu"
 # CPU image. (ImageFrame)
 input_stream: "IMAGE:image"
 
-# Complexity of hand landmark and palm detection models: 0 or 1. Accuracy as
-# well as inference latency generally go up with the model complexity. If
-# unspecified, functions as set to 1. (int)
-input_side_packet: "MODEL_COMPLEXITY:model_complexity"
-
 # Whether landmarks on the previous image should be used to help localize
 # landmarks on the current image. (bool)
 input_side_packet: "USE_PREV_LANDMARKS:use_prev_landmarks"
@@ -99,7 +94,6 @@ node {
 # Detects palms.
 node {
   calculator: "PalmDetectionCpu"
-  input_side_packet: "MODEL_COMPLEXITY:model_complexity"
   input_stream: "IMAGE:palm_detection_image"
   output_stream: "DETECTIONS:all_palm_detections"
 }

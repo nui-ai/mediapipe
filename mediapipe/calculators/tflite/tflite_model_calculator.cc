@@ -32,8 +32,8 @@
 
 namespace mediapipe {
 
-// Loads TfLite model from model blob specified as input side packet and outputs
-// corresponding side packet.
+// Loads as a TfLite model the model given as input side packet and outputs the loaded model.
+// Its alternative other model loading features below currently unused by our pipeline.
 //
 // Input side packets:
 //   MODEL_RESOURCE - TfLite model file as mediapipe::Resource - enables
@@ -139,6 +139,7 @@ class TfLiteModelCalculator : public CalculatorBase {
           model_packet.Get<Resource>().ToStringView();
       model = tflite::FlatBufferModel::BuildFromBuffer(model_view.data(),
                                                        model_view.size());
+      ABSL_LOG(INFO) << "tflite model loaded from resource object";
     }
 
     if (cc->InputSidePackets().HasTag(kModelFDTag)) {

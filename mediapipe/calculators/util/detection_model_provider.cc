@@ -10,12 +10,10 @@
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
-#include "mediapipe/calculators/util/resource_provider_calculator.pb.h"
 #include "mediapipe/framework/api2/node.h"
 #include "mediapipe/framework/api2/packet.h"
 #include "mediapipe/framework/api2/port.h"
 #include "mediapipe/framework/calculator_framework.h"
-#include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/resources.h"
 
@@ -37,4 +35,4 @@ namespace mediapipe::api2 {
 
     MEDIAPIPE_REGISTER_NODE(DetectionModelProvider)
 
-    }
+}

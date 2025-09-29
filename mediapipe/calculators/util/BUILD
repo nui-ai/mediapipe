@@ -25,8 +25,7 @@ cc_library(
     deps = [
         "@com_google_absl//absl/status",
         "//mediapipe/framework/api2:node",
-        "//mediapipe/framework:calculator_framework",
-        "//mediapipe/calculators/util:resource_provider_calculator_proto"
+        "//mediapipe/framework:calculator_framework"
     ],
     alwayslink = 1,
 )
