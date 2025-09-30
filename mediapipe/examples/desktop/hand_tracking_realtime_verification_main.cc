@@ -30,7 +30,7 @@
 #include "mediapipe/util/resource_util.h"
 
 constexpr char kInputStream[] = "image";
-constexpr char kOutputStream[] = "multi_hand_landmarks";
+constexpr char kOutputStream[] = "palm_detections";
 constexpr char kWindowName[] = "MediaPipe";
 
 ABSL_FLAG(std::string, calculator_graph_config_file, "",
@@ -126,9 +126,16 @@ absl::Status RunMPPGraph() {
 
     // Get the graph result packet, or stop if that fails.
     mediapipe::Packet packet;
-    if (!poller.Next(&packet)) break;
-    auto& output_frame = packet.Get<mediapipe::ImageFrame>();
-
+    absl::Status idle_status = graph.WaitUntilIdle();
+        if (!idle_status.ok()) {
+          ABSL_LOG(ERROR) << "Error while waiting for graph to become idle: " << idle_status.message();
+          break;
+      }
+      
+      // auto poll_result = poller.Next(&packet);
+      // ABSL_LOG(INFO) << "polling result is " << poll_result;
+      // if (!poll_result) break;
+      // auto& output_frame = packet.Get<mediapipe::ImageFrame>();
   }
 
   ABSL_LOG(INFO) << "Shutting down.";

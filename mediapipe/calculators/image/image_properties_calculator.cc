@@ -76,6 +76,8 @@ class ImagePropertiesCalculator : public Node {
   absl::Status Process(CalculatorContext* cc) override {
     std::pair<int, int> size;
 
+    ABSL_LOG(INFO) << "ImagePropertiesCalculator started processing";
+
     if (kIn(cc).IsConnected()) {
       kIn(cc).Visit(
           [&size](const mediapipe::Image& value) {
