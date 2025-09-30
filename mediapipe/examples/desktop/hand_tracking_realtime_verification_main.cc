@@ -30,7 +30,7 @@
 #include "mediapipe/util/resource_util.h"
 
 constexpr char kInputStream[] = "image";
-constexpr char kOutputStream[] = "palm_detections";
+constexpr char kOutputStream[] = "multi_hand_landmarks";
 constexpr char kWindowName[] = "MediaPipe";
 
 ABSL_FLAG(std::string, calculator_graph_config_file, "",
@@ -124,18 +124,24 @@ absl::Status RunMPPGraph() {
 
     ABSL_LOG(INFO) << "sent image to graph";
 
-    // Get the graph result packet, or stop if that fails.
+    // Get the graph result packet, if any for this iteration
     mediapipe::Packet packet;
     absl::Status idle_status = graph.WaitUntilIdle();
-        if (!idle_status.ok()) {
-          ABSL_LOG(ERROR) << "Error while waiting for graph to become idle: " << idle_status.message();
-          break;
+    ABSL_LOG(INFO) << "idle status " << idle_status;
+    if (!idle_status.ok()) {
+      ABSL_LOG(ERROR) << "Error while waiting for graph to become idle: " << idle_status.message();
+      continue;
+    }
+    if (poller.QueueSize() == 0) {
+      ABSL_LOG(INFO) << "No packets in the poller queue, for this iteration";
+    } else if (poller.QueueSize() > 1) {
+      ABSL_LOG(WARNING) << "More than one packet (" << poller.QueueSize() << ") in the poller queue, for this iteration";
+    } else {
+      if (poller.Next(&packet)) {
+        // auto& stream_output = packet.Get<std::vector<::mediapipe::NormalizedLandmarkList>>();
+        ABSL_LOG(INFO) << "Got output packet for stream " << kOutputStream;
       }
-      
-      // auto poll_result = poller.Next(&packet);
-      // ABSL_LOG(INFO) << "polling result is " << poll_result;
-      // if (!poll_result) break;
-      // auto& output_frame = packet.Get<mediapipe::ImageFrame>();
+    }
   }
 
   ABSL_LOG(INFO) << "Shutting down.";
