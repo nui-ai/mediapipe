@@ -171,8 +171,8 @@ absl::Status RunMPPGraph() {
     bool all_streams_have_output = std::all_of(stream_outputs.begin(), stream_outputs.end(), [](const auto& pair) { return pair.second; });
     if (!all_streams_have_output) { ABSL_LOG(INFO) << "at least one of the expected output streams has no packet in this iteration"; }
 
-    // Write protobuf message for this iteration
-    mediapipe::HandTrackingStreamData stream_data_msg;
+    // fill up a typed protobuf message containing the data from all output streams
+    mediapipe::PipelineOutputData stream_data_msg;
     stream_data_msg.set_frame_number(i);
     for (const auto& l : hand_landmarks) {
       ABSL_LOG(INFO) << "number of lm collections: " << hand_landmarks.size();
