@@ -64,7 +64,7 @@ class DescriptorReader {
   // Returns the length of the common prefix between two strings.
   static int MatchingPrefixLength(const std::string& s, const std::string& t) {
     int i = 0;
-    while (i < std::min(s.size(), t.size()) && s[i] == t[i]) {
+    while (static_cast<size_t>(i) < std::min(s.size(), t.size()) && s[i] == t[i]) {
       ++i;
     }
     return i;
