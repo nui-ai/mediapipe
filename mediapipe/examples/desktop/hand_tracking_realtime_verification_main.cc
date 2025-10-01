@@ -87,7 +87,7 @@ absl::Status RunMPPGraph() {
 #endif
   }
 
-  ABSL_LOG(INFO) << "Starting a Mediapipe Graph";
+  ABSL_LOG(INFO) << "starting a mediapipe graph";
 
   MP_RETURN_IF_ERROR(graph.StartRun({}));
 
@@ -121,35 +121,47 @@ absl::Status RunMPPGraph() {
 
     // Wait for graph to finish its processing of the current input fed to it
     MP_RETURN_IF_ERROR(graph.WaitUntilIdle());
+
+    // then take out its (zero or) single expected packet per each of its output streams ―
+    // currently when there's no hand detection, the graph will emit zero packets for
+    // all of its output streams (this can change during the liberation development phase)
     for (auto& poller_pair : pollers) {
       auto& stream_name = poller_pair.first;
       auto& poller = poller_pair.second;
       if (poller.QueueSize() == 0) {
-        ABSL_LOG(INFO) << "No packets in the " << stream_name << " poller queue, in this iteration";
+        ABSL_LOG(INFO) << "no packets in the " << stream_name << " poller queue, in this iteration";
       } else if (poller.QueueSize() > 1) {
-        ABSL_LOG(ERROR) << "More than one packet in the " << stream_name << "(" << poller.QueueSize() << ")" << " poller queue, in this iteration";
+        ABSL_LOG(ERROR) << "more than one packet in the " << stream_name << "(" << poller.QueueSize() << ")" << " poller queue, in this iteration";
       } else {
         mediapipe::Packet packet;
         if (poller.Next(&packet)) {
           // auto& stream_output = packet.Get<std::vector<::mediapipe::NormalizedLandmarkList>>();
-          ABSL_LOG(INFO) << "Got output packet for stream " << stream_name;
+          ABSL_LOG(INFO) << "got output packet for stream " << stream_name;
         }
       }
     }
   }
 
-  ABSL_LOG(INFO) << "Mediapipe Graph Shutting down";
+  ABSL_LOG(INFO) << "mediapipe graph shutting down";
   if (writer.isOpened()) writer.release();
   MP_RETURN_IF_ERROR(graph.CloseInputStream(kInputStream));
   return graph.WaitUntilDone();
 }
 
 int main(int argc, char** argv) {
-  google::InitGoogleLogging(argv[0]); // makes our VLOG swallow, so don't use VLGO. a subtle ABSL-GLOG interaction which other modules don't bump into but this one does, wasted 80 minutes in deep troubleshooting of it and gave up
+
+  // the following logging intialization made our VLOG macro uses swallow, so don't use VLOG.
+  // a subtle ABSL-GLOG interaction which other modules don't bump into but this one does, wasted 80 minutes in deep exploration of it and gave up.
+  // motivation was that VLOG can log conditionally at the module level (e.g. only log for our module etc. a feature which ABSL_LOG does not seem to have)
+  // something in the build dependencies order makes VLOG not log for the current module but only for original modules, which is too subtle to capture
+  // at any budget of time that's proportional.
+  google::InitGoogleLogging(argv[0]);
+
   absl::ParseCommandLine(argc, argv);
+
   absl::Status run_status = RunMPPGraph();
   if (!run_status.ok()) {
-    ABSL_LOG(INFO) << "Failed to run the graph: " << run_status.message();
+    ABSL_LOG(INFO) << "failed to run the mediapipe graph due to the following issue: " << run_status.message();
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
