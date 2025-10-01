@@ -57,7 +57,8 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     ```bash
     bazel clean --expunge && trash /tmp/bazel-\$\{USER\}/ && trash ~/.cache/bazel/
     ```
-   + This should be stressed: a mere bazel clean --expunge is not enough to clear _all_ bazel caches. See the end parts of https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35 for a delination of what it clears. the above trashing of specific paths is aligned to the way that this repository uses specific caching paths after we added a fixed cache location for it to avoid it from avoiding incremental building by pip's ephemeral isolated build environments. 
+   + This should be stressed: a mere bazel clean --expunge is not enough to clear _all_ bazel caches. See the end parts of https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35 for a delination of what it clears. the above trashing of specific paths is aligned to the way that this repository uses specific caching paths after we added a fixed cache location for it to avoid it from avoiding incremental building by pip's ephemeral isolated build environments.
+   + Sometimes manually trashing the built executable is also necessary (at least, encountered consistently, when fiddling to make VLOG work under ABSL to no avail in our new module same as it does for mediapipe's original modules; don't try again). 
    + This does not clear the wheel installed binary of mediapipe which `pip install .` installs into the active python environment! only `pip uninstall mediapipe` does that!
    + This does not uninstall the mediapipe python package (only a `pip uninstall mediapipe` does, but don't do that, just repeat the pip install for updating, as `pip uninstall` causes the known issue described below).
 
