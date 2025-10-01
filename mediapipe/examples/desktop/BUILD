@@ -18,6 +18,49 @@ package(default_visibility = [
     "//visibility:public",
 ])
 
+load("//mediapipe/framework/port:build_config.bzl", "mediapipe_proto_library", "mediapipe_cc_proto_library")
+
+mediapipe_proto_library(
+    name = "hand_tracking_stream_data_proto",
+    srcs = ["hand_tracking_stream_data.proto"],
+    deps = [
+        "//mediapipe/framework/formats:landmark_proto",
+        "//mediapipe/framework/formats:classification_proto",
+        "//mediapipe/framework/formats:rect_proto",
+    ],
+)
+
+cc_library(
+    name = "hand_tracking_realtime_verification_main",
+    srcs = ["hand_tracking_realtime_verification_main.cc"],
+    deps = [
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/formats:image_frame",
+        "//mediapipe/framework/formats:image_frame_opencv",
+        "//mediapipe/framework/port:file_helpers",
+        "//mediapipe/framework/port:opencv_highgui",
+        "//mediapipe/framework/port:opencv_imgproc",
+        "//mediapipe/framework/port:opencv_video",
+        "//mediapipe/framework/port:parse_text_proto",
+        "//mediapipe/framework/port:status",
+
+        "//mediapipe/util:resource_util",
+        "//mediapipe/calculators/util:detection_model_provider",
+        "//mediapipe/framework/formats:detection_cc_proto",
+
+        ":hand_tracking_stream_data_cc_proto",
+
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/log:absl_log",
+    ],
+)
+
+
+####################################
+# original mediapipe example mains #
+####################################
+
 cc_library(
     name = "simple_run_graph_main",
     srcs = ["simple_run_graph_main.cc"],
@@ -56,33 +99,6 @@ cc_library(
     ],
 )
 
-cc_library(
-    name = "hand_tracking_realtime_verification_main",
-    srcs = ["hand_tracking_realtime_verification_main.cc"],
-    deps = [
-        "//mediapipe/framework:calculator_framework",
-        "//mediapipe/framework/formats:image_frame",
-        "//mediapipe/framework/formats:image_frame_opencv",
-        "//mediapipe/framework/port:file_helpers",
-        "//mediapipe/framework/port:opencv_highgui",
-        "//mediapipe/framework/port:opencv_imgproc",
-        "//mediapipe/framework/port:opencv_video",
-        "//mediapipe/framework/port:parse_text_proto",
-        "//mediapipe/framework/port:status",
-
-        "//mediapipe/util:resource_util",
-        "//mediapipe/calculators/util:detection_model_provider",
-
-        "//mediapipe/framework/formats:landmark_cc_proto",
-        "//mediapipe/framework/formats:rect_cc_proto",
-        "//mediapipe/framework/formats:classification_cc_proto",
-        "//mediapipe/framework/formats:detection_cc_proto",
-
-        "@com_google_absl//absl/flags:flag",
-        "@com_google_absl//absl/flags:parse",
-        "@com_google_absl//absl/log:absl_log",
-    ],
-)
 
 # Linux only.
 # Must have a GPU with EGL support:

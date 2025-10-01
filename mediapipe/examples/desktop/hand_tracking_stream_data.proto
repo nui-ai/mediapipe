@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package mediapipe;
+
+import "mediapipe/framework/formats/landmark.proto";
+import "mediapipe/framework/formats/classification.proto";
+import "mediapipe/framework/formats/rect.proto";
+
+message HandTrackingStreamData {
+
+  // without this field, if no other field has data, the message is considered empty, and its file writing is silently skipped by design.
+  // this field prevents that from happening (assuming you always fill it, we can't force you in protobuf v3 so please do).
+  int32 frame_number = 999;
+
+  repeated LandmarkList multi_hand_world_landmarks = 1;
+  repeated NormalizedLandmarkList multi_hand_landmarks = 2;
+  repeated ClassificationList multi_handedness = 3;
+  repeated NormalizedRect hand_rects_from_palm_detections = 4;
+}
