@@ -15,6 +15,10 @@
 // An example of sending OpenCV webcam frames into a MediaPipe graph.
 #include <cstdlib>
 
+#include "mediapipe/framework/formats/rect.pb.h"
+#include "mediapipe/framework/formats/landmark.pb.h"
+#include "mediapipe/framework/formats/classification.pb.h"
+
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
 #include "mediapipe/framework/calculator_framework.h"
@@ -48,7 +52,7 @@ absl::Status RunMPPGraph() {
       mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(
           calculator_graph_config_contents);
 
-  const std::vector<std::string> graph_output_streams = {
+  const std::vector<std::string> graph_output_streams_names = {
     "multi_hand_landmarks",
     "multi_hand_world_landmarks",
     "multi_handedness",
@@ -61,7 +65,7 @@ absl::Status RunMPPGraph() {
   MP_RETURN_IF_ERROR(graph.Initialize(config));
 
   std::map<std::string, mediapipe::OutputStreamPoller> pollers;
-  for (const auto& stream : graph_output_streams) {
+  for (const auto& stream : graph_output_streams_names) {
     MP_ASSIGN_OR_RETURN(auto poller, graph.AddOutputStreamPoller(stream));
     pollers.emplace(stream, std::move(poller));
   }
@@ -136,7 +140,18 @@ absl::Status RunMPPGraph() {
         mediapipe::Packet packet;
         if (poller.Next(&packet)) {
           // auto& stream_output = packet.Get<std::vector<::mediapipe::NormalizedLandmarkList>>();
-          ABSL_LOG(INFO) << "got output packet for stream " << stream_name;
+          // ABSL_LOG(INFO) << "output packet for stream " << stream_name << " is of type " << packet.DebugTypeName();
+
+          // Skeleton for matching against all output stream names
+          if (stream_name == "multi_hand_world_landmarks") {
+            auto hand_landmarks = packet.Get<std::vector<mediapipe::LandmarkList>>();
+          } else if (stream_name == "multi_hand_landmarks") {
+            auto world_hand_landmarks = packet.Get<std::vector<mediapipe::NormalizedLandmarkList>>();
+          } else if (stream_name == "multi_handedness") {
+            auto handedness = packet.Get<std::vector<mediapipe::ClassificationList>>();
+          } else if (stream_name == "hand_rects_from_palm_detections") {
+            auto hand_rects = packet.Get<std::vector<mediapipe::NormalizedRect>>();
+          }
         }
       }
     }
