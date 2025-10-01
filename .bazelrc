@@ -29,6 +29,11 @@ build  --action_env=PYTHON_BIN_PATH
 # doubt about build completeness (or correctness) as this feels too quick.
 build  --incompatible_strict_action_env
 
+# We use the system OpenCV, and whereas this choice could be left to the bazel command to specify,
+# without this definition here, Clion will not pick it up when syncing from the bazel build definition,
+# leading to it flagging OpenCV symbols as unresolved. hence moved it here.
+build --cxxopt=-I/usr/include/opencv4
+
 # Enable stack traces
 test --test_env="GTEST_INSTALL_FAILURE_SIGNAL_HANDLER=1"
 
