@@ -16,7 +16,7 @@
 #include <cstdlib>
 #include <fstream>
 
-#include "mediapipe/examples/desktop/hand_tracking_stream_data.pb.h"
+#include "mediapipe/examples/desktop/pipeline_output.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/classification.pb.h"

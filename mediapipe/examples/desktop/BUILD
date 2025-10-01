@@ -21,8 +21,8 @@ package(default_visibility = [
 load("//mediapipe/framework/port:build_config.bzl", "mediapipe_proto_library", "mediapipe_cc_proto_library")
 
 mediapipe_proto_library(
-    name = "hand_tracking_stream_data_proto",
-    srcs = ["hand_tracking_stream_data.proto"],
+    name = "pipeline_output_proto",
+    srcs = ["pipeline_output.proto"],
     deps = [
         "//mediapipe/framework/formats:landmark_proto",
         "//mediapipe/framework/formats:classification_proto",
@@ -48,7 +48,7 @@ cc_library(
         "//mediapipe/calculators/util:detection_model_provider",
         "//mediapipe/framework/formats:detection_cc_proto",
 
-        ":hand_tracking_stream_data_cc_proto",
+        ":pipeline_output_cc_proto",
 
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
