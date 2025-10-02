@@ -6,6 +6,8 @@
 #include <string>
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
 #include "google/protobuf/util/message_differencer.h"
+#include "google/protobuf/io/zero_copy_stream_impl.h"
+#include "google/protobuf/util/delimited_message_util.h"
 
 using mediapipe::PipelineOutputData;
 using google::protobuf::util::MessageDifferencer;
@@ -17,14 +19,29 @@ bool ReadPipelineOutputDataStream(const std::string& filename, std::vector<Pipel
         std::cerr << "Failed to open " << filename << std::endl;
         return false;
     }
-    while (input.peek() != EOF) {
+    google::protobuf::io::IstreamInputStream zero_copy_input(&input);
+    bool clean_eof = false;
+    int msg_count = 0;
+    while (true) {
         PipelineOutputData msg;
-        if (!msg.ParseFromIstream(&input)) {
-            std::cerr << "Failed to parse message from " << filename << std::endl;
-            return false;
+        std::streampos pos = input.tellg();
+        if (!google::protobuf::util::ParseDelimitedFromZeroCopyStream(&msg, &zero_copy_input, &clean_eof)) {
+            if (msg_count == 0) {
+                std::cerr << "Failed to parse any messages from " << filename << " (parse error at file offset " << pos << ")" << std::endl;
+                return false;
+            } else {
+                // EOF or trailing bytes after all messages parsed; treat as normal
+                break;
+            }
+        }
+        if (clean_eof) {
+            // End of file reached after last message
+            break;
         }
         out.push_back(msg);
+        ++msg_count;
     }
+    std::cerr << "Successfully parsed " << msg_count << " messages from " << filename << std::endl;
     return true;
 }
 
@@ -62,4 +79,3 @@ int main(int argc, char** argv) {
         return 4;
     }
 }
-
