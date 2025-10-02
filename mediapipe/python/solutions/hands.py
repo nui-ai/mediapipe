@@ -67,7 +67,7 @@ class HandLandmark(enum.IntEnum):
   PINKY_TIP = 20
 
 
-_BINARYPB_FILE_PATH = 'mediapipe/modules/hand_landmark/hand_landmark_tracking_cpu.binarypb'
+_BINARYPB_FILE_PATH = 'mediapipe/modules/hand_landmark/hand_landmark_tracking_cpu.binarypb'  # not really used at runtime, it doesn't even exist unless purposefully built; evidence: change its name here to a non-existent name and it runs the same.
 
 
 class Hands(SolutionBase):
