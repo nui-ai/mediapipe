@@ -332,8 +332,8 @@ class BuildModules(build_ext.build_ext):
         # 'hand_landmark/hand_landmark_lite.tflite',
         # 'holistic_landmark/hand_recrop.tflite',
         # 'iris_landmark/iris_landmark.tflite',
-        # 'palm_detection/palm_detection_full.tflite',
-        # 'palm_detection/palm_detection_lite.tflite',
+        'palm_detection/palm_detection_full.tflite',
+        'palm_detection/palm_detection_lite.tflite',
         # 'pose_detection/pose_detection.tflite',
         # 'pose_landmark/pose_landmark_full.tflite',
         # 'selfie_segmentation/selfie_segmentation.tflite',
@@ -588,6 +588,13 @@ setuptools.setup(
     },
     ext_modules=[
         BazelExtension('//mediapipe/python:_framework_bindings'),
+
+        # new calculators we add during liberation must be also built by the python extension bazel build targets,
+        # which we wire in from here though we could wire them more intimately in other targets which that build
+        # is building. they are not part of the bazel targets of the pip install process unless we add them like
+        # here, as our C++ liberation bazel target is separate from the pip install one's.
+        # BazelExtension("//mediapipe/calculators/util:detection_model_provider"),
+
         BazelExtension(
             '//mediapipe/tasks/cc/metadata/python:_pywrap_metadata_version'),
         BazelExtension(

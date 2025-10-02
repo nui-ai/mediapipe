@@ -30,6 +30,15 @@ cc_library(
     alwayslink = 1,
 )
 
+# extra binary target of the same, for python bindings
+# which we lazily define with setup.py python classes
+# like BazelExtension("//mediapipe/calculators/util:detection_model_provider"),
+#cc_binary(
+#    name = "detection_model_provider.so",
+#    deps = [":detection_model_provider"],
+#    linkshared = True,
+#)
+
 cc_library(
     name = "alignment_points_to_rects_calculator",
     srcs = ["alignment_points_to_rects_calculator.cc"],
