@@ -23,6 +23,7 @@
 #include "mediapipe/python/pybind/resource_util.h"
 #include "mediapipe/python/pybind/timestamp.h"
 #include "mediapipe/python/pybind/validated_graph_config.h"
+#include "mediapipe/tasks/python/core/pybind/task_runner.h"
 
 namespace mediapipe {
 namespace python {

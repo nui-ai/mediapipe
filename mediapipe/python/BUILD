@@ -36,6 +36,7 @@ pybind_extension(
     module_name = "_framework_bindings",
     deps = [
         ":builtin_calculators",
+        ":builtin_task_graphs",
         "//mediapipe/python/pybind:calculator_graph",
         "//mediapipe/python/pybind:image",
         "//mediapipe/python/pybind:image_frame",
@@ -47,6 +48,7 @@ pybind_extension(
         "//mediapipe/python/pybind:resource_util",
         "//mediapipe/python/pybind:timestamp",
         "//mediapipe/python/pybind:validated_graph_config",
+        "//mediapipe/tasks/python/core/pybind:task_runner",
         "@com_google_absl//absl/strings:str_format",
         "@stblib//:stb_image",
         # Type registration.
@@ -56,6 +58,8 @@ pybind_extension(
         "//mediapipe/framework/formats:detection_registration",
         "//mediapipe/framework/formats:landmark_registration",
         "//mediapipe/framework/formats:rect_registration",
+        "//mediapipe/modules/objectron/calculators:annotation_registration",
+        "//mediapipe/tasks/cc/vision/face_geometry/proto:face_geometry_registration",
     ],
 )
 
@@ -73,7 +77,13 @@ cc_library(
         "//mediapipe/modules/face_detection:face_detection_short_range_cpu",
         "//mediapipe/modules/face_landmark:face_landmark_front_cpu",
         "//mediapipe/modules/hand_landmark:hand_landmark_tracking_cpu",
+        "//mediapipe/modules/holistic_landmark:holistic_landmark_cpu",
+        "//mediapipe/modules/objectron:objectron_cpu",
         "//mediapipe/modules/palm_detection:palm_detection_cpu",
+        "//mediapipe/modules/pose_detection:pose_detection_cpu",
+        "//mediapipe/modules/pose_landmark:pose_landmark_by_roi_cpu",
+        "//mediapipe/modules/pose_landmark:pose_landmark_cpu",
+        "//mediapipe/modules/selfie_segmentation:selfie_segmentation_cpu",
     ],
 )
 
@@ -138,6 +148,8 @@ py_library(
         "//mediapipe/framework/formats:detection_py_pb2",
         "//mediapipe/framework/formats:landmark_py_pb2",
         "//mediapipe/framework/formats:rect_py_pb2",
+        "//mediapipe/modules/objectron/calculators:annotation_py_pb2",
+        "//mediapipe/modules/objectron/calculators:lift_2d_frame_annotation_to_3d_calculator_py_pb2",
         "@com_google_protobuf//:protobuf_python",
     ],
 )

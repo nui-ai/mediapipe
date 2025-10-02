@@ -390,7 +390,7 @@ class GenerateMetadataSchema(build_ext.build_ext):
   def run(self):
     for target in [
         # 'image_segmenter_metadata_schema_py',
-        # 'metadata_schema_py',
+        'metadata_schema_py',
         # 'object_detector_metadata_schema_py',
         'schema_py',
     ]:
