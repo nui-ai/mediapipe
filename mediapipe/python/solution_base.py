@@ -131,6 +131,7 @@ NAME_TO_TYPE: Mapping[str, 'PacketDataType'] = {
     '::std::vector<float>': PacketDataType.FLOAT_LIST,
     '::mediapipe::Matrix': PacketDataType.AUDIO,
     '::mediapipe::ImageFrame': PacketDataType.IMAGE_FRAME,
+    '::mediapipe::PipelineOutputData': PacketDataType.PROTO, # new proto type introduced while liberating
     '::mediapipe::Classification': PacketDataType.PROTO,
     '::mediapipe::ClassificationList': PacketDataType.PROTO,
     '::mediapipe::ClassificationListCollection': PacketDataType.PROTO,

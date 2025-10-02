@@ -1,69 +1,78 @@
+# runs the hands pipeline over an input file, writing its outputs to a protobuf output file.
 # adapted from hands_test.py, which looks for a testdata directory that isn't part of the original mediapipe repository ...
 
 import cv2
 import numpy as np
+import os
 from mediapipe.python.solutions import hands as mp_hands
+from mediapipe.examples.desktop import pipeline_output_pb2
+from mediapipe.framework.formats import landmark_pb2, classification_pb2, rect_pb2, detection_pb2
+
+# Define constant output filename
+OUTPUT_FILE_PATH = "output_data_python.pb"
 
 num_landmarks=21
 num_dimensions=3
-
-def _landmarks_list_to_array(landmark_list, image_shape):
-    rows, cols, _ = image_shape
-    return np.asarray(
-        [(lmk.x * cols, lmk.y * rows, lmk.z * cols)
-         for lmk in landmark_list.landmark]
-        )
-
-
-def _world_landmarks_list_to_array(landmark_list):
-    return np.asarray(
-        [(lmk.x, lmk.y, lmk.z)
-         for lmk in landmark_list.landmark]
-        )
-
 
 def _process_video(input_video, model_complexity, max_num_hands=2):
     # Predict pose landmarks for each frame.
     video_cap = cv2.VideoCapture(input_video)
     total_frames = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    print(f"processing video {input_video} consisting of {total_frames} frames")
+    print(f"Processing video {input_video} consisting of {total_frames} frames")
     landmarks_per_frame = []
     w_landmarks_per_frame = []
     processed_frames = 0
     frame_idx = 0
-    with mp_hands.Hands(
-            static_image_mode = False,
-            max_num_hands = max_num_hands,
-            model_complexity = model_complexity,
-            min_detection_confidence = 0.5
-            ) as hands:
-        while True:
-            frame_idx += 1
-            success, input_frame = video_cap.read()
-            if not success:
-                if frame_idx <= total_frames:
-                    raise RuntimeError(f"Bad/corrupt frame encountered at frame {frame_idx} (1-based index). Stopping early.")
-                break
-            processed_frames += 1
-            input_frame = cv2.cvtColor(input_frame, cv2.COLOR_BGR2RGB)
-            frame_shape = input_frame.shape
-            result = hands.process(image = input_frame)
 
-            frame_landmarks = np.empty([max_num_hands, num_landmarks, num_dimensions]) * np.nan
-            frame_w_landmarks = np.empty([max_num_hands, num_landmarks, num_dimensions]) * np.nan
+    # Open file in write binary mode to overwrite any existing file
+    with open(OUTPUT_FILE_PATH, "wb") as pb_file:
+        with mp_hands.Hands(
+                static_image_mode = False,
+                max_num_hands = max_num_hands,
+                model_complexity = model_complexity,
+                min_detection_confidence = 0.5
+                ) as hands:
+            while True:
+                frame_idx += 1
+                success, input_frame = video_cap.read()
+                if not success:
+                    if frame_idx <= total_frames:
+                        raise RuntimeError(f"Bad/corrupt frame encountered at frame {frame_idx} (1-based index). Stopping early.")
+                    break
+                processed_frames += 1
+                input_frame = cv2.cvtColor(input_frame, cv2.COLOR_BGR2RGB)
+                frame_shape = input_frame.shape
+                result = hands.process(image = input_frame)
 
-            if result.multi_hand_landmarks:
-                for idx, landmarks in enumerate(result.multi_hand_landmarks):
-                    landmarks = _landmarks_list_to_array(landmarks, frame_shape)
-                    frame_landmarks[idx] = landmarks
-                # print(frame_landmarks)
+                frame_landmarks = np.empty([max_num_hands, num_landmarks, num_dimensions]) * np.nan
+                frame_w_landmarks = np.empty([max_num_hands, num_landmarks, num_dimensions]) * np.nan
 
-            if result.multi_hand_world_landmarks:
-                for idx, w_landmarks in enumerate(result.multi_hand_world_landmarks):
-                    w_landmarks = _world_landmarks_list_to_array(w_landmarks)
-                    frame_w_landmarks[idx] = w_landmarks
-                # print(frame_w_landmarks)
+                # Prepare protobuf message
+                output_msg = pipeline_output_pb2.PipelineOutputData()
+                output_msg.frame_number = frame_idx
 
+                if result.multi_hand_landmarks:
+                    for landmarks in result.multi_hand_landmarks:
+                        output_msg.multi_hand_landmarks.append(landmarks)
+
+                if result.multi_hand_world_landmarks:
+                    for w_landmarks in result.multi_hand_world_landmarks:
+                        output_msg.multi_hand_world_landmarks.append(w_landmarks)
+
+                if result.multi_handedness:
+                    for handedness in result.multi_handedness:
+                        output_msg.multi_handedness.append(handedness)
+
+                # Optionally: hand_rects_from_palm_detections if available
+                # if result.hand_rects_from_palm_detections:
+                #     for rect in result.hand_rects_from_palm_detections:
+                #         output_msg.hand_rects_from_palm_detections.append(rect)
+
+                # Just serialize directly to the file - no length prefixing needed
+                # to match the C++ SerializeToOstream behavior
+                pb_file.write(output_msg.SerializeToString())
+
+    print(f"Writing completed: {processed_frames} frames processed and saved to {os.path.abspath(OUTPUT_FILE_PATH)}")
 
     if processed_frames < total_frames:
         raise RuntimeError(f"Video processing stopped early: processed {processed_frames} out of {total_frames} frames. Possible bad/corrupt frame encountered.")
