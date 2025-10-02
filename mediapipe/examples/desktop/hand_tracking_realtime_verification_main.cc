@@ -34,6 +34,7 @@
 #include "mediapipe/util/resource_util.h"
 
 constexpr char kInputStream[] = "image";
+constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";
 
 ABSL_FLAG(std::string, calculator_graph_config_file, "",
           "Name of file containing text format CalculatorGraphConfig proto.");
@@ -59,7 +60,7 @@ absl::Status RunMPPGraph() {
     "multi_hand_landmarks",
     "multi_hand_world_landmarks",
     "multi_handedness",
-    "hand_rects_from_palm_detections"
+    // "hand_rects_from_palm_detections"
   };
 
   // Initializing the calculator graph
@@ -89,13 +90,13 @@ absl::Status RunMPPGraph() {
   MP_RETURN_IF_ERROR(graph.StartRun({}));
 
   // Initialize output protobuf file (overwrite if exists)
-  std::ofstream output_proto_file("output_data.pb", std::ios::binary | std::ios::trunc);
+  std::ofstream output_proto_file(kOutputProtoFilename, std::ios::binary | std::ios::trunc);
   if (!output_proto_file.is_open()) {
-    return absl::InternalError("failed to open output_data.pb for writing");
+    return absl::InternalError(std::string("failed to open ") + kOutputProtoFilename + " for writing");
   }
 
   // process all input frames
-  for (int i = 0; i < 200; ++i) {
+  for (int i = 0; i < 999999; ++i) {
 
     ABSL_LOG(WARNING) << "frame number: " << i;
 
@@ -184,16 +185,16 @@ absl::Status RunMPPGraph() {
     for (const auto& c : handedness) {
       *stream_data_msg.add_multi_handedness() = c;
     }
-    for (const auto& r : hand_rects) {
-      *stream_data_msg.add_hand_rects_from_palm_detections() = r;
-    }
+    // for (const auto& r : hand_rects) {
+    //   *stream_data_msg.add_hand_rects_from_palm_detections() = r;
+    // }
     // log the size of the message:
     stream_data_msg.SerializeToOstream(&output_proto_file);
   }
 
   output_proto_file.close();
   ABSL_LOG(INFO) << "mediapipe graph shutting down";
-  ABSL_LOG(INFO) << "output_data.pb was written";
+  ABSL_LOG(INFO) << kOutputProtoFilename << " was written";
 
   MP_RETURN_IF_ERROR(graph.CloseInputStream(kInputStream));
   return graph.WaitUntilDone();
