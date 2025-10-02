@@ -20,7 +20,7 @@ The objective of this repository is detailed in https://github.com/nui-ai/mediap
 ## Supporting Tools
 + A utility main for parsing the hands pipeline of mediapipe into its nodes is [available for reuse](mediapipe_analysis/analysis/pipeline_parser.py).
 + The input to the pipeline's head is just an ndarray image, [see here for discussion](https://github.com/nui-ai/mediapipe/blob/52e984567f30d8ffe79289e3852f8e9af2a6f69a/mediapipe/python/solution_base.py#L355-L372).
-+ [a main running the same pipeline which the python api runs](hand_tracking_pipeline_run.py) while writing its output per frame as protobuf; 
++ [a main running the same pipeline which the python api runs](hand_tracking_pipeline_run.py) while writing its output per frame as protobuf, since our liberation branch has mains which run a comparison of different pipeline runs which uses that format; 
   + its output data file can be used to compare results with liberated versions of the pipeline. this is just a repeatable way to get the original pipeline's results over a given input video file. this is necessary because the original example mains only ran the pipeline which the python api uses *wrapped* by other pipelines which made that pipeline's outputs inaccessible from the outside, so we couldn't just use them for that, so we added this main which mirrors the original python example but uses this pipeline directly (while writing out its output as protobuf).
   + this was instrumental in showing that the first step of liberation changes still yields identical results to the original pipeline down to the byte for each frame of a good not-short and diverse input video file! 
 
