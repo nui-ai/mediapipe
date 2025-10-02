@@ -65,6 +65,14 @@ cc_binary(
     ],
 )
 
+cc_binary(
+    name = "compare_pipelines_output_data",
+    deps = [
+        "//mediapipe/examples/desktop:compare_pipelines_output_data_main",
+        "@com_google_protobuf//:protobuf",
+    ],
+)
+
 # Linux only
 cc_binary(
     name = "hand_tracking_gpu",

@@ -32,6 +32,7 @@
 #include "mediapipe/framework/port/opencv_video_inc.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/util/resource_util.h"
+#include <google/protobuf/util/delimited_message_util.h>
 
 constexpr char kInputStream[] = "image";
 constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";
@@ -188,8 +189,8 @@ absl::Status RunMPPGraph() {
     // for (const auto& r : hand_rects) {
     //   *stream_data_msg.add_hand_rects_from_palm_detections() = r;
     // }
-    // log the size of the message:
-    stream_data_msg.SerializeToOstream(&output_proto_file);
+
+    google::protobuf::util::SerializeDelimitedToOstream(stream_data_msg, &output_proto_file);
   }
 
   output_proto_file.close();

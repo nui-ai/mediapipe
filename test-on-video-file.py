@@ -14,6 +14,22 @@ OUTPUT_FILE_PATH = "output_data_python.pb"
 num_landmarks=21
 num_dimensions=3
 
+def write_delimited_message(pb_file, message):
+    # no python library implementation for this in python https://chatgpt.com/s/t_68de7b5db2bc8191a472dc39f7af2c4a
+    # (only in cpp, so we roll our chatgpt own)
+    data = message.SerializeToString()
+    length = len(data)
+    # Write length as protobuf varint
+    while True:
+        to_write = length & 0x7F
+        length >>= 7
+        if length:
+            pb_file.write(bytes([to_write | 0x80]))
+        else:
+            pb_file.write(bytes([to_write]))
+            break
+    pb_file.write(data)
+
 def _process_video(input_video, model_complexity, max_num_hands=2):
     # Predict pose landmarks for each frame.
     video_cap = cv2.VideoCapture(input_video)
@@ -33,12 +49,15 @@ def _process_video(input_video, model_complexity, max_num_hands=2):
                 min_detection_confidence = 0.5
                 ) as hands:
             while True:
-                frame_idx += 1
                 success, input_frame = video_cap.read()
                 if not success:
-                    if frame_idx <= total_frames:
-                        raise RuntimeError(f"Bad/corrupt frame encountered at frame {frame_idx} (1-based index). Stopping early.")
+                    if frame_idx < total_frames:
+                        raise RuntimeError(f"Bad/corrupt frame encountered at frame {frame_idx} (0-based index). Stopping early.")
                     break
+
+                # put the output into a protobuf message for file writing
+                output_msg = pipeline_output_pb2.PipelineOutputData()
+                output_msg.frame_number = frame_idx
                 processed_frames += 1
                 input_frame = cv2.cvtColor(input_frame, cv2.COLOR_BGR2RGB)
                 frame_shape = input_frame.shape
@@ -46,10 +65,6 @@ def _process_video(input_video, model_complexity, max_num_hands=2):
 
                 frame_landmarks = np.empty([max_num_hands, num_landmarks, num_dimensions]) * np.nan
                 frame_w_landmarks = np.empty([max_num_hands, num_landmarks, num_dimensions]) * np.nan
-
-                # Prepare protobuf message
-                output_msg = pipeline_output_pb2.PipelineOutputData()
-                output_msg.frame_number = frame_idx
 
                 if result.multi_hand_landmarks:
                     for landmarks in result.multi_hand_landmarks:
@@ -68,9 +83,9 @@ def _process_video(input_video, model_complexity, max_num_hands=2):
                 #     for rect in result.hand_rects_from_palm_detections:
                 #         output_msg.hand_rects_from_palm_detections.append(rect)
 
-                # Just serialize directly to the file - no length prefixing needed
-                # to match the C++ SerializeToOstream behavior
-                pb_file.write(output_msg.SerializeToString())
+                # Write as delimited protobuf message
+                write_delimited_message(pb_file, output_msg)
+                frame_idx += 1
 
     print(f"Writing completed: {processed_frames} frames processed and saved to {os.path.abspath(OUTPUT_FILE_PATH)}")
 
