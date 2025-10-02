@@ -109,6 +109,6 @@ def test_video(input_video):
 if __name__ == '__main__':
     import sys
     if not sys.argv[1:]:
-        print("Usage: python test-on-video-file.py <input-video>")
+        print("Usage: python hand_tracking_pipeline_run.py <input-video>")
         sys.exit(1)
     test_video(input_video=sys.argv[1])

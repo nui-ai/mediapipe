@@ -1,6 +1,6 @@
-// Copyright 2025 The MediaPipe Authors.
-//
-// Compares two pipeline output protobuf files record by record.
+// Compares two pipeline output protobuf files record by record,
+// showing any difference via the protobuf google library's MessageDifferencer diff reporting utility.
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
         all_equal = false;
     }
     if (all_equal) {
-        std::cout << "All records are equal." << std::endl;
+        std::cout << "All records equal." << std::endl;
         return 0;
     } else {
         std::cout << "Differences found." << std::endl;

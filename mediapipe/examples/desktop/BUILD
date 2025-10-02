@@ -17,8 +17,8 @@ mediapipe_proto_library(
 )
 
 cc_library(
-    name = "hand_tracking_realtime_verification_main",
-    srcs = ["hand_tracking_realtime_verification_main.cc"],
+    name = "hand_tracking_pipeline_run_main",
+    srcs = ["hand_tracking_pipeline_run_main.cc"],
     deps = [
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/formats:image_frame",
