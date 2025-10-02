@@ -42,6 +42,12 @@ def _process_video(input_video, model_complexity, max_num_hands=2):
 
     # Open file in write binary mode to overwrite any existing file
     with open(OUTPUT_FILE_PATH, "wb") as pb_file:
+
+        # this main is new, but it uses the original mediapipe v0.10.13 provided python api
+        # underlying hands pipeline, using the same pipeline input side packets and
+        # everything else same as we really use from python in our application.
+        # which is not the same pipeline, as mentioned, that the original mediapipe
+        # example mains run, which is why this additional main.
         with mp_hands.Hands(
                 static_image_mode = False,
                 max_num_hands = max_num_hands,
