@@ -41,9 +41,9 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
         bazel-bin/mediapipe/examples/desktop/hand_tracking/hand_tracking_tflite --calculator_graph_config_file=./mediapipe/graphs/hand_tracking/hand_tracking_desktop.pbtxt --input_side_packets=input_video_path=sample-video.avi,output_video_path=output_video.mp4 
        ```
      this verifies the C++ built hands pipeline without relying on any python-targeting parts of the build.<br>
-   + python test which should complete with exit code 0, it doesn't show any fancy results for now, it's a smoke test only:
+   + python test which should complete with exit code 0, it doesn't show any fancy results but record the pipeline's per input output to a protobuf file.
         ```bash
-        python3 -P test-on-video-file.py
+        python3 -P hand_tracking_pipeline_run.py
         ``` 
         note that without `-P` python will try loading python modules from the `mediapipe` directory under the project's tree root, which is essentially our python "source directory", which is a horrible entanglement, and is also bound to fail since some of the mediapipe python modules are only dynamically built & placed (into the active python environment) by the pip install process ― because most of mediapipe python-exposed sub-packages are either pybind generated or bazel generated from protobuf definitions or both (e.g. mediapipe.python._framework_bindings). So the python source tree _never_ contains all the modules that the mediapipe python api expects to find, but it can sure throw you off track with cryptic module loading errors if you try to run without -P and thus let python first look for modules under the python source directory `mediapipe`. With this project you only want python to run from the active python environment, not from its "source" path, which is what `-P` does.
    
