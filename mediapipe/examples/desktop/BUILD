@@ -31,27 +31,6 @@ mediapipe_proto_library(
 )
 
 cc_library(
-    name = "hand_tracking_pipeline_run_main",
-    srcs = ["hand_tracking_pipeline_run_main.cc"],
-    deps = [
-        ":pipeline_output_cc_proto",
-        "//mediapipe/framework:calculator_framework",
-        "//mediapipe/framework/formats:image_frame",
-        "//mediapipe/framework/formats:image_frame_opencv",
-        "//mediapipe/framework/port:file_helpers",
-        "//mediapipe/framework/port:opencv_highgui",
-        "//mediapipe/framework/port:opencv_imgproc",
-        "//mediapipe/framework/port:opencv_video",
-        "//mediapipe/framework/port:parse_text_proto",
-        "//mediapipe/framework/port:status",
-        "//mediapipe/util:resource_util",
-        "@com_google_absl//absl/flags:flag",
-        "@com_google_absl//absl/flags:parse",
-        "@com_google_absl//absl/log:absl_log",
-    ],
-)
-
-cc_library(
     name = "simple_run_graph_main",
     srcs = ["simple_run_graph_main.cc"],
     deps = [
