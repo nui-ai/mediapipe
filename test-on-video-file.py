@@ -22,7 +22,7 @@ def _world_landmarks_list_to_array(landmark_list):
         )
 
 
-def _process_video(input_video, model_complexity, max_num_hands=1):
+def _process_video(input_video, model_complexity, max_num_hands=2):
     # Predict pose landmarks for each frame.
     video_cap = cv2.VideoCapture(input_video)
     total_frames = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))

@@ -113,11 +113,6 @@ class Hands(SolutionBase):
     """
     super().__init__(
         binary_graph_path=_BINARYPB_FILE_PATH,
-        side_inputs={
-            'model_complexity': model_complexity,
-            'num_hands': max_num_hands,
-            'use_prev_landmarks': not static_image_mode,
-        },
         calculator_params={
             'palmdetectioncpu__TensorsToDetectionsCalculator.min_score_thresh':
                 min_detection_confidence,
