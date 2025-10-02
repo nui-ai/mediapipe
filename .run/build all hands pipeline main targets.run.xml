@@ -3,6 +3,7 @@
     <blaze-settings blaze-command="build" handler-id="BlazeCommandGenericRunConfigurationHandlerProvider">
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite</blaze-target>
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu</blaze-target>
+      <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run</blaze-target>
       <blaze-user-flag>-c</blaze-user-flag>
       <blaze-user-flag>opt</blaze-user-flag>
       <blaze-user-flag>--copt=-I/usr/include/opencv4</blaze-user-flag>
