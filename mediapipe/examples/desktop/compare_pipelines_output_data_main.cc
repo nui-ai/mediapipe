@@ -56,9 +56,11 @@ int main(int argc, char** argv) {
 
     size_t n = std::min(cpp_records.size(), python_records.size());
     bool all_equal = true;
+    int different_pairs = 0;
     for (size_t i = 0; i < n; ++i) {
         if (!MessageDifferencer::Equals(cpp_records[i], python_records[i])) {
             all_equal = false;
+            ++different_pairs;
             std::cout << "Record " << i << " differs:" << std::endl;
             std::string diff;
             MessageDifferencer differ;
@@ -75,7 +77,7 @@ int main(int argc, char** argv) {
         std::cout << "All records equal." << std::endl;
         return 0;
     } else {
-        std::cout << "Differences found." << std::endl;
+        std::cout << different_pairs << " records are different." << std::endl;
         return 4;
     }
 }

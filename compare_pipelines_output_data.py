@@ -5,8 +5,8 @@ from mediapipe.examples.desktop import pipeline_output_pb2
 from mediapipe.framework.formats import landmark_pb2, classification_pb2, rect_pb2, detection_pb2
 from google.protobuf.json_format import MessageToDict
 
-CPP_FILE = "output_data_cpp.pb"
-PYTHON_FILE = "output_data_python.pb"
+FIRST = "output_data_cpp.pb"
+SECOND = "output_data_v0.10.13.pb"  # "output_data_python.pb"
 
 # Helper to read a varint from a file
 def read_varint(file):
@@ -58,21 +58,24 @@ def compare_messages(msg1, msg2):
     return differences
 
 def main():
-    if not os.path.exists(CPP_FILE) or not os.path.exists(PYTHON_FILE):
-        print(f"Missing required files: {CPP_FILE} or {PYTHON_FILE}")
+    print("note: the c++ equivalent main provides an easier to consume elucidation of the same differences. try it.\n")
+    if not os.path.exists(FIRST) or not os.path.exists(SECOND):
+        print(f"Missing required files: {FIRST} or {SECOND}")
         sys.exit(1)
-    py_msgs = read_pipeline_output_data(PYTHON_FILE)
-    cpp_msgs = read_pipeline_output_data(CPP_FILE)
+    py_msgs = read_pipeline_output_data(SECOND)
+    cpp_msgs = read_pipeline_output_data(FIRST)
     n_cpp = len(cpp_msgs)
     n_py = len(py_msgs)
-    print(f"Read {n_cpp} records from {CPP_FILE}")
-    print(f"Read {n_py} records from {PYTHON_FILE}")
+    print(f"Read {n_cpp} records from {FIRST}")
+    print(f"Read {n_py} records from {SECOND}")
     n = min(n_cpp, n_py)
     all_equal = True
+    different_pairs = 0
     for i in range(n):
         if cpp_msgs[i] == py_msgs[i]:
             continue
         all_equal = False
+        different_pairs += 1
         print(f"Record {i+1} differs:")
         diffs = compare_messages(cpp_msgs[i], py_msgs[i])
         for field, vals in diffs.items():
@@ -83,7 +86,7 @@ def main():
     if all_equal:
         print("All records are equal.")
     else:
-        print("Differences found.")
+        print(f"{different_pairs} records are different.")
 
 if __name__ == "__main__":
     main()
