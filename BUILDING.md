@@ -41,7 +41,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
         bazel-bin/mediapipe/examples/desktop/hand_tracking/hand_tracking_tflite --calculator_graph_config_file=./mediapipe/graphs/hand_tracking/hand_tracking_desktop.pbtxt --input_side_packets=input_video_path=sample-video.avi,output_video_path=output_video.mp4 
        ```
      this verifies the C++ built hands pipeline without relying on any python-targeting parts of the build.<br>
-   + python test which should complete with exit code 0, it doesn't show any fancy results but record the pipeline's per input output to a protobuf file, it's a smoke test:
+   + python test which should complete with exit code 0, it doesn't show any fancy results but only records the pipeline's output per input to a protobuf file:
         ```bash
         python3 -P hand_tracking_pipeline_run.py
         ``` 
