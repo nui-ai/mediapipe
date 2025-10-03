@@ -914,48 +914,6 @@ cc_library(
 )
 
 cc_library(
-    name = "hand_landmarks_inference_calculator_xnnpack",
-    srcs = ["hand_landmarks_inference_calculator_xnnpack.cc"],
-    deps = [
-        ":inference_calculator_interface",
-        ":inference_calculator_utils",
-        ":inference_interpreter_delegate_runner",
-        ":inference_runner",
-        ":tensor_span",
-        "//mediapipe/framework:calculator_framework",
-        "//mediapipe/framework/formats:tensor",
-        "//mediapipe/framework/port:ret_check",
-        "//mediapipe/framework/port:status",
-        "@com_google_absl//absl/status",
-        "@com_google_absl//absl/status:statusor",
-        "@com_google_absl//absl/time",
-        "@org_tensorflow//tensorflow/lite/delegates/xnnpack:xnnpack_delegate",
-    ],
-    alwayslink = 1,
-)
-
-cc_library(
-    name = "palms_detection_inference_calculator_xnnpack",
-    srcs = ["palms_detection_inference_calculator_xnnpack.cc"],
-    deps = [
-        ":inference_calculator_interface",
-        ":inference_calculator_utils",
-        ":inference_interpreter_delegate_runner",
-        ":inference_runner",
-        ":tensor_span",
-        "//mediapipe/framework:calculator_framework",
-        "//mediapipe/framework/formats:tensor",
-        "//mediapipe/framework/port:ret_check",
-        "//mediapipe/framework/port:status",
-        "@com_google_absl//absl/status",
-        "@com_google_absl//absl/status:statusor",
-        "@com_google_absl//absl/time",
-        "@org_tensorflow//tensorflow/lite/delegates/xnnpack:xnnpack_delegate",
-    ],
-    alwayslink = 1,
-)
-
-cc_library(
     name = "inference_calculator_gl_if_compute_shader_available",
     deps = selects.with_or({
         ":compute_shader_unavailable": [],
@@ -1193,6 +1151,7 @@ cc_library(
         ":platform_apple_with_gpu": [
             "//mediapipe/gpu:MPPMetalHelper",
             "//mediapipe/gpu:MPPMetalUtil",
+            "//mediapipe/objc:mediapipe_framework_ios",
         ],
         # This setting is needed to allow bazel to build all targets on Mac with GPU disabled
         ":platform_apple_without_gpu": [],
