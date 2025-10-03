@@ -895,16 +895,12 @@ cc_library(
     srcs = [
         "inference_calculator_xnnpack.cc",
     ],
-    hdrs = [
-        "inference_calculator_xnnpack.h",
-    ],
     deps = [
         ":inference_calculator_interface",
         ":inference_calculator_utils",
         ":inference_interpreter_delegate_runner",
         ":inference_runner",
         ":tensor_span",
-        "//mediapipe/calculators/tflite:tflite_model_calculator",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/formats:tensor",
         "//mediapipe/framework/port:ret_check",
@@ -920,11 +916,9 @@ cc_library(
 cc_library(
     name = "hand_landmarks_inference_calculator_xnnpack",
     srcs = ["hand_landmarks_inference_calculator_xnnpack.cc"],
-    hdrs = ["inference_calculator_xnnpack.h"],
     deps = [
         ":inference_calculator_interface",
         ":inference_calculator_utils",
-        ":inference_calculator_xnnpack",
         ":inference_interpreter_delegate_runner",
         ":inference_runner",
         ":tensor_span",
@@ -943,11 +937,9 @@ cc_library(
 cc_library(
     name = "palms_detection_inference_calculator_xnnpack",
     srcs = ["palms_detection_inference_calculator_xnnpack.cc"],
-    hdrs = ["inference_calculator_xnnpack.h"],
     deps = [
         ":inference_calculator_interface",
         ":inference_calculator_utils",
-        ":inference_calculator_xnnpack",
         ":inference_interpreter_delegate_runner",
         ":inference_runner",
         ":tensor_span",
