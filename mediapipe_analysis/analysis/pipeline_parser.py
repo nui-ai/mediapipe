@@ -974,6 +974,73 @@ code, pre {{ background: #222; color: #eee; }}
             md += '\n' + self._formats_table(abs_dir, script_name)
         return md
 
+    @staticmethod
+    def parse_stream_desc(desc: str) -> dict:
+        """ Parses a stream description into its components: name, tag (if present), and clone (if present).
+        
+        CLONE:number:name is parsed as clone=number, name=name, no tag.
+        CLONE:name is parsed as clone=name, name=name, no tag.
+        TAG:name is parsed as tag=TAG, name=name.
+        name alone is parsed as name=name, no tag or clone. """
+
+        clone = None
+        tag = None
+        name = None
+        parts = desc.split(':')
+        if len(parts) == 3 and parts[0] == 'CLONE':
+            clone = parts[1]
+            name = parts[2]
+        elif len(parts) == 2 and parts[0] == 'CLONE':
+            clone = parts[1]
+            name = parts[1]
+        elif len(parts) == 2:
+            tag = parts[0]
+            name = parts[1]
+        elif len(parts) == 1:
+            name = parts[0]
+        else:
+            # fallback: treat last part as name, second-to-last as tag if present
+            name = parts[-1]
+            if len(parts) > 1:
+                tag = parts[-2]
+        return {'name': name, 'tag': tag, 'clone': clone}
+
+    @staticmethod
+    def streams_match(desc1: str, desc2: str) -> bool:
+        """Return True if two stream descriptions match by name or by tag (if both have tags)."""
+        s1 = MediaPipePipelineParser.parse_stream_desc(desc1)
+        s2 = MediaPipePipelineParser.parse_stream_desc(desc2)
+        if s1['name'] == s2['name']:
+            return True
+        if s1['tag'] and s2['tag'] and s1['tag'] == s2['tag']:
+            return True
+        return False
+
+    def check_graph_node_streams(self, graph_node: PipelineNode, parent_node_fields: dict) -> dict:
+        """Check that every stream defined for the graph as a node matches exactly one field self-defined by the graph itself, and vice versa, for all stream types."""
+        results = {}
+        for field in ['input_streams', 'output_streams', 'input_side_packets', 'output_side_packets']:
+            parent_streams = parent_node_fields.get(field) or []
+            graph_streams = getattr(graph_node, field) or []
+            # Check each parent stream matches exactly one graph stream
+            unmatched_parent = []
+            for ps in parent_streams:
+                matches = [gs for gs in graph_streams if self.streams_match(ps, gs)]
+                if len(matches) != 1:
+                    unmatched_parent.append(ps)
+            # Check each graph stream matches exactly one parent stream
+            unmatched_graph = []
+            for gs in graph_streams:
+                matches = [ps for ps in parent_streams if self.streams_match(gs, ps)]
+                if len(matches) != 1:
+                    unmatched_graph.append(gs)
+            results[field] = {
+                'unmatched_parent': unmatched_parent,
+                'unmatched_graph': unmatched_graph,
+                'all_matched': not unmatched_parent and not unmatched_graph
+            }
+        return results
+
 def main():
     parser = MediaPipePipelineParser(Path('mediapipe').resolve())
     print()
