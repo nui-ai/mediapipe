@@ -629,15 +629,13 @@ class MediaPipePipelineParser:
         def render_node(node, level):
             indent = '    ' * level
             link = make_link(node)
-            # Ensure description is a single line for hoverbox
-            desc_raw = getattr(node, 'inline_pbtxt_comment', None)
-            desc = esc(desc_raw.replace('\n', ' ')) if desc_raw else ''
-            warning = esc(getattr(node, 'warning', None)) if getattr(node, 'warning', None) else ''
+            desc = esc(node.description) if node.description else ''
+            warning = esc(node.warning) if node.warning else ''
             hover = ''
             if desc or warning or node.input_streams or node.output_streams or node.input_side_packets or node.output_side_packets or (node.node_options and node.node_options != {}):
                 hover = '<div class="hoverbox">'
                 if desc:
-                    hover += desc
+                    hover += f'<div class="hoverbox-desc">{desc}</div>'
                 # Add table for fields (above warning)
                 def table_row(label, items):
                     if items:
@@ -801,6 +799,8 @@ code, pre {{ background: #222; color: #eee; }}
             'source': rel(node.source),
             'description': node.description,
         }
+        if node.warning:
+            d['warning'] = node.warning
         if node.children:
             d['nodes'] = [self._node_to_dict_rel(child) for child in node.children]
         return d
@@ -814,6 +814,8 @@ code, pre {{ background: #222; color: #eee; }}
             'description': node.description,
             'source_line_number': node.source_line_number,
         }
+        if node.warning:
+            d['warning'] = node.warning
         if node.input_streams:
             d['input_streams'] = node.input_streams
         if node.output_streams:
