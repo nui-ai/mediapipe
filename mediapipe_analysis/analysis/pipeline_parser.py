@@ -500,6 +500,14 @@ class MediaPipePipelineParser:
                     'node_options': node_options,
                     'description': node_description
                 })
+                # Ensure stream differences are checked and logged for all subgraph nodes
+                if input_streams or output_streams or input_side_packets or output_side_packets:
+                    self.check_graph_node_streams(child_node, {
+                        'input_streams': input_streams,
+                        'output_streams': output_streams,
+                        'input_side_packets': input_side_packets,
+                        'output_side_packets': output_side_packets
+                    })
                 child_nodes.append(child_node)
                 self.ident -= 1
             if warning:
@@ -1016,19 +1024,53 @@ code, pre {{ background: #222; color: #eee; }}
             return True
         return False
 
+    def log_stream_definition_differences(self, graph_node: PipelineNode):
+        """Compare parent (node) stream definitions to graph self-descriptions. Build matched pairs using streams_match, then log differences for each pair. Print [ERROR] if any stream matches more than one counterpart."""
+        if not graph_node.graph_self_description:
+            return
+        for field in ['input_streams', 'output_streams', 'input_side_packets', 'output_side_packets']:
+            parent_streams = getattr(graph_node, field) or []
+            graph_streams = getattr(graph_node.graph_self_description, field) or []
+            # Check for multiple matches per parent stream
+            for ps in parent_streams:
+                matches = [gs for gs in graph_streams if self.streams_match(ps, gs)]
+                if len(matches) > 1:
+                    print(f"[ERROR] Multiple matches for parent stream '{ps}' in graph '{graph_node.name}', field '{field}': {matches}", file=sys.stderr)
+            # Check for multiple matches per graph stream
+            for gs in graph_streams:
+                matches = [ps for ps in parent_streams if self.streams_match(ps, gs)]
+                if len(matches) > 1:
+                    print(f"[ERROR] Multiple matches for graph stream '{gs}' in graph '{graph_node.name}', field '{field}': {matches}", file=sys.stderr)
+            # Build matched pairs (first unused match only, as before)
+            matched_pairs = []
+            used_graph = set()
+            for ps in parent_streams:
+                for idx, gs in enumerate(graph_streams):
+                    if self.streams_match(ps, gs) and idx not in used_graph:
+                        matched_pairs.append((ps, gs))
+                        used_graph.add(idx)
+                        break
+            for ps, gs in matched_pairs:
+                ps_parsed = self.parse_stream_desc(ps)
+                gs_parsed = self.parse_stream_desc(gs)
+                differences = []
+                if ps_parsed['name'] != gs_parsed['name']:
+                    differences.append(f"name differs: parent='{ps_parsed['name']}' vs graph='{gs_parsed['name']}'")
+                if ps_parsed['tag'] and gs_parsed['tag'] and ps_parsed['tag'] != gs_parsed['tag']:
+                    differences.append(f"tag differs: parent='{ps_parsed['tag']}' vs graph='{gs_parsed['tag']}'")
+                if differences:
+                    print(f"[Stream definition difference] Graph '{graph_node.name}', field '{field}': parent='{ps}', graph='{gs}' | " + ", ".join(differences))
     def check_graph_node_streams(self, graph_node: PipelineNode, parent_node_fields: dict) -> dict:
-        """Check that every stream defined for the graph as a node matches exactly one field self-defined by the graph itself, and vice versa, for all stream types."""
+        self.log_stream_definition_differences(graph_node)
         results = {}
         for field in ['input_streams', 'output_streams', 'input_side_packets', 'output_side_packets']:
             parent_streams = parent_node_fields.get(field) or []
             graph_streams = getattr(graph_node, field) or []
-            # Check each parent stream matches exactly one graph stream
             unmatched_parent = []
             for ps in parent_streams:
                 matches = [gs for gs in graph_streams if self.streams_match(ps, gs)]
                 if len(matches) != 1:
                     unmatched_parent.append(ps)
-            # Check each graph stream matches exactly one parent stream
             unmatched_graph = []
             for gs in graph_streams:
                 matches = [ps for ps in parent_streams if self.streams_match(gs, ps)]
