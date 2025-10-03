@@ -14,7 +14,14 @@ import json
 import yaml
 import os
 
-
+@dataclass
+class GraphSelfDescription:
+    input_streams: Optional[list] = None
+    output_streams: Optional[list] = None
+    input_side_packets: Optional[list] = None
+    output_side_packets: Optional[list] = None
+    node_options: Optional[dict] = None
+    description: Optional[str] = None
 
 @dataclass
 class PipelineNode:
@@ -30,7 +37,8 @@ class PipelineNode:
     input_side_packets: Optional[list] = None
     output_side_packets: Optional[list] = None
     node_options: Optional[dict] = None
-    inline_pbtxt_comment: Optional[str] = None  # <-- moved after non-default fields
+    description: Optional[str] = None
+    graph_self_description: Optional[GraphSelfDescription] = None
 
 @dataclass
 class MediaPipeGraph:
@@ -348,7 +356,7 @@ class MediaPipePipelineParser:
         return ''.join(x.capitalize() for x in components)
 
 
-    def analyze_pipeline(self, pipeline_name: str, parent_output_dir: Optional[Path] = None) -> PipelineNode:
+    def analyze_pipeline(self, pipeline_name: str, parent_output_dir: Optional[Path] = None, node_fields: dict = None) -> PipelineNode:
 
         """Analyze the specific hand landmark tracking pipeline and build a hierarchy tree."""
 
@@ -363,6 +371,14 @@ class MediaPipePipelineParser:
 
         if graph_path.endswith('.pbtxt'):
             graph, graph_header_comment = self.parse_pbtxt_file(graph_path)
+            graph_self_description = GraphSelfDescription(
+                description=graph_header_comment,
+                input_streams=graph.input_streams,
+                output_streams=graph.output_streams,
+                input_side_packets=graph.input_side_packets,
+                output_side_packets=graph.output_side_packets,
+                node_options=None
+            )
         else:
             warning = '⚠️ this graph is defined in C++ code (not by a parseable .pbtxt file). its own nodes are therefore not expanded here, but you can read them in its source code.'
             self.print_with_ident(warning)
@@ -373,26 +389,30 @@ class MediaPipePipelineParser:
                 warning = warning,
                 children=[],
                 source_line_number=graph_line_number,
-                source_line_code=graph_line_code
+                source_line_code=graph_line_code,
+                graph_self_description=None,
+                description=None,
+                input_streams=None,
+                output_streams=None,
+                input_side_packets=None,
+                output_side_packets=None,
+                node_options=None
             )
-
         calculator_mapping = dict[str, Path]()
         subgraph_mapping = dict[str, Path]()
         child_nodes = []
         for node in graph.nodes:
-
             node_name = getattr(node, 'name', None) or node.get('name')
             input_streams = getattr(node, 'input_streams', None) or node.get('input_streams')
             output_streams = getattr(node, 'output_streams', None) or node.get('output_streams')
             input_side_packets = getattr(node, 'input_side_packets', None) or node.get('input_side_packets')
             output_side_packets = getattr(node, 'output_side_packets', None) or node.get('output_side_packets')
             node_options = getattr(node, 'node_options', None) or node.get('node_options')
-            inline_pbtxt_comment = getattr(node, 'inline_pbtxt_comment', None) if hasattr(node, 'inline_pbtxt_comment') else node.get('inline_pbtxt_comment', None)
+            node_description = node.get('description')
             warning = None
             source_line_number = None
             source_line_code = None
             node_source = None
-
             is_calc = is_graph = False
             node_source_rel = None
 
@@ -425,18 +445,13 @@ class MediaPipePipelineParser:
                     node_source_rel = 'mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarks_detector_graph.cc'
                     node_source = str(Path.cwd() / node_source_rel)
                     source_line_number = 356
-
             is_calc = is_calc or node_name in self.calculators_source_mapping
             is_graph = is_graph or node_name in self.graph_source_files
-
             if is_calc and is_graph:
                 self.print_with_ident(f'❌️️️ node \'{node_name}\' is found to be both a calculator and a graph; this case is not currently handled downstream!')
-
             if not is_calc and not is_graph:
                 self.print_with_ident(f'❌️️️ node \'{node_name}\' is neither a calculator nor a graph, which is not expected.')
                 continue
-
-            # For calculator nodes, set inline_pbtxt_comment from the parsed description
             if is_calc:
                 node_type = 'calculator'
                 if node_name in self.calculators_source_mapping:
@@ -450,13 +465,12 @@ class MediaPipePipelineParser:
                     self.print_with_ident(f'✅ calculator node \'{node_name}\' : {node_source_rel}')
                 else:
                     self.print_with_ident(f'❌ could not locate the source code for node \'{node_name}\'')
-                # FIX: set inline_pbtxt_comment from node.get('description')
                 child_nodes.append(PipelineNode(
                     name=node_name,
                     node_type=node_type,
                     source=node_source,
                     warning=warning,
-                    inline_pbtxt_comment = node.get('description'),
+                    description=node_description,
                     children=[],
                     source_line_number=source_line_number,
                     source_line_code=source_line_code,
@@ -464,9 +478,9 @@ class MediaPipePipelineParser:
                     output_streams=output_streams,
                     input_side_packets=input_side_packets,
                     output_side_packets=output_side_packets,
-                    node_options=node_options
+                    node_options=node_options,
+                    graph_self_description=None
                 ))
-
             elif is_graph:
                 src_info = self.graph_source_files[node_name]
                 node_source = str(src_info[0])
@@ -477,27 +491,55 @@ class MediaPipePipelineParser:
                 self.print_with_ident(f'✅ graph node \'{node_name}\' : {node_source_rel}')
                 self.print_with_ident(f'🔁 \'{node_name}\' is a graph')
                 self.ident += 1
-                child_nodes.append(self.analyze_pipeline(node_name, parent_output_dir))
+                # For subgraph nodes, pass node-level fields from parent node block
+                child_node = self.analyze_pipeline(node_name, parent_output_dir, node_fields={
+                    'input_streams': input_streams,
+                    'output_streams': output_streams,
+                    'input_side_packets': input_side_packets,
+                    'output_side_packets': output_side_packets,
+                    'node_options': node_options,
+                    'description': node_description
+                })
+                child_nodes.append(child_node)
                 self.ident -= 1
-
             if warning:
                 self.print_with_ident(f'{warning}')
-
-        return PipelineNode(
-            name=pipeline_name,
-            node_type='graph',
-            source=graph_path,
-            warning=None,
-            children=child_nodes,
-            source_line_number=graph_line_number,
-            source_line_code=graph_line_code,
-            input_streams=graph.input_streams,
-            output_streams=graph.output_streams,
-            input_side_packets=graph.input_side_packets,
-            output_side_packets=graph.output_side_packets,
-            node_options=None,
-            inline_pbtxt_comment=graph_header_comment
-        )
+        # For the topmost graph node, do not assign a node description or node-level fields
+        if node_fields is None:
+            return PipelineNode(
+                name=pipeline_name,
+                node_type='graph',
+                source=graph_path,
+                warning=None,
+                children=child_nodes,
+                source_line_number=graph_line_number,
+                source_line_code=graph_line_code,
+                input_streams=None,
+                output_streams=None,
+                input_side_packets=None,
+                output_side_packets=None,
+                node_options=None,
+                description=None,
+                graph_self_description=graph_self_description
+            )
+        else:
+            # For subgraph nodes, assign both node-level fields and graph_self_description
+            return PipelineNode(
+                name=pipeline_name,
+                node_type='graph',
+                source=graph_path,
+                warning=None,
+                children=child_nodes,
+                source_line_number=graph_line_number,
+                source_line_code=graph_line_code,
+                input_streams=node_fields.get('input_streams'),
+                output_streams=node_fields.get('output_streams'),
+                input_side_packets=node_fields.get('input_side_packets'),
+                output_side_packets=node_fields.get('output_side_packets'),
+                node_options=node_fields.get('node_options'),
+                description=node_fields.get('description'),
+                graph_self_description=graph_self_description
+            )
 
     def write_pipeline_outputs(self, root_node: PipelineNode, output_dir: Path):
         """Write the pipeline hierarchy to markdown (with and without line numbers), JSON, YAML, and HTML files in output_dir."""
@@ -780,6 +822,16 @@ code, pre {{ background: #222; color: #eee; }}
             d['output_side_packets'] = node.output_side_packets
         if node.node_options and node.node_options != {}:
             d['node_options'] = node.node_options
+        # Add graph_self_description if present
+        if node.graph_self_description:
+            d['graph_self_description'] = {
+                'description': node.graph_self_description.description,
+                'input_streams': node.graph_self_description.input_streams,
+                'output_streams': node.graph_self_description.output_streams,
+                'input_side_packets': node.graph_self_description.input_side_packets,
+                'output_side_packets': node.graph_self_description.output_side_packets,
+                'node_options': node.graph_self_description.node_options,
+            }
         d['nodes'] = [self._node_to_dict_verbose(child) for child in node.children]
         return d
 
@@ -846,23 +898,22 @@ code, pre {{ background: #222; color: #eee; }}
                 return os.path.relpath(str(Path(p).resolve()), md_dir)
             except Exception:
                 return str(Path(p).name)
-        # Prepare display name
         display_name = node.name
         if node.node_type == 'graph':
             display_name += ' (graph)'
-        # Node name as bold hyperlink
+        # Render node as hyperlink
         if node.node_type == 'calculator' and node.source and node.source_line_number:
             if with_line_numbers:
                 link = f"{relpath(node.source)}#L{node.source_line_number}"
-                md += f'{indent}- **[{display_name}]({link})**\n'
+                md += f'{indent}- [{display_name}]({link})'
             else:
                 link = relpath(node.source)
-                md += f'{indent}- **[{display_name}]({link})**\n'
+                md += f'{indent}- [{display_name}]({link})'
         elif node.source:
             link = relpath(node.source)
-            md += f'{indent}- **[{display_name}]({link})**\n'
+            md += f'{indent}- [{display_name}]({link})'
         else:
-            md += f'{indent}- **[{display_name}](#)**\n'
+            md += f'{indent}- [{display_name}](#)'
         # Append warning if present
         if node.warning:
             md += f'{indent}  {node.warning}\n'
@@ -887,12 +938,19 @@ code, pre {{ background: #222; color: #eee; }}
             node_opts_lines = node_opts_str.split('\n')
             values = '<br>'.join(node_opts_lines)
             table_rows.append(f'{table_indent}<tr><td><i>node options</i></td><td>{values}</td></tr>\n')
-        if table_rows:
-            md += '\n'  # Blank line before table for markdown rendering
-            md += f'{table_indent}<table>\n'
-            for row in table_rows:
-                md += row
-            md += f'{table_indent}</table>\n'
+        # Add graph_self_description details for graph nodes
+        if node.node_type == 'graph' and node.graph_self_description:
+            md += f'\n{indent}  * Graph Description: {node.graph_self_description.description}'
+            if node.graph_self_description.input_streams:
+                md += f'\n{indent}  * Input Streams: {node.graph_self_description.input_streams}'
+            if node.graph_self_description.output_streams:
+                md += f'\n{indent}  * Output Streams: {node.graph_self_description.output_streams}'
+            if node.graph_self_description.input_side_packets:
+                md += f'\n{indent}  * Input Side Packets: {node.graph_self_description.input_side_packets}'
+            if node.graph_self_description.output_side_packets:
+                md += f'\n{indent}  * Output Side Packets: {node.graph_self_description.output_side_packets}'
+            if node.graph_self_description.node_options:
+                md += f'\n{indent}  * Node Options: {node.graph_self_description.node_options}'
         md += '\n'
         for child in node.children:
             md += self._node_to_markdown_with_links_verbose(child, level + 1, json_verbose_path, yaml_verbose_path, md_basic_path, md_basic_nolines_path, json_basic_path, yaml_basic_path, with_line_numbers, md_verbose_path, yaml_verbose_path2, json_verbose_path2, script_name=script_name, use_absolute_links=use_absolute_links)
