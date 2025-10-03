@@ -795,13 +795,15 @@ code, pre {{ background: #222; color: #eee; }}
                 return str(Path(p).relative_to(Path.cwd()))
             except Exception:
                 return str(p)
-        return {
+        d = {
             'name': node.name,
             'type': node.node_type,
             'source': rel(node.source),
             'description': node.warning,
-            'nodes': [self._node_to_dict_rel(child) for child in node.children]
         }
+        if node.children:
+            d['nodes'] = [self._node_to_dict_rel(child) for child in node.children]
+        return d
 
     def _node_to_dict_verbose(self, node: PipelineNode) -> dict:
         """Recursively convert a PipelineNode tree to a dictionary for verbose serialization (all fields), omitting empty stream/packet/options fields."""
@@ -822,17 +824,29 @@ code, pre {{ background: #222; color: #eee; }}
             d['output_side_packets'] = node.output_side_packets
         if node.node_options and node.node_options != {}:
             d['node_options'] = node.node_options
-        # Add graph_self_description if present
+        # Add graph_self_description if present, omitting empty/null fields
         if node.graph_self_description:
-            d['graph_self_description'] = {
-                'description': node.graph_self_description.description,
-                'input_streams': node.graph_self_description.input_streams,
-                'output_streams': node.graph_self_description.output_streams,
-                'input_side_packets': node.graph_self_description.input_side_packets,
-                'output_side_packets': node.graph_self_description.output_side_packets,
-                'node_options': node.graph_self_description.node_options,
-            }
-        d['nodes'] = [self._node_to_dict_verbose(child) for child in node.children]
+            gsd = {}
+            if node.graph_self_description.description:
+                gsd['description'] = node.graph_self_description.description
+            if node.graph_self_description.input_streams:
+                if isinstance(node.graph_self_description.input_streams, list) and node.graph_self_description.input_streams:
+                    gsd['input_streams'] = node.graph_self_description.input_streams
+            if node.graph_self_description.output_streams:
+                if isinstance(node.graph_self_description.output_streams, list) and node.graph_self_description.output_streams:
+                    gsd['output_streams'] = node.graph_self_description.output_streams
+            if node.graph_self_description.input_side_packets:
+                if isinstance(node.graph_self_description.input_side_packets, list) and node.graph_self_description.input_side_packets:
+                    gsd['input_side_packets'] = node.graph_self_description.input_side_packets
+            if node.graph_self_description.output_side_packets:
+                if isinstance(node.graph_self_description.output_side_packets, list) and node.graph_self_description.output_side_packets:
+                    gsd['output_side_packets'] = node.graph_self_description.output_side_packets
+            if node.graph_self_description.node_options and node.graph_self_description.node_options != {}:
+                gsd['node_options'] = node.graph_self_description.node_options
+            if gsd:
+                d['graph_self_description'] = gsd
+        if node.children:
+            d['nodes'] = [self._node_to_dict_verbose(child) for child in node.children]
         return d
 
     def _node_to_markdown_with_links(self, node: PipelineNode, level: int, json_path: Path, yaml_path: Path, with_line_numbers: bool, script_name='pipeline_parser.py', use_absolute_links=False) -> str:
