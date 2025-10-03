@@ -1025,7 +1025,7 @@ code, pre {{ background: #222; color: #eee; }}
         return False
 
     def log_stream_definition_differences(self, graph_node: PipelineNode):
-        """Compare parent (node) stream definitions to graph self-descriptions. Build matched pairs using streams_match, then log differences for each pair. Print [ERROR] if any stream matches more than one counterpart."""
+        """Compare parent (node) stream definitions to graph self-descriptions. Build matched pairs using streams_match, then log differences for each pair. Print [ERROR] if any stream matches more than one counterpart. If a difference is detected, append the graph's self definition and parent's view to the parent's stream string."""
         if not graph_node.graph_self_description:
             return
         for field in ['input_streams', 'output_streams', 'input_side_packets', 'output_side_packets']:
@@ -1047,10 +1047,12 @@ code, pre {{ background: #222; color: #eee; }}
             for ps in parent_streams:
                 for idx, gs in enumerate(graph_streams):
                     if self.streams_match(ps, gs) and idx not in used_graph:
-                        matched_pairs.append((ps, gs))
+                        matched_pairs.append((ps, gs, idx))
                         used_graph.add(idx)
                         break
-            for ps, gs in matched_pairs:
+            updated_parent_streams = list(parent_streams)
+            found_difference = False
+            for i, (ps, gs, gs_idx) in enumerate(matched_pairs):
                 ps_parsed = self.parse_stream_desc(ps)
                 gs_parsed = self.parse_stream_desc(gs)
                 differences = []
@@ -1059,7 +1061,19 @@ code, pre {{ background: #222; color: #eee; }}
                 if ps_parsed['tag'] and gs_parsed['tag'] and ps_parsed['tag'] != gs_parsed['tag']:
                     differences.append(f"tag differs: parent='{ps_parsed['tag']}' vs graph='{gs_parsed['tag']}'")
                 if differences:
+                    found_difference = True
+                    if field == 'input_streams':
+                        new_ps = f"{ps} <inbound translation {ps} --> {gs}>"
+                    else:
+                        new_ps = f"{ps} <outbound translation {gs} --> {ps}>"
+                    try:
+                        idx = updated_parent_streams.index(ps)
+                        updated_parent_streams[idx] = new_ps
+                    except ValueError:
+                        pass
                     print(f"[Stream definition difference] Graph '{graph_node.name}', field '{field}': parent='{ps}', graph='{gs}' | " + ", ".join(differences))
+            if found_difference:
+                setattr(graph_node, field, updated_parent_streams)
     def check_graph_node_streams(self, graph_node: PipelineNode, parent_node_fields: dict) -> dict:
         self.log_stream_definition_differences(graph_node)
         results = {}
