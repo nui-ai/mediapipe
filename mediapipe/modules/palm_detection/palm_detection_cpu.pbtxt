@@ -36,24 +36,18 @@ node {
 # supports custom ops needed by the model used in this graph.
 node {
   calculator: "TfLiteCustomOpResolverCalculator"
-  output_side_packet: "OP_RESOLVER:opresolver"
-}
-
-# Loads the palm detection TF Lite model.
-node {
-  calculator: "PalmDetectionModelLoader"
-  output_side_packet: "MODEL:model"
+  #output_side_packet: "OP_RESOLVER:opresolver"
 }
 
 # Runs a TensorFlow Lite model on CPU that takes an image tensor and outputs a
 # vector of tensors representing, for instance, detection boxes/keypoints and
 # scores.
 node {
-  calculator: "InferenceCalculator"
+  calculator: "PalmsDetectionInferenceCalculatorXnnpackImpl"
   input_stream: "TENSORS:input_tensor"
   output_stream: "TENSORS:detection_tensors"
-  input_side_packet: "OP_RESOLVER:opresolver"
-  input_side_packet: "MODEL:model"
+  #input_side_packet: "OP_RESOLVER:opresolver"
+  #input_side_packet: "MODEL:model"
   options: {
     [mediapipe.InferenceCalculatorOptions.ext] {
       delegate { xnnpack {} }
@@ -65,7 +59,7 @@ node {
 # the specification in the options.
 node {
   calculator: "SsdAnchorsCalculator"
-  output_side_packet: "anchors"
+  #output_side_packet: "anchors"
   options: {
     [mediapipe.SsdAnchorsCalculatorOptions.ext] {
       num_layers: 4
@@ -91,7 +85,7 @@ node {
 node {
   calculator: "TensorsToDetectionsCalculator"
   input_stream: "TENSORS:detection_tensors"
-  input_side_packet: "ANCHORS:anchors"
+  #input_side_packet: "ANCHORS:anchors"
   output_stream: "DETECTIONS:unfiltered_detections"
   options: {
     [mediapipe.TensorsToDetectionsCalculatorOptions.ext] {

@@ -278,12 +278,12 @@ absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(
 absl::StatusOr<std::unique_ptr<InferenceRunner>>
 CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
-    api2::Packet<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
+    std::shared_ptr<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
     int interpreter_num_threads,
     const mediapipe::InferenceCalculatorOptions::InputOutputConfig*
         input_output_config,
     bool enable_zero_copy_tensor_io) {
-  InterpreterBuilder interpreter_builder(*model.Get(), op_resolver.Get());
+  InterpreterBuilder interpreter_builder(*model.Get(), *op_resolver);
   if (delegate) {
     interpreter_builder.AddDelegate(delegate.get());
   }

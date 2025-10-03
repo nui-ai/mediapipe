@@ -190,12 +190,12 @@ cc_library(
         ":calculator_context",
         ":calculator_contract",
         ":port",
+        ":shared_calculator_state",
         ":timestamp",
         "//mediapipe/framework/deps:registration",
         "//mediapipe/framework/port:logging",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/status",
-        ":shared_calculator_state"
     ],
 )
 
@@ -1996,4 +1996,9 @@ cc_library(
     hdrs = ["shared_calculator_state.h"],
     includes = ["mediapipe/nui/desktop"],
     visibility = ["//visibility:public"],
+    deps = [
+        "//mediapipe/calculators/tflite:tflite_custom_op_resolver_calculator_cc_proto",
+        "//mediapipe/framework/formats/object_detection:anchor_cc_proto",
+        "//mediapipe/util/tflite:op_resolver",
+    ],
 )

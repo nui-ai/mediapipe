@@ -22,6 +22,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/object_detection/anchor.pb.h"
 #include "mediapipe/framework/port/ret_check.h"
+#include "mediapipe/framework/shared_calculator_state.h"
 
 namespace mediapipe {
 
@@ -153,7 +154,7 @@ Anchor CalculateAnchorBox(const int y_center, const int x_center,
 class SsdAnchorsCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
-    cc->OutputSidePackets().Index(0).Set<std::vector<Anchor>>();
+    // No side packet output
     return absl::OkStatus();
   }
 
@@ -176,11 +177,11 @@ class SsdAnchorsCalculator : public CalculatorBase {
       }
       anchors->assign(options.fixed_anchors().begin(),
                       options.fixed_anchors().end());
-      cc->OutputSidePackets().Index(0).Set(Adopt(anchors.release()));
+      mediapipe::SharedCalculatorState::SetAnchors(*anchors);
       return absl::OkStatus();
     }
     MP_RETURN_IF_ERROR(GenerateAnchors(anchors.get(), options));
-    cc->OutputSidePackets().Index(0).Set(Adopt(anchors.release()));
+    mediapipe::SharedCalculatorState::SetAnchors(*anchors);
     return absl::OkStatus();
   }
 

@@ -96,14 +96,7 @@ class TfLiteCustomOpResolverCalculator : public CalculatorBase {
       op_resolver = absl::make_unique<mediapipe::CpuOpResolver>();
     }
 
-    if (cc->OutputSidePackets().HasTag(kOpResolverTag)) {
-      cc->OutputSidePackets()
-          .Tag(kOpResolverTag)
-          .Set(mediapipe::api2::PacketAdopting<tflite::OpResolver>(
-              std::move(op_resolver)));
-    } else {
-      cc->OutputSidePackets().Index(0).Set(Adopt(op_resolver.release()));
-    }
+    mediapipe::SharedCalculatorState::SetOpResolver(std::move(op_resolver));
     return absl::OkStatus();
   }
 

@@ -15,6 +15,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <fstream>
 #include <memory>
 #include <string>
 #include <tuple>
@@ -98,9 +99,6 @@ class TfLiteModelCalculator : public CalculatorBase {
     if (cc->InputSidePackets().HasTag(kModelResourceTag)) {
       cc->InputSidePackets().Tag(kModelResourceTag).Set<Resource>();
     }
-
-    RET_CHECK(cc->OutputSidePackets().HasTag(kModelTag) ^
-              cc->OutputSidePackets().HasTag(kSharedModelTag));
 
     if (cc->OutputSidePackets().HasTag(kModelTag)) {
       cc->OutputSidePackets().Tag(kModelTag).Set<TfLiteModelPtr>();

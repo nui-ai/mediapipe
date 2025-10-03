@@ -1,8 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="build all hands pipeline main targets" type="BlazeCommandRunConfigurationType" factoryName="Bazel Command">
+  <configuration default="false" name="build still relevant targets" type="BlazeCommandRunConfigurationType" factoryName="Bazel Command">
     <blaze-settings blaze-command="build" handler-id="BlazeCommandGenericRunConfigurationHandlerProvider">
-      <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite</blaze-target>
-      <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu</blaze-target>
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run</blaze-target>
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:compare_pipelines_output_data</blaze-target>
       <blaze-user-flag>-c</blaze-user-flag>
