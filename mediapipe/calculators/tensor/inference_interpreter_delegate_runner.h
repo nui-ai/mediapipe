@@ -46,7 +46,7 @@ namespace mediapipe {
 absl::StatusOr<std::unique_ptr<InferenceRunner>>
 CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
-    std::shared_ptr<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
+    api2::Packet<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
     int interpreter_num_threads,
     const mediapipe::InferenceCalculatorOptions::InputOutputConfig*
         input_output_config = nullptr,

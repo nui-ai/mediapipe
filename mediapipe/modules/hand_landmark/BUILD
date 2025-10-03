@@ -33,10 +33,23 @@ mediapipe_files(srcs = [
 exports_files(srcs = ["handedness.txt"])
 
 mediapipe_simple_subgraph(
+    name = "hand_landmark_model_loader",
+    graph = "hand_landmark_model_loader.pbtxt",
+    register_as = "HandLandmarkModelLoader",
+    deps = [
+        "//mediapipe/calculators/core:constant_side_packet_calculator",
+        "//mediapipe/calculators/tflite:tflite_model_calculator",
+        "//mediapipe/calculators/util:resource_provider_calculator",
+        "//mediapipe/framework/tool:switch_container",
+    ],
+)
+
+mediapipe_simple_subgraph(
     name = "hand_landmark_cpu",
     graph = "hand_landmark_cpu.pbtxt",
     register_as = "HandLandmarkCpu",
     deps = [
+        ":hand_landmark_model_loader",
         "//mediapipe/calculators/core:gate_calculator",
         "//mediapipe/calculators/core:split_vector_calculator",
         "//mediapipe/calculators/tensor:image_to_tensor_calculator",
@@ -56,6 +69,7 @@ mediapipe_simple_subgraph(
     graph = "hand_landmark_gpu.pbtxt",
     register_as = "HandLandmarkGpu",
     deps = [
+        ":hand_landmark_model_loader",
         "//mediapipe/calculators/core:gate_calculator",
         "//mediapipe/calculators/core:split_vector_calculator",
         "//mediapipe/calculators/tensor:image_to_tensor_calculator",

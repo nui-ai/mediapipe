@@ -1,5 +1,5 @@
 //
-// Created by matan on 9/30/25. Should be deleted.
+// Created by matan on 9/30/25.
 //
 
 #ifndef MEDIAPIPE_DETECTION_MODEL_PROVIDER_H

@@ -16,7 +16,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <fstream>
 
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
@@ -31,37 +30,36 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
 #include "tensorflow/lite/delegates/xnnpack/xnnpack_delegate.h"
-#include "mediapipe/calculators/tflite/tflite_model_calculator.cc"
-#include "mediapipe/calculators/tensor/inference_calculator_xnnpack.h"
-
-std::unique_ptr<tflite::FlatBufferModel> LoadTFLiteModelFromFile(const std::string& model_path) {
-    std::ifstream file(model_path, std::ios::binary | std::ios::ate);
-    if (!file) {
-        ABSL_LOG(ERROR) << "Failed to open model file: " << model_path;
-        return nullptr;
-    }
-    std::streamsize size = file.tellg();
-    file.seekg(0, std::ios::beg);
-    std::string buffer(size, '\0');
-    if (!file.read(&buffer[0], size)) {
-        ABSL_LOG(ERROR) << "Failed to read model file: " << model_path;
-        return nullptr;
-    }
-    auto model = tflite::FlatBufferModel::BuildFromBuffer(buffer.data(), buffer.size());
-    if (!model) {
-        ABSL_LOG(ERROR) << "Failed to build tflite model from file: " << model_path;
-        return nullptr;
-    }
-    ABSL_LOG(INFO) << "tflite model loaded from file: " << model_path;
-    return model;
-}
 
 namespace mediapipe {
 namespace api2 {
 
+class InferenceCalculatorXnnpackImpl
+    : public InferenceCalculatorNodeImpl<InferenceCalculatorXnnpack,
+                                         InferenceCalculatorXnnpackImpl> {
+ public:
+  static absl::Status UpdateContract(CalculatorContract* cc);
+
+  absl::Status Open(CalculatorContext* cc) override;
+  absl::Status Close(CalculatorContext* cc) override;
+
+ private:
+  absl::StatusOr<std::vector<Tensor>> Process(
+      CalculatorContext* cc, const TensorSpan& tensor_span) override;
+  absl::StatusOr<std::unique_ptr<InferenceRunner>> CreateInferenceRunner(
+      CalculatorContext* cc);
+  absl::StatusOr<TfLiteDelegatePtr> CreateDelegate(CalculatorContext* cc);
+
+  std::unique_ptr<InferenceRunner> inference_runner_;
+};
+
 absl::Status InferenceCalculatorXnnpackImpl::UpdateContract(
     CalculatorContract* cc) {
   MP_RETURN_IF_ERROR(TensorContractCheck(cc));
+
+  const auto& options = cc->Options<mediapipe::InferenceCalculatorOptions>();
+  RET_CHECK(!options.model_path().empty() ^ kSideInModel(cc).IsConnected())
+      << "Either model as side packet or model path in options is required.";
 
   return absl::OkStatus();
 }
@@ -86,23 +84,14 @@ absl::Status InferenceCalculatorXnnpackImpl::Close(CalculatorContext* cc) {
 
 absl::StatusOr<std::unique_ptr<InferenceRunner>>
 InferenceCalculatorXnnpackImpl::CreateInferenceRunner(CalculatorContext* cc) {
-  // Load model directly from file path, ignore input packets.
-  std::unique_ptr<tflite::FlatBufferModel> raw_model = LoadTFLiteModelFromFile(GetModelPath());
-  RET_CHECK(raw_model) << "Failed to load TfLite model from file.";
-  TfLiteModelPtr model_ptr = TfLiteModelPtr(
-      raw_model.release(), [](tflite::FlatBufferModel* model) {
-        delete model;
-      });
-  auto model_packet = MakePacket<TfLiteModelPtr>(std::move(model_ptr));
-  // Get op_resolver from SharedCalculatorState and pass directly.
-  auto op_resolver_ptr = mediapipe::SharedCalculatorState::GetOpResolver();
-  RET_CHECK(op_resolver_ptr != nullptr) << "OpResolver not set in SharedCalculatorState";
+  MP_ASSIGN_OR_RETURN(auto model_packet, GetModelAsPacket(cc));
+  MP_ASSIGN_OR_RETURN(auto op_resolver_packet, GetOpResolverAsPacket(cc));
   const auto& calculator_opts =
       cc->Options<mediapipe::InferenceCalculatorOptions>();
   const int interpreter_num_threads = calculator_opts.cpu_num_thread();
   MP_ASSIGN_OR_RETURN(TfLiteDelegatePtr delegate, CreateDelegate(cc));
   return CreateInferenceInterpreterDelegateRunner(
-      model_packet, op_resolver_ptr,
+      std::move(model_packet), std::move(op_resolver_packet),
       std::move(delegate), interpreter_num_threads,
       &calculator_opts.input_output_config(),
       calculator_opts.delegate().xnnpack().enable_zero_copy_tensor_io());

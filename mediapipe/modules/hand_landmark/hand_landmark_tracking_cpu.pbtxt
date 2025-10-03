@@ -11,9 +11,9 @@ type: "HandLandmarkTrackingCpu"
 # CPU image. (ImageFrame)
 input_stream: "IMAGE:image"
 
-## Whether landmarks on the previous image should be used to help localize
-## landmarks on the current image. (bool)
-#input_side_packet: "USE_PREV_LANDMARKS:use_prev_landmarks"
+# Whether landmarks on the previous image should be used to help localize
+# landmarks on the current image. (bool)
+input_side_packet: "USE_PREV_LANDMARKS:use_prev_landmarks"
 
 # Collection of detected/predicted hands, each represented as a list of
 # landmarks. (std::vector<NormalizedLandmarkList>)
@@ -58,6 +58,7 @@ output_stream: "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
 # landmarks on the current image.
 node {
   calculator: "GateCalculator"
+  input_side_packet: "ALLOW:use_prev_landmarks"
   input_stream: "prev_hand_rects_from_landmarks"
   output_stream: "gated_prev_hand_rects_from_landmarks"
   options: {
@@ -185,7 +186,7 @@ node {
 # Detect hand landmarks for the specific hand rect.
 node {
   calculator: "HandLandmarkCpu"
-  #input_side_packet: "MODEL_COMPLEXITY:model_complexity"
+  input_side_packet: "MODEL_COMPLEXITY:model_complexity"
   input_stream: "IMAGE:image_for_landmarks"
   input_stream: "ROI:single_hand_rect"
   output_stream: "LANDMARKS:single_hand_landmarks"

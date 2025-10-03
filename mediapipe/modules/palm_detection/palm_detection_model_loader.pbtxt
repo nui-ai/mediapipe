@@ -1,0 +1,20 @@
+# MediaPipe graph to load a selected palm detection TF Lite model.
+
+type: "PalmDetectionModelLoader"
+
+# TF Lite model represented as a FlatBuffer.
+# (std::unique_ptr<tflite::FlatBufferModel, std::function<void(tflite::FlatBufferModel*)>>)
+output_side_packet: "MODEL:model"
+
+# Loads the model file
+node {
+  calculator: "DetectionModelProvider"
+  output_side_packet: "RESOURCE:model_resource"
+}
+
+# Loads the loaded model file as a tflite model
+node {
+  calculator: "TfLiteModelCalculator"
+  input_side_packet: "MODEL_RESOURCE:model_resource"
+  output_side_packet: "MODEL:model"
+}
