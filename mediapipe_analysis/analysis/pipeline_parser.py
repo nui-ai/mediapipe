@@ -799,7 +799,7 @@ code, pre {{ background: #222; color: #eee; }}
             'name': node.name,
             'type': node.node_type,
             'source': rel(node.source),
-            'description': node.warning,
+            'description': node.description,
         }
         if node.children:
             d['nodes'] = [self._node_to_dict_rel(child) for child in node.children]
@@ -811,7 +811,7 @@ code, pre {{ background: #222; color: #eee; }}
             'name': node.name,
             'type': node.node_type,
             'source': node.source,
-            'description': node.warning,
+            'description': node.description,
             'source_line_number': node.source_line_number,
         }
         if node.input_streams:
