@@ -9,6 +9,7 @@
 #include "mediapipe/calculators/tensor/tensor_span.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/tensor.h"
+#include "mediapipe/calculators/tensor/inference_runner.h"
 
 namespace mediapipe {
 namespace api2 {

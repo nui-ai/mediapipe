@@ -31,7 +31,6 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
 #include "tensorflow/lite/delegates/xnnpack/xnnpack_delegate.h"
-#include "mediapipe/calculators/tflite/tflite_model_calculator.cc"
 #include "mediapipe/calculators/tensor/inference_calculator_xnnpack.h"
 
 std::unique_ptr<tflite::FlatBufferModel> LoadTFLiteModelFromFile(const std::string& model_path) {
