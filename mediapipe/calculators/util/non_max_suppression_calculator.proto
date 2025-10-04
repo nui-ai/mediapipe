@@ -29,8 +29,7 @@ message NonMaxSuppressionCalculatorOptions {
   // detections.
   optional int32 num_detection_streams = 1 [default = 1];
 
-  // Maximum number of detections to be returned. If -1, then all detections are
-  // returned.
+  // Maximum number of detections to be returned, which the suppression algorithm will cater to. If -1, then all detections are returned.
   optional int32 max_num_detections = 2 [default = -1];
 
   // Minimum score of detections to be returned.

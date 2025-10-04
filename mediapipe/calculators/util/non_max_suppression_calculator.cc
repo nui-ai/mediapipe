@@ -146,9 +146,12 @@ void NonMaxSuppression(const IndexedScores& indexed_scores,
                        int frame_width,
                        int frame_height,
                        Detections* output_detections) {
+
   std::vector<Location> retained_locations;
   retained_locations.reserve(max_num_detections);
-  // We traverse the detections by decreasing score.
+
+  // iterate the detections by decreasing score, admitting them into the result collection of detections
+  // while suppressing those that overlap too much with a previously retained detection.
   for (const auto& indexed_score : indexed_scores) {
     const auto& detection = detections[indexed_score.first];
     if (options.min_score_threshold() > 0 &&
@@ -157,18 +160,15 @@ void NonMaxSuppression(const IndexedScores& indexed_scores,
     }
     const Location location(detection.location_data());
     bool suppressed = false;
-    // The current detection is suppressed iff there exists a retained
-    // detection, whose location overlaps more than the specified
-    // threshold with the location of the current detection.
+    // The current detection is suppressed iff there exists a retained detection whose location overlaps more than the specified
+    // threshold with the location of the current detection. since we iterate by decreasing score, we keep the higher scoring one
+    // of all those considered as partially overlapping by the overlap criteria.
     for (const auto& retained_location : retained_locations) {
       float similarity;
       if (has_dimensions) {
-        similarity = OverlapSimilarity(frame_width, frame_height,
-                                       options.overlap_type(),
-                                       retained_location, location);
+        similarity = OverlapSimilarity(frame_width, frame_height, options.overlap_type(), retained_location, location);
       } else {
-        similarity = OverlapSimilarity(options.overlap_type(),
-                                       retained_location, location);
+        similarity = OverlapSimilarity(options.overlap_type(), retained_location, location);
       }
       if (similarity > options.min_suppression_threshold()) {
         suppressed = true;
@@ -176,6 +176,7 @@ void NonMaxSuppression(const IndexedScores& indexed_scores,
       }
     }
     if (!suppressed) {
+      // admit into the surviving detections collection
       output_detections->push_back(detection);
       retained_locations.push_back(location);
     }
@@ -185,7 +186,8 @@ void NonMaxSuppression(const IndexedScores& indexed_scores,
   }
 }
 
-// Weighted non-maximum suppression algorithm.
+// Weighted non-maximum suppression algorithm: same as standard NMS, but the location of a retained detection is not the location of the retained detection as in the default NMS implememntation,
+// but the weighted average of all locations that were considered overlapping with it ― weighted by their detection scores as seen below.
 void WeightedNonMaxSuppression(const IndexedScores& indexed_scores,
                                const Detections& detections,
                                int max_num_detections,
@@ -263,8 +265,7 @@ void WeightedNonMaxSuppression(const IndexedScores& indexed_scores,
     }
 
     output_detections->push_back(weighted_detection);
-    // Breaks the loop if the size of indexed scores doesn't change after an
-    // iteration.
+    // Breaks the loop if the size of indexed scores doesn't change after an iteration.
     if (original_indexed_scores_size == remained.size()) {
       break;
     } else {
@@ -280,9 +281,9 @@ void DoNonMaxSuppression(Detections& input_detections,
                          int frame_width,
                          int frame_height,
                          Detections* output_detections) {
-  // Remove all but the maximum scoring label from each input detection. This
-  // corresponds to non-maximum suppression among detections which have
-  // identical locations.
+
+  // first removes all but the maximum scoring label from each input detection. This corresponds to non-maximum suppression among detections which have identical locations.
+  // this cross-class step is not relevant to our palm detection SSD model, as it was trained for only once class (palm).
   Detections pruned_detections;
   pruned_detections.reserve(input_detections.size());
   for (auto& detection : input_detections) {
@@ -290,33 +291,35 @@ void DoNonMaxSuppression(Detections& input_detections,
       pruned_detections.push_back(detection);
     }
   }
+
   IndexedScores indexed_scores = GetIndexedScores(pruned_detections);
   const int max_num_detections =
-      (options.max_num_detections() > -1)
+      (options.max_num_detections() > -1)  // defaults to -1 in the protobuf underlying definition.
           ? options.max_num_detections()
-          : static_cast<int>(indexed_scores.size());
-  // A set of detections and locations, wrapping the location data from each
-  // detection, which are retained after the non-maximum suppression.
+          : static_cast<int>(indexed_scores.size());  // unlimited. so next steps after the NMS step will have to deal with all the surviving detections.
+
+  // A set of detections and locations, wrapping the location data from each detection, which are retained after the non-maximum suppression.
   output_detections->reserve(max_num_detections);
 
   if (options.algorithm() == NonMaxSuppressionCalculatorOptions::WEIGHTED) {
     WeightedNonMaxSuppression(indexed_scores, pruned_detections,
                               max_num_detections, options, output_detections);
-  } else {
+  } else { // default algorithm if WEIGHTED is not specified
     NonMaxSuppression(indexed_scores, pruned_detections, max_num_detections,
                       options, has_dimensions, frame_width, frame_height,
                       output_detections);
   }
 }
 
-// Processes a set of input detections using non-maximum suppression according
-// to the provided options. Returns a vector of detections after NMS.
-std::unique_ptr<Detections> ProcessDetections(
+// filters down a set of input detections by non-maximum suppression according to
+// the provided parameters for suppression. Returns a vector of the surviving detections.
+std::unique_ptr<Detections> FilterDetectionsByNonMaximumSuppression(
     const Detections& input_detections,
     const NonMaxSuppressionCalculatorOptions& options,
     bool has_dimensions = false,
     int frame_width = 0,
     int frame_height = 0) {
+
   // Check if there are any detections at all.
   if (input_detections.empty()) {
     return options.return_empty_detections() ?
@@ -420,8 +423,7 @@ class NonMaxSuppressionCalculator : public CalculatorBase {
 
     options_ = cc->Options<NonMaxSuppressionCalculatorOptions>();
 
-    // Directly set the non-maximum suppression options from the values that were
-    // previously in the YAML file
+    // Directly set the non-maximum suppression options from the values that were previously provided as pipeline node options:
     options_.set_min_suppression_threshold(0.3);
     options_.set_overlap_type(NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
     options_.set_algorithm(NonMaxSuppressionCalculatorOptions::WEIGHTED);
@@ -436,6 +438,7 @@ class NonMaxSuppressionCalculator : public CalculatorBase {
   }
 
   absl::Status Process(CalculatorContext* cc) override {
+
     // Get the frame dimensions if image is available
     bool has_frame_dimensions = false;
     int frame_width = 0;
@@ -448,7 +451,11 @@ class NonMaxSuppressionCalculator : public CalculatorBase {
       has_frame_dimensions = true;
     }
 
-    // Collect all input detections into a single vector
+    // Collect all input detections into a single vector.
+    // probably there can be multiple input streams of detections
+    // which the following loop just collects into a single vector,
+    // in our pipeline there's only one input stream to this calculator,
+    // so it just passes that stream through.
     Detections input_detections;
     for (int i = 0; i < options_.num_detection_streams(); ++i) {
       const auto& detections_packet = cc->Inputs().Index(i).Value();
@@ -457,13 +464,11 @@ class NonMaxSuppressionCalculator : public CalculatorBase {
         continue;
       }
       const auto& detections = detections_packet.Get<Detections>();
-
-      input_detections.insert(input_detections.end(), detections.begin(),
-                              detections.end());
+      input_detections.insert(input_detections.end(), detections.begin(), detections.end());
     }
 
-    // Process the detections using non-maximum suppression
-    auto retained_detections = ProcessDetections(
+    // Process all detections by non-maximum suppression
+    auto retained_detections = FilterDetectionsByNonMaximumSuppression(
         input_detections, options_, has_frame_dimensions, frame_width, frame_height);
 
     // Add the output to the stream if we have detections or if empty detections are requested
