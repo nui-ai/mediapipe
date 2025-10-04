@@ -247,8 +247,8 @@ absl::Status RunMPPGraph() {
         differ.ReportDifferencesToString(&diff);
 
         if (!differ.Compare(stream_data_msg, reference_data[i])) {
-          ABSL_LOG(ERROR) << "Difference found at frame " << i << ":\n" << diff;
-          ABSL_LOG(ERROR) << "Terminating early due to difference in output";
+          ABSL_LOG(ERROR) << "Pipeline output at frame " << i << " is different than the reference output:\n" << diff;
+          ABSL_LOG(ERROR) << "terminating early due to difference in output at frame " << i;
           break; // Early termination due to difference
         } else {
           ABSL_LOG(INFO) << "pipeline output for frame " << i << " is identical to its reference output read from " << kReferenceProtoFilename;
