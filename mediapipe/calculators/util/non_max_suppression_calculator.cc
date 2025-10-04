@@ -412,9 +412,9 @@ class NonMaxSuppressionCalculator : public CalculatorBase {
     if (cc->Inputs().HasTag(kImageTag)) {
       cc->Inputs().Tag(kImageTag).Set<ImageFrame>();
     }
-    // we only take a single detections stream in our pipeline, so this loop is vacuous.
+    // we only take a single detections stream in our pipeline, so this loop runs only once for us.
     for (int k = 0; k < options.num_detection_streams(); ++k) {
-      cc->Inputs().Index(k).Set<Detections>();
+      cc->Inputs().Index(0).Set<Detections>();
     }
     cc->Outputs().Index(0).Set<Detections>();
     return absl::OkStatus();

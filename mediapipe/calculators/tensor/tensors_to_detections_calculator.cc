@@ -702,10 +702,8 @@ namespace api2 {
   }
 
   absl::Status TensorsToDetectionsCalculator::SetDecodingParameters(CalculatorContext* cc) {
-    // Get calculator options specified in the graph.
     MP_RETURN_IF_ERROR(SetSsdAnchors());
     MP_RETURN_IF_ERROR(SetSsdDecodingOptions(cc));
-
     return absl::OkStatus();
   }
 

@@ -13,7 +13,8 @@ input_stream: "IMAGE:image"
 output_stream: "DETECTIONS:detections"
 
 # Transforms an image into a 128x128 tensor while keeping the aspect ratio, and
-# therefore may result in potential letterboxing.
+# therefore will result in letterboxing unless the input image was somehow rectangular,
+# which an image taken from a webcam in our scenario is not.
 node {
   calculator: "ImageToTensorCalculator"
   input_stream: "IMAGE:image"
@@ -33,7 +34,7 @@ node {
   }
 }
 
-# Determines path to the desired palms detection model file.
+# Sets path to the desired palms detection model file.
 node {
   calculator: "SwitchContainer"
   input_side_packet: "SELECT:model_complexity"
@@ -85,10 +86,11 @@ node {
   output_stream: "filtered_detections"
 }
 
-# Adjusts detection locations (already normalized to [0.f, 1.f]) on the
-# letterboxed image (after image transformation with the FIT scale mode) to the
-# corresponding locations on the same image with the letterbox removed (the
-# input image to the graph before image transformation).
+# translates the detection coordinates to the original image coordinates,
+# thus undoing the effect of the letterboxing which was necessary for using the neural network model:
+#  Adjusts detection locations (already normalized to [0.f, 1.f]) on the letterboxed image (after image
+# transformation with the FIT scale mode) to the corresponding locations on the same image with the letterbox
+removed (the input image to the graph before image transformation).
 node {
   calculator: "DetectionLetterboxRemovalCalculator"
   input_stream: "DETECTIONS:filtered_detections"

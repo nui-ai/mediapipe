@@ -55,7 +55,7 @@ node {
   }
 }
 
-# Determines path to the desired hand landmark model file.
+# Sets path to the desired hand landmark model file.
 node {
   calculator: "SwitchContainer"
   input_side_packet: "SELECT:model_complexity"
