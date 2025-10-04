@@ -58,8 +58,8 @@ absl::Status InferenceCalculatorXnnpackImpl::UpdateContract(
   MP_RETURN_IF_ERROR(TensorContractCheck(cc));
 
   const auto& options = cc->Options<mediapipe::InferenceCalculatorOptions>();
-  RET_CHECK(!options.model_path().empty() ^ kSideInModel(cc).IsConnected())
-      << "Either model as side packet or model path in options is required.";
+  RET_CHECK(!options.model_path().empty() ^ kSideInModel(cc).IsConnected() ^ kSideInModelPath(cc).IsConnected())
+      << "One of: model path in options, MODEL side packet, or MODEL_PATH side packet is required.";
 
   return absl::OkStatus();
 }

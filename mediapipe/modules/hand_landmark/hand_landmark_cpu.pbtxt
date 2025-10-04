@@ -56,11 +56,11 @@ node {
 }
 
 # Loads the hand landmark TF Lite model.
-node {
-  calculator: "HandLandmarkModelLoader"
-  input_side_packet: "MODEL_COMPLEXITY:model_complexity"
-  output_side_packet: "MODEL:model"
-}
+# node {
+#  calculator: "HandLandmarkModelLoader"
+#  input_side_packet: "MODEL_COMPLEXITY:model_complexity"
+#  output_side_packet: "MODEL:model"
+# }
 
 # Determines path to the desired pose landmark model file.
 node {
@@ -99,7 +99,7 @@ node {
 # scores.
 node {
   calculator: "InferenceCalculator"
-  input_side_packet: "PACKET:model_path"
+  input_side_packet: "MODEL_PATH:model_path"
   input_stream: "TENSORS:input_tensor"
   output_stream: "TENSORS:output_tensors"
   options: {
