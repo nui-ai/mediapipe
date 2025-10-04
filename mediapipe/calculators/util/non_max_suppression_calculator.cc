@@ -367,6 +367,7 @@ std::unique_ptr<Detections> ProcessDetections(
 
   return retained_detections;
 }
+
 }  // namespace
 
 // A calculator performing non-maximum suppression on a set of detections.
@@ -418,11 +419,18 @@ class NonMaxSuppressionCalculator : public CalculatorBase {
     cc->SetOffset(TimestampDiff(0));
 
     options_ = cc->Options<NonMaxSuppressionCalculatorOptions>();
+
+    // Directly set the non-maximum suppression options from the values that were
+    // previously in the YAML file
+    options_.set_min_suppression_threshold(0.3);
+    options_.set_overlap_type(NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
+    options_.set_algorithm(NonMaxSuppressionCalculatorOptions::WEIGHTED);
+
     ABSL_CHECK_GT(options_.num_detection_streams(), 0)
         << "At least one detection stream need to be specified.";
     ABSL_CHECK_NE(options_.max_num_detections(), 0)
         << "max_num_detections=0 is not a valid value. Please choose a "
-        << "positive number of you want to limit the number of output "
+        << "positive number if you want to limit the number of output "
         << "detections, or set -1 if you do not want any limit.";
     return absl::OkStatus();
   }

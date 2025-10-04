@@ -205,7 +205,7 @@ class TensorsToDetectionsCalculator : public Node {
   absl::Status ProcessGPU(CalculatorContext* cc,
                           std::vector<Detection>* output_detections);
 
-  absl::Status LoadOptions(CalculatorContext* cc);
+  absl::Status SetAlgorithmOptions(CalculatorContext* cc);
   absl::Status GpuInit(CalculatorContext* cc);
   absl::Status DecodeBoxes(const float* raw_boxes,
                            const std::vector<Anchor>& anchors,
@@ -237,12 +237,12 @@ class TensorsToDetectionsCalculator : public Node {
   // These are used to filter out the output detection results.
   ClassIndexSet class_index_set_;
 
-  TensorsToDetectionsCalculatorOptions options_;
-  bool scores_tensor_index_is_set_ = false;
-  TensorsToDetectionsCalculatorOptions::TensorMapping tensor_mapping_;
-  std::vector<int> box_indices_ = {0, 1, 2, 3};
   bool has_custom_box_indices_ = false;
-  std::vector<Anchor> anchors_;
+  bool scores_tensor_index_is_set_ = false;
+  std::vector<int> box_indices_ = {0, 1, 2, 3};
+  TensorsToDetectionsCalculatorOptions::TensorMapping tensor_mapping_;
+  TensorsToDetectionsCalculatorOptions ssd_detections_decoding_options;
+  std::vector<Anchor> ssd_anchors_;
 
 #ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
   mediapipe::GlCalculatorHelper gpu_helper_;
@@ -260,7 +260,7 @@ class TensorsToDetectionsCalculator : public Node {
   bool gpu_inited_ = false;
   bool gpu_input_ = false;
   bool gpu_has_enough_work_groups_ = true;
-  bool anchors_init_ = false;
+  bool ssd_anchors_init_ = false;
 };
 MEDIAPIPE_REGISTER_NODE(TensorsToDetectionsCalculator);
 
@@ -279,7 +279,7 @@ absl::Status TensorsToDetectionsCalculator::UpdateContract(
 }
 
 absl::Status TensorsToDetectionsCalculator::Open(CalculatorContext* cc) {
-  MP_RETURN_IF_ERROR(LoadOptions(cc));
+  MP_RETURN_IF_ERROR(SetAlgorithmOptions(cc));
 
   if (CanUseGpu()) {
 #ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
@@ -399,26 +399,9 @@ absl::Status TensorsToDetectionsCalculator::ProcessCPU(
     auto raw_scores_view = raw_score_tensor->GetCpuReadView();
     auto raw_scores = raw_scores_view.buffer<float>();
 
-    // TODO: Support other options to load anchors.
-    if (!anchors_init_) {
-      if (input_tensors.size() == kNumInputTensorsWithAnchors) {
-        auto anchor_tensor =
-            &input_tensors[tensor_mapping_.anchors_tensor_index()];
-        RET_CHECK_EQ(anchor_tensor->shape().dims.size(), 2);
-        RET_CHECK_EQ(anchor_tensor->shape().dims[0], num_boxes_);
-        RET_CHECK_EQ(anchor_tensor->shape().dims[1], kNumCoordsPerBox);
-        auto anchor_view = anchor_tensor->GetCpuReadView();
-        auto raw_anchors = anchor_view.buffer<float>();
-        ConvertRawValuesToAnchors(raw_anchors, num_boxes_, &anchors_);
-      } else if (!kInAnchors(cc).IsEmpty()) {
-        anchors_ = *kInAnchors(cc);
-      } else {
-        return absl::UnavailableError("No anchor data available.");
-      }
-      anchors_init_ = true;
-    }
+    assert (ssd_anchors_init_);
     std::vector<float> boxes(num_boxes_ * num_coords_);
-    MP_RETURN_IF_ERROR(DecodeBoxes(raw_boxes, anchors_, &boxes));
+    MP_RETURN_IF_ERROR(DecodeBoxes(raw_boxes, ssd_anchors_, &boxes));
 
     std::vector<float> detection_scores(num_boxes_);
     std::vector<int> detection_classes(num_boxes_);
@@ -431,13 +414,13 @@ absl::Status TensorsToDetectionsCalculator::ProcessCPU(
       for (int score_idx = 0; score_idx < num_classes_; ++score_idx) {
         if (IsClassIndexAllowed(score_idx)) {
           auto score = raw_scores[i * num_classes_ + score_idx];
-          if (options_.sigmoid_score()) {
-            if (options_.has_score_clipping_thresh()) {
-              score = score < -options_.score_clipping_thresh()
-                          ? -options_.score_clipping_thresh()
+          if (ssd_detections_decoding_options.sigmoid_score()) {
+            if (ssd_detections_decoding_options.has_score_clipping_thresh()) {
+              score = score < -ssd_detections_decoding_options.score_clipping_thresh()
+                          ? -ssd_detections_decoding_options.score_clipping_thresh()
                           : score;
-              score = score > options_.score_clipping_thresh()
-                          ? options_.score_clipping_thresh()
+              score = score > ssd_detections_decoding_options.score_clipping_thresh()
+                          ? ssd_detections_decoding_options.score_clipping_thresh()
                           : score;
             }
             score = 1.0f / (1.0f + std::exp(-score));
@@ -494,7 +477,7 @@ absl::Status TensorsToDetectionsCalculator::ProcessCPU(
     //   detection_boxes_tensor = [box_1, box1, ... ]
     // Each box repeats classes_per_detection_ times.
     // Note Detection_PostProcess op is only supported in CPU.
-    classes_per_detection_ = options_.max_classes_per_detection();
+    classes_per_detection_ = ssd_detections_decoding_options.max_classes_per_detection();
 
     auto detection_boxes_view = detection_boxes_tensor->GetCpuReadView();
     auto detection_boxes = detection_boxes_view.buffer<float>();
@@ -525,7 +508,7 @@ absl::Status TensorsToDetectionsCalculator::ProcessGPU(
   MP_RETURN_IF_ERROR(gpu_helper_.RunInGlContext([this, &input_tensors, &cc,
                                                  &output_detections]()
                                                     -> absl::Status {
-    if (!anchors_init_) {
+    if (!ssd_anchors_init_) {
       if (input_tensors.size() == kNumInputTensorsWithAnchors) {
         auto read_view = input_tensors[tensor_mapping_.anchors_tensor_index()]
                              .GetOpenGlBufferReadView();
@@ -543,7 +526,7 @@ absl::Status TensorsToDetectionsCalculator::ProcessGPU(
       } else {
         return absl::UnavailableError("No anchor data available.");
       }
-      anchors_init_ = true;
+      ssd_anchors_init_ = true;
     }
     // Use the scope to release the writable buffers' views before requesting
     // the reading buffers' views.
@@ -592,7 +575,7 @@ absl::Status TensorsToDetectionsCalculator::ProcessGPU(
                                          detection_classes.data(),
                                          output_detections));
 #elif MEDIAPIPE_METAL_ENABLED
-  if (!anchors_init_) {
+  if (!ssd_anchors_init_) {
     if (input_tensors.size() == kNumInputTensorsWithAnchors) {
       RET_CHECK_EQ(input_tensors.size(), kNumInputTensorsWithAnchors);
       auto command_buffer = [gpu_helper_ commandBuffer];
@@ -620,7 +603,7 @@ absl::Status TensorsToDetectionsCalculator::ProcessGPU(
     } else {
       return absl::UnavailableError("No anchor data available.");
     }
-    anchors_init_ = true;
+    ssd_anchors_init_ = true;
   }
 
   // Use the scope to release the writable buffers' views before requesting the
@@ -707,52 +690,70 @@ absl::Status TensorsToDetectionsCalculator::Close(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-absl::Status TensorsToDetectionsCalculator::LoadOptions(CalculatorContext* cc) {
+absl::Status TensorsToDetectionsCalculator::SetAlgorithmOptions(CalculatorContext* cc) {
   // Get calculator options specified in the graph.
-  options_ = cc->Options<::mediapipe::TensorsToDetectionsCalculatorOptions>();
-  RET_CHECK(options_.has_num_classes());
-  RET_CHECK(options_.has_num_coords());
+  ssd_detections_decoding_options = cc->Options<::mediapipe::TensorsToDetectionsCalculatorOptions>();
 
-  num_classes_ = options_.num_classes();
-  num_boxes_ = options_.num_boxes();
-  num_coords_ = options_.num_coords();
-  box_output_format_ = GetBoxFormat(options_);
-  ABSL_CHECK_NE(options_.max_results(), 0)
+  // Set the TensorsToDetectionsCalculatorOptions with the desired values
+  ssd_detections_decoding_options.set_num_classes(1);
+  ssd_detections_decoding_options.set_num_boxes(2016);
+  ssd_detections_decoding_options.set_num_coords(18);
+  ssd_detections_decoding_options.set_box_coord_offset(0);
+  ssd_detections_decoding_options.set_keypoint_coord_offset(4);
+  ssd_detections_decoding_options.set_num_keypoints(7);
+  ssd_detections_decoding_options.set_num_values_per_keypoint(2);
+  ssd_detections_decoding_options.set_sigmoid_score(true);
+  ssd_detections_decoding_options.set_score_clipping_thresh(100.0);
+  ssd_detections_decoding_options.set_reverse_output_order(true);
+  ssd_detections_decoding_options.set_x_scale(192.0);
+  ssd_detections_decoding_options.set_y_scale(192.0);
+  ssd_detections_decoding_options.set_w_scale(192.0);
+  ssd_detections_decoding_options.set_h_scale(192.0);
+  ssd_detections_decoding_options.set_min_score_thresh(0.5);
+
+  RET_CHECK(ssd_detections_decoding_options.has_num_classes());
+  RET_CHECK(ssd_detections_decoding_options.has_num_coords());
+
+  num_classes_ = ssd_detections_decoding_options.num_classes();
+  num_boxes_ = ssd_detections_decoding_options.num_boxes();
+  num_coords_ = ssd_detections_decoding_options.num_coords();
+  box_output_format_ = GetBoxFormat(ssd_detections_decoding_options);
+  ABSL_CHECK_NE(ssd_detections_decoding_options.max_results(), 0)
       << "The maximum number of the top-scored detection results must be "
          "non-zero.";
-  max_results_ = options_.max_results();
+  max_results_ = ssd_detections_decoding_options.max_results();
 
   // Currently only support 2D when num_values_per_keypoint equals to 2.
-  ABSL_CHECK_EQ(options_.num_values_per_keypoint(), 2);
+  ABSL_CHECK_EQ(ssd_detections_decoding_options.num_values_per_keypoint(), 2);
 
   // Check if the output size is equal to the requested boxes and keypoints.
-  ABSL_CHECK_EQ(options_.num_keypoints() * options_.num_values_per_keypoint() +
+  ABSL_CHECK_EQ(ssd_detections_decoding_options.num_keypoints() * ssd_detections_decoding_options.num_values_per_keypoint() +
                     kNumCoordsPerBox,
                 num_coords_);
 
   if (kSideInIgnoreClasses(cc).IsConnected()) {
     RET_CHECK(!kSideInIgnoreClasses(cc).IsEmpty());
-    RET_CHECK(options_.allow_classes().empty());
+    RET_CHECK(ssd_detections_decoding_options.allow_classes().empty());
     class_index_set_.is_allowlist = false;
     for (int ignore_class : *kSideInIgnoreClasses(cc)) {
       class_index_set_.values.insert(ignore_class);
     }
-  } else if (!options_.allow_classes().empty()) {
-    RET_CHECK(options_.ignore_classes().empty());
+  } else if (!ssd_detections_decoding_options.allow_classes().empty()) {
+    RET_CHECK(ssd_detections_decoding_options.ignore_classes().empty());
     class_index_set_.is_allowlist = true;
-    for (int i = 0; i < options_.allow_classes_size(); ++i) {
-      class_index_set_.values.insert(options_.allow_classes(i));
+    for (int i = 0; i < ssd_detections_decoding_options.allow_classes_size(); ++i) {
+      class_index_set_.values.insert(ssd_detections_decoding_options.allow_classes(i));
     }
   } else {
     class_index_set_.is_allowlist = false;
-    for (int i = 0; i < options_.ignore_classes_size(); ++i) {
-      class_index_set_.values.insert(options_.ignore_classes(i));
+    for (int i = 0; i < ssd_detections_decoding_options.ignore_classes_size(); ++i) {
+      class_index_set_.values.insert(ssd_detections_decoding_options.ignore_classes(i));
     }
   }
 
-  if (options_.has_tensor_mapping()) {
-    RET_CHECK_OK(CheckCustomTensorMapping(options_.tensor_mapping()));
-    tensor_mapping_ = options_.tensor_mapping();
+  if (ssd_detections_decoding_options.has_tensor_mapping()) {
+    RET_CHECK_OK(CheckCustomTensorMapping(ssd_detections_decoding_options.tensor_mapping()));
+    tensor_mapping_ = ssd_detections_decoding_options.tensor_mapping();
     scores_tensor_index_is_set_ = true;
   } else {
     // Assigns the default tensor indices.
@@ -767,11 +768,11 @@ absl::Status TensorsToDetectionsCalculator::LoadOptions(CalculatorContext* cc) {
     scores_tensor_index_is_set_ = false;
   }
 
-  if (options_.has_box_boundaries_indices()) {
-    box_indices_ = {options_.box_boundaries_indices().ymin(),
-                    options_.box_boundaries_indices().xmin(),
-                    options_.box_boundaries_indices().ymax(),
-                    options_.box_boundaries_indices().xmax()};
+  if (ssd_detections_decoding_options.has_box_boundaries_indices()) {
+    box_indices_ = {ssd_detections_decoding_options.box_boundaries_indices().ymin(),
+                    ssd_detections_decoding_options.box_boundaries_indices().xmin(),
+                    ssd_detections_decoding_options.box_boundaries_indices().ymax(),
+                    ssd_detections_decoding_options.box_boundaries_indices().xmax()};
     int bitmap = 0;
     for (int i : box_indices_) {
       bitmap |= 1 << i;
@@ -781,17 +782,27 @@ absl::Status TensorsToDetectionsCalculator::LoadOptions(CalculatorContext* cc) {
     has_custom_box_indices_ = true;
   }
 
-  // Load anchors from config file if anchors are not provided as side packet
-  if (kInAnchors(cc).IsEmpty()) {
-    // Directly load anchors from config file using the static method
-    std::string config_path = "/home/matan/code/mediapipe/mediapipe/calculators/tflite/ssd_anchors_config.yaml";
-    auto anchors_result = SsdAnchorsCalculatorUtils::GenerateAnchorsFromConfigFile(config_path);
-    if (!anchors_result.ok()) {
-      return anchors_result.status();
-    }
-    anchors_ = std::move(anchors_result.value());
-    anchors_init_ = true;
-  }
+  // Set the anchors options
+  SsdAnchorsCalculatorOptions ssd_anchors_options;
+  ssd_anchors_options.set_num_layers(4);
+  ssd_anchors_options.set_min_scale(0.1484375);
+  ssd_anchors_options.set_max_scale(0.75);
+  ssd_anchors_options.set_input_size_width(192);
+  ssd_anchors_options.set_input_size_height(192);
+  ssd_anchors_options.set_anchor_offset_x(0.5);
+  ssd_anchors_options.set_anchor_offset_y(0.5);
+  ssd_anchors_options.add_strides(8);
+  ssd_anchors_options.add_strides(16);
+  ssd_anchors_options.add_strides(16);
+  ssd_anchors_options.add_strides(16);
+  ssd_anchors_options.add_aspect_ratios(1.0);
+  ssd_anchors_options.set_fixed_anchor_size(true);
+
+  // Generate anchors according to the ssd anchors parameters
+  std::vector<Anchor> ssd_anchors;
+  MP_RETURN_IF_ERROR(SsdAnchorsCalculatorUtils::GenerateAnchors(&ssd_anchors, ssd_anchors_options));
+  ssd_anchors_ = std::move(ssd_anchors);
+  ssd_anchors_init_ = true;
 
   return absl::OkStatus();
 }
@@ -800,7 +811,7 @@ absl::Status TensorsToDetectionsCalculator::DecodeBoxes(
     const float* raw_boxes, const std::vector<Anchor>& anchors,
     std::vector<float>* boxes) {
   for (int i = 0; i < num_boxes_; ++i) {
-    const int box_offset = i * num_coords_ + options_.box_coord_offset();
+    const int box_offset = i * num_coords_ + ssd_detections_decoding_options.box_coord_offset();
 
     float y_center = 0.0;
     float x_center = 0.0;
@@ -829,16 +840,16 @@ absl::Status TensorsToDetectionsCalculator::DecodeBoxes(
         break;
     }
     x_center =
-        x_center / options_.x_scale() * anchors[i].w() + anchors[i].x_center();
+        x_center / ssd_detections_decoding_options.x_scale() * anchors[i].w() + anchors[i].x_center();
     y_center =
-        y_center / options_.y_scale() * anchors[i].h() + anchors[i].y_center();
+        y_center / ssd_detections_decoding_options.y_scale() * anchors[i].h() + anchors[i].y_center();
 
-    if (options_.apply_exponential_on_box_size()) {
-      h = std::exp(h / options_.h_scale()) * anchors[i].h();
-      w = std::exp(w / options_.w_scale()) * anchors[i].w();
+    if (ssd_detections_decoding_options.apply_exponential_on_box_size()) {
+      h = std::exp(h / ssd_detections_decoding_options.h_scale()) * anchors[i].h();
+      w = std::exp(w / ssd_detections_decoding_options.w_scale()) * anchors[i].w();
     } else {
-      h = h / options_.h_scale() * anchors[i].h();
-      w = w / options_.w_scale() * anchors[i].w();
+      h = h / ssd_detections_decoding_options.h_scale() * anchors[i].h();
+      w = w / ssd_detections_decoding_options.w_scale() * anchors[i].w();
     }
 
     const float ymin = y_center - h / 2.f;
@@ -851,10 +862,10 @@ absl::Status TensorsToDetectionsCalculator::DecodeBoxes(
     (*boxes)[i * num_coords_ + 2] = ymax;
     (*boxes)[i * num_coords_ + 3] = xmax;
 
-    if (options_.num_keypoints()) {
-      for (int k = 0; k < options_.num_keypoints(); ++k) {
-        const int offset = i * num_coords_ + options_.keypoint_coord_offset() +
-                           k * options_.num_values_per_keypoint();
+    if (ssd_detections_decoding_options.num_keypoints()) {
+      for (int k = 0; k < ssd_detections_decoding_options.num_keypoints(); ++k) {
+        const int offset = i * num_coords_ + ssd_detections_decoding_options.keypoint_coord_offset() +
+                           k * ssd_detections_decoding_options.num_values_per_keypoint();
 
         float keypoint_y = 0.0;
         float keypoint_x = 0.0;
@@ -871,10 +882,10 @@ absl::Status TensorsToDetectionsCalculator::DecodeBoxes(
             break;
         }
 
-        (*boxes)[offset] = keypoint_x / options_.x_scale() * anchors[i].w() +
+        (*boxes)[offset] = keypoint_x / ssd_detections_decoding_options.x_scale() * anchors[i].w() +
                            anchors[i].x_center();
         (*boxes)[offset + 1] =
-            keypoint_y / options_.y_scale() * anchors[i].h() +
+            keypoint_y / ssd_detections_decoding_options.y_scale() * anchors[i].h() +
             anchors[i].y_center();
       }
     }
@@ -899,7 +910,7 @@ absl::Status TensorsToDetectionsCalculator::ConvertToDetections(
         /*box_xmax=*/detection_boxes[box_offset + box_indices_[3]],
         absl::MakeConstSpan(detection_scores + i, classes_per_detection_),
         absl::MakeConstSpan(detection_classes + i, classes_per_detection_),
-        options_.flip_vertically());
+        ssd_detections_decoding_options.flip_vertically());
     // if all the scores and classes are filtered out, we skip the empty
     // detection.
     if (detection.score().empty()) {
@@ -914,16 +925,16 @@ absl::Status TensorsToDetectionsCalculator::ConvertToDetections(
       continue;
     }
     // Add keypoints.
-    if (options_.num_keypoints() > 0) {
+    if (ssd_detections_decoding_options.num_keypoints() > 0) {
       auto* location_data = detection.mutable_location_data();
-      for (int kp_id = 0; kp_id < options_.num_keypoints() *
-                                      options_.num_values_per_keypoint();
-           kp_id += options_.num_values_per_keypoint()) {
+      for (int kp_id = 0; kp_id < ssd_detections_decoding_options.num_keypoints() *
+                                      ssd_detections_decoding_options.num_values_per_keypoint();
+           kp_id += ssd_detections_decoding_options.num_values_per_keypoint()) {
         auto keypoint = location_data->add_relative_keypoints();
         const int keypoint_index =
-            box_offset + options_.keypoint_coord_offset() + kp_id;
+            box_offset + ssd_detections_decoding_options.keypoint_coord_offset() + kp_id;
         keypoint->set_x(detection_boxes[keypoint_index + 0]);
-        keypoint->set_y(options_.flip_vertically()
+        keypoint->set_y(ssd_detections_decoding_options.flip_vertically()
                             ? 1.f - detection_boxes[keypoint_index + 1]
                             : detection_boxes[keypoint_index + 1]);
       }
@@ -942,8 +953,8 @@ Detection TensorsToDetectionsCalculator::ConvertToDetection(
     if (!IsClassIndexAllowed(class_ids[i])) {
       continue;
     }
-    if (options_.has_min_score_thresh() &&
-        scores[i] < options_.min_score_thresh()) {
+    if (ssd_detections_decoding_options.has_min_score_thresh() &&
+        scores[i] < ssd_detections_decoding_options.min_score_thresh()) {
       continue;
     }
     detection.add_score(scores[i]);
@@ -1079,10 +1090,10 @@ void main() {
     }
   }
 })",
-        options_.num_coords(),  // box xywh
-        output_format_flag, options_.apply_exponential_on_box_size() ? 1 : 0,
-        options_.box_coord_offset(), options_.num_keypoints(),
-        options_.keypoint_coord_offset(), options_.num_values_per_keypoint());
+        ssd_detections_decoding_options.num_coords(),  // box xywh
+        output_format_flag, ssd_detections_decoding_options.apply_exponential_on_box_size() ? 1 : 0,
+        ssd_detections_decoding_options.box_coord_offset(), ssd_detections_decoding_options.num_keypoints(),
+        ssd_detections_decoding_options.keypoint_coord_offset(), ssd_detections_decoding_options.num_values_per_keypoint());
 
     // Shader program
     GLuint shader = glCreateShader(GL_COMPUTE_SHADER);
@@ -1113,8 +1124,8 @@ void main() {
         Tensor::Shape{1, num_boxes_ * kNumCoordsPerBox});
     // Parameters
     glUseProgram(decode_program_);
-    glUniform4f(0, options_.x_scale(), options_.y_scale(), options_.w_scale(),
-                options_.h_scale());
+    glUniform4f(0, ssd_detections_decoding_options.x_scale(), ssd_detections_decoding_options.y_scale(), ssd_detections_decoding_options.w_scale(),
+                ssd_detections_decoding_options.h_scale());
 
     // A shader to score detection boxes.
     const std::string score_src = absl::Substitute(
@@ -1173,9 +1184,9 @@ void main() {
     scored_boxes.data[g_idx * uint(2) + uint(1)] = max_class;
   }
 })",
-        num_classes_, options_.sigmoid_score() ? 1 : 0,
-        options_.has_score_clipping_thresh() ? 1 : 0,
-        options_.has_score_clipping_thresh() ? options_.score_clipping_thresh()
+        num_classes_, ssd_detections_decoding_options.sigmoid_score() ? 1 : 0,
+        ssd_detections_decoding_options.has_score_clipping_thresh() ? 1 : 0,
+        ssd_detections_decoding_options.has_score_clipping_thresh() ? ssd_detections_decoding_options.score_clipping_thresh()
                                              : 0,
         !IsClassIndexAllowed(0));
 
@@ -1247,16 +1258,16 @@ kernel void decodeKernel(
   int keypt_coord_offset = int($5);
   int num_values_per_keypt = int($6);
 )",
-      options_.num_coords(),  // box xywh
-      output_format_flag, options_.apply_exponential_on_box_size() ? 1 : 0,
-      options_.box_coord_offset(), options_.num_keypoints(),
-      options_.keypoint_coord_offset(), options_.num_values_per_keypoint());
+      ssd_detections_decoding_options.num_coords(),  // box xywh
+      output_format_flag, ssd_detections_decoding_options.apply_exponential_on_box_size() ? 1 : 0,
+      ssd_detections_decoding_options.box_coord_offset(), ssd_detections_decoding_options.num_keypoints(),
+      ssd_detections_decoding_options.keypoint_coord_offset(), ssd_detections_decoding_options.num_values_per_keypoint());
   decode_src += absl::Substitute(
       R"(
   float4 scale = float4(($0),($1),($2),($3));
 )",
-      options_.x_scale(), options_.y_scale(), options_.w_scale(),
-      options_.h_scale());
+      ssd_detections_decoding_options.x_scale(), ssd_detections_decoding_options.y_scale(), ssd_detections_decoding_options.w_scale(),
+      ssd_detections_decoding_options.h_scale());
   decode_src += R"(
   uint g_idx = gid.x;
   uint box_offset = g_idx * num_coords + uint(box_coord_offset);
@@ -1410,9 +1421,9 @@ kernel void scoreKernel(
     scored_boxes[g_idx * uint(2) + uint(1)] = max_class;
   }
 })",
-      num_classes_, options_.sigmoid_score() ? 1 : 0,
-      options_.has_score_clipping_thresh() ? 1 : 0,
-      options_.has_score_clipping_thresh() ? options_.score_clipping_thresh()
+      num_classes_, ssd_detections_decoding_options.sigmoid_score() ? 1 : 0,
+      ssd_detections_decoding_options.has_score_clipping_thresh() ? 1 : 0,
+      ssd_detections_decoding_options.has_score_clipping_thresh() ? ssd_detections_decoding_options.score_clipping_thresh()
                                            : 0,
       !IsClassIndexAllowed(0));
 

@@ -31,10 +31,6 @@ namespace mediapipe {
 // Helper functions for generating SSD anchors
 class SsdAnchorsCalculatorUtils {
  public:
-  // Generate anchors from a configuration file
-  static absl::StatusOr<std::vector<Anchor>> GenerateAnchorsFromConfigFile(
-      const std::string& config_path);
-
   // Generate anchors based on the options - moved from private to public
   static absl::Status GenerateAnchors(
       std::vector<Anchor>* anchors, const SsdAnchorsCalculatorOptions& options);

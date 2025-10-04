@@ -39,36 +39,10 @@ node {
 #  output_side_packet: "OP_RESOLVER:opresolver"
 # }
 
-# Determines path to the desired pose landmark model file.
+# Loads the palm detection TF Lite model.
 node {
-  calculator: "SwitchContainer"
-  input_side_packet: "SELECT:model_complexity"
-  output_side_packet: "PACKET:model_path"
-  options: {
-    [mediapipe.SwitchContainerOptions.ext] {
-      select: 1
-      contained_node: {
-        calculator: "ConstantSidePacketCalculator"
-        options: {
-          [mediapipe.ConstantSidePacketCalculatorOptions.ext]: {
-            packet {
-              string_value: "mediapipe/modules/palm_detection/palm_detection_lite.tflite"
-            }
-          }
-        }
-      }
-      contained_node: {
-        calculator: "ConstantSidePacketCalculator"
-        options: {
-          [mediapipe.ConstantSidePacketCalculatorOptions.ext]: {
-            packet {
-              string_value: "mediapipe/modules/palm_detection/palm_detection_full.tflite"
-            }
-          }
-        }
-      }
-    }
-  }
+  calculator: "PalmDetectionModelLoader"
+  output_side_packet: "MODEL:model"
 }
 
 # Runs a TensorFlow Lite model on CPU that takes an image tensor and outputs a
@@ -78,7 +52,7 @@ node {
   calculator: "InferenceCalculator"
   input_stream: "TENSORS:input_tensor"
   output_stream: "TENSORS:detection_tensors"
-  input_side_packet: "MODEL_PATH:model_path"
+  input_side_packet: "MODEL:model"
   options: {
     [mediapipe.InferenceCalculatorOptions.ext] {
       delegate { xnnpack {} }
@@ -117,26 +91,6 @@ node {
   calculator: "TensorsToDetectionsCalculator"
   input_stream: "TENSORS:detection_tensors"
    output_stream: "DETECTIONS:unfiltered_detections"
-  options: {
-    [mediapipe.TensorsToDetectionsCalculatorOptions.ext] {
-      num_classes: 1
-      num_boxes: 2016
-      num_coords: 18
-      box_coord_offset: 0
-      keypoint_coord_offset: 4
-      num_keypoints: 7
-      num_values_per_keypoint: 2
-      sigmoid_score: true
-      score_clipping_thresh: 100.0
-      reverse_output_order: true
-
-      x_scale: 192.0
-      y_scale: 192.0
-      w_scale: 192.0
-      h_scale: 192.0
-      min_score_thresh: 0.5
-    }
-  }
 }
 
 # Performs non-max suppression to remove excessive detections.
@@ -144,13 +98,6 @@ node {
   calculator: "NonMaxSuppressionCalculator"
   input_stream: "unfiltered_detections"
   output_stream: "filtered_detections"
-  options: {
-    [mediapipe.NonMaxSuppressionCalculatorOptions.ext] {
-      min_suppression_threshold: 0.3
-      overlap_type: INTERSECTION_OVER_UNION
-      algorithm: WEIGHTED
-    }
-  }
 }
 
 # Adjusts detection locations (already normalized to [0.f, 1.f]) on the
