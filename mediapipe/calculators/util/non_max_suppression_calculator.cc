@@ -27,7 +27,7 @@
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/formats/location.h"
 #include "mediapipe/framework/port/rectangle.h"
-#include "mediapipe/framework/port/status.h"
+#include "mediapipe/calculators/util/non_max_suppression_calculator.h"
 
 namespace mediapipe {
 
@@ -311,19 +311,20 @@ void DoNonMaxSuppression(Detections& input_detections,
   }
 }
 
+} // end anonymous namespace
+
 // filters down a set of input detections by non-maximum suppression according to
 // the provided parameters for suppression. Returns a vector of the surviving detections.
 std::unique_ptr<Detections> FilterDetectionsByNonMaximumSuppression(
     const Detections& input_detections,
     const NonMaxSuppressionCalculatorOptions& options,
-    bool has_dimensions = false,
-    int frame_width = 0,
-    int frame_height = 0) {
+    bool has_dimensions,
+    int frame_width,
+    int frame_height) {
 
   // Check if there are any detections at all.
   if (input_detections.empty()) {
-    return options.return_empty_detections() ?
-           std::make_unique<Detections>() : nullptr;
+    return std::make_unique<Detections>();
   }
 
   auto retained_detections = std::make_unique<Detections>();
@@ -353,8 +354,7 @@ std::unique_ptr<Detections> FilterDetectionsByNonMaximumSuppression(
     IndexedScores indexed_scores = GetIndexedScores(detections_nms);
     int max_num_detections = static_cast<int>(indexed_scores.size());
     if (options.max_num_detections() > -1) {
-      max_num_detections =
-          std::min(max_num_detections, options.max_num_detections());
+      max_num_detections = std::min(max_num_detections, options.max_num_detections());
     }
     retained_detections->reserve(max_num_detections);
     for (int i = 0; i < max_num_detections; i++) {
@@ -370,132 +370,5 @@ std::unique_ptr<Detections> FilterDetectionsByNonMaximumSuppression(
 
   return retained_detections;
 }
-
-}  // namespace
-
-// A calculator performing non-maximum suppression on a set of detections.
-// Inputs:
-//   1. IMAGE (optional): A stream of ImageFrame used to obtain the frame size.
-//      No image data is used. Not needed if the detection bounding boxes are
-//      already represented in normalized dimensions (0.0~1.0).
-//   2. A variable number of input streams of type std::vector<Detection>. The
-//      exact number of such streams should be set via num_detection_streams
-//      field in the calculator options.
-//
-// Outputs: a single stream of type std::vector<Detection> containing a subset
-//   of the input detections after non-maximum suppression.
-//
-// Example config:
-// node {
-//   calculator: "NonMaxSuppressionCalculator"
-//   input_stream: "IMAGE:frames"
-//   input_stream: "detections1"
-//   input_stream: "detections2"
-//   output_stream: "detections"
-//   options {
-//     [mediapipe.NonMaxSuppressionCalculatorOptions.ext] {
-//       num_detection_streams: 2
-//       max_num_detections: 10
-//       min_suppression_threshold: 0.2
-//       overlap_type: JACCARD
-//     }
-//   }
-// }
-class NonMaxSuppressionCalculator : public CalculatorBase {
- public:
-  NonMaxSuppressionCalculator() = default;
-  ~NonMaxSuppressionCalculator() override = default;
-
-  static absl::Status GetContract(CalculatorContract* cc) {
-    const auto& options = cc->Options<NonMaxSuppressionCalculatorOptions>();
-    // we don't pass this input stream in our pipeline, so this condition is always false for us.
-    if (cc->Inputs().HasTag(kImageTag)) {
-      cc->Inputs().Tag(kImageTag).Set<ImageFrame>();
-    }
-    // we only take a single detections stream in our pipeline, so this loop runs only once for us.
-    for (int k = 0; k < options.num_detection_streams(); ++k) {
-      cc->Inputs().Index(0).Set<Detections>();
-    }
-    cc->Outputs().Index(0).Set<Detections>();
-    return absl::OkStatus();
-  }
-
-  absl::Status setNmsParameters(CalculatorContext *cc) {
-    options_ = cc->Options<NonMaxSuppressionCalculatorOptions>();
-
-    // Directly set the non-maximum suppression options from the values that were previously provided as pipeline node options:
-    options_.set_min_suppression_threshold(0.3);
-    options_.set_overlap_type(NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
-    options_.set_algorithm(NonMaxSuppressionCalculatorOptions::WEIGHTED);
-
-    ABSL_CHECK_GT(options_.num_detection_streams(), 0)
-        << "At least one detection stream need to be specified.";
-    ABSL_CHECK_NE(options_.max_num_detections(), 0)
-        << "max_num_detections=0 is not a valid value. Please choose a "
-        << "positive number if you want to limit the number of output "
-        << "detections, or set -1 if you do not want any limit.";
-    return absl::OkStatus();
-  }
-
-  absl::Status Open(CalculatorContext* cc) override {
-
-    // setting the offset to TimestampDiff(0) in a MediaPipe calculator node is effectively a no-op. It does not change the default timestamp offset behavior,
-    // as an offset of zero means output timestamps will match input timestamps. This line is often included for clarity or explicitness, but it does not
-    // alter the processing logic.
-    cc->SetOffset(TimestampDiff(0));
-
-    return setNmsParameters(cc);
-  }
-
-  absl::Status Process(CalculatorContext* cc) override {
-
-    // Get the frame dimensions if image is available
-    bool has_frame_dimensions = false;
-    int frame_width = 0;
-    int frame_height = 0;
-    if (cc->Inputs().HasTag(kImageTag) &&
-        !cc->Inputs().Tag(kImageTag).Value().IsEmpty()) {
-      const auto& frame = cc->Inputs().Tag(kImageTag).Get<ImageFrame>();
-      frame_width = frame.Width();
-      frame_height = frame.Height();
-      has_frame_dimensions = true;
-    }
-
-    // Collect all input detections into a single vector.
-    // probably there can be multiple input streams of detections
-    // which the following loop just collects into a single vector,
-    // in our pipeline there's only one input stream to this calculator,
-    // so it just passes that stream through.
-    Detections input_detections;
-    for (int i = 0; i < options_.num_detection_streams(); ++i) {
-      const auto& detections_packet = cc->Inputs().Index(i).Value();
-      // Check whether this stream has a packet for this timestamp.
-      if (detections_packet.IsEmpty()) {
-        continue;
-      }
-      const auto& detections = detections_packet.Get<Detections>();
-      input_detections.insert(input_detections.end(), detections.begin(), detections.end());
-    }
-
-    // Process all detections by non-maximum suppression
-    auto retained_detections = FilterDetectionsByNonMaximumSuppression(
-        input_detections, options_, has_frame_dimensions, frame_width, frame_height);
-
-    // Add the output to the stream if we have detections or if empty detections are requested
-    if (retained_detections || options_.return_empty_detections()) {
-      if (!retained_detections) {
-        retained_detections = std::make_unique<Detections>();
-      }
-      cc->Outputs().Index(0).Add(retained_detections.release(), cc->InputTimestamp());
-    }
-
-    return absl::OkStatus();
-  }
-
- private:
-
-  NonMaxSuppressionCalculatorOptions options_;
-};
-REGISTER_CALCULATOR(NonMaxSuppressionCalculator);
 
 }  // namespace mediapipe

@@ -1217,6 +1217,7 @@ cc_library(
     deps = [
         ":tensors_to_detections_calculator_cc_proto",
         "//mediapipe/calculators/tflite:ssd_anchors_calculator",
+        "//mediapipe/calculators/util:non_max_suppression_calculator",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:port",
         "//mediapipe/framework/api2:node",

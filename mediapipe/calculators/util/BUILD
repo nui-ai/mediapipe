@@ -23,9 +23,9 @@ cc_library(
     srcs = ["detection_model_provider.cc"],
     hdrs = ["detection_model_provider.h"],
     deps = [
-        "@com_google_absl//absl/status",
+        "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/api2:node",
-        "//mediapipe/framework:calculator_framework"
+        "@com_google_absl//absl/status",
     ],
     alwayslink = 1,
 )
@@ -450,6 +450,8 @@ cc_test(
 cc_library(
     name = "non_max_suppression_calculator",
     srcs = ["non_max_suppression_calculator.cc"],
+    hdrs = ["non_max_suppression_calculator.h"],
+    visibility = ["//visibility:public"],
     deps = [
         ":non_max_suppression_calculator_cc_proto",
         "//mediapipe/framework:calculator_framework",

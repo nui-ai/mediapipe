@@ -26,6 +26,8 @@
 #include "absl/types/span.h"
 #include "mediapipe/calculators/tensor/tensors_to_detections_calculator.pb.h"
 #include "mediapipe/calculators/tflite/ssd_anchors_calculator_utils.h"
+#include "mediapipe/calculators/util/non_max_suppression_calculator.pb.h"
+#include "mediapipe/calculators/util/non_max_suppression_calculator.h"
 #include "mediapipe/framework/api2/node.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/detection.pb.h"
@@ -189,6 +191,7 @@ namespace api2 {
     absl::Status SetDecodingParameters(CalculatorContext* cc);
     absl::Status SetSsdAnchors();
     absl::Status SetSsdDecodingOptions(CalculatorContext* cc);
+    absl::Status SetNmsParameters(CalculatorContext* cc);
 
     absl::Status GpuInit(CalculatorContext* cc);
     absl::Status DecodeBoxes(const float* raw_boxes,
@@ -236,6 +239,7 @@ namespace api2 {
     TensorsToDetectionsCalculatorOptions::TensorMapping ssd_decoding_tensor_mapping_;
     TensorsToDetectionsCalculatorOptions ssd_decoding_options_;
     std::vector<Anchor> ssd_anchors_;
+    NonMaxSuppressionCalculatorOptions nms_options_;
 
 #ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
     mediapipe::GlCalculatorHelper gpu_helper_;
@@ -273,6 +277,7 @@ namespace api2 {
 
   absl::Status TensorsToDetectionsCalculator::Open(CalculatorContext* cc) {
     MP_RETURN_IF_ERROR(SetDecodingParameters(cc));
+    MP_RETURN_IF_ERROR(SetNmsParameters(cc));
 
     if (CanUseGpu()) {
 #ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
@@ -343,7 +348,11 @@ namespace api2 {
       MP_RETURN_IF_ERROR(ProcessCPU(cc, output_detections.get()));
     }
 
-    kOutDetections(cc).Send(std::move(output_detections));
+    ABSL_LOG(INFO) << "TensorsToDetectionsCalculator::Process: " << " detections count " << output_detections->size();
+    auto nms_surviving_detections = FilterDetectionsByNonMaximumSuppression(*output_detections, nms_options_, false, 0, 0);
+    ABSL_LOG(INFO) << "TensorsToDetectionsCalculator::Process: " << ", nms surviving detections " << nms_surviving_detections->size();
+
+    kOutDetections(cc).Send(std::move(nms_surviving_detections));
     return absl::OkStatus();
   }
 
@@ -731,6 +740,24 @@ namespace api2 {
     // Generate the anchors from these options (~2K of them)
     return SsdAnchorsCalculatorUtils::GenerateAnchors(&ssd_anchors_, ssd_anchors);
   }
+
+  absl::Status TensorsToDetectionsCalculator::SetNmsParameters(CalculatorContext *cc) {
+    nms_options_ = NonMaxSuppressionCalculatorOptions();
+
+    // Directly set the non-maximum suppression options from the values that were previously provided as pipeline node options:
+    nms_options_.set_min_suppression_threshold(0.3);
+    nms_options_.set_overlap_type(NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
+    nms_options_.set_algorithm(NonMaxSuppressionCalculatorOptions::WEIGHTED);
+
+    ABSL_CHECK_GT(nms_options_.num_detection_streams(), 0)
+        << "At least one detection stream need to be specified.";
+    ABSL_CHECK_NE(nms_options_.max_num_detections(), 0)
+        << "max_num_detections=0 is not a valid value. Please choose a "
+        << "positive number if you want to limit the number of output "
+        << "detections, or set -1 if you do not want any limit.";
+    return absl::OkStatus();
+  }
+
 
   // Configure specific post-SSD decoding parameters and options ― hardwired for coupling to the class itself.
   // (originally these values were given as mediapipe graph calculator node "options")
