@@ -33,9 +33,12 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/util/resource_util.h"
 #include <google/protobuf/util/delimited_message_util.h>
+#include <google/protobuf/util/message_differencer.h>
+#include <google/protobuf/io/zero_copy_stream_impl.h>
 
 constexpr char kInputStream[] = "image";
 constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";
+constexpr char kReferenceProtoFilename[] = "output_data_v0.10.13.pb";
 
 ABSL_FLAG(std::string, calculator_graph_config_file, "",
           "Name of file containing text format CalculatorGraphConfig proto.");
@@ -46,7 +49,50 @@ ABSL_FLAG(std::string, output_video_path, "",
           "Full path of where to save result (.mp4 only). "
           "If not provided, show result in a window.");
 
+// Function to read reference data from file
+bool ReadReferenceData(const std::string& filename, std::vector<mediapipe::PipelineOutputData>& out) {
+    std::ifstream input(filename, std::ios::binary);
+    if (!input.is_open()) {
+        ABSL_LOG(ERROR) << "Failed to open reference file: " << filename;
+        return false;
+    }
+    google::protobuf::io::IstreamInputStream zero_copy_input(&input);
+    bool clean_eof = false;
+    int msg_count = 0;
+    while (true) {
+        mediapipe::PipelineOutputData msg;
+        std::streampos pos = input.tellg();
+        if (!google::protobuf::util::ParseDelimitedFromZeroCopyStream(&msg, &zero_copy_input, &clean_eof)) {
+            if (msg_count == 0) {
+                ABSL_LOG(ERROR) << "Failed to parse any messages from " << filename
+                               << " (parse error at file offset " << pos << ")";
+                return false;
+            } else {
+                // EOF or trailing bytes after all messages parsed; treat as normal
+                break;
+            }
+        }
+        if (clean_eof) {
+            // End of file reached after last message
+            break;
+        }
+        out.push_back(msg);
+        ++msg_count;
+    }
+    ABSL_LOG(INFO) << "Successfully loaded " << msg_count << " reference records from " << filename;
+    return true;
+}
+
 absl::Status RunMPPGraph() {
+
+  // Load reference data from output_data_v0.10.13.pb
+  std::vector<mediapipe::PipelineOutputData> reference_data;
+  if (!ReadReferenceData(kReferenceProtoFilename, reference_data)) {
+    ABSL_LOG(WARNING) << "failed to load reference data from " << kReferenceProtoFilename
+                     << ". will proceed without real-time comparison.";
+  } else {
+    ABSL_LOG(INFO) << "loaded " << reference_data.size() << " records from the reference data file.";
+  }
 
   std::string calculator_graph_config_contents;
   MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
@@ -190,7 +236,27 @@ absl::Status RunMPPGraph() {
     //   *stream_data_msg.add_hand_rects_from_palm_detections() = r;
     // }
 
+    // Serialize the current output
     google::protobuf::util::SerializeDelimitedToOstream(stream_data_msg, &output_proto_file);
+
+    // Compare with reference data if available
+    if (!reference_data.empty()) {
+      if (i < reference_data.size()) {
+        google::protobuf::util::MessageDifferencer differ;
+        std::string diff;
+        differ.ReportDifferencesToString(&diff);
+
+        if (!differ.Compare(stream_data_msg, reference_data[i])) {
+          ABSL_LOG(ERROR) << "Difference found at frame " << i << ":\n" << diff;
+          ABSL_LOG(ERROR) << "Terminating early due to difference in output";
+          break; // Early termination due to difference
+        } else {
+          ABSL_LOG(INFO) << "pipeline output for frame " << i << " is identical to its reference output read from " << kReferenceProtoFilename;
+        }
+      } else {
+        ABSL_LOG(WARNING) << "reference output file doesn't have data for frame " << i << " (it has only " << reference_data.size() << " records)";
+      }
+    }
   }
 
   output_proto_file.close();

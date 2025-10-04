@@ -56,6 +56,10 @@ class InferenceCalculatorSelectorImpl
 
 #if !MEDIAPIPE_FORCE_CPU_INFERENCE
 
+    if (options.has_delegate()) {
+        ABSL_LOG(INFO) << "Delegate specified by options: " << options.delegate().DebugString();
+    }
+
     const bool should_use_gpu =
         !options.has_delegate() ||  // Use GPU delegate if not specified
         (options.has_delegate() && options.delegate().has_gpu());

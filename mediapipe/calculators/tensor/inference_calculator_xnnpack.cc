@@ -65,6 +65,7 @@ absl::Status InferenceCalculatorXnnpackImpl::UpdateContract(
 }
 
 absl::Status InferenceCalculatorXnnpackImpl::Open(CalculatorContext* cc) {
+  ABSL_LOG(INFO) << "starting InferenceCalculatorXnnpackImpl";
   MP_ASSIGN_OR_RETURN(inference_runner_, CreateInferenceRunner(cc));
   return InferenceCalculatorNodeImpl::UpdateIoMapping(
       cc, inference_runner_->GetInputOutputTensorNames());
