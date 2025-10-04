@@ -56,23 +56,23 @@ output_stream: "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
 # When the optional input side packet "use_prev_landmarks" is either absent or
 # set to true, uses the landmarks on the previous image to help localize
 # landmarks on the current image.
-node {
-  calculator: "GateCalculator"
-  input_side_packet: "ALLOW:use_prev_landmarks"
-  input_stream: "prev_hand_rects_from_landmarks"
-  output_stream: "gated_prev_hand_rects_from_landmarks"
-  options: {
-    [mediapipe.GateCalculatorOptions.ext] {
-      allow: true
-    }
-  }
-}
+# node {
+#  calculator: "GateCalculator"
+#  input_side_packet: "ALLOW:use_prev_landmarks"
+#  input_stream: "prev_hand_rects_from_landmarks"
+#  output_stream: "gated_prev_hand_rects_from_landmarks"
+#  options: {
+#    [mediapipe.GateCalculatorOptions.ext] {
+#      allow: true
+#    }
+#  }
+#}
 
 # Determines if an input vector of NormalizedRect has a size greater than or
 # equal to the globally defined num_hands.
 node {
   calculator: "NormalizedRectVectorHasMinSizeCalculator"
-  input_stream: "ITERABLE:gated_prev_hand_rects_from_landmarks"
+  input_stream: "ITERABLE:prev_hand_rects_from_landmarks"
   output_stream: "prev_has_enough_hands"
 }
 
@@ -151,7 +151,7 @@ node {
 node {
   calculator: "AssociationNormRectCalculator"
   input_stream: "hand_rects_from_palm_detections"
-  input_stream: "gated_prev_hand_rects_from_landmarks"
+  input_stream: "prev_hand_rects_from_landmarks"
   output_stream: "hand_rects"
   options: {
     [mediapipe.AssociationCalculatorOptions.ext] {
