@@ -1,3 +1,6 @@
+# liberation project specific ignores
+output_data*
+
 # Bazel / build ignores
 # note that some bazel files (and even yarn.lock) we do want tracked in git so they are not defined here to ignore.
 # note that third_party/ is a directory where project dependencies are vendored to the build by the original mediapipe
