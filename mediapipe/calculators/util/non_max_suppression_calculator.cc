@@ -408,9 +408,11 @@ class NonMaxSuppressionCalculator : public CalculatorBase {
 
   static absl::Status GetContract(CalculatorContract* cc) {
     const auto& options = cc->Options<NonMaxSuppressionCalculatorOptions>();
+    // we don't pass this input stream in our pipeline, so this condition is always false for us.
     if (cc->Inputs().HasTag(kImageTag)) {
       cc->Inputs().Tag(kImageTag).Set<ImageFrame>();
     }
+    // we only take a single detections stream in our pipeline, so this loop is vacuous.
     for (int k = 0; k < options.num_detection_streams(); ++k) {
       cc->Inputs().Index(k).Set<Detections>();
     }
@@ -418,9 +420,7 @@ class NonMaxSuppressionCalculator : public CalculatorBase {
     return absl::OkStatus();
   }
 
-  absl::Status Open(CalculatorContext* cc) override {
-    cc->SetOffset(TimestampDiff(0));
-
+  absl::Status setNmsParameters(CalculatorContext *cc) {
     options_ = cc->Options<NonMaxSuppressionCalculatorOptions>();
 
     // Directly set the non-maximum suppression options from the values that were previously provided as pipeline node options:
@@ -435,6 +435,16 @@ class NonMaxSuppressionCalculator : public CalculatorBase {
         << "positive number if you want to limit the number of output "
         << "detections, or set -1 if you do not want any limit.";
     return absl::OkStatus();
+  }
+
+  absl::Status Open(CalculatorContext* cc) override {
+
+    // setting the offset to TimestampDiff(0) in a MediaPipe calculator node is effectively a no-op. It does not change the default timestamp offset behavior,
+    // as an offset of zero means output timestamps will match input timestamps. This line is often included for clarity or explicitness, but it does not
+    // alter the processing logic.
+    cc->SetOffset(TimestampDiff(0));
+
+    return setNmsParameters(cc);
   }
 
   absl::Status Process(CalculatorContext* cc) override {

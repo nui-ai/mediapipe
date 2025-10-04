@@ -12,7 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// decodes (extracts) detection results from the SSD palm detection model's raw output.
+// decodes (extracts) detection results from the SSD palm detection model's raw output,
+// while filtering them down based on: detection validity, score thresholding, the requested maximum number
+// of detections to pass forward, and lastly by non-maximum suppression (NMS).
+//
+// the filtering steps can sure be reorganized for better cohesion from the original inherited current form,
+// but at least they are documented each inline.
 
 #include <unordered_map>
 #include <vector>
@@ -754,7 +759,7 @@ namespace api2 {
     // Applies sigmoid activation to raw scores. Can be toggled at inference if model outputs logits.
     ssd_decoding_options_.set_sigmoid_score(true);
 
-    // Clips raw scores to this threshold before sigmoid. Can help stabilize extreme values.
+    // Clips raw scores to this threshold before sigmoid scoring.
     ssd_decoding_options_.set_score_clipping_thresh(100.0);
 
     // Minimum confidence score required for a detection to be considered valid.
@@ -923,11 +928,15 @@ namespace api2 {
     return absl::OkStatus();
   }
 
+  // converts to mediapipe detection objects, while also:
+  // 1. filtering to only pass forward the maximum requested number of detections
+  // 2. filtering out by the set score threshold (within the ConvertToDetection() call)
+  // 2. optionally vertically flipping the detection coordinates
   absl::Status TensorsToDetectionsCalculator::ConvertToDetections(
       const float* detection_boxes, const float* detection_scores,
       const int* detection_classes, std::vector<Detection>* output_detections) {
-    for (int i = 0; i < num_boxes_ * classes_per_detection_;
-        i += classes_per_detection_) {
+
+    for (int i = 0; i < num_boxes_ * classes_per_detection_; i += classes_per_detection_) {
       if (max_results_ > 0 && output_detections->size() == max_results_) {
         break;
       }
@@ -940,28 +949,29 @@ namespace api2 {
           absl::MakeConstSpan(detection_scores + i, classes_per_detection_),
           absl::MakeConstSpan(detection_classes + i, classes_per_detection_),
           ssd_decoding_options_.flip_vertically());
-      // if all the scores and classes are filtered out, we skip the empty
-      // detection.
+      // if all the scores and classes are filtered out, we skip the empty detection.
       if (detection.score().empty()) {
         continue;
       }
+
+      // filter out box predictions which are possible as neural network output but should be ignored as invalid:
+      // Decoded detection boxes could have negative values for width/height due
+      // to model prediction. Filter out those boxes since some downstream
+      // calculators may assume non-negative values. (b/171391719)
       const auto& bbox = detection.location_data().relative_bounding_box();
       if (bbox.width() < 0 || bbox.height() < 0 || std::isnan(bbox.width()) ||
           std::isnan(bbox.height())) {
-        // Decoded detection boxes could have negative values for width/height due
-        // to model prediction. Filter out those boxes since some downstream
-        // calculators may assume non-negative values. (b/171391719)
         continue;
       }
+
       // Add keypoints.
       if (ssd_decoding_options_.num_keypoints() > 0) {
         auto* location_data = detection.mutable_location_data();
         for (int kp_id = 0; kp_id < ssd_decoding_options_.num_keypoints() *
-                                      ssd_decoding_options_.num_values_per_keypoint();
-            kp_id += ssd_decoding_options_.num_values_per_keypoint()) {
+             ssd_decoding_options_.num_values_per_keypoint();
+             kp_id += ssd_decoding_options_.num_values_per_keypoint()) {
           auto keypoint = location_data->add_relative_keypoints();
-          const int keypoint_index =
-              box_offset + ssd_decoding_options_.keypoint_coord_offset() + kp_id;
+          const int keypoint_index = box_offset + ssd_decoding_options_.keypoint_coord_offset() + kp_id;
           keypoint->set_x(detection_boxes[keypoint_index + 0]);
           keypoint->set_y(ssd_decoding_options_.flip_vertically()
                               ? 1.f - detection_boxes[keypoint_index + 1]
@@ -973,6 +983,9 @@ namespace api2 {
     return absl::OkStatus();
   }
 
+  // converts to mediapipe detection object, while also filtering out by the set score threshold.
+  // (really bad coupling by the original mediapipe code, these should not optimally be in the same fn).
+  // the class filtering is vacuous in our case as it is a single class SSD model we consume from.
   Detection TensorsToDetectionsCalculator::ConvertToDetection(
       float box_ymin, float box_xmin, float box_ymax, float box_xmax,
       absl::Span<const float> scores, absl::Span<const int> class_ids,

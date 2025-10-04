@@ -137,9 +137,8 @@ absl::StatusOr<Packet<TfLiteModelPtr>> InferenceCalculator::GetModelAsPacket(
                                                     model_path,
                                                     options.try_mmap_model()));
     ABSL_CHECK(!model.IsEmpty());
-    VLOG(1) << absl::StrFormat(
-        "GetModelAsPacket successfully loaded model from side packet "
-        "(path: %s, size: %ld bytes)",
+    ABSL_LOG(INFO) << absl::StrFormat(
+        "GetModelAsPacket successfully loaded model from path: %s. Model size: %ld bytes",
         model_path, model.Get()->allocation()->bytes());
     return model;
   }
@@ -151,9 +150,8 @@ absl::StatusOr<Packet<TfLiteModelPtr>> InferenceCalculator::GetModelAsPacket(
                                                     options.model_path(),
                                                     options.try_mmap_model()));
     ABSL_CHECK(!model.IsEmpty());
-    VLOG(1) << absl::StrFormat(
-        "GetModelAsPacket successfully loaded model "
-        "(path: %s, size: %ld bytes)",
+    ABSL_LOG(INFO) << absl::StrFormat(
+        "successfully loaded model from path: %s. Model size: %ld bytes)",
         options.model_path(), model.Get()->allocation()->bytes());
     return model;
   }
@@ -161,8 +159,7 @@ absl::StatusOr<Packet<TfLiteModelPtr>> InferenceCalculator::GetModelAsPacket(
   // Check if model is provided via MODEL side packet
   if (!kSideInModel(cc).IsEmpty()) return kSideInModel(cc);
 
-  return absl::Status(absl::StatusCode::kNotFound,
-                      "Must specify TFLite model as path or loaded model.");
+  return absl::Status(absl::StatusCode::kNotFound, "Must specify TFLite model as path or loaded model.");
 }
 
 absl::StatusOr<TfLiteModelWithResource>
@@ -190,15 +187,13 @@ InferenceCalculator::GetModelPacketWithResource(
         auto model, TfLiteModelLoader::LoadFromPathAndGetResource(
                         cc->GetResources(), options.model_path(), mmap_mode));
     ABSL_CHECK(!model.model_packet.IsEmpty());
-    VLOG(1) << absl::StrFormat(
-        "GetModelPacketWithResource successfully loaded model "
-        "(path: %s, size: %ld bytes)",
+    ABSL_LOG(INFO) << absl::StrFormat(
+        "GetModelPacketWithResource successfully loaded model from path: %s. Model size: %ld bytes)",
         options.model_path(), model.model_packet.Get()->allocation()->bytes());
     return model;
   }
 
-  return absl::Status(absl::StatusCode::kNotFound,
-                      "Must specify TFLite model as path or loaded model.");
+  return absl::Status(absl::StatusCode::kNotFound, "Must specify TFLite model as path or loaded model.");
 }
 
 absl::StatusOr<Packet<tflite::OpResolver>>

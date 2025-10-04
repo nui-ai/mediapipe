@@ -33,10 +33,25 @@ node {
   }
 }
 
-# Loads the palm detection TF Lite model.
+# Determines path to the desired palms detection model file.
 node {
-  calculator: "PalmDetectionModelLoader"
-  output_side_packet: "MODEL:model"
+  calculator: "SwitchContainer"
+  input_side_packet: "SELECT:model_complexity"
+  output_side_packet: "PACKET:model_path"
+  options: {
+    [mediapipe.SwitchContainerOptions.ext] {
+      contained_node: {
+        calculator: "ConstantSidePacketCalculator"
+        options: {
+          [mediapipe.ConstantSidePacketCalculatorOptions.ext]: {
+            packet {
+              string_value: "mediapipe/modules/palm_detection/palm_detection_full.tflite"
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 # Runs a TensorFlow Lite model on CPU that takes an image tensor and outputs a
@@ -46,7 +61,7 @@ node {
   calculator: "InferenceCalculator"
   input_stream: "TENSORS:input_tensor"
   output_stream: "TENSORS:detection_tensors"
-  input_side_packet: "MODEL:model"
+  input_side_packet: "MODEL_PATH:model_path"
   options: {
     [mediapipe.InferenceCalculatorOptions.ext] {
       delegate { xnnpack {} }
