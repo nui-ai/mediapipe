@@ -136,10 +136,12 @@ class MediaPipePipelineParser:
         nodes = []
         
         # Find all node blocks
-        node_pattern = r'node\s*\{'
+        node_pattern = r'node\s*\{'  # matches 'node {'
         node_starts = []
         for i, line in enumerate(lines):
-            if re.search(node_pattern, line):
+            stripped = line.lstrip()
+            # Only consider node blocks not commented out
+            if re.search(node_pattern, line) and not stripped.startswith('#'):
                 node_starts.append(i)
         
         for start_line in node_starts:

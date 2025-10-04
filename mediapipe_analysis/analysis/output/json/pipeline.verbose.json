@@ -112,45 +112,12 @@
           ]
         },
         {
-          "name": "PalmDetectionModelLoader",
+          "name": "SwitchContainer",
           "type": "graph",
-          "source": "/home/matan/code/mediapipe/mediapipe/modules/palm_detection/palm_detection_model_loader.pbtxt",
-          "description": "Loads the palm detection TF Lite model.",
-          "source_line_number": 1,
-          "output_side_packets": [
-            "MODEL:model"
-          ],
-          "graph_self_description": {
-            "description": "MediaPipe graph to load a selected palm detection TF Lite model.",
-            "output_side_packets": [
-              "MODEL:model"
-            ]
-          },
-          "nodes": [
-            {
-              "name": "DetectionModelProvider",
-              "type": "calculator",
-              "source": "/home/matan/code/mediapipe/mediapipe/calculators/util/detection_model_provider.cc",
-              "description": "Loads the model file",
-              "source_line_number": 36,
-              "output_side_packets": [
-                "RESOURCE:model_resource"
-              ]
-            },
-            {
-              "name": "TfLiteModelCalculator",
-              "type": "calculator",
-              "source": "/home/matan/code/mediapipe/mediapipe/calculators/tflite/tflite_model_calculator.cc",
-              "description": "Loads the loaded model file as a tflite model",
-              "source_line_number": 233,
-              "input_side_packets": [
-                "MODEL_RESOURCE:model_resource"
-              ],
-              "output_side_packets": [
-                "MODEL:model"
-              ]
-            }
-          ]
+          "source": "/home/matan/code/mediapipe/mediapipe/framework/tool/switch_container.cc",
+          "description": null,
+          "source_line_number": 77,
+          "warning": "\u26a0\ufe0f this graph is defined in C++ code (not by a parseable .pbtxt file). its own nodes are therefore not expanded here, but you can read them in its source code."
         },
         {
           "name": "InferenceCalculator",
@@ -167,7 +134,7 @@
           ],
           "input_side_packets": [
             "OP_RESOLVER:opresolver",
-            "MODEL:model"
+            "MODEL_PATH:model_path"
           ]
         },
         {
@@ -430,64 +397,6 @@
           ]
         },
         {
-          "name": "HandLandmarkModelLoader",
-          "type": "graph",
-          "source": "/home/matan/code/mediapipe/mediapipe/modules/hand_landmark/hand_landmark_model_loader.pbtxt",
-          "description": "Loads the hand landmark TF Lite model.",
-          "source_line_number": 1,
-          "input_side_packets": [
-            "MODEL_COMPLEXITY:model_complexity"
-          ],
-          "output_side_packets": [
-            "MODEL:model"
-          ],
-          "graph_self_description": {
-            "description": "MediaPipe graph to load a selected hand landmark TF Lite model.",
-            "input_side_packets": [
-              "MODEL_COMPLEXITY:model_complexity"
-            ],
-            "output_side_packets": [
-              "MODEL:model"
-            ]
-          },
-          "nodes": [
-            {
-              "name": "SwitchContainer",
-              "type": "graph",
-              "source": "/home/matan/code/mediapipe/mediapipe/framework/tool/switch_container.cc",
-              "description": null,
-              "source_line_number": 77,
-              "warning": "\u26a0\ufe0f this graph is defined in C++ code (not by a parseable .pbtxt file). its own nodes are therefore not expanded here, but you can read them in its source code."
-            },
-            {
-              "name": "ResourceProviderCalculator",
-              "type": "calculator",
-              "source": "/home/matan/code/mediapipe/mediapipe/calculators/util/resource_provider_calculator.cc",
-              "description": "Loads the file in the specified path as a resource.",
-              "source_line_number": 108,
-              "input_side_packets": [
-                "RESOURCE_ID:model_path"
-              ],
-              "output_side_packets": [
-                "RESOURCE:model_resource"
-              ]
-            },
-            {
-              "name": "TfLiteModelCalculator",
-              "type": "calculator",
-              "source": "/home/matan/code/mediapipe/mediapipe/calculators/tflite/tflite_model_calculator.cc",
-              "description": "Converts the provided resource into a TF Lite model.",
-              "source_line_number": 233,
-              "input_side_packets": [
-                "MODEL_PATH:model_path"
-              ],
-              "output_side_packets": [
-                "MODEL:model"
-              ]
-            }
-          ]
-        },
-        {
           "name": "SwitchContainer",
           "type": "graph",
           "source": "/home/matan/code/mediapipe/mediapipe/framework/tool/switch_container.cc",
@@ -509,7 +418,7 @@
             "TENSORS:output_tensors"
           ],
           "input_side_packets": [
-            "PACKET:model_path"
+            "MODEL_PATH:model_path"
           ]
         },
         {
