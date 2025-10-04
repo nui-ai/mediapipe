@@ -977,6 +977,20 @@ code, pre {{ background: #222; color: #eee; }}
                 md += f'\n{indent}  * Output Side Packets: {node.graph_self_description.output_side_packets}'
             if node.graph_self_description.node_options:
                 md += f'\n{indent}  * Node Options: {node.graph_self_description.node_options}'
+        # Add calculator node details for verbose markdown
+        if node.node_type == 'calculator':
+            if node.input_streams:
+                md += f'\n{indent}  * Input Streams: {node.input_streams}'
+            if node.output_streams:
+                md += f'\n{indent}  * Output Streams: {node.output_streams}'
+            if node.input_side_packets:
+                md += f'\n{indent}  * Input Side Packets: {node.input_side_packets}'
+            if node.output_side_packets:
+                md += f'\n{indent}  * Output Side Packets: {node.output_side_packets}'
+            if node.node_options and node.node_options != {}:
+                import json as _json
+                node_opts_str = _json.dumps(node.node_options, indent=2)
+                md += f'\n{indent}  * Node Options: {node_opts_str}'
         md += '\n'
         for child in node.children:
             md += self._node_to_markdown_with_links_verbose(child, level + 1, json_verbose_path, yaml_verbose_path, md_basic_path, md_basic_nolines_path, json_basic_path, yaml_basic_path, with_line_numbers, md_verbose_path, yaml_verbose_path2, json_verbose_path2, script_name=script_name, use_absolute_links=use_absolute_links)
@@ -1040,7 +1054,7 @@ code, pre {{ background: #222; color: #eee; }}
                     print(f"[ERROR] Multiple matches for parent stream '{ps}' in graph '{graph_node.name}', field '{field}': {matches}", file=sys.stderr)
             # Check for multiple matches per graph stream
             for gs in graph_streams:
-                matches = [ps for ps in parent_streams if self.streams_match(ps, gs)]
+                matches = [ps for ps in parent_streams if self.streams_match(gs, ps)]
                 if len(matches) > 1:
                     print(f"[ERROR] Multiple matches for graph stream '{gs}' in graph '{graph_node.name}', field '{field}': {matches}", file=sys.stderr)
             # Build matched pairs (first unused match only, as before)

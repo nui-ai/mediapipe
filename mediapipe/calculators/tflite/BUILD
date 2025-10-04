@@ -99,6 +99,7 @@ cc_library(
     srcs = ["ssd_anchors_calculator.cc"],
     deps = [
         ":ssd_anchors_calculator_cc_proto",
+        ":ssd_anchors_calculator_utils",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/formats/object_detection:anchor_cc_proto",
         "//mediapipe/framework/port:ret_check",
@@ -575,5 +576,22 @@ cc_test(
         "//mediapipe/framework/port:gtest_main",
         "//mediapipe/framework/port:parse_text_proto",
         "@org_tensorflow//tensorflow/lite/kernels:builtin_ops",
+    ],
+)
+
+cc_library(
+    name = "ssd_anchors_calculator_utils",
+    srcs = ["ssd_anchors_calculator_utils.cc"],
+    hdrs = ["ssd_anchors_calculator_utils.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ssd_anchors_calculator_cc_proto",
+        "//mediapipe/framework/formats/object_detection:anchor_cc_proto",
+        "//mediapipe/framework/port:file_helpers",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+        "//mediapipe/framework/port:statusor",
+        "@com_google_absl//absl/log:absl_check",
+        "@com_google_absl//absl/log:absl_log",
     ],
 )

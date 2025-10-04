@@ -89,16 +89,6 @@
           ]
         },
         {
-          "name": "TfLiteCustomOpResolverCalculator",
-          "type": "calculator",
-          "source": "/home/matan/code/mediapipe/mediapipe/calculators/tflite/tflite_custom_op_resolver_calculator.cc",
-          "description": "Generates a single side packet containing a TensorFlow Lite op resolver that supports custom ops needed by the model used in this graph.",
-          "source_line_number": 114,
-          "output_side_packets": [
-            "OP_RESOLVER:opresolver"
-          ]
-        },
-        {
           "name": "SwitchContainer",
           "type": "graph",
           "source": "/home/matan/code/mediapipe/mediapipe/framework/tool/switch_container.cc",
@@ -120,7 +110,6 @@
             "TENSORS:detection_tensors"
           ],
           "input_side_packets": [
-            "OP_RESOLVER:opresolver",
             "MODEL_PATH:model_path"
           ]
         },

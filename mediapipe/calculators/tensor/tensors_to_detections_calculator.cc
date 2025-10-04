@@ -18,6 +18,7 @@
 #include "absl/strings/str_format.h"
 #include "absl/types/span.h"
 #include "mediapipe/calculators/tensor/tensors_to_detections_calculator.pb.h"
+#include "mediapipe/calculators/tflite/ssd_anchors_calculator_utils.h"
 #include "mediapipe/framework/api2/node.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/deps/file_path.h"
@@ -780,6 +781,18 @@ absl::Status TensorsToDetectionsCalculator::LoadOptions(CalculatorContext* cc) {
     has_custom_box_indices_ = true;
   }
 
+  // Load anchors from config file if anchors are not provided as side packet
+  if (kInAnchors(cc).IsEmpty()) {
+    // Directly load anchors from config file using the static method
+    std::string config_path = "/home/matan/code/mediapipe/mediapipe/calculators/tflite/ssd_anchors_config.yaml";
+    auto anchors_result = SsdAnchorsCalculatorUtils::GenerateAnchorsFromConfigFile(config_path);
+    if (!anchors_result.ok()) {
+      return anchors_result.status();
+    }
+    anchors_ = std::move(anchors_result.value());
+    anchors_init_ = true;
+  }
+
   return absl::OkStatus();
 }
 
@@ -1014,13 +1027,13 @@ void main() {
     h = raw_boxes.data[box_offset + uint(3)];
   } else if (output_format_flag == int(2)) {
     x_center = (-raw_boxes.data[box_offset + uint(0)]
-                +raw_boxes.data[box_offset + uint(2)]) / 2.0;
-    y_center = (-raw_boxes.data[box_offset + uint(1)]
-                +raw_boxes.data[box_offset + uint(3)]) / 2.0;
-    w = raw_boxes.data[box_offset + uint(0)]
-      + raw_boxes.data[box_offset + uint(2)];
-    h = raw_boxes.data[box_offset + uint(1)]
-      + raw_boxes.data[box_offset + uint(3)];
+                +rawBoxes.data[box_offset + uint(2)]) / 2.0;
+    y_center = (-rawBoxes.data[box_offset + uint(1)]
+                +rawBoxes.data[box_offset + uint(3)]) / 2.0;
+    w = rawBoxes.data[box_offset + uint(0)]
+      + rawBoxes.data[box_offset + uint(2)];
+    h = rawBoxes.data[box_offset + uint(1)]
+      + rawBoxes.data[box_offset + uint(3)];
   }
 
   float anchor_yc = raw_anchors.data[anchor_offset + uint(0)];
@@ -1263,13 +1276,13 @@ kernel void decodeKernel(
     h = raw_boxes[box_offset + uint(3)];
   } else if (output_format_flag == int(2)) {
     x_center = (-raw_boxes[box_offset + uint(0)]
-                +raw_boxes[box_offset + uint(2)]) / 2.0;
-    y_center = (-raw_boxes[box_offset + uint(1)]
-                +raw_boxes[box_offset + uint(3)]) / 2.0;
-    w = raw_boxes[box_offset + uint(0)]
-      + raw_boxes[box_offset + uint(2)];
-    h = raw_boxes[box_offset + uint(1)]
-      + raw_boxes[box_offset + uint(3)];
+                +rawBoxes.data[box_offset + uint(2)]) / 2.0;
+    y_center = (-rawBoxes.data[box_offset + uint(1)]
+                +rawBoxes.data[box_offset + uint(3)]) / 2.0;
+    w = rawBoxes.data[box_offset + uint(0)]
+      + rawBoxes.data[box_offset + uint(2)];
+    h = rawBoxes.data[box_offset + uint(1)]
+      + rawBoxes.data[box_offset + uint(3)];
   }
 
   float anchor_yc = raw_anchors[anchor_offset + uint(0)];
@@ -1304,11 +1317,11 @@ kernel void decodeKernel(
         int(g_idx * num_coords) + keypt_coord_offset + k * num_values_per_keypt;
       float kp_y, kp_x;
       if (output_format_flag == int(0)) {
-        kp_y = raw_boxes[kp_offset + int(0)];
-        kp_x = raw_boxes[kp_offset + int(1)];
+        kp_y = raw_boxes.data[kp_offset + int(0)];
+        kp_x = raw_boxes.data[kp_offset + int(1)];
       } else {
-        kp_x = raw_boxes[kp_offset + int(0)];
-        kp_y = raw_boxes[kp_offset + int(1)];
+        kp_x = raw_boxes.data[kp_offset + int(0)];
+        kp_y = raw_boxes.data[kp_offset + int(1)];
       }
       boxes[kp_offset + int(0)] = kp_x / scale.x * anchor_w + anchor_xc;
       boxes[kp_offset + int(1)] = kp_y / scale.y * anchor_h + anchor_yc;
