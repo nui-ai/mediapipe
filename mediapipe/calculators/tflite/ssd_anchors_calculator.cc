@@ -26,39 +26,9 @@
 
 namespace mediapipe {
 
-// Generate anchors for SSD object detection model.
-// Output:
-//   ANCHORS: A list of anchors. Model generates predictions based on the
-//   offsets of these anchors.
-//
-// Usage example:
-// node {
-//   calculator: "SsdAnchorsCalculator"
-//   output_side_packet: "anchors"
-//   options {
-//     [mediapipe.SsdAnchorsCalculatorOptions.ext] {
-//       num_layers: 6
-//       min_scale: 0.2
-//       max_scale: 0.95
-//       input_size_height: 300
-//       input_size_width: 300
-//       anchor_offset_x: 0.5
-//       anchor_offset_y: 0.5
-//       strides: 16
-//       strides: 32
-//       strides: 64
-//       strides: 128
-//       strides: 256
-//       strides: 512
-//       aspect_ratios: 1.0
-//       aspect_ratios: 2.0
-//       aspect_ratios: 0.5
-//       aspect_ratios: 3.0
-//       aspect_ratios: 0.3333
-//       reduce_boxes_in_lowest_layer: true
-//     }
-//   }
-// }
+// generates anchors for SSD object detection model.
+// no longer used by the hands pipeline, though it may still be a dependency of it for protobuf
+// elements or for easy build integration of the liberated pipeline.
 class SsdAnchorsCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {

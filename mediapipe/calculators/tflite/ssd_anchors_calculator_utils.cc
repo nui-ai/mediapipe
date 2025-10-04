@@ -11,8 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-#include "mediapipe/calculators/tflite/ssd_anchors_calculator_utils.h"
+//
+// implements the anchors building from parameters.
+// not used the liberation-skipped dedicated anchor generation calculator,
+// which is already merged out, but the source file name persists as it's
+// a lot of places to rename if renaming it.
 
 #include <cmath>
 #include <fstream>
@@ -21,6 +24,8 @@
 
 #include "absl/log/absl_check.h"
 #include "absl/log/absl_log.h"
+
+#include "mediapipe/calculators/tflite/ssd_anchors_calculator_utils.h"
 #include "mediapipe/calculators/tflite/ssd_anchors_calculator.pb.h"
 #include "mediapipe/framework/formats/object_detection/anchor.pb.h"
 
@@ -179,6 +184,9 @@ absl::Status SsdAnchorsCalculatorUtils::GenerateMultiScaleAnchors(
   return absl::OkStatus();
 }
 
+
+// generates SSD anchors from anchor generation parameters,
+// to enable decoding the SSD neural network outputs
 absl::Status SsdAnchorsCalculatorUtils::GenerateAnchors(
     std::vector<Anchor>* anchors, const SsdAnchorsCalculatorOptions& options) {
   // Verify the options.
