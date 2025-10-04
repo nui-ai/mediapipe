@@ -319,6 +319,7 @@ cc_library_with_tflite(
         "@org_tensorflow//tensorflow/lite:framework_stable",
     ],
     deps = [
+        "//mediapipe/calculators/util:resource_provider_calculator",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:packet",
         "//mediapipe/framework:resources",

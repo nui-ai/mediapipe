@@ -23,19 +23,33 @@
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
 #include "absl/types/span.h"
+#include "mediapipe/calculators/util/resource_provider_calculator.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/packet.h"
 #include "mediapipe/framework/port/ret_check.h"
+#include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/resources.h"
 #include "tensorflow/lite/allocation.h"
 #include "tensorflow/lite/model_builder.h"
 
 namespace mediapipe {
 
+// Struct to hold onto resources so that they can be properly managed
+// in the deleter function for TfLiteModel
+struct ModelResources {
+  ModelResources(Packet model_packet, std::unique_ptr<Resource> res = nullptr)
+      : packet(std::move(model_packet)), resource(std::move(res)) {}
+
+  // These fields need to stay alive as long as the TFLite model uses them
+  Packet packet;
+  std::unique_ptr<Resource> resource;
+};
+
 // Loads as a TfLite model the model given as input side packet and outputs the loaded model.
-// Its alternative other model loading features below currently unused by our pipeline.
 //
 // Input side packets:
+//   MODEL_PATH - TfLite model file path as std::string. The model will be loaded
+//                directly from the specified path.
 //   MODEL_RESOURCE - TfLite model file as mediapipe::Resource - enables
 //                    managed, unmanaged, in-memory, mmaped resources.
 //   MODEL_BLOB - TfLite model blob/file-contents (std::string). You can read
@@ -60,6 +74,12 @@ namespace mediapipe {
 //
 // node {
 //   calculator: "TfLiteModelCalculator"
+//   input_side_packet: "MODEL_PATH:model_path"
+//   output_side_packet: "MODEL:model"
+// }
+//
+// node {
+//   calculator: "TfLiteModelCalculator"
 //   input_side_packet: "MODEL_RESOURCE:model_resource"
 //   output_side_packet: "MODEL:model"
 // }
@@ -71,6 +91,7 @@ class TfLiteModelCalculator : public CalculatorBase {
                       std::function<void(tflite::FlatBufferModel*)>>;
   using SharedTfLiteModelPtr = std::shared_ptr<tflite::FlatBufferModel>;
 
+  static constexpr absl::string_view kModelPathTag = "MODEL_PATH";
   static constexpr absl::string_view kModelResourceTag = "MODEL_RESOURCE";
   static constexpr absl::string_view kModelSpanTag = "MODEL_SPAN";
   static constexpr absl::string_view kModelBlobTag = "MODEL_BLOB";
@@ -79,6 +100,10 @@ class TfLiteModelCalculator : public CalculatorBase {
   static constexpr absl::string_view kSharedModelTag = "SHARED_MODEL";
 
   static absl::Status GetContract(CalculatorContract* cc) {
+    if (cc->InputSidePackets().HasTag(kModelPathTag)) {
+      cc->InputSidePackets().Tag(kModelPathTag).Set<std::string>();
+    }
+
     if (cc->InputSidePackets().HasTag(kModelBlobTag)) {
       cc->InputSidePackets().Tag(kModelBlobTag).Set<std::string>();
     }
@@ -114,6 +139,24 @@ class TfLiteModelCalculator : public CalculatorBase {
   absl::Status Open(CalculatorContext* cc) override {
     Packet model_packet;
     std::unique_ptr<tflite::FlatBufferModel> model;
+    std::unique_ptr<Resource> resource;
+
+    // Load model from file path using ResourceProviderCalculator::LoadModelFromPath
+    if (cc->InputSidePackets().HasTag(kModelPathTag)) {
+      model_packet = cc->InputSidePackets().Tag(kModelPathTag);
+      RET_CHECK(!model_packet.IsEmpty());
+      const std::string& model_path = model_packet.Get<std::string>();
+
+      // Use ResourceProviderCalculator to load the model from path
+      auto resource_or = api2::ResourceProviderCalculator::LoadModelFromPath(model_path);
+      RET_CHECK(resource_or.ok()) << "Failed to load model from path: " << model_path;
+
+      resource = std::move(resource_or).value();
+      absl::string_view model_view = resource->ToStringView();
+      model = tflite::FlatBufferModel::BuildFromBuffer(model_view.data(),
+                                                     model_view.size());
+      ABSL_LOG(INFO) << "tflite model loaded from file path";
+    }
 
     if (cc->InputSidePackets().HasTag(kModelBlobTag)) {
       model_packet = cc->InputSidePackets().Tag(kModelBlobTag);
@@ -160,13 +203,17 @@ class TfLiteModelCalculator : public CalculatorBase {
 
     RET_CHECK(model) << "Failed to load TfLite model.";
 
-    TfLiteModelPtr output_model = TfLiteModelPtr(
-        model.release(), [model_packet](tflite::FlatBufferModel* model) {
-          // Keeping model_packet in order to keep underlying model blob
-          // which can be released only after TfLite model is not needed
-          // anymore (deleted).
-          delete model;
-        });
+    // Create a shared_ptr to manage the resources properly
+    auto resources = std::make_shared<ModelResources>(model_packet, std::move(resource));
+
+    // Set up a deleter that will keep the resources alive along with the model
+    auto deleter = [resources](tflite::FlatBufferModel* model) {
+      delete model;  // Delete the model first
+      // The resources shared_ptr will be deleted when it goes out of scope
+    };
+
+    TfLiteModelPtr output_model(model.release(), deleter);
+
     if (cc->OutputSidePackets().HasTag(kModelTag)) {
       cc->OutputSidePackets().Tag(kModelTag).Set(
           MakePacket<TfLiteModelPtr>(std::move(output_model)));

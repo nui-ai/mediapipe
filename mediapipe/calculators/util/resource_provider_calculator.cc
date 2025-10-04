@@ -16,6 +16,8 @@
 
 #include <memory>
 #include <utility>
+#include <fstream>
+#include <vector>
 
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
@@ -30,6 +32,37 @@
 #include "mediapipe/framework/resources.h"
 
 namespace mediapipe::api2 {
+
+absl::StatusOr<std::unique_ptr<Resource>> ResourceProviderCalculator::LoadModelFromPath(
+    const std::string& file_path, bool use_mmap, bool mlock) {
+  if (file_path.empty()) {
+    return absl::InvalidArgumentError("Model file path cannot be empty");
+  }
+
+  if (use_mmap) {
+    // Use memory mapping for efficient loading of large model files
+    return MakeMMapResource(file_path, mlock);
+  } else {
+    // Read the file content into a string
+    std::ifstream file(file_path, std::ios::binary | std::ios::ate);
+    if (!file.is_open()) {
+      return absl::NotFoundError("Could not open file: " + file_path);
+    }
+
+    // Get file size
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    // Read the file into a string
+    std::string buffer(size, '\0');
+    if (!file.read(buffer.data(), size)) {
+      return absl::InternalError("Failed to read file: " + file_path);
+    }
+
+    // Create a string resource
+    return MakeStringResource(std::move(buffer));
+  }
+}
 
 absl::Status ResourceProviderCalculator::UpdateContract(CalculatorContext* cc) {
   RET_CHECK_GT(kResources(cc).Count(), 0)

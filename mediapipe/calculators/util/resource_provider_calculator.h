@@ -4,6 +4,7 @@
 #include <string>
 
 #include "absl/status/status.h"
+#include "absl/status/statusor.h"
 #include "mediapipe/framework/api2/node.h"
 #include "mediapipe/framework/api2/port.h"
 #include "mediapipe/framework/calculator_framework.h"
@@ -51,6 +52,15 @@ class ResourceProviderCalculator : public mediapipe::api2::Node {
   static constexpr api2::SideOutput<Resource>::Multiple kResources{"RESOURCE"};
 
   MEDIAPIPE_NODE_INTERFACE(ResourceProviderCalculator, kIds, kResources);
+
+  // Loads a model from the given file path
+  //
+  // @param file_path The path to the model file
+  // @param use_mmap If true, uses memory mapping for efficient loading of large models
+  // @param mlock If true and use_mmap is true, locks the memory to prevent swapping
+  // @return A Resource containing the loaded model data or an error status
+  static absl::StatusOr<std::unique_ptr<Resource>> LoadModelFromPath(
+      const std::string& file_path, bool use_mmap = true, bool mlock = false);
 
   static absl::Status UpdateContract(CalculatorContext* cc);
 
