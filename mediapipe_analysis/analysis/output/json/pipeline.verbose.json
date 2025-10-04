@@ -142,7 +142,7 @@
               "type": "calculator",
               "source": "/home/matan/code/mediapipe/mediapipe/calculators/tflite/tflite_model_calculator.cc",
               "description": "Loads the loaded model file as a tflite model",
-              "source_line_number": 186,
+              "source_line_number": 233,
               "input_side_packets": [
                 "MODEL_RESOURCE:model_resource"
               ],
@@ -464,7 +464,7 @@
               "type": "calculator",
               "source": "/home/matan/code/mediapipe/mediapipe/calculators/util/resource_provider_calculator.cc",
               "description": "Loads the file in the specified path as a resource.",
-              "source_line_number": 75,
+              "source_line_number": 108,
               "input_side_packets": [
                 "RESOURCE_ID:model_path"
               ],
@@ -477,15 +477,23 @@
               "type": "calculator",
               "source": "/home/matan/code/mediapipe/mediapipe/calculators/tflite/tflite_model_calculator.cc",
               "description": "Converts the provided resource into a TF Lite model.",
-              "source_line_number": 186,
+              "source_line_number": 233,
               "input_side_packets": [
-                "MODEL_RESOURCE:model_resource"
+                "MODEL_PATH:model_path"
               ],
               "output_side_packets": [
                 "MODEL:model"
               ]
             }
           ]
+        },
+        {
+          "name": "SwitchContainer",
+          "type": "graph",
+          "source": "/home/matan/code/mediapipe/mediapipe/framework/tool/switch_container.cc",
+          "description": null,
+          "source_line_number": 77,
+          "warning": "\u26a0\ufe0f this graph is defined in C++ code (not by a parseable .pbtxt file). its own nodes are therefore not expanded here, but you can read them in its source code."
         },
         {
           "name": "InferenceCalculator",
@@ -501,7 +509,7 @@
             "TENSORS:output_tensors"
           ],
           "input_side_packets": [
-            "MODEL:model"
+            "PACKET:model_path"
           ]
         },
         {

@@ -71,6 +71,9 @@ namespace api2 {
 //    Use to specify TfLite model.
 //    (std::unique_ptr<tflite::FlatBufferModel,
 //       std::function<void(tflite::FlatBufferModel*)>>)
+//  MODEL_PATH (optional)
+//    Use to specify TfLite model file path as std::string. The model will be loaded
+//    directly from the specified path.
 //  DELEGATE (optional)
 //    Use to specify special values per a particular delegate.
 //    (InferenceCalculatorOptions::Delegate)
@@ -111,6 +114,20 @@ namespace api2 {
 //   }
 // }
 //
+// or
+//
+// node {
+//   calculator: "InferenceCalculator"
+//   input_stream: "TENSORS:tensor_image"
+//   input_side_packet: "MODEL_PATH:model_path"
+//   output_stream: "TENSORS:tensors"
+//   options: {
+//     [mediapipe.InferenceCalculatorOptions.ext] {
+//       delegate { gpu {} }
+//     }
+//   }
+// }
+//
 // IMPORTANT Notes:
 //  Tensors are assumed to be ordered correctly (sequentially added to model).
 //  Input tensors are assumed to be of the correct size and already normalized.
@@ -135,6 +152,7 @@ class InferenceCalculator : public NodeIntf {
   static constexpr SideInput<tflite::OpResolver>::Optional kSideInOpResolver{
       "OP_RESOLVER"};
   static constexpr SideInput<TfLiteModelPtr>::Optional kSideInModel{"MODEL"};
+  static constexpr SideInput<std::string>::Optional kSideInModelPath{"MODEL_PATH"};
   static constexpr SideInput<
       mediapipe::InferenceCalculatorOptions::Delegate>::Optional kDelegate{
       "DELEGATE"};
@@ -142,8 +160,8 @@ class InferenceCalculator : public NodeIntf {
       mediapipe::InferenceCalculatorOptions::InputOutputConfig>::Optional
       kSideInIoMap{"IO_CONFIG"};
   MEDIAPIPE_NODE_CONTRACT(kInTensors, kInTensor, kSideInCustomOpResolver,
-                          kSideInOpResolver, kSideInModel, kOutTensors,
-                          kOutTensor, kDelegate, kSideInIoMap);
+                          kSideInOpResolver, kSideInModel, kSideInModelPath,
+                          kOutTensors, kOutTensor, kDelegate, kSideInIoMap);
 
  protected:
   using TfLiteDelegatePtr =

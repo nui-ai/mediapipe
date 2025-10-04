@@ -122,6 +122,23 @@ absl::Status InferenceCalculator::TensorContractCheck(CalculatorContract* cc) {
 absl::StatusOr<Packet<TfLiteModelPtr>> InferenceCalculator::GetModelAsPacket(
     CalculatorContext* cc) {
   const auto& options = cc->Options<mediapipe::InferenceCalculatorOptions>();
+
+  // First check if model is provided via MODEL_PATH side packet
+  if (kSideInModelPath(cc).IsConnected() && !kSideInModelPath(cc).IsEmpty()) {
+    const std::string& model_path = *kSideInModelPath(cc);
+    MP_ASSIGN_OR_RETURN(
+        auto model, TfLiteModelLoader::LoadFromPath(cc->GetResources(),
+                                                    model_path,
+                                                    options.try_mmap_model()));
+    ABSL_CHECK(!model.IsEmpty());
+    VLOG(1) << absl::StrFormat(
+        "GetModelAsPacket successfully loaded model from side packet "
+        "(path: %s, size: %ld bytes)",
+        model_path, model.Get()->allocation()->bytes());
+    return model;
+  }
+
+  // Check if model path is in options
   if (!options.model_path().empty()) {
     MP_ASSIGN_OR_RETURN(
         auto model, TfLiteModelLoader::LoadFromPath(cc->GetResources(),
@@ -134,7 +151,10 @@ absl::StatusOr<Packet<TfLiteModelPtr>> InferenceCalculator::GetModelAsPacket(
         options.model_path(), model.Get()->allocation()->bytes());
     return model;
   }
+
+  // Check if model is provided via MODEL side packet
   if (!kSideInModel(cc).IsEmpty()) return kSideInModel(cc);
+
   return absl::Status(absl::StatusCode::kNotFound,
                       "Must specify TFLite model as path or loaded model.");
 }
@@ -143,6 +163,22 @@ absl::StatusOr<TfLiteModelWithResource>
 InferenceCalculator::GetModelPacketWithResource(
     CalculatorContext* cc, std::optional<MMapMode> mmap_mode) {
   const auto& options = cc->Options<mediapipe::InferenceCalculatorOptions>();
+
+  // First check if model is provided via MODEL_PATH side packet
+  if (kSideInModelPath(cc).IsConnected() && !kSideInModelPath(cc).IsEmpty()) {
+    const std::string& model_path = *kSideInModelPath(cc);
+    MP_ASSIGN_OR_RETURN(
+        auto model, TfLiteModelLoader::LoadFromPathAndGetResource(
+                        cc->GetResources(), model_path, mmap_mode));
+    ABSL_CHECK(!model.model_packet.IsEmpty());
+    VLOG(1) << absl::StrFormat(
+        "GetModelPacketWithResource successfully loaded model from side packet "
+        "(path: %s, size: %ld bytes)",
+        model_path, model.model_packet.Get()->allocation()->bytes());
+    return model;
+  }
+
+  // Check if model path is in options
   if (!options.model_path().empty()) {
     MP_ASSIGN_OR_RETURN(
         auto model, TfLiteModelLoader::LoadFromPathAndGetResource(
@@ -154,6 +190,7 @@ InferenceCalculator::GetModelPacketWithResource(
         options.model_path(), model.model_packet.Get()->allocation()->bytes());
     return model;
   }
+
   return absl::Status(absl::StatusCode::kNotFound,
                       "Must specify TFLite model as path or loaded model.");
 }
