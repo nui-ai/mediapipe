@@ -137,6 +137,236 @@ IndexedScores GetIndexedScores(const Detections& detections) {
   return indexed_scores;
 }
 
+// Standard non-maximum suppression algorithm.
+void NonMaxSuppression(const IndexedScores& indexed_scores,
+                       const Detections& detections,
+                       int max_num_detections,
+                       const NonMaxSuppressionCalculatorOptions& options,
+                       bool has_dimensions,
+                       int frame_width,
+                       int frame_height,
+                       Detections* output_detections) {
+  std::vector<Location> retained_locations;
+  retained_locations.reserve(max_num_detections);
+  // We traverse the detections by decreasing score.
+  for (const auto& indexed_score : indexed_scores) {
+    const auto& detection = detections[indexed_score.first];
+    if (options.min_score_threshold() > 0 &&
+        detection.score(0) < options.min_score_threshold()) {
+      break;
+    }
+    const Location location(detection.location_data());
+    bool suppressed = false;
+    // The current detection is suppressed iff there exists a retained
+    // detection, whose location overlaps more than the specified
+    // threshold with the location of the current detection.
+    for (const auto& retained_location : retained_locations) {
+      float similarity;
+      if (has_dimensions) {
+        similarity = OverlapSimilarity(frame_width, frame_height,
+                                       options.overlap_type(),
+                                       retained_location, location);
+      } else {
+        similarity = OverlapSimilarity(options.overlap_type(),
+                                       retained_location, location);
+      }
+      if (similarity > options.min_suppression_threshold()) {
+        suppressed = true;
+        break;
+      }
+    }
+    if (!suppressed) {
+      output_detections->push_back(detection);
+      retained_locations.push_back(location);
+    }
+    if (output_detections->size() >= max_num_detections) {
+      break;
+    }
+  }
+}
+
+// Weighted non-maximum suppression algorithm.
+void WeightedNonMaxSuppression(const IndexedScores& indexed_scores,
+                               const Detections& detections,
+                               int max_num_detections,
+                               const NonMaxSuppressionCalculatorOptions& options,
+                               Detections* output_detections) {
+  IndexedScores remained_indexed_scores;
+  remained_indexed_scores.assign(indexed_scores.begin(),
+                                 indexed_scores.end());
+
+  IndexedScores remained;
+  IndexedScores candidates;
+  output_detections->clear();
+  while (!remained_indexed_scores.empty()) {
+    const int original_indexed_scores_size = remained_indexed_scores.size();
+    const auto& detection = detections[remained_indexed_scores[0].first];
+    if (options.min_score_threshold() > 0 &&
+        detection.score(0) < options.min_score_threshold()) {
+      break;
+    }
+    remained.clear();
+    candidates.clear();
+    const Location location(detection.location_data());
+    // This includes the first box.
+    for (const auto& indexed_score : remained_indexed_scores) {
+      Location rest_location(detections[indexed_score.first].location_data());
+      float similarity =
+          OverlapSimilarity(options.overlap_type(), rest_location, location);
+      if (similarity > options.min_suppression_threshold()) {
+        candidates.push_back(indexed_score);
+      } else {
+        remained.push_back(indexed_score);
+      }
+    }
+    auto weighted_detection = detection;
+    if (!candidates.empty()) {
+      const int num_keypoints =
+          detection.location_data().relative_keypoints_size();
+      std::vector<float> keypoints(num_keypoints * 2);
+      float w_xmin = 0.0f;
+      float w_ymin = 0.0f;
+      float w_xmax = 0.0f;
+      float w_ymax = 0.0f;
+      float total_score = 0.0f;
+      for (const auto& candidate : candidates) {
+        total_score += candidate.second;
+        const auto& location_data =
+            detections[candidate.first].location_data();
+        const auto& bbox = location_data.relative_bounding_box();
+        w_xmin += bbox.xmin() * candidate.second;
+        w_ymin += bbox.ymin() * candidate.second;
+        w_xmax += (bbox.xmin() + bbox.width()) * candidate.second;
+        w_ymax += (bbox.ymin() + bbox.height()) * candidate.second;
+
+        for (int i = 0; i < num_keypoints; ++i) {
+          keypoints[i * 2] +=
+              location_data.relative_keypoints(i).x() * candidate.second;
+          keypoints[i * 2 + 1] +=
+              location_data.relative_keypoints(i).y() * candidate.second;
+        }
+      }
+      auto* weighted_location = weighted_detection.mutable_location_data()
+                                    ->mutable_relative_bounding_box();
+      weighted_location->set_xmin(w_xmin / total_score);
+      weighted_location->set_ymin(w_ymin / total_score);
+      weighted_location->set_width((w_xmax / total_score) -
+                                   weighted_location->xmin());
+      weighted_location->set_height((w_ymax / total_score) -
+                                    weighted_location->ymin());
+      for (int i = 0; i < num_keypoints; ++i) {
+        auto* keypoint = weighted_detection.mutable_location_data()
+                              ->mutable_relative_keypoints(i);
+        keypoint->set_x(keypoints[i * 2] / total_score);
+        keypoint->set_y(keypoints[i * 2 + 1] / total_score);
+      }
+    }
+
+    output_detections->push_back(weighted_detection);
+    // Breaks the loop if the size of indexed scores doesn't change after an
+    // iteration.
+    if (original_indexed_scores_size == remained.size()) {
+      break;
+    } else {
+      remained_indexed_scores = std::move(remained);
+    }
+  }
+}
+
+// Performs non-maximum suppression on the input detections.
+void DoNonMaxSuppression(Detections& input_detections,
+                         const NonMaxSuppressionCalculatorOptions& options,
+                         bool has_dimensions,
+                         int frame_width,
+                         int frame_height,
+                         Detections* output_detections) {
+  // Remove all but the maximum scoring label from each input detection. This
+  // corresponds to non-maximum suppression among detections which have
+  // identical locations.
+  Detections pruned_detections;
+  pruned_detections.reserve(input_detections.size());
+  for (auto& detection : input_detections) {
+    if (RetainMaxScoringLabelOnly(&detection)) {
+      pruned_detections.push_back(detection);
+    }
+  }
+  IndexedScores indexed_scores = GetIndexedScores(pruned_detections);
+  const int max_num_detections =
+      (options.max_num_detections() > -1)
+          ? options.max_num_detections()
+          : static_cast<int>(indexed_scores.size());
+  // A set of detections and locations, wrapping the location data from each
+  // detection, which are retained after the non-maximum suppression.
+  output_detections->reserve(max_num_detections);
+
+  if (options.algorithm() == NonMaxSuppressionCalculatorOptions::WEIGHTED) {
+    WeightedNonMaxSuppression(indexed_scores, pruned_detections,
+                              max_num_detections, options, output_detections);
+  } else {
+    NonMaxSuppression(indexed_scores, pruned_detections, max_num_detections,
+                      options, has_dimensions, frame_width, frame_height,
+                      output_detections);
+  }
+}
+
+// Processes a set of input detections using non-maximum suppression according
+// to the provided options. Returns a vector of detections after NMS.
+std::unique_ptr<Detections> ProcessDetections(
+    const Detections& input_detections,
+    const NonMaxSuppressionCalculatorOptions& options,
+    bool has_dimensions = false,
+    int frame_width = 0,
+    int frame_height = 0) {
+  // Check if there are any detections at all.
+  if (input_detections.empty()) {
+    return options.return_empty_detections() ?
+           std::make_unique<Detections>() : nullptr;
+  }
+
+  auto retained_detections = std::make_unique<Detections>();
+  if (options.multiclass_nms()) {
+    absl::flat_hash_map<int, Detections> category_index_to_detections;
+    for (const auto& detection : input_detections) {
+      for (int index : detection.label_id()) {
+        category_index_to_detections[index].push_back(detection);
+      }
+    }
+    // For each category, do non-maximum suppression separately.
+    Detections detections_nms;
+    for (auto& [index, detections] : category_index_to_detections) {
+      auto retained_detections_per_category = std::make_unique<Detections>();
+      auto detections_copy = detections;  // Create a copy to avoid const issues
+      DoNonMaxSuppression(detections_copy, options, has_dimensions,
+                          frame_width, frame_height,
+                          retained_detections_per_category.get());
+
+      detections_nms.insert(detections_nms.end(),
+                            retained_detections_per_category->begin(),
+                            retained_detections_per_category->end());
+    }
+
+    // Descending sort and shrink the collected detections according to max
+    // num detections.
+    IndexedScores indexed_scores = GetIndexedScores(detections_nms);
+    int max_num_detections = static_cast<int>(indexed_scores.size());
+    if (options.max_num_detections() > -1) {
+      max_num_detections =
+          std::min(max_num_detections, options.max_num_detections());
+    }
+    retained_detections->reserve(max_num_detections);
+    for (int i = 0; i < max_num_detections; i++) {
+      retained_detections->push_back(
+          detections_nms.at(indexed_scores.at(i).first));
+    }
+  } else {
+    auto input_detections_copy = input_detections;  // Create a copy to avoid const issues
+    DoNonMaxSuppression(input_detections_copy, options, has_dimensions,
+                        frame_width, frame_height,
+                        retained_detections.get());
+  }
+
+  return retained_detections;
+}
 }  // namespace
 
 // A calculator performing non-maximum suppression on a set of detections.
@@ -198,7 +428,19 @@ class NonMaxSuppressionCalculator : public CalculatorBase {
   }
 
   absl::Status Process(CalculatorContext* cc) override {
-    // Add all input detections to the same vector.
+    // Get the frame dimensions if image is available
+    bool has_frame_dimensions = false;
+    int frame_width = 0;
+    int frame_height = 0;
+    if (cc->Inputs().HasTag(kImageTag) &&
+        !cc->Inputs().Tag(kImageTag).Value().IsEmpty()) {
+      const auto& frame = cc->Inputs().Tag(kImageTag).Get<ImageFrame>();
+      frame_width = frame.Width();
+      frame_height = frame.Height();
+      has_frame_dimensions = true;
+    }
+
+    // Collect all input detections into a single vector
     Detections input_detections;
     for (int i = 0; i < options_.num_detection_streams(); ++i) {
       const auto& detections_packet = cc->Inputs().Index(i).Value();
@@ -212,212 +454,22 @@ class NonMaxSuppressionCalculator : public CalculatorBase {
                               detections.end());
     }
 
-    // Check if there are any detections at all.
-    if (input_detections.empty()) {
-      if (options_.return_empty_detections()) {
-        cc->Outputs().Index(0).Add(new Detections(), cc->InputTimestamp());
-      }
-      return absl::OkStatus();
-    }
-    auto retained_detections = std::make_unique<Detections>();
-    if (options_.multiclass_nms()) {
-      absl::flat_hash_map<int, Detections> category_index_to_detections;
-      for (const auto& detection : input_detections) {
-        for (int index : detection.label_id()) {
-          category_index_to_detections[index].push_back(detection);
-        }
-      }
-      // For each category, do non-maximum suppression separately.
-      Detections detections_nms;
-      for (auto& [index, detections] : category_index_to_detections) {
-        auto retained_detections_per_category = std::make_unique<Detections>();
-        DoNonMaxSuppression(detections, cc,
-                            retained_detections_per_category.get());
-        detections_nms.insert(detections_nms.end(),
-                              retained_detections_per_category->begin(),
-                              retained_detections_per_category->end());
-      }
+    // Process the detections using non-maximum suppression
+    auto retained_detections = ProcessDetections(
+        input_detections, options_, has_frame_dimensions, frame_width, frame_height);
 
-      // Descending sort and shrink the collected detections according to max
-      // num detections.
-      IndexedScores indexed_scores = GetIndexedScores(detections_nms);
-      int max_num_detections = static_cast<int>(indexed_scores.size());
-      if (options_.max_num_detections() > -1) {
-        max_num_detections =
-            std::min(max_num_detections, options_.max_num_detections());
+    // Add the output to the stream if we have detections or if empty detections are requested
+    if (retained_detections || options_.return_empty_detections()) {
+      if (!retained_detections) {
+        retained_detections = std::make_unique<Detections>();
       }
-      retained_detections->reserve(max_num_detections);
-      for (int i = 0; i < max_num_detections; i++) {
-        retained_detections->push_back(
-            detections_nms.at(indexed_scores.at(i).first));
-      }
-    } else {
-      DoNonMaxSuppression(input_detections, cc, retained_detections.get());
+      cc->Outputs().Index(0).Add(retained_detections.release(), cc->InputTimestamp());
     }
-    cc->Outputs().Index(0).Add(retained_detections.release(),
-                               cc->InputTimestamp());
+
     return absl::OkStatus();
   }
 
  private:
-  void DoNonMaxSuppression(Detections& input_detections, CalculatorContext* cc,
-                           Detections* output_detections) {
-    // Remove all but the maximum scoring label from each input detection. This
-    // corresponds to non-maximum suppression among detections which have
-    // identical locations.
-    Detections pruned_detections;
-    pruned_detections.reserve(input_detections.size());
-    for (auto& detection : input_detections) {
-      if (RetainMaxScoringLabelOnly(&detection)) {
-        pruned_detections.push_back(detection);
-      }
-    }
-    IndexedScores indexed_scores = GetIndexedScores(pruned_detections);
-    const int max_num_detections =
-        (options_.max_num_detections() > -1)
-            ? options_.max_num_detections()
-            : static_cast<int>(indexed_scores.size());
-    // A set of detections and locations, wrapping the location data from each
-    // detection, which are retained after the non-maximum suppression.
-    output_detections->reserve(max_num_detections);
-
-    if (options_.algorithm() == NonMaxSuppressionCalculatorOptions::WEIGHTED) {
-      WeightedNonMaxSuppression(indexed_scores, pruned_detections,
-                                max_num_detections, cc, output_detections);
-    } else {
-      NonMaxSuppression(indexed_scores, pruned_detections, max_num_detections,
-                        cc, output_detections);
-    }
-  }
-
-  void NonMaxSuppression(const IndexedScores& indexed_scores,
-                         const Detections& detections, int max_num_detections,
-                         CalculatorContext* cc, Detections* output_detections) {
-    std::vector<Location> retained_locations;
-    retained_locations.reserve(max_num_detections);
-    // We traverse the detections by decreasing score.
-    for (const auto& indexed_score : indexed_scores) {
-      const auto& detection = detections[indexed_score.first];
-      if (options_.min_score_threshold() > 0 &&
-          detection.score(0) < options_.min_score_threshold()) {
-        break;
-      }
-      const Location location(detection.location_data());
-      bool suppressed = false;
-      // The current detection is suppressed iff there exists a retained
-      // detection, whose location overlaps more than the specified
-      // threshold with the location of the current detection.
-      for (const auto& retained_location : retained_locations) {
-        float similarity;
-        if (cc->Inputs().HasTag(kImageTag)) {
-          const auto& frame = cc->Inputs().Tag(kImageTag).Get<ImageFrame>();
-          similarity = OverlapSimilarity(frame.Width(), frame.Height(),
-                                         options_.overlap_type(),
-                                         retained_location, location);
-        } else {
-          similarity = OverlapSimilarity(options_.overlap_type(),
-                                         retained_location, location);
-        }
-        if (similarity > options_.min_suppression_threshold()) {
-          suppressed = true;
-          break;
-        }
-      }
-      if (!suppressed) {
-        output_detections->push_back(detection);
-        retained_locations.push_back(location);
-      }
-      if (output_detections->size() >= max_num_detections) {
-        break;
-      }
-    }
-  }
-
-  void WeightedNonMaxSuppression(const IndexedScores& indexed_scores,
-                                 const Detections& detections,
-                                 int max_num_detections, CalculatorContext* cc,
-                                 Detections* output_detections) {
-    IndexedScores remained_indexed_scores;
-    remained_indexed_scores.assign(indexed_scores.begin(),
-                                   indexed_scores.end());
-
-    IndexedScores remained;
-    IndexedScores candidates;
-    output_detections->clear();
-    while (!remained_indexed_scores.empty()) {
-      const int original_indexed_scores_size = remained_indexed_scores.size();
-      const auto& detection = detections[remained_indexed_scores[0].first];
-      if (options_.min_score_threshold() > 0 &&
-          detection.score(0) < options_.min_score_threshold()) {
-        break;
-      }
-      remained.clear();
-      candidates.clear();
-      const Location location(detection.location_data());
-      // This includes the first box.
-      for (const auto& indexed_score : remained_indexed_scores) {
-        Location rest_location(detections[indexed_score.first].location_data());
-        float similarity =
-            OverlapSimilarity(options_.overlap_type(), rest_location, location);
-        if (similarity > options_.min_suppression_threshold()) {
-          candidates.push_back(indexed_score);
-        } else {
-          remained.push_back(indexed_score);
-        }
-      }
-      auto weighted_detection = detection;
-      if (!candidates.empty()) {
-        const int num_keypoints =
-            detection.location_data().relative_keypoints_size();
-        std::vector<float> keypoints(num_keypoints * 2);
-        float w_xmin = 0.0f;
-        float w_ymin = 0.0f;
-        float w_xmax = 0.0f;
-        float w_ymax = 0.0f;
-        float total_score = 0.0f;
-        for (const auto& candidate : candidates) {
-          total_score += candidate.second;
-          const auto& location_data =
-              detections[candidate.first].location_data();
-          const auto& bbox = location_data.relative_bounding_box();
-          w_xmin += bbox.xmin() * candidate.second;
-          w_ymin += bbox.ymin() * candidate.second;
-          w_xmax += (bbox.xmin() + bbox.width()) * candidate.second;
-          w_ymax += (bbox.ymin() + bbox.height()) * candidate.second;
-
-          for (int i = 0; i < num_keypoints; ++i) {
-            keypoints[i * 2] +=
-                location_data.relative_keypoints(i).x() * candidate.second;
-            keypoints[i * 2 + 1] +=
-                location_data.relative_keypoints(i).y() * candidate.second;
-          }
-        }
-        auto* weighted_location = weighted_detection.mutable_location_data()
-                                      ->mutable_relative_bounding_box();
-        weighted_location->set_xmin(w_xmin / total_score);
-        weighted_location->set_ymin(w_ymin / total_score);
-        weighted_location->set_width((w_xmax / total_score) -
-                                     weighted_location->xmin());
-        weighted_location->set_height((w_ymax / total_score) -
-                                      weighted_location->ymin());
-        for (int i = 0; i < num_keypoints; ++i) {
-          auto* keypoint = weighted_detection.mutable_location_data()
-                               ->mutable_relative_keypoints(i);
-          keypoint->set_x(keypoints[i * 2] / total_score);
-          keypoint->set_y(keypoints[i * 2 + 1] / total_score);
-        }
-      }
-
-      output_detections->push_back(weighted_detection);
-      // Breaks the loop if the size of indexed scores doesn't change after an
-      // iteration.
-      if (original_indexed_scores_size == remained.size()) {
-        break;
-      } else {
-        remained_indexed_scores = std::move(remained);
-      }
-    }
-  }
 
   NonMaxSuppressionCalculatorOptions options_;
 };
