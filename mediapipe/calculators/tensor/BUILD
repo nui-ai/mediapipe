@@ -443,6 +443,7 @@ cc_library_with_tflite(
         ":inference_calculator_cc_proto",
         ":inference_calculator_options_lib",
         ":tensor_span",
+        "//mediapipe/calculators/tflite:tflite_custom_op_resolver_calculator",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:port",
         "//mediapipe/framework:resources",

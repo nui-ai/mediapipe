@@ -70,6 +70,7 @@ constexpr char kOpResolverTag[] = "OP_RESOLVER";
 //     }
 //   }
 // }
+// this class does not dynamically decide TensorFlow ops resolving at runtime based on model contents or external input. It only chooses between two predefined resolvers (OpResolver for GPU or CpuOpResolver for CPU) based on the use_gpu option in its configuration. The actual set of supported ops is determined by the implementation of these resolver classes, not by anything dynamic in this calculator.
 class TfLiteCustomOpResolverCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {

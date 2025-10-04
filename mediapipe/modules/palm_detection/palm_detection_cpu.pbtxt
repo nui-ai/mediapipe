@@ -34,10 +34,10 @@ node {
 }
 # Generates a single side packet containing a TensorFlow Lite op resolver that
 # supports custom ops needed by the model used in this graph.
-node {
-  calculator: "TfLiteCustomOpResolverCalculator"
-  output_side_packet: "OP_RESOLVER:opresolver"
-}
+# node {
+#  calculator: "TfLiteCustomOpResolverCalculator"
+#  output_side_packet: "OP_RESOLVER:opresolver"
+# }
 
 # Determines path to the desired pose landmark model file.
 node {
@@ -78,7 +78,6 @@ node {
   calculator: "InferenceCalculator"
   input_stream: "TENSORS:input_tensor"
   output_stream: "TENSORS:detection_tensors"
-  input_side_packet: "OP_RESOLVER:opresolver"
   input_side_packet: "MODEL_PATH:model_path"
   options: {
     [mediapipe.InferenceCalculatorOptions.ext] {

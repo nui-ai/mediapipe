@@ -36,6 +36,8 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/resources.h"
 #include "mediapipe/framework/tool/subgraph_expansion.h"
+#include "mediapipe/util/tflite/cpu_op_resolver.h"
+#include "mediapipe/util/tflite/op_resolver.h"
 #include "mediapipe/util/tflite/tflite_model_loader.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 #include "tensorflow/lite/kernels/register.h"
@@ -201,14 +203,31 @@ InferenceCalculator::GetModelPacketWithResource(
 
 absl::StatusOr<Packet<tflite::OpResolver>>
 InferenceCalculator::GetOpResolverAsPacket(CalculatorContext* cc) {
+  // First check if op resolver is provided via side packet, maintaining backward compatibility
   if (kSideInOpResolver(cc).IsConnected()) {
     return kSideInOpResolver(cc).As<tflite::OpResolver>();
   } else if (kSideInCustomOpResolver(cc).IsConnected()) {
     return kSideInCustomOpResolver(cc).As<tflite::OpResolver>();
   }
-  return PacketAdopting<tflite::OpResolver>(
-      std::make_unique<
-          tflite::ops::builtin::BuiltinOpResolverWithoutDefaultDelegates>());
+
+  // If no op resolver is provided via side packet, determine it based on options
+  // similar to TfLiteCustomOpResolverCalculator
+  const auto& options = cc->Options<mediapipe::InferenceCalculatorOptions>();
+
+  std::unique_ptr<tflite::ops::builtin::BuiltinOpResolver> op_resolver;
+
+  // Use the same logic as TfLiteCustomOpResolverCalculator:
+  // Check if delegate options has GPU - if so, use GPU op resolver
+  const bool should_use_gpu =
+      options.has_delegate() && options.delegate().has_gpu();
+
+  if (should_use_gpu) {
+    op_resolver = std::make_unique<mediapipe::OpResolver>();
+  } else {
+    op_resolver = std::make_unique<mediapipe::CpuOpResolver>();
+  }
+
+  return PacketAdopting<tflite::OpResolver>(std::move(op_resolver));
 }
 
 void InferenceCalculator::WarnFeedbackTensorsUnsupported(

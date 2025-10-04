@@ -7,7 +7,8 @@
   "graph_self_description": {
     "description": "MediaPipe graph to detect/predict hand landmarks on CPU.",
     "input_streams": [
-      "IMAGE:image"
+      "IMAGE:image",
+      "prev_hand_rects_from_landmarks"
     ],
     "output_streams": [
       "LANDMARKS:multi_hand_landmarks",
@@ -15,29 +16,15 @@
       "HANDEDNESS:multi_handedness",
       "PALM_DETECTIONS:palm_detections",
       "HAND_ROIS_FROM_LANDMARKS:hand_rects_from_landmarks",
-      "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
+      "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections",
+      "gated_prev_hand_rects_from_landmarks"
     ],
     "input_side_packets": [
-      "USE_PREV_LANDMARKS:use_prev_landmarks"
+      "USE_PREV_LANDMARKS:use_prev_landmarks",
+      "ALLOW:use_prev_landmarks"
     ]
   },
   "nodes": [
-    {
-      "name": "GateCalculator",
-      "type": "calculator",
-      "source": "/home/matan/code/mediapipe/mediapipe/calculators/core/gate_calculator.cc",
-      "description": "When the optional input side packet \"use_prev_landmarks\" is either absent or set to true, uses the landmarks on the previous image to help localize landmarks on the current image.",
-      "source_line_number": 235,
-      "input_streams": [
-        "prev_hand_rects_from_landmarks"
-      ],
-      "output_streams": [
-        "gated_prev_hand_rects_from_landmarks"
-      ],
-      "input_side_packets": [
-        "ALLOW:use_prev_landmarks"
-      ]
-    },
     {
       "name": "NormalizedRectVectorHasMinSizeCalculator",
       "type": "calculator",
@@ -45,7 +32,7 @@
       "description": "Determines if an input vector of NormalizedRect has a size greater than or equal to the globally defined num_hands.",
       "source_line_number": 40,
       "input_streams": [
-        "ITERABLE:gated_prev_hand_rects_from_landmarks"
+        "ITERABLE:prev_hand_rects_from_landmarks"
       ],
       "output_streams": [
         "prev_has_enough_hands"
@@ -310,7 +297,7 @@
       "source_line_number": 69,
       "input_streams": [
         "hand_rects_from_palm_detections",
-        "gated_prev_hand_rects_from_landmarks"
+        "prev_hand_rects_from_landmarks"
       ],
       "output_streams": [
         "hand_rects"
