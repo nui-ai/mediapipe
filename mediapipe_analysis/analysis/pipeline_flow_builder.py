@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 from typing import Dict, List, Set, Tuple, Any, Optional
 import copy
+import re
 
 
 class PipelineFlowBuilder:
@@ -126,18 +127,39 @@ class PipelineFlowBuilder:
         This is crucial for connecting nodes inside graphs with nodes outside,
         accounting for stream name translations.
         """
-        # Find all graph nodes
-        graph_nodes = [node for node in nodes if node.get('type') == 'graph']
-
-        for graph_node in graph_nodes:
+        for graph_node in [node for node in nodes if node.get('type') == 'graph']:
             graph_name = graph_node['name']
-
-            # Skip if no graph_self_description is available
             if 'graph_self_description' not in graph_node:
                 continue
-
             gsd = graph_node['graph_self_description']
-
+            # --- Outbound translation logic ---
+            for out_stream in graph_node.get('output_streams', []):
+                if '<outbound translation' in out_stream:
+                    m = re.search(r'<outbound translation ([^ ]+) --> ([^>]+)>', out_stream)
+                    if m:
+                        internal_stream = m.group(1)
+                        external_stream = m.group(2)
+                        # Find internal producers of internal_stream
+                        for node in self.nodes:
+                            node_name, stream = node
+                            if self.parser.streams_match(stream, internal_stream):
+                                # Find external consumers that actually declare external_stream in their input_streams
+                                for ext_node in nodes:
+                                    ext_node_name = ext_node.get('name')
+                                    if ext_node_name == graph_name:
+                                        continue
+                                    for ext_in_stream in ext_node.get('input_streams', []) or []:
+                                        if self.parser.streams_match(ext_in_stream, external_stream):
+                                            consumer = (ext_node_name, ext_in_stream)
+                                            # Add direct feed relationship
+                                            if node not in self.feeds:
+                                                self.feeds[node] = []
+                                            if consumer not in self.feeds[node]:
+                                                self.feeds[node].append(consumer)
+                                            if consumer not in self.feeds_from:
+                                                self.feeds_from[consumer] = []
+                                            if node not in self.feeds_from[consumer]:
+                                                self.feeds_from[consumer].append(node)
             # Process input stream translations
             if 'input_streams' in gsd and 'input_streams' in graph_node:
                 self._process_input_translations(
@@ -201,6 +223,7 @@ class PipelineFlowBuilder:
                                     if target_node_stream not in self.feeds_from:
                                         self.feeds_from[target_node_stream] = []
                                     self.feeds_from[target_node_stream].append(node_stream)
+
 
 def build_pipeline_flow(pipeline_parser, verbose_json_path, output_path):
     """
