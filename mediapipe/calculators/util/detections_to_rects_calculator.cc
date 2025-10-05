@@ -17,6 +17,7 @@
 #include <limits>
 
 #include "mediapipe/calculators/util/detections_to_rects_calculator.pb.h"
+#include "mediapipe/calculators/util/detections_to_rects_calculator_core.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/calculator_options.pb.h"
 #include "mediapipe/framework/formats/detection.pb.h"
@@ -171,29 +172,16 @@ absl::Status DetectionsToRectsCalculator::GetContract(CalculatorContract* cc) {
 
 absl::Status DetectionsToRectsCalculator::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
-
-  options_ = cc->Options<DetectionsToRectsCalculatorOptions>();
-
-  if (options_.has_rotation_vector_start_keypoint_index()) {
-    RET_CHECK(options_.has_rotation_vector_end_keypoint_index());
-    RET_CHECK(options_.has_rotation_vector_target_angle() ^
-              options_.has_rotation_vector_target_angle_degrees());
-    RET_CHECK(cc->Inputs().HasTag(kImageSizeTag));
-
-    if (options_.has_rotation_vector_target_angle()) {
-      target_angle_ = options_.rotation_vector_target_angle();
-    } else {
-      target_angle_ =
-          M_PI * options_.rotation_vector_target_angle_degrees() / 180.f;
-    }
-    start_keypoint_index_ = options_.rotation_vector_start_keypoint_index();
-    end_keypoint_index_ = options_.rotation_vector_end_keypoint_index();
-    rotate_ = true;
-  }
-
-  output_zero_rect_for_empty_detections_ =
-      options_.output_zero_rect_for_empty_detections();
-
+  options_ = DetectionsToRectsCalculatorOptions();
+  options_.set_rotation_vector_start_keypoint_index(0);  // Center of wrist.
+  options_.set_rotation_vector_end_keypoint_index(2);  // MCP of middle finger.
+  options_.set_rotation_vector_target_angle_degrees(90);
+  DetectionsToRectsCoreConfig config = ExtractConfigFromOptions(options_);
+  start_keypoint_index_ = config.start_keypoint_index;
+  end_keypoint_index_ = config.end_keypoint_index;
+  target_angle_ = config.target_angle;
+  rotate_ = config.rotate;
+  output_zero_rect_for_empty_detections_ = config.output_zero_rect_for_empty_detections;
   return absl::OkStatus();
 }
 
@@ -209,7 +197,6 @@ absl::Status DetectionsToRectsCalculator::Process(CalculatorContext* cc) {
   if (rotate_ && !HasTagValue(cc, kImageSizeTag)) {
     return absl::OkStatus();
   }
-
   std::vector<Detection> detections;
   if (cc->Inputs().HasTag(kDetectionTag)) {
     detections.push_back(cc->Inputs().Tag(kDetectionTag).Get<Detection>());
@@ -238,68 +225,30 @@ absl::Status DetectionsToRectsCalculator::Process(CalculatorContext* cc) {
       return absl::OkStatus();
     }
   }
-
-  // Get dynamic calculator options (e.g. `image_size`).
   const DetectionSpec detection_spec = GetDetectionSpec(cc);
-
-  if (cc->Outputs().HasTag(kRectTag)) {
-    auto output_rect = absl::make_unique<Rect>();
-    MP_RETURN_IF_ERROR(
-        DetectionToRect(detections[0], detection_spec, output_rect.get()));
-    if (rotate_) {
-      float rotation;
-      MP_RETURN_IF_ERROR(
-          ComputeRotation(detections[0], detection_spec, &rotation));
-      output_rect->set_rotation(rotation);
-    }
-    cc->Outputs().Tag(kRectTag).Add(output_rect.release(),
-                                    cc->InputTimestamp());
+  absl::optional<std::pair<int, int>> image_size = detection_spec.image_size;
+  DetectionsToRectsCoreConfig config;
+  config.start_keypoint_index = start_keypoint_index_;
+  config.end_keypoint_index = end_keypoint_index_;
+  config.target_angle = target_angle_;
+  config.rotate = rotate_;
+  config.output_zero_rect_for_empty_detections = output_zero_rect_for_empty_detections_;
+  std::vector<Rect> rects;
+  std::vector<NormalizedRect> norm_rects;
+  ComputeRectsFromDetections(detections, config, image_size, &norm_rects, &rects);
+  if (cc->Outputs().HasTag(kRectTag) && !rects.empty()) {
+    cc->Outputs().Tag(kRectTag).AddPacket(MakePacket<Rect>(rects[0]).At(cc->InputTimestamp()));
   }
-  if (cc->Outputs().HasTag(kNormRectTag)) {
-    auto output_rect = absl::make_unique<NormalizedRect>();
-    MP_RETURN_IF_ERROR(DetectionToNormalizedRect(detections[0], detection_spec,
-                                                 output_rect.get()));
-    if (rotate_) {
-      float rotation;
-      MP_RETURN_IF_ERROR(
-          ComputeRotation(detections[0], detection_spec, &rotation));
-      output_rect->set_rotation(rotation);
-    }
-    cc->Outputs()
-        .Tag(kNormRectTag)
-        .Add(output_rect.release(), cc->InputTimestamp());
+  if (cc->Outputs().HasTag(kNormRectTag) && !norm_rects.empty()) {
+    cc->Outputs().Tag(kNormRectTag).AddPacket(MakePacket<NormalizedRect>(norm_rects[0]).At(cc->InputTimestamp()));
   }
   if (cc->Outputs().HasTag(kRectsTag)) {
-    auto output_rects = absl::make_unique<std::vector<Rect>>(detections.size());
-    for (int i = 0; i < detections.size(); ++i) {
-      MP_RETURN_IF_ERROR(DetectionToRect(detections[i], detection_spec,
-                                         &(output_rects->at(i))));
-      if (rotate_) {
-        float rotation;
-        MP_RETURN_IF_ERROR(
-            ComputeRotation(detections[i], detection_spec, &rotation));
-        output_rects->at(i).set_rotation(rotation);
-      }
-    }
-    cc->Outputs().Tag(kRectsTag).Add(output_rects.release(),
-                                     cc->InputTimestamp());
+    auto output_rects = absl::make_unique<std::vector<Rect>>(rects);
+    cc->Outputs().Tag(kRectsTag).Add(output_rects.release(), cc->InputTimestamp());
   }
   if (cc->Outputs().HasTag(kNormRectsTag)) {
-    auto output_rects =
-        absl::make_unique<std::vector<NormalizedRect>>(detections.size());
-    for (int i = 0; i < detections.size(); ++i) {
-      MP_RETURN_IF_ERROR(DetectionToNormalizedRect(
-          detections[i], detection_spec, &(output_rects->at(i))));
-      if (rotate_) {
-        float rotation;
-        MP_RETURN_IF_ERROR(
-            ComputeRotation(detections[i], detection_spec, &rotation));
-        output_rects->at(i).set_rotation(rotation);
-      }
-    }
-    cc->Outputs()
-        .Tag(kNormRectsTag)
-        .Add(output_rects.release(), cc->InputTimestamp());
+    auto output_rects = absl::make_unique<std::vector<NormalizedRect>>(norm_rects);
+    cc->Outputs().Tag(kNormRectsTag).Add(output_rects.release(), cc->InputTimestamp());
   }
 
   return absl::OkStatus();

@@ -537,6 +537,28 @@ cc_library(
 )
 
 cc_library(
+    name = "detections_to_rects_calculator_core",
+    srcs = [
+        "detections_to_rects_calculator_core.cc",
+    ],
+    hdrs = [
+        "detections_to_rects_calculator_core.h",
+    ],
+    deps = [
+        ":detections_to_rects_calculator_cc_proto",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework:calculator_options_cc_proto",
+        "//mediapipe/framework/formats:detection_cc_proto",
+        "//mediapipe/framework/formats:location_data_cc_proto",
+        "//mediapipe/framework/formats:rect_cc_proto",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+        "@com_google_absl//absl/types:optional",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
     name = "detections_to_rects_calculator",
     srcs = [
         "detections_to_rects_calculator.cc",
@@ -546,6 +568,7 @@ cc_library(
     ],
     deps = [
         ":detections_to_rects_calculator_cc_proto",
+        ":detections_to_rects_calculator_core",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:calculator_options_cc_proto",
         "//mediapipe/framework/formats:detection_cc_proto",
