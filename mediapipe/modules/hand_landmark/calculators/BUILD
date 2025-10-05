@@ -17,10 +17,27 @@ licenses(["notice"])
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+    name = "hand_landmarks_to_rect_calculator_core",
+    srcs = ["hand_landmarks_to_rect_calculator_core.cc"],
+    hdrs = ["hand_landmarks_to_rect_calculator_core.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework:calculator_options_cc_proto",
+        "//mediapipe/framework/formats:landmark_cc_proto",
+        "//mediapipe/framework/formats:rect_cc_proto",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
     name = "hand_landmarks_to_rect_calculator",
     srcs = ["hand_landmarks_to_rect_calculator.cc"],
     visibility = ["//visibility:public"],
     deps = [
+        ":hand_landmarks_to_rect_calculator_core",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:calculator_options_cc_proto",
         "//mediapipe/framework/formats:landmark_cc_proto",
