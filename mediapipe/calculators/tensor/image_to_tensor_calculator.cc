@@ -220,7 +220,7 @@ class ImageToTensorCalculator : public Node {
     const bool is_input_gpu = kInGpu(cc).IsConnected();
     MP_ASSIGN_OR_RETURN(auto image, is_input_gpu ? GetInputImage(kInGpu(cc))
                                                  : GetInputImage(kIn(cc)));
-#endif  // MEDIAPIPE_DISABLE_GPU
+#endif
 
     RotatedRect roi = GetRoi(image->width(), image->height(), norm_rect);
     const int tensor_width = params_.output_width.value_or(image->width());
@@ -249,8 +249,7 @@ class ImageToTensorCalculator : public Node {
         {1, tensor_height, tensor_width, GetNumOutputChannels(*image)},
         memory_manager_);
     MP_RETURN_IF_ERROR((image->UsesGpu() ? gpu_converter_ : cpu_converter_)
-                           ->Convert(*image, roi, params_.range_min,
-                                     params_.range_max,
+                           ->Convert(*image, roi, params_.range_min, params_.range_max,
                                      /*tensor_buffer_offset=*/0, tensor));
 
     if (kOutTensors(cc).IsConnected()) {
