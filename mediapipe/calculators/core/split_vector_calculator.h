@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "mediapipe/calculators/core/split_vector_calculator.pb.h"
+#include "mediapipe/calculators/core/split_vector_calculator_core.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/canonical_errors.h"
 #include "mediapipe/framework/port/ret_check.h"
@@ -71,13 +72,13 @@ class SplitVectorCalculator : public CalculatorBase {
     if (!std::is_copy_constructible<T>::value || move_elements) {
       // Ranges of elements shouldn't overlap when the vector contains
       // non-copyable elements.
-      RET_CHECK_OK(checkRangesDontOverlap(options));
+      RET_CHECK_OK(CheckRangesDontOverlap(options));
     }
 
     if (options.combine_outputs()) {
       RET_CHECK_EQ(cc->Outputs().NumEntries(), 1);
       cc->Outputs().Index(0).Set<std::vector<T>>();
-      RET_CHECK_OK(checkRangesDontOverlap(options));
+      RET_CHECK_OK(CheckRangesDontOverlap(options));
     } else {
       if (cc->Outputs().NumEntries() != options.ranges_size()) {
         return absl::InvalidArgumentError(
@@ -114,16 +115,10 @@ class SplitVectorCalculator : public CalculatorBase {
     const auto& options =
         cc->Options<::mediapipe::SplitVectorCalculatorOptions>();
 
-    element_only_ = options.element_only();
-    combine_outputs_ = options.combine_outputs();
-
-    for (const auto& range : options.ranges()) {
-      ranges_.push_back({range.begin(), range.end()});
-      max_range_end_ = std::max(max_range_end_, range.end());
-      total_elements_ += range.end() - range.begin();
-    }
-
-    return absl::OkStatus();
+    // Use extracted function to initialize calculator state
+    return InitializeSplitVectorCalculator<T>(
+        options, &ranges_, &max_range_end_, &total_elements_,
+        &element_only_, &combine_outputs_);
   }
 
   absl::Status Process(CalculatorContext* cc) override {
@@ -138,32 +133,32 @@ class SplitVectorCalculator : public CalculatorBase {
 
   template <typename U, IsCopyable<U> = true>
   absl::Status ProcessCopyableElements(CalculatorContext* cc) {
-    // static_assert(std::is_copy_constructible<U>::value,
-    //              "Cannot copy non-copyable elements");
     const auto& input = cc->Inputs().Index(0).Get<std::vector<U>>();
-    RET_CHECK_GE(input.size(), max_range_end_);
+
+    std::vector<std::unique_ptr<std::vector<T>>> output_vectors;
+    std::vector<T> output_elements;
+    std::unique_ptr<std::vector<T>> combined_output;
+
+    // Use extracted function to process the input
+    auto status = ::mediapipe::ProcessCopyableElements<T>(
+        input, ranges_, max_range_end_, total_elements_,
+        element_only_, combine_outputs_,
+        &output_vectors, &output_elements, &combined_output);
+
+    if (!status.ok()) return status;
+
+    // Handle output based on configuration
     if (combine_outputs_) {
-      auto output = absl::make_unique<std::vector<U>>();
-      output->reserve(total_elements_);
-      for (int i = 0; i < ranges_.size(); ++i) {
-        auto elements = absl::make_unique<std::vector<U>>(
-            input.begin() + ranges_[i].first,
-            input.begin() + ranges_[i].second);
-        output->insert(output->end(), elements->begin(), elements->end());
-      }
-      cc->Outputs().Index(0).Add(output.release(), cc->InputTimestamp());
+      cc->Outputs().Index(0).Add(combined_output.release(), cc->InputTimestamp());
     } else {
       if (element_only_) {
         for (int i = 0; i < ranges_.size(); ++i) {
           cc->Outputs().Index(i).AddPacket(
-              MakePacket<U>(input[ranges_[i].first]).At(cc->InputTimestamp()));
+              MakePacket<U>(output_elements[i]).At(cc->InputTimestamp()));
         }
       } else {
         for (int i = 0; i < ranges_.size(); ++i) {
-          auto output = absl::make_unique<std::vector<T>>(
-              input.begin() + ranges_[i].first,
-              input.begin() + ranges_[i].second);
-          cc->Outputs().Index(i).Add(output.release(), cc->InputTimestamp());
+          cc->Outputs().Index(i).Add(output_vectors[i].release(), cc->InputTimestamp());
         }
       }
     }
@@ -183,34 +178,32 @@ class SplitVectorCalculator : public CalculatorBase {
     if (!input_status.ok()) return input_status.status();
     std::unique_ptr<std::vector<U>> input_vector =
         std::move(input_status).value();
-    RET_CHECK_GE(input_vector->size(), max_range_end_);
 
+    std::vector<std::unique_ptr<std::vector<T>>> output_vectors;
+    std::vector<T> output_elements;
+    std::unique_ptr<std::vector<T>> combined_output;
+
+    // Use extracted function to process the input
+    auto status = ::mediapipe::ProcessMovableElements<T>(
+        &input_vector, ranges_, max_range_end_, total_elements_,
+        element_only_, combine_outputs_,
+        &output_vectors, &output_elements, &combined_output);
+
+    if (!status.ok()) return status;
+
+    // Handle output based on configuration
     if (combine_outputs_) {
-      auto output = absl::make_unique<std::vector<U>>();
-      output->reserve(total_elements_);
-      for (int i = 0; i < ranges_.size(); ++i) {
-        output->insert(
-            output->end(),
-            std::make_move_iterator(input_vector->begin() + ranges_[i].first),
-            std::make_move_iterator(input_vector->begin() + ranges_[i].second));
-      }
-      cc->Outputs().Index(0).Add(output.release(), cc->InputTimestamp());
+      cc->Outputs().Index(0).Add(combined_output.release(), cc->InputTimestamp());
     } else {
       if (element_only_) {
         for (int i = 0; i < ranges_.size(); ++i) {
           cc->Outputs().Index(i).AddPacket(
-              MakePacket<U>(std::move(input_vector->at(ranges_[i].first)))
+              MakePacket<U>(std::move(output_elements[i]))
                   .At(cc->InputTimestamp()));
         }
       } else {
         for (int i = 0; i < ranges_.size(); ++i) {
-          auto output = absl::make_unique<std::vector<T>>();
-          output->insert(
-              output->end(),
-              std::make_move_iterator(input_vector->begin() + ranges_[i].first),
-              std::make_move_iterator(input_vector->begin() +
-                                      ranges_[i].second));
-          cc->Outputs().Index(i).Add(output.release(), cc->InputTimestamp());
+          cc->Outputs().Index(i).Add(output_vectors[i].release(), cc->InputTimestamp());
         }
       }
     }
@@ -224,25 +217,6 @@ class SplitVectorCalculator : public CalculatorBase {
   }
 
  private:
-  static absl::Status checkRangesDontOverlap(
-      const ::mediapipe::SplitVectorCalculatorOptions& options) {
-    for (int i = 0; i < options.ranges_size() - 1; ++i) {
-      for (int j = i + 1; j < options.ranges_size(); ++j) {
-        const auto& range_0 = options.ranges(i);
-        const auto& range_1 = options.ranges(j);
-        if ((range_0.begin() >= range_1.begin() &&
-             range_0.begin() < range_1.end()) ||
-            (range_1.begin() >= range_0.begin() &&
-             range_1.begin() < range_0.end())) {
-          return absl::InvalidArgumentError(
-              "Ranges must be non-overlapping when using combine_outputs "
-              "option.");
-        }
-      }
-    }
-    return absl::OkStatus();
-  }
-
   std::vector<std::pair<int32_t, int32_t>> ranges_;
   int32_t max_range_end_ = -1;
   int32_t total_elements_ = 0;

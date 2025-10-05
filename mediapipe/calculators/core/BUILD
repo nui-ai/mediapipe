@@ -975,7 +975,10 @@ cc_test(
 
 cc_library(
     name = "split_vector_calculator",
-    srcs = ["split_vector_calculator.cc"],
+    srcs = [
+        "split_vector_calculator.cc",
+        "split_vector_calculator_core.h",
+    ],
     hdrs = ["split_vector_calculator.h"],
     copts = select({
         "//mediapipe:apple": [
