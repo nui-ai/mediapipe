@@ -1143,7 +1143,7 @@ def main():
     print("\nBuilding stream-level flow graph...")
     from mediapipe_analysis.analysis.pipeline_flow_builder import build_pipeline_flow
     verbose_json_path = output_dir / 'json' / 'pipeline.verbose.json'
-    flow_graph_path = output_dir / 'json' / 'pipeline-flow.json'
+    flow_graph_path = output_dir / 'json' / 'streams-flow.json'
     build_pipeline_flow(parser, verbose_json_path, flow_graph_path)
     print(f"✅ Generated stream-level flow graph at file://{flow_graph_path.resolve()}")
 
@@ -1154,15 +1154,13 @@ def main():
     html_dir = output_dir_abs / 'html'
     outputs = [
         (html_dir / "pipeline.basic.html", "HTML format with node descriptions from pipeline inline documentation (hover for details); also includes free text descriptions of the nodes"),
-        (md_dir / "pipeline.basic.nolines.md", "Tree with hyperlinks to each node's source"),
-        (md_dir / "pipeline.basic.md", "Tree with hyperlinks to each node's source (with also line numbers included in source file hyperlinks)"),
-        (md_dir / "pipeline.verbose.md", "Tree with more node fields (streams, packets, options), hyperlinks to each node's source (with line numbers)"),
-        (md_dir / "pipeline.verbose.nolines.md", "Tree with more node fields (streams, packets, options), hyperlinks to each node's source (no line numbers)"),
-        (json_dir / "pipeline.basic.json", "Tree in JSON format"),
-        (json_dir / "pipeline.verbose.json", "Tree with more node fields (streams, packets, options) in JSON format"),
-        (json_dir / "pipeline-flow.json", "Stream-level graph with node-stream pairs and direct feed relationships"),
-        (yaml_dir / "pipeline.basic.yaml", "Tree in YAML format"),
-        (yaml_dir / "pipeline.verbose.yaml", "Tree with more node fields (streams, packets, options) in YAML format"),
+        (md_dir / "pipeline.basic.nolines.md", "Graph definition tree with hyperlinks to each node's source"),
+        (md_dir / "pipeline.basic.md", "Graph definition tree with hyperlinks to each node's source (with also line numbers included in source file hyperlinks)"),
+        (md_dir / "pipeline.verbose.md", "Graph definition tree with more node fields (streams, packets, options), hyperlinks to each node's source (with line numbers)"),
+        (md_dir / "pipeline.verbose.nolines.md", "Graph definition tree with more node fields (streams, packets, options), hyperlinks to each node's source (no line numbers)"),
+        (json_dir / "pipeline.basic.json", "Graph definition tree in JSON format"),
+        (json_dir / "pipeline.verbose.json", "Graph definition tree with more node fields (streams, packets, options) in JSON format"),
+        (json_dir / "streams-flow.json", "Stream flow description (not the tree of graph definitions like all the rest here) depicting the producer-consumer relationships between calculators"),
     ]
     # Find max path length for alignment
     maxlen = max(len(f"file://{str(path)}") for path, _ in outputs)
