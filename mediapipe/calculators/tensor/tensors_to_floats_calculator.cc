@@ -17,6 +17,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/port/ret_check.h"
+#include "mediapipe/calculators/tensor/tensors_to_floats_calculator_core.h"
 
 namespace mediapipe {
 
@@ -70,36 +71,25 @@ absl::Status TensorsToFloatsCalculator::UpdateContract(CalculatorContract* cc) {
 
 absl::Status TensorsToFloatsCalculator::Open(CalculatorContext* cc) {
   options_ = cc->Options<::mediapipe::TensorsToFloatsCalculatorOptions>();
-  return absl::OkStatus();
+  return tensors_to_floats_calculator_core::Open(options_);
 }
 
 absl::Status TensorsToFloatsCalculator::Process(CalculatorContext* cc) {
   const auto& input_tensors = *kInTensors(cc);
-  RET_CHECK(!input_tensors.empty());
-  RET_CHECK(input_tensors[0].element_type() == Tensor::ElementType::kFloat32);
-  // TODO: Add option to specify which tensor to take from.
-  auto view = input_tensors[0].GetCpuReadView();
-  auto raw_floats = view.buffer<float>();
-  int num_values = input_tensors[0].shape().num_elements();
-  auto output_floats = absl::make_unique<std::vector<float>>(
-      raw_floats, raw_floats + num_values);
 
-  switch (options_.activation()) {
-    case TensorsToFloatsCalculatorOptions::SIGMOID:
-      std::transform(output_floats->begin(), output_floats->end(),
-                     output_floats->begin(), Sigmoid);
-      break;
-    case TensorsToFloatsCalculatorOptions::NONE:
-      break;
+  auto result = tensors_to_floats_calculator_core::Process(input_tensors, options_);
+
+  if (!result.status.ok()) {
+    return result.status;
   }
 
   if (kOutFloat(cc).IsConnected()) {
     // TODO: Could add an index in the option to specifiy returning
     // one value of a float array.
-    RET_CHECK_EQ(num_values, 1);
-    kOutFloat(cc).Send(output_floats->at(0));
+    RET_CHECK_EQ(result.num_values, 1);
+    kOutFloat(cc).Send(result.output_floats->at(0));
   } else {
-    kOutFloats(cc).Send(std::move(output_floats));
+    kOutFloats(cc).Send(std::move(result.output_floats));
   }
   return absl::OkStatus();
 }

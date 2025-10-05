@@ -1152,7 +1152,6 @@ cc_library(
         ":platform_apple_with_gpu": [
             "//mediapipe/gpu:MPPMetalHelper",
             "//mediapipe/gpu:MPPMetalUtil",
-            "//mediapipe/objc:mediapipe_framework_ios",
         ],
         # This setting is needed to allow bazel to build all targets on Mac with GPU disabled
         ":platform_apple_without_gpu": [],
@@ -1363,6 +1362,7 @@ cc_library(
     }),
     deps = [
         ":tensors_to_floats_calculator_cc_proto",
+        ":tensors_to_floats_calculator_core",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/api2:node",
         "//mediapipe/framework/formats:tensor",
@@ -1385,6 +1385,19 @@ cc_test(
         "//mediapipe/framework/port:parse_text_proto",
         "@com_google_absl//absl/memory",
         "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_library(
+    name = "tensors_to_floats_calculator_core",
+    srcs = ["tensors_to_floats_calculator_core.cc"],
+    hdrs = ["tensors_to_floats_calculator_core.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":tensors_to_floats_calculator_cc_proto",
+        "//mediapipe/framework/formats:tensor",
+        "//mediapipe/framework/port:ret_check",
+        "@com_google_absl//absl/status",
     ],
 )
 
