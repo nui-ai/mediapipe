@@ -42,17 +42,24 @@ class PipelineFlowBuilder:
 
         # Map output streams to producing nodes
         output_stream_to_node = {}
+        node_stream_directions = {}  # (node_name, stream) -> direction
         for node in flat_nodes:
             node_name = node['name']
             for out_stream in node.get('output_streams', []):
                 stream_info = self.parser.parse_stream_desc(out_stream)
                 stream_name = stream_info['name']
                 output_stream_to_node[(stream_name, node_name)] = (node_name, out_stream)
-
-                # Add to nodes list
                 node_stream = (node_name, out_stream)
                 if node_stream not in self.nodes:
                     self.nodes.append(node_stream)
+                node_stream_directions[node_stream] = "output"
+        for node in flat_nodes:
+            node_name = node['name']
+            for in_stream in node.get('input_streams', []):
+                node_stream = (node_name, in_stream)
+                if node_stream not in self.nodes:
+                    self.nodes.append(node_stream)
+                node_stream_directions[node_stream] = "input"
 
         # Process input streams and build direct feed relationships
         for node in flat_nodes:
@@ -93,7 +100,9 @@ class PipelineFlowBuilder:
 
         # Build the final graph representation
         flow_graph = {
-            "nodes": [{"node": node[0], "stream": node[1]} for node in self.nodes],
+            "nodes": [
+                {"node": node[0], "stream": node[1], "stream-direction": node_stream_directions.get(node, "unknown")} for node in self.nodes
+            ],
             "edges": []
         }
 
