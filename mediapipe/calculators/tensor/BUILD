@@ -1402,6 +1402,21 @@ cc_library(
 )
 
 cc_library(
+    name = "tensors_to_classification_calculator_core",
+    srcs = ["tensors_to_classification_calculator_core.cc"],
+    hdrs = ["tensors_to_classification_calculator_core.h"],
+    deps = [
+        ":tensors_to_classification_calculator_cc_proto",
+        "//mediapipe/framework/formats:classification_cc_proto",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+        "//mediapipe/util:label_map_cc_proto",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/status",
+    ],
+)
+
+cc_library(
     name = "tensors_to_classification_calculator",
     srcs = ["tensors_to_classification_calculator.cc"],
     copts = select({
@@ -1413,6 +1428,7 @@ cc_library(
     }),
     deps = [
         ":tensors_to_classification_calculator_cc_proto",
+        ":tensors_to_classification_calculator_core",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:resources",
         "//mediapipe/framework/api2:node",

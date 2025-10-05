@@ -24,6 +24,7 @@
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
 #include "mediapipe/calculators/tensor/tensors_to_classification_calculator.pb.h"
+#include "mediapipe/calculators/tensor/tensors_to_classification_calculator_core.h"
 #include "mediapipe/framework/api2/node.h"
 #include "mediapipe/framework/api2/port.h"
 #include "mediapipe/framework/calculator_framework.h"
@@ -44,17 +45,6 @@
 
 namespace mediapipe {
 namespace api2 {
-namespace {
-
-void SetClassificationLabel(const LabelMapItem label_map_item,
-                            Classification* classification) {
-  classification->set_label(label_map_item.name());
-  if (label_map_item.has_display_name()) {
-    classification->set_display_name(label_map_item.display_name());
-  }
-}
-
-}  // namespace
 
 // Convert result tensors from classification models into MediaPipe
 // classifications.
@@ -91,23 +81,10 @@ class TensorsToClassificationCalculator : public Node {
   absl::Status Close(CalculatorContext* cc) override;
 
  private:
-  int top_k_ = 0;
-  bool sort_by_descending_score_ = false;
-  proto_ns::Map<int64_t, LabelMapItem> local_label_map_;
-  bool label_map_loaded_ = false;
-  bool is_binary_classification_ = false;
-  float min_score_threshold_ = std::numeric_limits<float>::lowest();
+  TensorsToClassificationConfig config_;
+  std::unordered_map<int64_t, LabelMapItem> external_label_map_;
 
-  // Set of allowed or ignored class indices.
-  struct ClassIndexSet {
-    absl::flat_hash_set<int> values;
-    bool is_allowlist;
-  };
-  // Allowed or ignored class indices based on provided options.
-  // These are used to filter out the output classification results.
-  ClassIndexSet class_index_set_;
-  bool IsClassIndexAllowed(int class_index);
-  const proto_ns::Map<int64_t, LabelMapItem>& GetLabelMap(
+  const std::unordered_map<int64_t, LabelMapItem>& GetLabelMap(
       CalculatorContext* cc);
 };
 MEDIAPIPE_REGISTER_NODE(TensorsToClassificationCalculator);
@@ -115,55 +92,26 @@ MEDIAPIPE_REGISTER_NODE(TensorsToClassificationCalculator);
 absl::Status TensorsToClassificationCalculator::Open(CalculatorContext* cc) {
   const auto& options = cc->Options<TensorsToClassificationCalculatorOptions>();
 
-  top_k_ = options.top_k();
-  sort_by_descending_score_ = options.sort_by_descending_score();
+  // Handle label map loading from file path
   if (options.has_label_map_path()) {
     std::string string_path;
     MP_ASSIGN_OR_RETURN(string_path,
                         PathToResourceAsFile(options.label_map_path()));
     MP_ASSIGN_OR_RETURN(std::unique_ptr<mediapipe::Resource> label_map,
                         cc->GetResources().Get(string_path));
+    proto_ns::Map<int64_t, LabelMapItem> temp_label_map;
     MP_ASSIGN_OR_RETURN(
-        local_label_map_,
+        temp_label_map,
         BuildLabelMapFromFiles(label_map->ToStringView(),
                                /*display_names_file_contents*/ {}));
-    label_map_loaded_ = true;
-  } else if (!options.label_items().empty()) {
-    label_map_loaded_ = true;
-  } else if (options.has_label_map()) {
-    for (int i = 0; i < options.label_map().entries_size(); ++i) {
-      const auto& entry = options.label_map().entries(i);
-      RET_CHECK(!local_label_map_.contains(entry.id()))
-          << "Duplicate id found: " << entry.id();
-      LabelMapItem item;
-      item.set_name(entry.label());
-      local_label_map_[entry.id()] = std::move(item);
-    }
-    label_map_loaded_ = true;
-  }
-  if (options.has_min_score_threshold()) {
-    min_score_threshold_ = options.min_score_threshold();
-  }
-  is_binary_classification_ = options.binary_classification();
-
-  if (is_binary_classification_) {
-    RET_CHECK(options.allow_classes().empty() &&
-              options.ignore_classes().empty());
-  }
-  if (!options.allow_classes().empty()) {
-    RET_CHECK(options.ignore_classes().empty());
-    class_index_set_.is_allowlist = true;
-    for (int i = 0; i < options.allow_classes_size(); ++i) {
-      class_index_set_.values.insert(options.allow_classes(i));
-    }
-  } else {
-    class_index_set_.is_allowlist = false;
-    for (int i = 0; i < options.ignore_classes_size(); ++i) {
-      class_index_set_.values.insert(options.ignore_classes(i));
+    // Convert proto_ns::Map to std::unordered_map
+    for (const auto& entry : temp_label_map) {
+      external_label_map_[entry.first] = entry.second;
     }
   }
 
-  return absl::OkStatus();
+  // Initialize configuration using core function
+  return InitializeTensorsToClassificationConfig(options, external_label_map_, &config_);
 }
 
 absl::Status TensorsToClassificationCalculator::Process(CalculatorContext* cc) {
@@ -173,70 +121,21 @@ absl::Status TensorsToClassificationCalculator::Process(CalculatorContext* cc) {
 
   int num_classes = input_tensors[0].shape().num_elements();
 
-  if (is_binary_classification_) {
+  if (config_.is_binary_classification) {
     RET_CHECK_EQ(num_classes, 1);
     // Number of classes for binary classification.
     num_classes = 2;
   }
-  if (label_map_loaded_) {
+  if (config_.label_map_loaded) {
     RET_CHECK_EQ(num_classes, GetLabelMap(cc).size());
   }
   auto view = input_tensors[0].GetCpuReadView();
   auto raw_scores = view.buffer<float>();
 
-  auto classification_list = std::make_unique<ClassificationList>();
-  if (is_binary_classification_) {
-    Classification* class_first = classification_list->add_classification();
-    Classification* class_second = classification_list->add_classification();
-    class_first->set_index(0);
-    class_second->set_index(1);
-    class_first->set_score(raw_scores[0]);
-    class_second->set_score(1. - raw_scores[0]);
+  // Use core function to process tensor to classifications
+  auto classification_list = ProcessTensorToClassifications(
+      raw_scores, num_classes, config_, GetLabelMap(cc));
 
-    if (label_map_loaded_) {
-      SetClassificationLabel(GetLabelMap(cc).at(0), class_first);
-      SetClassificationLabel(GetLabelMap(cc).at(1), class_second);
-    }
-  } else {
-    for (int i = 0; i < num_classes; ++i) {
-      if (!IsClassIndexAllowed(i)) {
-        continue;
-      }
-      if (raw_scores[i] < min_score_threshold_) {
-        continue;
-      }
-      Classification* classification =
-          classification_list->add_classification();
-      classification->set_index(i);
-      classification->set_score(raw_scores[i]);
-      if (label_map_loaded_) {
-        SetClassificationLabel(GetLabelMap(cc).at(i), classification);
-      }
-    }
-  }
-
-  auto raw_classification_list = classification_list->mutable_classification();
-  if (top_k_ > 0) {
-    int desired_size =
-        std::min(classification_list->classification_size(), top_k_);
-    std::partial_sort(raw_classification_list->begin(),
-                      raw_classification_list->begin() + desired_size,
-                      raw_classification_list->end(),
-                      [](const Classification a, const Classification b) {
-                        return a.score() > b.score();
-                      });
-
-    if (desired_size >= top_k_) {
-      // Resizes the underlying list to have only top_k_ classifications.
-      raw_classification_list->DeleteSubrange(
-          top_k_, raw_classification_list->size() - top_k_);
-    }
-  } else if (sort_by_descending_score_) {
-    std::sort(raw_classification_list->begin(), raw_classification_list->end(),
-              [](const Classification a, const Classification b) {
-                return a.score() > b.score();
-              });
-  }
   kOutClassificationList(cc).Send(std::move(classification_list));
   return absl::OkStatus();
 }
@@ -245,23 +144,20 @@ absl::Status TensorsToClassificationCalculator::Close(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-bool TensorsToClassificationCalculator::IsClassIndexAllowed(int class_index) {
-  if (class_index_set_.values.empty()) {
-    return true;
-  }
-  if (class_index_set_.is_allowlist) {
-    return class_index_set_.values.contains(class_index);
-  } else {
-    return !class_index_set_.values.contains(class_index);
-  }
-}
-
-const proto_ns::Map<int64_t, LabelMapItem>&
+const std::unordered_map<int64_t, LabelMapItem>&
 TensorsToClassificationCalculator::GetLabelMap(CalculatorContext* cc) {
-  return !local_label_map_.empty()
-             ? local_label_map_
-             : cc->Options<TensorsToClassificationCalculatorOptions>()
-                   .label_items();
+  static std::unordered_map<int64_t, LabelMapItem> temp_map;
+  if (!external_label_map_.empty()) {
+    return external_label_map_;
+  } else {
+    const auto& proto_map = cc->Options<TensorsToClassificationCalculatorOptions>()
+                               .label_items();
+    temp_map.clear();
+    for (const auto& entry : proto_map) {
+      temp_map[entry.first] = entry.second;
+    }
+    return temp_map;
+  }
 }
 
 }  // namespace api2
