@@ -576,10 +576,26 @@ cc_library(
 )
 
 cc_library(
+    name = "rect_transformation_calculator_core",
+    srcs = ["rect_transformation_calculator_core.cc"],
+    hdrs = ["rect_transformation_calculator_core.h"],
+    deps = [
+        ":rect_transformation_calculator_cc_proto",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework:calculator_options_cc_proto",
+        "//mediapipe/framework/formats:rect_cc_proto",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
     name = "rect_transformation_calculator",
     srcs = ["rect_transformation_calculator.cc"],
     deps = [
         ":rect_transformation_calculator_cc_proto",
+        ":rect_transformation_calculator_core",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:calculator_options_cc_proto",
         "//mediapipe/framework/formats:rect_cc_proto",

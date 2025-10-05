@@ -12,8 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include <cmath>
+#include <memory>
+#include <utility>
+#include <vector>
 
+#include "absl/memory/memory.h"
+#include "absl/status/status.h"
+#include "absl/strings/string_view.h"
+#include "absl/types/span.h"
 #include "mediapipe/calculators/util/rect_transformation_calculator.pb.h"
+#include "mediapipe/calculators/util/rect_transformation_calculator_core.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/calculator_options.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
@@ -67,11 +75,6 @@ class RectTransformationCalculator : public CalculatorBase {
 
  private:
   RectTransformationCalculatorOptions options_;
-
-  float ComputeNewRotation(float rotation);
-  void TransformRect(Rect* rect);
-  void TransformNormalizedRect(NormalizedRect* rect, int image_width,
-                               int image_height);
 };
 REGISTER_CALCULATOR(RectTransformationCalculator);
 
@@ -118,7 +121,7 @@ absl::Status RectTransformationCalculator::Open(CalculatorContext* cc) {
 absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
   if (cc->Inputs().HasTag(kRectTag) && !cc->Inputs().Tag(kRectTag).IsEmpty()) {
     auto rect = cc->Inputs().Tag(kRectTag).Get<Rect>();
-    TransformRect(&rect);
+    mediapipe::TransformRect(options_, &rect);
     cc->Outputs().Index(0).AddPacket(
         MakePacket<Rect>(rect).At(cc->InputTimestamp()));
   }
@@ -129,7 +132,7 @@ absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
     for (int i = 0; i < rects.size(); ++i) {
       output_rects->at(i) = rects[i];
       auto it = output_rects->begin() + i;
-      TransformRect(&(*it));
+      mediapipe::TransformRect(options_, &(*it));
     }
     cc->Outputs().Index(0).Add(output_rects.release(), cc->InputTimestamp());
   }
@@ -138,7 +141,7 @@ absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
     auto rect = cc->Inputs().Tag(kNormRectTag).Get<NormalizedRect>();
     const auto& image_size =
         cc->Inputs().Tag(kImageSizeTag).Get<std::pair<int, int>>();
-    TransformNormalizedRect(&rect, image_size.first, image_size.second);
+    mediapipe::TransformNormalizedRect(options_, &rect, image_size.first, image_size.second);
     cc->Outputs().Index(0).AddPacket(
         MakePacket<NormalizedRect>(rect).At(cc->InputTimestamp()));
   }
@@ -153,95 +156,12 @@ absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
     for (int i = 0; i < rects.size(); ++i) {
       output_rects->at(i) = rects[i];
       auto it = output_rects->begin() + i;
-      TransformNormalizedRect(&(*it), image_size.first, image_size.second);
+      mediapipe::TransformNormalizedRect(options_, &(*it), image_size.first, image_size.second);
     }
     cc->Outputs().Index(0).Add(output_rects.release(), cc->InputTimestamp());
   }
 
   return absl::OkStatus();
-}
-
-float RectTransformationCalculator::ComputeNewRotation(float rotation) {
-  if (options_.has_rotation()) {
-    rotation += options_.rotation();
-  } else if (options_.has_rotation_degrees()) {
-    rotation += M_PI * options_.rotation_degrees() / 180.f;
-  }
-  return NormalizeRadians(rotation);
-}
-
-void RectTransformationCalculator::TransformRect(Rect* rect) {
-  float width = rect->width();
-  float height = rect->height();
-  float rotation = rect->rotation();
-
-  if (options_.has_rotation() || options_.has_rotation_degrees()) {
-    rotation = ComputeNewRotation(rotation);
-  }
-  if (rotation == 0.f) {
-    rect->set_x_center(rect->x_center() + width * options_.shift_x());
-    rect->set_y_center(rect->y_center() + height * options_.shift_y());
-  } else {
-    const float x_shift = width * options_.shift_x() * std::cos(rotation) -
-                          height * options_.shift_y() * std::sin(rotation);
-    const float y_shift = width * options_.shift_x() * std::sin(rotation) +
-                          height * options_.shift_y() * std::cos(rotation);
-    rect->set_x_center(rect->x_center() + x_shift);
-    rect->set_y_center(rect->y_center() + y_shift);
-  }
-
-  if (options_.square_long()) {
-    const float long_side = std::max(width, height);
-    width = long_side;
-    height = long_side;
-  } else if (options_.square_short()) {
-    const float short_side = std::min(width, height);
-    width = short_side;
-    height = short_side;
-  }
-  rect->set_width(width * options_.scale_x());
-  rect->set_height(height * options_.scale_y());
-}
-
-void RectTransformationCalculator::TransformNormalizedRect(NormalizedRect* rect,
-                                                           int image_width,
-                                                           int image_height) {
-  float width = rect->width();
-  float height = rect->height();
-  float rotation = rect->rotation();
-
-  if (options_.has_rotation() || options_.has_rotation_degrees()) {
-    rotation = ComputeNewRotation(rotation);
-  }
-  if (rotation == 0.f) {
-    rect->set_x_center(rect->x_center() + width * options_.shift_x());
-    rect->set_y_center(rect->y_center() + height * options_.shift_y());
-  } else {
-    const float x_shift =
-        (image_width * width * options_.shift_x() * std::cos(rotation) -
-         image_height * height * options_.shift_y() * std::sin(rotation)) /
-        image_width;
-    const float y_shift =
-        (image_width * width * options_.shift_x() * std::sin(rotation) +
-         image_height * height * options_.shift_y() * std::cos(rotation)) /
-        image_height;
-    rect->set_x_center(rect->x_center() + x_shift);
-    rect->set_y_center(rect->y_center() + y_shift);
-  }
-
-  if (options_.square_long()) {
-    const float long_side =
-        std::max(width * image_width, height * image_height);
-    width = long_side / image_width;
-    height = long_side / image_height;
-  } else if (options_.square_short()) {
-    const float short_side =
-        std::min(width * image_width, height * image_height);
-    width = short_side / image_width;
-    height = short_side / image_height;
-  }
-  rect->set_width(width * options_.scale_x());
-  rect->set_height(height * options_.scale_y());
 }
 
 }  // namespace mediapipe
