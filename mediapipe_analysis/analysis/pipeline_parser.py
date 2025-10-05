@@ -39,6 +39,7 @@ class PipelineNode:
     node_options: Optional[dict] = None
     description: Optional[str] = None
     graph_self_description: Optional[GraphSelfDescription] = None
+    options_text: Optional[str] = None  # raw options block
 
 @dataclass
 class MediaPipeGraph:
@@ -202,25 +203,34 @@ class MediaPipePipelineParser:
             output_side_packets = self.extract_stream_fields(comment_block, "output_side_packet")
         # Enhanced node_options parsing (handles nested braces, simple key-value pairs)
         node_options = {}
-        options_match = re.search(r'node_options\s*\{([^}]*)\}', node_content, re.DOTALL)
-        if options_match:
-            options_content = options_match.group(1)
-            brace_level = 0
-            current_key = None
-            for line in options_content.split('\n'):
-                line = line.strip()
-                if not line:
-                    continue
-                if '{' in line:
-                    brace_level += 1
-                if '}' in line:
-                    brace_level -= 1
-                if ':' in line and brace_level == 0:
-                    key_value = line.split(':', 1)
-                    if len(key_value) == 2:
-                        key = key_value[0].strip()
-                        value = key_value[1].strip().strip('"')
-                        node_options[key] = value
+        # Robust extraction of options block (preserve whitespace, handle all nested cases)
+        options_text = None
+        node_block_lines = lines[start_line:end_line+1]
+        for idx, line in enumerate(node_block_lines):
+            # Match the options field, but only capture content inside braces (excluding "options:")
+            if re.match(r'\s*options:\s*\{', line):
+                # Find the position of the first opening brace
+                opening_brace_pos = line.find('{')
+                if opening_brace_pos != -1:
+                    # Start with content after the first opening brace
+                    options_lines = [line[opening_brace_pos+1:]]
+                    brace_count = line.count('{') - line.count('}')
+                    for j in range(idx+1, len(node_block_lines)):
+                        l = node_block_lines[j]
+                        # For the last line, exclude the final closing brace
+                        if brace_count + l.count('{') - l.count('}') == 0:
+                            last_brace_pos = l.rfind('}')
+                            if last_brace_pos != -1:
+                                options_lines.append(l[:last_brace_pos])
+                            else:
+                                options_lines.append(l)
+                        else:
+                            options_lines.append(l)
+                        brace_count += l.count('{') - l.count('}')
+                        if brace_count == 0:
+                            break
+                    options_text = '\n'.join(options_lines).strip()
+                break
         return {
             'name': name or "",
             'input_streams': input_streams,
@@ -228,6 +238,7 @@ class MediaPipePipelineParser:
             'input_side_packets': input_side_packets,
             'output_side_packets': output_side_packets,
             'node_options': node_options,
+            'options_text': options_text,  # raw options block
             'line_number': start_line + 1,
             'description': description,
         }
@@ -481,7 +492,8 @@ class MediaPipePipelineParser:
                     input_side_packets=input_side_packets,
                     output_side_packets=output_side_packets,
                     node_options=node_options,
-                    graph_self_description=None
+                    graph_self_description=None,
+                    options_text=node.get('options_text')  # Add options_text from parsed node
                 ))
             elif is_graph:
                 src_info = self.graph_source_files[node_name]
@@ -836,6 +848,9 @@ code, pre {{ background: #222; color: #eee; }}
             d['output_side_packets'] = node.output_side_packets
         if node.node_options and node.node_options != {}:
             d['node_options'] = node.node_options
+        # Add options_text if present
+        if getattr(node, 'options_text', None):
+            d['options_text'] = node.options_text
         # Add graph_self_description if present, omitting empty/null fields
         if node.graph_self_description:
             gsd = {}
