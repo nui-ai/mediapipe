@@ -1046,30 +1046,30 @@ code, pre {{ background: #222; color: #eee; }}
 
     @staticmethod
     def streams_match(desc1: str, desc2: str) -> bool:
-        """Return True if two stream descriptions match by name or by tag (if both have tags)."""
+        """Return True if two stream descriptions match by name only."""
         s1 = MediaPipePipelineParser.parse_stream_desc(desc1)
         s2 = MediaPipePipelineParser.parse_stream_desc(desc2)
-        if s1['name'] == s2['name']:
-            return True
-        if s1['tag'] and s2['tag'] and s1['tag'] == s2['tag']:
-            return True
-        return False
+        return s1['name'] == s2['name']
 
     def log_stream_definition_differences(self, graph_node: PipelineNode):
-        """Compare parent (node) stream definitions to graph self-descriptions. Build matched pairs using streams_match, then log differences for each pair. Print [ERROR] if any stream matches more than one counterpart. If a difference is detected, append the graph's self definition and parent's view to the parent's stream string."""
+        """Compare parent (node) stream definitions to graph self-descriptions. Build matched pairs using TAG or name at graph boundaries, then log differences for each pair. Print [ERROR] if any stream matches more than one counterpart. If a difference is detected, append the graph's self definition and parent's view to the parent's stream string, and propagate translation info to outputs."""
         if not graph_node.graph_self_description:
             return
+        def streams_match_tag_or_name(desc1, desc2):
+            s1 = self.parse_stream_desc(desc1)
+            s2 = self.parse_stream_desc(desc2)
+            return (s1['name'] == s2['name']) or (s1['tag'] and s2['tag'] and s1['tag'] == s2['tag'])
         for field in ['input_streams', 'output_streams', 'input_side_packets', 'output_side_packets']:
             parent_streams = getattr(graph_node, field) or []
             graph_streams = getattr(graph_node.graph_self_description, field) or []
             # Check for multiple matches per parent stream
             for ps in parent_streams:
-                matches = [gs for gs in graph_streams if self.streams_match(ps, gs)]
+                matches = [gs for gs in graph_streams if streams_match_tag_or_name(ps, gs)]
                 if len(matches) > 1:
                     print(f"[ERROR] Multiple matches for parent stream '{ps}' in graph '{graph_node.name}', field '{field}': {matches}", file=sys.stderr)
             # Check for multiple matches per graph stream
             for gs in graph_streams:
-                matches = [ps for ps in parent_streams if self.streams_match(gs, ps)]
+                matches = [ps for ps in parent_streams if streams_match_tag_or_name(gs, ps)]
                 if len(matches) > 1:
                     print(f"[ERROR] Multiple matches for graph stream '{gs}' in graph '{graph_node.name}', field '{field}': {matches}", file=sys.stderr)
             # Build matched pairs (first unused match only, as before)
@@ -1077,7 +1077,7 @@ code, pre {{ background: #222; color: #eee; }}
             used_graph = set()
             for ps in parent_streams:
                 for idx, gs in enumerate(graph_streams):
-                    if self.streams_match(ps, gs) and idx not in used_graph:
+                    if streams_match_tag_or_name(ps, gs) and idx not in used_graph:
                         matched_pairs.append((ps, gs, idx))
                         used_graph.add(idx)
                         break
@@ -1093,6 +1093,7 @@ code, pre {{ background: #222; color: #eee; }}
                     differences.append(f"tag differs: parent='{ps_parsed['tag']}' vs graph='{gs_parsed['tag']}'")
                 if differences:
                     found_difference = True
+                    # Propagate translation info to outputs
                     if field == 'input_streams':
                         new_ps = f"{ps} <inbound translation {ps} --> {gs}>"
                     else:
@@ -1137,6 +1138,15 @@ def main():
     else:
         output_dir = Path('mediapipe_analysis/analysis/output')
     parser.write_pipeline_outputs(root_node, output_dir)
+
+    # Phase 2: Build the pipeline flow graph
+    print("\nBuilding stream-level flow graph...")
+    from mediapipe_analysis.analysis.pipeline_flow_builder import build_pipeline_flow
+    verbose_json_path = output_dir / 'json' / 'pipeline.verbose.json'
+    flow_graph_path = output_dir / 'json' / 'pipeline-flow.json'
+    build_pipeline_flow(parser, verbose_json_path, flow_graph_path)
+    print(f"✅ Generated stream-level flow graph at file://{flow_graph_path.resolve()}")
+
     output_dir_abs = output_dir.resolve()
     md_dir = output_dir_abs / 'markdown'
     json_dir = output_dir_abs / 'json'
@@ -1150,6 +1160,7 @@ def main():
         (md_dir / "pipeline.verbose.nolines.md", "Tree with more node fields (streams, packets, options), hyperlinks to each node's source (no line numbers)"),
         (json_dir / "pipeline.basic.json", "Tree in JSON format"),
         (json_dir / "pipeline.verbose.json", "Tree with more node fields (streams, packets, options) in JSON format"),
+        (json_dir / "pipeline-flow.json", "Stream-level graph with node-stream pairs and direct feed relationships"),
         (yaml_dir / "pipeline.basic.yaml", "Tree in YAML format"),
         (yaml_dir / "pipeline.verbose.yaml", "Tree with more node fields (streams, packets, options) in YAML format"),
     ]
@@ -1164,10 +1175,10 @@ def main():
     for path, desc in outputs[1:5]:
         print(f"  {'file://' + str(path):<{maxlen}}  :  {desc}")
     print("\njson:")
-    for path, desc in outputs[5:7]:
+    for path, desc in outputs[5:8]:
         print(f"  {'file://' + str(path):<{maxlen}}  :  {desc}")
     print("\nyaml:")
-    for path, desc in outputs[7:]:
+    for path, desc in outputs[8:]:
         print(f"  {'file://' + str(path):<{maxlen}}  :  {desc}")
     print()
 
