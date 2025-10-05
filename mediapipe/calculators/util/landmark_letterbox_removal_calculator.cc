@@ -15,6 +15,7 @@
 #include <cmath>
 #include <vector>
 
+#include "mediapipe/calculators/util/landmark_letterbox_removal_calculator_core.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/port/ret_check.h"
@@ -99,10 +100,6 @@ class LandmarkLetterboxRemovalCalculator : public CalculatorBase {
     }
     const auto& letterbox_padding =
         cc->Inputs().Tag(kLetterboxPaddingTag).Get<std::array<float, 4>>();
-    const float left = letterbox_padding[0];
-    const float top = letterbox_padding[1];
-    const float left_and_right = letterbox_padding[0] + letterbox_padding[2];
-    const float top_and_bottom = letterbox_padding[1] + letterbox_padding[3];
 
     CollectionItemId input_id = cc->Inputs().BeginId(kLandmarksTag);
     CollectionItemId output_id = cc->Outputs().BeginId(kLandmarksTag);
@@ -116,19 +113,8 @@ class LandmarkLetterboxRemovalCalculator : public CalculatorBase {
 
       const NormalizedLandmarkList& input_landmarks =
           input_packet.Get<NormalizedLandmarkList>();
-      NormalizedLandmarkList output_landmarks;
-      for (int i = 0; i < input_landmarks.landmark_size(); ++i) {
-        const NormalizedLandmark& landmark = input_landmarks.landmark(i);
-        NormalizedLandmark* new_landmark = output_landmarks.add_landmark();
-        const float new_x = (landmark.x() - left) / (1.0f - left_and_right);
-        const float new_y = (landmark.y() - top) / (1.0f - top_and_bottom);
-        const float new_z =
-            landmark.z() / (1.0f - left_and_right);  // Scale Z coordinate as X.
-        *new_landmark = landmark;
-        new_landmark->set_x(new_x);
-        new_landmark->set_y(new_y);
-        new_landmark->set_z(new_z);
-      }
+      NormalizedLandmarkList output_landmarks =
+          AdjustLandmarkListForLetterboxRemoval(input_landmarks, letterbox_padding);
 
       cc->Outputs().Get(output_id).AddPacket(
           MakePacket<NormalizedLandmarkList>(output_landmarks)

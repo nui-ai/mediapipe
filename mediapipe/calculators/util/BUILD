@@ -933,8 +933,9 @@ cc_test(
 )
 
 cc_library(
-    name = "landmark_letterbox_removal_calculator",
-    srcs = ["landmark_letterbox_removal_calculator.cc"],
+    name = "landmark_letterbox_removal_calculator_core",
+    srcs = ["landmark_letterbox_removal_calculator_core.cc"],
+    hdrs = ["landmark_letterbox_removal_calculator_core.h"],
     deps = [
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/formats:landmark_cc_proto",
@@ -946,11 +947,51 @@ cc_library(
 )
 
 cc_library(
+    name = "landmark_letterbox_removal_calculator",
+    srcs = ["landmark_letterbox_removal_calculator.cc"],
+    hdrs = ["landmark_letterbox_removal_calculator_core.h"],
+    deps = [
+        ":landmark_letterbox_removal_calculator_core",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/formats:landmark_cc_proto",
+        "//mediapipe/framework/formats:location",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "landmark_projection_calculator_core",
+    srcs = ["landmark_projection_calculator_core.cc"],
+    hdrs = ["landmark_projection_calculator_core.h"],
+    deps = [
+        ":landmark_projection_calculator_cc_proto",
+        "//mediapipe/calculators/tensor:image_to_tensor_utils",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework:collection_item_id",
+        "//mediapipe/framework/api3:calculator",
+        "//mediapipe/framework/api3:calculator_context",
+        "//mediapipe/framework/api3:calculator_contract",
+        "//mediapipe/framework/api3:contract",
+        "//mediapipe/framework/api3:node",
+        "//mediapipe/framework/formats:landmark_cc_proto",
+        "//mediapipe/framework/formats:rect_cc_proto",
+        "//mediapipe/framework/port:ret_check",
+        "@com_google_absl//absl/log:absl_log",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/strings:string_view",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
     name = "landmark_projection_calculator",
     srcs = ["landmark_projection_calculator.cc"],
     hdrs = ["landmark_projection_calculator.h"],
     deps = [
         ":landmark_projection_calculator_cc_proto",
+        ":landmark_projection_calculator_core",
         "//mediapipe/calculators/tensor:image_to_tensor_utils",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:collection_item_id",
