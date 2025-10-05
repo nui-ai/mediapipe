@@ -1269,6 +1269,20 @@ mediapipe_proto_library(
 )
 
 cc_library(
+    name = "tensors_to_landmarks_calculator_core",
+    srcs = ["tensors_to_landmarks_calculator_core.cc"],
+    hdrs = ["tensors_to_landmarks_calculator_core.h"],
+    deps = [
+        ":tensors_to_landmarks_calculator_cc_proto",
+        "//mediapipe/framework/formats:landmark_cc_proto",
+        "//mediapipe/framework/formats:tensor",
+        "//mediapipe/framework/port:ret_check",
+        "@com_google_absl//absl/log:absl_check",
+        "@com_google_absl//absl/status",
+    ],
+)
+
+cc_library(
     name = "tensors_to_landmarks_calculator",
     srcs = ["tensors_to_landmarks_calculator.cc"],
     copts = select({
@@ -1280,6 +1294,7 @@ cc_library(
     }),
     deps = [
         ":tensors_to_landmarks_calculator_cc_proto",
+        ":tensors_to_landmarks_calculator_core",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/api2:node",
         "//mediapipe/framework/formats:landmark_cc_proto",
@@ -1660,7 +1675,6 @@ cc_test(
         "//mediapipe/framework/formats:image",
         "//mediapipe/framework/formats:image_format_cc_proto",
         "//mediapipe/framework/formats:image_frame",
-        "//mediapipe/framework/formats:image_frame_opencv",
         "//mediapipe/framework/formats:rect_cc_proto",
         "//mediapipe/framework/formats:tensor",
         "//mediapipe/framework/port:gtest_main",
