@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "mediapipe/calculators/util/world_landmark_projection_calculator.h"
+#include "mediapipe/calculators/util/world_landmark_projection_calculator_core.h"
 
 #include <cmath>
 #include <functional>
@@ -39,29 +40,13 @@ class WorldLandmarkProjectionNodeImpl
     }
 
     const auto& in_landmarks = cc.input_landmarks.GetOrDie();
-    std::function<void(const Landmark&, Landmark*)> rotate_fn;
+    std::function<void(const Landmark&, Landmark*)> rotate_fn = nullptr;
     if (cc.input_rect) {
       const auto& in_rect = cc.input_rect.GetOrDie();
-      const float cosa = std::cos(in_rect.rotation());
-      const float sina = std::sin(in_rect.rotation());
-      rotate_fn = [cosa, sina](const Landmark& in_landmark,
-                               Landmark* out_landmark) {
-        out_landmark->set_x(cosa * in_landmark.x() - sina * in_landmark.y());
-        out_landmark->set_y(sina * in_landmark.x() + cosa * in_landmark.y());
-      };
+      rotate_fn = mediapipe::api3::CreateRotationFunction(&in_rect);
     }
 
-    LandmarkList out_landmarks;
-    for (int i = 0; i < in_landmarks.landmark_size(); ++i) {
-      const auto& in_landmark = in_landmarks.landmark(i);
-
-      Landmark* out_landmark = out_landmarks.add_landmark();
-      *out_landmark = in_landmark;
-
-      if (rotate_fn) {
-        rotate_fn(in_landmark, out_landmark);
-      }
-    }
+    LandmarkList out_landmarks = mediapipe::api3::ProcessLandmarks(in_landmarks, rotate_fn);
 
     cc.output_landmarks.Send(std::move(out_landmarks));
     return absl::OkStatus();

@@ -1036,10 +1036,28 @@ cc_test(
 )
 
 cc_library(
+    name = "world_landmark_projection_calculator_core",
+    srcs = ["world_landmark_projection_calculator_core.cc"],
+    hdrs = ["world_landmark_projection_calculator_core.h"],
+    deps = [
+        "//mediapipe/framework/api3:calculator",
+        "//mediapipe/framework/api3:calculator_context",
+        "//mediapipe/framework/api3:contract",
+        "//mediapipe/framework/api3:node",
+        "//mediapipe/framework/formats:landmark_cc_proto",
+        "//mediapipe/framework/formats:rect_cc_proto",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/strings:string_view",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
     name = "world_landmark_projection_calculator",
     srcs = ["world_landmark_projection_calculator.cc"],
     hdrs = ["world_landmark_projection_calculator.h"],
     deps = [
+        ":world_landmark_projection_calculator_core",
         "//mediapipe/framework/api3:calculator",
         "//mediapipe/framework/api3:calculator_context",
         "//mediapipe/framework/api3:contract",
