@@ -14,6 +14,7 @@
 
 #include "mediapipe/calculators/util/thresholding_calculator.pb.h"
 #include "mediapipe/framework/calculator_framework.h"
+#include "mediapipe/calculators/util/thresholding_calculator_core.h"
 
 namespace mediapipe {
 
@@ -97,14 +98,13 @@ absl::Status ThresholdingCalculator::Open(CalculatorContext* cc) {
 
   const auto& options =
       cc->Options<::mediapipe::ThresholdingCalculatorOptions>();
-  if (options.has_threshold()) {
-    RET_CHECK(!cc->Inputs().HasTag(kThresholdTag))
-        << "Using both the threshold option and input stream is not supported.";
-    RET_CHECK(!cc->InputSidePackets().HasTag(kThresholdTag))
-        << "Using both the threshold option and input side packet is not "
-           "supported.";
-    threshold_ = options.threshold();
-  }
+
+  // Using the core function to initialize the calculator
+  MP_RETURN_IF_ERROR(thresholding_calculator::InitializeCalculator(
+      options,
+      cc->Inputs().HasTag(kThresholdTag),
+      cc->InputSidePackets().HasTag(kThresholdTag),
+      threshold_));
 
   if (cc->InputSidePackets().HasTag(kThresholdTag)) {
     threshold_ = cc->InputSidePackets().Tag(kThresholdTag).Get<double>();
@@ -113,16 +113,27 @@ absl::Status ThresholdingCalculator::Open(CalculatorContext* cc) {
 }
 
 absl::Status ThresholdingCalculator::Process(CalculatorContext* cc) {
+  // Get the input float value
+  RET_CHECK(!cc->Inputs().Tag(kFloatTag).IsEmpty());
+  const float input_float_value = cc->Inputs().Tag(kFloatTag).Get<float>();
+
+  // Default threshold input values
+  double threshold_input_value = 0.0;
+  bool threshold_input_empty = true;
+
+  // Get threshold from input stream if available
   if (cc->Inputs().HasTag(kThresholdTag) &&
       !cc->Inputs().Tag(kThresholdTag).IsEmpty()) {
-    threshold_ = cc->Inputs().Tag(kThresholdTag).Get<double>();
+    threshold_input_value = cc->Inputs().Tag(kThresholdTag).Get<double>();
+    threshold_input_empty = false;
   }
 
-  bool accept = false;
-  RET_CHECK(!cc->Inputs().Tag(kFloatTag).IsEmpty());
-  accept = static_cast<double>(cc->Inputs().Tag(kFloatTag).Get<float>()) >
-           threshold_;
+  // Use the core function to process the input value
+  bool accept = thresholding_calculator::ProcessCalculator(
+      threshold_, cc->Inputs().HasTag(kThresholdTag), threshold_input_empty,
+      threshold_input_value, input_float_value);
 
+  // Output packets to the appropriate streams
   if (cc->Outputs().HasTag(kFlagTag)) {
     cc->Outputs().Tag(kFlagTag).AddPacket(
         MakePacket<bool>(accept).At(cc->InputTimestamp()));

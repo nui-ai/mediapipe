@@ -468,10 +468,24 @@ cc_library(
 )
 
 cc_library(
+    name = "thresholding_calculator_core",
+    srcs = ["thresholding_calculator_core.cc"],
+    hdrs = ["thresholding_calculator_core.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":thresholding_calculator_cc_proto",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+    ],
+)
+
+cc_library(
     name = "thresholding_calculator",
     srcs = ["thresholding_calculator.cc"],
     deps = [
         ":thresholding_calculator_cc_proto",
+        ":thresholding_calculator_core",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/port:ret_check",
         "//mediapipe/framework/port:status",
