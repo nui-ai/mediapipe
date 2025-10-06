@@ -172,11 +172,13 @@ absl::Status DetectionsToRectsCalculator::GetContract(CalculatorContract* cc) {
 
 absl::Status DetectionsToRectsCalculator::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
+
   options_ = DetectionsToRectsCalculatorOptions();
   options_.set_rotation_vector_start_keypoint_index(0);  // Center of wrist.
   options_.set_rotation_vector_end_keypoint_index(2);  // MCP of middle finger.
   options_.set_rotation_vector_target_angle_degrees(90);
-  DetectionsToRectsCoreConfig config = ExtractConfigFromOptions(options_);
+
+  DetectionsToRectsCoreConfig config = SetDetectionsToRectsConfig(options_);
   start_keypoint_index_ = config.start_keypoint_index;
   end_keypoint_index_ = config.end_keypoint_index;
   target_angle_ = config.target_angle;

@@ -23,7 +23,7 @@ struct DetectionsToRectsCoreConfig {
   bool output_zero_rect_for_empty_detections;
 };
 
-DetectionsToRectsCoreConfig ExtractConfigFromOptions(const DetectionsToRectsCalculatorOptions& options);
+DetectionsToRectsCoreConfig SetDetectionsToRectsConfig(const DetectionsToRectsCalculatorOptions& options);
 
 void ComputeRectsFromDetections(
     const std::vector<Detection>& detections,

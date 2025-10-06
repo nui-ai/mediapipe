@@ -11,7 +11,7 @@
 
 namespace mediapipe {
 
-DetectionsToRectsCoreConfig ExtractConfigFromOptions(const DetectionsToRectsCalculatorOptions& options) {
+DetectionsToRectsCoreConfig SetDetectionsToRectsConfig(const DetectionsToRectsCalculatorOptions& options) {
   DetectionsToRectsCoreConfig config;
   config.rotate = false;
   config.target_angle = 0.0f;
