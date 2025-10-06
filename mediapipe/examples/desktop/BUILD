@@ -90,15 +90,6 @@ cc_library(
 )
 
 cc_library(
-    name = "compare_pipelines_output_data_main",
-    srcs = ["compare_pipelines_output_data_main.cc"],
-    deps = [
-        ":pipeline_output_cc_proto",
-        "@com_google_protobuf//:protobuf",
-    ],
-)
-
-cc_library(
     name = "hands_pipeline_operator_c_api",
     srcs = ["hands_pipeline_operator_c_api.cc"],
     hdrs = ["hands_pipeline_operator_c_api.h"],
@@ -114,6 +105,15 @@ cc_library(
         "@com_google_protobuf//:protobuf",
     ],
     alwayslink = 1,
+)
+
+cc_library(
+    name = "compare_pipelines_output_data_main",
+    srcs = ["compare_pipelines_output_data_main.cc"],
+    deps = [
+        ":pipeline_output_cc_proto",
+        "@com_google_protobuf//:protobuf",
+    ],
 )
 
 ####################################

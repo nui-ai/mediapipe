@@ -38,6 +38,17 @@ cc_binary(
     ],
 )
 
+# from the same c api wrapping around the C++ HandsPipelineOperatorfor pipeline driving class,
+# which the above binary target also uses ―
+# also build a shared library that can be loaded by rust.
+# the library name starts with the standard "lib" prefix which common scenarios expect, and ends with the standard ".so" suffix.
+cc_binary(
+    name = "libhands_pipeline_operator_c_api.so",
+    linkshared = 1,
+    visibility = ["//visibility:public"],
+    deps = ["//mediapipe/examples/desktop:hands_pipeline_operator_c_api"],
+)
+
 cc_binary(
     name = "compare_pipelines_output_data",
     deps = [

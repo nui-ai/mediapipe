@@ -1,0 +1,29 @@
+// FFI bindings for mediapipe C API
+
+extern "C" {
+    pub fn hands_pipeline_operator_create(
+        graph_bytes: *const libc::c_char,
+        graph_bytes_len: usize,
+        output_streams_csv: *const libc::c_char,
+    ) -> *mut std::ffi::c_void;
+
+    pub fn hands_pipeline_operator_push_image(
+        handle: *mut std::ffi::c_void,
+        image_data: *const u8,
+        cols: i32,
+        rows: i32,
+        channels: i32,
+        timestamp_us: usize,
+    ) -> i32;
+
+    pub fn hands_pipeline_operator_wait_for_output(
+        handle: *mut std::ffi::c_void,
+        frame_index: i32,
+        output_data: *mut *mut libc::c_char,
+        output_size: *mut usize,
+    ) -> i32;
+
+    pub fn hands_pipeline_operator_finalize(handle: *mut std::ffi::c_void) -> i32;
+    pub fn hands_pipeline_operator_destroy(handle: *mut std::ffi::c_void);
+    pub fn hands_pipeline_operator_get_last_error() -> *const libc::c_char;
+}

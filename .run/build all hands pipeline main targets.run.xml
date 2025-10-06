@@ -2,8 +2,9 @@
   <configuration default="false" name="build all hands pipeline main targets" type="BlazeCommandRunConfigurationType" factoryName="Bazel Command">
     <blaze-settings blaze-command="build" handler-id="BlazeCommandGenericRunConfigurationHandlerProvider">
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run</blaze-target>
-      <blaze-target>//mediapipe/examples/desktop/hand_tracking:compare_pipelines_output_data</blaze-target>
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run_via_c_api</blaze-target>
+      <blaze-target>//mediapipe/examples/desktop/hand_tracking:libhands_pipeline_operator_c_api.so</blaze-target>
+      <blaze-target>//mediapipe/examples/desktop/hand_tracking:compare_pipelines_output_data</blaze-target>
       <blaze-user-flag>-c</blaze-user-flag>
       <blaze-user-flag>opt</blaze-user-flag>
       <blaze-user-flag>--copt=-I/usr/include/opencv4</blaze-user-flag>
