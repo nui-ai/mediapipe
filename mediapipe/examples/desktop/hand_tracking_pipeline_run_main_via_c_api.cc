@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// C API test: clone of hand_tracking_pipeline_run_main.cc using the C API
+// drives the C API of operating our mediapipe pipeline:
+// practically a clone of hand_tracking_pipeline_run_main.cc,
+// which unlike the former does not directly use the C++ implementation of the pipeline operator,
+// but the C api for it.
 #include <cstdlib>
 #include <fstream>
 #include <vector>
@@ -20,7 +23,7 @@
 #include <iostream>
 #include <memory>
 
-#include "mediapipe/examples/desktop/hands_pipeline_operator_c_api.h"
+#include "mediapipe/examples/desktop/hands_pipeline_operator_c_api.h" // the C api header
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
