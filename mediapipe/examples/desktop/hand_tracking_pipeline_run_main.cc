@@ -41,8 +41,8 @@ constexpr char kInputStream[] = "image";
 constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";
 constexpr char kReferenceProtoFilename[] = "output_data_v0.10.13.pb";
 
-ABSL_FLAG(std::string, calculator_graph_config_file, "",
-          "Name of file containing text format CalculatorGraphConfig proto.");
+ABSL_FLAG(std::string, graph_file, "",
+          "Name of pipeline pbtxt file.");
 ABSL_FLAG(std::string, input_video_path, "",
           "Full path of video to load. "
           "If not provided, attempt to use a webcam.");
@@ -95,15 +95,11 @@ absl::Status RunPipelineWithDiffing() {
     ABSL_LOG(INFO) << "loaded " << reference_data.size() << " records from the reference data file.";
   }
 
-  std::string calculator_graph_config_contents;
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
-      absl::GetFlag(FLAGS_calculator_graph_config_file),
-      &calculator_graph_config_contents));
-  mediapipe::CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(
-          calculator_graph_config_contents);
+  std::string graph_protobuf_definition;  // the text protobuf definition of the graph, typically loaded from a pbtxt file
+  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(absl::GetFlag(FLAGS_graph_file), &graph_protobuf_definition));
+  mediapipe::CalculatorGraphConfig pipeline_definition = mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(graph_protobuf_definition);
 
-  // set of expected output streams
+  // set of expected pipeline output streams
   const std::vector<std::string> graph_output_streams_names = {
     "multi_hand_landmarks",
     "multi_hand_world_landmarks",
@@ -111,8 +107,7 @@ absl::Status RunPipelineWithDiffing() {
     // "hand_rects_from_palm_detections"
   };
 
-  // Use HandsPipelineOperator to encapsulate graph operations
-  mediapipe::HandsPipelineOperator pipeline_operator(config, graph_output_streams_names);
+  mediapipe::HandsPipelineOperator pipeline_operator(pipeline_definition, graph_output_streams_names);
 
   // initializing the camera or load the input video
   cv::VideoCapture capture;
