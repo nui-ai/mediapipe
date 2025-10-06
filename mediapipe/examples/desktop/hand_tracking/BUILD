@@ -14,6 +14,42 @@
 
 licenses(["notice"])
 
+cc_binary(
+    name = "hand_tracking_pipeline_run",
+    data = [
+        "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
+        "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
+    ],
+    deps = [
+        "//mediapipe/examples/desktop:hand_tracking_pipeline_run_main",
+        "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
+    ],
+)
+
+cc_binary(
+    name = "hand_tracking_pipeline_run_via_c_api",
+    data = [
+        "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
+        "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
+    ],
+    deps = [
+        "//mediapipe/examples/desktop:hand_tracking_pipeline_run_via_c_api",
+        "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
+    ],
+)
+
+cc_binary(
+    name = "compare_pipelines_output_data",
+    deps = [
+        "//mediapipe/examples/desktop:compare_pipelines_output_data_main",
+        "@com_google_protobuf//:protobuf",
+    ],
+)
+
+##################################################################################################
+# the legacy mediapipe example mains and how to run them (no longer interesting for this branch) #
+##################################################################################################
+
 # BUILD:
 # bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 \
 #   //mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
@@ -50,26 +86,6 @@ cc_binary(
     deps = [
         "//mediapipe/examples/desktop:demo_run_graph_main",
         "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
-    ],
-)
-
-cc_binary(
-    name = "hand_tracking_pipeline_run",
-    data = [
-        "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
-        "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
-    ],
-    deps = [
-        "//mediapipe/examples/desktop:hand_tracking_pipeline_run_main",
-        "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
-    ],
-)
-
-cc_binary(
-    name = "compare_pipelines_output_data",
-    deps = [
-        "//mediapipe/examples/desktop:compare_pipelines_output_data_main",
-        "@com_google_protobuf//:protobuf",
     ],
 )
 

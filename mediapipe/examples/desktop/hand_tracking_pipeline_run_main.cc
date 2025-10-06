@@ -17,18 +17,14 @@
 #include <fstream>
 
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
-#include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
-#include "mediapipe/framework/formats/classification.pb.h"
 #include "mediapipe/examples/desktop/hands_pipeline_operator.h"
 
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/image_frame.h"
-#include "mediapipe/framework/formats/image_frame_opencv.h"
 #include "mediapipe/framework/port/file_helpers.h"
-#include "mediapipe/framework/port/opencv_highgui_inc.h"
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/port/opencv_video_inc.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
@@ -50,7 +46,7 @@ ABSL_FLAG(std::string, output_video_path, "",
           "Full path of where to save result (.mp4 only). "
           "If not provided, show result in a window.");
 
-// Function to read reference data from file
+// helper function to read the output reference data from file
 bool ReadReferenceData(const std::string& filename, std::vector<mediapipe::PipelineOutputData>& out) {
     std::ifstream input(filename, std::ios::binary);
     if (!input.is_open()) {
@@ -150,8 +146,9 @@ absl::Status RunPipelineWithDiffing() {
     mediapipe::PipelineOutputData stream_data_msg;
     MP_RETURN_IF_ERROR(pipeline_operator.wait_for_output(&stream_data_msg, i));
 
-    // Serialize the current output
+    // write the current frame output to file
     google::protobuf::util::SerializeDelimitedToOstream(stream_data_msg, &output_proto_file);
+
     // Compare with reference data if available
     if (!reference_data.empty()) {
       if (i < reference_data.size()) {
@@ -188,6 +185,8 @@ int main(int argc, char** argv) {
   // something in the build dependencies order makes VLOG not log for the current module but only for original modules, which is too subtle to capture
   // at any budget of time that's proportional.
   google::InitGoogleLogging(argv[0]);
+
+  ABSL_LOG(INFO) << "this is the pure c++ pipeline runner";
 
   absl::ParseCommandLine(argc, argv);
 
