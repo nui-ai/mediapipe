@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// An example of sending OpenCV webcam frames into a MediaPipe graph.
+// operates a MediaPipe pipeline for hand tracking over a given input video file,
+// saving the per-frame output from the pipeline, and diffing the same outputs
+// against a reference output data file in real-time as it goes frame by frame.
+
 #include <cstdlib>
 #include <fstream>
 

@@ -16,6 +16,7 @@
 // practically a clone of hand_tracking_pipeline_run_main.cc,
 // which unlike the former does not directly use the C++ implementation of the pipeline operator,
 // but the C api for it.
+
 #include <cstdlib>
 #include <fstream>
 #include <vector>
