@@ -21,7 +21,6 @@
 #include <memory>
 
 #include "mediapipe/examples/desktop/hands_pipeline_operator_c_api.h"
-#include "mediapipe/examples/desktop/hands_pipeline_operator.h"
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
