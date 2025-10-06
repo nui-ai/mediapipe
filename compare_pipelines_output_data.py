@@ -5,8 +5,8 @@ from mediapipe.examples.desktop import pipeline_output_pb2
 from mediapipe.framework.formats import landmark_pb2, classification_pb2, rect_pb2, detection_pb2
 from google.protobuf.json_format import MessageToDict
 
-FIRST = "output_data_cpp.pb"
-SECOND = "output_data_v0.10.13.pb"  # "output_data_python.pb"
+CURRENT = "output_data_python.pb"
+REFERENCE = "output_data_v0.10.13.pb"  # "output_data_python.pb"
 
 # Helper to read a varint from a file
 def read_varint(file):
@@ -54,34 +54,34 @@ def compare_messages(msg1, msg2):
     all_keys = set(dict1.keys()) | set(dict2.keys())
     for key in all_keys:
         if dict1.get(key) != dict2.get(key):
-            differences[key] = {'cpp': dict1.get(key), 'python': dict2.get(key)}
+            differences[key] = {'reference': dict1.get(key), 'python': dict2.get(key)}
     return differences
 
 def main():
     print("note: the c++ equivalent main provides an easier to consume elucidation of the same differences. try it.\n")
-    if not os.path.exists(FIRST) or not os.path.exists(SECOND):
-        print(f"Missing required files: {FIRST} or {SECOND}")
+    if not os.path.exists(CURRENT) or not os.path.exists(REFERENCE):
+        print(f"Missing required files: {CURRENT} or {REFERENCE}")
         sys.exit(1)
-    py_msgs = read_pipeline_output_data(SECOND)
-    cpp_msgs = read_pipeline_output_data(FIRST)
-    n_cpp = len(cpp_msgs)
+    py_msgs = read_pipeline_output_data(REFERENCE)
+    reference_msgs = read_pipeline_output_data(CURRENT)
+    n_reference = len(reference_msgs)
     n_py = len(py_msgs)
-    print(f"Read {n_cpp} records from {FIRST}")
-    print(f"Read {n_py} records from {SECOND}")
-    n = min(n_cpp, n_py)
+    print(f"Read {n_reference} records from {CURRENT}")
+    print(f"Read {n_py} records from {REFERENCE}")
+    n = min(n_reference, n_py)
     all_equal = True
     different_pairs = 0
     for i in range(n):
-        if cpp_msgs[i] == py_msgs[i]:
+        if reference_msgs[i] == py_msgs[i]:
             continue
         all_equal = False
         different_pairs += 1
         print(f"Record {i+1} differs:")
-        diffs = compare_messages(cpp_msgs[i], py_msgs[i])
+        diffs = compare_messages(reference_msgs[i], py_msgs[i])
         for field, vals in diffs.items():
-            print(f"  Field '{field}': cpp={vals['cpp']} python={vals['python']}")
-    if n_cpp != n_py:
-        print(f"Number of records differ: cpp={n_cpp}, python={n_py}")
+            print(f"  Field '{field}': reference={vals['reference']} python={vals['python']}")
+    if n_reference != n_py:
+        print(f"Number of records differ: reference={n_reference}, python={n_py}")
         all_equal = False
     if all_equal:
         print("All records are equal.")
