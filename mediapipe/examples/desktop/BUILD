@@ -1,26 +1,30 @@
+load("//mediapipe/framework/port:build_config.bzl", "mediapipe_cc_proto_library", "mediapipe_proto_library")
+
 licenses(["notice"])
 
 package(default_visibility = [
     "//visibility:public",
 ])
 
-load("//mediapipe/framework/port:build_config.bzl", "mediapipe_proto_library", "mediapipe_cc_proto_library")
-
 mediapipe_proto_library(
     name = "pipeline_output_proto",
     srcs = ["pipeline_output.proto"],
     deps = [
-        "//mediapipe/framework/formats:landmark_proto",
         "//mediapipe/framework/formats:classification_proto",
+        "//mediapipe/framework/formats:landmark_proto",
         "//mediapipe/framework/formats:rect_proto",
     ],
 )
 
 cc_library(
-    name = "hand_tracking_pipeline_run_main",
-    srcs = ["hand_tracking_pipeline_run_main.cc"],
+    name = "hands_pipeline_operator",
+    srcs = ["hands_pipeline_operator.cc"],
+    hdrs = ["hands_pipeline_operator.h"],
     deps = [
+        ":pipeline_output_cc_proto",
+        "//mediapipe/calculators/util:detection_model_provider",
         "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/formats:detection_cc_proto",
         "//mediapipe/framework/formats:image_frame",
         "//mediapipe/framework/formats:image_frame_opencv",
         "//mediapipe/framework/port:file_helpers",
@@ -29,13 +33,31 @@ cc_library(
         "//mediapipe/framework/port:opencv_video",
         "//mediapipe/framework/port:parse_text_proto",
         "//mediapipe/framework/port:status",
-
         "//mediapipe/util:resource_util",
-        "//mediapipe/calculators/util:detection_model_provider",
-        "//mediapipe/framework/formats:detection_cc_proto",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/log:absl_log",
+    ],
+)
 
+cc_library(
+    name = "hand_tracking_pipeline_run_main",
+    srcs = ["hand_tracking_pipeline_run_main.cc"],
+    deps = [
+        ":hands_pipeline_operator",
         ":pipeline_output_cc_proto",
-
+        "//mediapipe/calculators/util:detection_model_provider",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/formats:detection_cc_proto",
+        "//mediapipe/framework/formats:image_frame",
+        "//mediapipe/framework/formats:image_frame_opencv",
+        "//mediapipe/framework/port:file_helpers",
+        "//mediapipe/framework/port:opencv_highgui",
+        "//mediapipe/framework/port:opencv_imgproc",
+        "//mediapipe/framework/port:opencv_video",
+        "//mediapipe/framework/port:parse_text_proto",
+        "//mediapipe/framework/port:status",
+        "//mediapipe/util:resource_util",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
         "@com_google_absl//absl/log:absl_log",
@@ -50,7 +72,6 @@ cc_library(
         "@com_google_protobuf//:protobuf",
     ],
 )
-
 
 ####################################
 # original mediapipe example mains #
@@ -107,7 +128,6 @@ cc_library(
         "@com_google_absl//absl/log:absl_log",
     ],
 )
-
 
 # Linux only.
 # Must have a GPU with EGL support:

@@ -20,6 +20,7 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/classification.pb.h"
+#include "mediapipe/examples/desktop/hands_pipeline_operator.h"
 
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
@@ -83,7 +84,7 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe::Pipel
     return true;
 }
 
-absl::Status RunMPPGraph() {
+absl::Status RunPipelineWithDiffing() {
 
   // Load reference data from output_data_v0.10.13.pb
   std::vector<mediapipe::PipelineOutputData> reference_data;
@@ -110,17 +111,8 @@ absl::Status RunMPPGraph() {
     // "hand_rects_from_palm_detections"
   };
 
-  // Initializing the calculator graph
-  mediapipe::CalculatorGraph graph;
-
-  MP_RETURN_IF_ERROR(graph.Initialize(config));
-
-  // poller per each expected output stream
-  std::map<std::string, mediapipe::OutputStreamPoller> pollers;
-  for (const auto& stream : graph_output_streams_names) {
-    MP_ASSIGN_OR_RETURN(auto poller, graph.AddOutputStreamPoller(stream));
-    pollers.emplace(stream, std::move(poller));
-  }
+  // Use HandsPipelineOperator to encapsulate graph operations
+  mediapipe::HandsPipelineOperator pipeline_operator(config, graph_output_streams_names);
 
   // initializing the camera or load the input video
   cv::VideoCapture capture;
@@ -134,8 +126,6 @@ absl::Status RunMPPGraph() {
 
   ABSL_LOG(INFO) << "starting a mediapipe graph";
 
-  MP_RETURN_IF_ERROR(graph.StartRun({}));
-
   // Initialize output protobuf file (overwrite if exists)
   std::ofstream output_proto_file(kOutputProtoFilename, std::ios::binary | std::ios::trunc);
   if (!output_proto_file.is_open()) {
@@ -146,10 +136,6 @@ absl::Status RunMPPGraph() {
   for (int i = 0; i < 999999; ++i) {
 
     ABSL_LOG(WARNING) << "frame number: " << i;
-
-    std::map<std::string, bool> stream_outputs;
-    for (const auto& stream_name : graph_output_streams_names) stream_outputs[stream_name] = false;
-
     cv::Mat input_frame_raw;
     capture >> input_frame_raw;
     if (input_frame_raw.empty()) {
@@ -164,81 +150,13 @@ absl::Status RunMPPGraph() {
     cv::cvtColor(input_frame_raw, input_frame, cv::COLOR_BGR2RGB);
     if (!video_file_input) { cv::flip(input_frame, input_frame, /*flipcode=HORIZONTAL*/ 1); }
 
-    // Wrap Mat into an ImageFrame.
-    auto pipeline_ready_frame = absl::make_unique<mediapipe::ImageFrame>(
-        mediapipe::ImageFormat::SRGB, input_frame.cols, input_frame.rows, mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-    cv::Mat input_frame_mat = mediapipe::formats::MatView(pipeline_ready_frame.get());
-    input_frame.copyTo(input_frame_mat);
-
-    // Send image packet into the graph.
-    size_t frame_timestamp_us =
-        (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
-    MP_RETURN_IF_ERROR(graph.AddPacketToInputStream(kInputStream, mediapipe::Adopt(pipeline_ready_frame.release()).At(mediapipe::Timestamp(frame_timestamp_us))));
-
-    // Wait for graph to finish its processing of the current input fed to it
-    MP_RETURN_IF_ERROR(graph.WaitUntilIdle());
-
-    // then take out its (zero or) single expected packet per each of its output streams ―
-    // currently when there's no hand detection, the graph will emit zero packets for
-    // all of its output streams (this can change during the liberation development phase)
-    // Declare output variables for all streams, accessible outside the if-else block
-    std::vector<mediapipe::LandmarkList> hand_landmarks;
-    std::vector<mediapipe::NormalizedLandmarkList> world_hand_landmarks;
-    std::vector<mediapipe::ClassificationList> handedness;
-    std::vector<mediapipe::NormalizedRect> hand_rects;
-
-    for (auto& poller_pair : pollers) {
-      auto& stream_name = poller_pair.first;
-      auto& poller = poller_pair.second;
-
-      if (poller.QueueSize() == 0) {
-        ABSL_LOG(INFO) << "no packets in the " << stream_name << " poller queue, in this iteration";
-      } else if (poller.QueueSize() > 1) {
-        return absl::InternalError("More than one packet is available on the output stream " + stream_name + " (" + std::to_string(poller.QueueSize()) + ") poller queue, in this iteration");
-      } else { // one packet is available
-
-        mediapipe::Packet packet;
-        MP_RETURN_IF_ERROR(poller.Next(&packet) ? absl::OkStatus() : absl::InternalError("poller queue size was one, but failed to retrieve its single packet, which is unexpected."));
-
-        // extract each stream's typed packet, we can be more elegant by using a map from poller to variable pointer or something, but each name will still be explicitly used also in that case.
-        // so avoiding over-complicated mapping from stream name to variable pointer is less code and simpler to read.
-        if (stream_name == "multi_hand_world_landmarks") {
-          hand_landmarks = packet.Get<std::vector<mediapipe::LandmarkList>>();
-        } else if (stream_name == "multi_hand_landmarks") {
-          world_hand_landmarks = packet.Get<std::vector<mediapipe::NormalizedLandmarkList>>();
-        } else if (stream_name == "multi_handedness") {
-          handedness = packet.Get<std::vector<mediapipe::ClassificationList>>();
-        } else if (stream_name == "hand_rects_from_palm_detections") {
-          hand_rects = packet.Get<std::vector<mediapipe::NormalizedRect>>();
-        }
-
-        stream_outputs[stream_name] = true;
-        }
-      }
-
-    bool all_streams_have_output = std::all_of(stream_outputs.begin(), stream_outputs.end(), [](const auto& pair) { return pair.second; });
-    if (!all_streams_have_output) { ABSL_LOG(INFO) << "at least one of the expected output streams has no packet in this iteration"; }
-
-    // fill up a typed protobuf message containing the data from all output streams
+    size_t frame_timestamp_us = (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
+    MP_RETURN_IF_ERROR(pipeline_operator.push_image(input_frame, frame_timestamp_us));
     mediapipe::PipelineOutputData stream_data_msg;
-    stream_data_msg.set_frame_number(i);
-    for (const auto& l : hand_landmarks) {
-      ABSL_LOG(INFO) << "number of lm collections: " << hand_landmarks.size();
-      *stream_data_msg.add_multi_hand_world_landmarks() = l;
-    }
-    for (const auto& l : world_hand_landmarks) {
-      *stream_data_msg.add_multi_hand_landmarks() = l;
-    }
-    for (const auto& c : handedness) {
-      *stream_data_msg.add_multi_handedness() = c;
-    }
-    // for (const auto& r : hand_rects) {
-    //   *stream_data_msg.add_hand_rects_from_palm_detections() = r;
-    // }
+    MP_RETURN_IF_ERROR(pipeline_operator.wait_for_output(&stream_data_msg, i));
 
     // Serialize the current output
     google::protobuf::util::SerializeDelimitedToOstream(stream_data_msg, &output_proto_file);
-
     // Compare with reference data if available
     if (!reference_data.empty()) {
       if (i < reference_data.size()) {
@@ -250,21 +168,21 @@ absl::Status RunMPPGraph() {
           ABSL_LOG(ERROR) << "Pipeline output at frame " << i << " is different than the reference output:\n" << diff;
           ABSL_LOG(ERROR) << "terminating early due to difference in output at frame " << i;
           break; // Early termination due to difference
-        } else {
-          ABSL_LOG(INFO) << "pipeline output for frame " << i << " is identical to its reference output read from " << kReferenceProtoFilename;
-        }
-      } else {
-        ABSL_LOG(WARNING) << "reference output file doesn't have data for frame " << i << " (it has only " << reference_data.size() << " records)";
-      }
+        } else { ABSL_LOG(INFO) << "pipeline output for frame " << i << " is identical to its reference output read from " << kReferenceProtoFilename; }
+      } else { ABSL_LOG(WARNING) << "reference output file doesn't have data for frame " << i << " (it has only " << reference_data.size() << " records)"; }
     }
   }
 
   output_proto_file.close();
-  ABSL_LOG(INFO) << "mediapipe graph shutting down";
   ABSL_LOG(INFO) << kOutputProtoFilename << " was written";
 
-  MP_RETURN_IF_ERROR(graph.CloseInputStream(kInputStream));
-  return graph.WaitUntilDone();
+  absl::Status finalize_status = pipeline_operator.finalize();
+  if (!pipeline_operator.finalize().ok()) {
+    ABSL_LOG(ERROR) << "Error during mediapipe graph finalization: " << finalize_status.message();
+    return finalize_status;
+  }
+
+  return absl::OkStatus();
 }
 
 int main(int argc, char** argv) {
@@ -278,7 +196,7 @@ int main(int argc, char** argv) {
 
   absl::ParseCommandLine(argc, argv);
 
-  absl::Status run_status = RunMPPGraph();
+  absl::Status run_status = RunPipelineWithDiffing();
   if (!run_status.ok()) {
     ABSL_LOG(INFO) << "failed to run the mediapipe graph due to the following issue: " << run_status.message();
     return EXIT_FAILURE;
