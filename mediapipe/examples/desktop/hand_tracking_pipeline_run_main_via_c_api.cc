@@ -90,25 +90,12 @@ int main(int argc, char** argv) {
     std::vector<mediapipe::PipelineOutputData> reference_data;
     ReadReferenceData(kReferenceProtoFilename, reference_data);
 
-    // load the graph definition from its pbtxt file
-    std::string graph_protobuf_definition;
-    if (!mediapipe::file::GetContents(absl::GetFlag(FLAGS_graph_file), &graph_protobuf_definition).ok()) {
-        std::cerr << "Failed to load graph file: " << absl::GetFlag(FLAGS_graph_file) << std::endl;
-        return EXIT_FAILURE;
-    }
-    mediapipe::CalculatorGraphConfig pipeline_definition = mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(graph_protobuf_definition);
-    std::string pipeline_definition_serialized;
-    if (!pipeline_definition.SerializeToString(&pipeline_definition_serialized)) {
-        std::cerr << "Failed to serialize CalculatorGraphConfig" << std::endl;
-        return EXIT_FAILURE;
-    }
-
     // output stream names as single string for c api simplicity
     const std::string output_streams_csv = "multi_hand_landmarks,multi_hand_world_landmarks,multi_handedness";
 
-    // instantiate the graph operator object
+    // instantiate the graph operator object using file path
     HandsPipelineOperatorHandle pipeline_operator = hands_pipeline_operator_create(
-        pipeline_definition_serialized.data(), pipeline_definition_serialized.size(), output_streams_csv.c_str());
+        absl::GetFlag(FLAGS_graph_file).c_str(), output_streams_csv.c_str());
     if (!pipeline_operator) {
         std::cerr << "Failed to create HandsPipelineOperator via C API: " << hands_pipeline_operator_get_last_error() << std::endl;
         return EXIT_FAILURE;

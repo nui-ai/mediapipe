@@ -18,9 +18,9 @@ extern "C" {
 // Opaque handle for the C++ HandsPipelineOperator instance
 typedef void* HandsPipelineOperatorHandle;
 
-// Create operator from serialized CalculatorGraphConfig and output stream names list (comma-separated string)
+// Create operator from graph file path and output stream names list (comma-separated string)
 HandsPipelineOperatorHandle hands_pipeline_operator_create(
-    const char* graph_definition, size_t config_size,
+    const char* graph_file_path,
     const char* output_streams_csv);
 
 // Destroy operator
@@ -49,4 +49,3 @@ const char* hands_pipeline_operator_get_last_error();
 #endif
 
 #endif  // MEDIAPIPE_EXAMPLES_DESKTOP_HANDS_PIPELINE_OPERATOR_C_API_H_
-

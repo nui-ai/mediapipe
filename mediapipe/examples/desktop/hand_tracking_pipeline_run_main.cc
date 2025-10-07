@@ -94,10 +94,6 @@ absl::Status RunPipelineWithDiffing() {
     ABSL_LOG(INFO) << "loaded " << reference_data.size() << " records from the reference data file.";
   }
 
-  std::string graph_protobuf_definition;  // the text protobuf definition of the graph, typically loaded from a pbtxt file
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(absl::GetFlag(FLAGS_graph_file), &graph_protobuf_definition));
-  mediapipe::CalculatorGraphConfig pipeline_definition = mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(graph_protobuf_definition);
-
   // set of expected pipeline output streams
   const std::vector<std::string> graph_output_streams_names = {
     "multi_hand_landmarks",
@@ -106,7 +102,12 @@ absl::Status RunPipelineWithDiffing() {
     // "hand_rects_from_palm_detections"
   };
 
-  mediapipe::HandsPipelineOperator pipeline_operator(pipeline_definition, graph_output_streams_names);
+  auto status_or_op = mediapipe::HandsPipelineOperator::Create(absl::GetFlag(FLAGS_graph_file), graph_output_streams_names);
+  if (!status_or_op.ok()) {
+      std::cerr << "Failed to create HandsPipelineOperator: " << status_or_op.status().message() << std::endl;
+      return status_or_op.status();
+  }
+  auto pipeline_operator = std::move(status_or_op.value());
 
   // initializing the camera or load the input video
   cv::VideoCapture capture;
@@ -145,9 +146,9 @@ absl::Status RunPipelineWithDiffing() {
     if (!video_file_input) { cv::flip(input_frame, input_frame, /*flipcode=HORIZONTAL*/ 1); }
 
     size_t frame_timestamp_us = (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
-    MP_RETURN_IF_ERROR(pipeline_operator.push_image(input_frame, frame_timestamp_us));
+    MP_RETURN_IF_ERROR(pipeline_operator->push_image(input_frame, frame_timestamp_us));
     mediapipe::PipelineOutputData stream_data_msg;
-    MP_RETURN_IF_ERROR(pipeline_operator.wait_for_output(&stream_data_msg, i));
+    MP_RETURN_IF_ERROR(pipeline_operator->wait_for_output(&stream_data_msg, i));
 
     // write the current frame output to file
     google::protobuf::util::SerializeDelimitedToOstream(stream_data_msg, &output_proto_file);
@@ -171,8 +172,8 @@ absl::Status RunPipelineWithDiffing() {
   output_proto_file.close();
   ABSL_LOG(INFO) << kOutputProtoFilename << " was written";
 
-  absl::Status finalize_status = pipeline_operator.finalize();
-  if (!pipeline_operator.finalize().ok()) {
+  absl::Status finalize_status = pipeline_operator->finalize();
+  if (!pipeline_operator->finalize().ok()) {
     ABSL_LOG(ERROR) << "Error during mediapipe graph finalization: " << finalize_status.message();
     return finalize_status;
   }

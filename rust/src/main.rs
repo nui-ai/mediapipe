@@ -26,33 +26,49 @@ pub struct Args {
     pub output_video_path: Option<PathBuf>,
 }
 
-fn read_reference_data(filename: &str) -> anyhow::Result<Vec<PipelineOutputData>> {
-    use protobuf::{CodedInputStream, error::{WireError, ProtobufError}};
-    let mut file = File::open(filename)
-        .with_context(|| format!("Failed to open reference proto file: {}", filename))?;
-    let mut cis = CodedInputStream::new(&mut file);
+// Helper to read length-delimited protobuf messages from a file.
+// Note: The rust-protobuf library does not natively support reading length-delimited protobuf messages from a file.
+// This helper implements the logic manually to match the output of C++ SerializeDelimitedToOstream.
+fn read_delimited_protobuf_messages<T: protobuf::Message + Default>(reader: &mut std::io::BufReader<std::fs::File>) -> anyhow::Result<Vec<T>> {
+    use std::io::Read;
     let mut out = Vec::new();
     loop {
-        match cis.read_message::<PipelineOutputData>() {
-            Ok(msg) => {
-                // If the message is empty, we've reached EOF or a zero-length message
-                if msg == PipelineOutputData::new() {
-                    break;
+        // Read varint length
+        let mut len_buf = [0u8; 1];
+        let mut len = 0u64;
+        let mut shift = 0;
+        let mut read_any = false;
+        loop {
+            match reader.read_exact(&mut len_buf) {
+                Ok(_) => {
+                    read_any = true;
+                    let byte = len_buf[0];
+                    len |= ((byte & 0x7F) as u64) << shift;
+                    if byte & 0x80 == 0 { break; }
+                    shift += 7;
                 }
-                out.push(msg);
-            }
-            Err(ProtobufError::WireError(WireError::UnexpectedEof)) => {
-                break;
-            }
-            Err(e) => {
-                if out.is_empty() {
-                    anyhow::bail!("Failed to parse any messages from {}: {}", filename, e);
-                } else {
-                    break;
+                Err(_) => {
+                    if !read_any { break; } // EOF
+                    else { anyhow::bail!("Failed to read varint length"); }
                 }
             }
         }
+        if !read_any { break; } // EOF
+        if len == 0 { continue; } // skip zero-length
+        let mut msg_buf = vec![0u8; len as usize];
+        reader.read_exact(&mut msg_buf)?;
+        let msg = T::parse_from_bytes(&msg_buf)?;
+        out.push(msg);
     }
+    Ok(out)
+}
+
+fn read_reference_data(filename: &str) -> anyhow::Result<Vec<PipelineOutputData>> {
+    use std::io::BufReader;
+    let file = File::open(filename)
+        .with_context(|| format!("Failed to open reference proto file: {}", filename))?;
+    let mut reader = BufReader::new(file);
+    let out = read_delimited_protobuf_messages::<PipelineOutputData>(&mut reader)?;
     println!("Loaded {} reference records from {}", out.len(), filename);
     Ok(out)
 }
@@ -60,21 +76,6 @@ fn read_reference_data(filename: &str) -> anyhow::Result<Vec<PipelineOutputData>
 fn main() -> anyhow::Result<()> {
     let args = Args::parse();
     println!("Args: {:?}", args);
-
-    // Read graph file as string, then convert to bytes
-    let graph_string = std::fs::read_to_string(&args.graph_file)
-        .with_context(|| format!("Failed to open graph file as string: {}", args.graph_file.display()))?;
-
-    // Print the first 100 chars before moving the string
-    println!("First 100 chars of graph file as string: {}", &graph_string[..std::cmp::min(100, graph_string.len())]);
-
-    // Create a CString for safer FFI transfer
-    let graph_cstring = CString::new(graph_string.clone())
-        .with_context(|| "Failed to convert graph file to CString (found null byte?)")?;
-    let graph_bytes = graph_cstring.as_bytes();
-
-    println!("Loaded graph file: {} ({} bytes)", args.graph_file.display(), graph_bytes.len());
-    println!("First 100 bytes of graph file as CString: {:?}", &graph_bytes[..std::cmp::min(100, graph_bytes.len())]);
 
     // Open video/camera
     let mut capture = if let Some(ref path) = args.input_video_path {
@@ -87,22 +88,42 @@ fn main() -> anyhow::Result<()> {
     }
     println!("Video/camera opened successfully");
 
-    // Read reference proto file
-    let reference_proto_path = "../output_data_v0.10.13.pb";
+    // Check if reference proto file exists and is readable
+    let reference_proto_path = "output_data_v0.10.13.pb";
+    if !std::path::Path::new(reference_proto_path).is_file() {
+        eprintln!("Error: Reference proto file '{}' not found or not a regular file.", reference_proto_path);
+        std::process::exit(1);
+    }
+    if std::fs::metadata(reference_proto_path).map(|m| m.len()).unwrap_or(0) == 0 {
+        eprintln!("Error: Reference proto file '{}' is empty.", reference_proto_path);
+        std::process::exit(1);
+    }
+    println!("Reference proto file '{}' found and is non-empty.", reference_proto_path);
     let reference_data = read_reference_data(reference_proto_path)?;
 
+    // print the current working directory
+    let current_dir = std::env::current_dir()?;
+    println!("Current working directory: {}", current_dir.display());
+
     // Create pipeline operator via FFI
-    let output_streams_csv = CString::new("multi_hand_landmarks,multi_hand_world_landmarks,multi_handedness")?;
+    let graph_file_cstr = CString::new(args.graph_file.to_str().unwrap())?;
+    let output_streams_csv_cstr = CString::new("multi_hand_landmarks,multi_hand_world_landmarks,multi_handedness")?;
+
+    // explicitly check graph_file_cstr.as_ptr() is not a nullptr
+    if graph_file_cstr.as_ptr().is_null() {
+        eprintln!("Error: graph_file_cstr is a null pointer");
+        std::process::exit(1);
+    }
     let handle = unsafe {
         ffi::hands_pipeline_operator_create(
-            graph_cstring.as_ptr(),
-            graph_string.len(), // Pass original string length without null terminator
-            output_streams_csv.as_ptr(),
+            graph_file_cstr.as_ptr(),
+            output_streams_csv_cstr.as_ptr(),
         )
     };
     if handle.is_null() {
-        let err = unsafe { CStr::from_ptr(ffi::hands_pipeline_operator_get_last_error()) }.to_string_lossy();
-        anyhow::bail!("Failed to create HandsPipelineOperator via C API: {}", err);
+        let err = unsafe { std::ffi::CStr::from_ptr(ffi::hands_pipeline_operator_get_last_error()) };
+        eprintln!("Error: Failed to create HandsPipelineOperator via C API: {}", err.to_string_lossy());
+        std::process::exit(1);
     }
     println!("Pipeline operator created successfully");
 

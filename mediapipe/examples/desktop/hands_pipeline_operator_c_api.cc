@@ -11,6 +11,13 @@
 #include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
 
+// initialize protobuf
+#include "google/protobuf/text_format.h"
+extern "C" void hands_pipeline_operator_init_protobuf() {
+    // Force protobuf initialization
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+}
+
 // Error handling (thread-local)
 static thread_local std::string g_last_error;
 static void set_last_error(const std::string& err) { g_last_error = err; }
@@ -21,14 +28,9 @@ struct HandsPipelineOperatorWrapper {
 };
 
 extern "C" HandsPipelineOperatorHandle hands_pipeline_operator_create(
-    const char* graph_definition, size_t config_size,
+    const char* graph_file_path,
     const char* output_streams_csv) {
     set_last_error("");
-    mediapipe::CalculatorGraphConfig config;
-    if (!config.ParseFromArray(graph_definition, config_size)) {
-        set_last_error("Failed to parse CalculatorGraphConfig protobuf");
-        return nullptr;
-    }
     std::vector<std::string> output_streams;
     std::istringstream ss(output_streams_csv ? output_streams_csv : "");
     std::string item;
@@ -36,13 +38,13 @@ extern "C" HandsPipelineOperatorHandle hands_pipeline_operator_create(
         if (!item.empty()) output_streams.push_back(item);
     }
     HandsPipelineOperatorWrapper* wrapper = new HandsPipelineOperatorWrapper;
-    try {
-        wrapper->impl = std::make_unique<mediapipe::HandsPipelineOperator>(config, output_streams);
-    } catch (const std::exception& e) {
-        set_last_error(e.what());
+    auto status_or_op = mediapipe::HandsPipelineOperator::Create(std::string(graph_file_path), output_streams);
+    if (!status_or_op.ok()) {
+        set_last_error(std::string(status_or_op.status().message()));
         delete wrapper;
         return nullptr;
     }
+    wrapper->impl = std::move(status_or_op.value());
     return wrapper;
 }
 
@@ -116,4 +118,3 @@ extern "C" int hands_pipeline_operator_finalize(HandsPipelineOperatorHandle hand
     }
     return 0;
 }
-

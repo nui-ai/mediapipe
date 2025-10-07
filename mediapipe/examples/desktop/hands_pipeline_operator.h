@@ -7,6 +7,7 @@
 #define MEDIAPIPE_EXAMPLES_DESKTOP_HANDS_PIPELINE_OPERATOR_H_
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 #include <opencv2/core.hpp>
@@ -22,8 +23,11 @@ namespace mediapipe {
 
 class HandsPipelineOperator {
  public:
-  HandsPipelineOperator(const CalculatorGraphConfig& config,
-                       const std::vector<std::string>& output_streams);
+  // Use a static factory method for idiomatic error handling
+  static absl::StatusOr<std::unique_ptr<HandsPipelineOperator>> Create(
+      const std::string& graph_file_path,
+      const std::vector<std::string>& output_streams);
+
   ~HandsPipelineOperator();
 
   absl::Status push_image(const cv::Mat& input_frame, int64_t timestamp_us);
@@ -31,6 +35,9 @@ class HandsPipelineOperator {
   absl::Status finalize();
 
  private:
+  // Make constructor private so only Create() can construct
+  HandsPipelineOperator(const std::vector<std::string>& output_streams);
+
   CalculatorGraph graph_;
   std::vector<std::string> output_streams_names_;
   std::map<std::string, OutputStreamPoller> pollers_;
@@ -39,4 +46,3 @@ class HandsPipelineOperator {
 }  // namespace mediapipe
 
 #endif  // MEDIAPIPE_EXAMPLES_DESKTOP_HANDS_PIPELINE_OPERATOR_H_
-

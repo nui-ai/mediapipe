@@ -97,12 +97,8 @@ cc_library(
     deps = [
         ":hands_pipeline_operator",
         ":pipeline_output_cc_proto",
-        "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/port:opencv_core",
         "//mediapipe/framework/port:opencv_imgproc",
-        "@com_google_absl//absl/status",
-        "@com_google_absl//absl/strings",
-        "@com_google_protobuf//:protobuf",
     ],
     alwayslink = 1,
 )

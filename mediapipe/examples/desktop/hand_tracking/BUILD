@@ -44,9 +44,17 @@ cc_binary(
 # the library name starts with the standard "lib" prefix which common scenarios expect, and ends with the standard ".so" suffix.
 cc_binary(
     name = "libhands_pipeline_operator_c_api.so",
+    linkopts = ["-Wl,--no-as-needed"],  # Ensure all symbols are retained
     linkshared = 1,
     visibility = ["//visibility:public"],
-    deps = ["//mediapipe/examples/desktop:hands_pipeline_operator_c_api"],
+    deps = [
+        "//mediapipe/examples/desktop:hands_pipeline_operator_c_api",
+        # Explicitly include proto dependencies
+        "//mediapipe/framework:calculator_cc_proto",
+        "//mediapipe/examples/desktop:pipeline_output_cc_proto",
+        # Include protobuf runtime
+        "@com_google_protobuf//:protobuf",
+    ],
 )
 
 cc_binary(

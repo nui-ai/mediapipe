@@ -7,27 +7,52 @@
 #include "mediapipe/framework/formats/image_frame_opencv.h"
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
+#include "mediapipe/framework/port/file_helpers.h"
+#include "mediapipe/framework/port/parse_text_proto.h"
 
 namespace mediapipe {
 
-HandsPipelineOperator::HandsPipelineOperator(const CalculatorGraphConfig& config,
-                       const std::vector<std::string>& output_streams)
-    : output_streams_names_(output_streams) {
-  absl::Status status = graph_.Initialize(config);
+absl::StatusOr<std::unique_ptr<HandsPipelineOperator>> HandsPipelineOperator::Create(
+    const std::string& graph_file_path,
+    const std::vector<std::string>& output_streams) {
+
+  std::string graph_content;
+  absl::Status status = mediapipe::file::GetContents(graph_file_path, &graph_content);
   if (!status.ok()) {
-    ABSL_LOG(ERROR) << "Graph initialization failed: " << status.message();
-  }
-  for (const auto& stream : output_streams_names_) {
-    auto poller_status = graph_.AddOutputStreamPoller(stream);
+    return absl::InvalidArgumentError(
+        absl::StrCat("Failed to read graph file: ", graph_file_path, " - ", status.message()));
+  } else ABSL_LOG(INFO) << "Read graph file: " << graph_file_path;
+
+  CalculatorGraphConfig config;
+  if (!mediapipe::ParseTextProto<CalculatorGraphConfig>(graph_content, &config)) {
+    return absl::InvalidArgumentError(
+        absl::StrCat("Failed to parse graph file: ", graph_file_path));
+  } else ABSL_LOG(INFO) << "Successfully parsed graph file " << graph_file_path;
+
+  auto op = std::unique_ptr<HandsPipelineOperator>(new HandsPipelineOperator(output_streams));
+  status = op->graph_.Initialize(config);
+
+  if (!status.ok()) {
+    return absl::InternalError(
+        absl::StrCat("Graph initialization failed: ", status.message()));
+  } else ABSL_LOG(INFO) << "Successfully initialized the graph";
+
+  for (const auto& stream : output_streams) {
+    auto poller_status = op->graph_.AddOutputStreamPoller(stream);
     if (poller_status.ok()) {
-      pollers_.emplace(stream, std::move(poller_status.value()));
+      op->pollers_.emplace(stream, std::move(poller_status.value()));
     }
   }
-  status = graph_.StartRun({});
+  status = op->graph_.StartRun({});
   if (!status.ok()) {
-    ABSL_LOG(ERROR) << "Graph start failed: " << status.message();
+    return absl::InternalError(
+        absl::StrCat("Graph start failed: ", status.message()));
   }
+  return op;
 }
+
+HandsPipelineOperator::HandsPipelineOperator(const std::vector<std::string>& output_streams)
+    : output_streams_names_(output_streams) {}
 
 HandsPipelineOperator::~HandsPipelineOperator() = default;
 

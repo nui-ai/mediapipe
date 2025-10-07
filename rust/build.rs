@@ -3,6 +3,9 @@ use std::fs;
 use std::path::PathBuf;
 
 fn main() {
+
+    // generate rust code for operating the output protobuf types which the pipeline output is,
+    // reliant on the protobuf-codegen crate.
     let manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
     let proto_files = [
         "../mediapipe/examples/desktop/pipeline_output.proto",
@@ -17,7 +20,7 @@ fn main() {
     let out_dir = PathBuf::from(&manifest_dir).join("src/proto");
     fs::create_dir_all(&out_dir).unwrap();
 
-    protobuf_codegen_pure::Codegen::new()
+    protobuf_codegen::Codegen::new()
         .out_dir(&out_dir)
         .inputs(
             &proto_files
