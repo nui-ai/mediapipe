@@ -15,6 +15,19 @@ mod ffi;
 mod proto;
 use proto::pipeline_output::PipelineOutputData;
 
+extern "C" {
+    fn hands_pipeline_operator_init_protobuf();
+    fn hands_pipeline_operator_force_link_protos();
+}
+
+fn init_protos() {
+    println!("Initializing protobuf library");
+    unsafe { hands_pipeline_operator_init_protobuf(); }
+    println!("Protobuf library initialized, registering descriptors");
+    unsafe { hands_pipeline_operator_force_link_protos(); }
+    println!("Protobuf descriptors registered");
+}
+
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 pub struct Args {
@@ -76,6 +89,9 @@ fn read_reference_data(filename: &str) -> anyhow::Result<Vec<PipelineOutputData>
 fn main() -> anyhow::Result<()> {
     let args = Args::parse();
     println!("Args: {:?}", args);
+
+    // Ensure protobuf descriptors are registered
+    init_protos();
 
     // Open video/camera
     let mut capture = if let Some(ref path) = args.input_video_path {

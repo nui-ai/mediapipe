@@ -8,6 +8,7 @@
 #include <cstring>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
+#include <google/protobuf/descriptor.h>
 #include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
 
@@ -117,4 +118,61 @@ extern "C" int hands_pipeline_operator_finalize(HandsPipelineOperatorHandle hand
         return -1;
     }
     return 0;
+}
+
+// NOTE: Call hands_pipeline_operator_init_protobuf() before hands_pipeline_operator_force_link_protos()
+extern "C" void hands_pipeline_operator_force_link_protos() {
+    fprintf(stderr, "touching protobuf descriptors to force registration...\n");
+    fprintf(stderr, "About to reference descriptor tables...\n");
+
+    // Step 0: Explicitly reference descriptor table symbols to force registration.
+    // These must match the actual symbols in your generated .pb.cc files.
+    extern const ::google::protobuf::internal::DescriptorTable descriptor_table_mediapipe_2fframework_2fcalculator_2eproto;
+    (void)descriptor_table_mediapipe_2fframework_2fcalculator_2eproto;
+    extern const ::google::protobuf::internal::DescriptorTable descriptor_table_mediapipe_2fexamples_2fdesktop_2fpipeline_5foutput_2eproto;
+    (void)descriptor_table_mediapipe_2fexamples_2fdesktop_2fpipeline_5foutput_2eproto;
+
+    fprintf(stderr, "Descriptor tables referenced. Now calling DescriptorPool::generated_pool()\n");
+
+    // Step 1: Now safe to call generated_pool()
+    auto* pool = ::google::protobuf::DescriptorPool::generated_pool();
+    if (pool == nullptr) {
+        fprintf(stderr, "[C API] FATAL: DescriptorPool::generated_pool() returned nullptr!\n");
+        abort();
+    }
+    fprintf(stderr, "Step 1: DescriptorPool::generated_pool() is not nullptr\n");
+
+    // Step 2: Check for expected file descriptors
+    const char* calculator_proto_name = "mediapipe/framework/calculator.proto";
+    const char* pipeline_output_proto_name = "mediapipe/examples/desktop/pipeline_output.proto";
+    fprintf(stderr, "Step 2: Checking for file descriptor: %s\n", calculator_proto_name);
+    if (pool->FindFileByName(calculator_proto_name) == nullptr) {
+        fprintf(stderr, "[C API] FATAL: DescriptorPool missing file: %s\n", calculator_proto_name);
+        abort();
+    }
+    fprintf(stderr, "Step 2: Found file descriptor: %s\n", calculator_proto_name);
+
+    fprintf(stderr, "Step 2: Checking for file descriptor: %s\n", pipeline_output_proto_name);
+    if (pool->FindFileByName(pipeline_output_proto_name) == nullptr) {
+        fprintf(stderr, "[C API] FATAL: DescriptorPool missing file: %s\n", pipeline_output_proto_name);
+        abort();
+    }
+    fprintf(stderr, "Step 2: Found file descriptor: %s\n", pipeline_output_proto_name);
+
+    fprintf(stderr, "protobuf pool contains expected files\n");
+
+    // Step 3: Reference message descriptors
+    fprintf(stderr, "Step 3: Checking CalculatorGraphConfig descriptor\n");
+    if (mediapipe::CalculatorGraphConfig::descriptor() == nullptr) {
+        fprintf(stderr, "[C API] FATAL: CalculatorGraphConfig descriptor not registered!\n");
+        abort();
+    }
+    fprintf(stderr, "Step 3: CalculatorGraphConfig descriptor is registered\n");
+
+    fprintf(stderr, "Step 3: Checking PipelineOutputData descriptor\n");
+    if (mediapipe::PipelineOutputData::descriptor() == nullptr) {
+        fprintf(stderr, "[C API] FATAL: PipelineOutputData descriptor not registered!\n");
+        abort();
+    }
+    fprintf(stderr, "Step 3: PipelineOutputData descriptor is registered\n");
 }

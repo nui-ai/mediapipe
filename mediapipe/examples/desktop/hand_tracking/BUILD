@@ -46,6 +46,7 @@ cc_binary(
     name = "libhands_pipeline_operator_c_api.so",
     linkopts = ["-Wl,--no-as-needed"],  # Ensure all symbols are retained
     linkshared = 1,
+    #    linkstatic = False,
     visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/examples/desktop:hands_pipeline_operator_c_api",

@@ -52,3 +52,17 @@ mediapipe_analysis/analysis/output/
 # Developer-specific video files
 /sample-video.avi
 /output_video.mp4
+
+# Rust ignores (specific to rust/ folder)
+rust/target/
+rust/*.rs.bk
+rust/*.dSYM/
+rust/coverage/
+rust/.cargo/
+rust/.rustup/
+rust/.env
+rust/.vscode/
+rust/.idea/
+rust/.DS_Store
+# Uncomment the next line if you do NOT want to track Cargo.lock
+rust/Cargo.lock

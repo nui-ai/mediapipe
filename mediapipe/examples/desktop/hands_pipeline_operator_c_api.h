@@ -44,6 +44,13 @@ int hands_pipeline_operator_finalize(HandsPipelineOperatorHandle handle);
 // Get last error message (thread-local or global)
 const char* hands_pipeline_operator_get_last_error();
 
+// Initialize protobuf library (must be called before force_link_protos)
+void hands_pipeline_operator_init_protobuf();
+
+// Force link protobuf descriptors (call once at startup from Rust, after init_protobuf)
+// Will abort if descriptors are not registered.
+void hands_pipeline_operator_force_link_protos();
+
 #ifdef __cplusplus
 }
 #endif

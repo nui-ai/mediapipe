@@ -4,6 +4,28 @@ use std::path::PathBuf;
 
 fn main() {
 
+    // load the shared library directly by specifying its full path to the linker,
+    // which avoids needing to set LD_LIBRARY_PATH at runtime. this was added
+    // only as part of troubleshooting the protobuf issue, and can be rolled back
+    // in favor of using LD_LIBRARY_PATH which avoids hardcoding the path here.
+    // Point to the bazel output dir containing the .so
+
+    let so_dir = format!("{}/../bazel-bin/mediapipe/examples/desktop/hand_tracking", env!("CARGO_MANIFEST_DIR"));
+    let so_path = format!("{}/libhands_pipeline_operator_c_api.so", so_dir);
+
+    // Link the .so as a positional argument (avoids --as-needed issues)
+    println!("cargo:rustc-link-arg={}", so_path);
+
+    // Make the loader find it at runtime without LD_LIBRARY_PATH
+    println!("cargo:rustc-link-arg=-Wl,-rpath,{}", so_dir);
+
+    let so: PathBuf = [env!("CARGO_MANIFEST_DIR"),
+        "..", "bazel-bin", "mediapipe", "examples", "desktop", "hand_tracking",
+        "libhands_pipeline_operator_c_api.so"]
+        .iter().collect();
+
+    println!("cargo:rustc-link-arg={}", so.display());
+
     // generate rust code for operating the output protobuf types which the pipeline output is,
     // reliant on the protobuf-codegen crate.
     let manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
