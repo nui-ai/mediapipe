@@ -1,6 +1,7 @@
 # MediaPipe Hand Tracking Rust Runner
 
 The Rust project directory in this repo provides a runner for the MediaPipe hand tracking pipeline using the project's C API via FFI.
+🚧 Sadly this hinges on https://github.com/nui-ai/mediapipe/issues/22, see also last commit's comment on that 🚧
 
 ## Prerequisites
 - Rust and Cargo (already installed)

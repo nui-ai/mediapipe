@@ -5,7 +5,7 @@ use std::path::PathBuf;
 fn main() {
 
     // load the shared library directly by specifying its full path to the linker,
-    // which avoids needing to set LD_LIBRARY_PATH at runtime. this was added
+    // which avoids needing to set LD_LIBRARY_PATH for building. this was added
     // only as part of troubleshooting the protobuf issue, and can be rolled back
     // in favor of using LD_LIBRARY_PATH which avoids hardcoding the path here.
     // Point to the bazel output dir containing the .so
@@ -26,8 +26,8 @@ fn main() {
 
     println!("cargo:rustc-link-arg={}", so.display());
 
-    // generate rust code for operating the output protobuf types which the pipeline output is,
-    // reliant on the protobuf-codegen crate.
+    // generate rust code for being able to actually use the output protobuf types which the pipeline output is,
+    // from rust. reliant on the protobuf-codegen crate.
     let manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
     let proto_files = [
         "../mediapipe/examples/desktop/pipeline_output.proto",
