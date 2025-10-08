@@ -46,7 +46,7 @@ cc_binary(
     name = "libhands_pipeline_operator_c_api.so",
     linkopts = ["-Wl,--no-as-needed"],
     linkshared = 1,
-    linkstatic = True,  # probably not really yield a static lib, and we dynaically link to it from rust anyway.
+    linkstatic = True,  # probably does not really yield a static lib, and we dynaically link to it from rust anyway.
     visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/examples/desktop:hands_pipeline_operator_c_api",
@@ -56,18 +56,6 @@ cc_binary(
         # Include protobuf runtime
         "@com_google_protobuf//:protobuf",
         "@com_google_protobuf//:protobuf_headers",  # superfluous
-    ],
-)
-
-cc_library(
-    name = "hands_pipeline_operator_c_api_static",
-    srcs = ["//mediapipe/examples/desktop:hands_pipeline_operator_c_api.cc"],  # without srcs or headers no .a static lib will be built
-    hdrs = ["//mediapipe/examples/desktop:hands_pipeline_operator_c_api.h"],  # without srcs or headers no .a static lib will be built
-    visibility = ["//visibility:public"],
-    deps = [
-        "//mediapipe/examples/desktop:hands_pipeline_operator_c_api",
-        "@com_google_protobuf//:protobuf",
-        "@com_google_protobuf//:protobuf_headers",
     ],
 )
 
