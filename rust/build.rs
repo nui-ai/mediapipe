@@ -12,7 +12,6 @@ fn main() {
 
     let so_dir = format!("{}/../bazel-bin/mediapipe/examples/desktop/hand_tracking", env!("CARGO_MANIFEST_DIR"));
     let so_path = format!("{}/libhands_pipeline_operator_c_api.so", so_dir);
-    let manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
 
     // Link the .so as a positional argument (avoids --as-needed issues)
     println!("cargo:rustc-link-arg={}", so_path);
@@ -29,30 +28,31 @@ fn main() {
 
     // generate rust code for being able to actually use the output protobuf types which the pipeline output is,
     // from rust. reliant on the protobuf-codegen crate.
-    // let proto_files = [
-    //     "../mediapipe/examples/desktop/pipeline_output.proto",
-    //     "../mediapipe/framework/formats/landmark.proto",
-    //     "../mediapipe/framework/formats/classification.proto",
-    //     "../mediapipe/framework/formats/rect.proto",
-    // ];
-    // let proto_files: Vec<_> = proto_files
-    //     .iter()
-    //     .map(|f| PathBuf::from(&manifest_dir).join(f))
-    //     .collect();
-    // let out_dir = PathBuf::from(&manifest_dir).join("src/proto");
-    // fs::create_dir_all(&out_dir).unwrap();
-    //
-    // protobuf_codegen::Codegen::new()
-    //     .out_dir(&out_dir)
-    //     .inputs(
-    //         &proto_files
-    //             .iter()
-    //             .map(|p| p.to_str().unwrap())
-    //             .collect::<Vec<_>>(),
-    //     )
-    //     .include(PathBuf::from(&manifest_dir).join("../"))
-    //     .run()
-    //     .expect("protoc codegen failed");
+    let manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+    let proto_files = [
+        "../mediapipe/examples/desktop/pipeline_output.proto",
+        "../mediapipe/framework/formats/landmark.proto",
+        "../mediapipe/framework/formats/classification.proto",
+        "../mediapipe/framework/formats/rect.proto",
+    ];
+    let proto_files: Vec<_> = proto_files
+        .iter()
+        .map(|f| PathBuf::from(&manifest_dir).join(f))
+        .collect();
+    let out_dir = PathBuf::from(&manifest_dir).join("src/proto");
+    fs::create_dir_all(&out_dir).unwrap();
+
+    protobuf_codegen::Codegen::new()
+        .out_dir(&out_dir)
+        .inputs(
+            &proto_files
+                .iter()
+                .map(|p| p.to_str().unwrap())
+                .collect::<Vec<_>>(),
+        )
+        .include(PathBuf::from(&manifest_dir).join("../"))
+        .run()
+        .expect("protoc codegen failed");
 
     // Link the C API shared library for hand tracking.
     // This tells Cargo/rustc to add the Bazel output directory to the linker search path,
