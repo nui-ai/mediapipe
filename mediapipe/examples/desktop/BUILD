@@ -93,6 +93,7 @@ cc_library(
     name = "hands_pipeline_operator_c_api",
     srcs = ["hands_pipeline_operator_c_api.cc"],
     hdrs = ["hands_pipeline_operator_c_api.h"],
+    linkstatic = True,
     visibility = ["//visibility:public"],
     deps = [
         ":hands_pipeline_operator",

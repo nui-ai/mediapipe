@@ -3,9 +3,7 @@
     <option name="buildProfileId" value="release" />
     <option name="command" value="run --manifest-path rust/Cargo.toml -- --graph-file mediapipe/modules/hand_landmark/hand_landmark_tracking_cpu.pbtxt --input-video-path sample-video.avi" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$/.." />
-    <envs>
-      <env name="LD_DEBUG" value="libs" />
-    </envs>
+    <envs />
     <option name="emulateTerminal" value="true" />
     <option name="channel" value="DEFAULT" />
     <option name="requiredFeatures" value="true" />
@@ -16,7 +14,6 @@
     <option name="isRedirectInput" value="false" />
     <option name="redirectInputPath" value="" />
     <method v="2">
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="build all hands pipeline main targets" run_configuration_type="BlazeCommandRunConfigurationType" />
       <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
     </method>
   </configuration>

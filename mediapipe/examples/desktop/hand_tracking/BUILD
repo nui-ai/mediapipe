@@ -46,6 +46,7 @@ cc_binary(
     name = "libhands_pipeline_operator_c_api.so",
     linkopts = ["-Wl,--no-as-needed"],
     linkshared = 1,
+    linkstatic = True,
     visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/examples/desktop:hands_pipeline_operator_c_api",
@@ -57,18 +58,6 @@ cc_binary(
         "@com_google_protobuf//:protobuf_headers",  # superfluous
     ],
 )
-
-#cc_binary(
-#    name = "libhands_pipeline_operator_c_api.so",
-#    linkopts = [
-#        "-Wl,--no-as-needed",
-#        "-Wl,-z,origin",
-#        "-Wl,-rpath,$ORIGIN",  # find libprotobuf next to this .so
-#        "-Wl,-rpath,$ORIGIN/..",  # (optional) or a sibling dir
-#    ],
-#    linkshared = 1,
-#    linkstatic = False,
-#)
 
 cc_binary(
     name = "compare_pipelines_output_data",

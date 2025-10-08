@@ -4,30 +4,8 @@ use std::path::PathBuf;
 
 fn main() {
 
-    // load the shared library directly by specifying its full path to the linker,
-    // which avoids needing to set LD_LIBRARY_PATH for building. this was added
-    // only as part of troubleshooting the protobuf issue, and can be rolled back
-    // in favor of using LD_LIBRARY_PATH which avoids hardcoding the path here.
-    // Point to the bazel output dir containing the .so
-
-    let so_dir = format!("{}/../bazel-bin/mediapipe/examples/desktop/hand_tracking", env!("CARGO_MANIFEST_DIR"));
-    let so_path = format!("{}/libhands_pipeline_operator_c_api.so", so_dir);
-
-    // Link the .so as a positional argument (avoids --as-needed issues)
-    println!("cargo:rustc-link-arg={}", so_path);
-
-    // Make the loader find it at runtime without LD_LIBRARY_PATH
-    println!("cargo:rustc-link-arg=-Wl,-rpath,{}", so_dir);
-
-    let so: PathBuf = [env!("CARGO_MANIFEST_DIR"),
-        "..", "bazel-bin", "mediapipe", "examples", "desktop", "hand_tracking",
-        "libhands_pipeline_operator_c_api.so"]
-        .iter().collect();
-
-    println!("cargo:rustc-link-arg={}", so.display());
-
-    // generate rust code for being able to actually use the output protobuf types which the pipeline output is,
-    // from rust. reliant on the protobuf-codegen crate.
+    // 1. generate rust code for being able to actually use the output protobuf types which the pipeline output is,
+    //    from rust. reliant on the protobuf-codegen crate.
     let manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
     let proto_files = [
         "../mediapipe/examples/desktop/pipeline_output.proto",
@@ -54,14 +32,17 @@ fn main() {
         .run()
         .expect("protoc codegen failed");
 
-    // Link the C API shared library for hand tracking.
-    // This tells Cargo/rustc to add the Bazel output directory to the linker search path,
-    // so it can find the shared library built from the C API, libhands_pipeline_operator_c_api.so, at build time.
-    // The library name (hands_pipeline_operator_c_api) must match the .so filename (libhands_pipeline_operator_c_api.so).
-    // At runtime, you must also set LD_LIBRARY_PATH to this directory so the dynamic loader can find the .so file.
-    // Example:
-    //   export LD_LIBRARY_PATH=$PWD/../bazel-bin/mediapipe/examples/desktop/hand_tracking:$LD_LIBRARY_PATH
-    // No additional code is needed in Rust to load the library; the extern "C" declarations in ffi.rs are sufficient.
-    println!("cargo:rustc-link-search=native={}/../bazel-bin/mediapipe/examples/desktop/hand_tracking", manifest_dir);
+    // 2. Dynamically link the C API shared library for hand tracking by its path.
+    //    This tells Cargo/rustc to add the Bazel output directory to the linker search path,
+    //    so it can find the shared library built by Bazel from the C API, libhands_pipeline_operator_c_api.so, at build time.
+    //    The library name (hands_pipeline_operator_c_api) must match the .so filename (libhands_pipeline_operator_c_api.so).
+    //    At runtime, you don't also need to set LD_LIBRARY_PATH to include this directory so the dynamic loader
+    //    can find the .so file.
+
+    let so_dir = format!("{}/../bazel-bin/mediapipe/examples/desktop/hand_tracking", env!("CARGO_MANIFEST_DIR"));
+    // direct rustc to find the lib file (.so) during its compilation and linking when building the rust binary
+    println!("cargo:rustc-link-arg=-Wl,-rpath,{}", so_dir);
+    // make the runtime find the same lib file when running that rust built binary
+    println!("cargo:rustc-link-search=native={}", so_dir);
     println!("cargo:rustc-link-lib=dylib=hands_pipeline_operator_c_api");
 }
