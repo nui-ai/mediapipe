@@ -90,8 +90,10 @@ fn main() -> anyhow::Result<()> {
     let args = Args::parse();
     println!("Args: {:?}", args);
 
-    // Ensure protobuf descriptors are registered
-    init_protos();
+    // Ensure protobuf descriptors are registered, which our C++ main using the same api doesn't do,
+    // nor does it avoid crashing over protobuf initialization in the case of the current rust main.
+    // it's not causing it either (comment it out and we fail the same).
+    // init_protos();
 
     // Open video/camera
     let mut capture = if let Some(ref path) = args.input_video_path {
