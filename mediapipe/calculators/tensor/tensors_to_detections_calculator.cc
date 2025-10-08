@@ -407,7 +407,6 @@ namespace api2 {
       auto raw_scores_view = raw_score_tensor->GetCpuReadView();
       auto raw_scores = raw_scores_view.buffer<float>();
 
-      assert (anchors_init_);
       std::vector<float> boxes(num_boxes_ * num_coords_);
       MP_RETURN_IF_ERROR(DecodeBoxes(raw_boxes, ssd_anchors_, &boxes));
 
@@ -1041,16 +1040,515 @@ namespace api2 {
     return detection;
   }
 
-  bool TensorsToDetectionsCalculator::IsClassIndexAllowed(int class_index) {
-    if (class_index_set_.values.empty()) {
-      return true;
-    }
-    if (class_index_set_.is_allowlist) {
-      return class_index_set_.values.contains(class_index);
-    } else {
-      return !class_index_set_.values.contains(class_index);
+absl::Status TensorsToDetectionsCalculator::GpuInit(CalculatorContext* cc) {
+  int output_format_flag = 0;
+  switch (box_output_format_) {
+    case mediapipe::TensorsToDetectionsCalculatorOptions::UNSPECIFIED:
+    case mediapipe::TensorsToDetectionsCalculatorOptions::YXHW:
+      output_format_flag = 0;
+      break;
+    case mediapipe::TensorsToDetectionsCalculatorOptions::XYWH:
+      output_format_flag = 1;
+      break;
+    case mediapipe::TensorsToDetectionsCalculatorOptions::XYXY:
+      output_format_flag = 2;
+      break;
+  }
+#ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
+  MP_RETURN_IF_ERROR(gpu_helper_.Open(cc));
+  MP_RETURN_IF_ERROR(gpu_helper_.RunInGlContext([this, output_format_flag]()
+                                                    -> absl::Status {
+    // A shader to decode detection boxes.
+    const std::string decode_src = absl::Substitute(
+        R"( #version 310 es
+
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
+layout(location = 0) uniform vec4 scale;
+
+layout(std430, binding = 0) writeonly buffer Output {
+  float data[];
+} boxes;
+
+layout(std430, binding = 1) readonly buffer Input0 {
+  float data[];
+} raw_boxes;
+
+layout(std430, binding = 2) readonly buffer Input1 {
+  float data[];
+} raw_anchors;
+
+uint num_coords = uint($0);
+int output_format_flag = int($1);
+int apply_exponential = int($2);
+int box_coord_offset = int($3);
+int num_keypoints = int($4);
+int keypt_coord_offset = int($5);
+int num_values_per_keypt = int($6);
+
+void main() {
+  uint g_idx = gl_GlobalInvocationID.x;  // box index
+  uint box_offset = g_idx * num_coords + uint(box_coord_offset);
+  uint anchor_offset = g_idx * uint(4);  // check kNumCoordsPerBox
+
+  float y_center, x_center, h, w;
+  if (output_format_flag == int(0)) {
+    y_center = raw_boxes.data[box_offset + uint(0)];
+    x_center = raw_boxes.data[box_offset + uint(1)];
+    h = raw_boxes.data[box_offset + uint(2)];
+    w = raw_boxes.data[box_offset + uint(3)];
+  } else if (output_format_flag == int(1)) {
+    x_center = raw_boxes.data[box_offset + uint(0)];
+    y_center = raw_boxes.data[box_offset + uint(1)];
+    w = raw_boxes.data[box_offset + uint(2)];
+    h = raw_boxes.data[box_offset + uint(3)];
+  } else if (output_format_flag == int(2)) {
+    x_center = (-raw_boxes.data[box_offset + uint(0)]
+                +raw_boxes.data[box_offset + uint(2)]) / 2.0;
+    y_center = (-raw_boxes.data[box_offset + uint(1)]
+                +raw_boxes.data[box_offset + uint(3)]) / 2.0;
+    w = raw_boxes.data[box_offset + uint(0)]
+      + raw_boxes.data[box_offset + uint(2)];
+    h = raw_boxes.data[box_offset + uint(1)]
+      + raw_boxes.data[box_offset + uint(3)];
+  }
+
+  float anchor_yc = raw_anchors.data[anchor_offset + uint(0)];
+  float anchor_xc = raw_anchors.data[anchor_offset + uint(1)];
+  float anchor_h  = raw_anchors.data[anchor_offset + uint(2)];
+  float anchor_w  = raw_anchors.data[anchor_offset + uint(3)];
+
+  x_center = x_center / scale.x * anchor_w + anchor_xc;
+  y_center = y_center / scale.y * anchor_h + anchor_yc;
+
+  if (apply_exponential == int(1)) {
+    h = exp(h / scale.w) * anchor_h;
+    w = exp(w / scale.z) * anchor_w;
+  } else {
+    h = (h / scale.w) * anchor_h;
+    w = (w / scale.z) * anchor_w;
+  }
+
+  float ymin = y_center - h / 2.0;
+  float xmin = x_center - w / 2.0;
+  float ymax = y_center + h / 2.0;
+  float xmax = x_center + w / 2.0;
+
+  boxes.data[box_offset + uint(0)] = ymin;
+  boxes.data[box_offset + uint(1)] = xmin;
+  boxes.data[box_offset + uint(2)] = ymax;
+  boxes.data[box_offset + uint(3)] = xmax;
+
+  if (num_keypoints > int(0)){
+    for (int k = 0; k < num_keypoints; ++k) {
+      int kp_offset =
+        int(g_idx * num_coords) + keypt_coord_offset + k * num_values_per_keypt;
+      float kp_y, kp_x;
+      if (output_format_flag == int(0)) {
+        kp_y = raw_boxes.data[kp_offset + int(0)];
+        kp_x = raw_boxes.data[kp_offset + int(1)];
+      } else {
+        kp_x = raw_boxes.data[kp_offset + int(0)];
+        kp_y = raw_boxes.data[kp_offset + int(1)];
+      }
+      boxes.data[kp_offset + int(0)] = kp_x / scale.x * anchor_w + anchor_xc;
+      boxes.data[kp_offset + int(1)] = kp_y / scale.y * anchor_h + anchor_yc;
     }
   }
+})",
+        options_.num_coords(),  // box xywh
+        output_format_flag, options_.apply_exponential_on_box_size() ? 1 : 0,
+        options_.box_coord_offset(), options_.num_keypoints(),
+        options_.keypoint_coord_offset(), options_.num_values_per_keypoint());
+
+    // Shader program
+    GLuint shader = glCreateShader(GL_COMPUTE_SHADER);
+    const GLchar* sources[] = {decode_src.c_str()};
+    glShaderSource(shader, 1, sources, NULL);
+    glCompileShader(shader);
+    GLint compiled = GL_FALSE;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+    RET_CHECK(compiled == GL_TRUE) << "Shader compilation error: " << [shader] {
+      GLint length;
+      glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
+      std::string str;
+      str.reserve(length);
+      glGetShaderInfoLog(shader, length, nullptr, str.data());
+      return str;
+    }();
+    decode_program_ = glCreateProgram();
+    glAttachShader(decode_program_, shader);
+    glDeleteShader(shader);
+    glLinkProgram(decode_program_);
+
+    // Outputs
+    decoded_boxes_buffer_ =
+        absl::make_unique<Tensor>(Tensor::ElementType::kFloat32,
+                                  Tensor::Shape{1, num_boxes_ * num_coords_});
+    raw_anchors_buffer_ = absl::make_unique<Tensor>(
+        Tensor::ElementType::kFloat32,
+        Tensor::Shape{1, num_boxes_ * kNumCoordsPerBox});
+    // Parameters
+    glUseProgram(decode_program_);
+    glUniform4f(0, options_.x_scale(), options_.y_scale(), options_.w_scale(),
+                options_.h_scale());
+
+    // A shader to score detection boxes.
+    const std::string score_src = absl::Substitute(
+        R"( #version 310 es
+
+layout(local_size_x = 1, local_size_y = $0, local_size_z = 1) in;
+
+#define FLT_MAX 1.0e+37
+
+shared float local_scores[$0];
+
+layout(std430, binding = 0) writeonly buffer Output {
+  float data[];
+} scored_boxes;
+
+layout(std430, binding = 1) readonly buffer Input0 {
+  float data[];
+} raw_scores;
+
+uint num_classes = uint($0);
+int apply_sigmoid = int($1);
+int apply_clipping_thresh = int($2);
+float clipping_thresh = float($3);
+int ignore_class_0 = int($4);
+
+float optional_sigmoid(float x) {
+  if (apply_sigmoid == int(0)) return x;
+  if (apply_clipping_thresh == int(1)) {
+    x = clamp(x, -clipping_thresh, clipping_thresh);
+  }
+  x = 1.0 / (1.0 + exp(-x));
+  return x;
+}
+
+void main() {
+  uint g_idx = gl_GlobalInvocationID.x;   // box idx
+  uint s_idx =  gl_LocalInvocationID.y;   // score/class idx
+
+  // load all scores into shared memory
+  float score = raw_scores.data[g_idx * num_classes + s_idx];
+  local_scores[s_idx] = optional_sigmoid(score);
+  memoryBarrierShared();
+  barrier();
+
+  // find max score in shared memory
+  if (s_idx == uint(0)) {
+    float max_score = -FLT_MAX;
+    float max_class = -1.0;
+    for (int i=ignore_class_0; i<int(num_classes); ++i) {
+      if (local_scores[i] > max_score) {
+        max_score = local_scores[i];
+        max_class = float(i);
+      }
+    }
+    scored_boxes.data[g_idx * uint(2) + uint(0)] = max_score;
+    scored_boxes.data[g_idx * uint(2) + uint(1)] = max_class;
+  }
+})",
+        num_classes_, options_.sigmoid_score() ? 1 : 0,
+        options_.has_score_clipping_thresh() ? 1 : 0,
+        options_.has_score_clipping_thresh() ? options_.score_clipping_thresh()
+                                             : 0,
+        !IsClassIndexAllowed(0));
+
+    // # filter classes supported is hardware dependent.
+    int max_wg_size;  //  typically <= 1024
+    glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1,
+                    &max_wg_size);  // y-dim
+    gpu_has_enough_work_groups_ = num_classes_ < max_wg_size;
+    if (!gpu_has_enough_work_groups_) {
+      return absl::FailedPreconditionError(absl::StrFormat(
+          "Hardware limitation: Processing will be done on CPU, because "
+          "num_classes %d exceeds the max work_group size %d.",
+          num_classes_, max_wg_size));
+    }
+    // TODO support better filtering.
+    if (class_index_set_.is_allowlist) {
+      ABSL_CHECK_EQ(class_index_set_.values.size(),
+                    IsClassIndexAllowed(0) ? num_classes_ : num_classes_ - 1)
+          << "Only all classes  >= class 0  or  >= class 1";
+    } else {
+      ABSL_CHECK_EQ(class_index_set_.values.size(),
+                    IsClassIndexAllowed(0) ? 0 : 1)
+          << "Only ignore class 0 is allowed";
+    }
+
+    // Shader program
+    {
+      GLuint shader = glCreateShader(GL_COMPUTE_SHADER);
+      const GLchar* sources[] = {score_src.c_str()};
+      glShaderSource(shader, 1, sources, NULL);
+      glCompileShader(shader);
+      GLint compiled = GL_FALSE;
+      glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+      RET_CHECK(compiled == GL_TRUE);
+      score_program_ = glCreateProgram();
+      glAttachShader(score_program_, shader);
+      glDeleteShader(shader);
+      glLinkProgram(score_program_);
+    }
+
+    // Outputs
+    scored_boxes_buffer_ = absl::make_unique<Tensor>(
+        Tensor::ElementType::kFloat32, Tensor::Shape{1, num_boxes_ * 2});
+
+    return absl::OkStatus();
+  }));
+
+#elif MEDIAPIPE_METAL_ENABLED
+  id<MTLDevice> device = gpu_helper_.mtlDevice;
+
+  // A shader to decode detection boxes.
+  std::string decode_src = absl::Substitute(
+      R"(
+#include <metal_stdlib>
+
+using namespace metal;
+
+kernel void decodeKernel(
+    device float*                   boxes       [[ buffer(0) ]],
+    device float*                   raw_boxes   [[ buffer(1) ]],
+    device float*                   raw_anchors [[ buffer(2) ]],
+    uint2                           gid         [[ thread_position_in_grid ]]) {
+
+  uint num_coords = uint($0);
+  int output_format_flag = int($1);
+  int apply_exponential = int($2);
+  int box_coord_offset = int($3);
+  int num_keypoints = int($4);
+  int keypt_coord_offset = int($5);
+  int num_values_per_keypt = int($6);
+)",
+      options_.num_coords(),  // box xywh
+      output_format_flag, options_.apply_exponential_on_box_size() ? 1 : 0,
+      options_.box_coord_offset(), options_.num_keypoints(),
+      options_.keypoint_coord_offset(), options_.num_values_per_keypoint());
+  decode_src += absl::Substitute(
+      R"(
+  float4 scale = float4(($0),($1),($2),($3));
+)",
+      options_.x_scale(), options_.y_scale(), options_.w_scale(),
+      options_.h_scale());
+  decode_src += R"(
+  uint g_idx = gid.x;
+  uint box_offset = g_idx * num_coords + uint(box_coord_offset);
+  uint anchor_offset = g_idx * uint(4);  // check kNumCoordsPerBox
+
+  float y_center, x_center, h, w;
+
+  if (output_format_flag == int(0)) {
+    y_center = raw_boxes[box_offset + uint(0)];
+    x_center = raw_boxes[box_offset + uint(1)];
+    h = raw_boxes[box_offset + uint(2)];
+    w = raw_boxes[box_offset + uint(3)];
+  } else if (output_format_flag == int(1)) {
+    x_center = raw_boxes[box_offset + uint(0)];
+    y_center = raw_boxes[box_offset + uint(1)];
+    w = raw_boxes[box_offset + uint(2)];
+    h = raw_boxes[box_offset + uint(3)];
+  } else if (output_format_flag == int(2)) {
+    x_center = (-raw_boxes[box_offset + uint(0)]
+                +raw_boxes[box_offset + uint(2)]) / 2.0;
+    y_center = (-raw_boxes[box_offset + uint(1)]
+                +raw_boxes[box_offset + uint(3)]) / 2.0;
+    w = raw_boxes[box_offset + uint(0)]
+      + raw_boxes[box_offset + uint(2)];
+    h = raw_boxes[box_offset + uint(1)]
+      + raw_boxes[box_offset + uint(3)];
+  }
+
+  float anchor_yc = raw_anchors[anchor_offset + uint(0)];
+  float anchor_xc = raw_anchors[anchor_offset + uint(1)];
+  float anchor_h  = raw_anchors[anchor_offset + uint(2)];
+  float anchor_w  = raw_anchors[anchor_offset + uint(3)];
+
+  x_center = x_center / scale.x * anchor_w + anchor_xc;
+  y_center = y_center / scale.y * anchor_h + anchor_yc;
+
+  if (apply_exponential == int(1)) {
+    h = exp(h / scale.w) * anchor_h;
+    w = exp(w / scale.z) * anchor_w;
+  } else {
+    h = (h / scale.w) * anchor_h;
+    w = (w / scale.z) * anchor_w;
+  }
+
+  float ymin = y_center - h / 2.0;
+  float xmin = x_center - w / 2.0;
+  float ymax = y_center + h / 2.0;
+  float xmax = x_center + w / 2.0;
+
+  boxes[box_offset + uint(0)] = ymin;
+  boxes[box_offset + uint(1)] = xmin;
+  boxes[box_offset + uint(2)] = ymax;
+  boxes[box_offset + uint(3)] = xmax;
+
+  if (num_keypoints > int(0)){
+    for (int k = 0; k < num_keypoints; ++k) {
+      int kp_offset =
+        int(g_idx * num_coords) + keypt_coord_offset + k * num_values_per_keypt;
+      float kp_y, kp_x;
+      if (output_format_flag == int(0)) {
+        kp_y = raw_boxes[kp_offset + int(0)];
+        kp_x = raw_boxes[kp_offset + int(1)];
+      } else {
+        kp_x = raw_boxes[kp_offset + int(0)];
+        kp_y = raw_boxes[kp_offset + int(1)];
+      }
+      boxes[kp_offset + int(0)] = kp_x / scale.x * anchor_w + anchor_xc;
+      boxes[kp_offset + int(1)] = kp_y / scale.y * anchor_h + anchor_yc;
+    }
+  }
+})";
+
+  {
+    // Shader program
+    NSString* library_source =
+        [NSString stringWithUTF8String:decode_src.c_str()];
+    NSError* error = nil;
+    id<MTLLibrary> library = [device newLibraryWithSource:library_source
+                                                  options:nullptr
+                                                    error:&error];
+    RET_CHECK(library != nil) << "Couldn't create shader library "
+                              << [[error localizedDescription] UTF8String];
+    id<MTLFunction> kernel_func = nil;
+    kernel_func = [library newFunctionWithName:@"decodeKernel"];
+    RET_CHECK(kernel_func != nil) << "Couldn't create kernel function.";
+    decode_program_ =
+        [device newComputePipelineStateWithFunction:kernel_func error:&error];
+    RET_CHECK(decode_program_ != nil) << "Couldn't create pipeline state " <<
+        [[error localizedDescription] UTF8String];
+    // Outputs
+    decoded_boxes_buffer_ =
+        absl::make_unique<Tensor>(Tensor::ElementType::kFloat32,
+                                  Tensor::Shape{1, num_boxes_ * num_coords_});
+    // Inputs
+    raw_anchors_buffer_ = absl::make_unique<Tensor>(
+        Tensor::ElementType::kFloat32,
+        Tensor::Shape{1, num_boxes_ * kNumCoordsPerBox});
+  }
+
+  // A shader to score detection boxes.
+  const std::string score_src = absl::Substitute(
+      R"(
+#include <metal_stdlib>
+
+using namespace metal;
+
+float optional_sigmoid(float x) {
+  int apply_sigmoid = int($1);
+  int apply_clipping_thresh = int($2);
+  float clipping_thresh = float($3);
+  if (apply_sigmoid == int(0)) return x;
+  if (apply_clipping_thresh == int(1)) {
+    x = clamp(x, -clipping_thresh, clipping_thresh);
+  }
+  x = 1.0 / (1.0 + exp(-x));
+  return x;
+}
+
+kernel void scoreKernel(
+    device float*             scored_boxes [[ buffer(0) ]],
+    device float*             raw_scores   [[ buffer(1) ]],
+    uint2                     tid          [[ thread_position_in_threadgroup ]],
+    uint2                     gid          [[ thread_position_in_grid ]]) {
+
+  uint num_classes = uint($0);
+  int apply_sigmoid = int($1);
+  int apply_clipping_thresh = int($2);
+  float clipping_thresh = float($3);
+  int ignore_class_0 = int($4);
+
+  uint g_idx = gid.x;   // box idx
+  uint s_idx = tid.y;   // score/class idx
+
+  // load all scores into shared memory
+  threadgroup float local_scores[$0];
+  float score = raw_scores[g_idx * num_classes + s_idx];
+  local_scores[s_idx] = optional_sigmoid(score);
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+
+  // find max score in shared memory
+  if (s_idx == uint(0)) {
+    float max_score = -FLT_MAX;
+    float max_class = -1.0;
+    for (int i=ignore_class_0; i<int(num_classes); ++i) {
+      if (local_scores[i] > max_score) {
+        max_score = local_scores[i];
+        max_class = float(i);
+      }
+    }
+    scored_boxes[g_idx * uint(2) + uint(0)] = max_score;
+    scored_boxes[g_idx * uint(2) + uint(1)] = max_class;
+  }
+})",
+      num_classes_, options_.sigmoid_score() ? 1 : 0,
+      options_.has_score_clipping_thresh() ? 1 : 0,
+      options_.has_score_clipping_thresh() ? options_.score_clipping_thresh()
+                                           : 0,
+      !IsClassIndexAllowed(0));
+
+  // TODO support better filtering.
+  if (class_index_set_.is_allowlist) {
+    ABSL_CHECK_EQ(class_index_set_.values.size(),
+                  IsClassIndexAllowed(0) ? num_classes_ : num_classes_ - 1)
+        << "Only all classes  >= class 0  or  >= class 1";
+  } else {
+    ABSL_CHECK_EQ(class_index_set_.values.size(),
+                  IsClassIndexAllowed(0) ? 0 : 1)
+        << "Only ignore class 0 is allowed";
+  }
+
+  {
+    // Shader program
+    NSString* library_source =
+        [NSString stringWithUTF8String:score_src.c_str()];
+    NSError* error = nil;
+    id<MTLLibrary> library = [device newLibraryWithSource:library_source
+                                                  options:nullptr
+                                                    error:&error];
+    RET_CHECK(library != nil) << "Couldn't create shader library "
+                              << [[error localizedDescription] UTF8String];
+    id<MTLFunction> kernel_func = nil;
+    kernel_func = [library newFunctionWithName:@"scoreKernel"];
+    RET_CHECK(kernel_func != nil) << "Couldn't create kernel function.";
+    score_program_ =
+        [device newComputePipelineStateWithFunction:kernel_func error:&error];
+    RET_CHECK(score_program_ != nil) << "Couldn't create pipeline state " <<
+        [[error localizedDescription] UTF8String];
+    // Outputs
+    scored_boxes_buffer_ = absl::make_unique<Tensor>(
+        Tensor::ElementType::kFloat32, Tensor::Shape{1, num_boxes_ * 2});
+    // # filter classes supported is hardware dependent.
+    int max_wg_size = score_program_.maxTotalThreadsPerThreadgroup;
+    gpu_has_enough_work_groups_ = num_classes_ < max_wg_size;
+    if (!gpu_has_enough_work_groups_) {
+      return absl::FailedPreconditionError(absl::StrFormat(
+          "Hardware limitation: Processing will be done on CPU, because "
+          "num_classes %d exceeds the max work_group size %d.",
+          num_classes_, max_wg_size));
+    }
+  }
+#endif  // !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
+
+  return absl::OkStatus();
+}
+
+bool TensorsToDetectionsCalculator::IsClassIndexAllowed(int class_index) {
+  if (class_index_set_.values.empty()) {
+    return true;
+  }
+  if (class_index_set_.is_allowlist) {
+    return class_index_set_.values.contains(class_index);
+  } else {
+    return !class_index_set_.values.contains(class_index);
+  }
+}
 
 }  // namespace api2
 }  // namespace mediapipe
