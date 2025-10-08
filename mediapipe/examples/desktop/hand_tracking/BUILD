@@ -46,7 +46,7 @@ cc_binary(
     name = "libhands_pipeline_operator_c_api.so",
     linkopts = ["-Wl,--no-as-needed"],
     linkshared = 1,
-    linkstatic = True,
+    linkstatic = True,  # probably does not really yield a static lib, and we dynaically link to it from rust anyway.
     visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/examples/desktop:hands_pipeline_operator_c_api",
