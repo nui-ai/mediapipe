@@ -44,5 +44,11 @@ fn main() {
     println!("cargo:rustc-link-arg=-Wl,-rpath,{}", so_dir);
     // make the runtime find the same lib file when running that rust built binary
     println!("cargo:rustc-link-search=native={}", so_dir);
+    // static linking would trigger a cascade of rendering all dependencies of the C API as static libraries,
+    // which is typically intractable or extremely hard to accoplish, so dynamic linking is our only option.
+    // we could also directly feed in an object file from the Bazel build, not a lib built by it, but then
+    // we also have to cater for aspects that linking on the bazel side took ownership of before,
+    // not to mention that cc_library bazel rules don't leave behind object files of them
+    // for cargo to consume in its default behavior.
     println!("cargo:rustc-link-lib=dylib=hands_pipeline_operator_c_api");
 }
