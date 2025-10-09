@@ -60,7 +60,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
    + This should be stressed: a mere bazel clean --expunge is not enough to clear _all_ bazel caches. See the end parts of https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35 for a delination of what it clears. the above trashing of specific paths is aligned to the way that this repository uses specific caching paths after we added a fixed cache location for it to avoid it from avoiding incremental building by pip's ephemeral isolated build environments.
    + Sometimes manually trashing the built executable is also necessary (at least, encountered consistently, when fiddling to make VLOG work under ABSL to no avail in our new module same as it does for mediapipe's original modules; don't try again). 
    + This does not clear the wheel installed binary of mediapipe which `pip install .` installs into the active python environment! only `pip uninstall mediapipe` does that!
-   + This does not uninstall the mediapipe python package (only a `pip uninstall mediapipe` does, but don't do that, just repeat the pip install for updating, as `pip uninstall` causes the known issue described below).
+   + This does not uninstall the mediapipe python package (only a `pip uninstall mediapipe` does;  `pip uninstall` caused the known issue described below, but after recent changes no longer does).
 
 8. above we dealt with one example C++ main which runs the hands pipeline. but there are three C++ example mains which build and use the hand tracking pipeline, all of which run it over an input video. 
    + their build commands and run commands are originally described in [their shared build file](mediapipe/examples/desktop/hand_tracking/BUILD)
@@ -72,7 +72,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     + all defined as said in the same build file. 
     + if you want to only build the hands pipeline (yes, a mediapipe graph should be built, not only fed as a pbtxt file to C++ code running it) you can build the bottom line target of the three, which you find in the `deps` field of their build definitions in the said build file.
 
-# ⚠️ Build Known Issue ⚠️  
+# ⚠️ Obsolete: Build Known Issue ⚠️  
 Sometimes you get this error from python, or a similar one from C++ mains:
 ```
 Failed to load resource: mediapipe/modules/palm_detection/palm_detection_full.tflite
