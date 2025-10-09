@@ -252,7 +252,8 @@ class GeneratePyProtos(build_ext.build_ext):
     for pattern in [
         'mediapipe/framework/**/*.proto', 'mediapipe/calculators/**/*.proto',
         'mediapipe/gpu/**/*.proto', 'mediapipe/modules/**/*.proto',
-        'mediapipe/tasks/cc/**/*.proto', 'mediapipe/util/**/*.proto'
+        'mediapipe/tasks/cc/**/*.proto', 'mediapipe/util/**/*.proto',
+        'mediapipe/examples/desktop/**/pipeline_output.proto'  # piggyback the generation of a python class from our own non-mediapipe protobuf type here
     ]:
       for proto_file in glob.glob(pattern, recursive=True):
         # Ignore test protos.
@@ -266,8 +267,7 @@ class GeneratePyProtos(build_ext.build_ext):
           continue
         self._add_empty_init_file(
             os.path.abspath(
-                os.path.join(MP_ROOT_PATH, self.build_lib,
-                             os.path.dirname(proto_file), '__init__.py')))
+                os.path.join(MP_ROOT_PATH, self.build_lib, os.path.dirname(proto_file), '__init__.py')))
         self._generate_proto(proto_file)
 
   def _add_empty_init_file(self, init_file):
@@ -283,8 +283,7 @@ class GeneratePyProtos(build_ext.build_ext):
     if not os.path.exists(output):
       sys.stderr.write('generating proto file: %s\n' % output)
       protoc_command = [
-          self._protoc, '-I.',
-          '--python_out=' + os.path.abspath(self.build_lib), source
+          self._protoc, '-I.', '--python_out=' + os.path.abspath(self.build_lib), source
       ]
       _invoke_shell_command(protoc_command)
 
@@ -339,7 +338,6 @@ class BuildModules(build_ext.build_ext):
     ]
     for elem in binary_graphs:
       binary_graph = os.path.join('mediapipe/modules/', elem)
-      sys.stderr.write('generating binarypb: %s\n' % binary_graph)
       self._build_mediapipe_graph_target(binary_graph)
 
   def _download_external_file(self, external_file):
@@ -457,6 +455,8 @@ class BuildExtension(build_ext.build_ext):
     else:
       for ext in self.extensions:
         self._build_binary(ext)
+    # Use self.build_lib as the destination for .so files
+    _copy_opencv_shared_libs(self.build_lib)
     build_ext.build_ext.run(self)
 
   def _build_binary(self, ext, extra_args=None):
@@ -476,6 +476,30 @@ class BuildExtension(build_ext.build_ext):
       for opencv_dll in glob.glob(
           os.path.join('bazel-bin', ext.relpath, '*opencv*.dll')):
         shutil.copy(opencv_dll, ext_dest_dir)
+
+
+def _copy_opencv_shared_libs(build_lib=None):
+    """Copy Bazel-built OpenCV .so files into the build_lib/python/ for runtime loading, and set owner write permissions
+    to support repeat `pip install .` runs being able to overwrite them."""
+    opencv_lib_dir = os.path.join('bazel-bin', 'third_party', 'opencv_cmake', 'lib')
+    # If build_lib is not provided, fallback to source tree (for legacy usage)
+    if build_lib is None:
+        dest_dir = os.path.join(MP_ROOT_PATH, 'mediapipe', 'python')
+    else:
+        dest_dir = os.path.join(build_lib, 'mediapipe', 'python')
+    if not os.path.exists(opencv_lib_dir):
+        print(f"OpenCV lib dir not found: {opencv_lib_dir}", flush=True)
+        return
+    if not os.path.exists(dest_dir):
+        os.makedirs(dest_dir)
+    for so_file in glob.glob(os.path.join(opencv_lib_dir, 'libopencv*.so*')):
+        dest_file = os.path.join(dest_dir, os.path.basename(so_file))
+        print(f"Copying {so_file} to {dest_dir}", flush=True)
+        shutil.copy(so_file, dest_dir)
+        try:
+            os.chmod(dest_file, 0o744)  # Owner: rwx, Group: r, Others: r
+        except Exception as e:
+            print(f"Warning: could not set permissions on {dest_file}: {e}", flush=True)
 
 
 class BuildPy(build_py.build_py):
