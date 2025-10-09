@@ -1,6 +1,14 @@
 # Update About Successful building on Ubuntu 24.04 as well as building a Docker image (Ubuntu 22.04 based) that can build mediapipe as well.
 
-The current commit reflects the exact code revision of git tag v0.10.13 of the original MediaPipe repository, with some patches applied to make it buildable again, and it now successfully builds the hand tracking pipeline target as well as the python package that exposes the mediapipe api to python as a python package called `mediapipe`, installable into a python environment by `pip install .` as per the instructions below."
+This branch reflects the exact code revision of git tag v0.10.13 of the original MediaPipe repository, plus modifications for making it buildable again, and it now successfully builds the hand tracking pipeline target as well as the python package that exposes the mediapipe api to python as a python package called `mediapipe`, installable into a python environment by `pip install .` as per the instructions below.
+
+Its mediapipe hands pipeline is gradually and safely being reduced on the way to liberating it from mediapipe completely, while using as a verification harness:
++ a C++ main which runs the mediapipe hand tracking pipeline and compares its output per frame to output yielded for the same frame before starting the liberation process.
++ a python main which does the same, using the python mediapipe api.
++ a rust main which does the same, using rust FFI bindings for a C API facade wrapping the C++ pipeline runner.
++ a C++ main (and a python main) comparing two given output files made by a pipeline runner, as extra.
+
+These quickly ascertain after each pipeline reduction step, that the pipeline still produces the same output as before, thus safely facilitating the liberation development process. 
 
 # Build and Development Environment Setup
 
@@ -44,7 +52,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     ``` 
     note that without `-P` python will try loading python modules from the `mediapipe` directory under the project's tree root, which is essentially our python "source directory", which is a horrible entanglement, and is also bound to fail since some of the mediapipe python modules are only dynamically built & placed (into the active python environment) by the pip install process ― because most of mediapipe python-exposed sub-packages are either pybind generated or bazel generated from protobuf definitions or both (e.g. mediapipe.python._framework_bindings). So the python source tree _never_ contains all the modules that the mediapipe python api expects to find, but it can sure throw you off track with cryptic module loading errors if you try to run without -P and thus let python first look for modules under the python source directory `mediapipe`. With this project you only want python to run from the active python environment, not from its "source" path, which is what `-P` does.
 
-6. build and run our C++ mains using the repo included JetBrains run configurations.
+6. build and run our C++ mains which drive the mediapipe pipeline, using the repo included JetBrains run configurations.
    
 7. to clear all bazel build caching:
     ```bash
@@ -54,6 +62,8 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
    + Sometimes manually trashing the built executable is also necessary (at least, encountered consistently, when fiddling to make VLOG work under ABSL to no avail in our new module same as it does for mediapipe's original modules; don't try again). 
    + This does not clear the wheel installed binary of mediapipe which `pip install .` installs into the active python environment! only `pip uninstall mediapipe` does that!
    + This does not uninstall the mediapipe python package (only a `pip uninstall mediapipe` does;  `pip uninstall` caused the known issue described below, but after recent changes no longer does).
+
+8. build and run our mediapipe pipeline from rust using the repo included JetBrains (cargo based) run configuration.
 
 # ⚠️ Obsolete: Build Known Issue ⚠️  
 Sometimes you get this error from python, or a similar one from C++ mains:
