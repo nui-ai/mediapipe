@@ -32,27 +32,20 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     pip install . 
     ```
     for a verbose output which includes print statements made by `setup.py`, add `-v` to the pip command as otherwise due to pip's build isolation stdout is swallowed when the build does not fai.:
-4. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
 
-5. place a video file with hands in the project root path, as `sample-video.avi`, and run both of the following tests:<br>
-   + typically the video files are too large for git/github, so bring your own by using Gesture Studio. 
-   + C++ program built by the bazel build, this program takes in the sample video, and produces a derivative of it which shows the pipeline's predictions (and bounding boxes detected internally by it) per frame of the original video:
-       ```bash
-        bazel-bin/mediapipe/examples/desktop/hand_tracking/hand_tracking_tflite --calculator_graph_config_file=./mediapipe/graphs/hand_tracking/hand_tracking_desktop.pbtxt --input_side_packets=input_video_path=sample-video.avi,output_video_path=output_video.mp4 
-       ```
-     this verifies the C++ built hands pipeline without relying on any python-targeting parts of the build.<br>
-   + python test which should complete with exit code 0, it doesn't show any fancy results but only records the pipeline's output per input to a protobuf file:
-        ```bash
-        python3 -P hand_tracking_pipeline_run.py
-        ``` 
-        note that without `-P` python will try loading python modules from the `mediapipe` directory under the project's tree root, which is essentially our python "source directory", which is a horrible entanglement, and is also bound to fail since some of the mediapipe python modules are only dynamically built & placed (into the active python environment) by the pip install process ― because most of mediapipe python-exposed sub-packages are either pybind generated or bazel generated from protobuf definitions or both (e.g. mediapipe.python._framework_bindings). So the python source tree _never_ contains all the modules that the mediapipe python api expects to find, but it can sure throw you off track with cryptic module loading errors if you try to run without -P and thus let python first look for modules under the python source directory `mediapipe`. With this project you only want python to run from the active python environment, not from its "source" path, which is what `-P` does.
-   
-6. if you wish to only build the C++ part, maybe for isolation that it builds without errors, or for C++ development:
+3. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
+
+4. place a video file with hands in the project root path, as `sample-video.avi`, to enable the tests.
+    + typically the video files are too large for git/github, so bring your own by using Gesture Studio.
+
+5. python test which should complete with exit code 0, it doesn't show any fancy results but only records the pipeline's output per input to a protobuf file:
     ```bash
-    bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
-    ```
-    just remember this option doesn't (probably build the python bindgins and doesn't) deploy any library object for python use.
+    python3 -P hand_tracking_pipeline_run.py
+    ``` 
+    note that without `-P` python will try loading python modules from the `mediapipe` directory under the project's tree root, which is essentially our python "source directory", which is a horrible entanglement, and is also bound to fail since some of the mediapipe python modules are only dynamically built & placed (into the active python environment) by the pip install process ― because most of mediapipe python-exposed sub-packages are either pybind generated or bazel generated from protobuf definitions or both (e.g. mediapipe.python._framework_bindings). So the python source tree _never_ contains all the modules that the mediapipe python api expects to find, but it can sure throw you off track with cryptic module loading errors if you try to run without -P and thus let python first look for modules under the python source directory `mediapipe`. With this project you only want python to run from the active python environment, not from its "source" path, which is what `-P` does.
 
+6. build and run our C++ mains using the repo included JetBrains run configurations.
+   
 7. to clear all bazel build caching:
     ```bash
     bazel clean --expunge && trash /tmp/bazel-\$\{USER\}/ && trash ~/.cache/bazel/
@@ -61,16 +54,6 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
    + Sometimes manually trashing the built executable is also necessary (at least, encountered consistently, when fiddling to make VLOG work under ABSL to no avail in our new module same as it does for mediapipe's original modules; don't try again). 
    + This does not clear the wheel installed binary of mediapipe which `pip install .` installs into the active python environment! only `pip uninstall mediapipe` does that!
    + This does not uninstall the mediapipe python package (only a `pip uninstall mediapipe` does;  `pip uninstall` caused the known issue described below, but after recent changes no longer does).
-
-8. above we dealt with one example C++ main which runs the hands pipeline. but there are three C++ example mains which build and use the hand tracking pipeline, all of which run it over an input video. 
-   + their build commands and run commands are originally described in [their shared build file](mediapipe/examples/desktop/hand_tracking/BUILD)
-   + they are named very non-descriptively:
-    + `hand_tracking_cpu`: applies the hands pipeline to an input video file, and writes a video file with the pipeline's results drawn on it. this is the one we used above.
-    + `hand_tracking_tflite`: applies the hands pipeline to an input video file, and writes a video file with the pipeline's results drawn on it. and shows each image with its results drawn on it, in an OpenCV window as it goes.
-    + `hand_tracking_gpu`: applies the hands pipeline to an input video file, and writes a video file with the pipeline's results drawn on it. and shows each image with its results drawn on it, in an OpenCV window as it goes. Uses GPU for inference.
-    + the naming could not be more awkwardly non-descriptive, but now you have the mapping for what each does.
-    + all defined as said in the same build file. 
-    + if you want to only build the hands pipeline (yes, a mediapipe graph should be built, not only fed as a pbtxt file to C++ code running it) you can build the bottom line target of the three, which you find in the `deps` field of their build definitions in the said build file.
 
 # ⚠️ Obsolete: Build Known Issue ⚠️  
 Sometimes you get this error from python, or a similar one from C++ mains:
