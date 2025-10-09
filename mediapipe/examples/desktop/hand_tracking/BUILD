@@ -41,21 +41,16 @@ cc_binary(
 # from the same c api wrapping around the C++ HandsPipelineOperatorfor pipeline driving class,
 # which the above binary target also uses ―
 # also build a shared library that can be loaded by rust.
-# the library name starts with the standard "lib" prefix which common scenarios expect, and ends with the standard ".so" suffix.
+# the name of the library that this rule builds will start with the standard "lib" prefix which common scenarios expect, and ends with the standard ".so" suffix.
 cc_binary(
     name = "libhands_pipeline_operator_c_api.so",
     linkopts = ["-Wl,--no-as-needed"],
     linkshared = 1,
-    linkstatic = True,  # probably does not really yield a static lib, and we dynaically link to it from rust anyway.
+    linkstatic = False,
     visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/examples/desktop:hands_pipeline_operator_c_api",
-        # Explicitly include proto dependencies
-        #        "//mediapipe/framework:calculator_cc_proto",
-        #        "//mediapipe/examples/desktop:pipeline_output_cc_proto",
-        # Include protobuf runtime
-        "@com_google_protobuf//:protobuf",
-        "@com_google_protobuf//:protobuf_headers",  # superfluous
+        "//third_party:opencv_cmake",  # explicit dependency to ensure Bazel builds it
     ],
 )
 

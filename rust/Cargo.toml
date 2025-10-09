@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-opencv = "0.95.0"
+opencv = { version = "0.95.0", default-features = false, features = ["imgproc","imgcodecs","highgui","videoio"] }  # in support of https://github.com/nui-ai/mediapipe/issues/22
 protobuf = "3.7.2"  # this is for mediapipe interop which is still required when using our C API for mediapipe for now. this crate does not handle protobuf extension syntax, which we avoid needing to use by e.g. not trying to consume mediapipe pbtxt files from rust.
 clap = { version = "4.4", features = ["derive"] }
 anyhow = "1.0"

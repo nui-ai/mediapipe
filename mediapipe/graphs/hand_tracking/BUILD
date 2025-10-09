@@ -36,6 +36,7 @@ cc_library(
         "//mediapipe/calculators/video:opencv_video_decoder_calculator",
         "//mediapipe/calculators/video:opencv_video_encoder_calculator",
     ],
+    alwayslink = 1,
 )
 
 cc_library(
@@ -47,6 +48,7 @@ cc_library(
         "//mediapipe/graphs/hand_tracking/subgraphs:hand_renderer_cpu",
         "//mediapipe/modules/hand_landmark:hand_landmark_tracking_cpu",
     ],
+    alwayslink = 1,
 )
 
 mediapipe_binary_graph(

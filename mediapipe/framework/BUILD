@@ -190,12 +190,12 @@ cc_library(
         ":calculator_context",
         ":calculator_contract",
         ":port",
+        ":shared_calculator_state",
         ":timestamp",
         "//mediapipe/framework/deps:registration",
         "//mediapipe/framework/port:logging",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/status",
-        ":shared_calculator_state"
     ],
 )
 
@@ -397,6 +397,7 @@ cc_library(
         "@com_google_absl//absl/synchronization",
         "@com_google_absl//absl/time",
     ],
+    alwayslink = 1,
 )
 
 cc_library(

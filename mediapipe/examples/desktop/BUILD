@@ -16,13 +16,33 @@ mediapipe_proto_library(
     ],
 )
 
+# stuffs many calculators as direct dependencies, in order to make them "alwayslink",
+# for the sake of the shared library that we build which depends on this target.
+# we could have added them in that lib target directly, but feels cleaner here.
+# not sure why we needed this for those ones defined by mediapipe_simple_subgraph
+# in particular, but since we removed many source trees for unnecessary platforms,
+# simple use of bazel query "somepath(//foo:bar, //dep:lib)" for detailing dependency
+# graphs for making an elegant short tethering path isn't working on this branch,
+# so a bit brute-force here rather than elegantly tethering the most minimal
+# alwayslink path fo those extra direct depenedencies here.
 cc_library(
     name = "hands_pipeline_operator",
     srcs = ["hands_pipeline_operator.cc"],
     hdrs = ["hands_pipeline_operator.h"],
     deps = [
         ":pipeline_output_cc_proto",
+        "//mediapipe/calculators/core:begin_loop_calculator",
+        "//mediapipe/calculators/core:clip_vector_size_calculator",
+        "//mediapipe/calculators/core:constant_side_packet_calculator",
+        "//mediapipe/calculators/core:end_loop_calculator",
+        "//mediapipe/calculators/core:flow_limiter_calculator",
+        "//mediapipe/calculators/core:gate_calculator",
+        "//mediapipe/calculators/core:previous_loopback_calculator",
+        "//mediapipe/calculators/image:image_properties_calculator",
+        "//mediapipe/calculators/util:association_norm_rect_calculator",
+        "//mediapipe/calculators/util:collection_has_min_size_calculator",
         "//mediapipe/calculators/util:detection_model_provider",
+        "//mediapipe/calculators/util:filter_collection_calculator",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/formats:detection_cc_proto",
         "//mediapipe/framework/formats:image_frame",
@@ -33,11 +53,16 @@ cc_library(
         "//mediapipe/framework/port:opencv_video",
         "//mediapipe/framework/port:parse_text_proto",
         "//mediapipe/framework/port:status",
+        "//mediapipe/modules/hand_landmark:hand_landmark_cpu",
+        "//mediapipe/modules/hand_landmark:hand_landmark_landmarks_to_roi",
+        "//mediapipe/modules/hand_landmark:palm_detection_detection_to_roi",
+        "//mediapipe/modules/palm_detection:palm_detection_cpu",
         "//mediapipe/util:resource_util",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
         "@com_google_absl//absl/log:absl_log",
     ],
+    alwayslink = 1,
 )
 
 cc_library(
@@ -98,8 +123,6 @@ cc_library(
     deps = [
         ":hands_pipeline_operator",
         ":pipeline_output_cc_proto",
-        "//mediapipe/framework/port:opencv_core",
-        "//mediapipe/framework/port:opencv_imgproc",
     ],
     alwayslink = 1,
 )

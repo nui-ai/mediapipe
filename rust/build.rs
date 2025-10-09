@@ -44,6 +44,16 @@ fn main() {
     println!("cargo:rustc-link-arg=-Wl,-rpath,{}", so_dir);
     // make the runtime find the same lib file when running that rust built binary
     println!("cargo:rustc-link-search=native={}", so_dir);
+
+    // 3. Dynamically link the OpenCV shared libraries that we bazel build, which we transitively depend on via the C API,
+    //    this is in order to avoid the system OpenCV being linked which would cause https://github.com/nui-ai/mediapipe/issues/22.
+    //    our .cargo/config.toml only handles this aspect for the build of the OpenCV crate, whereas this here handles
+    //    the same loading for our final rust binary, which must also link against that bazel-built OpenCV of ours
+    //    and not the system one, at runtime.
+    let opencv_dir = format!("{}/../bazel-bin/third_party/opencv_cmake/lib", env!("CARGO_MANIFEST_DIR"));
+    println!("cargo:rustc-link-arg=-Wl,--enable-new-dtags");
+    println!("cargo:rustc-link-arg=-Wl,-rpath,{}", opencv_dir);
+
     // static linking would trigger a cascade of rendering all dependencies of the C API as static libraries,
     // which is typically intractable or extremely hard to accoplish, so dynamic linking is our only option.
     // we could also directly feed in an object file from the Bazel build, not a lib built by it, but then we also
