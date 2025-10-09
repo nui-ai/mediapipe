@@ -15,19 +15,6 @@ mod ffi;
 mod proto;
 use proto::pipeline_output::PipelineOutputData;
 
-extern "C" {
-    fn hands_pipeline_operator_init_protobuf();
-    fn hands_pipeline_operator_force_link_protos();
-}
-
-fn init_protos() {
-    println!("Initializing protobuf library");
-    unsafe { hands_pipeline_operator_init_protobuf(); }
-    println!("Protobuf library initialized, registering descriptors");
-    unsafe { hands_pipeline_operator_force_link_protos(); }
-    println!("Protobuf descriptors registered");
-}
-
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 pub struct Args {
@@ -81,7 +68,7 @@ fn read_reference_data(filename: &str) -> anyhow::Result<Vec<PipelineOutputData>
     let file = File::open(filename).with_context(|| format!("Failed to open reference proto file: {}", filename))?;
     let mut reader = BufReader::new(file);
     let out = read_delimited_protobuf_messages::<PipelineOutputData>(&mut reader)?;
-    println!("Loaded {} reference records from {}", out.len(), filename);
+    println!("{} reference output records read from {}", out.len(), filename);
     Ok(out)
 }
 
@@ -124,15 +111,14 @@ fn print_pipeline_output_diff(a: &PipelineOutputData, b: &PipelineOutputData, fr
 }
 
 fn main() -> anyhow::Result<()> {
+
     let args = Args::parse();
     println!("Args: {:?}", args);
 
-    // Ensure protobuf descriptors are registered, which our C++ main using the same api doesn't do,
-    // nor does it avoid crashing over protobuf initialization in the case of the current rust main.
-    // it's not causing it either (comment it out and we fail the same).
-    // init_protos();
+    let current_dir = std::env::current_dir()?;
+    println!("current working directory: {}", current_dir.display());
 
-    // Open video/camera
+    // Open video/camera input
     let mut capture = if let Some(ref path) = args.input_video_path {
         VideoCapture::from_file(path.to_str().unwrap(), CAP_ANY)?
     } else {
@@ -141,30 +127,25 @@ fn main() -> anyhow::Result<()> {
     if !capture.is_opened()? {
         anyhow::bail!("Failed to open video/camera: {:?}", args.input_video_path);
     }
-    println!("Video/camera opened successfully");
+    println!("Video/camera input successfully opened");
 
-    // Check if reference output file exists and is readable
+    // Check the reference output file
     let reference_proto_path = "output_data_v0.10.13.pb";
     if !std::path::Path::new(reference_proto_path).is_file() {
-        eprintln!("Error: Reference proto file '{}' not found or not a regular file.", reference_proto_path);
+        eprintln!("Error: the reference output data file '{}' not found or is not a regular file.", reference_proto_path);
         std::process::exit(1);
     }
     if std::fs::metadata(reference_proto_path).map(|m| m.len()).unwrap_or(0) == 0 {
-        eprintln!("Error: Reference proto file '{}' is empty.", reference_proto_path);
+        eprintln!("Error: the reference output data file '{}' is empty.", reference_proto_path);
         std::process::exit(1);
     }
-    println!("Reference proto file '{}' found and is non-empty.", reference_proto_path);
+    println!("reference output data file '{}' found and is non-empty.", reference_proto_path);
     let reference_data = read_reference_data(reference_proto_path)?;
 
-    // print the current working directory
-    let current_dir = std::env::current_dir()?;
-    println!("Current working directory: {}", current_dir.display());
-
-    // Create pipeline operator via FFI
+    // Create the pipeline operator via FFI
     let graph_file_cstr = CString::new(args.graph_file.to_str().unwrap())?;
     let output_streams_csv_cstr = CString::new("multi_hand_landmarks,multi_hand_world_landmarks,multi_handedness")?;
 
-    // explicitly check graph_file_cstr.as_ptr() is not a nullptr
     if graph_file_cstr.as_ptr().is_null() {
         eprintln!("Error: graph_file_cstr is a null pointer");
         std::process::exit(1);
@@ -177,10 +158,10 @@ fn main() -> anyhow::Result<()> {
     };
     if handle.is_null() {
         let err = unsafe { std::ffi::CStr::from_ptr(ffi::hands_pipeline_operator_get_last_error()) };
-        eprintln!("Error: Failed to create HandsPipelineOperator via C API: {}", err.to_string_lossy());
+        eprintln!("Error: Failed to create HandsPipelineOperator via its C API: {}", err.to_string_lossy());
         std::process::exit(1);
     }
-    println!("Pipeline operator created successfully");
+    println!("pipeline operator object created successfully");
 
     // Prepare output proto file
     let output_proto_path = "output_data_cpp.pb";
@@ -199,7 +180,7 @@ fn main() -> anyhow::Result<()> {
         capture.read(&mut input_frame_raw)?;
         if input_frame_raw.empty() {
             if !video_file_input {
-                eprintln!("Empty frame from camera being ignored");
+                eprintln!("empty frame from camera being ignored");
                 continue;
             }
             break;
@@ -230,7 +211,7 @@ fn main() -> anyhow::Result<()> {
         };
         if push_status != 0 {
             let err = unsafe { CStr::from_ptr(ffi::hands_pipeline_operator_get_last_error()) }.to_string_lossy();
-            anyhow::bail!("push_image failed: {}", err);
+            anyhow::bail!("pushing an image to the pipeline failed: {}", err);
         }
 
         // Wait for output
@@ -246,7 +227,7 @@ fn main() -> anyhow::Result<()> {
         };
         if wait_status != 0 {
             let err = unsafe { CStr::from_ptr(ffi::hands_pipeline_operator_get_last_error()) }.to_string_lossy();
-            anyhow::bail!("wait_for_output failed: {}", err);
+            anyhow::bail!("waiting for pipeline output failed: {}", err);
         }
 
         // Parse output proto
@@ -261,15 +242,15 @@ fn main() -> anyhow::Result<()> {
         if !reference_data.is_empty() {
             if i < reference_data.len() {
                 if stream_data_msg != reference_data[i] {
-                    eprintln!("Pipeline output at frame {} is different than the reference output:", i);
+                    eprintln!("pipeline output at frame {} is different than the reference output:", i);
                     print_pipeline_output_diff(&stream_data_msg, &reference_data[i], i);
-                    eprintln!("Terminating early due to difference in output at frame {}", i);
+                    eprintln!("terminating early due to difference in output at frame {}", i);
                     break;
                 } else {
-                    println!("Pipeline output for frame {} is identical to its reference output.", i);
+                    println!("pipeline output for frame {} is identical to its reference output.", i);
                 }
             } else {
-                eprintln!("Reference output file doesn't have data for frame {}", i);
+                eprintln!("reference output file doesn't have data for frame {}", i);
             }
         }
     }

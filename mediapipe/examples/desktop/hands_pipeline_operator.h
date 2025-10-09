@@ -12,12 +12,10 @@
 #include <vector>
 #include <opencv2/core.hpp>
 #include "mediapipe/framework/calculator_framework.h"
-#include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/formats/classification.pb.h"
-#include "mediapipe/framework/port/status.h"
 
 namespace mediapipe {
 

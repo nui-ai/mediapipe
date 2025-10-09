@@ -30,7 +30,6 @@
 #include "absl/flags/parse.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/image_frame.h"
-#include "mediapipe/framework/port/file_helpers.h"
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/calculator.pb.h"
@@ -164,10 +163,10 @@ int main(int argc, char** argv) {
         }
         free(output_data);
 
-        // write the current frame output to file
+        // write the current frame's pipeline output to file
         google::protobuf::util::SerializeDelimitedToOstream(stream_data_msg, &output_proto_file);
 
-        // compare with reference data if available
+        // compare it with the corresponding frame's output from the reference output data file
         if (!reference_data.empty()) {
             if (i < reference_data.size()) {
                 google::protobuf::util::MessageDifferencer differ;
@@ -177,11 +176,9 @@ int main(int argc, char** argv) {
                     std::cerr << "Pipeline output at frame " << i << " is different than the reference output:\n" << diff << std::endl;
                     std::cerr << "Terminating early due to difference in output at frame " << i << std::endl;
                     break;
-                } else {
-                    std::cout << "Pipeline output for frame " << i << " is identical to its reference output." << std::endl;
                 }
             } else {
-                std::cerr << "Reference output file doesn't have data for frame " << i << std::endl;
+                std::cerr << "warning: could not compare pipeline output for frame " << i << ":the reference output data file doesn't have data for frame " << i << std::endl;
             }
         }
     }
