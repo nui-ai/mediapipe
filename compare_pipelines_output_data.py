@@ -1,6 +1,8 @@
 import os
 import sys
 
+# pb2 classes are generated code, generated from their original .proto definitions during the pip install,
+# by our setup.py, into the target venv's paths. they are therefore not known to the IDE.
 from mediapipe.examples.desktop import pipeline_output_pb2
 from mediapipe.framework.formats import landmark_pb2, classification_pb2, rect_pb2, detection_pb2
 from google.protobuf.json_format import MessageToDict

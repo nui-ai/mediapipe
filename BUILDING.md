@@ -49,7 +49,7 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
    
 6. if you wish to only build the C++ part, maybe for isolation that it builds without errors, or for C++ development:
     ```bash
-    bazel build -c opt --copt=-I/usr/include/opencv4 --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
+    bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
     ```
     just remember this option doesn't (probably build the python bindgins and doesn't) deploy any library object for python use.
 
@@ -180,54 +180,6 @@ Building MediaPipe using the legacy `setup.py bdist_wheel` mechanism is deprecat
 
 see [pip issue #6334](https://github.com/pypa/pip/issues/6334).
 
-#### Last Pip Issue Encountered
-
-Having pip reuse the already Bazel built OpenCV instead of trying to build OpenCV from source from scratch, is a good idea. However:
-To build and install the MediaPipe Python package using the already bazel built OpenCV (recommended for faster builds):
-
-```bash
-MEDIAPIPE_LINK_OPENCV=1 pip install . --use-pep517
-```
-
-- This will instruct the build to use your system OpenCV and skip building OpenCV from source.
-- Make sure OpenCV and its development headers are installed in your environment.
-- Do **not** use `--install-option` with pip, as it is not supported with modern builds.
-
-However its some work to get to that working.
-  
-## CPU-Only Hand Tracking Build Command
-
-This PR implements a minimal CPU-only build configuration. Use this command to build the hand tracking target:
-
-```bash
-# Set environment variable to bypass blocked releases.bazel.build
-export BAZELISK_BASE_URL=https://github.com/bazelbuild/bazel/releases/download
-
-# Build the CPU-only hand tracking target
-bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
-```
-
-**Note**: The build will fail due to SSL certificate verification issues when Bazel downloads dependencies from GitHub in CI environments. This is a confirmed persistent issue. Solutions include:
-
-**For CI/Production Environments:**
-- Use pre-downloaded dependencies approach (recommended)
-- Configure Docker environment with proper Java certificate store
-- Use dependency caching to avoid repeated downloads
-
-**For Local Development:**
-- Local Ubuntu environments typically work with proper SSL setup
-- Ensure `ca-certificates` and `ca-certificates-java` packages are installed
-- Configure Java to trust system certificates: `sudo update-ca-certificates`
-
-**Workaround for Testing:**
-The SSL issue specifically affects Bazel's Java-based download mechanism. Manual downloads work fine:
-```bash
-# This works:
-wget https://github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz
-
-# This fails in CI:
-bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
-```
 
 # Why this Recipe Matters
 

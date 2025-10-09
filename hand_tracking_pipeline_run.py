@@ -6,7 +6,7 @@ import numpy as np
 import os
 from mediapipe.python.solutions import hands as mp_hands
 from mediapipe.examples.desktop import pipeline_output_pb2
-from mediapipe.framework.formats import landmark_pb2, classification_pb2, rect_pb2, detection_pb2
+from mediapipe.framework.formats import landmark_pb2, classification_pb2, rect_pb2, detection_pb2  # only known to the venv where pip install generates them from proto files, not known to the IDE
 
 # Define constant output filename
 OUTPUT_FILE_PATH = "output_data_python.pb"
