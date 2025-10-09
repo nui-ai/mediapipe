@@ -561,18 +561,24 @@ http_archive(
     url = "https://github.com/ceres-solver/ceres-solver/archive/123fba61cf2611a3c8bddc9d91416db26b10b558.zip",
 )
 
+# downloads the opencv source of the given version, for the sake of building it from source when applicable.
+# 4.6.0. doesn't work well with modern ffmpeg so upgraded to 4.10.0 (https://chatgpt.com/s/t_68e77246a72081919d71625d69d34ba9)
 http_archive(
     name = "opencv",
     build_file_content = all_content,
-    strip_prefix = "opencv-3.4.11",
-    urls = ["https://github.com/opencv/opencv/archive/3.4.11.tar.gz"],
+    strip_prefix = "opencv-4.10.0",
+    urls = ["https://github.com/opencv/opencv/archive/4.10.0.tar.gz"],
 )
 
-new_local_repository(
-    name = "linux_opencv",
-    build_file = "@//third_party:opencv_linux.BUILD",
-    path = "/usr",
-)
+# this definition makes Bazel not build OpenCV itself but rather it makes the system-installed OpenCV available as a dependency to the rest of the build.
+# the referenced build_file defines for it the header files, and linking options for being able to use it as such.
+# it should be uncommented if reverting to use the system-installed OpenCV instead of a downloaded one (above) or
+# building it from source as part of the mediapipe build.
+# new_local_repository(
+#    name = "linux_opencv",
+#    build_file = "@//third_party:opencv_linux.BUILD",
+#    path = "/usr",
+#)
 
 new_local_repository(
     name = "linux_ffmpeg",

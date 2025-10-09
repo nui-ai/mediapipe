@@ -3,7 +3,9 @@
     <option name="buildProfileId" value="release" />
     <option name="command" value="run --manifest-path rust/Cargo.toml -- --graph-file mediapipe/modules/hand_landmark/hand_landmark_tracking_cpu.pbtxt --input-video-path sample-video.avi" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$/.." />
-    <envs />
+    <envs>
+      <env name="LD_DEBUG" value="libs" />
+    </envs>
     <option name="emulateTerminal" value="true" />
     <option name="channel" value="DEFAULT" />
     <option name="requiredFeatures" value="true" />

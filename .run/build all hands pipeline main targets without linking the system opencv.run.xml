@@ -9,6 +9,8 @@
       <blaze-user-flag>opt</blaze-user-flag>
       <blaze-user-flag>--define</blaze-user-flag>
       <blaze-user-flag>MEDIAPIPE_DISABLE_GPU=1</blaze-user-flag>
+      <blaze-user-flag>--define</blaze-user-flag>
+      <blaze-user-flag>OPENCV=source</blaze-user-flag>
       <env_state>
         <envs />
       </env_state>

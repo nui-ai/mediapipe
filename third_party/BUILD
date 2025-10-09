@@ -67,6 +67,7 @@ cc_library(
     }),
 )
 
+# this option is enabled when adding "--define OPENCV=source" to the build command
 config_setting(
     name = "opencv_source_build",
     define_values = {
@@ -187,12 +188,10 @@ bzl_library(
 # Note: this determines the order in which the libraries are passed to the
 # linker, so if library A depends on library B, library B must come _after_.
 # Hence core is at the bottom.
+# NOTE: trimmed down to avoid forcing the DNN submodule with its protobuf dependency (as per https://chatgpt.com/s/t_68e77d69569c81918ae4599fd026af0b as part of https://github.com/nui-ai/mediapipe/issues/22)
 OPENCV_MODULES = [
-    "calib3d",
-    "features2d",
-    "highgui",
-    "video",
     "videoio",
+    "highgui",
     "imgcodecs",
     "imgproc",
     "core",
@@ -202,9 +201,12 @@ OPENCV_MODULES = [
 # still only builds the shared libraries, so we have to choose one or the
 # other. We build shared libraries by default, but this variable can be used
 # to switch to static libraries.
-OPENCV_SHARED_LIBS = False
+OPENCV_SHARED_LIBS = True  # # changed as part of https://github.com/nui-ai/mediapipe/issues/22
 
-OPENCV_SO_VERSION = "3.4"
+# changed as part of https://github.com/nui-ai/mediapipe/issues/22 (https://chatgpt.com/s/t_68e77246a72081919d71625d69d34ba9)
+OPENCV_SO_VERSION = "4.10.0"
+
+OPENCV_SO_SONAME = "410"  # SONAME used by linkers/NEEDED
 
 cmake(
     name = "opencv_cmake",
@@ -252,6 +254,14 @@ cmake(
         # ccache would be able to work across sandboxed Bazel builds, either.
         # In any case, Bazel does its own caching of the rule's outputs.
         "ENABLE_CCACHE": "OFF",
+        # Added to avoid the protobuf import by opencv as part of https://github.com/nui-ai/mediapipe/issues/22
+        "BUILD_PROTOBUF": "OFF",
+        # Added to avoid the protobuf import by opencv as part of https://github.com/nui-ai/mediapipe/issues/22
+        "BUILD_opencv_dnn": "OFF",
+        # added to avoid the DNN module import which brings in protobuf as part of https://github.com/nui-ai/mediapipe/issues/22
+        "BUILD_opencv_objdetect": "OFF",
+        # added to avoid the DNN module import which brings in protobuf as part of https://github.com/nui-ai/mediapipe/issues/22
+        "BUILD_opencv_tracking": "OFF",
     },
     lib_source = "@opencv//:all",
     linkopts = [] if OPENCV_SHARED_LIBS else [
@@ -261,7 +271,8 @@ cmake(
         # This list depends on which dependencies CMake finds when it configures
         # the build, and so depends on what is installed on the local system.
         # After building, the linkopts for the current setup can be extracted
-        # from lib/pkgconfig/opencv.pc in bazel-out
+        # from lib/pkgconfig/opencv.pc in bazel-out.
+        # NOTE: some of these seem to be outdated, or at least some of them fail to be recognized/found out of the box for me.
         "-ljpeg",
         "-lpng",
         "-lz",
@@ -283,12 +294,21 @@ cmake(
         "-lrt",
     ],
     out_shared_libs = select({
-        "@bazel_tools//src/conditions:darwin": ["libopencv_%s.%s.dylib" % (module, OPENCV_SO_VERSION) for module in OPENCV_MODULES],
-        # Only the shared objects listed here will be linked in the directory
-        # that Bazel adds to the RUNPATH of dependent executables. You cannot
-        # list both the versioned and unversioned name of the .so, and the
-        # versioned name is the one that the executables actually reference.
-        "//conditions:default": ["libopencv_%s.so.%s" % (module, OPENCV_SO_VERSION) for module in OPENCV_MODULES],
+        "@bazel_tools//src/conditions:darwin": [
+            "libopencv_%s.%s.dylib" % (module, OPENCV_SO_VERSION)
+            for module in OPENCV_MODULES
+        ],
+        "//conditions:default": (
+            # properly make it available at runtime as a non-versioned .so name.
+            [
+                "libopencv_%s.so.%s" % (module, OPENCV_SO_SONAME)
+                for module in OPENCV_MODULES
+            ] +
+            [
+                "libopencv_%s.so.%s" % (module, OPENCV_SO_VERSION)
+                for module in OPENCV_MODULES
+            ]
+        ),
     }) if OPENCV_SHARED_LIBS else None,
     out_static_libs = [
         "libopencv_%s.a" % module
