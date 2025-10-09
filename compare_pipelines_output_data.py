@@ -47,6 +47,9 @@ def read_pipeline_output_data(filename):
             except Exception as e:
                 print(f"Error parsing message at offset {f.tell() - length}: {e}")
                 break
+            else:
+                pass
+                # print(f'frame number is {msg.frame_number}')
     return messages
 
 def compare_messages(msg1, msg2):

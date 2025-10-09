@@ -67,7 +67,7 @@ fn read_delimited_protobuf_messages<T: protobuf::Message + Default>(reader: &mut
             }
         }
         if !read_any { break; } // EOF
-        if len == 0 { continue; } // skip zero-length
+        // Do not skip zero-length messages
         let mut msg_buf = vec![0u8; len as usize];
         reader.read_exact(&mut msg_buf)?;
         let msg = T::parse_from_bytes(&msg_buf)?;
@@ -82,9 +82,6 @@ fn read_reference_data(filename: &str) -> anyhow::Result<Vec<PipelineOutputData>
     let mut reader = BufReader::new(file);
     let out = read_delimited_protobuf_messages::<PipelineOutputData>(&mut reader)?;
     println!("Loaded {} reference records from {}", out.len(), filename);
-    for (i, msg) in out.iter().take(3).enumerate() {
-        println!("Reference message {}: {:#?}", i , msg);
-    }
     Ok(out)
 }
 
@@ -146,7 +143,7 @@ fn main() -> anyhow::Result<()> {
     }
     println!("Video/camera opened successfully");
 
-    // Check if reference proto file exists and is readable
+    // Check if reference output file exists and is readable
     let reference_proto_path = "output_data_v0.10.13.pb";
     if !std::path::Path::new(reference_proto_path).is_file() {
         eprintln!("Error: Reference proto file '{}' not found or not a regular file.", reference_proto_path);
