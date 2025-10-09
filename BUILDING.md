@@ -268,11 +268,10 @@ docker run --rm -it -v "$PWD":/mediapipe mediapipe-build /bin/bash
 To build the Python hand landmarks solution (the only target built in the Docker image):
 
 ```bash
-bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --copt=-I/usr/include/opencv4 mediapipe/python/solutions:hands
+bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/python/solutions:hands
 ```
 
 - This command builds only the hand landmarks solution for Python, matching the Docker image build step.
-- The `--copt=-I/usr/include/opencv4` flag is needed for OpenCV 4.x on Ubuntu 24.04+.
 
 > **Note:** Sandboxed Bazel builds (e.g., with `--sandbox_debug`) may fail due to upstream or environment issues. Use the regular build command above for reliable results.
 

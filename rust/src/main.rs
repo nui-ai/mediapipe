@@ -78,12 +78,52 @@ fn read_delimited_protobuf_messages<T: protobuf::Message + Default>(reader: &mut
 
 fn read_reference_data(filename: &str) -> anyhow::Result<Vec<PipelineOutputData>> {
     use std::io::BufReader;
-    let file = File::open(filename)
-        .with_context(|| format!("Failed to open reference proto file: {}", filename))?;
+    let file = File::open(filename).with_context(|| format!("Failed to open reference proto file: {}", filename))?;
     let mut reader = BufReader::new(file);
     let out = read_delimited_protobuf_messages::<PipelineOutputData>(&mut reader)?;
     println!("Loaded {} reference records from {}", out.len(), filename);
+    for (i, msg) in out.iter().take(3).enumerate() {
+        println!("Reference message {}: {:#?}", i , msg);
+    }
     Ok(out)
+}
+
+fn print_pipeline_output_diff(a: &PipelineOutputData, b: &PipelineOutputData, frame: usize) {
+    if a.frame_number != b.frame_number {
+        eprintln!("frame_number differs: {} vs {}", a.frame_number, b.frame_number);
+    }
+    if a.multi_hand_world_landmarks.len() != b.multi_hand_world_landmarks.len() {
+        eprintln!("multi_hand_world_landmarks length differs: {} vs {}", a.multi_hand_world_landmarks.len(), b.multi_hand_world_landmarks.len());
+    }
+    for (i, (l1, l2)) in a.multi_hand_world_landmarks.iter().zip(b.multi_hand_world_landmarks.iter()).enumerate() {
+        if l1 != l2 {
+            eprintln!("multi_hand_world_landmarks[{}] differs: {:?} vs {:?}", i, l1, l2);
+        }
+    }
+    if a.multi_hand_landmarks.len() != b.multi_hand_landmarks.len() {
+        eprintln!("multi_hand_landmarks length differs: {} vs {}", a.multi_hand_landmarks.len(), b.multi_hand_landmarks.len());
+    }
+    for (i, (l1, l2)) in a.multi_hand_landmarks.iter().zip(b.multi_hand_landmarks.iter()).enumerate() {
+        if l1 != l2 {
+            eprintln!("multi_hand_landmarks[{}] differs: {:?} vs {:?}", i, l1, l2);
+        }
+    }
+    if a.multi_handedness.len() != b.multi_handedness.len() {
+        eprintln!("multi_handedness length differs: {} vs {}", a.multi_handedness.len(), b.multi_handedness.len());
+    }
+    for (i, (c1, c2)) in a.multi_handedness.iter().zip(b.multi_handedness.iter()).enumerate() {
+        if c1 != c2 {
+            eprintln!("multi_handedness[{}] differs: {:?} vs {:?}", i, c1, c2);
+        }
+    }
+    if a.hand_rects_from_palm_detections.len() != b.hand_rects_from_palm_detections.len() {
+        eprintln!("hand_rects_from_palm_detections length differs: {} vs {}", a.hand_rects_from_palm_detections.len(), b.hand_rects_from_palm_detections.len());
+    }
+    for (i, (r1, r2)) in a.hand_rects_from_palm_detections.iter().zip(b.hand_rects_from_palm_detections.iter()).enumerate() {
+        if r1 != r2 {
+            eprintln!("hand_rects_from_palm_detections[{}] differs: {:?} vs {:?}", i, r1, r2);
+        }
+    }
 }
 
 fn main() -> anyhow::Result<()> {
@@ -224,7 +264,8 @@ fn main() -> anyhow::Result<()> {
         if !reference_data.is_empty() {
             if i < reference_data.len() {
                 if stream_data_msg != reference_data[i] {
-                    eprintln!("Pipeline output at frame {} is different than the reference output.", i);
+                    eprintln!("Pipeline output at frame {} is different than the reference output:", i);
+                    print_pipeline_output_diff(&stream_data_msg, &reference_data[i], i);
                     eprintln!("Terminating early due to difference in output at frame {}", i);
                     break;
                 } else {

@@ -69,8 +69,6 @@ if IS_MAC:
   GPU_OPTIONS_ENBALED.append('--copt=-DMEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER')
 GPU_OPTIONS = GPU_OPTIONS_DISBALED if MP_DISABLE_GPU else GPU_OPTIONS_ENBALED
 
-# Global OpenCV linking option, set early
-link_opencv = os.environ.get('MEDIAPIPE_LINK_OPENCV', '0') == '1'
 
 def _normalize_path(path):
   return path.replace('\\', '/') if IS_WINDOWS else path
@@ -130,22 +128,8 @@ def _check_bazel():
 
 
 def _maybe_modify_opencv_cmake_rule():
-  """Modify opencv_cmake rule to build the static opencv libraries."""
-
-  # Ask the opencv_cmake rule to build the static opencv libraries for the
-  # mediapipe python package. By doing this, we can avoid copying the opencv
-  # .so file into the package.
-  # On Windows, the opencv_cmake rule may need Visual Studio to compile OpenCV
-  # from source. For simplicity, we continue to link the prebuilt version of
-  # the OpenCV library through "@windows_opencv//:opencv".
-  if not link_opencv and not IS_WINDOWS:
-    content = open(MP_THIRD_PARTY_BUILD,
-                   'r').read().replace('OPENCV_SHARED_LIBS = True',
-                                       'OPENCV_SHARED_LIBS = False')
-    shutil.move(MP_THIRD_PARTY_BUILD, _get_backup_file(MP_THIRD_PARTY_BUILD))
-    build_file = open(MP_THIRD_PARTY_BUILD, 'w')
-    build_file.write(content)
-    build_file.close()
+    """Modify opencv_cmake rule to build the static opencv libraries."""
+    return
 
 
 def _add_mp_init_files():
@@ -226,7 +210,7 @@ def _build_bazel_command(target, extra_bazel_args=None):
         '--nostamp',
         '--compilation_mode=opt',
         '--copt=-DNDEBUG',
-        '--copt=-I/usr/include/opencv4',
+        #'--copt=-I/usr/include/opencv4', as a consequence of the opencv cmake rule now building opencv from source (https://github.com/nui-ai/mediapipe/issues/22), this is not needed anymore
         '--explain=/tmp/bazel.explain',
     "--verbose_explanations",
         target,
@@ -234,8 +218,7 @@ def _build_bazel_command(target, extra_bazel_args=None):
     if extra_bazel_args:
         bazel_command += extra_bazel_args
         print(f'extra args provided for the current bazel build command:\n{extra_bazel_args}', flush=True)
-    if not link_opencv and not IS_WINDOWS:
-        bazel_command.append('--define=OPENCV=system')
+    bazel_command.append('--define=OPENCV=source')  # as a consequence of the opencv cmake rule now building opencv from source (https://github.com/nui-ai/mediapipe/issues/22)
     return bazel_command
 
 

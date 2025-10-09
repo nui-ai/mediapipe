@@ -201,11 +201,10 @@ OPENCV_MODULES = [
 # still only builds the shared libraries, so we have to choose one or the
 # other. We build shared libraries by default, but this variable can be used
 # to switch to static libraries.
-OPENCV_SHARED_LIBS = True  # # changed as part of https://github.com/nui-ai/mediapipe/issues/22
+OPENCV_SHARED_LIBS = True # changed as part of https://github.com/nui-ai/mediapipe/issues/22
 
 # changed as part of https://github.com/nui-ai/mediapipe/issues/22 (https://chatgpt.com/s/t_68e77246a72081919d71625d69d34ba9)
 OPENCV_SO_VERSION = "4.10.0"
-
 OPENCV_SO_SONAME = "410"  # SONAME used by linkers/NEEDED
 
 cmake(
