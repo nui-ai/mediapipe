@@ -45,10 +45,10 @@ constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";
 constexpr char kReferenceProtoFilename[] = "output_data_v0.10.13.pb";
 
 ABSL_FLAG(std::string, graph_file, "", "Name of pipeline pbtxt file.");
-ABSL_FLAG(std::string, input_video_path, "", "Full path of video to load. If not provided, attempt to use a webcam.");
-ABSL_FLAG(std::string, output_video_path, "", "Full path of where to save result (.mp4 only). If not provided, show result in a window.");
+ABSL_FLAG(std::string, input_video_path, "", "Full path of video to load. If not provided, will attempt to use webcam input (not tested).");
+ABSL_FLAG(std::string, output_video_path, "", "Full path of where to save result (.mp4 only). If not provided, show result in a window (not tested).");
 
-// helper function to read reference data from file c style (we could just have used cpp)
+// helper function to read the reference output data from file c style (we could just have used cpp)
 bool ReadReferenceData(const std::string& filename, std::vector<mediapipe::PipelineOutputData>& out) {
     std::ifstream input(filename, std::ios::binary);
     if (!input.is_open()) {
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
 
     absl::ParseCommandLine(argc, argv);
 
-    // Load the reference output data (we could just read it using cpp)
+    // load the reference output data (we could just read it using cpp)
     std::vector<mediapipe::PipelineOutputData> reference_data;
     ReadReferenceData(kReferenceProtoFilename, reference_data);
 
@@ -121,6 +121,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
+    // loop the input video/camera
     for (int i = 0; i < 999999; ++i) {
         cv::Mat input_frame_raw;
         capture >> input_frame_raw;
