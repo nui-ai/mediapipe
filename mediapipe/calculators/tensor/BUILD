@@ -1551,8 +1551,9 @@ cc_test(
 )
 
 cc_library(
-    name = "image_to_tensor_calculator",
-    srcs = ["image_to_tensor_calculator.cc"],
+    name = "image_to_tensor_calculator_core",
+    srcs = ["image_to_tensor_calculator_core.cc"],
+    hdrs = ["image_to_tensor_calculator_core.h"],
     copts = select({
         "//mediapipe:apple": [
             "-x objective-c++",
@@ -1594,6 +1595,13 @@ cc_library(
         ],
         "//conditions:default": [],
     }),
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "image_to_tensor_calculator",
+    srcs = ["image_to_tensor_calculator.cc"],
+    deps = [":image_to_tensor_calculator_core"],
     alwayslink = 1,
 )
 

@@ -19,6 +19,7 @@
 
 #include "absl/log/absl_log.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_calculator.pb.h"
+#include "mediapipe/calculators/tensor/image_to_tensor_calculator_core.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_converter.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_utils.h"
 #include "mediapipe/framework/api2/node.h"
@@ -151,29 +152,6 @@ class ImageToTensorCalculator : public Node {
   static absl::Status UpdateContract(CalculatorContract* cc) {
     const auto& options =
         cc->Options<mediapipe::ImageToTensorCalculatorOptions>();
-
-    RET_CHECK_OK(ValidateOptionOutputDims(options));
-    RET_CHECK(kIn(cc).IsConnected() ^ kInGpu(cc).IsConnected())
-        << "One and only one of IMAGE and IMAGE_GPU input is expected.";
-    RET_CHECK(kOutTensors(cc).IsConnected() ^ kOutTensor(cc).IsConnected())
-        << "One and only one of TENSORS and TENSOR output is supported.";
-
-#if MEDIAPIPE_DISABLE_GPU
-    if (kInGpu(cc).IsConnected()) {
-      return absl::UnimplementedError(
-          "GPU processing is disabled in build flags");
-    }
-#else  // !MEDIAPIPE_DISABLE_GPU
-#if MEDIAPIPE_METAL_ENABLED
-    MP_RETURN_IF_ERROR([MPPMetalHelper updateContract:cc]);
-#else
-    cc->UseService(kGpuService).Optional();
-#if MEDIAPIPE_USE_WEBGPU
-    cc->UseService(kWebGpuService).Optional();
-#endif  // MEDIAPIPE_USE_WEBGPU
-#endif  // MEDIAPIPE_METAL_ENABLED
-#endif  // MEDIAPIPE_DISABLE_GPU
-
     cc->UseService(kMemoryManagerService).Optional();
     return absl::OkStatus();
   }
@@ -189,11 +167,7 @@ class ImageToTensorCalculator : public Node {
 
   absl::Status Process(CalculatorContext* cc) {
     ABSL_LOG(INFO) << "ImageToTensorCalculator started processing";
-    if ((kIn(cc).IsConnected() && kIn(cc).IsEmpty()) ||
-        (kInGpu(cc).IsConnected() && kInGpu(cc).IsEmpty())) {
-      // Timestamp bound update happens automatically.
-      return absl::OkStatus();
-    }
+    if ((kIn(cc).IsConnected() && kIn(cc).IsEmpty()) || (kInGpu(cc).IsConnected() && kInGpu(cc).IsEmpty())) { return absl::OkStatus(); }
 
     absl::optional<mediapipe::NormalizedRect> norm_rect;
     if (kInNormRect(cc).IsConnected()) {
@@ -202,62 +176,33 @@ class ImageToTensorCalculator : public Node {
         return absl::OkStatus();
       }
       norm_rect = *kInNormRect(cc);
-      if (norm_rect->width() == 0 && norm_rect->height() == 0) {
-        // WORKAROUND: some existing graphs may use sentinel rects {width=0,
-        // height=0, ...} quite often and calculator has to handle them
-        // gracefully by updating timestamp bound instead of returning failure.
-        // Timestamp bound update happens automatically. (See Open().)
-        // NOTE: usage of sentinel rects should be avoided.
-        ABSL_DLOG(WARNING)
-            << "Updating timestamp bound in response to a sentinel rect";
-        return absl::OkStatus();
-      }
     }
 
-#if MEDIAPIPE_DISABLE_GPU
     MP_ASSIGN_OR_RETURN(auto image, GetInputImage(kIn(cc)));
-#else
-    const bool is_input_gpu = kInGpu(cc).IsConnected();
-    MP_ASSIGN_OR_RETURN(auto image, is_input_gpu ? GetInputImage(kInGpu(cc))
-                                                 : GetInputImage(kIn(cc)));
-#endif
-
-    RotatedRect roi = GetRoi(image->width(), image->height(), norm_rect);
     const int tensor_width = params_.output_width.value_or(image->width());
     const int tensor_height = params_.output_height.value_or(image->height());
-    MP_ASSIGN_OR_RETURN(auto padding,
-                        PadRoi(tensor_width, tensor_height,
-                               options_.keep_aspect_ratio(), &roi));
-    if (kOutLetterboxPadding(cc).IsConnected()) {
-      kOutLetterboxPadding(cc).Send(padding);
-    }
-    if (kOutMatrix(cc).IsConnected()) {
-      std::array<float, 16> matrix;
-      GetRotatedSubRectToRectTransformMatrix(
-          roi, image->width(), image->height(),
-          /*flip_horizontally=*/false, &matrix);
-      kOutMatrix(cc).Send(std::move(matrix));
-    }
 
-    // Lazy initialization of the GPU or CPU converter.
-    MP_RETURN_IF_ERROR(InitConverterIfNecessary(cc, *image.get()));
+    ImageToTensorCoreResult core_result;
+    MP_RETURN_IF_ERROR(ImageToTensorCalculatorCore(
+      *image,
+      options_,
+      tensor_width,
+      tensor_height,
+      params_,
+      gpu_converter_,
+      cpu_converter_,
+      memory_manager_,
+      norm_rect,
+      &core_result));
 
-    Tensor::ElementType output_tensor_type =
-        GetOutputTensorType(image->UsesGpu(), params_);
-    Tensor tensor(
-        output_tensor_type,
-        {1, tensor_height, tensor_width, GetNumOutputChannels(*image)},
-        memory_manager_);
-    MP_RETURN_IF_ERROR((image->UsesGpu() ? gpu_converter_ : cpu_converter_)
-                           ->Convert(*image, roi, params_.range_min, params_.range_max,
-                                     /*tensor_buffer_offset=*/0, tensor));
-
+    if (kOutMatrix(cc).IsConnected()) { kOutMatrix(cc).Send(core_result.matrix); }
+    if (kOutLetterboxPadding(cc).IsConnected()) { kOutLetterboxPadding(cc).Send(core_result.padding); }
     if (kOutTensors(cc).IsConnected()) {
       auto result = std::make_unique<std::vector<Tensor>>();
-      result->push_back(std::move(tensor));
+      *result = std::move(core_result.tensors);
       kOutTensors(cc).Send(std::move(result));
-    } else {
-      kOutTensor(cc).Send(std::move(tensor));
+    } else if (core_result.tensor) {
+      kOutTensor(cc).Send(std::move(*core_result.tensor));
     }
     return absl::OkStatus();
   }
