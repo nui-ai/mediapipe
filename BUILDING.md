@@ -63,7 +63,15 @@ These quickly ascertain after each pipeline reduction step, that the pipeline st
    + This does not clear the wheel installed binary of mediapipe which `pip install .` installs into the active python environment! only `pip uninstall mediapipe` does that!
    + This does not uninstall the mediapipe python package (only a `pip uninstall mediapipe` does;  `pip uninstall` caused the known issue described below, but after recent changes no longer does).
 
-8. build and run our mediapipe pipeline from rust using the repo included JetBrains (cargo based) run configuration.
+8. build and run our mediapipe pipeline from rust using the repo included JetBrains (cargo based) dedicated run configuration.
+
+## Debugging
+
+For being able to place breakpoints in the bazel built C++, it is necessary to use the following build flags in the bazel build command to build the top-level build targets (executable, lib) as really debuggable:
++ `-c dbg` (or any equivalent which generates debug symbols)
++ `--fission=no` (this option simplifies the debug symbol's writing into the executables, thus enabling Clion/GDB/LLDB to use them; without it, you cannot place breakpoints in the C++ code and expect them to actually work).
+
+---
 
 # ⚠️ Obsolete: Build Known Issue ⚠️  
 Sometimes you get this error from python, or a similar one from C++ mains:
