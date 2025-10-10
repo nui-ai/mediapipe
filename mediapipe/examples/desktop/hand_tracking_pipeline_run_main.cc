@@ -18,6 +18,8 @@
 
 #include <cstdlib>
 #include <fstream>
+#include <filesystem>
+#include <string>
 
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
@@ -48,6 +50,18 @@ ABSL_FLAG(std::string, input_video_path, "",
 ABSL_FLAG(std::string, output_video_path, "",
           "Full path of where to save result (.mp4 only). "
           "If not provided, show result in a window.");
+
+// Returns the full path by prefixing with PROJECT_ROOT_DIR if set and path is not absolute.
+std::string GetProjectRootedPath(const std::string& filename) {
+    if (filename.empty() || std::filesystem::path(filename).is_absolute()) {
+        return filename;
+    }
+    const char* root_dir = std::getenv("PROJECT_ROOT_DIR");
+    if (root_dir && std::string(root_dir).length() > 0) {
+        return (std::filesystem::path(root_dir) / filename).string();
+    }
+    return filename;
+}
 
 // helper function to read the output reference data from file
 bool ReadReferenceData(const std::string& filename, std::vector<mediapipe::PipelineOutputData>& out) {
@@ -84,11 +98,10 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe::Pipel
 }
 
 absl::Status RunPipelineWithDiffing() {
-
   // Load reference data from output_data_v0.10.13.pb
   std::vector<mediapipe::PipelineOutputData> reference_data;
-  if (!ReadReferenceData(kReferenceProtoFilename, reference_data)) {
-    ABSL_LOG(WARNING) << "failed to load reference data from " << kReferenceProtoFilename
+  if (!ReadReferenceData(GetProjectRootedPath(kReferenceProtoFilename), reference_data)) {
+    ABSL_LOG(WARNING) << "failed to load reference data from " << GetProjectRootedPath(kReferenceProtoFilename)
                      << ". will proceed without real-time comparison.";
   } else {
     ABSL_LOG(INFO) << "loaded " << reference_data.size() << " records from the reference data file.";
@@ -102,7 +115,7 @@ absl::Status RunPipelineWithDiffing() {
     // "hand_rects_from_palm_detections"
   };
 
-  auto status_or_op = mediapipe::HandsPipelineOperator::Create(absl::GetFlag(FLAGS_graph_file), graph_output_streams_names);
+  auto status_or_op = mediapipe::HandsPipelineOperator::Create(GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)), graph_output_streams_names);
   if (!status_or_op.ok()) {
       std::cerr << "Failed to create HandsPipelineOperator: " << status_or_op.status().message() << std::endl;
       return status_or_op.status();
@@ -113,7 +126,7 @@ absl::Status RunPipelineWithDiffing() {
   cv::VideoCapture capture;
   const bool video_file_input = !absl::GetFlag(FLAGS_input_video_path).empty();
   if (video_file_input) {
-    capture.open(absl::GetFlag(FLAGS_input_video_path));
+    capture.open(GetProjectRootedPath(absl::GetFlag(FLAGS_input_video_path)));
   } else {
     capture.open(0);
   }
@@ -122,9 +135,9 @@ absl::Status RunPipelineWithDiffing() {
   ABSL_LOG(INFO) << "starting a mediapipe graph";
 
   // Initialize output protobuf file (overwrite if exists)
-  std::ofstream output_proto_file(kOutputProtoFilename, std::ios::binary | std::ios::trunc);
+  std::ofstream output_proto_file(GetProjectRootedPath(kOutputProtoFilename), std::ios::binary | std::ios::trunc);
   if (!output_proto_file.is_open()) {
-    return absl::InternalError(std::string("failed to open ") + kOutputProtoFilename + " for writing");
+    return absl::InternalError(std::string("failed to open ") + GetProjectRootedPath(kOutputProtoFilename) + " for writing");
   }
 
   // process all input frames
@@ -181,18 +194,49 @@ absl::Status RunPipelineWithDiffing() {
   return absl::OkStatus();
 }
 
+// Validates PROJECT_ROOT_DIR env variable if set. Exits with error if invalid.
+void ValidateProjectRootDirectoryOrExit() {
+    const char* root_dir = std::getenv("PROJECT_ROOT_DIR");
+    if (!root_dir || std::string(root_dir).empty()) return; // Not set, nothing to check
+    std::string dir_str(root_dir);
+    if (!std::filesystem::path(dir_str).is_absolute()) {
+        std::cerr << "ERROR: PROJECT_ROOT_DIR must be an absolute path, but got: '" << dir_str << "'\n";
+        std::exit(EXIT_FAILURE);
+    }
+    if (!std::filesystem::exists(dir_str)) {
+        std::cerr << "ERROR: PROJECT_ROOT_DIR does not exist: '" << dir_str << "'\n";
+        std::exit(EXIT_FAILURE);
+    }
+    if (!std::filesystem::is_directory(dir_str)) {
+        std::cerr << "ERROR: PROJECT_ROOT_DIR is not a directory: '" << dir_str << "'\n";
+        std::exit(EXIT_FAILURE);
+    }
+}
+
+// Checks that the given file exists. Exits with error if not.
+void CheckFileExistsOrExit(const std::string& file_path, const char* flag_name) {
+    if (!file_path.empty() && !std::filesystem::exists(file_path)) {
+        std::cerr << "ERROR: File specified by --" << flag_name << " does not exist: '" << file_path << "'\n";
+        std::exit(EXIT_FAILURE);
+    }
+}
+
 int main(int argc, char** argv) {
+  ValidateProjectRootDirectoryOrExit();
 
-  // the following logging intialization made our VLOG macro uses swallow, so don't use VLOG.
-  // a subtle ABSL-GLOG interaction which other modules don't bump into but this one does, wasted 80 minutes in deep exploration of it and gave up.
-  // motivation was that VLOG can log conditionally at the module level (e.g. only log for our module etc. a feature which ABSL_LOG does not seem to have)
-  // something in the build dependencies order makes VLOG not log for the current module but only for original modules, which is too subtle to capture
-  // at any budget of time that's proportional.
   google::InitGoogleLogging(argv[0]);
-
   ABSL_LOG(INFO) << "this is the pure c++ pipeline runner";
+  ABSL_LOG(INFO) << "working directory: " << std::filesystem::current_path() << std::endl;
 
   absl::ParseCommandLine(argc, argv);
+
+  // Check input files exist before use
+  CheckFileExistsOrExit(GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)), "graph_file");
+  if (!absl::GetFlag(FLAGS_input_video_path).empty()) {
+    CheckFileExistsOrExit(GetProjectRootedPath(absl::GetFlag(FLAGS_input_video_path)), "input_video_path");
+  }
+  // Optionally check reference proto file if you want to require its existence
+  // CheckFileExistsOrExit(GetProjectRootedPath(kReferenceProtoFilename), "reference_proto_filename");
 
   absl::Status run_status = RunPipelineWithDiffing();
   if (!run_status.ok()) {

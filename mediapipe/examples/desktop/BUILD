@@ -68,6 +68,7 @@ cc_library(
 cc_library(
     name = "hand_tracking_pipeline_run_main",
     srcs = ["hand_tracking_pipeline_run_main.cc"],
+    data = ["//mediapipe/modules/hand_landmark:handedness.txt"],  # needed when running the binary through the bazel command
     deps = [
         ":hands_pipeline_operator",
         ":pipeline_output_cc_proto",

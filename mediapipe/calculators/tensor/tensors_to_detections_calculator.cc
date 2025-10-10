@@ -36,6 +36,8 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/port/ret_check.h"
+#include "mediapipe/calculators/tensor/tensors_to_detections_calculator_core.h"
+using mediapipe::api2::TensorsToDetectionsCore;
 
 // Note: On Apple platforms MEDIAPIPE_DISABLE_GL_COMPUTE is automatically
 // defined in mediapipe/framework/port.h. Therefore,
@@ -212,8 +214,9 @@ namespace api2 {
     int num_coords_ = 0;
     int max_results_ = -1;
     int classes_per_detection_ = 1;
-    BoxFormat box_output_format_ =
-        mediapipe::TensorsToDetectionsCalculatorOptions::YXHW;
+    BoxFormat box_output_format_ = mediapipe::TensorsToDetectionsCalculatorOptions::YXHW;
+
+    bool initialized_ = false;
 
     // Set of allowed or ignored class indices.
     struct ClassIndexSet {
@@ -253,6 +256,7 @@ namespace api2 {
     std::unique_ptr<Tensor> raw_anchors_buffer_;
     std::unique_ptr<Tensor> decoded_boxes_buffer_;
     std::unique_ptr<Tensor> scored_boxes_buffer_;
+    std::unique_ptr<TensorsToDetectionsCore> core_;
 
     bool gpu_inited_ = false;
     bool gpu_input_ = false;
@@ -278,6 +282,7 @@ namespace api2 {
   absl::Status TensorsToDetectionsCalculator::Open(CalculatorContext* cc) {
     MP_RETURN_IF_ERROR(SetDecodingParameters(cc));
     MP_RETURN_IF_ERROR(SetNmsParameters(cc));
+    initialized_ = true;
 
     if (CanUseGpu()) {
 #ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
@@ -286,7 +291,9 @@ namespace api2 {
       RET_CHECK(gpu_helper_);
 #endif  // !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
     }
-
+    // Instantiate and open core
+    core_ = std::make_unique<TensorsToDetectionsCore>();
+    MP_RETURN_IF_ERROR(core_->Open());
     return absl::OkStatus();
   }
 
@@ -297,62 +304,20 @@ namespace api2 {
   //    with only some optional leverage for filtering the raw detections.
   // 2. it also transforms them into mediapipe vector types.
   absl::Status TensorsToDetectionsCalculator::Process(CalculatorContext* cc) {
+    assert (initialized_);
+
     auto output_detections = absl::make_unique<std::vector<Detection>>();
     bool gpu_processing = false;
-    if (CanUseGpu() && gpu_has_enough_work_groups_) {
-      // Use GPU processing only if at least one input tensor is already on GPU
-      // (to avoid CPU->GPU overhead).
-      for (const auto& tensor : *kInTensors(cc)) {
-        if (tensor.ready_on_gpu()) {
-          gpu_processing = true;
-          break;
-        }
-      }
-    }
     const auto& input_tensors = *kInTensors(cc);
     for (const auto& tensor : input_tensors) {
       RET_CHECK(tensor.element_type() == Tensor::ElementType::kFloat32);
     }
-    const int num_input_tensors = input_tensors.size();
-    if (!scores_tensor_index_is_set_) {
-      if (num_input_tensors == 2 ||
-          num_input_tensors == kNumInputTensorsWithAnchors) {
-        ssd_decoding_tensor_mapping_.set_scores_tensor_index(1);
-          } else {
-            ssd_decoding_tensor_mapping_.set_scores_tensor_index(2);
-          }
-      scores_tensor_index_is_set_ = true;
-    }
-    if (gpu_processing || num_input_tensors != 4) {
-      // Allows custom bounding box indices when receiving 4 cpu tensors.
-      // Uses the default bbox indices in other cases.
-      RET_CHECK(!has_custom_box_indices_);
-    }
 
-    if (gpu_processing && !gpu_inited_) {
-      auto status = GpuInit(cc);
-      if (status.ok()) {
-        gpu_inited_ = true;
-      } else if (status.code() == absl::StatusCode::kFailedPrecondition) {
-        // For initialization error because of hardware limitation, fallback to
-        // CPU processing.
-        ABSL_LOG(WARNING) << status.message();
-      } else {
-        // For other error, let the error propagates.
-        return status;
-      }
-    }
-    if (gpu_processing && gpu_inited_) {
-      MP_RETURN_IF_ERROR(ProcessGPU(cc, output_detections.get()));
-    } else {
-      MP_RETURN_IF_ERROR(ProcessCPU(cc, output_detections.get()));
-    }
+    auto filtered_detections = core_->Process(input_tensors);
+    MP_RETURN_IF_ERROR(filtered_detections.status());
+    kOutDetections(cc).Send(*filtered_detections.value());
 
-    ABSL_LOG(INFO) << "TensorsToDetectionsCalculator::Process: " << " detections count " << output_detections->size();
-    auto nms_surviving_detections = FilterDetectionsByNonMaximumSuppression(*output_detections, nms_options_, false, 0, 0);
-    ABSL_LOG(INFO) << "TensorsToDetectionsCalculator::Process: " << ", nms surviving detections " << nms_surviving_detections->size();
-
-    kOutDetections(cc).Send(std::move(nms_surviving_detections));
+    // kOutDetections(cc).Send(std::move(nms_surviving_detections));
     return absl::OkStatus();
   }
 
