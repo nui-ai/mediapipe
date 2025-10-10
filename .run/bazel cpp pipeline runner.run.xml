@@ -3,7 +3,7 @@
     <blaze-settings handler-id="BlazeCLionRunConfigurationHandlerProvider" blaze-command="run" kind="cc_binary">
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run</blaze-target>
       <blaze-user-flag>-c</blaze-user-flag>
-      <blaze-user-flag>dbg</blaze-user-flag>
+      <blaze-user-flag>opt</blaze-user-flag>
       <blaze-user-flag>--define</blaze-user-flag>
       <blaze-user-flag>MEDIAPIPE_DISABLE_GPU=1</blaze-user-flag>
       <blaze-user-flag>--define</blaze-user-flag>
