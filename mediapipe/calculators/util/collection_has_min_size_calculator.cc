@@ -28,12 +28,7 @@ class NormalizedRectVectorHasMinSizeCalculator : public CollectionHasMinSizeCalc
     // Call base Open to set min_size_ from options or side packet.
     MP_RETURN_IF_ERROR(CollectionHasMinSizeCalculator::Open(cc));
     // Check shared config for "num_hands".
-    const auto& config = CalculatorBase::SharedState().GetConfig();
-    auto it = config.find("num_hands");
-    if (it != config.end()) {
-      // Crash if conversion fails
-      min_size_ = std::stoi(it->second);  // Will throw std::invalid_argument or std::out_of_range if invalid, which will crash
-    }
+    min_size_ = CalculatorBase::GetSharedState().num_hands;
     return absl::OkStatus();
   }
 };

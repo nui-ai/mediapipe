@@ -13,16 +13,19 @@ namespace mediapipe {
 
     class SharedCalculatorState {
     public:
+
         static int GetCounter();
         static void IncrementCounter();
         static void ResetCounter();
 
-        static const std::map<std::string, std::string>& GetConfig();
-        static void SetConfig(const std::map<std::string, std::string>& config);
+        uint32_t num_hands = 2;
+        uint32_t model_complexity = 1;
+        bool USE_PREV_LANDMARKS = true;
+
+        bool prev_has_enough_hands;
 
     private:
         static int counter_;
-        static std::map<std::string, std::string> config_;
         static std::mutex mutex_;
     };
 

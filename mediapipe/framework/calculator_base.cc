@@ -27,7 +27,7 @@ CalculatorBase::~CalculatorBase() {}
 // Static member definition
 SharedCalculatorState CalculatorBase::shared_state_;
 
-SharedCalculatorState& CalculatorBase::SharedState() {
+SharedCalculatorState& CalculatorBase::GetSharedState() {
     return shared_state_;
 }
 

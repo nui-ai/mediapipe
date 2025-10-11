@@ -171,7 +171,7 @@ class CalculatorBase {
   virtual Timestamp SourceProcessOrder(const CalculatorContext* cc) const;
 
   // Accessor for shared calculator state.
-  static SharedCalculatorState& SharedState();
+  static SharedCalculatorState& GetSharedState();
 
  private:
   // Shared state across all instances of CalculatorBase.

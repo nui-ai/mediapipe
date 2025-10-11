@@ -13,11 +13,6 @@ namespace mediapipe {
 
     // global value definitions which previously came as input to the entire invocation of the root graph
     int SharedCalculatorState::counter_ = 0;
-    std::map<std::string, std::string> SharedCalculatorState::config_ = {
-        {"num_hands", "2"},
-        {"model_complexity", "1"},
-        {"USE_PREV_LANDMARKS", "true"}
-    };
     std::mutex SharedCalculatorState::mutex_;
 
     // a frame number counter
@@ -34,15 +29,10 @@ namespace mediapipe {
         counter_ = 0;
     }
 
-    // a mapping from string values to string names, maybe not the greatest idea as we can have typed argument
-    // passing between our nodes instead, each one being just a member of the current object.
-    const std::map<std::string, std::string>& SharedCalculatorState::GetConfig() {
-        return config_;
-    }
-    void SharedCalculatorState::SetConfig(const std::map<std::string, std::string>& config) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        config_ = config;
-    }
+    // void SharedCalculatorState::SetConfig(const std::map<std::string, std::string>& config) {
+    //     std::lock_guard<std::mutex> lock(mutex_);
+    //     config_ = config;
+    // }
 
     // each mediapipe stream definition pattern (TAG:name, name, CLONE:n:name etc.) and the framework's wiring
     // of input streams to output streams from other nodes should be made a simple typed definition of the "packet"
