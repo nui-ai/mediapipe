@@ -24,7 +24,7 @@ Currently successfully building with Bazel 6.5.0 as also seen in the [Dockerfile
   + Chiefly, the first two plugins make the editor aware of `pb.h` header files which are only generated during each bazel build, outside the codebase source-tree, from the underlying protobuf definitions which mediapipe uses for mostly all of its C++ classes; these `pb.h` are expected by C++ include statements, without which most code symbols are marked as unknown in the editor, rendering code editing noisy and unusable.
   + The editing awareness through these plugins is only materialized after you perform the "Sync" action in the Bazel menu or in context menus ― it basically draws the bazel build graph into the IDE's project model to make the IDE understand the project code. You have to repeat the "Sync" after build changes.
   + They also enable more fluency with bazel run configurations and stuff in the IDE.
-  + Case in point: jumping from CC code to its BAZEL file build definition! (available as a right click option)
+  + Case in point: jumping from a CC source file directly to its very build definition in the respective BAZEL file! (available as a right click option)
   + Don't install conflicting Clion plugins for Protocol Buffers IDE support, they will make the IDE silently fail on many features and become defunct. Just use the JetBrains one.
 
 + As a byproduct of the Bazel for Clion plugin, Clion may use the `.clwb` (Clion With Bazel Acronym) path as the working directory or the console home directory; you usually want to revert to the project root path for running stuff.
@@ -81,9 +81,12 @@ For being able to place breakpoints in the bazel built C++, it is necessary to u
 + `--fission=no` (this option simplifies the debug symbol's writing into the executables, thus enabling Clion/GDB/LLDB to use them; without it, you cannot place breakpoints in the C++ code and expect them to actually work).
 + the same bazel flags should be used on the run configuration as in the build run configuration, otherwise the run configuration will trigger a rebuild with the default bazel build options. 
 
+## see also
+https://github.com/nui-ai/mediapipe/issues/18
+
 ---
 
-# ⚠️ Obsolete: Build Known Issue ⚠️  
+### ⚠️ Obsolete: Build Known Issue ⚠️  
 Sometimes you get this error from python, or a similar one from C++ mains:
 ```
 Failed to load resource: mediapipe/modules/palm_detection/palm_detection_full.tflite
