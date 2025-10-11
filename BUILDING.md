@@ -12,7 +12,9 @@ These quickly ascertain after each pipeline reduction step, that the pipeline st
 
 # Build and Development Environment Setup
 
-+ Currently successfully building with Bazel 6.5.0 as also seen in the [Dockerfile](Dockerfile).
+Currently successfully building with Bazel 6.5.0 as also seen in the [Dockerfile](Dockerfile).
+
+### Jetbrains as IDE
 + Consider installing the following JetBrains Plugins for IDE support:
   1. `Bazel for Clion` (in Clion) is a must-have plugin if you use Clion as your C++ IDE, as it makes the IDE aware of the bazel build graph and its generated files, which is essential for code navigation and understanding in a bazel-built project like this one.
   2. `Bazel` for the equivalent support (in PyCharm).
@@ -20,10 +22,17 @@ These quickly ascertain after each pipeline reduction step, that the pipeline st
   3. Only optionally add the `FlatBuffers` from a 3rd party developer.
 + Why plugins?
   + Chiefly, the first two plugins make the editor aware of `pb.h` header files which are only generated during each bazel build, outside the codebase source-tree, from the underlying protobuf definitions which mediapipe uses for mostly all of its C++ classes; these `pb.h` are expected by C++ include statements, without which most code symbols are marked as unknown in the editor, rendering code editing noisy and unusable.
-  + The editing awareness through these plugins is only materialized after you perform the "Sync" action in the Bazel menu or in context menus ― it basically draws the bazel build graph into the IDE's project model to make the IDE understand the project code.
+  + The editing awareness through these plugins is only materialized after you perform the "Sync" action in the Bazel menu or in context menus ― it basically draws the bazel build graph into the IDE's project model to make the IDE understand the project code. You have to repeat the "Sync" after build changes.
   + They also enable more fluency with bazel run configurations and stuff in the IDE.
+  + Case in point: jumping from CC code to its BAZEL file build definition! (available as a right click option)
   + Don't install conflicting Clion plugins for Protocol Buffers IDE support, they will make the IDE silently fail on many features and become defunct. Just use the JetBrains one.
+
 + As a byproduct of the Bazel for Clion plugin, Clion may use the `.clwb` (Clion With Bazel Acronym) path as the working directory or the console home directory; you usually want to revert to the project root path for running stuff.
+
+### VS Code as IDE
+  + VSCode has popular bazel extensions which provide a different set of features; some things from those VSCode plugins you'd want in JetBrains and vice versa.
+  + Let CoPilot port the project's JetBrains run configurations into VSCode's equivalent json files for the same.
+  + VSCode is generally more configurable and extensible for you to code your way to make the extensions do more. 
 
 # Building 
 
