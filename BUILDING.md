@@ -1,4 +1,4 @@
-# Update About Successful building on Ubuntu 24.04 as well as building a Docker image (Ubuntu 22.04 based) that can build mediapipe as well.
+# Development Environment and Build Guide
 
 This branch reflects the exact code revision of git tag v0.10.13 of the original MediaPipe repository, plus modifications for making it buildable again, and it now successfully builds the hand tracking pipeline target as well as the python package that exposes the mediapipe api to python as a python package called `mediapipe`, installable into a python environment by `pip install .` as per the instructions below.
 
@@ -12,7 +12,11 @@ These quickly ascertain after each pipeline reduction step, that the pipeline st
 
 # Build and Development Environment Setup
 
+Successful building on Ubuntu 24.04 as well as building a Docker image (Ubuntu 22.04 based) that can build mediapipe at this revision have been accomplished, and reproducible as per below, as the basis for reducing the hand processing pipeline from mediapipe into liberation from use of mediapipe framework.
+
 Currently successfully building with Bazel 6.5.0 as also seen in the [Dockerfile](Dockerfile).
+
+Unlike original mediapipe, this build builds OpenCV from source which avoids [protobuf runtime issues](https://github.com/nui-ai/mediapipe/issues/18).
 
 ### Jetbrains as IDE
 + Consider installing the following JetBrains Plugins for IDE support:
