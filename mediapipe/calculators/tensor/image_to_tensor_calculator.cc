@@ -166,7 +166,6 @@ class ImageToTensorCalculator : public Node {
   }
 
   absl::Status Process(CalculatorContext* cc) {
-    ABSL_LOG(INFO) << "ImageToTensorCalculator started processing";
     if ((kIn(cc).IsConnected() && kIn(cc).IsEmpty()) || (kInGpu(cc).IsConnected() && kInGpu(cc).IsEmpty())) { return absl::OkStatus(); }
 
     absl::optional<mediapipe::NormalizedRect> norm_rect;

@@ -83,7 +83,9 @@ Unlike original mediapipe, this build builds OpenCV from source which avoids [pr
 For being able to place breakpoints in the bazel built C++, it is necessary to use the following build flags in the bazel build command to build the top-level build targets (executable, lib) as really debuggable:
 + `-c dbg` (or any equivalent which generates debug symbols)
 + `--fission=no` (this option simplifies the debug symbol's writing into the executables, thus enabling Clion/GDB/LLDB to use them; without it, you cannot place breakpoints in the C++ code and expect them to actually work).
-+ the same bazel flags should be used on the run configuration as in the build run configuration, otherwise the run configuration will trigger a rebuild with the default bazel build options. 
++ the same bazel flags should be used on the run configuration as in the build run configuration, otherwise the run configuration will trigger a rebuild with the default bazel build options.
+
+Running the built executables through bazel (rather than directly running the executable) may be required for being able to set breakpoints, and it also makes ABSL_LOG messages appear with a hyperlink to the source code line where they are issued from, which is very convenient.
 
 ## see also
 https://github.com/nui-ai/mediapipe/issues/18

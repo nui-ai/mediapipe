@@ -1,3 +1,10 @@
+// tweaked to write to shared state while Sending out its packet as before.
+// unlike other calculators, its packet sent is also assigned a timestamp
+// which makes sense for restarting the next graph input iteration,
+// and it also behaves in a way that avoids sending the packet
+// if it's the last input.
+// --> so this calc should be only removed as the last step of getting rid of pipeline liberation.
+//
 // Copyright 2019 The MediaPipe Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -125,7 +132,11 @@ class PreviousLoopbackCalculator : public Node {
         } else {
           // Avoids sending leftovers to a stream that's already closed.
           if (!kPrevLoop(cc).IsClosed()) {
+            // finally:
+            // passes forward the same packet received by it, with the necessary timestamp tweaks.
             kPrevLoop(cc).Send(loop_candidate.At(main_spec.timestamp));
+            // and we write the same to shared state, we know in our pipeline that the type is std::vector<mediapipe::NormalizedRect> of course.
+            GetSharedState().prev_hand_rects_from_landmarks = loop_candidate.Get<std::vector<::mediapipe::NormalizedRect>>();
           }
         }
         loop_packets_.pop_front();

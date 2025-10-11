@@ -50,27 +50,27 @@ int main(int argc, char** argv) {
         std::cerr << "Usage: " << argv[0] << " <output_data_cpp.pb> <output_data_python.pb>" << std::endl;
         return 1;
     }
-    std::vector<PipelineOutputData> cpp_records, python_records;
-    if (!ReadPipelineOutputDataStream(argv[1], cpp_records)) return 2;
-    if (!ReadPipelineOutputDataStream(argv[2], python_records)) return 3;
+    std::vector<PipelineOutputData> current, reference;
+    if (!ReadPipelineOutputDataStream(argv[1], current)) return 2;
+    if (!ReadPipelineOutputDataStream(argv[2], reference)) return 3;
 
-    size_t n = std::min(cpp_records.size(), python_records.size());
+    size_t n = std::min(current.size(), reference.size());
     bool all_equal = true;
     int different_pairs = 0;
     for (size_t i = 0; i < n; ++i) {
-        if (!MessageDifferencer::Equals(cpp_records[i], python_records[i])) {
+        if (!MessageDifferencer::Equals(current[i], reference[i])) {
             all_equal = false;
             ++different_pairs;
             std::cout << "Record " << i << " differs:" << std::endl;
             std::string diff;
             MessageDifferencer differ;
             differ.ReportDifferencesToString(&diff);
-            differ.Compare(cpp_records[i], python_records[i]);
+            differ.Compare(current[i], reference[i]);
             std::cout << diff << std::endl;
         }
     }
-    if (cpp_records.size() != python_records.size()) {
-        std::cout << "Warning: record count differs: " << cpp_records.size() << " vs " << python_records.size() << std::endl;
+    if (current.size() != reference.size()) {
+        std::cout << "Warning: record count differs: " << current.size() << " vs " << reference.size() << std::endl;
         all_equal = false;
     }
     if (all_equal) {
