@@ -62,6 +62,11 @@ class HeadCalculator : public CollectionHasMinSizeCalculator<std::vector<mediapi
       GetSharedState().ImageToTensorCalculatorOptions_float_range_min = 0.0f;
       GetSharedState().ImageToTensorCalculatorOptions_float_range_max = 1.0f;
       GetSharedState().ImageToTensorCalculatorOptions_border_mode = 1; // reuse the zero border mode value from the Options class enumeration for clarity
+      // can't pass the model and just expect it to funnel to the right inferencer object,
+      // this is not some small param that can be passed at runtime as an input packet,
+      // swallowing an inference calculator is not possible hence, but only a full liberation
+      // of it which we defer for now to the last mile.
+      // GetSharedState().inference_model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
       ABSL_LOG(INFO) << "palm detection is being triggered";
     } else {
 

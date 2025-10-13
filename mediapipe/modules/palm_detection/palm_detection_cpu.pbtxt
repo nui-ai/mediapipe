@@ -34,7 +34,9 @@ node {
 #  }
 }
 
-# Sets the path to the desired palms detection model file.
+# Sets the path to the desired palms detection model file. we can only remove this
+# We can only remove this at the last mile of liberation ― where a full-blown transform
+# of the InferenceCalculator into a stateful plain object is performed
 node {
   calculator: "SwitchContainer"
   input_side_packet: "SELECT:model_complexity"

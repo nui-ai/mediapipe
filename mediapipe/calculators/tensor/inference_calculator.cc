@@ -49,6 +49,22 @@ class InferenceCalculatorSelectorImpl
     : public SubgraphImpl<InferenceCalculatorSelector,
                           InferenceCalculatorSelectorImpl> {
  public:
+
+  /// this is where currently a specific implementation is selected for an InferenceCalculator
+  /// tag in the pipeline (pbtxt) graph definitions. it's a little dodgy but tracing in debug
+  /// through this method easily betrays how it selects.
+  /// we'd need to evolve the chain this is part of so that we can instantitate
+  /// one inference calculator object per model, which currently the framework allows
+  /// only via a side-packet and we'd need to radically strip down the core of it
+  /// to allow explicitly setting the model path rather than rely on a side-packet.
+  /// it's not fully clear how the current structure of this initialization path
+  /// yields a different initialized model per side-packet value, but that must be discoverable ―
+  /// we want to ultimately flip the structure so that the model path is a direct argument
+  /// of initialization for a simple no-framework object that can be then used for inference
+  /// from the loaded model repeatedly.
+  /// ================================
+  /// also we want to figure why it's not prefering XNNPACK over "plain" (?!) cpu implementation
+  /// in the current selection order below.
   absl::StatusOr<CalculatorGraphConfig> GetConfig(
       const CalculatorGraphConfig::Node& subgraph_node) override {
     const auto& options =
@@ -100,7 +116,7 @@ class InferenceCalculatorSelectorImpl
             absl::StrJoin(missing_impls, ", "), impl);
       }
 
-      VLOG(1) << "Using " << suffix << " for InferenceCalculator with "
+      ABSL_LOG(INFO) << "Using " << suffix << " for InferenceCalculator with "
               << (options.has_model_path()
                       ? "model " + options.model_path()
                       : "output_stream " +
