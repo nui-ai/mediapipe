@@ -79,7 +79,23 @@ class CollectionHasMinSizeCalculator : public CalculatorBase {
   absl::Status Process(CalculatorContext* cc) override {
     ABSL_LOG(INFO) << "legacy process starting";
 
-    // the condition has been modified as adaptation to no longer feeding off a Gate calculator, thus having to also deal with an empty input packets directly rather than rely on the Gate calculator for that case.
+    // the condition has been modified as adaptation to no longer feeding off a Gate calculator because:
+    //
+    // 1. because without the Gate calculator suppressing our input stream if it were an empty packet ― this calculator is now called also in that case ―
+    //    which previously it did not get called for. so modified here as adaptation to no longer feeding off a Gate calculator.
+    //    instead of never being called when there was no packet in prev_hand_rects_from_landmarks ― now we are called also in that case.
+    // 2. then, the behavior adapatation here is that this calculator will now trigger palm detection also if the input iterable is empty.
+    //    this is required not because of the Gate calculator swallowed which this calculator feeds from ― but because of the specific fact
+    //    that the Gate calculator FEEDING FROM the current one should also be swallowed.
+    //
+    // this bridges the emptinesss semantics across Gate calculators, to a pipeline flow which decides about passing forward in plain non Gate-calculator logic.
+    //
+    // so in summary, this adaptation is tailored to that very specific state of being sandwitched beteween two Gate calculators on the flow of the pipeline!
+    // and is not the simple case of swalling a single Gate calculator.
+    //
+    // it's not even a generic recipe, because empty semantics hinges on Gate calculator Options such as empty_packets_as_allow:true and allow:true (!!)
+    // so it's not a generic recipe but every Gate calc removal needs to be tailored to the Gate calculator Options values and overall pipeline context
+    // (which nodes feed from it, which nodes feed into it, by their streams).
     bool has_min_size = (cc->Inputs().Tag("ITERABLE").IsEmpty() || cc->Inputs().Tag("ITERABLE").Get<IterableT>().size() < min_size_) ? false : true;
 
     cc->Outputs().Index(0).AddPacket(MakePacket<bool>(has_min_size).At(cc->InputTimestamp()));
