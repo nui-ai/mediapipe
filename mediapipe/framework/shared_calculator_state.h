@@ -32,13 +32,14 @@ namespace mediapipe {
         std::vector<::mediapipe::NormalizedRect> prev_hand_rects_from_landmarks;
 
         uint32_t ImageToTensorCalculatorOptions_input_selection_field;  //  0 => use palm_detection_image as input;
-
-        uint32_t ImageToTensorCalculatorOptions_output_tensor_width ;
-        uint32_t ImageToTensorCalculatorOptions_output_tensor_height;
+        int32_t ImageToTensorCalculatorOptions_num_landmakrs;
+        int32_t ImageToTensorCalculatorOptions_output_tensor_width ;
+        int32_t ImageToTensorCalculatorOptions_output_tensor_height;
         bool ImageToTensorCalculatorOptions_keep_aspect_ratio;
         float ImageToTensorCalculatorOptions_float_range_min;
         float ImageToTensorCalculatorOptions_float_range_max;
-        uint32_t ImageToTensorCalculatorOptions_border_mode;
+        int32_t ImageToTensorCalculatorOptions_border_mode;
+        float ImageToTensorCalculatorOptions_normalize_z;
 
     private:
         static int counter_;

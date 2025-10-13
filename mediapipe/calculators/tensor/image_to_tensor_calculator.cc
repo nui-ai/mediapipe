@@ -16,6 +16,7 @@
 #include <memory>
 #include <utility>
 #include <vector>
+#include <google/protobuf/util/message_differencer.h>
 
 #include "absl/log/absl_log.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_calculator.pb.h"
@@ -113,26 +114,6 @@ namespace api2 {
 //     padding of 10 pixels at the top and the bottom. The resulting array is
 //     therefore [0.f, 0.25f, 0.f, 0.25f] (10/40 = 0.25f).
 //
-// Example:
-// node {
-//   calculator: "ImageToTensorCalculator"
-//   input_stream: "IMAGE:image"  # or "IMAGE_GPU:image"
-//   input_stream: "NORM_RECT:roi"
-//   output_stream: "TENSORS:tensors"
-//   output_stream: "MATRIX:matrix"
-//   options {
-//     [mediapipe.ImageToTensorCalculatorOptions.ext] {
-//       output_tensor_width: 256
-//       output_tensor_height: 256
-//       keep_aspect_ratio: false
-//       output_tensor_float_range {
-//         min: 0.0
-//         max: 1.0
-//       }
-//       # gpu_origin: CONVENTIONAL # or TOP_LEFT
-//     }
-//   }
-// }
 class ImageToTensorCalculator : public Node {
  public:
   static constexpr Input<
@@ -180,6 +161,22 @@ class ImageToTensorCalculator : public Node {
     MP_ASSIGN_OR_RETURN(auto image, GetInputImage(kIn(cc)));
     const int tensor_width = params_.output_width.value_or(image->width());
     const int tensor_height = params_.output_height.value_or(image->height());
+
+    options_ = ImageToTensorCalculatorOptions();
+    options_.set_output_tensor_width(GetSharedState().ImageToTensorCalculatorOptions_output_tensor_width);
+    options_.set_output_tensor_height(GetSharedState().ImageToTensorCalculatorOptions_output_tensor_height);
+    options_.set_keep_aspect_ratio(GetSharedState().ImageToTensorCalculatorOptions_keep_aspect_ratio);
+    options_.mutable_output_tensor_float_range()->set_min(GetSharedState().ImageToTensorCalculatorOptions_float_range_min);
+    options_.mutable_output_tensor_float_range()->set_max(GetSharedState().ImageToTensorCalculatorOptions_float_range_max);
+    if (GetSharedState().ImageToTensorCalculatorOptions_border_mode == 1) options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_ZERO);
+
+    google::protobuf::util::MessageDifferencer differ;
+    std::string diff;
+    differ.ReportDifferencesToString(&diff);
+    differ.Compare(options_, cc->Options<mediapipe::ImageToTensorCalculatorOptions>());
+    if (!diff.empty()) {
+      ABSL_LOG(INFO) << "ImageToTensorCalculator options changed:\n" << diff;
+    }
 
     ImageToTensorCoreResult core_result;
     MP_RETURN_IF_ERROR(ImageToTensorCalculatorCore(

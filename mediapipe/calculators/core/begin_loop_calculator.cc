@@ -40,8 +40,18 @@ typedef BeginLoopCalculator<std::vector<int>> BeginLoopIntCalculator;
 REGISTER_CALCULATOR(BeginLoopIntCalculator);
 
 // A calculator to process std::vector<NormalizedRect>.
-typedef BeginLoopCalculator<std::vector<::mediapipe::NormalizedRect>>
-    BeginLoopNormalizedRectCalculator;
+class BeginLoopNormalizedRectCalculator : public BeginLoopCalculator<std::vector<::mediapipe::NormalizedRect>> {
+    absl::Status Process(CalculatorContext* cc) override {
+        // set up the options for ImageToTensorCalculator (which also feeds from another calculator, so each one feeding it should set its own options for it).
+        GetSharedState().ImageToTensorCalculatorOptions_output_tensor_width = 224;
+        GetSharedState().ImageToTensorCalculatorOptions_output_tensor_height = 224;
+        GetSharedState().ImageToTensorCalculatorOptions_keep_aspect_ratio = true;
+        GetSharedState().ImageToTensorCalculatorOptions_float_range_min = 0.0f;
+        GetSharedState().ImageToTensorCalculatorOptions_float_range_max = 1.0f;
+        GetSharedState().ImageToTensorCalculatorOptions_border_mode = 0;  // BORDER_UNSPECIFIED
+        return BeginLoopCalculator::Process(cc);
+    }
+};
 REGISTER_CALCULATOR(BeginLoopNormalizedRectCalculator);
 
 // A calculator to process std::vector<Detection>.

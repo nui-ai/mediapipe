@@ -51,11 +51,19 @@ class NormalizedRectVectorHasMinSizeCalculator : public CollectionHasMinSizeCalc
 
     ABSL_LOG(INFO) << "image is null? " << (GetSharedState().image == nullptr);
 
+    // trigger palm detection, as we don't have detection signal from the previous frame's landmarks processing for the amount of expected hands.
+    // AssociationNormRectCalculator may later reconcile the rects from palm detection with those from landmarks tracking, but that is not this
+    // calculator's concern.
     if (GetSharedState().prev_hand_rects_from_landmarks.size() < min_size_) {
-      // trigger palm detection, as we don't have detection signal from the previous frame's landmarks processing for the amount of expected hands.
-      // AssociationNormRectCalculator may later reconcile the rects from palm detection with those from landmarks tracking, but that is not this
-      // calculator's concern.
+
       GetSharedState().palm_detection_image = GetSharedState().image;
+
+      GetSharedState().ImageToTensorCalculatorOptions_output_tensor_width = 192;
+      GetSharedState().ImageToTensorCalculatorOptions_output_tensor_height = 192;
+      GetSharedState().ImageToTensorCalculatorOptions_keep_aspect_ratio = true;
+      GetSharedState().ImageToTensorCalculatorOptions_float_range_min = 0.0f;
+      GetSharedState().ImageToTensorCalculatorOptions_float_range_max = 1.0f;
+      GetSharedState().ImageToTensorCalculatorOptions_border_mode = 1; // reuse the zero border mode value from the Options class enumeration for clarity
       ABSL_LOG(INFO) << "palm detection is being triggered";
     } else {
       // avoid applying hand detection as we have an amount of hand detections from the previous frame's landmarks processing

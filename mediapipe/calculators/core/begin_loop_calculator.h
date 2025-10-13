@@ -142,7 +142,7 @@ class BeginLoopCalculator : public CalculatorBase {
     return absl::OkStatus();
   }
 
-  absl::Status Process(CalculatorContext* cc) final {
+  absl::Status Process(CalculatorContext* cc) override {
     Timestamp last_timestamp = loop_internal_timestamp_;
     if (!cc->Inputs().Tag("ITERABLE").IsEmpty()) {
       const Packet& iterable = cc->Inputs().Tag("ITERABLE").Value();
