@@ -76,7 +76,6 @@ class ClipVectorSizeCalculator : public CalculatorBase {
   }
 
   absl::Status Process(CalculatorContext* cc) override {
-    ABSL_LOG(INFO) << "ClipVectorSizeCalculator started processing";
     if (max_vec_size_ < 1) {
       return absl::InternalError(
           "max_vec_size should be greater than or equal to 1.");

@@ -97,7 +97,7 @@ class CollectionHasMinSizeCalculator : public CalculatorBase {
     // so it's not a generic recipe but every Gate calc removal needs to be tailored to the Gate calculator Options values and overall pipeline context
     // (which nodes feed from it, which nodes feed into it, by their streams).
     bool has_min_size = (cc->Inputs().Tag("ITERABLE").IsEmpty() || cc->Inputs().Tag("ITERABLE").Get<IterableT>().size() < min_size_) ? false : true;
-
+    ABSL_LOG(INFO) << "HeadCalculator legacy part has_min_size: " << has_min_size << " (min_size_ is " << min_size_ << ", input iterable size is " << (cc->Inputs().Tag("ITERABLE").IsEmpty() ? 0 : cc->Inputs().Tag("ITERABLE").Get<IterableT>().size()) << ")";
     cc->Outputs().Index(0).AddPacket(MakePacket<bool>(has_min_size).At(cc->InputTimestamp()));
 
     return absl::OkStatus();

@@ -90,6 +90,8 @@ class PreviousLoopbackCalculator : public Node {
     // packets within the same stream. Calculator tracks and operates on such
     // packets.
 
+    ABSL_LOG(INFO) << "PreviousLoopbackCalculator starting to process";
+
     const PacketBase& main_packet = kMain(cc).packet();
     if (prev_main_ts_ < main_packet.timestamp()) {
       Timestamp loop_timestamp;
@@ -111,6 +113,12 @@ class PreviousLoopbackCalculator : public Node {
       prev_loop_ts_ = loop_packet.timestamp();
     }
 
+    // from observation only:
+    // this calculator gets kicked off at pipeline beginning AND end, not just at the end of the pipeline, as if the framework is not waiting for its "LOOP:hand_rects_from_landmarks" input stream,
+    // and starts this calculator as soon as merely the "MAIN:input_video" input stream has a new packet.
+    // so you'll see at as the very first calc to run for an input iteration, and then at the end of each pipeline flow it runs again.
+    // the first run doesn't send anything on its output stream which the next HeadCalculator is waiting for, but only used for timestamp
+    // bookkeeping, and the second run sends the actual packet on its output stream as expected.
     while (!main_packet_specs_.empty() && !loop_packets_.empty()) {
       // The earliest MAIN packet.
       MainPacketSpec main_spec = main_packet_specs_.front();
@@ -129,6 +137,8 @@ class PreviousLoopbackCalculator : public Node {
         if (loop_candidate.IsEmpty()) {
           // However, LOOP packet is empty.
           kPrevLoop(cc).SetNextTimestampBound(main_spec.timestamp + 1);
+          GetSharedState().prev_hand_rects_from_landmarks = std::vector<::mediapipe::NormalizedRect>();
+          ABSL_LOG(INFO) << "PreviousLoopbackCalculator setting prev_hand_rects_from_landmarks to empty list";
         } else {
           // Avoids sending leftovers to a stream that's already closed.
           if (!kPrevLoop(cc).IsClosed()) {
@@ -136,6 +146,7 @@ class PreviousLoopbackCalculator : public Node {
             // passes forward the same packet received by it, with the necessary timestamp tweaks.
             kPrevLoop(cc).Send(loop_candidate.At(main_spec.timestamp));
             // and we write the same to shared state, we know in our pipeline that the type is std::vector<mediapipe::NormalizedRect> of course.
+            ABSL_LOG(INFO) << "PreviousLoopbackCalculator setting prev_hand_rects_from_landmarks to size: " << loop_candidate.Get<std::vector<::mediapipe::NormalizedRect>>().size();
             GetSharedState().prev_hand_rects_from_landmarks = loop_candidate.Get<std::vector<::mediapipe::NormalizedRect>>();
           }
         }
