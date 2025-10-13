@@ -1470,7 +1470,9 @@ cc_library(
     hdrs = ["collection_has_min_size_calculator.h"],
     deps = [
         ":collection_has_min_size_calculator_cc_proto",
+        "//mediapipe/calculators/tensor:image_to_tensor_utils",
         "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/api2:port",
         "//mediapipe/framework/formats:classification_cc_proto",
         "//mediapipe/framework/formats:landmark_cc_proto",
         "//mediapipe/framework/formats:rect_cc_proto",

@@ -212,7 +212,7 @@ class GateCalculator : public CalculatorBase {
       return absl::OkStatus();
     }
 
-    // Process data streams.
+    // Process data streams (only those carrying an empty packet).
     for (int i = 0; i < num_data_streams_; ++i) {
       if (!cc->Inputs().Get("", i).IsEmpty()) {
         cc->Outputs().Get("", i).AddPacket(cc->Inputs().Get("", i).Value());

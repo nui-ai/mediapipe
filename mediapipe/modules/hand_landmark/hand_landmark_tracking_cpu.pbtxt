@@ -72,6 +72,7 @@ output_stream: "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
 # equal to the globally defined num_hands.
 node {
   calculator: "NormalizedRectVectorHasMinSizeCalculator"
+  input_stream: "IMAGE:image"
   input_stream: "ITERABLE:prev_hand_rects_from_landmarks"
   output_stream: "prev_has_enough_hands"
 }

@@ -24,12 +24,22 @@ namespace mediapipe {
         const bool USE_PREV_LANDMARKS = true;
 
         // image being input to the pipeline
-        std::shared_ptr<Image> image;
+        std::shared_ptr<const mediapipe::Image> image;
         // image to apply palm detection to, or null pointer when palm detection should be skipped
-        std::shared_ptr<Image> palm_detection_image;
+        std::shared_ptr<const mediapipe::Image> palm_detection_image;
 
         // rects from landmarks tracking in the previous frame
         std::vector<::mediapipe::NormalizedRect> prev_hand_rects_from_landmarks;
+
+        uint32_t ImageToTensorCalculatorOptions_input_selection_field;  //  0 => use palm_detection_image as input;
+
+        uint32_t ImageToTensorCalculatorOptions_output_tensor_width ;
+        uint32_t ImageToTensorCalculatorOptions_output_tensor_height;
+        bool ImageToTensorCalculatorOptions_keep_aspect_ratio;
+        float ImageToTensorCalculatorOptions_float_range_min;
+        float ImageToTensorCalculatorOptions_float_range_max;
+        uint32_t ImageToTensorCalculatorOptions_border_mode;
+
     private:
         static int counter_;
         static std::mutex mutex_;

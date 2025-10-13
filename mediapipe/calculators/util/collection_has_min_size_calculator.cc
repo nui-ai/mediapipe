@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "mediapipe/calculators/util/collection_has_min_size_calculator.h"
-
 #include <vector>
+
+#include "mediapipe/calculators/util/collection_has_min_size_calculator.h"
+#include "mediapipe/calculators/tensor/image_to_tensor_utils.h"
+#include "mediapipe/framework/api2/port.h"
+#include "mediapipe/framework/port/status.h"
 
 #include "mediapipe/framework/formats/classification.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
@@ -32,14 +35,21 @@ class NormalizedRectVectorHasMinSizeCalculator : public CollectionHasMinSizeCalc
     return absl::OkStatus();
   }
 
-  // this function now replaces the following calculator's work, and no longer needs to inherit CollectionHasMinSizeCalculator's Process method.
-  //
-  // - NormalizedRectVectorHasMinSizeCalculator: Determines if an input vector of NormalizedRect has a size greater than or equal to the globally defined num_hands.
-  // - GateCalculator: Drops the incoming image if enough hands have already been identified from the previous image. Otherwise, passes the incoming image through to trigger a new round of palm detection.
-  //
-  // *  uses shared state as stream input and stream output
-  // ** algorithm imporvement note: this is a little coarse, but it works as a great baseline
+  /// this function now replaces the following calculator's work, and no longer needs to inherit CollectionHasMinSizeCalculator's Process method.
+  ///
+  /// - NormalizedRectVectorHasMinSizeCalculator: Determines if an input vector of NormalizedRect has a size greater than or equal to the globally defined num_hands.
+  /// - GateCalculator: Drops the incoming image if enough hands have already been identified from the previous image. Otherwise, passes the incoming image through to trigger a new round of palm detection.
+  ///
+  /// *  uses shared state as stream input and stream output
+  /// ** algorithm imporvement note: this is a little coarse, but it works as a great baseline
   absl::Status Process(CalculatorContext* cc) override {
+
+    ABSL_LOG(INFO) << "NormalizedRectVectorHasMinSizeCalculator starting to process";
+
+    static constexpr api2::Input<api2::OneOf<mediapipe::Image, mediapipe::ImageFrame>>::Optional kIn{"IMAGE"};
+    MP_ASSIGN_OR_RETURN(GetSharedState().image, GetInputImage(kIn(cc)));
+
+    ABSL_LOG(INFO) << "image is null? " << (GetSharedState().image == nullptr);
 
     if (GetSharedState().prev_hand_rects_from_landmarks.size() < min_size_) {
       // trigger palm detection, as we don't have detection signal from the previous frame's landmarks processing for the amount of expected hands.

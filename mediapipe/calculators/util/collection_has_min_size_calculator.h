@@ -43,9 +43,8 @@ template <typename IterableT>
 class CollectionHasMinSizeCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
+    RET_CHECK(cc->Inputs().HasTag("IMAGE"));
     RET_CHECK(cc->Inputs().HasTag("ITERABLE"));
-    RET_CHECK_EQ(1, cc->Inputs().NumEntries());
-
     RET_CHECK_EQ(1, cc->Outputs().NumEntries());
 
     RET_CHECK_GE(
@@ -54,6 +53,7 @@ class CollectionHasMinSizeCalculator : public CalculatorBase {
         0);
 
     cc->Inputs().Tag("ITERABLE").Set<IterableT>();
+    cc->Inputs().Tag("IMAGE").Set<ImageFrame>();
     cc->Outputs().Index(0).Set<bool>();
 
     // Optional input side packet that determines `min_size_`.
@@ -77,11 +77,12 @@ class CollectionHasMinSizeCalculator : public CalculatorBase {
   }
 
   absl::Status Process(CalculatorContext* cc) override {
-    const IterableT& input = cc->Inputs().Tag("ITERABLE").Get<IterableT>();
-    bool has_min_size = input.size() >= min_size_;
+    ABSL_LOG(INFO) << "legacy process starting";
 
-    cc->Outputs().Index(0).AddPacket(
-        MakePacket<bool>(has_min_size).At(cc->InputTimestamp()));
+    // the condition has been modified as adaptation to no longer feeding off a Gate calculator, thus having to also deal with an empty input packets directly rather than rely on the Gate calculator for that case.
+    bool has_min_size = (cc->Inputs().Tag("ITERABLE").IsEmpty() || cc->Inputs().Tag("ITERABLE").Get<IterableT>().size() < min_size_) ? false : true;
+
+    cc->Outputs().Index(0).AddPacket(MakePacket<bool>(has_min_size).At(cc->InputTimestamp()));
 
     return absl::OkStatus();
   }
