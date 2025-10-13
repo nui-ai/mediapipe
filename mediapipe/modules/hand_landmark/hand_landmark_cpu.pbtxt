@@ -42,17 +42,17 @@ node {
   input_stream: "NORM_RECT:hand_rect"
   output_stream: "TENSORS:input_tensor"
   output_stream: "LETTERBOX_PADDING:letterbox_padding"
-  options: {
-    [mediapipe.ImageToTensorCalculatorOptions.ext] {
-      output_tensor_width: 224
-      output_tensor_height: 224
-      keep_aspect_ratio: true
-      output_tensor_float_range {
-        min: 0.0
-        max: 1.0
-      }
-    }
-  }
+#  options: {
+#    [mediapipe.ImageToTensorCalculatorOptions.ext] {
+#      output_tensor_width: 224
+#      output_tensor_height: 224
+#      keep_aspect_ratio: true
+#      output_tensor_float_range {
+#        min: 0.0
+#        max: 1.0
+#      }
+#    }
+#  }
 }
 
 # Sets path to the desired hand landmark model file.

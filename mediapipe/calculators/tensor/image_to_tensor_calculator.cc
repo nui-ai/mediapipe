@@ -159,8 +159,8 @@ class ImageToTensorCalculator : public Node {
     }
 
     MP_ASSIGN_OR_RETURN(auto image, GetInputImage(kIn(cc)));
-    const int tensor_width = params_.output_width.value_or(image->width());
-    const int tensor_height = params_.output_height.value_or(image->height());
+    int tensor_width = params_.output_width.value_or(image->width());
+    int tensor_height = params_.output_height.value_or(image->height());
 
     options_ = ImageToTensorCalculatorOptions();
     options_.set_output_tensor_width(GetSharedState().ImageToTensorCalculatorOptions_output_tensor_width);
@@ -169,14 +169,18 @@ class ImageToTensorCalculator : public Node {
     options_.mutable_output_tensor_float_range()->set_min(GetSharedState().ImageToTensorCalculatorOptions_float_range_min);
     options_.mutable_output_tensor_float_range()->set_max(GetSharedState().ImageToTensorCalculatorOptions_float_range_max);
     if (GetSharedState().ImageToTensorCalculatorOptions_border_mode == 1) options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_ZERO);
+    params_ = GetOutputTensorParams(options_);
+    tensor_width = params_.output_width.value_or(image->width());
+    tensor_height = params_.output_height.value_or(image->height());
 
-    google::protobuf::util::MessageDifferencer differ;
-    std::string diff;
-    differ.ReportDifferencesToString(&diff);
-    differ.Compare(options_, cc->Options<mediapipe::ImageToTensorCalculatorOptions>());
-    if (!diff.empty()) {
-      ABSL_LOG(INFO) << "ImageToTensorCalculator options changed:\n" << diff;
-    }
+    // no longer relevant! Options clause removed in the pbtxt for liberation.
+    // google::protobuf::util::MessageDifferencer differ;
+    // std::string diff;
+    // differ.ReportDifferencesToString(&diff);
+    // differ.Compare(options_, cc->Options<mediapipe::ImageToTensorCalculatorOptions>());
+    // if (!diff.empty()) {
+    //   ABSL_LOG(INFO) << "ImageToTensorCalculator options changed:\n" << diff;
+    // }
 
     ImageToTensorCoreResult core_result;
     MP_RETURN_IF_ERROR(ImageToTensorCalculatorCore(
