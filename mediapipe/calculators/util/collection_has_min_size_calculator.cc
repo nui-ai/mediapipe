@@ -25,7 +25,7 @@
 
 namespace mediapipe {
 
-class NormalizedRectVectorHasMinSizeCalculator : public CollectionHasMinSizeCalculator<std::vector<mediapipe::NormalizedRect>> {
+class HeadCalculator : public CollectionHasMinSizeCalculator<std::vector<mediapipe::NormalizedRect>> {
  public:
   absl::Status Open(CalculatorContext* cc) override {
     // Call base Open to set min_size_ from options or side packet.
@@ -81,7 +81,7 @@ class NormalizedRectVectorHasMinSizeCalculator : public CollectionHasMinSizeCalc
 
 
 };
-REGISTER_CALCULATOR(NormalizedRectVectorHasMinSizeCalculator);
+REGISTER_CALCULATOR(HeadCalculator);
 
 typedef CollectionHasMinSizeCalculator<
     std::vector<mediapipe::NormalizedLandmarkList>>

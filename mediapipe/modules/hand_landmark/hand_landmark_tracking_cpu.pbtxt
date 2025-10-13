@@ -71,7 +71,7 @@ output_stream: "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
 # Determines if an input vector of NormalizedRect has a size greater than or
 # equal to the globally defined num_hands.
 node {
-  calculator: "NormalizedRectVectorHasMinSizeCalculator"
+  calculator: "HeadCalculator"
   input_stream: "IMAGE:image"
   input_stream: "ITERABLE:prev_hand_rects_from_landmarks"
   output_stream: "prev_has_enough_hands"
@@ -80,6 +80,8 @@ node {
 # Drops the incoming image if enough hands have already been identified from the
 # previous image. Otherwise, passes the incoming image through to trigger a new
 # round of palm detection.
+# left around till final stage of liberation ― to keep all calculators' Process
+# method being called till the final switch.
 node {
   calculator: "GateCalculator"
   input_stream: "image"
