@@ -1,11 +1,3 @@
-# MediaPipe graph to detect/predict hand landmarks on CPU.
-#
-# The procedure is done in two steps:
-# - locate palms/hands
-# - detect landmarks for each palm/hand.
-# This graph tries to skip palm detection as much as possible by reusing
-# previously detected/predicted landmarks for new images.
-
 type: "HandLandmarkTrackingCpu"
 
 # CPU image. (ImageFrame)
@@ -53,21 +45,6 @@ output_stream: "HAND_ROIS_FROM_LANDMARKS:hand_rects_from_landmarks"
 # (std::vector<NormalizedRect>)
 output_stream: "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
 
-# When the optional input side packet "use_prev_landmarks" is either absent or
-# set to true, uses the landmarks on the previous image to help localize
-# landmarks on the current image.
-# node {
-#  calculator: "GateCalculator"
-#  input_side_packet: "ALLOW:use_prev_landmarks"
-#  input_stream: "prev_hand_rects_from_landmarks"
-#  output_stream: "gated_prev_hand_rects_from_landmarks"
-#  options: {
-#    [mediapipe.GateCalculatorOptions.ext] {
-#      allow: true
-#    }
-#  }
-#}
-
 # Determines if an input vector of NormalizedRect has a size greater than or
 # equal to the globally defined num_hands.
 node {
@@ -104,18 +81,6 @@ node {
   input_stream: "IMAGE:palm_detection_image"
   output_stream: "TENSORS:detection_input_tensor"
   output_stream: "LETTERBOX_PADDING:detection_letterbox_padding"
-  #  options: {
-  #    [mediapipe.ImageToTensorCalculatorOptions.ext] {
-  #      output_tensor_width: 192
-  #      output_tensor_height: 192
-  #      keep_aspect_ratio: true
-  #      output_tensor_float_range {
-  #        min: 0.0
-  #        max: 1.0
-  #      }
-  #      border_mode: BORDER_ZERO
-  #    }
-  #  }
 }
 
 # Sets the path to the desired palms detection model file. we can only remove this
@@ -216,13 +181,6 @@ node {
   input_stream: "DETECTION:palm_detection"
   input_stream: "IMAGE_SIZE:image_size_for_palms"
   output_stream: "NORM_RECT:raw_roi"
-  #  options: {
-  #    [mediapipe.DetectionsToRectsCalculatorOptions.ext] {
-  #      rotation_vector_start_keypoint_index: 0  # Center of wrist.
-  #      rotation_vector_end_keypoint_index: 2  # MCP of middle finger.
-  #      rotation_vector_target_angle_degrees: 90
-  #    }
-  #  }
 }
 
 # Expands and shifts the rectangle that contains the palm so that it's likely
