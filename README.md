@@ -24,7 +24,7 @@ The objective of this repository is detailed in https://github.com/nui-ai/mediap
 + The [v0.10.13](https://github.com/google-ai-edge/mediapipe/releases/tag/v0.10.13) release 🏆 was tested for a very long time to work well and have consistent performance and behavior characteristics.
 
 ## Supporting Tools
-+ A utility main for parsing the hands pipeline of mediapipe into its nodes plus data flow visualization [made available](mediapipe_analysis/README.md) 
++ A utility main for parsing the hands pipeline of mediapipe into its nodes plus data flow visualization is [made available](mediapipe_analysis/README.md). 
 + The input to the pipeline's head is just an ndarray image, [see here for discussion](https://github.com/nui-ai/mediapipe/blob/52e984567f30d8ffe79289e3852f8e9af2a6f69a/mediapipe/python/solution_base.py#L355-L372).
 
 ## ReBuilding MediaPipe v0.10.13 Hand Tracking
