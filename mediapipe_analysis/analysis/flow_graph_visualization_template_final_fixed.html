@@ -29,7 +29,11 @@ const fontScale = {font_scale};
 const alphaDecay = {alpha_decay};
 const repulsion = -Math.max(window.innerWidth, window.innerHeight) * {repulsion_factor};
 
-// Global clipboard copy function
+// FIXED: Zoom-independent base distance and user scaling
+const BASE_LINK_DISTANCE = 200;
+let userDistanceMultiplier = 1.0;
+let currentHoverNode = null;
+
 function copyToClipboard(text, label) {{
   function showCopyFeedback(msg) {{
     const feedbackDiv = document.getElementById('copyFeedback');
@@ -42,7 +46,6 @@ function copyToClipboard(text, label) {{
     }}, 1200);
   }}
 
-  // Try modern Clipboard API first
   if (navigator.clipboard && window.isSecureContext) {{
     navigator.clipboard.writeText(text)
       .then(() => showCopyFeedback('✓ ' + label + ' copied to clipboard'))
@@ -78,38 +81,67 @@ function copyToClipboard(text, label) {{
 function getSize() {{
   return [window.innerWidth, window.innerHeight];
 }}
-let simulation, node, link, nodeRadius, defaultLinkDist;
+
+function getStableLinkDistance(link) {{
+  const baseDistance = BASE_LINK_DISTANCE * userDistanceMultiplier;
+  const minimumDistance = 80;
+
+  if (currentHoverNode &&
+      (link.source.id === currentHoverNode.id || link.target.id === currentHoverNode.id)) {{
+    return Math.max(baseDistance * 0.5, minimumDistance);
+  }}
+
+  return Math.max(baseDistance, minimumDistance);
+}}
+
+let simulation, node, link, nodeRadius;
+
 function renderGraph() {{
   const [width, height] = getSize();
   const svg = d3.select('svg').attr('width', width).attr('height', height);
   svg.selectAll('*').remove();
-  svg.append('defs').append('marker')
-      .attr('id', 'arrowhead')
-      .attr('viewBox', '-0 -5 10 10')
-      .attr('refX', 60)
-      .attr('refY', 0)
-      .attr('orient', 'auto')
-      .attr('markerWidth', 16)
-      .attr('markerHeight', 16)
-      .attr('xoverflow', 'visible')
-    .append('svg:path')
-      .attr('d', 'M0,-5L10,0L0,5')
-      .attr('class','arrowhead');
-  defaultLinkDist = Math.max(width, height) / 4.5;
+
+  // FIXED: Smaller, more nuanced arrowheads that match edge colors
+  const defs = svg.append('defs');
+
+  // Create arrowheads for both normal (green) and hover (blue) states
+  const arrowheadConfigs = [
+    {{ id: 'arrowhead-green', color: '#0f0' }},
+    {{ id: 'arrowhead-blue', color: '#1976d2' }}
+  ];
+
+  arrowheadConfigs.forEach(config => {{
+    defs.append('marker')
+        .attr('id', config.id)
+        .attr('viewBox', '-0 -3 8 6')
+        .attr('refX', 32)
+        .attr('refY', 0)
+        .attr('orient', 'auto')
+        .attr('markerWidth', 8)
+        .attr('markerHeight', 8)
+        .attr('xoverflow', 'visible')
+      .append('svg:path')
+        .attr('d', 'M0,-3L8,0L0,3')
+        .attr('fill', config.color);
+  }});
+
+  nodeRadius = Math.max(30, Math.min(width, height) / 18);
+
   simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.id).distance(defaultLinkDist))
+      .force('link', d3.forceLink(links).id(d => d.id).distance(getStableLinkDistance))
       .force('charge', d3.forceManyBody().strength(repulsion))
       .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('collision', d3.forceCollide().radius(nodeRadius + 5))
       .alpha(1)
       .alphaTarget(0.3)
-      .alphaDecay(alphaDecay)
-      .restart();
+      .alphaDecay(alphaDecay);
+
   link = svg.append('g')
       .selectAll('line')
       .data(links)
       .enter().append('line')
-      .attr('class', 'link')
-      .attr('marker-end','url(#arrowhead)');
+      .attr('class', 'link');
+
   node = svg.append('g')
       .selectAll('g')
       .data(nodes)
@@ -121,29 +153,25 @@ function renderGraph() {{
           .on('end', dragended))
       .on('mouseover', nodeMouseOver)
       .on('mouseout', nodeMouseOut);
-  nodeRadius = Math.max(30, Math.min(width, height) / 18);
+
   node.append('circle')
       .attr('r', nodeRadius)
       .attr('fill', d => d.url ? '#1f77b4' : '#333')
       .on('click', function(event, d) {{
-        // Check for Ctrl key first
         if (event.ctrlKey || event.metaKey) {{
-          // Ctrl+click: copy source path to clipboard
           if (d.url) {{
-            // Extract the file path from the file:// URL
             const filePath = d.url.replace('file://', '');
             copyToClipboard(filePath, 'Source path');
           }} else {{
             copyToClipboard('No source path available for ' + d.id, 'Message');
           }}
         }} else {{
-          // Regular click: copy node name to clipboard
           copyToClipboard(d.id, 'Node name');
         }}
-        // Prevent any default behaviors
         event.preventDefault();
         event.stopPropagation();
       }});
+
   node.append('text')
       .attr('x', 0)
       .attr('y', 0)
@@ -152,15 +180,51 @@ function renderGraph() {{
       .style('font-size', (fontScale * nodeRadius) + 'px')
       .style('font-weight', 'normal')
       .text(d => d.id);
+
+  // FIXED: Enhanced link display with color-matched arrowheads
+  function updateLinkDisplay() {{
+    link.each(function(d) {{
+      const line = d3.select(this);
+
+      // Calculate link length and adjust endpoints
+      const dx = d.target.x - d.source.x;
+      const dy = d.target.y - d.source.y;
+      const length = Math.sqrt(dx * dx + dy * dy);
+
+      const sourceRadius = nodeRadius + 2;
+      const targetRadius = nodeRadius + 2;
+      const ux = dx / length;
+      const uy = dy / length;
+
+      const startX = d.source.x + ux * sourceRadius;
+      const startY = d.source.y + uy * sourceRadius;
+      const endX = d.target.x - ux * targetRadius;
+      const endY = d.target.y - uy * targetRadius;
+
+      line.attr('x1', startX)
+          .attr('y1', startY)
+          .attr('x2', endX)
+          .attr('y2', endY);
+
+      // FIXED: Match arrowhead color to edge color
+      const isHoverEdge = currentHoverNode &&
+                         (d.source.id === currentHoverNode.id || d.target.id === currentHoverNode.id);
+
+      if (isHoverEdge) {{
+        line.attr('stroke', '#1976d2')
+            .attr('marker-end', 'url(#arrowhead-blue)');
+      }} else {{
+        line.attr('stroke', '#0f0')
+            .attr('marker-end', 'url(#arrowhead-green)');
+      }}
+    }});
+  }}
+
   simulation.on('tick', () => {{
-    link
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y);
-    node
-        .attr('transform', d => `translate(${{d.x}},${{d.y}})`);
+    updateLinkDisplay();
+    node.attr('transform', d => `translate(${{d.x}},${{d.y}})`);
   }});
+
   function dragstarted(event, d) {{
     if (!event.active) simulation.alphaTarget(0.3).restart();
     d.fx = d.x; d.fy = d.y;
@@ -172,142 +236,149 @@ function renderGraph() {{
     if (!event.active) simulation.alphaTarget(0);
     d.fx = null; d.fy = null;
   }}
-  // Clique hover: show only hovered node and direct neighbors, pin hovered node, and draw clique closer
+
   function nodeMouseOver(event, d) {{
+    currentHoverNode = d;
+
     const connectedIds = new Set([d.id]);
     links.forEach(l => {{
       if (l.source.id === d.id) connectedIds.add(l.target.id);
       if (l.target.id === d.id) connectedIds.add(l.source.id);
     }});
+
     node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
     link.style('display', l => (l.source.id === d.id || l.target.id === d.id) ? '' : 'none')
-      .attr('stroke', '#1976d2')
-      .attr('stroke-width', 16);
+        .attr('stroke-width', 16);
     node.filter(n => connectedIds.has(n.id))
-      .select('circle')
-      .attr('fill', '#1976d2');
+        .select('circle')
+        .attr('fill', '#1976d2');
+
     d.fx = d.x;
     d.fy = d.y;
-    simulation.force('link').distance(l => (l.source.id === d.id || l.target.id === d.id) ? nodeRadius * 1.2 : defaultLinkDist);
-    simulation.alpha(0.7).restart();
-    setTimeout(() => simulation.alphaTarget(0), 400);
+
+    simulation.force('link').distance(getStableLinkDistance);
+    simulation.alpha(Math.min(simulation.alpha() + 0.3, 0.5));
+
+    setTimeout(updateLinkDisplay, 10);
   }}
+
   function nodeMouseOut(event, d) {{
+    currentHoverNode = null;
+
     node.style('display', '');
     link.style('display', '')
-      .attr('stroke', '#0f0')
-      .attr('stroke-width', 8);
+        .attr('stroke-width', 8);
     node.select('circle').attr('fill', d => d.url ? '#1f77b4' : '#333');
+
     d.fx = null;
     d.fy = null;
-    simulation.force('link').distance(defaultLinkDist);
-    simulation.alpha(0.3).restart();
+
+    simulation.force('link').distance(getStableLinkDistance);
+    simulation.alpha(Math.min(simulation.alpha() + 0.1, 0.3));
+
+    setTimeout(updateLinkDisplay, 10);
   }}
-  // --- Node search/paste feature ---
+
   const searchBox = document.getElementById('nodeSearchBox');
   let lastFocusedNode = null;
   searchBox.addEventListener('input', function(e) {{
     const val = searchBox.value.trim();
     if (!val) {{
-      // Restore full graph
+      // CRITICAL FIX: Restore links properly instead of hiding them
+      currentHoverNode = null;
       node.style('display', '');
-      link.style('display', 'none')
-        .attr('stroke', '#0f0')
-        .attr('stroke-width', 8);
+      link.style('display', '')  // FIXED: was 'none', now properly restores links
+          .attr('stroke-width', 8);
       node.select('circle').attr('fill', d => d.url ? '#1f77b4' : '#333');
-      simulation.force('link').distance(defaultLinkDist);
-      simulation.alpha(0.3).restart();
+      simulation.force('link').distance(getStableLinkDistance);
+      simulation.alpha(0.3);
       if (lastFocusedNode) {{ lastFocusedNode.fx = null; lastFocusedNode.fy = null; lastFocusedNode = null; }}
+      setTimeout(updateLinkDisplay, 10);
       return;
     }}
-    // Find node by name
+
     const found = nodes.find(n => n.id === val);
     if (!found) {{
-      // Optionally show not found message
       node.style('display', 'none');
       link.style('display', 'none');
       return;
     }}
+
+    currentHoverNode = found;
     lastFocusedNode = found;
-    // Apply clique filter (same as nodeMouseOver)
     const connectedIds = new Set([found.id]);
     links.forEach(l => {{
       if (l.source.id === found.id) connectedIds.add(l.target.id);
       if (l.target.id === found.id) connectedIds.add(l.source.id);
     }});
+
     node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
     link.style('display', l => (l.source.id === found.id || l.target.id === found.id) ? '' : 'none')
-      .attr('stroke', '#1976d2')
-      .attr('stroke-width', 16);
+        .attr('stroke-width', 16);
     node.filter(n => connectedIds.has(n.id))
-      .select('circle')
-      .attr('fill', '#1976d2');
-    // Center graph on found node
+        .select('circle')
+        .attr('fill', '#1976d2');
+
     found.fx = window.innerWidth / 2;
     found.fy = window.innerHeight / 2;
-    simulation.force('center', null); // Remove center force so node stays centered
-    simulation.force('link').distance(l => (l.source.id === found.id || l.target.id === found.id) ? nodeRadius * 1.2 : defaultLinkDist);
-    simulation.alpha(0.7).restart();
-    setTimeout(() => simulation.alphaTarget(0), 400);
+    simulation.force('center', null);
+    simulation.force('link').distance(getStableLinkDistance);
+    simulation.alpha(0.7);
+    setTimeout(updateLinkDisplay, 10);
   }});
 }}
+
 window.addEventListener('resize', () => {{
   renderGraph();
-  if (simulation) simulation.alpha(1).restart();
+  if (simulation) simulation.alpha(1);
 }});
 
-// Keyboard controls for edge length adjustment
+// FIXED: Stable keyboard controls
 document.addEventListener('keydown', function(event) {{
   if (!simulation) return;
-
-  // Skip if typing in search box
   if (event.target.id === 'nodeSearchBox') return;
 
-  let adjustmentFactor = 1.2; // 20% change per keypress
-  let newDistance;
+  const adjustmentFactor = 1.2;
+  let newMultiplier;
 
   if (event.key === '+' || event.key === '=') {{
-    // Increase edge length
-    newDistance = defaultLinkDist * adjustmentFactor;
-    defaultLinkDist = newDistance;
-    // Update the force with a function that uses the current defaultLinkDist
-    simulation.force('link').distance(l => defaultLinkDist);
-    simulation.alpha(0.5).restart();
+    newMultiplier = userDistanceMultiplier * adjustmentFactor;
+    userDistanceMultiplier = newMultiplier;
 
-    // Show feedback using the existing feedback div
+    simulation.force('link').distance(getStableLinkDistance);
+    simulation.alpha(Math.min(simulation.alpha() + 0.1, 0.3));
+
     const feedbackDiv = document.getElementById('copyFeedback');
-    feedbackDiv.style.background = '#FF9800'; // Orange for edge adjustments
-    feedbackDiv.textContent = 'edge lengths increased to ' + Math.round(newDistance) + 'px';
+    feedbackDiv.style.background = '#FF9800';
+    feedbackDiv.textContent = 'edge lengths increased (' + (userDistanceMultiplier * 100).toFixed(0) + '%)';
     feedbackDiv.style.display = 'block';
     feedbackDiv.style.opacity = '1';
     setTimeout(() => {{
       feedbackDiv.style.opacity = '0';
       setTimeout(() => {{
         feedbackDiv.style.display = 'none';
-        feedbackDiv.style.background = '#4CAF50'; // Reset to green
+        feedbackDiv.style.background = '#4CAF50';
       }}, 300);
     }}, 800);
 
     event.preventDefault();
   }} else if (event.key === '-') {{
-    // Decrease edge length (with minimum limit)
-    newDistance = Math.max(50, defaultLinkDist / adjustmentFactor); // Min 50px
-    defaultLinkDist = newDistance;
-    // Update the force with a function that uses the current defaultLinkDist
-    simulation.force('link').distance(l => defaultLinkDist);
-    simulation.alpha(0.5).restart();
+    newMultiplier = Math.max(0.3, userDistanceMultiplier / adjustmentFactor);
+    userDistanceMultiplier = newMultiplier;
 
-    // Show feedback using the existing feedback div
+    simulation.force('link').distance(getStableLinkDistance);
+    simulation.alpha(Math.min(simulation.alpha() + 0.1, 0.3));
+
     const feedbackDiv = document.getElementById('copyFeedback');
-    feedbackDiv.style.background = '#FF9800'; // Orange for edge adjustments
-    feedbackDiv.textContent = 'edge lengths decreased to ' + Math.round(newDistance) + 'px';
+    feedbackDiv.style.background = '#FF9800';
+    feedbackDiv.textContent = 'edge lengths decreased (' + (userDistanceMultiplier * 100).toFixed(0) + '%)';
     feedbackDiv.style.display = 'block';
     feedbackDiv.style.opacity = '1';
     setTimeout(() => {{
       feedbackDiv.style.opacity = '0';
       setTimeout(() => {{
         feedbackDiv.style.display = 'none';
-        feedbackDiv.style.background = '#4CAF50'; // Reset to green
+        feedbackDiv.style.background = '#4CAF50';
       }}, 300);
     }}, 800);
 

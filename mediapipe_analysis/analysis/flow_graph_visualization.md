@@ -31,6 +31,8 @@ Use `python visualize_flow_graph.py` with the following arguments, since a force
 
 ### Example Usage
 
+make sure to change directory to the script's path. then run it: 
+
 ```bash
 cd mediapipe_analysis/analysis
 python flow_graph_visualization.py --font_scale 0.5 --repulsion_factor 0.3 --alpha_decay 1
