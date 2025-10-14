@@ -1,7 +1,7 @@
 import re
 from collections import defaultdict
 
-class ExecutionGraphBuilder:
+class FlowGraphBuilder:
     STREAM_PATTERN = re.compile(r'^[^:]+:[^:]+$')
     NAME_PATTERN = re.compile(r'^[^:]+$')
     CLONE_PATTERN = re.compile(r'^CLONE:\d+:(.+)$')

@@ -1,6 +1,6 @@
 import os
 import json
-from ExecutionGraphBuilder import ExecutionGraphBuilder
+from flow_graph_builder_other import FlowGraphBuilder
 import re
 from collections import defaultdict
 
@@ -39,7 +39,7 @@ def main():
     with open(json_path, 'r') as f:
         data = json.load(f)
     nodes = data.get('nodes', data)
-    builder = ExecutionGraphBuilder(nodes)
+    builder = FlowGraphBuilder(nodes)
     id_to_node, name_to_ids = build_node_maps(nodes)
 
     with open(md_path, 'w') as md:
@@ -58,7 +58,7 @@ def main():
             else:
                 md.write('no graph nodes feed from this node (the pipeline consumer may feed from them)\n')
             md.write('\n')
-    print(f"Execution path relations written to {md_path}")
+    print(f"Execution path relations written.")
 
 if __name__ == '__main__':
     main()

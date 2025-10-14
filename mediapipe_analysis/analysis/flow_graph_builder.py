@@ -3,12 +3,13 @@ MediaPipe Pipeline Flow Builder
 
 Builds a stream-level graph representation of MediaPipe pipelines where each node is
 a (node_name, stream_name) pair, capturing the detailed flow of data through the pipeline.
-This handles stream name translations at graph boundaries.
+This handles stream name translations at graph boundaries and processes duplicate nodes
+by creating unique instances with numbered suffixes.
 """
 
 import json
 from pathlib import Path
-from typing import Dict, List, Set, Tuple, Any, Optional
+from typing import List
 import copy
 import re
 
@@ -40,10 +41,13 @@ class PipelineFlowBuilder:
         # Flatten the node hierarchy to get all nodes with their original names
         flat_nodes = self._flatten_nodes(pipeline)
 
+        # Handle duplicate nodes by creating unique instances
+        processed_nodes = self._process_duplicate_nodes(flat_nodes)
+
         # Map output streams to producing nodes
         output_stream_to_node = {}
         node_stream_directions = {}  # (node_name, stream) -> direction
-        for node in flat_nodes:
+        for node in processed_nodes:
             node_name = node['name']
             for out_stream in node.get('output_streams', []):
                 stream_info = self.parser.parse_stream_desc(out_stream)
@@ -53,7 +57,7 @@ class PipelineFlowBuilder:
                 if node_stream not in self.nodes:
                     self.nodes.append(node_stream)
                 node_stream_directions[node_stream] = "output"
-        for node in flat_nodes:
+        for node in processed_nodes:
             node_name = node['name']
             for in_stream in node.get('input_streams', []):
                 node_stream = (node_name, in_stream)
@@ -62,7 +66,7 @@ class PipelineFlowBuilder:
                 node_stream_directions[node_stream] = "input"
 
         # Process input streams and build direct feed relationships
-        for node in flat_nodes:
+        for node in processed_nodes:
             node_name = node['name']
 
             # Create entries for input streams
@@ -96,7 +100,7 @@ class PipelineFlowBuilder:
                             self.feeds_from[consumer_node_stream].append(producer_node_stream)
 
         # Handle stream translations at graph boundaries
-        self._process_graph_translations(flat_nodes)
+        self._process_graph_translations(processed_nodes)
 
         # Build the final graph representation
         flow_graph = {
@@ -128,6 +132,76 @@ class PipelineFlowBuilder:
             result.extend(self._flatten_nodes(child))
 
         return result
+
+    def _process_duplicate_nodes(self, nodes: List[dict]) -> List[dict]:
+        """
+        Process duplicate nodes by creating unique instances.
+        Uses a two-pass approach: first pass identifies duplicates,
+        second pass creates numbered instances starting from _1 for all instances.
+
+        Args:
+            nodes: List of nodes to process
+
+        Returns:
+            List of processed nodes with unique instances
+        """
+        # First pass: count occurrences of each node name
+        name_counts = {}
+        for node in nodes:
+            node_name = node['name']
+            name_counts[node_name] = name_counts.get(node_name, 0) + 1
+
+        # Second pass: process nodes and assign unique names
+        name_instance_counters = {}
+        processed_nodes = []
+
+        for node in nodes:
+            original_name = node['name']
+
+            if name_counts[original_name] > 1:
+                # Multiple instances exist, number them starting from _1
+                if original_name not in name_instance_counters:
+                    name_instance_counters[original_name] = 1
+                else:
+                    name_instance_counters[original_name] += 1
+
+                unique_name = f"{original_name}_{name_instance_counters[original_name]}"
+            else:
+                # Single instance, keep original name
+                unique_name = original_name
+
+            # Create a copy of the node with the updated name
+            node_copy = copy.deepcopy(node)
+            node_copy['name'] = unique_name
+
+            # Update input and output stream names to reflect the new node name
+            node_copy['input_streams'] = [
+                self._update_stream_name(stream, original_name, unique_name)
+                for stream in node.get('input_streams', [])
+            ]
+            node_copy['output_streams'] = [
+                self._update_stream_name(stream, original_name, unique_name)
+                for stream in node.get('output_streams', [])
+            ]
+
+            processed_nodes.append(node_copy)
+
+        return processed_nodes
+
+    def _update_stream_name(self, stream_name: str, old_node_name: str, new_node_name: str) -> str:
+        """
+        Update the stream name to reflect the new node name.
+
+        Args:
+            stream_name: The original stream name
+            old_node_name: The old node name
+            new_node_name: The new node name
+
+        Returns:
+            The updated stream name
+        """
+        # Replace the old node name with the new node name in the stream name
+        return stream_name.replace(old_node_name, new_node_name)
 
     def _process_graph_translations(self, nodes: List[dict]) -> None:
         """

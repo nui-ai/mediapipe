@@ -1141,7 +1141,7 @@ def main():
 
     # Phase 2: Build the pipeline flow graph
     print("\nBuilding stream-level flow graph...")
-    from mediapipe_analysis.analysis.pipeline_flow_builder import build_pipeline_flow
+    from mediapipe_analysis.analysis.flow_graph_builder import build_pipeline_flow
     verbose_json_path = output_dir / 'json' / 'pipeline.verbose.json'
     flow_graph_path = output_dir / 'json' / 'streams-flow.json'
     build_pipeline_flow(parser, verbose_json_path, flow_graph_path)

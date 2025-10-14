@@ -53,5 +53,5 @@ when using +/- to adjust edge lengths, the graph may not re-layout immediately w
 
 ## Requirements
 
-- Input files: `output/json/streams-flow.json` and `output/json/pipeline.verbose.json`
+- Input files: `output/json/streams-flow.json` and `output/json/pipeline.verbose.json` which are created by running `pipeline_parser.py` first.
 
