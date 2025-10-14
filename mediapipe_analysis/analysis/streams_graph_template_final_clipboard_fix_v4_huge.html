@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <title>Streams Graph</title>
+  <script src='https://d3js.org/d3.v7.min.js'></script>
+  <style>
+    html, body {{ height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; }}
+    svg {{ width: 100vw; height: 100vh; display: block; background: #000; }}
+    .link {{ stroke: #0f0; stroke-opacity: 1; stroke-width: 8px; }}
+    .arrowhead {{ fill: #0f0; }}
+    .node text {{ pointer-events: none; fill: #fff; font-weight: bold; }}
+    #nodeSearchBox {{ position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10; font-size: 5em; padding: 40px 80px; border-radius: 40px; border: 6px solid #1976d2; background: #222; color: #fff; width: 1600px; text-align: center; }}
+    #copyFeedback {{ position: fixed; top: 250px; left: 50%; transform: translateX(-50%); background: #4CAF50; color: #fff; padding: 60px 120px; border-radius: 50px; font-size: 5em; z-index: 100; display: none; font-weight: bold; transition: opacity 0.3s ease; text-align: center; min-width: 1200px; }}
+  </style>
+</head>
+<body>
+<input id="nodeSearchBox" type="text" placeholder="Paste or type node name to focus..." autocomplete="off" />
+<div id="copyFeedback"></div>
+<svg></svg>
+<script>
+const nodes = {nodes_json};
+const links = {links_json};
+const fontScale = {font_scale};
+const alphaDecay = {alpha_decay};
+const repulsion = -Math.max(window.innerWidth, window.innerHeight) * {repulsion_factor};
+
+// Global clipboard copy function
+function copyToClipboard(text, label) {{
+  function showCopyFeedback(msg) {{
+    const feedbackDiv = document.getElementById('copyFeedback');
+    feedbackDiv.textContent = msg;
+    feedbackDiv.style.display = 'block';
+    feedbackDiv.style.opacity = '1';
+    setTimeout(() => {{
+      feedbackDiv.style.opacity = '0';
+      setTimeout(() => {{ feedbackDiv.style.display = 'none'; }}, 300);
+    }}, 1200);
+  }}
+
+  // Try modern Clipboard API first
+  if (navigator.clipboard && window.isSecureContext) {{
+    navigator.clipboard.writeText(text)
+      .then(() => showCopyFeedback('✓ ' + label + ' copied to clipboard'))
+      .catch(() => fallbackCopy(text, label));
+  }} else {{
+    fallbackCopy(text, label);
+  }}
+
+  function fallbackCopy(text, label) {{
+    try {{
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      textarea.style.top = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      if (successful) {{
+        showCopyFeedback('✓ ' + label + ' copied to clipboard');
+      }} else {{
+        showCopyFeedback('✗ Copy failed');
+      }}
+    }} catch (err) {{
+      console.error('Copy failed:', err);
+      showCopyFeedback('✗ Copy failed');
+    }}
+  }}
+}}
+
+function getSize() {{
+  return [window.innerWidth, window.innerHeight];
+}}
+let simulation, node, link, nodeRadius, defaultLinkDist;
+function renderGraph() {{
+  const [width, height] = getSize();
+  const svg = d3.select('svg').attr('width', width).attr('height', height);
+  svg.selectAll('*').remove();
+  svg.append('defs').append('marker')
+      .attr('id', 'arrowhead')
+      .attr('viewBox', '-0 -5 10 10')
+      .attr('refX', 60)
+      .attr('refY', 0)
+      .attr('orient', 'auto')
+      .attr('markerWidth', 16)
+      .attr('markerHeight', 16)
+      .attr('xoverflow', 'visible')
+    .append('svg:path')
+      .attr('d', 'M0,-5L10,0L0,5')
+      .attr('class','arrowhead');
+  defaultLinkDist = Math.max(width, height) / 4.5;
+  simulation = d3.forceSimulation(nodes)
+      .force('link', d3.forceLink(links).id(d => d.id).distance(defaultLinkDist))
+      .force('charge', d3.forceManyBody().strength(repulsion))
+      .force('center', d3.forceCenter(width / 2, height / 2))
+      .alpha(1)
+      .alphaTarget(0.3)
+      .alphaDecay(alphaDecay)
+      .restart();
+  link = svg.append('g')
+      .selectAll('line')
+      .data(links)
+      .enter().append('line')
+      .attr('class', 'link')
+      .attr('marker-end','url(#arrowhead)');
+  node = svg.append('g')
+      .selectAll('g')
+      .data(nodes)
+      .enter().append('g')
+      .attr('class', 'node')
+      .call(d3.drag()
+          .on('start', dragstarted)
+          .on('drag', dragged)
+          .on('end', dragended))
+      .on('mouseover', nodeMouseOver)
+      .on('mouseout', nodeMouseOut);
+  nodeRadius = Math.max(30, Math.min(width, height) / 18);
+  node.append('circle')
+      .attr('r', nodeRadius)
+      .attr('fill', d => d.url ? '#1f77b4' : '#333')
+      .on('click', function(event, d) {{
+        // Check for Ctrl key first
+        if (event.ctrlKey || event.metaKey) {{
+          // Ctrl+click: copy source path to clipboard
+          if (d.url) {{
+            // Extract the file path from the file:// URL
+            const filePath = d.url.replace('file://', '');
+            copyToClipboard(filePath, 'Source path');
+          }} else {{
+            copyToClipboard('No source path available for ' + d.id, 'Message');
+          }}
+        }} else {{
+          // Regular click: copy node name to clipboard
+          copyToClipboard(d.id, 'Node name');
+        }}
+        // Prevent any default behaviors
+        event.preventDefault();
+        event.stopPropagation();
+      }});
+  node.append('text')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('text-anchor', 'middle')
+      .style('dominant-baseline', 'middle')
+      .style('font-size', (fontScale * nodeRadius) + 'px')
+      .style('font-weight', 'normal')
+      .text(d => d.id);
+  simulation.on('tick', () => {{
+    link
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y);
+    node
+        .attr('transform', d => `translate(${{d.x}},${{d.y}})`);
+  }});
+  function dragstarted(event, d) {{
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x; d.fy = d.y;
+  }}
+  function dragged(event, d) {{
+    d.fx = event.x; d.fy = event.y;
+  }}
+  function dragended(event, d) {{
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null; d.fy = null;
+  }}
+  // Clique hover: show only hovered node and direct neighbors, pin hovered node, and draw clique closer
+  function nodeMouseOver(event, d) {{
+    const connectedIds = new Set([d.id]);
+    links.forEach(l => {{
+      if (l.source.id === d.id) connectedIds.add(l.target.id);
+      if (l.target.id === d.id) connectedIds.add(l.source.id);
+    }});
+    node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
+    link.style('display', l => (l.source.id === d.id || l.target.id === d.id) ? '' : 'none')
+      .attr('stroke', '#1976d2')
+      .attr('stroke-width', 16);
+    node.filter(n => connectedIds.has(n.id))
+      .select('circle')
+      .attr('fill', '#1976d2');
+    d.fx = d.x;
+    d.fy = d.y;
+    simulation.force('link').distance(l => (l.source.id === d.id || l.target.id === d.id) ? nodeRadius * 1.2 : defaultLinkDist);
+    simulation.alpha(0.7).restart();
+    setTimeout(() => simulation.alphaTarget(0), 400);
+  }}
+  function nodeMouseOut(event, d) {{
+    node.style('display', '');
+    link.style('display', '')
+      .attr('stroke', '#0f0')
+      .attr('stroke-width', 8);
+    node.select('circle').attr('fill', d => d.url ? '#1f77b4' : '#333');
+    d.fx = null;
+    d.fy = null;
+    simulation.force('link').distance(defaultLinkDist);
+    simulation.alpha(0.3).restart();
+  }}
+  // --- Node search/paste feature ---
+  const searchBox = document.getElementById('nodeSearchBox');
+  let lastFocusedNode = null;
+  searchBox.addEventListener('input', function(e) {{
+    const val = searchBox.value.trim();
+    if (!val) {{
+      // Restore full graph
+      node.style('display', '');
+      link.style('display', '')
+        .attr('stroke', '#0f0')
+        .attr('stroke-width', 8);
+      node.select('circle').attr('fill', d => d.url ? '#1f77b4' : '#333');
+      simulation.force('link').distance(defaultLinkDist);
+      simulation.alpha(0.3).restart();
+      if (lastFocusedNode) {{ lastFocusedNode.fx = null; lastFocusedNode.fy = null; lastFocusedNode = null; }}
+      return;
+    }}
+    // Find node by name
+    const found = nodes.find(n => n.id === val);
+    if (!found) {{
+      // Optionally show not found message
+      node.style('display', 'none');
+      link.style('display', 'none');
+      return;
+    }}
+    lastFocusedNode = found;
+    // Apply clique filter (same as nodeMouseOver)
+    const connectedIds = new Set([found.id]);
+    links.forEach(l => {{
+      if (l.source.id === found.id) connectedIds.add(l.target.id);
+      if (l.target.id === found.id) connectedIds.add(l.source.id);
+    }});
+    node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
+    link.style('display', l => (l.source.id === found.id || l.target.id === found.id) ? '' : 'none')
+      .attr('stroke', '#1976d2')
+      .attr('stroke-width', 16);
+    node.filter(n => connectedIds.has(n.id))
+      .select('circle')
+      .attr('fill', '#1976d2');
+    // Center graph on found node
+    found.fx = window.innerWidth / 2;
+    found.fy = window.innerHeight / 2;
+    simulation.force('center', null); // Remove center force so node stays centered
+    simulation.force('link').distance(l => (l.source.id === found.id || l.target.id === found.id) ? nodeRadius * 1.2 : defaultLinkDist);
+    simulation.alpha(0.7).restart();
+    setTimeout(() => simulation.alphaTarget(0), 400);
+  }});
+}}
+window.addEventListener('resize', () => {{
+  renderGraph();
+  if (simulation) simulation.alpha(1).restart();
+}});
+renderGraph();
+</script>
+</body>
+</html>
