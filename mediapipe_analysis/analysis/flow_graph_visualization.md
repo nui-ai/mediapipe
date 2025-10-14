@@ -21,7 +21,7 @@ A slightly interactive D3.js-based visualization of a MediaPipe pipeline's flow 
 
 ## 2. Fuzzy Layout Control
 
-Use `python visualize_flow_graph.py` with the following arguments, since a force layout cannot be automagically optimized:
+Use `python visualize_flow_graph.py` while tweaking the following argument values, since a force layout cannot be automagically optimized:
 
 | Argument             | Default | When to Increase                                                                                                                                      | When to Decrease                                                                               | Description                                   |
 |----------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|-----------------------------------------------|
