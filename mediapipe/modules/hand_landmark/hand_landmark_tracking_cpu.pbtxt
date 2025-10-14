@@ -315,14 +315,34 @@ node {
   output_stream: "ITERABLE:multi_handedness"
 }
 
-# Calculate region of interest (ROI) based on detected hand landmarks to reuse
-# on the subsequent runs of the graph.
+# start original hand landmark to roi subgraph's nodes ##
+
 node {
-  calculator: "HandLandmarkLandmarksToRoi"
+  calculator: "HandLandmarksToRectCalculator"
+  input_stream: "NORM_LANDMARKS:single_hand_landmarks"
   input_stream: "IMAGE_SIZE:image_size_for_landmarks"
-  input_stream: "LANDMARKS:single_hand_landmarks"
-  output_stream: "ROI:single_hand_rect_from_landmarks"
+  output_stream: "NORM_RECT:hand_rect_from_landmarks"
 }
+
+# Expands the hand rectangle so that the box contains the entire hand and it's
+# big enough so that it's likely to still contain the hand even with some motion
+# in the next video frame .
+node {
+  calculator: "RectTransformationCalculator"
+  input_stream: "NORM_RECT:hand_rect_from_landmarks"
+  input_stream: "IMAGE_SIZE:image_size_for_landmarks"
+  output_stream: "single_hand_rect_from_landmarks"
+  options: {
+    [mediapipe.RectTransformationCalculatorOptions.ext] {
+      scale_x: 2.0
+      scale_y: 2.0
+      shift_y: -0.1
+      square_long: true
+    }
+  }
+}
+
+# end original hand landmark to roi subgraph's nodes ##
 
 # Collects a set of landmarks for each hand into a vector. Upon receiving the
 # BATCH_END timestamp, outputs the vector of landmarks at the BATCH_END
