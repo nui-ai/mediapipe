@@ -82,13 +82,21 @@ function getSize() {{
   return [window.innerWidth, window.innerHeight];
 }}
 
+// Helper function to get node ID from D3.js object or string
+function getNodeId(nodeRef) {{
+  return (typeof nodeRef === 'object' && nodeRef.id) ? nodeRef.id : nodeRef;
+}}
+
 function getStableLinkDistance(link) {{
   const baseDistance = BASE_LINK_DISTANCE * userDistanceMultiplier;
   const minimumDistance = 80;
 
-  if (currentHoverNode &&
-      (link.source.id === currentHoverNode.id || link.target.id === currentHoverNode.id)) {{
-    return Math.max(baseDistance * 0.5, minimumDistance);
+  if (currentHoverNode) {{
+    const sourceId = getNodeId(link.source);
+    const targetId = getNodeId(link.target);
+    if (sourceId === currentHoverNode.id || targetId === currentHoverNode.id) {{
+      return Math.max(baseDistance * 0.5, minimumDistance);
+    }}
   }}
 
   return Math.max(baseDistance, minimumDistance);
@@ -181,7 +189,7 @@ function renderGraph() {{
       .style('font-weight', 'normal')
       .text(d => d.id);
 
-  // FIXED: Enhanced link display with color-matched arrowheads
+  // FIXED: Enhanced link display with differentiated incoming/outgoing edge colors
   function updateLinkDisplay() {{
     link.each(function(d) {{
       const line = d3.select(this);
@@ -206,14 +214,29 @@ function renderGraph() {{
           .attr('x2', endX)
           .attr('y2', endY);
 
-      // FIXED: Match arrowhead color to edge color
-      const isHoverEdge = currentHoverNode &&
-                         (d.source.id === currentHoverNode.id || d.target.id === currentHoverNode.id);
+      // FIXED: Properly handle D3.js object references for source/target
+      if (currentHoverNode) {{
+        const sourceId = getNodeId(d.source);
+        const targetId = getNodeId(d.target);
 
-      if (isHoverEdge) {{
-        line.attr('stroke', '#1976d2')
-            .attr('marker-end', 'url(#arrowhead-blue)');
+        const isIncomingEdge = targetId === currentHoverNode.id;
+        const isOutgoingEdge = sourceId === currentHoverNode.id;
+
+        if (isIncomingEdge) {{
+          // Incoming edges to focal node are blue
+          line.attr('stroke', '#1976d2')
+              .attr('marker-end', 'url(#arrowhead-blue)');
+        }} else if (isOutgoingEdge) {{
+          // Outgoing edges from focal node are green
+          line.attr('stroke', '#0f0')
+              .attr('marker-end', 'url(#arrowhead-green)');
+        }} else {{
+          // Non-connected edges (shouldn't be visible in hover mode)
+          line.attr('stroke', '#0f0')
+              .attr('marker-end', 'url(#arrowhead-green)');
+        }}
       }} else {{
+        // Default state: all edges are green
         line.attr('stroke', '#0f0')
             .attr('marker-end', 'url(#arrowhead-green)');
       }}
@@ -242,13 +265,19 @@ function renderGraph() {{
 
     const connectedIds = new Set([d.id]);
     links.forEach(l => {{
-      if (l.source.id === d.id) connectedIds.add(l.target.id);
-      if (l.target.id === d.id) connectedIds.add(l.source.id);
+      const sourceId = getNodeId(l.source);
+      const targetId = getNodeId(l.target);
+      if (sourceId === d.id) connectedIds.add(targetId);
+      if (targetId === d.id) connectedIds.add(sourceId);
     }});
 
     node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
-    link.style('display', l => (l.source.id === d.id || l.target.id === d.id) ? '' : 'none')
-        .attr('stroke-width', 16);
+    link.style('display', l => {{
+      const sourceId = getNodeId(l.source);
+      const targetId = getNodeId(l.target);
+      return (sourceId === d.id || targetId === d.id) ? '' : 'none';
+    }}).attr('stroke-width', 16);
+
     node.filter(n => connectedIds.has(n.id))
         .select('circle')
         .attr('fill', '#1976d2');
@@ -259,6 +288,8 @@ function renderGraph() {{
     simulation.force('link').distance(getStableLinkDistance);
     simulation.alpha(Math.min(simulation.alpha() + 0.3, 0.5));
 
+    // Apply edge coloring immediately AND with delay
+    updateLinkDisplay();
     setTimeout(updateLinkDisplay, 10);
   }}
 
@@ -276,6 +307,8 @@ function renderGraph() {{
     simulation.force('link').distance(getStableLinkDistance);
     simulation.alpha(Math.min(simulation.alpha() + 0.1, 0.3));
 
+    // Apply edge coloring immediately AND with delay
+    updateLinkDisplay();
     setTimeout(updateLinkDisplay, 10);
   }}
 
@@ -293,6 +326,7 @@ function renderGraph() {{
       simulation.force('link').distance(getStableLinkDistance);
       simulation.alpha(0.3);
       if (lastFocusedNode) {{ lastFocusedNode.fx = null; lastFocusedNode.fy = null; lastFocusedNode = null; }}
+      updateLinkDisplay();
       setTimeout(updateLinkDisplay, 10);
       return;
     }}
@@ -308,13 +342,19 @@ function renderGraph() {{
     lastFocusedNode = found;
     const connectedIds = new Set([found.id]);
     links.forEach(l => {{
-      if (l.source.id === found.id) connectedIds.add(l.target.id);
-      if (l.target.id === found.id) connectedIds.add(l.source.id);
+      const sourceId = getNodeId(l.source);
+      const targetId = getNodeId(l.target);
+      if (sourceId === found.id) connectedIds.add(targetId);
+      if (targetId === found.id) connectedIds.add(sourceId);
     }});
 
     node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
-    link.style('display', l => (l.source.id === found.id || l.target.id === found.id) ? '' : 'none')
-        .attr('stroke-width', 16);
+    link.style('display', l => {{
+      const sourceId = getNodeId(l.source);
+      const targetId = getNodeId(l.target);
+      return (sourceId === found.id || targetId === found.id) ? '' : 'none';
+    }}).attr('stroke-width', 16);
+
     node.filter(n => connectedIds.has(n.id))
         .select('circle')
         .attr('fill', '#1976d2');
@@ -324,6 +364,7 @@ function renderGraph() {{
     simulation.force('center', null);
     simulation.force('link').distance(getStableLinkDistance);
     simulation.alpha(0.7);
+    updateLinkDisplay();
     setTimeout(updateLinkDisplay, 10);
   }});
 }}
