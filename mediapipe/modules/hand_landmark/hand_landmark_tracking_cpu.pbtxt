@@ -205,13 +205,45 @@ node {
   output_stream: "BATCH_END:palm_detections_timestamp"
 }
 
-# Calculates region of interest (ROI) based on the specified palm.
+# start original palm detection to roi subgraph's nodes ##
+
+# Converts results of palm detection into a rectangle (normalized by image size)
+# that encloses the palm and is rotated such that the line connecting center of
+# the wrist and MCP of the middle finger is aligned with the Y-axis of the
+# rectangle.
 node {
-  calculator: "PalmDetectionDetectionToRoi"
+  calculator: "DetectionsToRectsCalculator"
   input_stream: "DETECTION:palm_detection"
   input_stream: "IMAGE_SIZE:image_size_for_palms"
-  output_stream: "ROI:hand_rect_from_palm_detection"
+  output_stream: "NORM_RECT:raw_roi"
+  #  options: {
+  #    [mediapipe.DetectionsToRectsCalculatorOptions.ext] {
+  #      rotation_vector_start_keypoint_index: 0  # Center of wrist.
+  #      rotation_vector_end_keypoint_index: 2  # MCP of middle finger.
+  #      rotation_vector_target_angle_degrees: 90
+  #    }
+  #  }
 }
+
+# Expands and shifts the rectangle that contains the palm so that it's likely
+# to cover the entire hand.
+node {
+  calculator: "RectTransformationCalculator"
+  input_stream: "NORM_RECT:raw_roi"
+  input_stream: "IMAGE_SIZE:image_size_for_palms"
+  output_stream: "hand_rect_from_palm_detection"
+  options: {
+    [mediapipe.RectTransformationCalculatorOptions.ext] {
+      scale_x: 2.6
+      scale_y: 2.6
+      shift_y: -0.5
+      square_long: true
+    }
+  }
+}
+
+
+# end original palm detection to roi subgraph's nodes ##
 
 # Collects a NormalizedRect for each hand into a vector. Upon receiving the
 # BATCH_END timestamp, outputs the vector of NormalizedRect at the BATCH_END
