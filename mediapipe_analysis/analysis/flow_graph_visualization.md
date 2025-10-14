@@ -16,21 +16,22 @@ A slightly interactive D3.js-based visualization of a MediaPipe pipeline's flow 
 - **Ctrl+click any node** → Copies the source file path to clipboard
 
 #### Real-time Edge Length Control
-- **`+` key** → Increase edge lengths a bit
+- **`+` key** → Increase edge lengths a bit 
 - **`-` key** → Decrease edge lengths a bit
 - a minimum limit prevents edges from becoming too short (50px minimum)
+- limitation: these keys are not active when the cursor is in the search box or the search box has focus
 
-### Example Usage
 
-make sure to change directory to the script's path. then run it: 
+## Example Launch
+
+make sure to change directory to the script's path. then run it with e.g. the following argument values: 
 
 ```bash
 cd mediapipe_analysis/analysis
 python flow_graph_visualization.py --font_scale 0.5 --repulsion_factor 0.3 --alpha_decay 1
 ```
 
-
-## Fuzzy Layout Control
+## Fuzzy Layout Affordances
 
 Use `python visualize_flow_graph.py` while tweaking the following argument values, since a force layout cannot be automagically optimized:
 
