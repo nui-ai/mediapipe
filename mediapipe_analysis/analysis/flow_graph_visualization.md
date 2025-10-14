@@ -38,6 +38,9 @@ cd mediapipe_analysis/analysis
 python flow_graph_visualization.py --font_scale 0.5 --repulsion_factor 0.3 --alpha_decay 1
 ```
 
+### Known Issue
+when using +/- to adjust edge lengths, the graph may not re-layout immediately when the graph display has reached its stable state. click and hold the center node, or drag a node slightly to make the layout exit its stable state, while pressing +/- to see the effect immediately, otherwise it can get very confusing when you later nudge the graph and all your +/- adjustments take effect at once in a radical way.
+
 ## Technical Details
 
 - Built with D3.js v7 for smooth force-directed layout
