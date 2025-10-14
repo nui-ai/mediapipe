@@ -12,11 +12,15 @@
     .node text {{ pointer-events: none; fill: #fff; font-weight: bold; }}
     #nodeSearchBox {{ position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10; font-size: 5em; padding: 40px 80px; border-radius: 40px; border: 6px solid #1976d2; background: #222; color: #fff; width: 1600px; text-align: center; }}
     #copyFeedback {{ position: fixed; top: 250px; left: 50%; transform: translateX(-50%); background: #4CAF50; color: #fff; padding: 60px 120px; border-radius: 50px; font-size: 5em; z-index: 100; display: none; font-weight: bold; transition: opacity 0.3s ease; text-align: center; min-width: 1200px; }}
+    #keyHelp {{ position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); color: #fff; padding: 15px; border-radius: 10px; font-size: 1.2em; z-index: 100; }}
   </style>
 </head>
 <body>
 <input id="nodeSearchBox" type="text" placeholder="Paste or type node name to focus..." autocomplete="off" />
 <div id="copyFeedback"></div>
+<div id="keyHelp">
+  Keys: <strong>+/=</strong> increase edge length | <strong>-</strong> decrease edge length
+</div>
 <svg></svg>
 <script>
 const nodes = {nodes_json};
@@ -207,7 +211,7 @@ function renderGraph() {{
     if (!val) {{
       // Restore full graph
       node.style('display', '');
-      link.style('display', '')
+      link.style('display', 'none')
         .attr('stroke', '#0f0')
         .attr('stroke-width', 8);
       node.select('circle').attr('fill', d => d.url ? '#1f77b4' : '#333');
@@ -251,6 +255,66 @@ window.addEventListener('resize', () => {{
   renderGraph();
   if (simulation) simulation.alpha(1).restart();
 }});
+
+// Keyboard controls for edge length adjustment
+document.addEventListener('keydown', function(event) {{
+  if (!simulation) return;
+
+  // Skip if typing in search box
+  if (event.target.id === 'nodeSearchBox') return;
+
+  let adjustmentFactor = 1.2; // 20% change per keypress
+  let newDistance;
+
+  if (event.key === '+' || event.key === '=') {{
+    // Increase edge length
+    newDistance = defaultLinkDist * adjustmentFactor;
+    defaultLinkDist = newDistance;
+    // Update the force with a function that uses the current defaultLinkDist
+    simulation.force('link').distance(l => defaultLinkDist);
+    simulation.alpha(0.5).restart();
+
+    // Show feedback using the existing feedback div
+    const feedbackDiv = document.getElementById('copyFeedback');
+    feedbackDiv.style.background = '#FF9800'; // Orange for edge adjustments
+    feedbackDiv.textContent = 'edge lengths increased to ' + Math.round(newDistance) + 'px';
+    feedbackDiv.style.display = 'block';
+    feedbackDiv.style.opacity = '1';
+    setTimeout(() => {{
+      feedbackDiv.style.opacity = '0';
+      setTimeout(() => {{
+        feedbackDiv.style.display = 'none';
+        feedbackDiv.style.background = '#4CAF50'; // Reset to green
+      }}, 300);
+    }}, 800);
+
+    event.preventDefault();
+  }} else if (event.key === '-') {{
+    // Decrease edge length (with minimum limit)
+    newDistance = Math.max(50, defaultLinkDist / adjustmentFactor); // Min 50px
+    defaultLinkDist = newDistance;
+    // Update the force with a function that uses the current defaultLinkDist
+    simulation.force('link').distance(l => defaultLinkDist);
+    simulation.alpha(0.5).restart();
+
+    // Show feedback using the existing feedback div
+    const feedbackDiv = document.getElementById('copyFeedback');
+    feedbackDiv.style.background = '#FF9800'; // Orange for edge adjustments
+    feedbackDiv.textContent = 'edge lengths decreased to ' + Math.round(newDistance) + 'px';
+    feedbackDiv.style.display = 'block';
+    feedbackDiv.style.opacity = '1';
+    setTimeout(() => {{
+      feedbackDiv.style.opacity = '0';
+      setTimeout(() => {{
+        feedbackDiv.style.display = 'none';
+        feedbackDiv.style.background = '#4CAF50'; // Reset to green
+      }}, 300);
+    }}, 800);
+
+    event.preventDefault();
+  }}
+}});
+
 renderGraph();
 </script>
 </body>

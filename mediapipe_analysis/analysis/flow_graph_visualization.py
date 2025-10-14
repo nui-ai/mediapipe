@@ -18,8 +18,8 @@ def load_json(path):
 base_dir = Path(__file__).parent
 streams_flow_path = base_dir / 'output/json/streams-flow.json'
 pipeline_verbose_path = base_dir / 'output/json/pipeline.verbose.json'
-template_path = base_dir / 'streams_graph_template_final_clipboard_fix_v5_keyboard.html'
-output_html_path = base_dir / 'output/streams_graph.html'
+template_path = base_dir / 'flow_graph_visualization_template.html'
+output_html_path = base_dir / 'output/flow_graph.html'
 
 # Load data
 streams_flow = load_json(streams_flow_path)
