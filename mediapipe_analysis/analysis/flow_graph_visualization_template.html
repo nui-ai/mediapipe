@@ -141,21 +141,22 @@ function updateLinkDisplay() {{
       const isOutgoingEdge = sourceId === currentHoverNode.id;
 
       if (isIncomingEdge) {{
-        // Incoming edges to focal node are blue
-        line.attr('stroke', '#1976d2')
+        // Incoming edges to focal node are blue (both stroke and arrowhead)
+        // FIXED: Use style.setProperty with !important to override CSS
+        line.style('stroke', '#1976d2', 'important')
             .attr('marker-end', 'url(#arrowhead-blue)');
       }} else if (isOutgoingEdge) {{
         // Outgoing edges from focal node are green
-        line.attr('stroke', '#0f0')
+        line.style('stroke', '#0f0', 'important')
             .attr('marker-end', 'url(#arrowhead-green)');
       }} else {{
         // Non-connected edges (shouldn't be visible in hover mode)
-        line.attr('stroke', '#0f0')
+        line.style('stroke', '#0f0', 'important')
             .attr('marker-end', 'url(#arrowhead-green)');
       }}
     }} else {{
       // Default state: all edges are green
-      line.attr('stroke', '#0f0')
+      line.style('stroke', '#0f0', 'important')
           .attr('marker-end', 'url(#arrowhead-green)');
     }}
   }});
