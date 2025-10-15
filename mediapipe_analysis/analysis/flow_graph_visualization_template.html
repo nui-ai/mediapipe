@@ -11,7 +11,7 @@
     .arrowhead {{ fill: #0f0; }}
     .node text {{ pointer-events: none; fill: #fff; font-weight: bold; }}
     #nodeSearchBox {{ position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10; font-size: 5em; padding: 40px 80px; border-radius: 40px; border: 6px solid #1976d2; background: #222; color: #fff; width: 1600px; text-align: center; }}
-    #copyFeedback {{ position: fixed; top: 250px; left: 50%; transform: translateX(-50%); background: #4CAF50; color: #fff; padding: 60px 120px; border-radius: 50px; font-size: 5em; z-index: 100; display: none; font-weight: bold; transition: opacity 0.3s ease; text-align: center; min-width: 1200px; }}
+    #copyFeedback {{ position: fixed; top: 250px; left: 50%; transform: translateX(-50%); background: #4CAF50; color: #fff; padding: 30px 60px; border-radius: 25px; font-size: 2.5em; z-index: 100; display: none; font-weight: bold; transition: opacity 0.3s ease; text-align: center; min-width: 600px; }}
     #keyHelp {{ position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); color: #fff; padding: 15px; border-radius: 10px; font-size: 1.2em; z-index: 100; }}
   </style>
 </head>
@@ -19,7 +19,7 @@
 <input id="nodeSearchBox" type="text" placeholder="Paste or type node name to focus..." autocomplete="off" />
 <div id="copyFeedback"></div>
 <div id="keyHelp">
-  Keys: <strong>+/=</strong> increase edge length | <strong>-</strong> decrease edge length
+ mouse click to focus a node | <strong>esc</strong> clear focus | <strong>+/-</strong> adjust edge length<
 </div>
 <svg></svg>
 <script>
@@ -33,6 +33,7 @@ const repulsion = -Math.max(window.innerWidth, window.innerHeight) * {repulsion_
 const BASE_LINK_DISTANCE = 200;
 let userDistanceMultiplier = 1.0;
 let currentHoverNode = null;
+let stickyFocusNode = null;  // NEW: Track sticky focused node
 
 function copyToClipboard(text, label) {{
   function showCopyFeedback(msg) {{
@@ -104,6 +105,119 @@ function getStableLinkDistance(link) {{
 
 let simulation, node, link, nodeRadius;
 
+// NEW: Move updateLinkDisplay to global scope as well
+function updateLinkDisplay() {{
+  if (!link) return; // Guard against being called before initialization
+
+  link.each(function(d) {{
+    const line = d3.select(this);
+
+    // Calculate link length and adjust endpoints
+    const dx = d.target.x - d.source.x;
+    const dy = d.target.y - d.source.y;
+    const length = Math.sqrt(dx * dx + dy * dy);
+
+    const sourceRadius = nodeRadius + 2;
+    const targetRadius = nodeRadius + 2;
+    const ux = dx / length;
+    const uy = dy / length;
+
+    const startX = d.source.x + ux * sourceRadius;
+    const startY = d.source.y + uy * sourceRadius;
+    const endX = d.target.x - ux * targetRadius;
+    const endY = d.target.y - uy * targetRadius;
+
+    line.attr('x1', startX)
+        .attr('y1', startY)
+        .attr('x2', endX)
+        .attr('y2', endY);
+
+    // FIXED: Properly handle D3.js object references for source/target
+    if (currentHoverNode) {{
+      const sourceId = getNodeId(d.source);
+      const targetId = getNodeId(d.target);
+
+      const isIncomingEdge = targetId === currentHoverNode.id;
+      const isOutgoingEdge = sourceId === currentHoverNode.id;
+
+      if (isIncomingEdge) {{
+        // Incoming edges to focal node are blue
+        line.attr('stroke', '#1976d2')
+            .attr('marker-end', 'url(#arrowhead-blue)');
+      }} else if (isOutgoingEdge) {{
+        // Outgoing edges from focal node are green
+        line.attr('stroke', '#0f0')
+            .attr('marker-end', 'url(#arrowhead-green)');
+      }} else {{
+        // Non-connected edges (shouldn't be visible in hover mode)
+        line.attr('stroke', '#0f0')
+            .attr('marker-end', 'url(#arrowhead-green)');
+      }}
+    }} else {{
+      // Default state: all edges are green
+      line.attr('stroke', '#0f0')
+          .attr('marker-end', 'url(#arrowhead-green)');
+    }}
+  }});
+}}
+
+// NEW: Move sticky focus functions to global scope
+function applyStickyFocus(focusNode) {{
+  stickyFocusNode = focusNode;
+  currentHoverNode = focusNode;
+
+  const connectedIds = new Set([focusNode.id]);
+  links.forEach(l => {{
+    const sourceId = getNodeId(l.source);
+    const targetId = getNodeId(l.target);
+    if (sourceId === focusNode.id) connectedIds.add(targetId);
+    if (targetId === focusNode.id) connectedIds.add(sourceId);
+  }});
+
+  node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
+  link.style('display', l => {{
+    const sourceId = getNodeId(l.source);
+    const targetId = getNodeId(l.target);
+    return (sourceId === focusNode.id || targetId === focusNode.id) ? '' : 'none';
+  }}).attr('stroke-width', 16);
+
+  // NEW: Preserve gray color for nodes without source paths, use blue for nodes with source paths
+  node.filter(n => connectedIds.has(n.id))
+      .select('circle')
+      .attr('fill', n => n.url ? '#1976d2' : '#333');
+
+  focusNode.fx = focusNode.x;
+  focusNode.fy = focusNode.y;
+
+  simulation.force('link').distance(getStableLinkDistance);
+  simulation.alpha(Math.min(simulation.alpha() + 0.3, 0.5));
+
+  updateLinkDisplay();
+  setTimeout(updateLinkDisplay, 10);
+}}
+
+function clearStickyFocus() {{
+  if (!stickyFocusNode) return;
+
+  const prevStickyNode = stickyFocusNode;
+  stickyFocusNode = null;
+  currentHoverNode = null;
+
+  node.style('display', '');
+  link.style('display', '')
+      .attr('stroke-width', 8);
+  node.select('circle').attr('fill', d => d.url ? '#1f77b4' : '#333');
+
+  prevStickyNode.fx = null;
+  prevStickyNode.fy = null;
+
+  simulation.force('link').distance(getStableLinkDistance);
+  simulation.alpha(Math.min(simulation.alpha() + 0.1, 0.3));
+
+  updateLinkDisplay();
+  setTimeout(updateLinkDisplay, 10);
+}}
+
 function renderGraph() {{
   const [width, height] = getSize();
   const svg = d3.select('svg').attr('width', width).attr('height', height);
@@ -171,10 +285,58 @@ function renderGraph() {{
             const filePath = d.url.replace('file://', '');
             copyToClipboard(filePath, 'Source path');
           }} else {{
-            copyToClipboard('No source path available for ' + d.id, 'Message');
+            // NEW: Show message in feedback box instead of copying error message
+            const feedbackDiv = document.getElementById('copyFeedback');
+            feedbackDiv.textContent = 'No source path available for ' + d.id;
+            feedbackDiv.style.display = 'block';
+            feedbackDiv.style.opacity = '1';
+            setTimeout(() => {{
+              feedbackDiv.style.opacity = '0';
+              setTimeout(() => {{ feedbackDiv.style.display = 'none'; }}, 300);
+            }}, 1200);
           }}
         }} else {{
-          copyToClipboard(d.id, 'Node name');
+          // NEW: Left click creates sticky focus
+          if (stickyFocusNode && stickyFocusNode.id === d.id) {{
+            // Clicking the same sticky focused node clears it
+            clearStickyFocus();
+            // Update search box to reflect cleared state
+            document.getElementById('nodeSearchBox').value = '';
+          }} else {{
+            // Apply sticky focus to clicked node
+            applyStickyFocus(d);
+            // Update search box to reflect focused node
+            document.getElementById('nodeSearchBox').value = d.id;
+          }}
+          // NEW: Show custom message for focus and copy
+          const feedbackDiv = document.getElementById('copyFeedback');
+          feedbackDiv.textContent = 'focused and copied to clipboard';
+          feedbackDiv.style.display = 'block';
+          feedbackDiv.style.opacity = '1';
+          setTimeout(() => {{
+            feedbackDiv.style.opacity = '0';
+            setTimeout(() => {{ feedbackDiv.style.display = 'none'; }}, 300);
+          }}, 1200);
+
+          // Still copy to clipboard
+          if (navigator.clipboard && window.isSecureContext) {{
+            navigator.clipboard.writeText(d.id);
+          }} else {{
+            try {{
+              const textarea = document.createElement('textarea');
+              textarea.value = d.id;
+              textarea.style.position = 'fixed';
+              textarea.style.left = '-9999px';
+              textarea.style.top = '-9999px';
+              document.body.appendChild(textarea);
+              textarea.focus();
+              textarea.select();
+              document.execCommand('copy');
+              document.body.removeChild(textarea);
+            }} catch (err) {{
+              console.error('Copy failed:', err);
+            }}
+          }}
         }}
         event.preventDefault();
         event.stopPropagation();
@@ -189,59 +351,6 @@ function renderGraph() {{
       .style('font-weight', 'normal')
       .text(d => d.id);
 
-  // FIXED: Enhanced link display with differentiated incoming/outgoing edge colors
-  function updateLinkDisplay() {{
-    link.each(function(d) {{
-      const line = d3.select(this);
-
-      // Calculate link length and adjust endpoints
-      const dx = d.target.x - d.source.x;
-      const dy = d.target.y - d.source.y;
-      const length = Math.sqrt(dx * dx + dy * dy);
-
-      const sourceRadius = nodeRadius + 2;
-      const targetRadius = nodeRadius + 2;
-      const ux = dx / length;
-      const uy = dy / length;
-
-      const startX = d.source.x + ux * sourceRadius;
-      const startY = d.source.y + uy * sourceRadius;
-      const endX = d.target.x - ux * targetRadius;
-      const endY = d.target.y - uy * targetRadius;
-
-      line.attr('x1', startX)
-          .attr('y1', startY)
-          .attr('x2', endX)
-          .attr('y2', endY);
-
-      // FIXED: Properly handle D3.js object references for source/target
-      if (currentHoverNode) {{
-        const sourceId = getNodeId(d.source);
-        const targetId = getNodeId(d.target);
-
-        const isIncomingEdge = targetId === currentHoverNode.id;
-        const isOutgoingEdge = sourceId === currentHoverNode.id;
-
-        if (isIncomingEdge) {{
-          // Incoming edges to focal node are blue
-          line.attr('stroke', '#1976d2')
-              .attr('marker-end', 'url(#arrowhead-blue)');
-        }} else if (isOutgoingEdge) {{
-          // Outgoing edges from focal node are green
-          line.attr('stroke', '#0f0')
-              .attr('marker-end', 'url(#arrowhead-green)');
-        }} else {{
-          // Non-connected edges (shouldn't be visible in hover mode)
-          line.attr('stroke', '#0f0')
-              .attr('marker-end', 'url(#arrowhead-green)');
-        }}
-      }} else {{
-        // Default state: all edges are green
-        line.attr('stroke', '#0f0')
-            .attr('marker-end', 'url(#arrowhead-green)');
-      }}
-    }});
-  }}
 
   simulation.on('tick', () => {{
     updateLinkDisplay();
@@ -261,6 +370,11 @@ function renderGraph() {{
   }}
 
   function nodeMouseOver(event, d) {{
+    // Only allow hover focus if no sticky focus exists
+    if (stickyFocusNode) {{
+      return;
+    }}
+
     currentHoverNode = d;
 
     const connectedIds = new Set([d.id]);
@@ -278,9 +392,10 @@ function renderGraph() {{
       return (sourceId === d.id || targetId === d.id) ? '' : 'none';
     }}).attr('stroke-width', 16);
 
+    // NEW: Preserve gray color for nodes without source paths during hover focus
     node.filter(n => connectedIds.has(n.id))
         .select('circle')
-        .attr('fill', '#1976d2');
+        .attr('fill', n => n.url ? '#1976d2' : '#333');
 
     d.fx = d.x;
     d.fy = d.y;
@@ -294,6 +409,11 @@ function renderGraph() {{
   }}
 
   function nodeMouseOut(event, d) {{
+    // Only clear hover focus if no sticky focus exists
+    if (stickyFocusNode) {{
+      return;
+    }}
+
     currentHoverNode = null;
 
     node.style('display', '');
@@ -313,59 +433,44 @@ function renderGraph() {{
   }}
 
   const searchBox = document.getElementById('nodeSearchBox');
-  let lastFocusedNode = null;
   searchBox.addEventListener('input', function(e) {{
     const val = searchBox.value.trim();
     if (!val) {{
-      // CRITICAL FIX: Restore links properly instead of hiding them
-      currentHoverNode = null;
-      node.style('display', '');
-      link.style('display', '')  // FIXED: was 'none', now properly restores links
-          .attr('stroke-width', 8);
-      node.select('circle').attr('fill', d => d.url ? '#1f77b4' : '#333');
-      simulation.force('link').distance(getStableLinkDistance);
-      simulation.alpha(0.3);
-      if (lastFocusedNode) {{ lastFocusedNode.fx = null; lastFocusedNode.fy = null; lastFocusedNode = null; }}
-      updateLinkDisplay();
-      setTimeout(updateLinkDisplay, 10);
+      // Clear sticky focus when search box is emptied
+      clearStickyFocus();
       return;
     }}
 
     const found = nodes.find(n => n.id === val);
     if (!found) {{
-      node.style('display', 'none');
-      link.style('display', 'none');
+      // No matching node found - just clear sticky focus, keep graph visible
+      clearStickyFocus();
       return;
     }}
 
-    currentHoverNode = found;
-    lastFocusedNode = found;
-    const connectedIds = new Set([found.id]);
-    links.forEach(l => {{
-      const sourceId = getNodeId(l.source);
-      const targetId = getNodeId(l.target);
-      if (sourceId === found.id) connectedIds.add(targetId);
-      if (targetId === found.id) connectedIds.add(sourceId);
-    }});
+    // Check if this is a different node than currently sticky focused
+    if (stickyFocusNode && stickyFocusNode.id === found.id) {{
+      // Same node already sticky focused, no change needed
+      return;
+    }}
 
-    node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
-    link.style('display', l => {{
-      const sourceId = getNodeId(l.source);
-      const targetId = getNodeId(l.target);
-      return (sourceId === found.id || targetId === found.id) ? '' : 'none';
-    }}).attr('stroke-width', 16);
+    // FIXED: Clear any existing sticky focus first to ensure all nodes are visible
+    // This is crucial because the target node might currently be hidden
+    if (stickyFocusNode) {{
+      clearStickyFocus();
+    }}
 
-    node.filter(n => connectedIds.has(n.id))
-        .select('circle')
-        .attr('fill', '#1976d2');
+    // FIXED: Small delay to ensure the clear operation completes before applying new focus
+    setTimeout(() => {{
+      // Apply sticky focus to the found node
+      applyStickyFocus(found);
 
-    found.fx = window.innerWidth / 2;
-    found.fy = window.innerHeight / 2;
-    simulation.force('center', null);
-    simulation.force('link').distance(getStableLinkDistance);
-    simulation.alpha(0.7);
-    updateLinkDisplay();
-    setTimeout(updateLinkDisplay, 10);
+      // Center the node
+      found.fx = window.innerWidth / 2;
+      found.fy = window.innerHeight / 2;
+      simulation.force('center', null);
+      simulation.alpha(0.7);
+    }}, 10);
   }});
 }}
 
@@ -377,6 +482,16 @@ window.addEventListener('resize', () => {{
 // FIXED: Stable keyboard controls
 document.addEventListener('keydown', function(event) {{
   if (!simulation) return;
+
+  // NEW: Handle Escape key to clear focus and search box
+  if (event.key === 'Escape') {{
+    clearStickyFocus();
+    document.getElementById('nodeSearchBox').value = '';
+    document.getElementById('nodeSearchBox').blur(); // Remove focus from search box
+    event.preventDefault();
+    return;
+  }}
+
   if (event.target.id === 'nodeSearchBox') return;
 
   const adjustmentFactor = 1.2;
