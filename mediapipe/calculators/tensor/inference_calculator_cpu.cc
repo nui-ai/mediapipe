@@ -107,8 +107,8 @@ absl::Status InferenceCalculatorCpuImpl::Open(CalculatorContext* cc) {
     false));
 
   // Update IoMapper with input/output tensor names from the TfLite model.
-  auto io_mapper = std::make_unique<InferenceIoMapper>();
-  io_mapper->UpdateIoMap(options.input_output_config(), inference_runner_->GetInputOutputTensorNames());
+  // auto io_mapper = std::make_unique<InferenceIoMapper>();
+  // return io_mapper->UpdateIoMap(options.input_output_config(), inference_runner_->GetInputOutputTensorNames());
 
   //MP_ASSIGN_OR_RETURN(inference_runner_, CreateInferenceRunner(cc));
   return InferenceCalculatorNodeImpl::UpdateIoMapping(
