@@ -19,6 +19,7 @@ A slightly interactive D3.js-based visualization of a MediaPipe pipeline's flow 
 - **`-` key** → Decrease edge lengths a bit
 - a minimum limit prevents edges from becoming too short (50px minimum)
 - limitation: these keys are not active when the cursor is in the search box or the search box has focus
+- if any sizes are really off for you (font sizes, overall graph size) then tweak the generating script's parameters mentioned below. 
 
 
 ## Example Launch
@@ -44,7 +45,7 @@ Use `python visualize_flow_graph.py` while tweaking the following argument value
 ### Known Issues
 + when using +/- to adjust edge lengths, the graph may not re-layout immediately when the graph display has reached its stable state. click and hold the center node, or drag a node slightly to make the layout exit its stable state, while pressing +/- to see the effect immediately, otherwise it can get very confusing when you later nudge the graph and all your +/- adjustments take effect at once in a radical way. this affordance is a little shaky.
 + edge length is determined by the D3 physics engine's (by repulsion, collision, centering), and only softly affected by +/- key presses.
-+ fiddling the search box text may make the entire graph disappear. refresh the page to workaround it.
++ should add control for node size scaling not just font size; current presets may not work well for viewing on small displays or smaller screen resolutions.
 
 ## Technical Details
 
