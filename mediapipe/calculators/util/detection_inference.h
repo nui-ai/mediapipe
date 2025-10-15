@@ -8,13 +8,15 @@
 
 namespace mediapipe::api2 {
 
+  // this is the newer mediapipe internal api way of defining a calculator not the older one which inherits CalculatorBase.
+  // it is supposed to have many advantages: more strongly typed, Less boilerplate, more compile-time checking,
+  // cleaner move-semantics (Consume()), fewer gotchas than legacy use of GetContract(). As per ChatGPT.
   class DetectionInference : public Node {
   public:
-    // Required ports? Use Input<> / Output<>.
-    // Optional ports? Use Input<>::Optional / Output<>::Optional.
+
+    // define the calculator contract via a macro not a GetContract method
     static constexpr Input<std::vector<Tensor>>             kInTensors{"TENSORS"};
     static constexpr Output<std::vector<Tensor>>::Optional  kOutTensors{"TENSORS"};
-
     MEDIAPIPE_NODE_INTERFACE(DetectionInference, kInTensors, kOutTensors);
 
     absl::Status Open(CalculatorContext* cc) override;
