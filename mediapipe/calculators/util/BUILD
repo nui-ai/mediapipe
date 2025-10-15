@@ -23,8 +23,8 @@ cc_library(
     srcs = ["detection_inference.cc"],
     hdrs = ["detection_inference.h"],
     deps = [
+        "//mediapipe/calculators/tensor:inference_calculator",
         "//mediapipe/framework:calculator_framework",
-        "//mediapipe/framework/api2:node",
         "@com_google_absl//absl/status",
     ],
     alwayslink = 1,
