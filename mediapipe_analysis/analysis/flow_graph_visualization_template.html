@@ -19,7 +19,7 @@
 <input id="nodeSearchBox" type="text" placeholder="paste or type a node name to focus it ..." autocomplete="off" />
 <div id="copyFeedback"></div>
 <div id="keyHelp">
- <strong>hover</strong> to focus a node's immediate clique | <strong>click it</strong> to make it stick | <strong>esc</strong> clears focus | <strong>+/-</strong> adjusts edge length
+ <strong>hover</strong> to focus a node's immediate clique | <strong>left-click</strong> to make it stick | <strong>right-click</strong> to copy name | <strong>esc</strong> clears focus | <strong>+/-</strong> adjusts edge length
 </div>
 <svg></svg>
 <script>
@@ -271,6 +271,7 @@ function renderGraph() {{
       .enter().append('g')
       .attr('class', 'node')
       .call(d3.drag()
+          .filter(event => event.button === 0) // Only allow left mouse button for drag
           .on('start', dragstarted)
           .on('drag', dragged)
           .on('end', dragended))
@@ -286,7 +287,6 @@ function renderGraph() {{
             const filePath = d.url.replace('file://', '');
             copyToClipboard(filePath, 'source code path');
           }} else {{
-            // NEW: Show message in feedback box instead of copying error message
             const feedbackDiv = document.getElementById('copyFeedback');
             feedbackDiv.textContent = 'no source code path available for ' + d.id;
             feedbackDiv.style.display = 'block';
@@ -297,19 +297,14 @@ function renderGraph() {{
             }}, 1200);
           }}
         }} else {{
-          // NEW: Left click creates sticky focus
+          // Left click: creates sticky focus and copy
           if (stickyFocusNode && stickyFocusNode.id === d.id) {{
-            // Clicking the same sticky focused node clears it
             clearStickyFocus();
-            // Update search box to reflect cleared state
             document.getElementById('nodeSearchBox').value = '';
           }} else {{
-            // Apply sticky focus to clicked node
             applyStickyFocus(d);
-            // Update search box to reflect focused node
             document.getElementById('nodeSearchBox').value = d.id;
           }}
-          // NEW: Show custom message for focus and copy
           const feedbackDiv = document.getElementById('copyFeedback');
           feedbackDiv.textContent = 'focused and copied to clipboard';
           feedbackDiv.style.display = 'block';
@@ -319,7 +314,6 @@ function renderGraph() {{
             setTimeout(() => {{ feedbackDiv.style.display = 'none'; }}, 300);
           }}, 1200);
 
-          // Still copy to clipboard
           if (navigator.clipboard && window.isSecureContext) {{
             navigator.clipboard.writeText(d.id);
           }} else {{
@@ -341,6 +335,12 @@ function renderGraph() {{
         }}
         event.preventDefault();
         event.stopPropagation();
+      }})
+      .on('contextmenu', function(event, d) {{
+        // Right click: only copy node name to clipboard, no focus
+        event.preventDefault();
+        event.stopPropagation();
+        copyToClipboard(d.id, 'node name');
       }});
 
   node.append('text')
