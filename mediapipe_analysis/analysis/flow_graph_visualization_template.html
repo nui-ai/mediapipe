@@ -283,11 +283,11 @@ function renderGraph() {{
         if (event.ctrlKey || event.metaKey) {{
           if (d.url) {{
             const filePath = d.url.replace('file://', '');
-            copyToClipboard(filePath, 'Source path');
+            copyToClipboard(filePath, 'source code path');
           }} else {{
             // NEW: Show message in feedback box instead of copying error message
             const feedbackDiv = document.getElementById('copyFeedback');
-            feedbackDiv.textContent = 'No source path available for ' + d.id;
+            feedbackDiv.textContent = 'no source code path available for ' + d.id;
             feedbackDiv.style.display = 'block';
             feedbackDiv.style.opacity = '1';
             setTimeout(() => {{
