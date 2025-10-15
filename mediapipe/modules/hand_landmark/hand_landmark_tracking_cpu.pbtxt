@@ -54,6 +54,10 @@ node {
   output_stream: "prev_has_enough_hands"
 }
 
+node {
+  calculator: "DetectionInference"
+}
+
 # Drops the incoming image if enough hands have already been identified from the
 # previous image. Otherwise, passes the incoming image through to trigger a new
 # round of palm detection.
@@ -207,7 +211,7 @@ node {
 # BATCH_END timestamp, outputs the vector of NormalizedRect at the BATCH_END
 # timestamp.
 node {
-  calculator: "EndLoopNormalizedRectCalculator"
+  calculator: "EndLoopNormalizedRectCalculator" # _1
   input_stream: "ITEM:hand_rect_from_palm_detection"
   input_stream: "BATCH_END:palm_detections_timestamp"
   output_stream: "ITERABLE:hand_rects_from_palm_detections"
@@ -508,7 +512,7 @@ node {
 # BATCH_END timestamp, outputs the vector of NormalizedRect at the BATCH_END
 # timestamp.
 node {
-  calculator: "EndLoopNormalizedRectCalculator"
+  calculator: "EndLoopNormalizedRectCalculator" # _2
   input_stream: "ITEM:single_hand_rect_from_landmarks"
   input_stream: "BATCH_END:hand_rects_timestamp"
   output_stream: "ITERABLE:hand_rects_from_landmarks"

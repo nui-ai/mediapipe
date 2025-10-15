@@ -19,6 +19,18 @@ licenses(["notice"])
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+    name = "detection_inference",
+    srcs = ["detection_inference.cc"],
+    hdrs = ["detection_inference.h"],
+    deps = [
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/api2:node",
+        "@com_google_absl//absl/status",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
     name = "detection_model_provider",
     srcs = ["detection_model_provider.cc"],
     hdrs = ["detection_model_provider.h"],

@@ -41,6 +41,7 @@ cc_library(
         "//mediapipe/calculators/image:image_properties_calculator",
         "//mediapipe/calculators/util:association_norm_rect_calculator",
         "//mediapipe/calculators/util:collection_has_min_size_calculator",
+        "//mediapipe/calculators/util:detection_inference",
         "//mediapipe/calculators/util:detection_model_provider",
         "//mediapipe/calculators/util:filter_collection_calculator",
         "//mediapipe/framework:calculator_framework",
