@@ -18,6 +18,7 @@
 #include <utility>
 #include <vector>
 
+#include "inference_feedback_manager.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/time/time.h"
@@ -30,6 +31,7 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
+#include "mediapipe/util/tflite/cpu_op_resolver.h"
 #if defined(MEDIAPIPE_ANDROID)
 #include "tensorflow/lite/delegates/nnapi/nnapi_delegate.h"
 #endif  // ANDROID
@@ -69,7 +71,46 @@ absl::Status InferenceCalculatorCpuImpl::UpdateContract(
 
 absl::Status InferenceCalculatorCpuImpl::Open(CalculatorContext* cc) {
   ABSL_LOG(INFO) << "starting InferenceCalculatorCpuImpl";
-  MP_ASSIGN_OR_RETURN(inference_runner_, CreateInferenceRunner(cc));
+
+  // auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
+  // xnnpack_opts.num_threads = GetXnnpackNumThreads(opts_has_delegate, opts_delegate);
+  // auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts), &TfLiteXNNPackDelegateDelete);
+
+  MP_ASSIGN_OR_RETURN(auto model_packet, GetModelAsPacket(cc));
+  auto op_resolver = std::make_unique<mediapipe::CpuOpResolver>();
+
+  // const auto& calculator_opts = cc->Options<mediapipe::InferenceCalculatorOptions>();
+  // auto opts_delegate = calculator_opts.delegate();
+  auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
+  xnnpack_opts.num_threads = 1;
+  auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts),&TfLiteXNNPackDelegateDelete);
+
+  tflite::InterpreterBuilder interpreter_builder(*model_packet.Get(), *op_resolver);
+  interpreter_builder.AddDelegate(delegate.get());
+  interpreter_builder.SetNumThreads(-1);
+
+    // api2::Packet<TfLiteModelPtr> model,
+    //   api2::Packet<tflite::OpResolver> op_resolver,
+    //   TfLiteDelegatePtr delegate,
+    //   int interpreter_num_threads,
+    //   const mediapipe::InferenceCalculatorOptions::InputOutputConfig* input_output_config,
+    //   bool enable_zero_copy_tensor_io)
+
+  auto options = InferenceCalculatorOptions();
+
+  MP_ASSIGN_OR_RETURN(inference_runner_, CreateInferenceInterpreterDelegateRunner(
+    model_packet,
+    PacketAdopting<tflite::OpResolver>(std::move(op_resolver)),
+    std::move(delegate),
+    -1,
+    &options.input_output_config(),
+    false));
+
+  // Update IoMapper with input/output tensor names from the TfLite model.
+  auto io_mapper = std::make_unique<InferenceIoMapper>();
+  io_mapper->UpdateIoMap(options.input_output_config(), inference_runner_->GetInputOutputTensorNames());
+
+  //MP_ASSIGN_OR_RETURN(inference_runner_, CreateInferenceRunner(cc));
   return InferenceCalculatorNodeImpl::UpdateIoMapping(
       cc, inference_runner_->GetInputOutputTensorNames());
 }
