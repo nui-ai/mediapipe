@@ -310,6 +310,7 @@ class InferenceCalculatorNodeImpl : public NodeImpl<Intf, Impl> {
     return mediapipe::InferenceCalculatorOptions::InputOutputConfig();
   }
 
+protected:
   std::unique_ptr<InferenceIoMapper> io_mapper_;
 };
 

@@ -140,6 +140,7 @@ class InferenceInterpreterDelegateRunner : public InferenceRunner {
   bool enable_zero_copy_tensor_io_ = false;
 };
 
+/// does not really use its CalculatorContext argument (only used it for performance tracing before)
 absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(
     CalculatorContext* cc, const TensorSpan& tensor_span) {
   const int num_feedback_tensors =
@@ -249,7 +250,7 @@ absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(
 
   // Run inference.
   {
-    MEDIAPIPE_PROFILING(CPU_TASK_INVOKE, cc);
+    // MEDIAPIPE_PROFILING(CPU_TASK_INVOKE, cc);
     RET_CHECK_EQ(interpreter_->Invoke(), kTfLiteOk);
   }
   input_tensor_views.clear();

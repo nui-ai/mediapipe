@@ -50,12 +50,14 @@ class InferenceCalculatorCpuImpl
   absl::Status Close(CalculatorContext* cc) override;
 
  private:
-  absl::StatusOr<std::unique_ptr<InferenceRunner>> CreateInferenceRunner(
-      CalculatorContext* cc);
-  absl::StatusOr<TfLiteDelegatePtr> MaybeCreateDelegate(CalculatorContext* cc);
   absl::StatusOr<std::vector<Tensor>> Process(
       CalculatorContext* cc, const TensorSpan& tensor_span) override;
+
   std::unique_ptr<InferenceRunner> inference_runner_;
+  // std::unique_ptr<InferenceIoMapper> io_mapper_;
+  std::vector<int> input_tensor_indices_;
+  std::vector<int> output_tensor_indices_;
+
 };
 
 absl::Status InferenceCalculatorCpuImpl::UpdateContract(
@@ -69,18 +71,13 @@ absl::Status InferenceCalculatorCpuImpl::UpdateContract(
   return absl::OkStatus();
 }
 
+/// Open method no longer really uses its CalculatorContext argument.
 absl::Status InferenceCalculatorCpuImpl::Open(CalculatorContext* cc) {
   ABSL_LOG(INFO) << "starting InferenceCalculatorCpuImpl";
-
-  // auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
-  // xnnpack_opts.num_threads = GetXnnpackNumThreads(opts_has_delegate, opts_delegate);
-  // auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts), &TfLiteXNNPackDelegateDelete);
 
   MP_ASSIGN_OR_RETURN(auto model_packet, GetModelAsPacket(cc));
   auto op_resolver = std::make_unique<mediapipe::CpuOpResolver>();
 
-  // const auto& calculator_opts = cc->Options<mediapipe::InferenceCalculatorOptions>();
-  // auto opts_delegate = calculator_opts.delegate();
   auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
   xnnpack_opts.num_threads = 1;
   auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts),&TfLiteXNNPackDelegateDelete);
@@ -88,13 +85,6 @@ absl::Status InferenceCalculatorCpuImpl::Open(CalculatorContext* cc) {
   tflite::InterpreterBuilder interpreter_builder(*model_packet.Get(), *op_resolver);
   interpreter_builder.AddDelegate(delegate.get());
   interpreter_builder.SetNumThreads(-1);
-
-    // api2::Packet<TfLiteModelPtr> model,
-    //   api2::Packet<tflite::OpResolver> op_resolver,
-    //   TfLiteDelegatePtr delegate,
-    //   int interpreter_num_threads,
-    //   const mediapipe::InferenceCalculatorOptions::InputOutputConfig* input_output_config,
-    //   bool enable_zero_copy_tensor_io)
 
   auto options = InferenceCalculatorOptions();
 
@@ -107,102 +97,23 @@ absl::Status InferenceCalculatorCpuImpl::Open(CalculatorContext* cc) {
     false));
 
   // Update IoMapper with input/output tensor names from the TfLite model.
-  // auto io_mapper = std::make_unique<InferenceIoMapper>();
-  // return io_mapper->UpdateIoMap(options.input_output_config(), inference_runner_->GetInputOutputTensorNames());
-
-  //MP_ASSIGN_OR_RETURN(inference_runner_, CreateInferenceRunner(cc));
-  return InferenceCalculatorNodeImpl::UpdateIoMapping(
-      cc, inference_runner_->GetInputOutputTensorNames());
+  io_mapper_ = std::make_unique<InferenceIoMapper>();
+  return io_mapper_->UpdateIoMap(options.input_output_config(), inference_runner_->GetInputOutputTensorNames());
 }
 
+/// does not really use its CalculatorContext argument in the cascade of called functions
+/// (only one of the chain of functions called from it merely used it only for performance tracing before)
 absl::StatusOr<std::vector<Tensor>> InferenceCalculatorCpuImpl::Process(
     CalculatorContext* cc, const TensorSpan& tensor_span) {
-  MP_ASSIGN_OR_RETURN(std::vector<Tensor> output_tensors,
-                      inference_runner_->Run(cc, tensor_span));
+
+  MP_ASSIGN_OR_RETURN(std::vector<Tensor> output_tensors, inference_runner_->Run(cc, tensor_span));
+
   return output_tensors;
 }
 
 absl::Status InferenceCalculatorCpuImpl::Close(CalculatorContext* cc) {
   inference_runner_ = nullptr;
   return absl::OkStatus();
-}
-
-absl::StatusOr<std::unique_ptr<InferenceRunner>>
-InferenceCalculatorCpuImpl::CreateInferenceRunner(CalculatorContext* cc) {
-  MP_ASSIGN_OR_RETURN(auto model_packet, GetModelAsPacket(cc));
-  MP_ASSIGN_OR_RETURN(auto op_resolver_packet, GetOpResolverAsPacket(cc));
-  const auto& options = cc->Options<mediapipe::InferenceCalculatorOptions>();
-  const int interpreter_num_threads =
-      cc->Options<mediapipe::InferenceCalculatorOptions>().cpu_num_thread();
-  MP_ASSIGN_OR_RETURN(TfLiteDelegatePtr delegate, MaybeCreateDelegate(cc));
-  return CreateInferenceInterpreterDelegateRunner(
-      std::move(model_packet), std::move(op_resolver_packet),
-      std::move(delegate), interpreter_num_threads,
-      &options.input_output_config());
-}
-
-absl::StatusOr<TfLiteDelegatePtr>
-InferenceCalculatorCpuImpl::MaybeCreateDelegate(CalculatorContext* cc) {
-  const auto& calculator_opts =
-      cc->Options<mediapipe::InferenceCalculatorOptions>();
-  auto opts_delegate = calculator_opts.delegate();
-  if (!kDelegate(cc).IsEmpty()) {
-    const mediapipe::InferenceCalculatorOptions::Delegate&
-        input_side_packet_delegate = kDelegate(cc).Get();
-    RET_CHECK(
-        input_side_packet_delegate.has_tflite() ||
-        input_side_packet_delegate.has_xnnpack() ||
-        input_side_packet_delegate.has_nnapi() ||
-        input_side_packet_delegate.delegate_case() ==
-            mediapipe::InferenceCalculatorOptions::Delegate::DELEGATE_NOT_SET)
-        << "inference_calculator_cpu only supports delegate input side packet "
-        << "for TFLite, XNNPack and Nnapi";
-    opts_delegate.MergeFrom(input_side_packet_delegate);
-  }
-  const bool opts_has_delegate =
-      calculator_opts.has_delegate() || !kDelegate(cc).IsEmpty();
-  if (opts_has_delegate && opts_delegate.has_tflite()) {
-    // Default tflite inference requested - no need to modify graph.
-    return nullptr;
-  }
-
-#if defined(MEDIAPIPE_ANDROID)
-  const bool nnapi_requested = opts_has_delegate ? opts_delegate.has_nnapi()
-                                                 : calculator_opts.use_nnapi();
-  if (nnapi_requested) {
-    // Attempt to use NNAPI.
-    // If not supported, the default CPU delegate will be created and used.
-    tflite::StatefulNnApiDelegate::Options options;
-    const auto& nnapi = opts_delegate.nnapi();
-    options.allow_fp16 = true;
-    // Set up cache_dir and model_token for NNAPI compilation cache.
-    options.cache_dir =
-        nnapi.has_cache_dir() ? nnapi.cache_dir().c_str() : nullptr;
-    options.model_token =
-        nnapi.has_model_token() ? nnapi.model_token().c_str() : nullptr;
-    options.accelerator_name = nnapi.has_accelerator_name()
-                                   ? nnapi.accelerator_name().c_str()
-                                   : nullptr;
-    return TfLiteDelegatePtr(new tflite::StatefulNnApiDelegate(options),
-                             [](TfLiteDelegate*) {});
-  }
-#endif  // MEDIAPIPE_ANDROID
-
-#if defined(__EMSCRIPTEN__) || MEDIAPIPE_FORCE_CPU_INFERENCE
-  const bool use_xnnpack = true;
-#else
-  const bool use_xnnpack = opts_has_delegate && opts_delegate.has_xnnpack();
-#endif  // defined(__EMSCRIPTEN__)
-
-  if (use_xnnpack) {
-    auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
-    xnnpack_opts.num_threads =
-        GetXnnpackNumThreads(opts_has_delegate, opts_delegate);
-    return TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts),
-                             &TfLiteXNNPackDelegateDelete);
-  }
-
-  return nullptr;
 }
 
 }  // namespace api2
