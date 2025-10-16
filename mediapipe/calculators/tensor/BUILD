@@ -416,6 +416,20 @@ config_setting(
     visibility = ["//visibility:public"],
 )
 
+# new inference calculator
+cc_library(
+    name = "detection_inference_calculator",
+    srcs = ["detection_inference_calculator.cc"],
+    deps = [
+        ":inference_calculator_cpu",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/api2:node",
+        "@com_google_absl//absl/status",
+    ],
+    alwayslink = 1,
+)
+
+# The legacy generic inference calculator.
 # This target defines the "InferenceCalculator" component, which looks for the available concrete
 # implementations linked into the current binary and picks the one to use.
 # You can depend on :inference_calculator instead if you want to automatically include a default

@@ -108,7 +108,7 @@ node {
 
 # Runs the TensorFlow Lite SSD palm detection model
 node {
-  calculator: "InferenceCalculator"
+  calculator: "DetectionInferenceCalculator"
   input_stream: "TENSORS:detection_input_tensor"
   output_stream: "TENSORS:detection_tensors"
   input_side_packet: "MODEL_PATH:detection_model_path"
