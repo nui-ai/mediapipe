@@ -19,9 +19,9 @@ licenses(["notice"])
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-    name = "detection_inference",
-    srcs = ["detection_inference.cc"],
-    hdrs = ["detection_inference.h"],
+    name = "dummy_calculator",
+    srcs = ["dummy_calculator.cc"],
+    hdrs = ["dummy_calculator.h"],
     deps = [
         "//mediapipe/calculators/tensor:inference_calculator",
         "//mediapipe/framework:calculator_framework",

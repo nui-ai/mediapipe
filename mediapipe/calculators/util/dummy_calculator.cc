@@ -1,4 +1,4 @@
-#include "detection_inference.h"
+#include "dummy_calculator.h"
 
 #include <utility>
 #include "absl/status/status.h"
@@ -6,11 +6,11 @@
 
 namespace mediapipe::api2 {
 
-  absl::Status DetectionInference::Open(CalculatorContext* cc) {
+  absl::Status DummyCalculator::Open(CalculatorContext* cc) {
     return absl::OkStatus();
   }
 
-  absl::Status DetectionInference::Process(CalculatorContext* cc) {
+  absl::Status DummyCalculator::Process(CalculatorContext* cc) {
     if (kInTensors(cc).IsEmpty()) return absl::OkStatus();
 
     // Move-only safe: takes ownership of the vector<Tensor> from the packet.
@@ -24,7 +24,7 @@ namespace mediapipe::api2 {
     return absl::OkStatus();
   }
 
-  MEDIAPIPE_REGISTER_NODE(DetectionInference);
+  MEDIAPIPE_REGISTER_NODE(DummyCalculator);
 
 }  // namespace mediapipe::api2
 
