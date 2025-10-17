@@ -424,7 +424,6 @@ cc_library(
     deps = [
         ":inference_interpreter_delegate_runner_new",
         "//mediapipe/calculators/tensor:inference_calculator",
-        "//mediapipe/calculators/tensor:inference_calculator_interface",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/api2:node",
         "@com_google_absl//absl/status",

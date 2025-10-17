@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "mediapipe/calculators/tensor/detection_inference_calculator_core.h"
 
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "../../framework/deps/status_macros.h"
+#include "mediapipe/calculators/tensor/detection_inference_calculator_core.h"
+#include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
+#include "mediapipe/framework/deps/status_macros.h"
 #include "absl/log/log.h"
 #include "absl/strings/str_format.h"
 #include "mediapipe/calculators/tensor/inference_calculator_utils.h"
-#include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
 #include "mediapipe/util/tflite/cpu_op_resolver.h"
 #include "tensorflow/lite/delegates/xnnpack/xnnpack_delegate.h"
 
