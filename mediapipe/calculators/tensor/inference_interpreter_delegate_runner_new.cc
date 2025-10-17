@@ -144,9 +144,6 @@ absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(cons
   const int num_feedback_tensors =
       feedback_manager_ ? feedback_manager_->GetNumberOfFeedbackTensors() : 0;
 
-  ABSL_LOG(INFO) << "InferenceInterpreterDelegateRunner::Run ― "
-            << "tensor_span size" << tensor_span.size()
-            << ", interpreter object inputs size" << interpreter_->inputs().size();
   RET_CHECK_EQ(tensor_span.size() + num_feedback_tensors, interpreter_->inputs().size());
 
   std::vector<int> input_indices_excluding_feedback_tensors;
