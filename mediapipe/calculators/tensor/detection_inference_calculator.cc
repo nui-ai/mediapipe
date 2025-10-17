@@ -58,7 +58,7 @@ class DetectionInferenceCalculator
   std::vector<int> input_tensor_indices_;
   std::vector<int> output_tensor_indices_;
 
-//  const model_path_ = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
+// const std::string& model_path_ = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
 //  model_packet = GetModelAsPacket(model_path_);
 
 };
@@ -72,7 +72,18 @@ absl::Status DetectionInferenceCalculator::UpdateContract(CalculatorContract* cc
 absl::Status DetectionInferenceCalculator::Open(CalculatorContext* cc) {
   ABSL_LOG(INFO) << "starting DetectionInferenceCalculator";
 
-  MP_ASSIGN_OR_RETURN(auto model_packet, GetModelAsPacket(cc));
+  // const std::string& model_path = *kSideInModelPath(cc);
+  const std::string& model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
+
+  // make the model file loadable using the mediapipe resource loading system,
+  // which may (or may not) prove useful to reuse rather than just loading on our own.
+  auto default_resources = CreateDefaultResources();
+  MP_ASSIGN_OR_RETURN(auto model_packet, TfLiteModelLoader::LoadFromPath(*default_resources, model_path, false));
+  ABSL_CHECK(!model_packet.IsEmpty());
+  ABSL_LOG(INFO) << absl::StrFormat(
+    "GetModelAsPacket successfully loaded model from path: %s. Model size: %ld bytes",
+    model_path, model_packet.Get()->allocation()->bytes());
+
   auto op_resolver = std::make_unique<mediapipe::CpuOpResolver>();
 
   auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
