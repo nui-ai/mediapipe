@@ -83,29 +83,6 @@ node {
   output_stream: "LETTERBOX_PADDING:detection_letterbox_padding"
 }
 
-# Sets the path to the desired palms detection model file. we can only remove this
-# We can only remove this at the last mile of liberation ― where a full-blown transform
-# of the InferenceCalculator into a stateful plain object is performed
-node {
-  calculator: "SwitchContainer"
-  input_side_packet: "SELECT:model_complexity"
-  output_side_packet: "PACKET:detection_model_path"
-  options: {
-    [mediapipe.SwitchContainerOptions.ext] {
-      contained_node: {
-        calculator: "ConstantSidePacketCalculator"
-        options: {
-          [mediapipe.ConstantSidePacketCalculatorOptions.ext]: {
-            packet {
-              string_value: "mediapipe/modules/palm_detection/palm_detection_full.tflite"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
 # Runs the TensorFlow Lite SSD palm detection model
 node {
   calculator: "DetectionInferenceCalculator"
@@ -269,29 +246,6 @@ node {
   input_stream: "NORM_RECT:single_hand_rect"
   output_stream: "TENSORS:input_tensor"
   output_stream: "LETTERBOX_PADDING:letterbox_padding"
-}
-
-# Sets path to the desired hand landmark model file.
-# We can only remove this at the last mile of liberation ― where a full-blown transform
-# of the InferenceCalculator into a stateful plain object is performed
-node {
-  calculator: "SwitchContainer"
-  input_side_packet: "SELECT:model_complexity"
-  output_side_packet: "PACKET:model_path"
-  options: {
-    [mediapipe.SwitchContainerOptions.ext] {
-      contained_node: {
-        calculator: "ConstantSidePacketCalculator"
-        options: {
-          [mediapipe.ConstantSidePacketCalculatorOptions.ext]: {
-            packet {
-              string_value: "mediapipe/modules/hand_landmark/hand_landmark_full.tflite"
-            }
-          }
-        }
-      }
-    }
-  }
 }
 
 # Runs a TensorFlow Lite model on CPU that takes an image tensor and outputs a
