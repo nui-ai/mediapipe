@@ -265,7 +265,7 @@ class InferenceCalculatorNodeImpl : public NodeImpl<Intf, Impl> {
   absl::StatusOr<std::vector<Tensor>> RemapAndProcessTensors(
       CalculatorContext* cc, const TensorSpan& input_tensors) {
     RET_CHECK(io_mapper_ != nullptr)
-        << "IO mapper is not initialized. MaybeUpdateIoMapping must be called "
+        << "IO mapper is not initialized. UpdateIoMapping must be called "
            "prior to Process.";
     MP_ASSIGN_OR_RETURN(const TensorSpan input_tensors_remapped,
                         io_mapper_->RemapInputTensors(input_tensors));
@@ -310,7 +310,7 @@ class InferenceCalculatorNodeImpl : public NodeImpl<Intf, Impl> {
     return mediapipe::InferenceCalculatorOptions::InputOutputConfig();
   }
 
-protected:
+public:
   std::unique_ptr<InferenceIoMapper> io_mapper_;
 };
 

@@ -23,7 +23,6 @@
 #include "absl/time/time.h"
 #include "mediapipe/calculators/tensor/inference_calculator.h"
 #include "mediapipe/calculators/tensor/inference_calculator_utils.h"
-// #include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner.h"
 #include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
 #include "mediapipe/calculators/tensor/inference_runner.h"
 #include "mediapipe/calculators/tensor/tensor_span.h"
@@ -43,6 +42,8 @@ struct LandmarksInferenceCalculatorCpu : public InferenceCalculator {
   static constexpr char kCalculatorName[] = "LandmarksInferenceCalculator";
 };
 
+/// note that this class still uses a lot of generic inference code of the mediapipe framework
+/// (who knows maybe some of it will turn out useful in later expansions).
 class LandmarksInferenceCalculator
     : public InferenceCalculatorNodeImpl<LandmarksInferenceCalculatorCpu,
                                          LandmarksInferenceCalculator> {
@@ -70,9 +71,7 @@ absl::Status LandmarksInferenceCalculator::UpdateContract(CalculatorContract* cc
 
 /// Open method no longer really uses its CalculatorContext argument.
 absl::Status LandmarksInferenceCalculator::Open(CalculatorContext* cc) {
-  ABSL_LOG(INFO) << "starting LandmarksInferenceCalculator";
 
-  // const std::string& model_path = *kSideInModelPath(cc);
   const std::string& model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
 
   // make the model file loadable using the mediapipe resource loading system,
@@ -114,13 +113,8 @@ absl::Status LandmarksInferenceCalculator::Open(CalculatorContext* cc) {
 absl::StatusOr<std::vector<Tensor>> LandmarksInferenceCalculator::Process(
     CalculatorContext* cc, const TensorSpan& tensor_span) {
 
-  ABSL_LOG(INFO) << "LandmarksInferenceCalculator::Process started ― tensor_span size " << tensor_span.size();
-
   MP_ASSIGN_OR_RETURN(std::vector<Tensor> output_tensors, inference_runner_->Run(tensor_span));
 
-  ABSL_LOG(INFO) << "LandmarksInferenceCalculator::Process ended ― tensor_span size " << tensor_span.size();
-
-  // return io_mapper_->RemapOutputTensors(std::move(output_tensors));
   return output_tensors;
 }
 

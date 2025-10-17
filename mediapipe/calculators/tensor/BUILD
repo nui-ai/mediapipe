@@ -416,16 +416,30 @@ config_setting(
     visibility = ["//visibility:public"],
 )
 
-# dedicated detection inference calculator
+# detection inference calculator core
 cc_library(
-    name = "detection_inference_calculator",
-    srcs = ["detection_inference_calculator.cc"],
+    name = "detection_inference_calculator_core",
+    srcs = ["detection_inference_calculator_core.cc"],
+    hdrs = ["detection_inference_calculator_core.h"],
     deps = [
         ":inference_interpreter_delegate_runner_new",
         "//mediapipe/calculators/tensor:inference_calculator",
+        "//mediapipe/calculators/tensor:inference_calculator_interface",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/api2:node",
         "@com_google_absl//absl/status",
+    ],
+    alwayslink = 1,
+)
+
+# dedicated detection inference calculator
+cc_library(
+    name = "detection_inference_calculator",
+    srcs = [
+        "detection_inference_calculator.cc",
+    ],
+    deps = [
+        ":detection_inference_calculator_core",
     ],
     alwayslink = 1,
 )

@@ -88,7 +88,6 @@ node {
   calculator: "DetectionInferenceCalculator"
   input_stream: "TENSORS:detection_input_tensor"
   output_stream: "TENSORS:detection_tensors"
-  input_side_packet: "MODEL_PATH:detection_model_path"
   options: {
     [mediapipe.InferenceCalculatorOptions.ext] {
       delegate { xnnpack {} }
@@ -253,7 +252,6 @@ node {
 # scores.
 node {
   calculator: "LandmarksInferenceCalculator"
-  input_side_packet: "MODEL_PATH:model_path"
   input_stream: "TENSORS:input_tensor"
   output_stream: "TENSORS:output_tensors"
   options: {
