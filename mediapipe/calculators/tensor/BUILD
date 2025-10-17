@@ -416,12 +416,27 @@ config_setting(
     visibility = ["//visibility:public"],
 )
 
-# new inference calculator
+# dedicated detection inference calculator
 cc_library(
     name = "detection_inference_calculator",
     srcs = ["detection_inference_calculator.cc"],
     deps = [
-        ":inference_calculator_cpu",
+        ":inference_interpreter_delegate_runner_new",
+        "//mediapipe/calculators/tensor:inference_calculator",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/api2:node",
+        "@com_google_absl//absl/status",
+    ],
+    alwayslink = 1,
+)
+
+# dedicated landmarks inference calculator
+cc_library(
+    name = "landmarks_inference_calculator",
+    srcs = ["landmarks_inference_calculator.cc"],
+    deps = [
+        ":inference_interpreter_delegate_runner_new",
+        "//mediapipe/calculators/tensor:inference_calculator",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/api2:node",
         "@com_google_absl//absl/status",
@@ -708,6 +723,20 @@ cc_library(
 )
 
 cc_library_with_tflite(
+    name = "inference_runner_new",
+    hdrs = ["inference_runner_new.h"],
+    tflite_deps = [
+        ":inference_io_mapper",
+    ],
+    deps = [
+        ":tensor_span",
+        "//mediapipe/framework:calculator_context",
+        "//mediapipe/framework/formats:tensor",
+        "@com_google_absl//absl/status:statusor",
+    ],
+)
+
+cc_library_with_tflite(
     name = "inference_runner",
     hdrs = ["inference_runner.h"],
     tflite_deps = [
@@ -735,6 +764,39 @@ cc_library_with_tflite(
     hdrs = ["inference_interpreter_delegate_runner.h"],
     tflite_deps = [
         ":inference_runner",
+        ":tflite_delegate_ptr",
+        ":inference_io_mapper",
+        ":inference_feedback_manager",
+        "//mediapipe/util/tflite:tflite_model_loader",
+        "@org_tensorflow//tensorflow/lite:framework_stable",
+        "@org_tensorflow//tensorflow/lite/c:c_api_types",
+        "@org_tensorflow//tensorflow/lite/c:common",
+    ],
+    deps = [
+        ":inference_calculator_utils",
+        ":tensor_span",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework:mediapipe_profiling",
+        "//mediapipe/framework/api2:packet",
+        "//mediapipe/framework/formats:tensor",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/strings",
+        "@org_tensorflow//tensorflow/lite:string_util",
+        "@org_tensorflow//tensorflow/lite:util",
+        "@org_tensorflow//tensorflow/lite/core/api:op_resolver",
+    ],
+)
+
+cc_library_with_tflite(
+    name = "inference_interpreter_delegate_runner_new",
+    srcs = ["inference_interpreter_delegate_runner_new.cc"],
+    hdrs = ["inference_interpreter_delegate_runner_new.h"],
+    tflite_deps = [
+        ":inference_runner_new",
         ":tflite_delegate_ptr",
         ":inference_io_mapper",
         ":inference_feedback_manager",

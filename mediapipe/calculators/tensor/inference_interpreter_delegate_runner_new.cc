@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner.h"
+#include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
 
 #include <cstdint>
 #include <cstring>
@@ -124,8 +124,7 @@ class InferenceInterpreterDelegateRunner : public InferenceRunner {
         feedback_manager_(std::move(feedback_manager)),
         enable_zero_copy_tensor_io_(enable_zero_copy_tensor_io) {}
 
-  absl::StatusOr<std::vector<Tensor>> Run(
-      CalculatorContext* cc, const TensorSpan& tensor_span) override;
+  absl::StatusOr<std::vector<Tensor>> Run(const TensorSpan& tensor_span);
 
   const InputOutputTensorNames& GetInputOutputTensorNames() const override {
     return input_output_tensor_names_;
@@ -141,17 +140,14 @@ class InferenceInterpreterDelegateRunner : public InferenceRunner {
 };
 
 /// does not really use its CalculatorContext argument (only used it for performance tracing before)
-absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(
-    CalculatorContext* cc, const TensorSpan& tensor_span) {
+absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(const TensorSpan& tensor_span) {
   const int num_feedback_tensors =
       feedback_manager_ ? feedback_manager_->GetNumberOfFeedbackTensors() : 0;
 
   ABSL_LOG(INFO) << "InferenceInterpreterDelegateRunner::Run ― "
-          << "tensor_span size " << tensor_span.size()
-          << ", interpreter object inputs size " << interpreter_->inputs().size();
-
-  RET_CHECK_EQ(tensor_span.size() + num_feedback_tensors,
-               interpreter_->inputs().size());
+            << "tensor_span size" << tensor_span.size()
+            << ", interpreter object inputs size" << interpreter_->inputs().size();
+  RET_CHECK_EQ(tensor_span.size() + num_feedback_tensors, interpreter_->inputs().size());
 
   std::vector<int> input_indices_excluding_feedback_tensors;
   input_indices_excluding_feedback_tensors.reserve(tensor_span.size());

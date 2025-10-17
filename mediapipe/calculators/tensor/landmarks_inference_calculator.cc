@@ -39,13 +39,13 @@
 namespace mediapipe {
 namespace api2 {
 
-struct DetectionInferenceCalculatorCpu : public InferenceCalculator {
-  static constexpr char kCalculatorName[] = "DetectionInferenceCalculator";
+struct LandmarksInferenceCalculatorCpu : public InferenceCalculator {
+  static constexpr char kCalculatorName[] = "LandmarksInferenceCalculator";
 };
 
-class DetectionInferenceCalculator
-    : public InferenceCalculatorNodeImpl<DetectionInferenceCalculatorCpu,
-                                         DetectionInferenceCalculator> {
+class LandmarksInferenceCalculator
+    : public InferenceCalculatorNodeImpl<LandmarksInferenceCalculatorCpu,
+                                         LandmarksInferenceCalculator> {
  public:
   static absl::Status UpdateContract(CalculatorContract* cc);
 
@@ -63,17 +63,17 @@ class DetectionInferenceCalculator
 
 };
 
-absl::Status DetectionInferenceCalculator::UpdateContract(CalculatorContract* cc) {
+absl::Status LandmarksInferenceCalculator::UpdateContract(CalculatorContract* cc) {
   MP_RETURN_IF_ERROR(TensorContractCheck(cc));
   return absl::OkStatus();
 }
 
 /// Open method no longer really uses its CalculatorContext argument.
-absl::Status DetectionInferenceCalculator::Open(CalculatorContext* cc) {
-  ABSL_LOG(INFO) << "starting DetectionInferenceCalculator";
+absl::Status LandmarksInferenceCalculator::Open(CalculatorContext* cc) {
+  ABSL_LOG(INFO) << "starting LandmarksInferenceCalculator";
 
   // const std::string& model_path = *kSideInModelPath(cc);
-  const std::string& model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
+  const std::string& model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
 
   // make the model file loadable using the mediapipe resource loading system,
   // which may (or may not) prove useful to reuse rather than just loading on our own.
@@ -111,20 +111,20 @@ absl::Status DetectionInferenceCalculator::Open(CalculatorContext* cc) {
 
 /// does not really use its CalculatorContext argument in the cascade of called functions
 /// (only one of the chain of functions called from it merely used it only for performance tracing before)
-absl::StatusOr<std::vector<Tensor>> DetectionInferenceCalculator::Process(
+absl::StatusOr<std::vector<Tensor>> LandmarksInferenceCalculator::Process(
     CalculatorContext* cc, const TensorSpan& tensor_span) {
 
-  ABSL_LOG(INFO) << "DetectionInferenceCalculator::Process started ― tensor_span size " << tensor_span.size();
+  ABSL_LOG(INFO) << "LandmarksInferenceCalculator::Process started ― tensor_span size " << tensor_span.size();
 
   MP_ASSIGN_OR_RETURN(std::vector<Tensor> output_tensors, inference_runner_->Run(tensor_span));
 
-  ABSL_LOG(INFO) << "DetectionInferenceCalculator::Process ended ― tensor_span size " << tensor_span.size();
+  ABSL_LOG(INFO) << "LandmarksInferenceCalculator::Process ended ― tensor_span size " << tensor_span.size();
 
   // return io_mapper_->RemapOutputTensors(std::move(output_tensors));
   return output_tensors;
 }
 
-absl::Status DetectionInferenceCalculator::Close(CalculatorContext* cc) {
+absl::Status LandmarksInferenceCalculator::Close(CalculatorContext* cc) {
   inference_runner_ = nullptr;
   return absl::OkStatus();
 }

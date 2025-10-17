@@ -298,7 +298,7 @@ node {
 # vector of tensors representing, for instance, detection boxes/keypoints and
 # scores.
 node {
-  calculator: "InferenceCalculator"
+  calculator: "LandmarksInferenceCalculator"
   input_side_packet: "MODEL_PATH:model_path"
   input_stream: "TENSORS:input_tensor"
   output_stream: "TENSORS:output_tensors"
