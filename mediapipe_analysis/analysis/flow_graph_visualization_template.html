@@ -314,6 +314,7 @@ function renderGraph() {{
           }} else {{
               applyStickyFocus(d);
               setSearchBoxToNode(d);
+              pushFocusHistory(d.id); // <-- Add to history
           }}
           const feedbackDiv = document.getElementById('copyFeedback');
           feedbackDiv.textContent = 'focused and copied to clipboard';
@@ -443,6 +444,57 @@ function renderGraph() {{
     setTimeout(updateLinkDisplay, 10);
   }}
 
+  // --- Focused Node History Mechanism ---
+  let focusHistory = [];
+  let focusHistoryIndex = -1;
+
+  function deduplicateHistory() {{
+    // Remove consecutive duplicates
+    focusHistory = focusHistory.filter((id, i, arr) => i === 0 || id !== arr[i - 1]);
+  }}
+
+  function pushFocusHistory(nodeId) {{
+    // Truncate future if not at end
+    if (focusHistoryIndex < focusHistory.length - 1) {{
+      focusHistory = focusHistory.slice(0, focusHistoryIndex + 1);
+    }}
+    // Only add if not duplicate
+    if (focusHistory[focusHistoryIndex] !== nodeId) {{
+      focusHistory.push(nodeId);
+      deduplicateHistory();
+      focusHistoryIndex = focusHistory.length - 1;
+    }}
+  }}
+
+  function focusNodeById(nodeId, updateSearchBox = true) {{
+    const nodeObj = nodes.find(n => n.id === nodeId);
+    if (!nodeObj) return;
+    applyStickyFocus(nodeObj);
+    if (updateSearchBox) setSearchBoxToNode(nodeObj);
+  }}
+
+  function handleHistoryNavigation(direction) {{
+    if (direction === 'back' && focusHistoryIndex > 0) {{
+      focusHistoryIndex--;
+      focusNodeById(focusHistory[focusHistoryIndex]);
+    }} else if (direction === 'forward' && focusHistoryIndex < focusHistory.length - 1) {{
+      focusHistoryIndex++;
+      focusNodeById(focusHistory[focusHistoryIndex]);
+    }}
+  }}
+
+  // Listen for mouse back/forward buttons
+  window.addEventListener('pointerup', function(event) {{
+    if (event.button === 3) {{ // Back
+      handleHistoryNavigation('back');
+      event.preventDefault();
+    }} else if (event.button === 4) {{ // Forward
+      handleHistoryNavigation('forward');
+      event.preventDefault();
+    }}
+  }});
+  // --- End Focused Node History Mechanism ---
+
   const searchBox = document.getElementById('nodeSearchBox');
   searchBox.addEventListener('input', function(e) {{
     const val = searchBox.value.trim();
@@ -475,6 +527,8 @@ function renderGraph() {{
     setTimeout(() => {{
       // Apply sticky focus to the found node
       applyStickyFocus(found);
+      setSearchBoxToNode(found);
+      pushFocusHistory(found.id); // <-- Add to history
 
       // Center the node
       found.fx = window.innerWidth / 2;
