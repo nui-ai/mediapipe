@@ -18,7 +18,8 @@
 <!--
 This template uses double curly braces instead of single curly braces in its CSS and JS as a workaround to prevent Python's `.format()`
 from interpreting single braces as template variables. Placeholders like `{nodes_json}` are acknowledged by Python as template variables.
-This is not standard practice—normally, a proper templating engine (like Jinja2) would avoid this twisting by handling escaping gracefully.
+Then when generating the html file from the current html template source file, the curly braces are removed.
+This is not standard practice — normally using a proper templating engine (like Jinja2) would avoid this twisting.
 -->
 <body>
 <input id="nodeSearchBox" type="text" placeholder="paste or type a node name to focus it ..." autocomplete="off" />
@@ -172,7 +173,6 @@ function updateLinkDisplay() {{
   }});
 }}
 
-// NEW: Move sticky focus functions to global scope
 function applyStickyFocus(focusNode) {{
   stickyFocusNode = focusNode;
   currentHoverNode = focusNode;
@@ -192,7 +192,7 @@ function applyStickyFocus(focusNode) {{
     return (sourceId === focusNode.id || targetId === focusNode.id) ? '' : 'none';
   }}).attr('stroke-width', 16);
 
-  // NEW: Preserve gray color for nodes without source paths, use blue for nodes with source paths
+  // Preserve gray color for nodes without source paths, use blue for nodes with source paths
   node.filter(n => connectedIds.has(n.id))
       .select('circle')
       .attr('fill', n => n.url ? '#1976d2' : '#333');
@@ -202,6 +202,10 @@ function applyStickyFocus(focusNode) {{
 
   simulation.force('link').distance(getStableLinkDistance);
   simulation.alpha(Math.min(simulation.alpha() + 0.3, 0.5));
+
+  node.select('circle')
+    .attr('stroke', n => n.id === focusNode.id ? '#fff' : null)
+    .attr('stroke-width', n => n.id === focusNode.id ? 4 : null);
 
   updateLinkDisplay();
   setTimeout(updateLinkDisplay, 10);
@@ -224,6 +228,10 @@ function clearStickyFocus() {{
 
   simulation.force('link').distance(getStableLinkDistance);
   simulation.alpha(Math.min(simulation.alpha() + 0.1, 0.3));
+
+  node.select('circle')
+    .attr('stroke', null)
+    .attr('stroke-width', null);
 
   updateLinkDisplay();
   setTimeout(updateLinkDisplay, 10);
@@ -312,9 +320,7 @@ function renderGraph() {{
               clearStickyFocus();
               setSearchBoxToNode(null);
           }} else {{
-              applyStickyFocus(d);
-              setSearchBoxToNode(d);
-              pushFocusHistory(d.id); // <-- Add to history
+              focusNode(d);
           }}
           const feedbackDiv = document.getElementById('copyFeedback');
           feedbackDiv.textContent = 'focused and copied to clipboard';
@@ -473,6 +479,12 @@ function renderGraph() {{
     if (updateSearchBox) setSearchBoxToNode(nodeObj);
   }}
 
+  function focusNode(node) {{
+      applyStickyFocus(node);
+      setSearchBoxToNode(node);
+      pushFocusHistory(node.id);
+  }}
+
   function handleHistoryNavigation(direction) {{
     if (direction === 'back' && focusHistoryIndex > 0) {{
       focusHistoryIndex--;
@@ -506,8 +518,6 @@ function renderGraph() {{
 
     const found = nodes.find(n => n.id === val);
     if (!found) {{
-      // No matching node found - just clear sticky focus, keep graph visible
-      clearStickyFocus();
       return;
     }}
 
@@ -525,16 +535,7 @@ function renderGraph() {{
 
     // FIXED: Small delay to ensure the clear operation completes before applying new focus
     setTimeout(() => {{
-      // Apply sticky focus to the found node
-      applyStickyFocus(found);
-      setSearchBoxToNode(found);
-      pushFocusHistory(found.id); // <-- Add to history
-
-      // Center the node
-      found.fx = window.innerWidth / 2;
-      found.fy = window.innerHeight / 2;
-      simulation.force('center', null);
-      simulation.alpha(0.7);
+      focusNode(found);
     }}, 10);
   }});
 }}
