@@ -96,8 +96,9 @@ with open(output_html_path, 'w') as f:
 # Launch in browser
 webbrowser.open(f'file://{output_html_path}', new=2)
 
-print(f"[INFO] Number of nodes: {len(node_list)}")
-print(f"[INFO] Number of edges: {len(links)}")
-print(f"[INFO] First 5 nodes: {node_list[:5]}")
-print(f"[INFO] First 5 edges: {links[:5]}")
-print(f"[INFO] Output HTML: {output_html_path}")
+print(f"number of nodes: {len(node_list)}")
+print(f"number of edges: {len(links)}")
+print(f"first node: {node_list[:1]}")
+print(f"note that nodes which appear in the input graph by the same name more than once, are acknoweledged by this script and visualization as separaet nodes, e.g. Node_1, Node_2, Node_3 etc when a node Node appeared more than once in the input graph.")
+print(f"output HTML file generated and launched in the default browser: {output_html_path}")
+print(f"")
