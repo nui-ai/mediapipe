@@ -629,6 +629,14 @@ document.addEventListener('keydown', function(event) {{
     return;
   }}
 
+  if (event.key === 'd' || event.key === 'D') {{
+    if (event.target.id !== 'nodeSearchBox') {{ // Don't trigger when typing in search box
+      window.open(window.location.href, '_blank');
+      event.preventDefault();
+    }}
+    return;
+  }}
+
   if (event.target.id === 'nodeSearchBox') return;
 
   const adjustmentFactor = 1.2;

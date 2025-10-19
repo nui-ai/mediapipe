@@ -1,3 +1,8 @@
+# This script generates an HTML file visualizing the data flow graph of a an input data file describing a mediapipe pipeline.
+# For future usability features, and general enhancement, the use of a force simulation layout (center of gravity and nodes repulsion
+# working one v.s. the other to achieve a balanced layout) should be gradually weaned in favor of computational layoutss which cater
+# for implied optimization goals: https://chatgpt.com/s/t_68f495e758fc8191b020d225a7fc89f7.
+
 import json
 import webbrowser
 from pathlib import Path
