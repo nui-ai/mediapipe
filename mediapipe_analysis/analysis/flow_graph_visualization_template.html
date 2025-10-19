@@ -16,10 +16,14 @@
   </style>
 </head>
 <!--
+
 This template uses double curly braces instead of single curly braces in its CSS and JS as a workaround to prevent Python's `.format()`
-from interpreting single braces as template variables. Placeholders like `{nodes_json}` are acknowledged by Python as template variables.
-Then when generating the html file from the current html template source file, the curly braces are removed.
-This is not standard practice — normally using a proper templating engine (like Jinja2) would avoid this twisting.
+from interpreting single braces as template variables. Placeholders like `{nodes_json}` are acknowledged by our python as template variables.
+When python is generating the html file from the current html template source file, it fills values for the template variables and reduces
+the double curly braces to single ones.
+
+normally using a proper templating engine (like Jinja2) would avoid this twisting.
+
 -->
 <body>
 <input autocomplete="off" id="nodeSearchBox" placeholder="paste or type a node name to focus it ..." type="text" />
