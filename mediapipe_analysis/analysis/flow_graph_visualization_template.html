@@ -177,17 +177,23 @@ function updateLinkDisplay() {{
   }});
 }}
 
+// Helper function to get node clique (connected nodes)
+function getNodeClique(nodeId) {{
+  const connectedIds = new Set([nodeId]);
+  links.forEach(l => {{
+      const sourceId = getNodeId(l.source);
+      const targetId = getNodeId(l.target);
+      if (sourceId === nodeId) connectedIds.add(targetId);
+      if (targetId === nodeId) connectedIds.add(sourceId);
+    }});
+  return connectedIds;
+}}
+
 function applyStickyFocus(focusNode) {{
   stickyFocusNode = focusNode;
   currentHoverNode = focusNode;
 
-  const connectedIds = new Set([focusNode.id]);
-  links.forEach(l => {{
-    const sourceId = getNodeId(l.source);
-    const targetId = getNodeId(l.target);
-    if (sourceId === focusNode.id) connectedIds.add(targetId);
-    if (targetId === focusNode.id) connectedIds.add(sourceId);
-  }});
+  const connectedIds = getNodeClique(focusNode.id);
 
   node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
   link.style('display', l => {{
@@ -392,68 +398,122 @@ function renderGraph() {{
   }}
 
   function nodeMouseOver(event, d) {{
-    // Only allow hover focus if no sticky focus exists
-    if (stickyFocusNode) {{
+    // If no sticky focus exists, use original hover behavior
+    if (!stickyFocusNode) {{
+      currentHoverNode = d;
+      const connectedIds = getNodeClique(d.id);
+
+      node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
+      link.style('display', l => {{
+        const sourceId = getNodeId(l.source);
+        const targetId = getNodeId(l.target);
+        return (sourceId === d.id || targetId === d.id) ? '' : 'none';
+      }}).attr('stroke-width', 16);
+
+      node.filter(n => connectedIds.has(n.id))
+          .select('circle')
+          .attr('fill', n => n.url ? '#1976d2' : '#333');
+
+      d.fx = d.x;
+      d.fy = d.y;
+      simulation.force('link').distance(getStableLinkDistance);
+      simulation.alpha(Math.min(simulation.alpha() + 0.3, 0.5));
+      updateLinkDisplay();
+      setTimeout(updateLinkDisplay, 10);
       return;
     }}
 
-    currentHoverNode = d;
+    // Within focused mode: show combined cliques
+    if (d.id === stickyFocusNode.id) {{
+      // Hovering the focused node itself - no additional action needed
+      return;
+    }}
 
-    const connectedIds = new Set([d.id]);
-    links.forEach(l => {{
-      const sourceId = getNodeId(l.source);
-      const targetId = getNodeId(l.target);
-      if (sourceId === d.id) connectedIds.add(targetId);
-      if (targetId === d.id) connectedIds.add(sourceId);
-    }});
+    // Check if hovered node is part of focused node's clique
+    const focusedClique = getNodeClique(stickyFocusNode.id);
+    if (!focusedClique.has(d.id)) {{
+      // Hovered node is not in focused clique - ignore hover
+      return;
+    }}
 
-    node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
+    // Get combined cliques: focused node's clique + hovered node's clique
+    const hoveredClique = getNodeClique(d.id);
+    const combinedClique = new Set([...focusedClique, ...hoveredClique]);
+
+    // Show combined cliques
+    node.style('display', n => combinedClique.has(n.id) ? '' : 'none');
+
+    // Show edges: within combined clique OR between focused and hovered cliques
     link.style('display', l => {{
       const sourceId = getNodeId(l.source);
       const targetId = getNodeId(l.target);
-      return (sourceId === d.id || targetId === d.id) ? '' : 'none';
+
+      // Edge within combined clique
+      if (combinedClique.has(sourceId) && combinedClique.has(targetId)) {{
+        return '';
+      }}
+
+      // Cross-clique edges: between focused clique and hovered clique
+      if ((focusedClique.has(sourceId) && hoveredClique.has(targetId)) ||
+          (hoveredClique.has(sourceId) && focusedClique.has(targetId))) {{
+        return '';
+      }}
+
+      return 'none';
     }}).attr('stroke-width', 16);
 
-    // NEW: Preserve gray color for nodes without source paths during hover focus
-    node.filter(n => connectedIds.has(n.id))
+    // Update node colors
+    node.filter(n => combinedClique.has(n.id))
         .select('circle')
         .attr('fill', n => n.url ? '#1976d2' : '#333');
 
-    d.fx = d.x;
-    d.fy = d.y;
+    // Keep focused node border
+    node.select('circle')
+      .attr('stroke', n => n.id === stickyFocusNode.id ? '#fff' : null)
+      .attr('stroke-width', n => n.id === stickyFocusNode.id ? 4 : null);
 
-    simulation.force('link').distance(getStableLinkDistance);
-    simulation.alpha(Math.min(simulation.alpha() + 0.3, 0.5));
-
-    // Apply edge coloring immediately AND with delay
     updateLinkDisplay();
     setTimeout(updateLinkDisplay, 10);
   }}
 
-  function nodeMouseOut(event, d) {{
+function nodeMouseOut(event, d) {{
     // Only clear hover focus if no sticky focus exists
-    if (stickyFocusNode) {{
+    if (!stickyFocusNode) {{
+      currentHoverNode = null;
+      node.style('display', '');
+      link.style('display', '').attr('stroke-width', 8);
+      node.select('circle').attr('fill', d => d.url ? '#1f77b4' : '#333');
+      d.fx = null;
+      d.fy = null;
+      simulation.force('link').distance(getStableLinkDistance);
+      simulation.alpha(Math.min(simulation.alpha() + 0.1, 0.3));
+      updateLinkDisplay();
+      setTimeout(updateLinkDisplay, 10);
       return;
     }}
 
-    currentHoverNode = null;
+    // Within focused mode: restore just the focused node's clique
+    const focusedClique = getNodeClique(stickyFocusNode.id);
 
-    node.style('display', '');
-    link.style('display', '')
-        .attr('stroke-width', 8);
-    node.select('circle').attr('fill', d => d.url ? '#1f77b4' : '#333');
+    node.style('display', n => focusedClique.has(n.id) ? '' : 'none');
+    link.style('display', l => {{
+      const sourceId = getNodeId(l.source);
+      const targetId = getNodeId(l.target);
+      return (sourceId === stickyFocusNode.id || targetId === stickyFocusNode.id) ? '' : 'none';
+    }}).attr('stroke-width', 16);
 
-    d.fx = null;
-    d.fy = null;
+    node.filter(n => focusedClique.has(n.id))
+        .select('circle')
+        .attr('fill', n => n.url ? '#1976d2' : '#333');
 
-    simulation.force('link').distance(getStableLinkDistance);
-    simulation.alpha(Math.min(simulation.alpha() + 0.1, 0.3));
+    // Keep focused node border
+    node.select('circle')
+      .attr('stroke', n => n.id === stickyFocusNode.id ? '#fff' : null)
+      .attr('stroke-width', n => n.id === stickyFocusNode.id ? 4 : null);
 
-    // Apply edge coloring immediately AND with delay
     updateLinkDisplay();
     setTimeout(updateLinkDisplay, 10);
   }}
-
   // --- Focused Node History Mechanism ---
   let focusHistory = [];
   let focusHistoryIndex = -1;

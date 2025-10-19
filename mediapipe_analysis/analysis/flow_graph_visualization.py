@@ -93,7 +93,20 @@ links_json = json.dumps(links)
 # Read HTML template and inject data
 with open(template_path, 'r') as f:
     template = f.read()
-html = template.format(nodes_json=nodes_json, links_json=links_json, font_scale=args.font_scale, alpha_decay=args.alpha_decay, repulsion_factor=args.repulsion_factor)
+
+try:
+    # using template.format is a quick way to template the html file with the nodes and links json data
+    html = template.format(nodes_json=nodes_json, links_json=links_json, font_scale=args.font_scale, alpha_decay=args.alpha_decay, repulsion_factor=args.repulsion_factor)
+except Exception as e:
+    print(f"\nError formatting the HTML template source file:\n"
+          f"this may be due to not using double curly braces {{ and }} in the html template source file's included javascript, which is currently relied upon by the python str.format() method "
+          f"to distinguish between placeholders (which we consider template variables) and literal curly braces. this is a complication of using python str.format() for templating instead of "
+          f"using a dedicated templating engine like jinja2.\n\n"
+          f"--> Please check the template file at {template_path} for single curly braces which should be doubled (use regex search https://chatgpt.com/s/t_68f53b6ac0bc81918d8e675627682a93, "
+          f"    ― it should not match other than around the intended template variables and not elsewhere in the html/javascript code)  <--\n\n"
+          f"in the future, migrating to a dedicated templating engine like jinja2 would likely simplify this unique requirement away, but until then please make sure that single curly braces "
+          f"only appear where template variables are intended in the html template, and all other curly braces in the html template which are intended as regular javascript code curly braces are doubled.\n")
+    raise
 
 with open(output_html_path, 'w') as f:
     f.write(html)
