@@ -28,6 +28,9 @@ This is not standard practice — normally using a proper templating engine (lik
  <strong>hover</strong> to focus a node's immediate clique | <strong>click</strong> to make it stick | or <strong>type</strong> or <strong>paste</strong> a node's name in the text box to focus it sticky just the same<br>
   press <strong>ESC</strong> or clear the text box to clear the sticky focus<br>
   use the <strong>back & forward mouse buttons</strong> to traverse the history of focused nodes<br>
+  <br>
+  <strong>right-click</strong> a node to copy its name to clipboard | <strong>ctrl + right-click</strong> to copy its source code path (if available)<br>
+  <br>
   press <strong>d</strong> to initiate a new browser tab of the same visualization<br>
   press <strong>+/-</strong> to nudge edge lengths (to be improved/deprecated)
 </div>
@@ -307,68 +310,59 @@ function renderGraph() {{
       .on('mouseout', nodeMouseOut);
 
   node.append('circle')
-      .attr('r', nodeRadius)
-      .attr('fill', d => d.url ? '#1f77b4' : '#333')
-      .on('click', function(event, d) {{
-        if (event.ctrlKey || event.metaKey) {{
-          if (d.url) {{
-            const filePath = d.url.replace('file://', '');
-            copyToClipboard(filePath, 'source code path');
-          }} else {{
-            const feedbackDiv = document.getElementById('copyFeedback');
-            feedbackDiv.textContent = 'no source code path available for ' + d.id;
-            feedbackDiv.style.display = 'block';
-            feedbackDiv.style.opacity = '1';
-            setTimeout(() => {{
-              feedbackDiv.style.opacity = '0';
-              setTimeout(() => {{ feedbackDiv.style.display = 'none'; }}, 300);
-            }}, 1200);
-          }}
-        }} else {{
-        // Left click: creates sticky focus and copy
-          if (stickyFocusNode && stickyFocusNode.id === d.id) {{
-              clearStickyFocus();
-              setSearchBoxToNode(null);
-          }} else {{
-              focusNode(d);
-          }}
-          const feedbackDiv = document.getElementById('copyFeedback');
-          feedbackDiv.textContent = 'focused and copied to clipboard';
-          feedbackDiv.style.display = 'block';
-          feedbackDiv.style.opacity = '1';
-          setTimeout(() => {{
-            feedbackDiv.style.opacity = '0';
-            setTimeout(() => {{ feedbackDiv.style.display = 'none'; }}, 300);
-          }}, 1200);
-
-          if (navigator.clipboard && window.isSecureContext) {{
-            navigator.clipboard.writeText(d.id);
-          }} else {{
-            try {{
-              const textarea = document.createElement('textarea');
-              textarea.value = d.id;
-              textarea.style.position = 'fixed';
-              textarea.style.left = '-9999px';
-              textarea.style.top = '-9999px';
-              document.body.appendChild(textarea);
-              textarea.focus();
-              textarea.select();
-              document.execCommand('copy');
-              document.body.removeChild(textarea);
-            }} catch (err) {{
-              console.error('Copy failed:', err);
-            }}
-          }}
+  .attr('r', nodeRadius)
+  .attr('fill', d => d.url ? '#1f77b4' : '#333')
+  .on('click', function(event, d) {{
+    if (event.button === 0) {{
+      // Left click: creates sticky focus
+      if (stickyFocusNode && stickyFocusNode.id === d.id) {{
+        clearStickyFocus();
+        setSearchBoxToNode(null);
+      }} else {{
+        focusNode(d);
+      }}
+    }}
+    }}) // end block on click
+  .on('contextmenu', function(event, d) {{ // right click handling is performend (by the contextmenu event) here
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.ctrlKey) {{ // right click and control held: copy source code path
+      if (d.url) {{
+        const filePath = d.url.replace('file://', '');
+        copyToClipboard(filePath, 'node\'s source code path');
+      }} else {{
+        const feedbackDiv = document.getElementById('copyFeedback');
+        feedbackDiv.textContent = 'no source code path available for ' + d.id;
+        feedbackDiv.style.display = 'block';
+        feedbackDiv.style.opacity = '1';
+        setTimeout(() => {{
+          feedbackDiv.style.opacity = '0';
+          setTimeout(() => {{ feedbackDiv.style.display = 'none'; }}, 300);
+        }}, 1200);
+      }}
+    }}
+    else {{ // right click without ctrl held: copy node name
+      if (navigator.clipboard && window.isSecureContext) {{
+        navigator.clipboard.writeText(d.id);
+      }} else {{
+        try {{
+          const textarea = document.createElement('textarea');
+          textarea.value = d.id;
+          textarea.style.position = 'fixed';
+          textarea.style.left = '-9999px';
+          textarea.style.top = '-9999px';
+          document.body.appendChild(textarea);
+          textarea.focus();
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+        }} catch (err) {{
+          console.error('Copy failed:', err);
         }}
-        event.preventDefault();
-        event.stopPropagation();
-      }})
-      .on('contextmenu', function(event, d) {{
-        // Right click: only copy node name to clipboard, no focus
-        event.preventDefault();
-        event.stopPropagation();
-        copyToClipboard(d.id, 'node name');
-      }});
+      }}
+      copyToClipboard(d.id, 'node name');
+    }} // end right click handling
+  }}); // end block on contextmenu
 
   node.append('text')
       .attr('x', 0)
@@ -382,7 +376,8 @@ function renderGraph() {{
 
   simulation.on('tick', () => {{
     updateLinkDisplay();
-    node.attr('transform', d => `translate(${{d.x}},${{d.y}})`);
+
+    node.attr('transform', d => `translate(${{d.x}}, ${{d.y}})`);
   }});
 
   function dragstarted(event, d) {{
@@ -618,6 +613,15 @@ function nodeMouseOut(event, d) {{
       setSearchBoxToNode(node);
       pushFocusHistory(node.id);
       animateNodeToViewport(node);
+
+      // const feedbackDiv = document.getElementById('copyFeedback');
+      // feedbackDiv.textContent = 'node focused';
+      // feedbackDiv.style.display = 'block';
+      // feedbackDiv.style.opacity = '1';
+      // setTimeout(() => {{
+      //   feedbackDiv.style.opacity = '0';
+      //   setTimeout(() => {{ feedbackDiv.style.display = 'none'; }}, 300);
+      // }}, 1200);
   }}
 
   function handleHistoryNavigation(direction) {{
