@@ -22,7 +22,7 @@ Then when generating the html file from the current html template source file, t
 This is not standard practice — normally using a proper templating engine (like Jinja2) would avoid this twisting.
 -->
 <body>
-<input id="nodeSearchBox" type="text" placeholder="paste or type a node name to focus it ..." autocomplete="off" />
+<input autocomplete="off" id="nodeSearchBox" placeholder="paste or type a node name to focus it ..." type="text" />
 <div id="copyFeedback"></div>
 <div id="keyHelp">
  <strong>hover</strong> to focus a node's immediate clique | <strong>click</strong> to make it stick | <strong>esc</strong> clears focus | <strong>+/-</strong> nudges edge lengths
@@ -479,10 +479,81 @@ function renderGraph() {{
     if (updateSearchBox) setSearchBoxToNode(nodeObj);
   }}
 
+  function isNodeInViewport(node, margin = 40) {{
+    return (
+      node.x > margin &&
+      node.x < window.innerWidth - margin &&
+      node.y > margin &&
+      node.y < window.innerHeight - margin
+    );
+  }}
+
+  function getTargetPosition(node, margin = 40) {{
+    let x = node.x, y = node.y;
+    if (node.x < margin) x = margin;
+    if (node.x > window.innerWidth - margin) x = window.innerWidth - margin;
+    if (node.y < margin) y = margin;
+    if (node.y > window.innerHeight - margin) y = window.innerHeight - margin;
+    return {{ x, y }};
+  }}
+
+  function forceNodeIntoView(focusNode, margin = 40, strength = 0.5) {{
+    return function(alpha) {{
+      if (!focusNode) return;
+      if (isNodeInViewport(focusNode, margin)) return;
+      const target = getTargetPosition(focusNode, margin);
+      focusNode.vx += (target.x - focusNode.x) * strength * alpha;
+      focusNode.vy += (target.y - focusNode.y) * strength * alpha;
+    }};
+  }}
+
+  function animateNodeToViewport(node) {{
+    if (isNodeInViewport(node, 80)) return; // Already in view
+
+    const [width, height] = getSize();
+    const targetX = width / 2;
+    const targetY = height / 2;
+    const duration = 800; // ms
+    const startX = node.x;
+    const startY = node.y;
+    const dx = targetX - startX;
+    const dy = targetY - startY;
+
+    let startTime = null;
+
+    function animate(timestamp) {{
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const t = Math.min(elapsed / duration, 1);
+
+      // Cubic ease-out: 1 - (1 - t)^3
+      const ease = 1 - Math.pow(1 - t, 3);
+
+      // Set fixed position during animation
+      node.fx = startX + dx * ease;
+      node.fy = startY + dy * ease;
+
+      // Restart simulation to update positions
+      simulation.alpha(0.3).restart();
+
+      if (t < 1) {{
+        requestAnimationFrame(animate);
+          }} else {{
+            // Animation complete - keep the node pinned at final position
+            node.fx = targetX;
+            node.fy = targetY;
+            simulation.alphaTarget(0.1);
+          }}
+    }}
+
+    requestAnimationFrame(animate);
+  }}
+
   function focusNode(node) {{
       applyStickyFocus(node);
       setSearchBoxToNode(node);
       pushFocusHistory(node.id);
+      animateNodeToViewport(node);
   }}
 
   function handleHistoryNavigation(direction) {{
