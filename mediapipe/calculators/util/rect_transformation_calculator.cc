@@ -4,13 +4,6 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 #include <cmath>
 #include <memory>
 #include <utility>
@@ -75,8 +68,13 @@ class RectTransformationCalculator : public CalculatorBase {
 
  private:
   RectTransformationCalculatorOptions options_;
+  std::unique_ptr<RectTransformationCalculatorCore> core_;
 };
-REGISTER_CALCULATOR(RectTransformationCalculator);
+
+class RectTransformationCalculator_1 : public RectTransformationCalculator {};
+class RectTransformationCalculator_2 : public RectTransformationCalculator {};
+REGISTER_CALCULATOR(RectTransformationCalculator_1);
+REGISTER_CALCULATOR(RectTransformationCalculator_2);
 
 absl::Status RectTransformationCalculator::GetContract(CalculatorContract* cc) {
   RET_CHECK_EQ((cc->Inputs().HasTag(kNormRectTag) ? 1 : 0) +
@@ -115,13 +113,17 @@ absl::Status RectTransformationCalculator::Open(CalculatorContext* cc) {
   RET_CHECK(!(options_.has_rotation() && options_.has_rotation_degrees()));
   RET_CHECK(!(options_.has_square_long() && options_.has_square_short()));
 
+  ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
+
+  core_ = std::make_unique<RectTransformationCalculatorCore>(options_);
+
   return absl::OkStatus();
 }
 
 absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
   if (cc->Inputs().HasTag(kRectTag) && !cc->Inputs().Tag(kRectTag).IsEmpty()) {
     auto rect = cc->Inputs().Tag(kRectTag).Get<Rect>();
-    mediapipe::TransformRect(options_, &rect);
+    core_->TransformRect(&rect);
     cc->Outputs().Index(0).AddPacket(
         MakePacket<Rect>(rect).At(cc->InputTimestamp()));
   }
@@ -132,7 +134,7 @@ absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
     for (int i = 0; i < rects.size(); ++i) {
       output_rects->at(i) = rects[i];
       auto it = output_rects->begin() + i;
-      mediapipe::TransformRect(options_, &(*it));
+      core_->TransformRect(&(*it));
     }
     cc->Outputs().Index(0).Add(output_rects.release(), cc->InputTimestamp());
   }
@@ -141,7 +143,7 @@ absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
     auto rect = cc->Inputs().Tag(kNormRectTag).Get<NormalizedRect>();
     const auto& image_size =
         cc->Inputs().Tag(kImageSizeTag).Get<std::pair<int, int>>();
-    mediapipe::TransformNormalizedRect(options_, &rect, image_size.first, image_size.second);
+    core_->TransformNormalizedRect(&rect, image_size.first, image_size.second);
     cc->Outputs().Index(0).AddPacket(
         MakePacket<NormalizedRect>(rect).At(cc->InputTimestamp()));
   }
@@ -156,7 +158,7 @@ absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
     for (int i = 0; i < rects.size(); ++i) {
       output_rects->at(i) = rects[i];
       auto it = output_rects->begin() + i;
-      mediapipe::TransformNormalizedRect(options_, &(*it), image_size.first, image_size.second);
+      core_->TransformNormalizedRect(&(*it), image_size.first, image_size.second);
     }
     cc->Outputs().Index(0).Add(output_rects.release(), cc->InputTimestamp());
   }

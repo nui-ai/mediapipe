@@ -85,11 +85,13 @@ class AssociationCalculator : public CalculatorBase {
     }
     std::list<T> result = get_non_overlapping_elements.value();
 
-    if (has_prev_input_stream_ &&
-        !cc->Inputs().Get(prev_input_stream_id_).IsEmpty()) {
+    if (has_prev_input_stream_ && !cc->Inputs().Get(prev_input_stream_id_).IsEmpty()) {
       // Processed all regular input streams. Now compare the result list
       // elements with those in the PREV input stream, and propagate IDs from
       // PREV input stream as appropriate.
+
+      ABSL_LOG(INFO) << "AssociationNormRectCalculator processing PREV stream (this is currently unexpected).";
+
       const std::vector<T>& prev_input_vec =
           cc->Inputs()
               .Get(prev_input_stream_id_)
@@ -111,6 +113,7 @@ class AssociationCalculator : public CalculatorBase {
  protected:
   ::mediapipe::AssociationCalculatorOptions options_;
 
+  // if there is an input stream tagged with "PREV", set a boolean to true and store its ID.
   bool has_prev_input_stream_;
   CollectionItemId prev_input_stream_id_;
 
@@ -132,17 +135,14 @@ class AssociationCalculator : public CalculatorBase {
     // Initialize result with the first non-empty input vector.
     CollectionItemId non_empty_id = cc->Inputs().BeginId();
     for (CollectionItemId id = cc->Inputs().BeginId();
-         id < cc->Inputs().EndId(); ++id) {
-      if (id == prev_input_stream_id_ || cc->Inputs().Get(id).IsEmpty()) {
-        continue;
-      }
-      const std::vector<T>& input_vec =
-          cc->Inputs().Get(id).Get<std::vector<T>>();
+      id < cc->Inputs().EndId(); ++id) {
+      if (id == prev_input_stream_id_ || cc->Inputs().Get(id).IsEmpty()) { continue; }
+      const std::vector<T>& input_vec = cc->Inputs().Get(id).Get<std::vector<T>>();
       if (!input_vec.empty()) {
         non_empty_id = id;
         result.push_back(input_vec[0]);
         for (int j = 1; j < input_vec.size(); ++j) {
-          MP_RETURN_IF_ERROR(AddElementToList(input_vec[j], &result));
+          MP_RETURN_IF_ERROR(AddElementToListWhileSuppressing(input_vec[j], &result));
         }
         break;
       }
@@ -153,24 +153,21 @@ class AssociationCalculator : public CalculatorBase {
     // had corresponding higher-priority elements as necessary.
     for (CollectionItemId id = non_empty_id + 1; id < cc->Inputs().EndId();
          ++id) {
-      if (id == prev_input_stream_id_ || cc->Inputs().Get(id).IsEmpty()) {
-        continue;
-      }
+      if (id == prev_input_stream_id_ || cc->Inputs().Get(id).IsEmpty()) { continue; }
       const std::vector<T>& input_vec =
           cc->Inputs().Get(id).Get<std::vector<T>>();
 
       for (int vi = 0; vi < input_vec.size(); ++vi) {
-        MP_RETURN_IF_ERROR(AddElementToList(input_vec[vi], &result));
+        MP_RETURN_IF_ERROR(AddElementToListWhileSuppressing(input_vec[vi], &result));
       }
     }
 
     return result;
   }
 
-  absl::Status AddElementToList(T element, std::list<T>* current) {
-    // Compare this element with elements of the input collection. If this
-    // element has high overlap with elements of the collection, remove
-    // those elements from the collection and add this element.
+  absl::Status AddElementToListWhileSuppressing(T element, std::list<T>* current) {
+    // adds the given element to the collection, while removing any elements that
+    // have sufficient overlap with it (as per the options threshold) from the collection.
     MP_ASSIGN_OR_RETURN(auto cur_rect, GetRectangle(element));
 
     bool change_id = false;
@@ -178,8 +175,7 @@ class AssociationCalculator : public CalculatorBase {
 
     for (auto uit = current->begin(); uit != current->end();) {
       MP_ASSIGN_OR_RETURN(auto prev_rect, GetRectangle(*uit));
-      if (CalculateIou(cur_rect, prev_rect) >
-          options_.min_similarity_threshold()) {
+      if (CalculateIou(cur_rect, prev_rect) > options_.min_similarity_threshold()) {
         std::pair<bool, int> prev_id = GetId(*uit);
         // If prev_id.first is false when some element doesn't have an ID,
         // change_id and new_elem_id will not be updated.
