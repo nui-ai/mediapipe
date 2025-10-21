@@ -55,6 +55,10 @@ class InputStreamShard : public InputStream {
 
   bool IsDone() const override { return is_done_; }
 
+  // Pointer to the name string of the InputStreamManager.
+  const std::string* name_;
+
+
  private:
   void SetName(const std::string* name) { name_ = name; }
 
@@ -74,8 +78,6 @@ class InputStreamShard : public InputStream {
   std::queue<Packet> packet_queue_;
   Packet empty_packet_;
 
-  // Pointer to the name string of the InputStreamManager.
-  const std::string* name_;
   bool is_done_;
 
   // Accesses InputStreamShard for setting data.

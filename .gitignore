@@ -50,7 +50,7 @@ htmlcov/
 mediapipe_analysis/analysis/output/
 
 # Developer-specific video files
-/sample-video.avi
+/sample-video*.avi
 /output_video.mp4
 
 # Rust ignores (specific to rust/ folder)

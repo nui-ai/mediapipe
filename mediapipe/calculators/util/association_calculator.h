@@ -90,7 +90,7 @@ class AssociationCalculator : public CalculatorBase {
       // elements with those in the PREV input stream, and propagate IDs from
       // PREV input stream as appropriate.
 
-      ABSL_LOG(INFO) << "AssociationNormRectCalculator processing PREV stream (this is currently unexpected).";
+      ABSL_LOG(INFO) << "AssociationNormRectCalculator is processing PREV stream (this is currently unexpected).";
 
       const std::vector<T>& prev_input_vec =
           cc->Inputs()
@@ -132,32 +132,53 @@ class AssociationCalculator : public CalculatorBase {
       CalculatorContext* cc) {
     std::list<T> result;
 
-    // Initialize result with the first non-empty input vector.
+    // An input stream having the PREV stream specification tag will be skipped, but our pipeline doesn't have such ones anyway.
+    //
+    // in our case:
+    //    stream id 0 is the current iteration's palm detections from explicit palm detection inference
+    //    stream id 1 is the previous iteration's landmarks detection derived palm detections
+    //
+    // enter all elements of the first input stream that doesn't carry an empty packet;
+    // if any of them overlap with one another, suppress by the sufficient overlap criterion.
     CollectionItemId non_empty_id = cc->Inputs().BeginId();
-    for (CollectionItemId id = cc->Inputs().BeginId();
-      id < cc->Inputs().EndId(); ++id) {
-      if (id == prev_input_stream_id_ || cc->Inputs().Get(id).IsEmpty()) { continue; }
-      const std::vector<T>& input_vec = cc->Inputs().Get(id).Get<std::vector<T>>();
+    for (CollectionItemId stream_id = cc->Inputs().BeginId(); stream_id < cc->Inputs().EndId(); ++stream_id) {
+      if (stream_id == prev_input_stream_id_ || cc->Inputs().Get(stream_id).IsEmpty()) { continue; }
+      const std::vector<T>& input_vec = cc->Inputs().Get(stream_id).Get<std::vector<T>>();
       if (!input_vec.empty()) {
-        non_empty_id = id;
+        non_empty_id = stream_id;
+        ABSL_LOG(INFO) << "AssociationNormRectCalculator is processing input stream " << *(cc->Inputs().Get(stream_id).name_) << " id " << stream_id << ".";
         result.push_back(input_vec[0]);
+
+        // add all elements of this stream while pushing out any element which has sufficient overlap.
+        // the sufficient overlap can only be with elements of the current input stream, as this loop
+        // only handles one input stream, and the add-filtering is just a single linear pass over it.
         for (int j = 1; j < input_vec.size(); ++j) {
+          std::pair<bool, int> id = GetId(input_vec[j]);
+          if (id.first) {
+            ABSL_LOG(INFO) << "element id is " << id.second << ".";
+          }
           MP_RETURN_IF_ERROR(AddElementToListWhileSuppressing(input_vec[j], &result));
         }
         break;
       }
     }
 
-    // Compare remaining input vectors with the non-empty result vector,
-    // remove lower-priority overlapping elements from the result vector and
-    // had corresponding higher-priority elements as necessary.
-    for (CollectionItemId id = non_empty_id + 1; id < cc->Inputs().EndId();
-         ++id) {
-      if (id == prev_input_stream_id_ || cc->Inputs().Get(id).IsEmpty()) { continue; }
+    // continue absorbing elements from the next non-empty input stream, if any.
+    // using the same sufficient overlap criterion. in our case, that can only be the previous detections stream.
+    // this makes the current stream push out elements of the former first processed ones, and not vice versa,
+    // so it's the second stream which prevails in all cases of sufficient overlap:
+    // in our case that's the previous iteration's landmarks detection derived palm detections
+    for (CollectionItemId stream_id = non_empty_id + 1; stream_id < cc->Inputs().EndId(); ++stream_id) {
+      if (stream_id == prev_input_stream_id_ || cc->Inputs().Get(stream_id).IsEmpty()) { continue; }
       const std::vector<T>& input_vec =
-          cc->Inputs().Get(id).Get<std::vector<T>>();
+          cc->Inputs().Get(stream_id).Get<std::vector<T>>();
 
       for (int vi = 0; vi < input_vec.size(); ++vi) {
+        ABSL_LOG(INFO) << "AssociationNormRectCalculator is processing input stream " << *(cc->Inputs().Get(stream_id).name_) << " id " << stream_id << ".";
+        std::pair<bool, int> id = GetId(input_vec[vi]);
+        if (id.first) {
+          ABSL_LOG(INFO) << "element id is " << id.second << ".";
+        }
         MP_RETURN_IF_ERROR(AddElementToListWhileSuppressing(input_vec[vi], &result));
       }
     }
@@ -166,22 +187,27 @@ class AssociationCalculator : public CalculatorBase {
   }
 
   absl::Status AddElementToListWhileSuppressing(T element, std::list<T>* current) {
-    // adds the given element to the collection, while removing any elements that
-    // have sufficient overlap with it (as per the options threshold) from the collection.
-    MP_ASSIGN_OR_RETURN(auto cur_rect, GetRectangle(element));
+    // adds the given element to the given collection, while pushing out any elements that
+    // have sufficient overlap with it (as per the options threshold) from the given collection,
+    // while associating the added ones to those pushed out by them, as a means of heuristically
+    // maintaining hand id by the signal that the overlap is.
+    MP_ASSIGN_OR_RETURN(auto new_element, GetRectangle(element));
 
     bool change_id = false;
     int new_elem_id = -1;
 
     for (auto uit = current->begin(); uit != current->end();) {
-      MP_ASSIGN_OR_RETURN(auto prev_rect, GetRectangle(*uit));
-      if (CalculateIou(cur_rect, prev_rect) > options_.min_similarity_threshold()) {
+      MP_ASSIGN_OR_RETURN(auto collection_element, GetRectangle(*uit));
+
+      // push out the currently examined element, if the given new element and it have sufficient overlap
+      if (CalculateIou(new_element, collection_element) > options_.min_similarity_threshold()) {
+        ABSL_LOG(INFO) << "AssociationNormRectCalculator is pushing out an overlapping element.";
+        // optionally update the id of the element being added, to that of an element it is pushing out
         std::pair<bool, int> prev_id = GetId(*uit);
-        // If prev_id.first is false when some element doesn't have an ID,
-        // change_id and new_elem_id will not be updated.
         if (prev_id.first) {
           change_id = prev_id.first;
           new_elem_id = prev_id.second;
+          ABSL_LOG(INFO) << "AssociationNormRectCalculator is assigning the id of the pushed out element " << new_elem_id << ".";
         }
         uit = current->erase(uit);
       } else {
@@ -189,9 +215,12 @@ class AssociationCalculator : public CalculatorBase {
       }
     }
 
+    // optionally assign the id of the element being pushed, as the id of the element being added
     if (change_id) {
       SetId(&element, new_elem_id);
     }
+
+    // always add the given element
     current->push_back(element);
 
     return absl::OkStatus();
