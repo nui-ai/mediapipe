@@ -43,13 +43,15 @@ constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";
 constexpr char kReferenceProtoFilename[] = "output_data_v0.10.13.pb";
 
 ABSL_FLAG(std::string, graph_file, "",
-          "Name of pipeline pbtxt file.");
+          "name of pipeline pbtxt file.");
 ABSL_FLAG(std::string, input_video_path, "",
-          "Full path of video to load. "
-          "If not provided, attempt to use a webcam.");
+          "video to load. "
+          "if not provided, attempts to use a webcam (not tested).");
+ABSL_FLAG(std::string, reference_data_path, "",
+          "reference data file");
 ABSL_FLAG(std::string, output_video_path, "",
-          "Full path of where to save result (.mp4 only). "
-          "If not provided, show result in a window.");
+          "output video file path (.mp4 only). "
+          "if not provided, shows the result images in a window without saving them to an output video file.");
 
 // Returns the full path by prefixing with PROJECT_ROOT_DIR if set and path is not absolute.
 std::string GetProjectRootedPath(const std::string& filename) {
@@ -100,7 +102,7 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe::Pipel
 absl::Status RunPipelineWithDiffing() {
   // Load reference data from output_data_v0.10.13.pb
   std::vector<mediapipe::PipelineOutputData> reference_data;
-  if (!ReadReferenceData(GetProjectRootedPath(kReferenceProtoFilename), reference_data)) {
+  if (!ReadReferenceData(GetProjectRootedPath(absl::GetFlag(FLAGS_reference_data_path)), reference_data)) {
     ABSL_LOG(WARNING) << "failed to load reference data from " << GetProjectRootedPath(kReferenceProtoFilename)
                      << ". will proceed without real-time comparison.";
   } else {
