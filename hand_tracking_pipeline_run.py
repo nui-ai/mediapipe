@@ -30,7 +30,7 @@ def write_delimited_message(pb_file, message):
             break
     pb_file.write(data)
 
-def _process_video(input_video, model_complexity, max_num_hands=2):
+def _process_video(input_video, model_complexity, max_num_hands=3):
     # Predict pose landmarks for each frame.
     video_cap = cv2.VideoCapture(input_video)
     total_frames = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
