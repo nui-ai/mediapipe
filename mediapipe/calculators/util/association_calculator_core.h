@@ -32,6 +32,7 @@
 
 namespace mediapipe {
 
+  // helper function for the below
   absl::StatusOr<Rectangle_f> GetRectangle(
       const ::mediapipe::NormalizedRect& input) {
     if (!input.has_x_center() || !input.has_y_center() || !input.has_width() ||
@@ -44,6 +45,7 @@ namespace mediapipe {
     return Rectangle_f(xmin, ymin, input.width(), input.height());
   }
 
+  // helper function for the below
   template <typename T>
   absl::Status AddElementToListWhileSuppressing(const T& element, std::list<T>* current, float min_similarity_threshold) {
     MP_ASSIGN_OR_RETURN(auto new_element, GetRectangle(element));
@@ -60,13 +62,27 @@ namespace mediapipe {
     return absl::OkStatus();
   }
 
+  /// smashes together palm detections from the current frame's explicit palm detection inference
+  /// and those derived from the previous frame's landmarks inference, filtering out any partially overlapping ones
+  /// (by its overlap threshold) by a greedy ordering where the last wins. in our case, the last stream is
+  /// (not-intuitively) that of the *previous frame's landmarks-derived palm detections*.
+  ///
+  /// the homomorphic effect of filtering the same within each of the two sets is more of an artefact,
+  /// as it should be a separate step, or they should all be pooled before filtering at all,
+  /// so that in-set filtering feature of this function is only kept as a baseline.
+  ///
+  /// (when there are no detections at all, it should just pass forward no detections).
   template <typename T>
-  absl::StatusOr<std::list<T>> FilterByAssociation(
+  absl::StatusOr<std::list<T>> FilterMerge(
       const std::vector<T>& explicit_palm_detections,
       const std::vector<T>& landmarks_derived_palm_detections,
       float min_similarity_threshold = 0.5) {
 
     std::list<T> result_set;
+
+    // this step only filters partially overlapping hand detections in case the pipeline flow leading to the
+    // the current node/code only filtered partially overlapping detections more loosely than the current
+    // function's overlap threshold.
     if (!explicit_palm_detections.empty()) {
       result_set.push_back(explicit_palm_detections[0]);
       for (size_t j = 1; j < explicit_palm_detections.size(); ++j) {
@@ -74,6 +90,9 @@ namespace mediapipe {
       }
     }
 
+    // this step filters partially overlapping hand detections between the landmarks derived detections and the
+    // explicitly detected palm detections if any, or, just partially overlapping ones within the set of landmarks
+    // derived detections if they've not been as strictly filtered by overlapping before reaching this node.
     if (!landmarks_derived_palm_detections.empty()) {
       for (size_t vi = 0; vi < landmarks_derived_palm_detections.size(); ++vi) {
         MP_RETURN_IF_ERROR(AddElementToListWhileSuppressing(landmarks_derived_palm_detections[vi], &result_set, min_similarity_threshold));
