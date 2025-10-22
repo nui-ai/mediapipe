@@ -1511,8 +1511,23 @@ cc_library(
     hdrs = ["association_calculator.h"],
     deps = [
         ":association_calculator_cc_proto",
+        ":association_calculator_core",
         "//mediapipe/framework:calculator_context",
         "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework:collection_item_id",
+        "//mediapipe/framework/port:rectangle",
+        "//mediapipe/framework/port:status",
+        "//mediapipe/util:rectangle_util",
+        "@com_google_absl//absl/log:absl_check",
+        "@com_google_absl//absl/memory",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "association_calculator_core",
+    hdrs = ["association_calculator_core.h"],
+    deps = [
         "//mediapipe/framework:collection_item_id",
         "//mediapipe/framework/port:rectangle",
         "//mediapipe/framework/port:status",

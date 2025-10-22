@@ -197,39 +197,31 @@ node {
 }
 
 #
-# filters down partially overlapping hand rects by its own overlap threshold criterion, from both of its input streams,
-# thus merging them into a single output stream:
-#
-# • it starts off with an empty output set.
-# • takes each input stream in turn, add-filtering each its elements into the output set by the said threshold criterion.
-# • the filtering here unlike elsewhere is naive ― a single greedy pass according to order of elements of the input stream
-#   and each element may equally filter out elements from its own input stream as it may filter out ones in the output set from a prior stream;
-#   this is all really clubbing them all together into a flat greedy filtering pass where the latest element wins on any overlap.
-# • in our pipeline the stream of palm detections derived from the landmarks inference takes precedence here over
-#   that of the explicit palm detection inference ― whenever both yielded any hand rects and any of them are overlapping
-#   according to the current overlap threshold ― the greedy pass of the stream of previous landmarks-derived palm detections
-#   make the elements of that stream win on any overlap.
-#
-# since it relies on entity ids but our streams don't carry them, it doesn't really provide any association
-# in the sense of tracking identities across frames; rather, it's just a filtering step to reduce duplicates, as is.
-#
-# in summary:
-# this calculator smashes together palm detections from the current frame's explicit palm detection inference
+# smashes together palm detections from the current frame's explicit palm detection inference
 # and those derived from the previous frame's landmarks inference, filtering out any partially overlapping ones
 # (by its overlap threshold) by a greedy ordering where the last wins. in our case, the last stream is
 # (not-intuitively) that of the *previous frame's landmarks-derived palm detections*.
 #
+# differetly put it filters down partially overlapping hand rects by its own overlap threshold criterion,
+# from both of its input streams, thus yielding a single output set of palm detections where no two overlap
+# beyond the said threshold.
+#
 # so in those cases where palm detection was triggered AND we have previous landmarks-derived palm detections,
 # i.e. we didn't reach the pipeline's constant expected number of hands in the landmarks inference of the previous frame ―
 # which is very probably when there's distinctively enough only one hand in the frame but two are the number aiming for ―
-# the current frame's processing will throw away the palms detected explicitly by it
-# most of the time ...
+# the current frame's processing will throw away the palms detected explicitly by it most of the time ...
+# if they overlap partially enough with the previous frame's landmarks-derived palm detections.
 #
 # on the other hand, if the number of hands expected is set to one, there won't usually even be two streams
 # to smash together, only one, as the palm detection won't even kick into action most of the time.
 #
-# this may only yield some baseline weak robustness to hand ids across frames as emerging from the
-# constant order of the SSD detection bounding boxes ...
+# as the current node only filters by overlap, its prioritization of survival between the streams
+# is not even helpful for sticking with an already tracked hand when a second hand comes into view.
+#
+# a weak baseline for robustness to hand ids across frames may emerge from the constant order of the SSD detection bounding boxes ...
+# not from the current node, which is not associating anything, as it doesn't even try to. its original impl. had logic for
+# associating hand ID's but the current pipeline never provided it with ID's for hands to begin with, not even in the base
+# v0.10.13 code level which our baseline branch represents.
 #
 node {
   calculator: "AssociationNormRectCalculator"
