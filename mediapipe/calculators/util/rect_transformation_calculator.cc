@@ -44,21 +44,15 @@ inline float NormalizeRadians(float angle) {
 // is NORM_RECT, an addition input stream IMAGE_SIZE is required, which is a
 // std::pair<int, int> representing the image width and height.
 //
-// Example config:
-// node {
-//   calculator: "RectTransformationCalculator"
-//   input_stream: "NORM_RECT:rect"
-//   input_stream: "IMAGE_SIZE:image_size"
-//   output_stream: "output_rect"
-//   options: {
-//     [mediapipe.RectTransformationCalculatorOptions.ext] {
-//       scale_x: 2.6
-//       scale_y: 2.6
-//       shift_y: -0.5
-//       square_long: true
-//     }
-//   }
-// }
+// the purpose of transformation is typically (i.e. in our pipeline) to either
+// expand a bounding box from its palm detection nature to one that is likely
+// to capture the entire hand, or to expand it in a way that it would still
+// capture the entire same hand if the hand moved a little on the next frame.
+// as a baseline it works well and forms a good baseline in enabling the
+// overall hand tracking.
+//
+// the expansion performed elongates the original bounding box in one direction before applying the scaling.
+
 class RectTransformationCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc);

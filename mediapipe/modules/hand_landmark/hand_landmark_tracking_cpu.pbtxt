@@ -446,9 +446,8 @@ node {
   output_stream: "NORM_RECT:hand_rect_from_landmarks"
 }
 
-# Expands the hand rectangle so that the box contains the entire hand and it's
-# big enough so that it's likely to still contain the hand even with some motion
-# in the next video frame .
+# Expands the hand rectangle so that it's likely to still contain the hand
+# after whatever motion of the hand in the next video frame.
 node {
   calculator: "RectTransformationCalculator_2"
   input_stream: "NORM_RECT:hand_rect_from_landmarks"
