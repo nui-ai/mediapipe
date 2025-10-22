@@ -40,13 +40,13 @@ class WorldLandmarkProjectionNodeImpl
     }
 
     const auto& in_landmarks = cc.input_landmarks.GetOrDie();
-    std::function<void(const Landmark&, Landmark*)> rotate_fn = nullptr;
+
+    const NormalizedRect* in_rect = nullptr;
     if (cc.input_rect) {
-      const auto& in_rect = cc.input_rect.GetOrDie();
-      rotate_fn = mediapipe::api3::CreateRotationFunction(&in_rect);
+      in_rect = &cc.input_rect.GetOrDie();
     }
 
-    LandmarkList out_landmarks = mediapipe::api3::ProcessLandmarks(in_landmarks, rotate_fn);
+    LandmarkList out_landmarks = mediapipe::api3::Process(in_landmarks, in_rect);
 
     cc.output_landmarks.Send(std::move(out_landmarks));
     return absl::OkStatus();

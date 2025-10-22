@@ -1097,6 +1097,7 @@ cc_library(
         "//mediapipe/framework/api3:node",
         "//mediapipe/framework/formats:landmark_cc_proto",
         "//mediapipe/framework/formats:rect_cc_proto",
+        "@com_google_absl//absl/log:absl_log",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/strings:string_view",
     ],

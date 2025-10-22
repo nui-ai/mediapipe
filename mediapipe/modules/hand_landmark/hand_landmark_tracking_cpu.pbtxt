@@ -286,8 +286,7 @@ node {
   }
 }
 
-# Splits a vector of tensors to multiple vectors according to the ranges
-# specified in option.
+# Splits the landmark's inference output vector of tensors by topic
 node {
   calculator: "SplitTensorVectorCalculator"
   input_stream: "output_tensors"
@@ -305,16 +304,14 @@ node {
   }
 }
 
-# Converts the hand-flag tensor into a float that represents the confidence
-# score of hand presence.
+# Converts the hand-flag tensor into a float that represents the confidence score of hand presence.
 node {
   calculator: "TensorsToFloatsCalculator"
   input_stream: "TENSORS:hand_flag_tensor"
   output_stream: "FLOAT:hand_presence_score"
 }
 
-# Applies a threshold to the confidence score to determine whether a hand is
-# present.
+# Thresholds the hand presence confidence score
 node {
   calculator: "ThresholdingCalculator"
   input_stream: "FLOAT:hand_presence_score"
@@ -326,7 +323,7 @@ node {
   }
 }
 
-# Drops handedness tensor if hand is not present.
+# Drops the handedness tensor if hand is not present.
 node {
   calculator: "GateCalculator"
   input_stream: "handedness_tensor"
@@ -334,8 +331,7 @@ node {
   output_stream: "ensured_handedness_tensor"
 }
 
-# Converts the handedness tensor into a float that represents the classification
-# score of handedness.
+# Converts the handedness tensor into a float that represents the classification score of handedness.
 node {
   calculator: "TensorsToClassificationCalculator"
   input_stream: "TENSORS:ensured_handedness_tensor"
@@ -349,7 +345,7 @@ node {
   }
 }
 
-# Drops landmarks tensors if hand is not present.
+# Drops the landmarks tensors if hand is not present.
 node {
   calculator: "GateCalculator"
   input_stream: "landmark_tensors"
@@ -395,7 +391,7 @@ node {
   output_stream: "NORM_LANDMARKS:single_hand_landmarks"
 }
 
-# Drops world landmarks tensors if hand is not present.
+# Drops the world landmarks tensors if hand is not present.
 node {
   calculator: "GateCalculator"
   input_stream: "world_landmark_tensor"

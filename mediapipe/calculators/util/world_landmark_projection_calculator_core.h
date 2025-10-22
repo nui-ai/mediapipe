@@ -13,9 +13,9 @@ namespace mediapipe::api3 {
 std::function<void(const mediapipe::Landmark&, mediapipe::Landmark*)>
 CreateRotationFunction(const mediapipe::NormalizedRect* rect);
 
-mediapipe::LandmarkList ProcessLandmarks(
+LandmarkList Process(
     const mediapipe::LandmarkList& in_landmarks,
-    const std::function<void(const mediapipe::Landmark&, mediapipe::Landmark*)>& rotate_fn);
+    const NormalizedRect *hand_rect);
 
 } // namespace mediapipe::api3
 
