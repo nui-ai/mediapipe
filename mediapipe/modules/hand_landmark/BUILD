@@ -57,6 +57,7 @@ mediapipe_simple_subgraph(
         "//mediapipe/calculators/tensor:tensors_to_classification_calculator",
         "//mediapipe/calculators/tensor:tensors_to_floats_calculator",
         "//mediapipe/calculators/tensor:tensors_to_landmarks_calculator",
+        "//mediapipe/calculators/tensor:tensors_to_world_landmarks_calculator",
         "//mediapipe/calculators/util:landmark_letterbox_removal_calculator",
         "//mediapipe/calculators/util:landmark_projection_calculator",
         "//mediapipe/calculators/util:thresholding_calculator",

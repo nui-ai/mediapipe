@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "mediapipe/calculators/tensor/tensors_to_landmarks_calculator_core.h"
+#include "mediapipe/calculators/tensor/tensors_to_world_landmarks_calculator_core.h"
 #include "mediapipe/framework/port/ret_check.h"
 #include <cmath>
 

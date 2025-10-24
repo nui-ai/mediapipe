@@ -402,7 +402,7 @@ node {
 # Decodes the landmark tensors into a list of landmarks, where the landmark
 # coordinates are normalized by the size of the input image to the model.
 node {
-  calculator: "TensorsToLandmarksCalculator"
+  calculator: "TensorsToWorldLandmarksCalculator"
   input_stream: "TENSORS:ensured_world_landmark_tensor"
   output_stream: "LANDMARKS:unprojected_world_landmarks"
   options: {

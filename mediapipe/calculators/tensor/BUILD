@@ -1366,6 +1366,20 @@ mediapipe_proto_library(
 )
 
 cc_library(
+    name = "tensors_to_world_landmarks_calculator_core",
+    srcs = ["tensors_to_world_landmarks_calculator_core.cc"],
+    hdrs = ["tensors_to_world_landmarks_calculator_core.h"],
+    deps = [
+        ":tensors_to_landmarks_calculator_cc_proto",
+        "//mediapipe/framework/formats:landmark_cc_proto",
+        "//mediapipe/framework/formats:tensor",
+        "//mediapipe/framework/port:ret_check",
+        "@com_google_absl//absl/log:absl_check",
+        "@com_google_absl//absl/status",
+    ],
+)
+
+cc_library(
     name = "tensors_to_landmarks_calculator_core",
     srcs = ["tensors_to_landmarks_calculator_core.cc"],
     hdrs = ["tensors_to_landmarks_calculator_core.h"],
@@ -1392,6 +1406,29 @@ cc_library(
     deps = [
         ":tensors_to_landmarks_calculator_cc_proto",
         ":tensors_to_landmarks_calculator_core",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/api2:node",
+        "//mediapipe/framework/formats:landmark_cc_proto",
+        "//mediapipe/framework/formats:tensor",
+        "//mediapipe/framework/port:ret_check",
+        "@com_google_absl//absl/log:absl_check",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "tensors_to_world_landmarks_calculator",
+    srcs = ["tensors_to_world_landmarks_calculator.cc"],
+    copts = select({
+        "//mediapipe:apple": [
+            "-x objective-c++",
+            "-fobjc-arc",  # enable reference-counting
+        ],
+        "//conditions:default": [],
+    }),
+    deps = [
+        ":tensors_to_landmarks_calculator_cc_proto",
+        ":tensors_to_world_landmarks_calculator_core",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/api2:node",
         "//mediapipe/framework/formats:landmark_cc_proto",
