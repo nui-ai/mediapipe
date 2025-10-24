@@ -274,10 +274,10 @@ node {
 }
 
 # Splits the landmark's inference output vector of tensors by topic:
-# - landmark_tensors: the inferred viewport hand landmark coordinates
-# - hand_flag_tensor: weather a hand was deemed actually there in the input rectnagle or not (a confidence score)
-# - handedness_tensor: the handedness classification scores (left vs right hand confidence)
-# - world_landmark_tensor: the inferred object hand landmark coordinates
+# • landmark_tensors: the inferred viewport hand landmark coordinates
+# • hand_flag_tensor: weather a hand was deemed actually there in the input rectnagle or not (a confidence score)
+# • handedness_tensor: the handedness classification scores (left vs right hand confidence)
+# • world_landmark_tensor: the inferred object hand landmark coordinates
 node {
   calculator: "SplitTensorVectorCalculator"
   input_stream: "output_tensors"
