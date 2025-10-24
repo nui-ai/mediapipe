@@ -31,6 +31,14 @@ absl::Status ComputeHandRect(const NormalizedLandmarkList& landmarks,
   return NormalizedLandmarkListToRect(landmarks, image_size, rect);
 }
 
+// Unified API: derives the necessary landmarks and computes the hand rect.
+absl::Status MakeHandRect(const NormalizedLandmarkList& input_landmarks,
+                          const std::pair<int, int>& image_size,
+                          NormalizedRect* rect) {
+  const auto partial = GetPartialLandmarks(input_landmarks);
+  return ComputeHandRect(partial, image_size, rect);
+}
+
 float NormalizeRadians(float angle) {
   return angle - 2 * M_PI * std::floor((angle - (-M_PI)) / (2 * M_PI));
 }

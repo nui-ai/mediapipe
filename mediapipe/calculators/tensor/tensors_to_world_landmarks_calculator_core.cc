@@ -23,7 +23,7 @@ namespace {
 
 inline float Sigmoid(float value) { return 1.0f / (1.0f + std::exp(-value)); }
 
-/// optionally applies sigmoid to the input activation value. our code paths never reach it.
+/// optionally applies sigmoid to the activation value of hand visibility/presence. our code paths never reach it.
 float ProcessExtraActivation(::mediapipe::TensorsToLandmarksCalculatorOptions::Activation activation, float value) {
   switch (activation) {
     case TensorsToLandmarksCalculatorOptions::SIGMOID:

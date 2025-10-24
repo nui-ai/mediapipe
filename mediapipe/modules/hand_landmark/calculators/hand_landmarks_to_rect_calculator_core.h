@@ -14,6 +14,10 @@ NormalizedLandmarkList GetPartialLandmarks(const NormalizedLandmarkList& landmar
 absl::Status ComputeHandRect(const NormalizedLandmarkList& landmarks,
                              const std::pair<int, int>& image_size,
                              NormalizedRect* rect);
+// New unified API for computing the hand rect from input landmarks and image size.
+absl::Status MakeHandRect(const NormalizedLandmarkList& input_landmarks,
+                          const std::pair<int, int>& image_size,
+                          NormalizedRect* rect);
 absl::Status NormalizedLandmarkListToRect(
     const NormalizedLandmarkList& landmarks,
     const std::pair<int, int>& image_size, NormalizedRect* rect);
