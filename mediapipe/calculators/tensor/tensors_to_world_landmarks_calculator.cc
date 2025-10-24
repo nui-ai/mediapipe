@@ -19,6 +19,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/port/ret_check.h"
+#include <memory>
 
 namespace mediapipe {
 namespace api2 {
@@ -73,28 +74,28 @@ namespace api2 {
 class TensorsToWorldLandmarksCalculator : public Node {
  public:
   static constexpr Input<std::vector<Tensor>> kInTensors{"TENSORS"};
-  static constexpr Input<bool>::SideFallback::Optional kFlipHorizontally{
-      "FLIP_HORIZONTALLY"};
-  static constexpr Input<bool>::SideFallback::Optional kFlipVertically{
-      "FLIP_VERTICALLY"};
   static constexpr Output<LandmarkList>::Optional kOutLandmarkList{"LANDMARKS"};
   static constexpr Output<NormalizedLandmarkList>::Optional
       kOutNormalizedLandmarkList{"NORM_LANDMARKS"};
-  MEDIAPIPE_NODE_CONTRACT(kInTensors, kFlipHorizontally, kFlipVertically,
-                          kOutLandmarkList, kOutNormalizedLandmarkList);
+  MEDIAPIPE_NODE_CONTRACT(kInTensors, kOutLandmarkList, kOutNormalizedLandmarkList);
 
   absl::Status Open(CalculatorContext* cc) override;
   absl::Status Process(CalculatorContext* cc) override;
 
  private:
   absl::Status LoadOptions(CalculatorContext* cc);
-  int num_landmarks_ = 0;
+  std::unique_ptr<TensorsToWorldLandmarksCore> core_;
   ::mediapipe::TensorsToLandmarksCalculatorOptions options_;
 };
 MEDIAPIPE_REGISTER_NODE(TensorsToWorldLandmarksCalculator);
 
 absl::Status TensorsToWorldLandmarksCalculator::Open(CalculatorContext* cc) {
   MP_RETURN_IF_ERROR(LoadOptions(cc));
+  // Instantiate the core with input image size and option-derived parameters.
+  core_ = std::make_unique<TensorsToWorldLandmarksCore>(
+      options_.input_image_width(), options_.input_image_height(),
+      options_.visibility_activation(), options_.presence_activation(),
+      options_.normalize_z());
   return absl::OkStatus();
 }
 
@@ -102,10 +103,6 @@ absl::Status TensorsToWorldLandmarksCalculator::Process(CalculatorContext* cc) {
   if (kInTensors(cc).IsEmpty()) {
     return absl::OkStatus();
   }
-
-  bool flip_horizontally =
-      kFlipHorizontally(cc).GetOr(options_.flip_horizontally());
-  bool flip_vertically = kFlipVertically(cc).GetOr(options_.flip_vertically());
 
   const auto& input_tensors = *kInTensors(cc);
 
@@ -115,9 +112,7 @@ absl::Status TensorsToWorldLandmarksCalculator::Process(CalculatorContext* cc) {
   NormalizedLandmarkList* norm_landmarks_ptr =
       kOutNormalizedLandmarkList(cc).IsConnected() ? &output_norm_landmarks : nullptr;
 
-  MP_RETURN_IF_ERROR(TensorsToLandmarks(
-      input_tensors, options_, num_landmarks_, flip_horizontally, flip_vertically,
-      &output_landmarks, norm_landmarks_ptr));
+  MP_RETURN_IF_ERROR(core_->TensorsToWorldLandmarks(input_tensors, &output_landmarks, norm_landmarks_ptr));
 
   // Output normalized landmarks if required.
   if (kOutNormalizedLandmarkList(cc).IsConnected()) {
@@ -135,9 +130,7 @@ absl::Status TensorsToWorldLandmarksCalculator::Process(CalculatorContext* cc) {
 absl::Status TensorsToWorldLandmarksCalculator::LoadOptions(CalculatorContext* cc) {
   // Get calculator options specified in the graph.
   options_ = cc->Options<::mediapipe::TensorsToLandmarksCalculatorOptions>();
-  RET_CHECK(options_.has_num_landmarks());
-  num_landmarks_ = options_.num_landmarks();
-
+  // num_landmarks is not required anymore; default of core is 21.
   return absl::OkStatus();
 }
 }  // namespace api2

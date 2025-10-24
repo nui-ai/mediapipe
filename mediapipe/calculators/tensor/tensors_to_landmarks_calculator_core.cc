@@ -23,11 +23,11 @@ namespace {
 
 inline float Sigmoid(float value) { return 1.0f / (1.0f + std::exp(-value)); }
 
-/// optionally applies sigmoid to the input activation value
+/// optionally applies sigmoid to the input activation value. our code paths never reach it.
 float ProcessExtraActivation(
-    TensorsToLandmarksCalculatorOptions::Activation activation, float value) {
+    ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation activation, float value) {
   switch (activation) {
-    case TensorsToLandmarksCalculatorOptions::SIGMOID:
+    case ::mediapipe::TensorsToLandmarksCalculatorOptions::SIGMOID:
       // ABSL_LOG(INFO) << "activation is sigmoid";
       return Sigmoid(value);
       break;
@@ -39,17 +39,26 @@ float ProcessExtraActivation(
 
 }  // namespace
 
-absl::Status TensorsToLandmarks(
+TensorsToLandmarksCore::TensorsToLandmarksCore(
+    int input_image_width, int input_image_height,
+    ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
+    ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
+    float normalize_z,
+    int num_landmarks)
+    : input_image_width_(input_image_width),
+      input_image_height_(input_image_height),
+      num_landmarks_(num_landmarks),
+      visibility_activation_(visibility_activation),
+      presence_activation_(presence_activation),
+      normalize_z_(normalize_z) {}
+
+absl::Status TensorsToLandmarksCore::TensorsToLandmarks(
     const std::vector<Tensor>& input_tensors,
-    const ::mediapipe::TensorsToLandmarksCalculatorOptions& options,
-    int num_landmarks,
-    bool flip_horizontally,
-    bool flip_vertically,
     LandmarkList* output_landmarks,
     NormalizedLandmarkList* output_norm_landmarks) {
   RET_CHECK(input_tensors[0].element_type() == Tensor::ElementType::kFloat32);
   int num_values = input_tensors[0].shape().num_elements();
-  const int num_dimensions = num_values / num_landmarks;
+  const int num_dimensions = num_values / num_landmarks_;
   RET_CHECK_GT(num_dimensions, 0);
 
   auto view = input_tensors[0].GetCpuReadView();
@@ -57,31 +66,24 @@ absl::Status TensorsToLandmarks(
 
   output_landmarks->clear_landmark();
 
-  for (int ld = 0; ld < num_landmarks; ++ld) {
+  for (int ld = 0; ld < num_landmarks_; ++ld) {
     const int offset = ld * num_dimensions;
     Landmark* landmark = output_landmarks->add_landmark();
 
-    if (flip_horizontally) {
-      landmark->set_x(options.input_image_width() - raw_landmarks[offset]);
-    } else {
-      landmark->set_x(raw_landmarks[offset]);
-    }
+    // Flipping is not supported; use raw coordinates directly.
+    landmark->set_x(raw_landmarks[offset]);
     if (num_dimensions > 1) {
-      if (flip_vertically) {
-        landmark->set_y(options.input_image_height() - raw_landmarks[offset + 1]);
-      } else {
-        landmark->set_y(raw_landmarks[offset + 1]);
-      }
+      landmark->set_y(raw_landmarks[offset + 1]);
     }
     if (num_dimensions > 2) {
       landmark->set_z(raw_landmarks[offset + 2]);
     }
-    if (num_dimensions > 3) {  // we never get here, and as is this extra signal is non-interpretable, and likely an abandoned training objective. https://chatgpt.com/s/t_68fb6338573c81919bef075a6bce50a8
-      auto visibility = ProcessExtraActivation(options.visibility_activation(), raw_landmarks[offset + 3]);
+    if (num_dimensions > 3) {  // Optional attributes if present.
+      auto visibility = ProcessExtraActivation(visibility_activation_, raw_landmarks[offset + 3]);
       landmark->set_visibility(visibility);
     }
-    if (num_dimensions > 4) {  // we never get here, and as is this extra signal is non-interpretable, and likely an abandoned training objective. https://chatgpt.com/s/t_68fb6338573c81919bef075a6bce50a8
-      auto presence = ProcessExtraActivation(options.presence_activation(), raw_landmarks[offset + 4]);
+    if (num_dimensions > 4) {
+      auto presence = ProcessExtraActivation(presence_activation_, raw_landmarks[offset + 4]);
       landmark->set_presence(presence);
     }
   }
@@ -92,11 +94,11 @@ absl::Status TensorsToLandmarks(
     for (int i = 0; i < output_landmarks->landmark_size(); ++i) {
       const Landmark& landmark = output_landmarks->landmark(i);
       NormalizedLandmark* norm_landmark = output_norm_landmarks->add_landmark();
-      norm_landmark->set_x(landmark.x() / options.input_image_width());
-      norm_landmark->set_y(landmark.y() / options.input_image_height());
+      norm_landmark->set_x(landmark.x() / input_image_width_);
+      norm_landmark->set_y(landmark.y() / input_image_height_);
       // Scale Z coordinate as X + allow additional uniform normalization.
-      norm_landmark->set_z(landmark.z() / options.input_image_width() /
-                           options.normalize_z());
+      norm_landmark->set_z(landmark.z() / input_image_width_ /
+                           normalize_z_);
       if (landmark.has_visibility()) {  // Set only if supported in the model.
         norm_landmark->set_visibility(landmark.visibility());
       }

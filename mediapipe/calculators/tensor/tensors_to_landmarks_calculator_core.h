@@ -23,15 +23,34 @@
 namespace mediapipe {
 namespace api2 {
 
-// Core processing function extracted from Process method
-absl::Status TensorsToLandmarks(
-    const std::vector<Tensor>& input_tensors,
-    const ::mediapipe::TensorsToLandmarksCalculatorOptions& options,
-    int num_landmarks,
-    bool flip_horizontally,
-    bool flip_vertically,
-    LandmarkList* output_landmarks,
-    NormalizedLandmarkList* output_norm_landmarks = nullptr);
+// Refactored core as a class to avoid reading sizes from options and to
+// remove flipping logic from the API.
+class TensorsToLandmarksCore {
+ public:
+  // num_landmarks defaults to 21 and is not required to be passed explicitly.
+  explicit TensorsToLandmarksCore(int input_image_width,
+                                  int input_image_height,
+                                  ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
+                                  ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
+                                  float normalize_z,
+                                  int num_landmarks = 21);
+
+  // Converts the first tensor in input_tensors to landmarks. Uses the stored
+  // input image width/height and num_landmarks. Flipping is not supported and
+  // assumed to be false.
+  absl::Status TensorsToLandmarks(
+      const std::vector<Tensor>& input_tensors,
+      LandmarkList* output_landmarks,
+      NormalizedLandmarkList* output_norm_landmarks = nullptr);
+
+ private:
+  int input_image_width_;
+  int input_image_height_;
+  int num_landmarks_;
+  TensorsToLandmarksCalculatorOptions::Activation visibility_activation_;
+  TensorsToLandmarksCalculatorOptions::Activation presence_activation_;
+  float normalize_z_ = 1.0f;
+};
 
 }  // namespace api2
 }  // namespace mediapipe
