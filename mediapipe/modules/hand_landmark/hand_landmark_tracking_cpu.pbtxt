@@ -387,7 +387,7 @@ node {
 # steps. this just places, stretches, rotates the output landmarks from their rectangle passed to inference,
 # to their viewport interpretation which is a totally naive and no-surprises transformation; it just does
 # what you'd think needs be done to place the inference of the passed rectangle in the original image's
-# coordinate system.
+# coordinate system. there's no sophisticated real projection that's happening here.
 node {
   calculator: "LandmarkProjectionCalculator"
   input_stream: "NORM_LANDMARKS:scaled_landmarks"
@@ -417,7 +417,8 @@ node {
 }
 
 # merely un-rotates the object landmarks by the exact rotation which was passed to the inference step,
-# which is the only geometric transformation needed after the inference step for object landmarks
+# which is the only geometric transformation needed after the inference step for object landmarks.
+# there's no sophisticated real projection that's happening here.
 node {
   calculator: "WorldLandmarkProjectionCalculator"
   input_stream: "LANDMARKS:unprojected_world_landmarks"
