@@ -37,22 +37,17 @@ float ProcessExtraActivation(::mediapipe::TensorsToLandmarksCalculatorOptions::A
 }  // namespace
 
 TensorsToWorldLandmarksCore::TensorsToWorldLandmarksCore(
-    int input_image_width, int input_image_height,
     ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
     ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
-    float normalize_z,
     int num_landmarks)
-    : input_image_width_(input_image_width),
-      input_image_height_(input_image_height),
-      num_landmarks_(num_landmarks),
+    : num_landmarks_(num_landmarks),
       visibility_activation_(visibility_activation),
-      presence_activation_(presence_activation),
-      normalize_z_(normalize_z) {}
+      presence_activation_(presence_activation) {}
 
 absl::Status TensorsToWorldLandmarksCore::TensorsToWorldLandmarks(
     const std::vector<Tensor>& input_tensors,
-    LandmarkList* output_landmarks,
-    NormalizedLandmarkList* output_norm_landmarks) {
+    LandmarkList* output_landmarks) {
+
   RET_CHECK(input_tensors[0].element_type() == Tensor::ElementType::kFloat32);
   int num_values = input_tensors[0].shape().num_elements();
   const int num_dimensions = num_values / num_landmarks_;
@@ -67,7 +62,6 @@ absl::Status TensorsToWorldLandmarksCore::TensorsToWorldLandmarks(
     const int offset = ld * num_dimensions;
     Landmark* landmark = output_landmarks->add_landmark();
 
-    // Flipping is not supported; use raw coordinates directly.
     landmark->set_x(raw_landmarks[offset]);
     if (num_dimensions > 1) {
       landmark->set_y(raw_landmarks[offset + 1]);
@@ -75,31 +69,11 @@ absl::Status TensorsToWorldLandmarksCore::TensorsToWorldLandmarks(
     if (num_dimensions > 2) {
       landmark->set_z(raw_landmarks[offset + 2]);
     }
-    if (num_dimensions > 3) {  // Keep optional attributes if present.
+    if (num_dimensions > 3) {  // we never get here, this extra signal is not directly intelligible and almost surely an a abandoned training objective of the network as trained. https://chatgpt.com/s/t_68fb6338573c81919bef075a6bce50a8.
       landmark->set_visibility(ProcessExtraActivation(visibility_activation_, raw_landmarks[offset + 3]));
     }
-    if (num_dimensions > 4) {
+    if (num_dimensions > 4) {  // we never get here, this extra signal is not directly intelligible and almost surely an a abandoned training objective of the network as trained. https://chatgpt.com/s/t_68fb6338573c81919bef075a6bce50a8.
       landmark->set_presence(ProcessExtraActivation(presence_activation_, raw_landmarks[offset + 4]));
-    }
-  }
-
-  // Generate normalized landmarks if requested.
-  if (output_norm_landmarks != nullptr) {
-    output_norm_landmarks->clear_landmark();
-    for (int i = 0; i < output_landmarks->landmark_size(); ++i) {
-      const Landmark& landmark = output_landmarks->landmark(i);
-      NormalizedLandmark* norm_landmark = output_norm_landmarks->add_landmark();
-      norm_landmark->set_x(landmark.x() / input_image_width_);
-      norm_landmark->set_y(landmark.y() / input_image_height_);
-      // Scale Z coordinate as X + allow additional uniform normalization.
-      norm_landmark->set_z(landmark.z() / input_image_width_ /
-                           normalize_z_);
-      if (landmark.has_visibility()) {  // Set only if supported in the model.
-        norm_landmark->set_visibility(landmark.visibility());
-      }
-      if (landmark.has_presence()) {  // Set only if supported in the model.
-        norm_landmark->set_presence(landmark.presence());
-      }
     }
   }
 

@@ -54,8 +54,8 @@ TensorsToLandmarksCore::TensorsToLandmarksCore(
 
 absl::Status TensorsToLandmarksCore::TensorsToLandmarks(
     const std::vector<Tensor>& input_tensors,
-    LandmarkList* output_landmarks,
     NormalizedLandmarkList* output_norm_landmarks) {
+
   RET_CHECK(input_tensors[0].element_type() == Tensor::ElementType::kFloat32);
   int num_values = input_tensors[0].shape().num_elements();
   const int num_dimensions = num_values / num_landmarks_;
@@ -64,13 +64,15 @@ absl::Status TensorsToLandmarksCore::TensorsToLandmarks(
   auto view = input_tensors[0].GetCpuReadView();
   auto raw_landmarks = view.buffer<float>();
 
-  output_landmarks->clear_landmark();
+  LandmarkList output_landmarks;
+  LandmarkList* output_landmarks_ptr = &output_landmarks;
+  output_landmarks_ptr->clear_landmark();
 
+  // fill the landmarks output collection
   for (int ld = 0; ld < num_landmarks_; ++ld) {
     const int offset = ld * num_dimensions;
-    Landmark* landmark = output_landmarks->add_landmark();
+    Landmark* landmark = output_landmarks_ptr->add_landmark();
 
-    // Flipping is not supported; use raw coordinates directly.
     landmark->set_x(raw_landmarks[offset]);
     if (num_dimensions > 1) {
       landmark->set_y(raw_landmarks[offset + 1]);
@@ -78,33 +80,31 @@ absl::Status TensorsToLandmarksCore::TensorsToLandmarks(
     if (num_dimensions > 2) {
       landmark->set_z(raw_landmarks[offset + 2]);
     }
-    if (num_dimensions > 3) {  // Optional attributes if present.
+    if (num_dimensions > 3) {  // we never get here, this extra signal is not directly intelligible and almost surely an a abandoned training objective of the network as trained. https://chatgpt.com/s/t_68fb6338573c81919bef075a6bce50a8.
       auto visibility = ProcessExtraActivation(visibility_activation_, raw_landmarks[offset + 3]);
       landmark->set_visibility(visibility);
     }
-    if (num_dimensions > 4) {
+    if (num_dimensions > 4) {  // we never get here, this extra signal is not directly intelligible and almost surely an a abandoned training objective of the network as trained. https://chatgpt.com/s/t_68fb6338573c81919bef075a6bce50a8.
       auto presence = ProcessExtraActivation(presence_activation_, raw_landmarks[offset + 4]);
       landmark->set_presence(presence);
     }
   }
 
-  // Generate normalized landmarks if requested.
-  if (output_norm_landmarks != nullptr) {
-    output_norm_landmarks->clear_landmark();
-    for (int i = 0; i < output_landmarks->landmark_size(); ++i) {
-      const Landmark& landmark = output_landmarks->landmark(i);
-      NormalizedLandmark* norm_landmark = output_norm_landmarks->add_landmark();
-      norm_landmark->set_x(landmark.x() / input_image_width_);
-      norm_landmark->set_y(landmark.y() / input_image_height_);
-      // Scale Z coordinate as X + allow additional uniform normalization.
-      norm_landmark->set_z(landmark.z() / input_image_width_ /
-                           normalize_z_);
-      if (landmark.has_visibility()) {  // Set only if supported in the model.
-        norm_landmark->set_visibility(landmark.visibility());
-      }
-      if (landmark.has_presence()) {  // Set only if supported in the model.
-        norm_landmark->set_presence(landmark.presence());
-      }
+  // fill the normalized output collection.
+  // they are just normalized to the image dimensions to range between 0 and 1, and by a constant for Z
+  output_norm_landmarks->clear_landmark();
+  for (int i = 0; i < output_landmarks_ptr->landmark_size(); ++i) {
+    const Landmark& landmark = output_landmarks_ptr->landmark(i);
+    NormalizedLandmark* norm_landmark = output_norm_landmarks->add_landmark();
+    norm_landmark->set_x(landmark.x() / input_image_width_);
+    norm_landmark->set_y(landmark.y() / input_image_height_);
+    // Scale Z coordinate as X + allow additional uniform normalization.
+    norm_landmark->set_z(landmark.z() / input_image_width_ / normalize_z_);
+    if (landmark.has_visibility()) {  // Set only if supported in the model.
+      norm_landmark->set_visibility(landmark.visibility());
+    }
+    if (landmark.has_presence()) {  // Set only if supported in the model.
+      norm_landmark->set_presence(landmark.presence());
     }
   }
 

@@ -92,10 +92,7 @@ MEDIAPIPE_REGISTER_NODE(TensorsToWorldLandmarksCalculator);
 absl::Status TensorsToWorldLandmarksCalculator::Open(CalculatorContext* cc) {
   MP_RETURN_IF_ERROR(LoadOptions(cc));
   // Instantiate the core with input image size and option-derived parameters.
-  core_ = std::make_unique<TensorsToWorldLandmarksCore>(
-      options_.input_image_width(), options_.input_image_height(),
-      options_.visibility_activation(), options_.presence_activation(),
-      options_.normalize_z());
+  core_ = std::make_unique<TensorsToWorldLandmarksCore>(options_.visibility_activation(), options_.presence_activation());
   return absl::OkStatus();
 }
 
@@ -112,7 +109,7 @@ absl::Status TensorsToWorldLandmarksCalculator::Process(CalculatorContext* cc) {
   NormalizedLandmarkList* norm_landmarks_ptr =
       kOutNormalizedLandmarkList(cc).IsConnected() ? &output_norm_landmarks : nullptr;
 
-  MP_RETURN_IF_ERROR(core_->TensorsToWorldLandmarks(input_tensors, &output_landmarks, norm_landmarks_ptr));
+  MP_RETURN_IF_ERROR(core_->TensorsToWorldLandmarks(input_tensors, &output_landmarks));
 
   // Output normalized landmarks if required.
   if (kOutNormalizedLandmarkList(cc).IsConnected()) {

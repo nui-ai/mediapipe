@@ -112,16 +112,11 @@ absl::Status TensorsToLandmarksCalculator::Process(CalculatorContext* cc) {
   NormalizedLandmarkList* norm_landmarks_ptr =
       kOutNormalizedLandmarkList(cc).IsConnected() ? &output_norm_landmarks : nullptr;
 
-  MP_RETURN_IF_ERROR(core_->TensorsToLandmarks(input_tensors, &output_landmarks, norm_landmarks_ptr));
+  MP_RETURN_IF_ERROR(core_->TensorsToLandmarks(input_tensors, norm_landmarks_ptr));
 
   // Output normalized landmarks if required.
   if (kOutNormalizedLandmarkList(cc).IsConnected()) {
     kOutNormalizedLandmarkList(cc).Send(std::move(output_norm_landmarks));
-  }
-
-  // Output absolute landmarks.
-  if (kOutLandmarkList(cc).IsConnected()) {
-    kOutLandmarkList(cc).Send(std::move(output_landmarks));
   }
 
   return absl::OkStatus();
