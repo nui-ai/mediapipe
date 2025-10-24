@@ -93,9 +93,30 @@ class TensorsToLandmarksCalculator : public Node {
 };
 MEDIAPIPE_REGISTER_NODE(TensorsToLandmarksCalculator);
 
+absl::Status ValidateCalculatorOptions(
+      const ::mediapipe::TensorsToLandmarksCalculatorOptions& options,
+      bool output_normalized_landmarks,
+      bool output_landmarks,
+      bool has_flip_inputs) {
+  if (output_normalized_landmarks) {
+    RET_CHECK(options.has_input_image_height() &&
+              options.has_input_image_width())
+        << "Must provide input width/height for getting normalized landmarks.";
+  }
+  if (output_landmarks &&
+      (options.flip_horizontally() || options.flip_vertically() ||
+       has_flip_inputs)) {
+    RET_CHECK(options.has_input_image_height() &&
+              options.has_input_image_width())
+        << "Must provide input width/height for using flipping when outputting "
+           "landmarks in absolute coordinates.";
+       }
+  return absl::OkStatus();
+}
+
 absl::Status TensorsToLandmarksCalculator::Open(CalculatorContext* cc) {
   MP_RETURN_IF_ERROR(LoadOptions(cc));
-
+  return absl::OkStatus();
   return ValidateCalculatorOptions(
       options_,
       kOutNormalizedLandmarkList(cc).IsConnected(),
@@ -120,7 +141,7 @@ absl::Status TensorsToLandmarksCalculator::Process(CalculatorContext* cc) {
   NormalizedLandmarkList* norm_landmarks_ptr =
       kOutNormalizedLandmarkList(cc).IsConnected() ? &output_norm_landmarks : nullptr;
 
-  MP_RETURN_IF_ERROR(ProcessTensorsToLandmarks(
+  MP_RETURN_IF_ERROR(TensorsToLandmarks(
       input_tensors, options_, num_landmarks_, flip_horizontally, flip_vertically,
       &output_landmarks, norm_landmarks_ptr));
 

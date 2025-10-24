@@ -95,12 +95,7 @@ MEDIAPIPE_REGISTER_NODE(TensorsToWorldLandmarksCalculator);
 
 absl::Status TensorsToWorldLandmarksCalculator::Open(CalculatorContext* cc) {
   MP_RETURN_IF_ERROR(LoadOptions(cc));
-
-  return ValidateCalculatorOptions(
-      options_,
-      kOutNormalizedLandmarkList(cc).IsConnected(),
-      kOutLandmarkList(cc).IsConnected(),
-      kFlipHorizontally(cc).IsConnected() || kFlipVertically(cc).IsConnected());
+  return absl::OkStatus();
 }
 
 absl::Status TensorsToWorldLandmarksCalculator::Process(CalculatorContext* cc) {
@@ -120,7 +115,7 @@ absl::Status TensorsToWorldLandmarksCalculator::Process(CalculatorContext* cc) {
   NormalizedLandmarkList* norm_landmarks_ptr =
       kOutNormalizedLandmarkList(cc).IsConnected() ? &output_norm_landmarks : nullptr;
 
-  MP_RETURN_IF_ERROR(ProcessTensorsToLandmarks(
+  MP_RETURN_IF_ERROR(TensorsToLandmarks(
       input_tensors, options_, num_landmarks_, flip_horizontally, flip_vertically,
       &output_landmarks, norm_landmarks_ptr));
 

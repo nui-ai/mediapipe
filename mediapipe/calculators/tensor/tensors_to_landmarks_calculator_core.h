@@ -23,15 +23,8 @@
 namespace mediapipe {
 namespace api2 {
 
-// Core validation function extracted from Open method
-absl::Status ValidateCalculatorOptions(
-    const ::mediapipe::TensorsToLandmarksCalculatorOptions& options,
-    bool output_normalized_landmarks,
-    bool output_landmarks,
-    bool has_flip_inputs);
-
 // Core processing function extracted from Process method
-absl::Status ProcessTensorsToLandmarks(
+absl::Status TensorsToLandmarks(
     const std::vector<Tensor>& input_tensors,
     const ::mediapipe::TensorsToLandmarksCalculatorOptions& options,
     int num_landmarks,
