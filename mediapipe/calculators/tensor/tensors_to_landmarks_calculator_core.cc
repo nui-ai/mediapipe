@@ -91,7 +91,8 @@ absl::Status TensorsToLandmarksCore::TensorsToLandmarks(
   }
 
   // fill the normalized output collection.
-  // they are just normalized to the image dimensions to range between 0 and 1, and by a (rather arbitrary) constant for Z
+  // they are just normalized to the image dimensions to range between 0 and 1, and by a (rather arbitrary) constant for Z.
+  // the constant for Z doesn't matter to us since we consider these Z values of no relevant semantics.
   output_norm_landmarks->clear_landmark();
   for (int i = 0; i < output_landmarks_ptr->landmark_size(); ++i) {
     const Landmark& landmark = output_landmarks_ptr->landmark(i);

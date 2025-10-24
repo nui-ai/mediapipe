@@ -24,37 +24,17 @@
 
 namespace mediapipe {
 
-// Projects XY coordinates of a landmark using a transformation matrix.
-void ProjectXY(const NormalizedLandmark& lm,
-               const std::array<float, 16>& matrix,
-               NormalizedLandmark* out);
-
-// Calculates Z scale factor based on the transformation matrix.
-// Landmark's Z scale is equal to a relative (to image) width of region of
-// interest used during detection. To calculate based on matrix:
-// 1. Project (0,0) --- (1,0) segment using matrix.
-// 2. Calculate length of the projected segment.
-float CalculateZScale(const std::array<float, 16>& matrix);
-
 // Creates a projection function based on the provided inputs.
 // Only one of the input parameter groups should be non-null:
 // - input_rect without image_dimensions (square ROI case)
 // - input_rect with image_dimensions (general rect case)
 // - projection_matrix (matrix-based projection)
-std::function<void(const NormalizedLandmark&, NormalizedLandmark*)>
-CreateProjectionFunction(
-    const NormalizedRect* input_rect,
-    bool ignore_rotation,
-    const std::pair<int, int>* image_dimensions,
-    const std::array<float, 16>* projection_matrix);
+std::function<void(const NormalizedLandmark&, NormalizedLandmark*)> CreateProjectionFunction(const NormalizedRect* input_rect);
 
 // Processes a landmark list using the inputs to build a projection function.
 void ProcessLandmarkList(
     const NormalizedLandmarkList& input_landmarks,
     const NormalizedRect* input_rect,
-    bool ignore_rotation,
-    const std::pair<int, int>* image_dimensions,
-    const std::array<float, 16>* projection_matrix,
     NormalizedLandmarkList* output_landmarks);
 
 }  // namespace mediapipe

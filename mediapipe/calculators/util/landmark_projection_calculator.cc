@@ -56,7 +56,7 @@ class LandmarkProjectionNodeImpl
 
       const NormalizedLandmarkList& input_landmarks = input.GetOrDie();
       NormalizedLandmarkList output_landmarks;
-      ProcessLandmarkList(input_landmarks, rect_ptr, ignore_rotation, dims_ptr, matrix_ptr, &output_landmarks);
+      ProcessLandmarkList(input_landmarks, rect_ptr, &output_landmarks);
 
       cc.output_landmarks.At(i).Send(std::move(output_landmarks));
     }

@@ -44,6 +44,7 @@ TensorsToWorldLandmarksCore::TensorsToWorldLandmarksCore(
       visibility_activation_(visibility_activation),
       presence_activation_(presence_activation) {}
 
+/// merely puts the tensors into the mediapipe output object, no more.
 absl::Status TensorsToWorldLandmarksCore::TensorsToWorldLandmarks(
     const std::vector<Tensor>& input_tensors,
     LandmarkList* output_landmarks) {
