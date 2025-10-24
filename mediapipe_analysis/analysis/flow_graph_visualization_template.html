@@ -229,6 +229,15 @@ function getNodeScreenCenter(groupEl) {{
     return {{ x: r.left + r.width / 2, y: r.top + r.height / 2 }};
   }} catch(e) {{ return null; }}
 }}
+function hideNodeLabelByGroup(groupEl) {{
+  try {{ d3.select(groupEl).select('text').style('display', 'none').style('opacity', '0'); }} catch (e) {{}}
+}}
+function restoreNodeLabelByGroup(groupEl) {{
+  try {{ d3.select(groupEl).select('text').style('display', null).style('opacity', null); }} catch (e) {{}}
+}}
+function restoreNodeLabelById(nodeId) {{
+  try {{ if (!node || !nodeId) return; node.filter(n => n.id === nodeId).select('text').style('display', null).style('opacity', null); }} catch (e) {{}}
+}}
 function showHoverBoxForNode(d, groupEl, x, y) {{
   hoverBoxNode = d.id;
   hoverGroupEl = groupEl;
@@ -237,16 +246,14 @@ function showHoverBoxForNode(d, groupEl, x, y) {{
   const el = ensureHoverBox();
   el.style.display = 'block';
   positionHoverBox(x ?? lastMouseX, y ?? lastMouseY);
-  // hide node text while hoverbox visible
-  try {{
-    d3.select(groupEl).select('text').style('display', 'none');
-  }} catch (e) {{}}
 }}
 function hideHoverBox() {{
   const el = ensureHoverBox();
   el.style.display = 'none';
   if (hoverGroupEl) {{
-    try {{ d3.select(hoverGroupEl).select('text').style('display', null); }} catch (e) {{}}
+    restoreNodeLabelByGroup(hoverGroupEl);
+  }} else if (hoverBoxNode) {{
+    restoreNodeLabelById(hoverBoxNode);
   }}
   hoverBoxNode = null;
   hoverGroupEl = null;
