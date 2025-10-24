@@ -173,9 +173,8 @@ node {
   }
 }
 
-# Collects a NormalizedRect for each hand into a vector. Upon receiving the
-# BATCH_END timestamp, outputs the vector of NormalizedRect at the BATCH_END
-# timestamp.
+# collects the final set of hand detection rectangles, into a vector of them.
+# outputs that vector upon receiving the BATCH_END timestamp.
 node {
   calculator: "EndLoopNormalizedRectCalculator" # _1
   input_stream: "ITEM:hand_rect_from_palm_detection"
@@ -421,7 +420,7 @@ node {
 
 ### end of the original hand landmark inference nodes ###
 
-# Collects the handedness for each single hand into a vector. Upon receiving the
+# Collects the handedness for each single hand, into a vector of them. Upon receiving the
 # BATCH_END timestamp, outputs a vector of ClassificationList at the BATCH_END
 # timestamp.
 node {
@@ -458,7 +457,7 @@ node {
   }
 }
 
-# collects the set of landmarks of each hand into a vector.
+# collects the set of landmarks of each hand, into a vector of them.
 # outputs that vector upon receiving the BATCH_END timestamp.
 node {
   calculator: "EndLoopNormalizedLandmarkListVectorCalculator"
@@ -467,7 +466,7 @@ node {
   output_stream: "ITERABLE:multi_hand_landmarks"
 }
 
-# collects a set of world landmarks of each hand into a vector.
+# collects a set of world landmarks of each hand, into a vector of them.
 # outputs that vector upon receiving the BATCH_END timestamp.
 node {
   calculator: "EndLoopLandmarkListVectorCalculator"
@@ -476,7 +475,7 @@ node {
   output_stream: "ITERABLE:multi_hand_world_landmarks"
 }
 
-# collects the set of hand rects calculated from landmarks into a vector.
+# collects the set of hand rects calculated from the inferred landmarks, into a vector of them.
 # outputs that vector upon receiving the BATCH_END timestamp.
 node {
   calculator: "EndLoopNormalizedRectCalculator" # _2
