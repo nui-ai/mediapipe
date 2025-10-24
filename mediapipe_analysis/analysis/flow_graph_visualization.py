@@ -39,7 +39,18 @@ def build_node_source_map(verbose):
             node_map[name] = source
     return node_map
 
+# Build node->description mapping
+def build_node_description_map(verbose):
+    desc_map = {}
+    for node in verbose.get('nodes', []):
+        name = node.get('name')
+        desc = node.get('description')
+        if name and desc is not None:
+            desc_map[name] = desc
+    return desc_map
+
 node_source_map = build_node_source_map(pipeline_verbose)
+node_description_map = build_node_description_map(pipeline_verbose)
 
 # Extract nodes and edges from streams-flow.json
 nodes = set()
@@ -87,7 +98,14 @@ def node_url(node):
         return f"file://{src}"
     return None
 
-nodes_json = json.dumps([{'id': n, 'url': node_url(n)} for n in node_list])
+nodes_json = json.dumps([
+    {
+        'id': n,
+        'url': node_url(n),
+        'description': node_description_map.get(n)
+    }
+    for n in node_list
+])
 links_json = json.dumps(links)
 
 # Read HTML template and inject data

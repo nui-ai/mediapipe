@@ -13,6 +13,9 @@
     #nodeSearchBox {{ position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10; font-size: 5em; padding: 40px 80px; border-radius: 40px; border: 6px solid #1976d2; background: #222; color: #fff; width: 1600px; text-align: center; }}
     #copyFeedback {{ position: fixed; top: 250px; left: 50%; transform: translateX(-50%); background: #4CAF50; color: #fff; padding: 30px 60px; border-radius: 25px; font-size: 2.5em; z-index: 100; display: none; font-weight: bold; transition: opacity 0.3s ease; text-align: center; min-width: 600px; }}
     #HelpBox {{ position: fixed; bottom: 20px; right: 20px; background: rgba(31, 114, 36, 0.76); color: rgba(0, 0, 0, 0.93); padding: 15px; border-radius: 10px; font-size: 1.5em; z-index: 100; }}
+    #hoverBox {{ position: fixed; top: 0; left: 0; display: none; z-index: 200; color: #fff; background: rgba(25, 118, 210, 0.92); border: 3px solid #1976d2; border-radius: 12px; padding: 16px 18px; max-width: 40vw; box-shadow: 0 8px 24px rgba(0,0,0,0.4); pointer-events: none; }}
+    #hoverBox .hb-title {{ font-weight: 900; font-size: 1.6em; line-height: 1.1; margin-bottom: 8px; }}
+    #hoverBox .hb-desc {{ font-weight: 400; font-size: 1.1em; line-height: 1.3; white-space: normal; word-wrap: break-word; }}
   </style>
 </head>
 <!--
@@ -41,6 +44,7 @@ normally using a proper templating engine (like Jinja2) would avoid this twistin
   press <strong>d</strong> to initiate a new browser tab of the same visualization<br>
   press <strong>+/-</strong> to nudge edge lengths (to be improved/deprecated)
 </div>
+<div id="hoverBox"><div class="hb-title"></div><div class="hb-desc"></div></div>
 <svg></svg>
 <script>
 const nodes = {nodes_json};
@@ -54,6 +58,10 @@ const BASE_LINK_DISTANCE = 200;
 let userDistanceMultiplier = 1.0;
 let currentHoverNode = null;
 let stickyFocusNode = null;  // NEW: Track sticky focused node
+let shiftHeld = false;
+let hoverBoxNode = null; // id of node currently showing hover box
+let hoverBoxEl = null; // cached element reference
+let hoverGroupEl = null; // the SVG group element for hovered node
 
 function setSearchBoxToNode(node) {{
   const searchBox = document.getElementById('nodeSearchBox');
@@ -126,6 +134,87 @@ function getStableLinkDistance(link) {{
   }}
 
   return Math.max(baseDistance, minimumDistance);
+}}
+
+// --- Hover box helpers ---
+let lastMouseX = 0, lastMouseY = 0;
+function ensureHoverBox() {{
+  if (!hoverBoxEl) hoverBoxEl = document.getElementById('hoverBox');
+  return hoverBoxEl;
+}}
+function getNodeFill(n) {{ return n.url ? '#1976d2' : '#333'; }}
+function hexToRgba(hex, alpha) {{
+  const h = hex.replace('#','');
+  const bigint = parseInt(h, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${{r}}, ${{g}}, ${{b}}, ${{alpha}})`;
+}}
+function setHoverBoxContent(d) {{
+  const el = ensureHoverBox();
+  const title = el.querySelector('.hb-title');
+  const desc = el.querySelector('.hb-desc');
+  title.textContent = d.id || '';
+  const text = (d.description && String(d.description).trim().length) ? d.description : '(no description)';
+  desc.textContent = text;
+}}
+function styleHoverBoxForNode(d) {{
+  const el = ensureHoverBox();
+  const fill = getNodeFill(d);
+  el.style.borderColor = fill;
+  el.style.background = hexToRgba(fill === '#333' ? '#444' : fill, 0.92);
+  el.style.color = '#fff';
+}}
+function clampPosition(x, y) {{
+  const el = ensureHoverBox();
+  el.style.left = '-1000px'; // move away to measure
+  el.style.top = '-1000px';
+  el.style.display = 'block';
+  const rect = el.getBoundingClientRect();
+  const margin = 12;
+  let nx = Math.max(margin, Math.min(x, window.innerWidth - rect.width - margin));
+  let ny = Math.max(margin, Math.min(y, window.innerHeight - rect.height - margin));
+  return {{ x: nx, y: ny }};
+}}
+function positionHoverBox(x, y) {{
+  const offset = 18;
+  const p = clampPosition(x + offset, y + offset);
+  const el = ensureHoverBox();
+  el.style.left = p.x + 'px';
+  el.style.top = p.y + 'px';
+}}
+function showHoverBoxForNode(d, groupEl, x, y) {{
+  hoverBoxNode = d.id;
+  hoverGroupEl = groupEl;
+  setHoverBoxContent(d);
+  styleHoverBoxForNode(d);
+  const el = ensureHoverBox();
+  el.style.display = 'block';
+  positionHoverBox(x ?? lastMouseX, y ?? lastMouseY);
+  // hide node text while hoverbox visible
+  try {{
+    d3.select(groupEl).select('text').style('display', 'none');
+  }} catch (e) {{}}
+}}
+function hideHoverBox() {{
+  const el = ensureHoverBox();
+  el.style.display = 'none';
+  if (hoverGroupEl) {{
+    try {{ d3.select(hoverGroupEl).select('text').style('display', null); }} catch (e) {{}}
+  }}
+  hoverBoxNode = null;
+  hoverGroupEl = null;
+}}
+// --- end hover box helpers ---
+
+// Centralized hover box state refresher: shows when (hovered && Shift) else hides
+function refreshHoverBox() {{
+  if (shiftHeld && currentHoverNode && hoverGroupEl) {{
+    showHoverBoxForNode(currentHoverNode, hoverGroupEl, lastMouseX, lastMouseY);
+  }} else {{
+    hideHoverBox();
+  }}
 }}
 
 let simulation, node, link, nodeRadius;
@@ -400,6 +489,10 @@ function renderGraph() {{
   }}
 
   function nodeMouseOver(event, d) {{
+    hoverGroupEl = this;
+    currentHoverNode = d;
+    lastMouseX = event.clientX; lastMouseY = event.clientY;
+    refreshHoverBox();
     // If no sticky focus exists, use original hover behavior
     if (!stickyFocusNode) {{
       currentHoverNode = d;
@@ -479,6 +572,9 @@ function renderGraph() {{
   }}
 
 function nodeMouseOut(event, d) {{
+    currentHoverNode = null;
+    hoverGroupEl = null;
+    refreshHoverBox();
     // Only clear hover focus if no sticky focus exists
     if (!stickyFocusNode) {{
       currentHoverNode = null;
@@ -698,6 +794,28 @@ document.addEventListener('DOMContentLoaded', function() {{
     closeBtn.onclick = function() {{
       helpBox.style.display = 'none';
     }};
+  }}
+}});
+
+// Track mouse position globally for hover box positioning
+window.addEventListener('mousemove', function(e) {{
+  lastMouseX = e.clientX;
+  lastMouseY = e.clientY;
+  if (hoverBoxNode) {{ positionHoverBox(lastMouseX, lastMouseY); }}
+}});
+
+// Track Shift key for hover box show/hide
+document.addEventListener('keydown', function(e) {{
+  if (e.key === 'Shift' && !shiftHeld) {{
+    shiftHeld = true;
+    refreshHoverBox();
+  }}
+}});
+
+document.addEventListener('keyup', function(e) {{
+  if (e.key === 'Shift') {{
+    shiftHeld = false;
+    refreshHoverBox();
   }}
 }});
 
