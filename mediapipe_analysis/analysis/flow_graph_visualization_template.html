@@ -210,6 +210,7 @@ function hideHoverBox() {{
 
 // Centralized hover box state refresher: shows when (hovered && Shift) else hides
 function refreshHoverBox() {{
+  console.log('refreshHoverBox: shiftHeld = ' + shiftHeld + ', hoverBoxNode = ' + hoverBoxNode + ', currentHoverNode = ' + currentHoverNode);
   if (shiftHeld && currentHoverNode && hoverGroupEl) {{
     showHoverBoxForNode(currentHoverNode, hoverGroupEl, lastMouseX, lastMouseY);
   }} else {{
@@ -806,14 +807,22 @@ window.addEventListener('mousemove', function(e) {{
 
 // Track Shift key for hover box show/hide
 document.addEventListener('keydown', function(e) {{
-  if (e.key === 'Shift' && !shiftHeld) {{
-    shiftHeld = true;
-    refreshHoverBox();
+  if (e.key === 'Shift') {{
+    if (shiftHeld) {{
+      refreshHoverBox();
+    }} else {{
+      shiftHeld = true;
+      console.log(currentHoverNode);
+      if (currentHoverNode) {{
+        showHoverBoxForNode(currentHoverNode, hoverGroupEl, lastMouseX, lastMouseY);
+      }}
+    }}
   }}
 }});
 
 document.addEventListener('keyup', function(e) {{
   if (e.key === 'Shift') {{
+    console.log("shift key being released")
     shiftHeld = false;
     refreshHoverBox();
   }}
