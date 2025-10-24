@@ -383,7 +383,11 @@ node {
 }
 
 # adapts the landmark coordinates to the image coordinates ― this completes the work of TensorsToLandmarksCalculator
-# which performs initial steps of this adaptation, the letterbox undoing step being sandwiched in between.
+# which performs initial steps of this adaptation, the letterbox undoing step being sandwiched in between the two
+# steps. this just places, stretches, rotates the output landmarks from their rectangle passed to inference,
+# to their viewport interpretation which is a totally naive and no-surprises transformation; it just does
+# what you'd think needs be done to place the inference of the passed rectangle in the original image's
+# coordinate system.
 node {
   calculator: "LandmarkProjectionCalculator"
   input_stream: "NORM_LANDMARKS:scaled_landmarks"
@@ -412,7 +416,8 @@ node {
   }
 }
 
-# un-rotates the landmarks from the bounding box coordinate system to the image coordinate system.
+# merely un-rotates the object landmarks by the exact rotation which was passed to the inference step,
+# which is the only geometric transformation needed after the inference step for object landmarks
 node {
   calculator: "WorldLandmarkProjectionCalculator"
   input_stream: "LANDMARKS:unprojected_world_landmarks"

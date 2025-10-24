@@ -43,7 +43,7 @@ namespace mediapipe {
 ///
 /// the current function, handling the viewport landmarks, just needs this
 /// little extra effort to stretch and shift the network's viewport landmakrs
-/// outputs back into the viewport interpretation of them that's all!
+/// outputs back into the only natural viewport interpretation of them that's all!
 ///
 /// assumes a square rectangle as input! our lanamarks inference model only takes a square one anyway so that's always the case.
 std::function<void(const NormalizedLandmark&, NormalizedLandmark*)> CreateProjectionFunction(const NormalizedRect* input_rect) {
