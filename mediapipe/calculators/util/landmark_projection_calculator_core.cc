@@ -22,7 +22,6 @@
 #include "absl/log/absl_log.h"
 #include "absl/status/status.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_utils.h"
-#include "mediapipe/calculators/util/landmark_projection_calculator.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
@@ -55,7 +54,7 @@ float CalculateZScale(const std::array<float, 16>& matrix) {
 std::function<void(const NormalizedLandmark&, NormalizedLandmark*)>
 CreateProjectionFunction(
     const NormalizedRect* input_rect,
-    const LandmarkProjectionCalculatorOptions* options,
+    bool ignore_rotation,
     const std::pair<int, int>* image_dimensions,
     const std::array<float, 16>* projection_matrix) {
 
@@ -66,12 +65,11 @@ CreateProjectionFunction(
            "supported for the square ROI. Provide "
            "IMAGE_DIMENSIONS or use PROJECTION_MATRIX.";
 
-    return [input_rect, options](const NormalizedLandmark& landmark,
-                                NormalizedLandmark* new_landmark) {
+    return [input_rect, ignore_rotation](const NormalizedLandmark& landmark,
+                                         NormalizedLandmark* new_landmark) {
       const float x = landmark.x() - 0.5f;
       const float y = landmark.y() - 0.5f;
-      const float angle =
-          options->ignore_rotation() ? 0 : input_rect->rotation();
+      const float angle = ignore_rotation ? 0 : input_rect->rotation();
       float new_x = std::cos(angle) * x - std::sin(angle) * y;
       float new_y = std::sin(angle) * x + std::cos(angle) * y;
 
@@ -92,8 +90,7 @@ CreateProjectionFunction(
         /*center_y=*/input_rect->y_center() * image_dimensions->second,
         /*width=*/input_rect->width() * image_dimensions->first,
         /*height=*/input_rect->height() * image_dimensions->second,
-        /*rotation=*/options->ignore_rotation() ? 0.0f
-                                                : input_rect->rotation()};
+        /*rotation=*/ignore_rotation ? 0.0f : input_rect->rotation()};
 
     std::array<float, 16> project_mat;
     GetRotatedSubRectToRectTransformMatrix(
@@ -124,8 +121,14 @@ CreateProjectionFunction(
 
 void ProcessLandmarkList(
     const NormalizedLandmarkList& input_landmarks,
-    const std::function<void(const NormalizedLandmark&, NormalizedLandmark*)>& project_fn,
+    const NormalizedRect* input_rect,
+    bool ignore_rotation,
+    const std::pair<int, int>* image_dimensions,
+    const std::array<float, 16>* projection_matrix,
     NormalizedLandmarkList* output_landmarks) {
+
+  auto project_fn = CreateProjectionFunction(input_rect, ignore_rotation,
+                                             image_dimensions, projection_matrix);
 
   for (int j = 0; j < input_landmarks.landmark_size(); ++j) {
     const NormalizedLandmark& landmark = input_landmarks.landmark(j);

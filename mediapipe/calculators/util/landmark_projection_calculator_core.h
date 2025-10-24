@@ -19,7 +19,6 @@
 #include <functional>
 #include <utility>
 
-#include "mediapipe/calculators/util/landmark_projection_calculator.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
@@ -45,14 +44,17 @@ float CalculateZScale(const std::array<float, 16>& matrix);
 std::function<void(const NormalizedLandmark&, NormalizedLandmark*)>
 CreateProjectionFunction(
     const NormalizedRect* input_rect,
-    const LandmarkProjectionCalculatorOptions* options,
+    bool ignore_rotation,
     const std::pair<int, int>* image_dimensions,
     const std::array<float, 16>* projection_matrix);
 
-// Processes a landmark list using the provided projection function.
+// Processes a landmark list using the inputs to build a projection function.
 void ProcessLandmarkList(
     const NormalizedLandmarkList& input_landmarks,
-    const std::function<void(const NormalizedLandmark&, NormalizedLandmark*)>& project_fn,
+    const NormalizedRect* input_rect,
+    bool ignore_rotation,
+    const std::pair<int, int>* image_dimensions,
+    const std::array<float, 16>* projection_matrix,
     NormalizedLandmarkList* output_landmarks);
 
 }  // namespace mediapipe

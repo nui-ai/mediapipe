@@ -383,7 +383,7 @@ node {
 }
 
 # Projects the landmarks from the cropped hand image to the corresponding
-# locations on the full image before cropping (input to the graph).
+# locations on the full image
 node {
   calculator: "LandmarkProjectionCalculator"
   input_stream: "NORM_LANDMARKS:scaled_landmarks"
@@ -412,8 +412,7 @@ node {
   }
 }
 
-# Projects the world landmarks from the cropped hand image to the corresponding
-# locations on the full image before cropping (input to the graph).
+# un-rotates the landmarks from the bounding box coordinate system to the image coordinate system.
 node {
   calculator: "WorldLandmarkProjectionCalculator"
   input_stream: "LANDMARKS:unprojected_world_landmarks"

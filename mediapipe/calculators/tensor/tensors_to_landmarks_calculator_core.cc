@@ -91,21 +91,19 @@ absl::Status TensorsToLandmarksCore::TensorsToLandmarks(
   }
 
   // fill the normalized output collection.
-  // they are just normalized to the image dimensions to range between 0 and 1, and by a constant for Z
+  // they are just normalized to the image dimensions to range between 0 and 1, and by a (rather arbitrary) constant for Z
   output_norm_landmarks->clear_landmark();
   for (int i = 0; i < output_landmarks_ptr->landmark_size(); ++i) {
     const Landmark& landmark = output_landmarks_ptr->landmark(i);
     NormalizedLandmark* norm_landmark = output_norm_landmarks->add_landmark();
     norm_landmark->set_x(landmark.x() / input_image_width_);
     norm_landmark->set_y(landmark.y() / input_image_height_);
+
     // Scale Z coordinate as X + allow additional uniform normalization.
     norm_landmark->set_z(landmark.z() / input_image_width_ / normalize_z_);
-    if (landmark.has_visibility()) {  // Set only if supported in the model.
-      norm_landmark->set_visibility(landmark.visibility());
-    }
-    if (landmark.has_presence()) {  // Set only if supported in the model.
-      norm_landmark->set_presence(landmark.presence());
-    }
+
+    if (landmark.has_visibility()) {  norm_landmark->set_visibility(landmark.visibility()); }
+    if (landmark.has_presence()) {  norm_landmark->set_presence(landmark.presence()); }
   }
 
   return absl::OkStatus();

@@ -39,36 +39,12 @@ class LandmarkProjectionNodeImpl
   absl::Status Process(CalculatorContext<LandmarkProjectionNode>& cc) override {
     const bool has_rect = cc.norm_rect.IsConnected();
     const bool has_image_dims = cc.image_dimensions.IsConnected();
+    const bool has_projection_matrix = cc.projection_matrix.IsConnected();
 
-    std::function<void(const NormalizedLandmark&, NormalizedLandmark*)>
-        project_fn;
-    if (has_rect && !has_image_dims) {
-      if (!cc.norm_rect) {
-        return absl::OkStatus();
-      }
-      const NormalizedRect& input_rect = cc.norm_rect.GetOrDie();
-      const LandmarkProjectionCalculatorOptions& options = cc.options.Get();
-      project_fn = CreateProjectionFunction(&input_rect, &options, nullptr,
-                                           nullptr);
-    } else if (has_rect && has_image_dims) {
-      if (!cc.norm_rect || !cc.image_dimensions) {
-        return absl::OkStatus();
-      }
-      const NormalizedRect& input_rect = cc.norm_rect.GetOrDie();
-      const LandmarkProjectionCalculatorOptions& options = cc.options.Get();
-      const std::pair<int, int>& image_dimensions =
-          cc.image_dimensions.GetOrDie();
-      project_fn = CreateProjectionFunction(&input_rect, &options,
-                                           &image_dimensions, nullptr);
-    } else if (cc.projection_matrix.IsConnected()) {
-      if (!cc.projection_matrix) {
-        return absl::OkStatus();
-      }
-      const std::array<float, 16>& matrix = cc.projection_matrix.GetOrDie();
-      project_fn = CreateProjectionFunction(nullptr, nullptr, nullptr, &matrix);
-    } else {
-      return absl::InternalError("Either rect or matrix must be specified.");
-    }
+    const NormalizedRect* rect_ptr = has_rect ? &cc.norm_rect.GetOrDie() : nullptr;
+    const std::pair<int, int>* dims_ptr = has_image_dims ? &cc.image_dimensions.GetOrDie() : nullptr;
+    const std::array<float, 16>* matrix_ptr = has_projection_matrix ? &cc.projection_matrix.GetOrDie() : nullptr;
+    const bool ignore_rotation = cc.options.Get().ignore_rotation();
 
     const int count = cc.input_landmarks.Count();
     // Number of inputs and outputs is the same according to the contract.
@@ -80,7 +56,8 @@ class LandmarkProjectionNodeImpl
 
       const NormalizedLandmarkList& input_landmarks = input.GetOrDie();
       NormalizedLandmarkList output_landmarks;
-      ProcessLandmarkList(input_landmarks, project_fn, &output_landmarks);
+      ProcessLandmarkList(input_landmarks, rect_ptr, ignore_rotation, dims_ptr, matrix_ptr, &output_landmarks);
+
       cc.output_landmarks.At(i).Send(std::move(output_landmarks));
     }
     return absl::OkStatus();
