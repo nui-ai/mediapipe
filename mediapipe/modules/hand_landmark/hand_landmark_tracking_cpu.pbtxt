@@ -126,7 +126,7 @@ node {
 
 # Extracts image size.
 node {
-  calculator: "ImagePropertiesCalculator"
+  calculator: "ImagePropertiesCalculator" # 1
   input_stream: "IMAGE:palm_detection_image"
   output_stream: "SIZE:palm_detection_image_size"
 }
@@ -176,7 +176,7 @@ node {
 # collects the final set of hand detection rectangles, into a vector of them.
 # outputs that vector upon receiving the BATCH_END timestamp.
 node {
-  calculator: "EndLoopNormalizedRectCalculator" # _1
+  calculator: "EndLoopNormalizedRectCalculator" # 1
   input_stream: "ITEM:hand_rect_from_palm_detection"
   input_stream: "BATCH_END:palm_detections_timestamp"
   output_stream: "ITERABLE:hand_rects_from_palm_detections"
@@ -223,7 +223,7 @@ node {
 
 # Extracts the size of the image
 node {
-  calculator: "ImagePropertiesCalculator"
+  calculator: "ImagePropertiesCalculator" # 2
   input_stream: "IMAGE_CPU:image"
   output_stream: "SIZE:image_size"
 }
@@ -477,7 +477,7 @@ node {
 # collects the set of hand rects calculated from the inferred landmarks, into a vector of them.
 # outputs that vector upon receiving the BATCH_END timestamp.
 node {
-  calculator: "EndLoopNormalizedRectCalculator" # _2
+  calculator: "EndLoopNormalizedRectCalculator" # 2
   input_stream: "ITEM:single_hand_rect_from_landmarks"
   input_stream: "BATCH_END:hand_rects_timestamp"
   output_stream: "ITERABLE:hand_rects_from_landmarks"

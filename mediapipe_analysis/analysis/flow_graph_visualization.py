@@ -1,7 +1,18 @@
-# This script generates an HTML file visualizing the data flow graph of a an input data file describing a mediapipe pipeline.
+# This script generates an HTML file visualizing the data flow graph of a an input data file describing a mediapipe pipeline,
+# by showing which node feeds which node, and providing mild interactive viewing and informative features.
+#
 # For future usability features, and general enhancement, the use of a force simulation layout (center of gravity and nodes repulsion
 # working one v.s. the other to achieve a balanced layout) should be gradually weaned in favor of computational layoutss which cater
 # for implied optimization goals: https://chatgpt.com/s/t_68f495e758fc8191b020d225a7fc89f7.
+#
+# better layout algorithms:
+#
+# 1 let the user move things around without force and repulsion (a.k.a force layout) working beyond perhaps only in a
+#   limited way during the time of the user placing a node over/near other ones, so that it makes room for the node where
+#   the user places it (maybe only application of repulsion, no center force, till some stabilization function threshold).
+# 2 viewability optimized layout option A: https://observablehq.com/@erikbrinkman/d3-dag-sugiyama
+# 3 viewability optimized layout option B: https://observablehq.com/d/9ce02b308bb2b138
+# 4 viewability optimized layout option C: https://observablehq.com/@erikbrinkman/d3-dag-topological
 
 import json
 import webbrowser
@@ -18,12 +29,15 @@ def load_json(path):
     with open(path, 'r') as f:
         return json.load(f)
 
-# Paths
 base_dir = Path(__file__).parent
+
+# input data
 streams_flow_path = base_dir / 'output/json/streams-flow.json'
 pipeline_verbose_path = base_dir / 'output/json/pipeline.verbose.json'
-template_path = base_dir / 'flow_graph_visualization_template.html'
-output_html_path = base_dir / 'output/flow_graph.html'
+
+# html template to generate the final html from
+template_path = base_dir / 'flow_graph_visualization_template.html.template'
+output_path = base_dir / 'output/flow_graph.html'
 
 # Load data
 streams_flow = load_json(streams_flow_path)
@@ -126,15 +140,15 @@ except Exception as e:
           f"only appear where template variables are intended in the html template, and all other curly braces in the html template which are intended as regular javascript code curly braces are doubled.\n")
     raise
 
-with open(output_html_path, 'w') as f:
+with open(output_path, 'w') as f:
     f.write(html)
 
 # Launch in browser
-webbrowser.open(f'file://{output_html_path}', new=2)
+webbrowser.open(f'file://{output_path}', new=2)
 
 print(f"number of nodes: {len(node_list)}")
 print(f"number of edges: {len(links)}")
 print(f"first node: {node_list[:1]}")
 print(f"note that nodes which appear in the input graph by the same name more than once, are acknoweledged by this script and visualization as separate nodes, e.g. Node_1, Node_2, Node_3 etc when a node Node appeared more than once in the input graph.")
-print(f"output HTML file generated and launched in the default browser: {output_html_path}")
+print(f"output HTML file generated and launched in the default browser: {output_path}")
 print(f"")
