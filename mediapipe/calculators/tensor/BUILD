@@ -1734,7 +1734,10 @@ cc_library(
 
 cc_library(
     name = "image_to_tensor_calculator",
-    srcs = ["image_to_tensor_calculator.cc"],
+    srcs = [
+        "image_to_tensor_calculator.cc",
+        "image_to_tensor_calculator2.cc",
+    ],
     deps = [":image_to_tensor_calculator_core"],
     alwayslink = 1,
 )

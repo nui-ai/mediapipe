@@ -114,7 +114,7 @@ namespace api2 {
 //     padding of 10 pixels at the top and the bottom. The resulting array is
 //     therefore [0.f, 0.25f, 0.f, 0.25f] (10/40 = 0.25f).
 //
-class ImageToTensorCalculator : public Node {
+class ImageToTensorCalculator2 : public Node {
  public:
   static constexpr Input<
       OneOf<mediapipe::Image, mediapipe::ImageFrame>>::Optional kIn{"IMAGE"};
@@ -163,12 +163,12 @@ class ImageToTensorCalculator : public Node {
     int tensor_height = params_.output_height.value_or(image->height());
 
     options_ = ImageToTensorCalculatorOptions();
-    options_.set_output_tensor_width(192);
-    options_.set_output_tensor_height(192);
+    options_.set_output_tensor_width(224);
+    options_.set_output_tensor_height(224);
     options_.set_keep_aspect_ratio(true);
     options_.mutable_output_tensor_float_range()->set_min(0.0f);
     options_.mutable_output_tensor_float_range()->set_max(1.0f);
-    options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_ZERO);
+    options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_UNSPECIFIED);
     params_ = GetOutputTensorParams(options_);
     tensor_width = params_.output_width.value_or(image->width());
     tensor_height = params_.output_height.value_or(image->height());
@@ -279,7 +279,7 @@ class ImageToTensorCalculator : public Node {
   MemoryManager* memory_manager_ = nullptr;
 };
 
-MEDIAPIPE_REGISTER_NODE(ImageToTensorCalculator);
+MEDIAPIPE_REGISTER_NODE(ImageToTensorCalculator2);
 
 }  // namespace api2
 }  // namespace mediapipe

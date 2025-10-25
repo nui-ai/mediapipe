@@ -56,12 +56,6 @@ class HeadCalculator : public CollectionHasMinSizeCalculator<std::vector<mediapi
 
       GetSharedState().palm_detection_image = GetSharedState().image;
 
-      GetSharedState().ImageToTensorCalculatorOptions_output_tensor_width = 192;
-      GetSharedState().ImageToTensorCalculatorOptions_output_tensor_height = 192;
-      GetSharedState().ImageToTensorCalculatorOptions_keep_aspect_ratio = true;
-      GetSharedState().ImageToTensorCalculatorOptions_float_range_min = 0.0f;
-      GetSharedState().ImageToTensorCalculatorOptions_float_range_max = 1.0f;
-      GetSharedState().ImageToTensorCalculatorOptions_border_mode = 1; // reuse the zero border mode value from the Options class enumeration for clarity
       // can't pass the model and just expect it to funnel to the right inferencer object,
       // this is not some small param that can be passed at runtime as an input packet,
       // swallowing an inference calculator is not possible hence, but only a full liberation
