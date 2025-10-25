@@ -420,9 +420,8 @@ node {
 
 ### end of the original hand landmark inference nodes ###
 
-# Collects the handedness for each single hand, into a vector of them. Upon receiving the
-# BATCH_END timestamp, outputs a vector of ClassificationList at the BATCH_END
-# timestamp.
+# collects the handedness for each single hand, into a vector of them.
+# Upon receiving the BATCH_END timestamp, outputs a vector of them
 node {
   calculator: "EndLoopClassificationListCalculator"
   input_stream: "ITEM:single_handedness"
