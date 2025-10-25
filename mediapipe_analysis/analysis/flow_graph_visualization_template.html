@@ -61,6 +61,7 @@ let userDistanceMultiplier = 1.0;
 let currentHoverNode = null;
 let stickyFocusNode = null;  // NEW: Track sticky focused node
 let shiftHeld = false;
+let ctrlHeld = false; // NEW: track Ctrl state uniformly with Shift
 
 let hoverBoxNode = null; // id of node currently showing hover box
 let hoverBoxEl = null; // cached element reference
@@ -265,7 +266,13 @@ function hideHoverBox() {{
 
 // Centralized hover box state refresher: shows when (hovered && Shift) else hides
 function refreshHoverBox() {{
-  console.log('refreshHoverBox: shiftHeld = ' + shiftHeld + ', hoverBoxNode = ' + hoverBoxNode + ', currentHoverNode = ' + currentHoverNode);
+  // Lazily resolve the hovered group's element if missing (e.g., Shift pressed after hover)
+  if (shiftHeld && currentHoverNode && !hoverGroupEl && node) {{
+    try {{
+      node.each(function(n) {{ if (!hoverGroupEl && n.id === currentHoverNode.id) hoverGroupEl = this; }});
+    }} catch (e) {{}}
+  }}
+
   if (shiftHeld && currentHoverNode && hoverGroupEl) {{
     if (draggingNode && currentHoverNode.id === draggingNode.id) {{
       const center = getNodeScreenCenter(hoverGroupEl);
@@ -311,25 +318,27 @@ function updateLinkDisplay() {{
         .attr('x2', endX)
         .attr('y2', endY);
 
-    // FIXED: Properly handle D3.js object references for source/target
-    if (currentHoverNode) {{
+    // Color edges with set semantics:
+    // - Blue for any edge whose target is in the set of blue-incoming nodes (hovered and/or sticky-focused roots)
+    // - Else green for any edge whose source is a root (outgoing from roots)
+    // - Else default green
+    const roots = getRoots();
+    if (roots && roots.length) {{
+      const blueIncomingIds = new Set(roots.map(r => r.id));
+      const rootIdSet = blueIncomingIds; // same nodes are considered roots for outgoing edges
       const sourceId = getNodeId(d.source);
       const targetId = getNodeId(d.target);
 
-      const isIncomingEdge = targetId === currentHoverNode.id;
-      const isOutgoingEdge = sourceId === currentHoverNode.id;
+      const isBlueIncoming = blueIncomingIds.has(targetId);
+      const isGreenOutgoing = rootIdSet.has(sourceId);
 
-      if (isIncomingEdge) {{
-        // Incoming edges to focal node are blue (both stroke and arrowhead)
-        // FIXED: Use style.setProperty with !important to override CSS
+      if (isBlueIncoming) {{
         line.style('stroke', '#1976d2', 'important')
             .attr('marker-end', 'url(#arrowhead-blue)');
-      }} else if (isOutgoingEdge) {{
-        // Outgoing edges from focal node are green
+      }} else if (isGreenOutgoing) {{
         line.style('stroke', '#0f0', 'important')
             .attr('marker-end', 'url(#arrowhead-green)');
       }} else {{
-        // Non-connected edges (shouldn't be visible in hover mode)
         line.style('stroke', '#0f0', 'important')
             .attr('marker-end', 'url(#arrowhead-green)');
       }}
@@ -353,36 +362,87 @@ function getNodeClique(nodeId) {{
   return connectedIds;
 }}
 
+// --- Centralized visibility management ---
+function getRoots() {{
+  const roots = [];
+  if (stickyFocusNode) roots.push(stickyFocusNode);
+  if (currentHoverNode && (!stickyFocusNode || currentHoverNode.id !== stickyFocusNode.id)) roots.push(currentHoverNode);
+  return roots;
+}}
+
+function computeVisibility() {{
+  const roots = getRoots();
+  let visibleNodeIds;
+  if (roots.length === 0) {{
+    visibleNodeIds = new Set(nodes.map(n => n.id));
+  }} else {{
+    visibleNodeIds = new Set();
+    roots.forEach(r => {{
+      getNodeClique(r.id).forEach(id => visibleNodeIds.add(id));
+    }});
+  }}
+
+  const rootIdSet = new Set(roots.map(r => r.id));
+  const visibleEdgeSet = new Set();
+  links.forEach(l => {{
+    const s = getNodeId(l.source);
+    const t = getNodeId(l.target);
+    const bothVisible = visibleNodeIds.has(s) && visibleNodeIds.has(t);
+    if (roots.length === 0) {{
+      if (bothVisible) visibleEdgeSet.add(l);
+    }} else if (ctrlHeld) {{
+      if (bothVisible) visibleEdgeSet.add(l);
+    }} else {{
+      if (bothVisible && (rootIdSet.has(s) || rootIdSet.has(t))) {{
+        visibleEdgeSet.add(l);
+      }}
+    }}
+  }});
+  // Return as array to avoid template curly brace confusion
+  return [visibleNodeIds, visibleEdgeSet, roots.length];
+}}
+
+function refreshVisibility() {{
+  if (!node || !link) return;
+  const res = computeVisibility();
+  const visibleNodeIds = res[0];
+  const visibleEdgeSet = res[1];
+  const rootsCount = res[2];
+
+  node.style('display', n => visibleNodeIds.has(n.id) ? '' : 'none');
+  link.style('display', l => visibleEdgeSet.has(l) ? '' : 'none')
+      .attr('stroke-width', rootsCount ? 16 : 8);
+
+  // Preserve gray/blue fills
+  node.filter(n => visibleNodeIds.has(n.id))
+      .select('circle')
+      .attr('fill', n => n.url ? '#1976d2' : '#333');
+
+  // Keep focused node border if present
+  node.select('circle')
+    .attr('stroke', n => stickyFocusNode && n.id === stickyFocusNode.id ? '#fff' : null)
+    .attr('stroke-width', n => stickyFocusNode && n.id === stickyFocusNode.id ? 4 : null);
+
+  simulation.force('link').distance(getStableLinkDistance);
+  simulation.alpha(Math.min(simulation.alpha() + 0.1, 0.3));
+  updateLinkDisplay();
+  setTimeout(updateLinkDisplay, 10);
+}}
+// --- End centralized visibility ---
+
 function applyStickyFocus(focusNode) {{
   stickyFocusNode = focusNode;
   currentHoverNode = focusNode;
 
-  const connectedIds = getNodeClique(focusNode.id);
-
-  node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
-  link.style('display', l => {{
-    const sourceId = getNodeId(l.source);
-    const targetId = getNodeId(l.target);
-    return (sourceId === focusNode.id || targetId === focusNode.id) ? '' : 'none';
-  }}).attr('stroke-width', 16);
-
-  // Preserve gray color for nodes without source paths, use blue for nodes with source paths
-  node.filter(n => connectedIds.has(n.id))
-      .select('circle')
-      .attr('fill', n => n.url ? '#1976d2' : '#333');
-
+  // Pin focused node where it is for stability
   focusNode.fx = focusNode.x;
   focusNode.fy = focusNode.y;
 
   simulation.force('link').distance(getStableLinkDistance);
   simulation.alpha(Math.min(simulation.alpha() + 0.3, 0.5));
 
-  node.select('circle')
-    .attr('stroke', n => n.id === focusNode.id ? '#fff' : null)
-    .attr('stroke-width', n => n.id === focusNode.id ? 4 : null);
-
-  updateLinkDisplay();
-  setTimeout(updateLinkDisplay, 10);
+  // Centralized visibility update
+  refreshVisibility();
 }}
 
 function clearStickyFocus() {{
@@ -392,23 +452,16 @@ function clearStickyFocus() {{
   stickyFocusNode = null;
   currentHoverNode = null;
 
-  node.style('display', '');
-  link.style('display', '')
-      .attr('stroke-width', 8);
-  node.select('circle').attr('fill', d => d.url ? '#1f77b4' : '#333');
-
-  prevStickyNode.fx = null;
-  prevStickyNode.fy = null;
+  if (prevStickyNode) {{
+    prevStickyNode.fx = null;
+    prevStickyNode.fy = null;
+  }}
 
   simulation.force('link').distance(getStableLinkDistance);
   simulation.alpha(Math.min(simulation.alpha() + 0.1, 0.3));
 
-  node.select('circle')
-    .attr('stroke', null)
-    .attr('stroke-width', null);
-
-  updateLinkDisplay();
-  setTimeout(updateLinkDisplay, 10);
+  // Centralized visibility update
+  refreshVisibility();
 }}
 
 function renderGraph() {{
@@ -574,82 +627,7 @@ function renderGraph() {{
     currentHoverNode = d;
     lastMouseX = event.clientX; lastMouseY = event.clientY;
     refreshHoverBox();
-    // If no sticky focus exists, use original hover behavior
-    if (!stickyFocusNode) {{
-      currentHoverNode = d;
-      const connectedIds = getNodeClique(d.id);
-
-      node.style('display', n => connectedIds.has(n.id) ? '' : 'none');
-      link.style('display', l => {{
-        const sourceId = getNodeId(l.source);
-        const targetId = getNodeId(l.target);
-        return (sourceId === d.id || targetId === d.id) ? '' : 'none';
-      }}).attr('stroke-width', 16);
-
-      node.filter(n => connectedIds.has(n.id))
-          .select('circle')
-          .attr('fill', n => n.url ? '#1976d2' : '#333');
-
-      d.fx = d.x;
-      d.fy = d.y;
-      simulation.force('link').distance(getStableLinkDistance);
-      simulation.alpha(Math.min(simulation.alpha() + 0.3, 0.5));
-      updateLinkDisplay();
-      setTimeout(updateLinkDisplay, 10);
-      return;
-    }}
-
-    // Within focused mode: show combined cliques
-    if (d.id === stickyFocusNode.id) {{
-      // Hovering the focused node itself - no additional action needed
-      return;
-    }}
-
-    // Check if hovered node is part of focused node's clique
-    const focusedClique = getNodeClique(stickyFocusNode.id);
-    if (!focusedClique.has(d.id)) {{
-      // Hovered node is not in focused clique - ignore hover
-      return;
-    }}
-
-    // Get combined cliques: focused node's clique + hovered node's clique
-    const hoveredClique = getNodeClique(d.id);
-    const combinedClique = new Set([...focusedClique, ...hoveredClique]);
-
-    // Show combined cliques
-    node.style('display', n => combinedClique.has(n.id) ? '' : 'none');
-
-    // Show edges: within combined clique OR between focused and hovered cliques
-    link.style('display', l => {{
-      const sourceId = getNodeId(l.source);
-      const targetId = getNodeId(l.target);
-
-      // Edge within combined clique
-      if (combinedClique.has(sourceId) && combinedClique.has(targetId)) {{
-        return '';
-      }}
-
-      // Cross-clique edges: between focused clique and hovered clique
-      if ((focusedClique.has(sourceId) && hoveredClique.has(targetId)) ||
-          (hoveredClique.has(sourceId) && focusedClique.has(targetId))) {{
-        return '';
-      }}
-
-      return 'none';
-    }}).attr('stroke-width', 16);
-
-    // Update node colors
-    node.filter(n => combinedClique.has(n.id))
-        .select('circle')
-        .attr('fill', n => n.url ? '#1976d2' : '#333');
-
-    // Keep focused node border
-    node.select('circle')
-      .attr('stroke', n => n.id === stickyFocusNode.id ? '#fff' : null)
-      .attr('stroke-width', n => n.id === stickyFocusNode.id ? 4 : null);
-
-    updateLinkDisplay();
-    setTimeout(updateLinkDisplay, 10);
+    refreshVisibility();
   }}
 
 function nodeMouseOut(event, d) {{
@@ -660,42 +638,7 @@ function nodeMouseOut(event, d) {{
     currentHoverNode = null;
     hoverGroupEl = null;
     refreshHoverBox();
-    // Only clear hover focus if no sticky focus exists
-    if (!stickyFocusNode) {{
-      currentHoverNode = null;
-      node.style('display', '');
-      link.style('display', '').attr('stroke-width', 8);
-      node.select('circle').attr('fill', d => d.url ? '#1f77b4' : '#333');
-      d.fx = null;
-      d.fy = null;
-      simulation.force('link').distance(getStableLinkDistance);
-      simulation.alpha(Math.min(simulation.alpha() + 0.1, 0.3));
-      updateLinkDisplay();
-      setTimeout(updateLinkDisplay, 10);
-      return;
-    }}
-
-    // Within focused mode: restore just the focused node's clique
-    const focusedClique = getNodeClique(stickyFocusNode.id);
-
-    node.style('display', n => focusedClique.has(n.id) ? '' : 'none');
-    link.style('display', l => {{
-      const sourceId = getNodeId(l.source);
-      const targetId = getNodeId(l.target);
-      return (sourceId === stickyFocusNode.id || targetId === stickyFocusNode.id) ? '' : 'none';
-    }}).attr('stroke-width', 16);
-
-    node.filter(n => focusedClique.has(n.id))
-        .select('circle')
-        .attr('fill', n => n.url ? '#1976d2' : '#333');
-
-    // Keep focused node border
-    node.select('circle')
-      .attr('stroke', n => n.id === stickyFocusNode.id ? '#fff' : null)
-      .attr('stroke-width', n => n.id === stickyFocusNode.id ? 4 : null);
-
-    updateLinkDisplay();
-    setTimeout(updateLinkDisplay, 10);
+    refreshVisibility();
   }}
   // --- Focused Node History Mechanism ---
   let focusHistory = [];
@@ -889,26 +832,28 @@ window.addEventListener('mousemove', function(e) {{
   if (hoverBoxNode) {{ positionHoverBox(lastMouseX, lastMouseY); }}
 }});
 
-// Track Shift key for hover box show/hide
-document.addEventListener('keydown', function(e) {{
-  if (e.key === 'Shift') {{
-    if (shiftHeld) {{
-      refreshHoverBox();
-    }} else {{
-      shiftHeld = true;
-      console.log(currentHoverNode);
-      if (currentHoverNode) {{
-        showHoverBoxForNode(currentHoverNode, hoverGroupEl, lastMouseX, lastMouseY);
-      }}
-    }}
-  }}
-}});
-
-document.addEventListener('keyup', function(e) {{
-  if (e.key === 'Shift') {{
-    console.log("shift key being released")
-    shiftHeld = false;
+// Unified modifier tracking (Shift, Ctrl) for hoverbox and visibility
+function updateModifiersFromEvent(e) {{
+  const newShift = !!e.shiftKey;
+  const newCtrl = !!e.ctrlKey;
+  const changed = (newShift !== shiftHeld) || (newCtrl !== ctrlHeld);
+  if (changed) {{
+    shiftHeld = newShift;
+    ctrlHeld = newCtrl;
     refreshHoverBox();
+    refreshVisibility();
+  }}
+}}
+
+document.addEventListener('keydown', updateModifiersFromEvent, true);
+
+document.addEventListener('keyup', updateModifiersFromEvent, true);
+
+window.addEventListener('blur', function() {{
+  if (shiftHeld || ctrlHeld) {{
+    shiftHeld = false; ctrlHeld = false;
+    refreshHoverBox();
+    refreshVisibility();
   }}
 }});
 
@@ -946,7 +891,7 @@ document.addEventListener('keydown', function(event) {{
 
     const feedbackDiv = document.getElementById('copyFeedback');
     feedbackDiv.style.background = '#FF9800';
-    feedbackDiv.textContent = 'edge lengths nudged up globally (' + (userDistanceMultiplier * 100).toFixed(0) + '%)';
+    feedbackDiv.textContent = 'edge lengths nudged globally up (' + (userDistanceMultiplier * 100).toFixed(0) + '%)';
     feedbackDiv.style.display = 'block';
     feedbackDiv.style.opacity = '1';
     setTimeout(() => {{
@@ -967,7 +912,7 @@ document.addEventListener('keydown', function(event) {{
 
     const feedbackDiv = document.getElementById('copyFeedback');
     feedbackDiv.style.background = '#FF9800';
-    feedbackDiv.textContent = 'edge lengths nudged down globally (' + (userDistanceMultiplier * 100).toFixed(0) + '%)';
+    feedbackDiv.textContent = 'edge lengths nudged globally down (' + (userDistanceMultiplier * 100).toFixed(0) + '%)';
     feedbackDiv.style.display = 'block';
     feedbackDiv.style.opacity = '1';
     setTimeout(() => {{
@@ -983,6 +928,8 @@ document.addEventListener('keydown', function(event) {{
 }});
 
 renderGraph();
+// Initialize visibility based on current state (no focus => show all)
+refreshVisibility();
 </script>
 </body>
 </html>
