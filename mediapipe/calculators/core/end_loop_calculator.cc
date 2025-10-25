@@ -36,6 +36,14 @@ typedef EndLoopCalculator<std::vector<::mediapipe::NormalizedRect>>
     EndLoopNormalizedRectCalculator;
 REGISTER_CALCULATOR(EndLoopNormalizedRectCalculator);
 
+typedef EndLoopCalculator<std::vector<::mediapipe::NormalizedRect>>
+    EndLoopHandRectangleFromDetectionCalculator;
+REGISTER_CALCULATOR(EndLoopHandRectangleFromDetectionCalculator);
+
+typedef EndLoopCalculator<std::vector<::mediapipe::NormalizedRect>>
+    EndLoopHandRectangleFromLandmarksCalculator;
+REGISTER_CALCULATOR(EndLoopHandRectangleFromLandmarksCalculator);
+
 typedef EndLoopCalculator<std::vector<::mediapipe::LandmarkList>>
     EndLoopLandmarkListVectorCalculator;
 REGISTER_CALCULATOR(EndLoopLandmarkListVectorCalculator);
