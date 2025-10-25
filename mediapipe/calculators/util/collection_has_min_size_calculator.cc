@@ -25,62 +25,6 @@
 
 namespace mediapipe {
 
-class HeadCalculator : public CollectionHasMinSizeCalculator<std::vector<mediapipe::NormalizedRect>> {
- public:
-  absl::Status Open(CalculatorContext* cc) override {
-    // Call base Open to set min_size_ from options or side packet.
-    MP_RETURN_IF_ERROR(CollectionHasMinSizeCalculator::Open(cc));
-    // Check shared config for "num_hands".
-    min_size_ = GetSharedState().NUM_HANDS;
-    return absl::OkStatus();
-  }
-
-  /// this function now replaces the following calculator's work, and no longer needs to inherit CollectionHasMinSizeCalculator's Process method.
-  ///
-  /// - NormalizedRectVectorHasMinSizeCalculator: Determines if an input vector of NormalizedRect has a size greater than or equal to the globally defined num_hands.
-  /// - GateCalculator: Drops the incoming image if enough hands have already been identified from the previous image. Otherwise, passes the incoming image through to trigger a new round of palm detection.
-  ///
-  /// *  uses shared state as stream input and stream output
-  /// ** algorithm imporvement note: this is a little coarse, but it works as a great baseline
-  absl::Status Process(CalculatorContext* cc) override {
-
-    ABSL_LOG(INFO) << "HeadCalculator starting to process";
-
-    static constexpr api2::Input<api2::OneOf<Image, ImageFrame>>::Optional kIn{"IMAGE"};
-    MP_ASSIGN_OR_RETURN(GetSharedState().image, GetInputImage(kIn(cc)));
-    // trigger palm detection, as we don't have detection signal from the previous frame's landmarks processing for the amount of expected hands.
-    // AssociationNormRectCalculator may later reconcile the rects from palm detection with those from landmarks tracking, but that is not this
-    // calculator's concern.
-    ABSL_LOG(INFO) << "HeadCalculator prev_hand_rects_from_landmarks.size(): " << GetSharedState().prev_hand_rects_from_landmarks.size();
-    if (GetSharedState().prev_hand_rects_from_landmarks.size() < min_size_) {
-
-      GetSharedState().palm_detection_image = GetSharedState().image;
-
-      // can't pass the model and just expect it to funnel to the right inferencer object,
-      // this is not some small param that can be passed at runtime as an input packet,
-      // swallowing an inference calculator is not possible hence, but only a full liberation
-      // of it which we defer for now to the last mile.
-      // GetSharedState().inference_model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
-      ABSL_LOG(INFO) << "palm detection is being triggered";
-    } else {
-
-      // avoid applying hand detection as we have an amount of hand detections from the previous frame's landmarks processing
-      // which is the same or more than the amount of hands our pipeline has been configured to track.
-      GetSharedState().palm_detection_image = nullptr;
-      ABSL_LOG(INFO) << "skipping palm detection as " << GetSharedState().prev_hand_rects_from_landmarks.size() << " hands have been detected from the previous frame's landmarks processing.";
-
-      if (GetSharedState().prev_hand_rects_from_landmarks.size() > min_size_) {
-        ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks (" << GetSharedState().prev_hand_rects_from_landmarks.size() << ") is larger than the number of hands being tracked (" << min_size_ << ") which is unexpected.";
-      }
-    }
-
-    return CollectionHasMinSizeCalculator::Process(cc);
-  }
-
-
-};
-REGISTER_CALCULATOR(HeadCalculator);
-
 typedef CollectionHasMinSizeCalculator<
     std::vector<mediapipe::NormalizedLandmarkList>>
     NormalizedLandmarkListVectorHasMinSizeCalculator;

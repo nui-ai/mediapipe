@@ -58,17 +58,17 @@ node {
 # for the previous image. Otherwise, passes the incoming image through to trigger a new round of
 # palm detection. left around till final stage of liberation ― to keep all calculators' Process
 # method being called till the final switch.
-node {
-  calculator: "GateCalculator"
-  input_stream: "image"
-  input_stream: "DISALLOW:prev_has_enough_hands"
-  output_stream: "palm_detection_image"
-  options: {
-    [mediapipe.GateCalculatorOptions.ext] {
-      empty_packets_as_allow: true
-    }
-  }
-}
+#node {
+#  calculator: "GateCalculator"
+#  input_stream: "image"
+#  input_stream: "DISALLOW:prev_has_enough_hands"
+#  output_stream: "palm_detection_image"
+#  options: {
+#    [mediapipe.GateCalculatorOptions.ext] {
+#      empty_packets_as_allow: true
+#    }
+#  }
+#}
 
 ### beginning of the original palm detection subgraph's nodes ###
 
