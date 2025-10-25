@@ -126,7 +126,7 @@ node {
 
 # Extracts image size.
 node {
-  calculator: "ImagePropertiesCalculator" # 1
+  calculator: "ImagePropertiesCalculator"
   input_stream: "IMAGE:palm_detection_image"
   output_stream: "SIZE:palm_detection_image_size"
 }
@@ -223,7 +223,7 @@ node {
 
 # Extracts the size of the image
 node {
-  calculator: "ImagePropertiesCalculator" # 2
+  calculator: "ImagePropertiesCalculator2"
   input_stream: "IMAGE_CPU:image"
   output_stream: "SIZE:image_size"
 }

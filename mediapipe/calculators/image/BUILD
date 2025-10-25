@@ -534,6 +534,25 @@ cc_library(
     alwayslink = 1,
 )
 
+cc_library(
+    name = "image_properties_calculator2",
+    srcs = ["image_properties_calculator2.cc"],
+    deps = [
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/api2:node",
+        "//mediapipe/framework/formats:image",
+        "//mediapipe/framework/formats:image_frame",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+    ] + select({
+        "//mediapipe/gpu:disable_gpu": [],
+        "//conditions:default": [
+            "//mediapipe/gpu:gpu_buffer",
+        ],
+    }),
+    alwayslink = 1,
+)
+
 cc_test(
     name = "image_properties_calculator_test",
     srcs = ["image_properties_calculator_test.cc"],
