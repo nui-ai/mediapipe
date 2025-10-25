@@ -159,8 +159,6 @@ class ImageToTensorCalculator : public Node {
     }
 
     MP_ASSIGN_OR_RETURN(auto image, GetInputImage(kIn(cc)));
-    int tensor_width = params_.output_width.value_or(image->width());
-    int tensor_height = params_.output_height.value_or(image->height());
 
     options_ = ImageToTensorCalculatorOptions();
     options_.set_output_tensor_width(192);
@@ -170,8 +168,8 @@ class ImageToTensorCalculator : public Node {
     options_.mutable_output_tensor_float_range()->set_max(1.0f);
     options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_ZERO);
     params_ = GetOutputTensorParams(options_);
-    tensor_width = params_.output_width.value_or(image->width());
-    tensor_height = params_.output_height.value_or(image->height());
+    auto tensor_width = params_.output_width.value_or(image->width());
+    auto tensor_height = params_.output_height.value_or(image->height());
 
     ImageToTensorCoreResult core_result;
     MP_RETURN_IF_ERROR(ImageToTensorCalculatorCore(
