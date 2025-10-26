@@ -60,27 +60,45 @@ absl::Status InitConverterIfNecessary(
 } // namespace
 
 namespace api2 {
-absl::Status ImageToTensorCalculatorCore(
-    const mediapipe::Image& image,
+
+ImageToTensorCalculatorCore::ImageToTensorCalculatorCore(
     const mediapipe::ImageToTensorCalculatorOptions& options,
     int tensor_width,
     int tensor_height,
     const mediapipe::OutputTensorParams& params,
     std::unique_ptr<mediapipe::ImageToTensorConverter>& gpu_converter,
     std::unique_ptr<mediapipe::ImageToTensorConverter>& cpu_converter,
-    mediapipe::MemoryManager* memory_manager,
+    mediapipe::MemoryManager* memory_manager)
+    : options_(options),
+      tensor_width_(tensor_width),
+      tensor_height_(tensor_height),
+      params_(params),
+      gpu_converter_(gpu_converter),
+      cpu_converter_(cpu_converter),
+      memory_manager_(memory_manager) {}
+
+absl::Status ImageToTensorCalculatorCore::Process(
+    const mediapipe::Image& image,
     absl::optional<mediapipe::NormalizedRect> norm_rect,
     ImageToTensorCoreResult* result) {
+
+  // ABSL_LOG(INFO) << "image dimensions: " << image.width() << "x" << image.height();
+  // if (norm_rect) {
+  //   ABSL_LOG(INFO) << "norm_rect: " << norm_rect.value().DebugString();
+  // } else {
+  //   ABSL_LOG(INFO) << "no norm_rect provided";
+  // }
   mediapipe::RotatedRect roi = mediapipe::GetRoi(image.width(), image.height(), norm_rect);
-  MP_ASSIGN_OR_RETURN(auto padding, mediapipe::PadRoi(tensor_width, tensor_height, options.keep_aspect_ratio(), &roi));
+  MP_ASSIGN_OR_RETURN(auto padding, mediapipe::PadRoi(tensor_width_, tensor_height_, options_.keep_aspect_ratio(), &roi));
   result->padding = padding;
   mediapipe::GetRotatedSubRectToRectTransformMatrix(
       roi, image.width(), image.height(), /*flip_horizontally=*/false, &result->matrix);
-  MP_RETURN_IF_ERROR(InitConverterIfNecessary(image, options, params, gpu_converter, cpu_converter));
-  mediapipe::Tensor::ElementType output_tensor_type = mediapipe::GetOutputTensorType(image.UsesGpu(), params);
-  mediapipe::Tensor tensor(output_tensor_type, {1, tensor_height, tensor_width, mediapipe::GetNumOutputChannels(image)}, memory_manager);
-  MP_RETURN_IF_ERROR((image.UsesGpu() ? gpu_converter.get() : cpu_converter.get())->Convert(
-      image, roi, params.range_min, params.range_max, 0, tensor));
+  MP_RETURN_IF_ERROR(InitConverterIfNecessary(image, options_, params_, gpu_converter_, cpu_converter_));
+  mediapipe::Tensor::ElementType output_tensor_type = mediapipe::GetOutputTensorType(image.UsesGpu(), params_);
+  mediapipe::Tensor tensor(output_tensor_type, {1, tensor_height_, tensor_width_, mediapipe::GetNumOutputChannels(image)}, memory_manager_);
+
+  MP_RETURN_IF_ERROR((image.UsesGpu() ? gpu_converter_.get() : cpu_converter_.get())->Convert(
+      image, roi, params_.range_min, params_.range_max, 0, tensor));
   result->tensor = std::move(tensor);
   result->tensors.clear();
   if (result->tensor) {

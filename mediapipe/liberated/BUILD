@@ -12,6 +12,7 @@ cc_library(
         "//mediapipe/calculators/util:collection_has_min_size_calculator",
         "//mediapipe/framework:calculator_framework",
         "@com_google_absl//absl/status",
+        "//mediapipe/calculators/tensor:image_to_tensor_calculator_core"
     ],
     alwayslink = 1,
 )

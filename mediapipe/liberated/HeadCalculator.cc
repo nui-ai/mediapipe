@@ -1,20 +1,48 @@
 #include "HeadCalculator.h"
 #include <vector>
-#include "mediapipe/calculators/util/collection_has_min_size_calculator.h"
-#include "mediapipe/calculators/tensor/image_to_tensor_utils.h"
+#include <memory>
+#include "mediapipe/framework/memory_manager.h"
+#include "mediapipe/framework/memory_manager_service.h"
 #include "mediapipe/framework/api2/port.h"
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/formats/classification.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
+#include "mediapipe/calculators/tensor/image_to_tensor_utils.h"
 #include "mediapipe/calculators/util/collection_has_min_size_calculator.h"
+#include "mediapipe/calculators/tensor/image_to_tensor_calculator_core.h"
 
 namespace mediapipe {
 
   class HeadCalculator : public CollectionHasMinSizeCalculator<std::vector<NormalizedRect>> {
+
+    private:
+      std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
+      std::unique_ptr<ImageToTensorConverter> gpu_converter_;
+      std::unique_ptr<ImageToTensorConverter> cpu_converter_;
+
     public:
       absl::Status Open(CalculatorContext* cc) override {
         min_size_ = GetSharedState().NUM_HANDS;
+        MemoryManager* memory_manager_ = nullptr;
+        if (cc->Service(kMemoryManagerService).IsAvailable()) {
+          memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();
+        }
+        // Configure fixed 192x192 core options.
+        auto options_ = ImageToTensorCalculatorOptions();
+        options_.set_output_tensor_width(192);
+        options_.set_output_tensor_height(192);
+        options_.set_keep_aspect_ratio(true);
+        options_.mutable_output_tensor_float_range()->set_min(0.0f);
+        options_.mutable_output_tensor_float_range()->set_max(1.0f);
+        options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_ZERO);
+        auto params_ = GetOutputTensorParams(options_);
+        int tensor_width = params_.output_width.value_or(0);
+        int tensor_height = params_.output_height.value_or(0);
+        image_to_tensor_core_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
+            options_, tensor_width, tensor_height, params_,
+            gpu_converter_, cpu_converter_, memory_manager_);
+
         return absl::OkStatus();
       }
 
@@ -28,14 +56,26 @@ namespace mediapipe {
         static constexpr api2::Input<api2::OneOf<Image, ImageFrame>>::Optional kIn{"IMAGE"};
         MP_ASSIGN_OR_RETURN(GetSharedState().image, GetInputImage(kIn(cc)));
 
-        auto image = GetSharedState().image;
+        std::shared_ptr<const mediapipe::Image> image = GetSharedState().image;
         ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks: " << GetSharedState().prev_hand_rects_from_landmarks.size();
         if (GetSharedState().prev_hand_rects_from_landmarks.size() < min_size_) {
 
           GetSharedState().palm_detection_image = GetSharedState().image;
           ABSL_LOG(INFO) << "palm detection is being triggered";
 
-          image_to_tensor(&image);
+          api2::ImageToTensorCoreResult core_result;
+          absl::optional<mediapipe::NormalizedRect> norm_rect = absl::nullopt;
+          MP_RETURN_IF_ERROR(image_to_tensor_core_->Process(*image, norm_rect, &core_result));
+
+          // if (kOutMatrix(cc).IsConnected()) { kOutMatrix(cc).Send(core_result.matrix); }
+          // if (kOutLetterboxPadding(cc).IsConnected()) { kOutLetterboxPadding(cc).Send(core_result.padding); }
+          // if (kOutTensors(cc).IsConnected()) {
+          //   auto result = std::make_unique<std::vector<Tensor>>();
+          //   *result = std::move(core_result.tensors);
+          //   kOutTensors(cc).Send(std::move(result));
+          // } else if (core_result.tensor) {
+          //   kOutTensor(cc).Send(std::move(*core_result.tensor));
+          // }
 
         } else {
 
@@ -50,6 +90,7 @@ namespace mediapipe {
         }
 
         return CollectionHasMinSizeCalculator::Process(cc);
+        return absl::OkStatus();
       }
 
 

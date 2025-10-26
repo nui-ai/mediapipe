@@ -12,26 +12,42 @@
 #include "absl/types/optional.h"
 
 namespace mediapipe {
-    namespace api2 {
+namespace api2 {
 
-        struct ImageToTensorCoreResult {
-            std::array<float, 4> padding;
-            std::array<float, 16> matrix;
-            std::vector<Tensor> tensors;
-            std::optional<Tensor> tensor;
-        };
+struct ImageToTensorCoreResult {
+  std::array<float, 4> padding;
+  std::array<float, 16> matrix;
+  std::vector<Tensor> tensors;
+  std::optional<Tensor> tensor;
+};
 
-        absl::Status ImageToTensorCalculatorCore(
-            const mediapipe::Image& image,
-            const mediapipe::ImageToTensorCalculatorOptions& options,
-            int tensor_width,
-            int tensor_height,
-            const OutputTensorParams& params,
-            std::unique_ptr<ImageToTensorConverter>& gpu_converter,
-            std::unique_ptr<ImageToTensorConverter>& cpu_converter,
-            mediapipe::MemoryManager* memory_manager,
-            absl::optional<mediapipe::NormalizedRect> norm_rect,
-            ImageToTensorCoreResult* result);
+// Refactored into a class: constructor captures configuration and resources;
+// Process executes on a given image and optional normalized rect.
+class ImageToTensorCalculatorCore {
+ public:
+  ImageToTensorCalculatorCore(
+      const mediapipe::ImageToTensorCalculatorOptions& options,
+      int tensor_width,
+      int tensor_height,
+      const OutputTensorParams& params,
+      std::unique_ptr<ImageToTensorConverter>& gpu_converter,
+      std::unique_ptr<ImageToTensorConverter>& cpu_converter,
+      mediapipe::MemoryManager* memory_manager);
 
-    }
-}
+  absl::Status Process(const mediapipe::Image& image,
+                       absl::optional<mediapipe::NormalizedRect> norm_rect,
+                       ImageToTensorCoreResult* result);
+
+ private:
+  const mediapipe::ImageToTensorCalculatorOptions options_;
+  const int tensor_width_;
+  const int tensor_height_;
+  const OutputTensorParams params_;
+  // References to converters so the core can lazily initialize them.
+  std::unique_ptr<ImageToTensorConverter>& gpu_converter_;
+  std::unique_ptr<ImageToTensorConverter>& cpu_converter_;
+  mediapipe::MemoryManager* memory_manager_ = nullptr;
+};
+
+}  // namespace api2
+}  // namespace mediapipe

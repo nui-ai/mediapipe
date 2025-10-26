@@ -141,8 +141,20 @@ class ImageToTensorCalculator2 : public Node {
     if (cc->Service(kMemoryManagerService).IsAvailable()) {
       memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();
     }
-    options_ = cc->Options<mediapipe::ImageToTensorCalculatorOptions>();
+    // Configure fixed 224x224 core options.
+    options_ = ImageToTensorCalculatorOptions();
+    options_.set_output_tensor_width(224);
+    options_.set_output_tensor_height(224);
+    options_.set_keep_aspect_ratio(true);
+    options_.mutable_output_tensor_float_range()->set_min(0.0f);
+    options_.mutable_output_tensor_float_range()->set_max(1.0f);
+    options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_UNSPECIFIED);
     params_ = GetOutputTensorParams(options_);
+    int tensor_width = params_.output_width.value_or(0);
+    int tensor_height = params_.output_height.value_or(0);
+    core_ = std::make_unique<ImageToTensorCalculatorCore>(
+        options_, tensor_width, tensor_height, params_,
+        gpu_converter_, cpu_converter_, memory_manager_);
     return absl::OkStatus();
   }
 
@@ -159,32 +171,19 @@ class ImageToTensorCalculator2 : public Node {
     }
 
     MP_ASSIGN_OR_RETURN(auto image, GetInputImage(kIn(cc)));
-    int tensor_width = params_.output_width.value_or(image->width());
-    int tensor_height = params_.output_height.value_or(image->height());
 
-    options_ = ImageToTensorCalculatorOptions();
-    options_.set_output_tensor_width(224);
-    options_.set_output_tensor_height(224);
-    options_.set_keep_aspect_ratio(true);
-    options_.mutable_output_tensor_float_range()->set_min(0.0f);
-    options_.mutable_output_tensor_float_range()->set_max(1.0f);
-    options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_UNSPECIFIED);
-    params_ = GetOutputTensorParams(options_);
-    tensor_width = params_.output_width.value_or(image->width());
-    tensor_height = params_.output_height.value_or(image->height());
+    // If width/height were unspecified in options, default to the image size.
+    if (params_.output_width == absl::nullopt || params_.output_height == absl::nullopt) {
+      // Recreate core with image-dependent dimensions.
+      int tensor_width = params_.output_width.value_or(image->width());
+      int tensor_height = params_.output_height.value_or(image->height());
+      core_ = std::make_unique<ImageToTensorCalculatorCore>(
+          options_, tensor_width, tensor_height, params_,
+          gpu_converter_, cpu_converter_, memory_manager_);
+    }
 
     ImageToTensorCoreResult core_result;
-    MP_RETURN_IF_ERROR(ImageToTensorCalculatorCore(
-      *image,
-      options_,
-      tensor_width,
-      tensor_height,
-      params_,
-      gpu_converter_,
-      cpu_converter_,
-      memory_manager_,
-      norm_rect,
-      &core_result));
+    MP_RETURN_IF_ERROR(core_->Process(*image, norm_rect, &core_result));
 
     if (kOutMatrix(cc).IsConnected()) { kOutMatrix(cc).Send(core_result.matrix); }
     if (kOutLetterboxPadding(cc).IsConnected()) { kOutLetterboxPadding(cc).Send(core_result.padding); }
@@ -199,79 +198,7 @@ class ImageToTensorCalculator2 : public Node {
   }
 
  private:
-  absl::Status InitConverterIfNecessary(CalculatorContext* cc,
-                                        const Image& image) {
-    // Lazy initialization of the GPU or CPU converter.
-    if (image.UsesGpu()) {
-      if (!params_.is_float_output) {
-        return absl::UnimplementedError(
-            "ImageToTensorConverter for the input GPU image currently doesn't "
-            "support quantization.");
-      }
-      if (!gpu_converter_) {
-#if !MEDIAPIPE_DISABLE_GPU
-#if MEDIAPIPE_METAL_ENABLED
-        MP_ASSIGN_OR_RETURN(
-            gpu_converter_,
-            CreateMetalConverter(cc, GetBorderMode(options_.border_mode())));
-#elif MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
-        MP_ASSIGN_OR_RETURN(bool input_starts_at_bottom,
-                            IsGpuOriginAtBottom(options_.gpu_origin()));
-        MP_ASSIGN_OR_RETURN(gpu_converter_,
-                            CreateImageToGlBufferTensorConverter(
-                                cc, input_starts_at_bottom,
-                                GetBorderMode(options_.border_mode())));
-#else
-        if (IsWebGpuAvailable()) {
-#if MEDIAPIPE_USE_WEBGPU
-          MP_ASSIGN_OR_RETURN(gpu_converter_,
-                              CreateImageToWebGpuTextureTensorConverter(cc));
-#endif  // MEDIAPIPE_USE_WEBGPU
-        }
-#if MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_30
-        if (!gpu_converter_) {
-          MP_ASSIGN_OR_RETURN(bool input_starts_at_bottom,
-                              IsGpuOriginAtBottom(options_.gpu_origin()));
-          MP_ASSIGN_OR_RETURN(gpu_converter_,
-                              CreateImageToGlTextureTensorConverter(
-                                  cc, input_starts_at_bottom,
-                                  GetBorderMode(options_.border_mode())));
-        }
-#endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_30
-        if (!gpu_converter_) {
-          return absl::UnimplementedError(
-              "ImageToTensorConverter for the input GPU image is unavailable.");
-        }
-#endif  // MEDIAPIPE_METAL_ENABLED
-#endif  // !MEDIAPIPE_DISABLE_GPU
-      }
-    } else {
-      if (!cpu_converter_) {
-#if !MEDIAPIPE_DISABLE_OPENCV
-        MP_ASSIGN_OR_RETURN(
-            cpu_converter_,
-            CreateOpenCvConverter(
-                cc, GetBorderMode(options_.border_mode()),
-                GetOutputTensorType(/*uses_gpu=*/false, params_)));
-// TODO: FrameBuffer-based converter needs to call GetGpuBuffer()
-// to get access to a FrameBuffer view. Investigate if GetGpuBuffer() can be
-// made available even with MEDIAPIPE_DISABLE_GPU set.
-#elif MEDIAPIPE_ENABLE_HALIDE
-        MP_ASSIGN_OR_RETURN(
-            cpu_converter_,
-            CreateFrameBufferConverter(
-                cc, GetBorderMode(options_.border_mode()),
-                GetOutputTensorType(/*uses_gpu=*/false, params_)));
-#else
-        ABSL_LOG(FATAL) << "Cannot create image to tensor CPU converter since "
-                           "MEDIAPIPE_DISABLE_OPENCV is defined and "
-                           "MEDIAPIPE_ENABLE_HALIDE is not defined.";
-#endif  // !MEDIAPIPE_DISABLE_HALIDE
-      }
-    }
-    return absl::OkStatus();
-  }
-
+  std::unique_ptr<ImageToTensorCalculatorCore> core_;
   std::unique_ptr<ImageToTensorConverter> gpu_converter_;
   std::unique_ptr<ImageToTensorConverter> cpu_converter_;
   mediapipe::ImageToTensorCalculatorOptions options_;

@@ -141,8 +141,21 @@ class ImageToTensorCalculator : public Node {
     if (cc->Service(kMemoryManagerService).IsAvailable()) {
       memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();
     }
-    options_ = cc->Options<mediapipe::ImageToTensorCalculatorOptions>();
+    // Configure fixed 192x192 core options.
+    options_ = ImageToTensorCalculatorOptions();
+    options_.set_output_tensor_width(192);
+    options_.set_output_tensor_height(192);
+    options_.set_keep_aspect_ratio(true);
+    options_.mutable_output_tensor_float_range()->set_min(0.0f);
+    options_.mutable_output_tensor_float_range()->set_max(1.0f);
+    options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_ZERO);
     params_ = GetOutputTensorParams(options_);
+    // Defer image-dependent dims to runtime; default to provided output sizes.
+    int tensor_width = params_.output_width.value_or(0);
+    int tensor_height = params_.output_height.value_or(0);
+    core_ = std::make_unique<ImageToTensorCalculatorCore>(
+        options_, tensor_width, tensor_height, params_,
+        gpu_converter_, cpu_converter_, memory_manager_);
     return absl::OkStatus();
   }
 
@@ -160,29 +173,18 @@ class ImageToTensorCalculator : public Node {
 
     MP_ASSIGN_OR_RETURN(auto image, GetInputImage(kIn(cc)));
 
-    options_ = ImageToTensorCalculatorOptions();
-    options_.set_output_tensor_width(192);
-    options_.set_output_tensor_height(192);
-    options_.set_keep_aspect_ratio(true);
-    options_.mutable_output_tensor_float_range()->set_min(0.0f);
-    options_.mutable_output_tensor_float_range()->set_max(1.0f);
-    options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_ZERO);
-    params_ = GetOutputTensorParams(options_);
-    auto tensor_width = params_.output_width.value_or(image->width());
-    auto tensor_height = params_.output_height.value_or(image->height());
+    // If width/height were unspecified in options, default to the image size.
+    if (params_.output_width == absl::nullopt || params_.output_height == absl::nullopt) {
+      // Recreate core with image-dependent dimensions.
+      int tensor_width = params_.output_width.value_or(image->width());
+      int tensor_height = params_.output_height.value_or(image->height());
+      core_ = std::make_unique<ImageToTensorCalculatorCore>(
+          options_, tensor_width, tensor_height, params_,
+          gpu_converter_, cpu_converter_, memory_manager_);
+    }
 
     ImageToTensorCoreResult core_result;
-    MP_RETURN_IF_ERROR(ImageToTensorCalculatorCore(
-      *image,
-      options_,
-      tensor_width,
-      tensor_height,
-      params_,
-      gpu_converter_,
-      cpu_converter_,
-      memory_manager_,
-      norm_rect,
-      &core_result));
+    MP_RETURN_IF_ERROR(core_->Process(*image, norm_rect, &core_result));
 
     if (kOutMatrix(cc).IsConnected()) { kOutMatrix(cc).Send(core_result.matrix); }
     if (kOutLetterboxPadding(cc).IsConnected()) { kOutLetterboxPadding(cc).Send(core_result.padding); }
@@ -197,7 +199,7 @@ class ImageToTensorCalculator : public Node {
   }
 
  private:
-
+  std::unique_ptr<ImageToTensorCalculatorCore> core_;
   std::unique_ptr<ImageToTensorConverter> gpu_converter_;
   std::unique_ptr<ImageToTensorConverter> cpu_converter_;
   mediapipe::ImageToTensorCalculatorOptions options_;
