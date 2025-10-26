@@ -186,7 +186,9 @@ class ImageToTensorCalculator : public Node {
     ImageToTensorCoreResult core_result;
     MP_RETURN_IF_ERROR(core_->Process(*image, norm_rect, &core_result));
 
-    if (kOutMatrix(cc).IsConnected()) { kOutMatrix(cc).Send(core_result.matrix); }
+    if (kOutMatrix(cc).IsConnected()) {
+      kOutMatrix(cc).Send(core_result.matrix);
+    }
     if (kOutLetterboxPadding(cc).IsConnected()) { kOutLetterboxPadding(cc).Send(core_result.padding); }
     if (kOutTensors(cc).IsConnected()) {
       auto result = std::make_unique<std::vector<Tensor>>();

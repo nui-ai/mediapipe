@@ -56,6 +56,8 @@ class EndLoopCalculator : public CalculatorBase {
         input_stream_collection_.reset(new IterableT);
       }
 
+      ABSL_LOG(INFO) << "starting end looper processing of packet into output stream " << cc->Outputs().Tag("ITERABLE").Name();
+
       if constexpr (std::is_copy_constructible_v<ItemT>) {
         input_stream_collection_->push_back(
             cc->Inputs().Tag("ITEM").Get<ItemT>());
@@ -78,10 +80,13 @@ class EndLoopCalculator : public CalculatorBase {
       Timestamp loop_control_ts =
           cc->Inputs().Tag("BATCH_END").template Get<Timestamp>();
       if (input_stream_collection_) {
+        ABSL_LOG(INFO) << "end looper flushing items into the output collection " << cc->Outputs().Tag("ITERABLE").Name();
+        ABSL_LOG(INFO) << "number of items flushed: " << input_stream_collection_->size();
         cc->Outputs()
             .Tag("ITERABLE")
             .Add(input_stream_collection_.release(), loop_control_ts);
       } else {
+        ABSL_LOG(INFO) << "input stream collection for end looper is empty";
         // Since there is no collection, inform downstream calculators to not
         // expect any packet by updating the timestamp bounds.
         cc->Outputs()

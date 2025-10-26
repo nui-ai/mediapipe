@@ -52,35 +52,37 @@ node {
   input_stream: "IMAGE:image"
   input_stream: "ITERABLE:prev_hand_rects_from_landmarks"
   output_stream: "prev_has_enough_hands"
+  output_stream: "TENSORS:detection_input_tensor"
+  output_stream: "LETTERBOX_PADDING:detection_letterbox_padding"
 }
 
 # Drops the incoming image from reaching palm detection, if enough hands have already been identified
 # for the previous image. Otherwise, passes the incoming image through to trigger a new round of
 # palm detection. left around till final stage of liberation ― to keep all calculators' Process
 # method being called till the final switch.
-node {
-  calculator: "GateCalculator"
-  input_stream: "image"
-  input_stream: "DISALLOW:prev_has_enough_hands"
-  output_stream: "palm_detection_image"
-  options: {
-    [mediapipe.GateCalculatorOptions.ext] {
-      empty_packets_as_allow: true
-    }
-  }
-}
+#node {
+#  calculator: "GateCalculator"
+#  input_stream: "image"
+#  input_stream: "DISALLOW:prev_has_enough_hands"
+#  output_stream: "palm_detection_image"
+#  options: {
+#    [mediapipe.GateCalculatorOptions.ext] {
+#      empty_packets_as_allow: true
+#    }
+#  }
+#}
 
 ### beginning of the original palm detection subgraph's nodes ###
 
 # Transforms an image into a 128x128 tensor while keeping the aspect ratio, and
 # therefore will result in letterboxing unless the input image was somehow rectangular,
 # which an image taken from a webcam in our scenario is not.
-node {
-  calculator: "ImageToTensorCalculator"
-  input_stream: "IMAGE:palm_detection_image"
-  output_stream: "TENSORS:detection_input_tensor"
-  output_stream: "LETTERBOX_PADDING:detection_letterbox_padding"
-}
+#node {
+#  calculator: "ImageToTensorCalculator"
+#  input_stream: "IMAGE:palm_detection_image"
+#  output_stream: "TENSORS:detection_input_tensor"
+#  output_stream: "LETTERBOX_PADDING:detection_letterbox_padding"
+#}
 
 # Runs the TensorFlow Lite SSD palm detection model
 node {
@@ -127,7 +129,7 @@ node {
 # Extracts image size.
 node {
   calculator: "ImagePropertiesCalculator"
-  input_stream: "IMAGE:palm_detection_image"
+  input_stream: "IMAGE:image"
   output_stream: "SIZE:palm_detection_image_size"
 }
 
@@ -229,10 +231,9 @@ node {
 }
 
 # loop inducer node:
-# Outputs each element of hand_rects at a fake timestamp for the rest of the
-# graph to process. Clones image and image size packets for each
-# single_hand_rect at the fake timestamp. At the end of the loop, outputs the
-# BATCH_END timestamp for downstream calculators to inform them that all
+# Outputs each element of hand_rects for the rest of the graph to process.
+# Clones image and image size packets for each single_hand_rect at a synthetic timestamp per each hand_rect.
+# At the end of the loop, outputs the BATCH_END timestamp for downstream calculators to inform them that all
 # elements in the vector have been processed.
 node {
   calculator: "BeginLoopNormalizedRectCalculator"
@@ -477,7 +478,7 @@ node {
 # collects the set of hand rects calculated from the inferred landmarks, into a vector of them.
 # outputs that vector upon receiving the BATCH_END timestamp.
 node {
-  calculator: "EndLoopHandRectangleFromLandmarksCalculator" # 2
+  calculator: "EndLoopHandRectangleFromLandmarksCalculator" # 2 V
   input_stream: "ITEM:single_hand_rect_from_landmarks"
   input_stream: "BATCH_END:hand_rects_timestamp"
   output_stream: "ITERABLE:hand_rects_from_landmarks"

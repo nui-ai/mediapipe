@@ -9,10 +9,10 @@ cc_library(
     srcs = ["HeadCalculator.cc"],
     hdrs = ["HeadCalculator.h"],
     deps = [
+        "//mediapipe/calculators/tensor:image_to_tensor_calculator_core",
         "//mediapipe/calculators/util:collection_has_min_size_calculator",
         "//mediapipe/framework:calculator_framework",
         "@com_google_absl//absl/status",
-        "//mediapipe/calculators/tensor:image_to_tensor_calculator_core"
     ],
     alwayslink = 1,
 )

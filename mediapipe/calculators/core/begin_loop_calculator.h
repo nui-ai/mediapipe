@@ -143,6 +143,10 @@ class BeginLoopCalculator : public CalculatorBase {
   }
 
   absl::Status Process(CalculatorContext* cc) override {
+
+    ABSL_LOG(INFO) << "begin looper is about to fan out its iterable input stream " << cc->Inputs().Tag("ITERABLE").Name() <<
+      " of " << cc->Inputs().Tag("ITERABLE").Get<IterableT>().size() << " input elements into output stream " << cc->Outputs().Tag("ITEM").Name();
+
     Timestamp last_timestamp = loop_internal_timestamp_;
     if (!cc->Inputs().Tag("ITERABLE").IsEmpty()) {
       const Packet& iterable = cc->Inputs().Tag("ITERABLE").Value();

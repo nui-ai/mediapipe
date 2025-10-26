@@ -45,7 +45,6 @@ class CollectionHasMinSizeCalculator : public CalculatorBase {
   static absl::Status GetContract(CalculatorContract* cc) {
     RET_CHECK(cc->Inputs().HasTag("IMAGE"));
     RET_CHECK(cc->Inputs().HasTag("ITERABLE"));
-    RET_CHECK_EQ(1, cc->Outputs().NumEntries());
 
     RET_CHECK_GE(
         cc->Options<::mediapipe::CollectionHasMinSizeCalculatorOptions>()
@@ -69,10 +68,6 @@ class CollectionHasMinSizeCalculator : public CalculatorBase {
         cc->Options<::mediapipe::CollectionHasMinSizeCalculatorOptions>()
             .min_size();
     // Override `min_size` if passed as side packet.
-    if (cc->InputSidePackets().NumEntries() > 0 &&
-        !cc->InputSidePackets().Index(0).IsEmpty()) {
-      min_size_ = cc->InputSidePackets().Index(0).Get<int>();
-    }
     return absl::OkStatus();
   }
 

@@ -1,6 +1,7 @@
 #include "HeadCalculator.h"
 #include <vector>
 #include <memory>
+#include <array>
 #include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/framework/memory_manager_service.h"
 #include "mediapipe/framework/api2/port.h"
@@ -9,19 +10,42 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_utils.h"
-#include "mediapipe/calculators/util/collection_has_min_size_calculator.h"
+#include "mediapipe/framework/calculator_framework.h"
+#include "mediapipe/framework/formats/image.h"
+#include "mediapipe/framework/formats/image_frame.h"
+#include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_calculator_core.h"
 
 namespace mediapipe {
 
-  class HeadCalculator : public CollectionHasMinSizeCalculator<std::vector<NormalizedRect>> {
+  class HeadCalculator : public CalculatorBase {
 
     private:
       std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
       std::unique_ptr<ImageToTensorConverter> gpu_converter_;
       std::unique_ptr<ImageToTensorConverter> cpu_converter_;
+      int min_size_ = 0;
+
+      static constexpr api2::Output<std::vector<Tensor>>::Optional kOutTensors{"TENSORS"};
+      static constexpr api2::Output<Tensor>::Optional kOutTensor{"TENSOR"};
+      static constexpr api2::Output<std::array<float, 4>>::Optional kOutLetterboxPadding{"LETTERBOX_PADDING"};
 
     public:
+      static absl::Status GetContract(CalculatorContract* cc) {
+        RET_CHECK(cc->Inputs().HasTag("IMAGE"));
+        RET_CHECK(cc->Inputs().HasTag("ITERABLE"));
+        // Accept ImageFrame for IMAGE input; helper converts to Image if needed.
+        cc->Inputs().Tag("IMAGE").Set<ImageFrame>();
+        // Iterable input is a vector of NormalizedRect.
+        cc->Inputs().Tag("ITERABLE").Set<std::vector<NormalizedRect>>();
+        // Unnamed boolean output at index 0 (legacy behavior expected by graph).
+        cc->Outputs().Index(0).Set<bool>();
+
+        cc->Outputs().Tag("TENSORS").Set<std::vector<Tensor>>();
+        cc->Outputs().Tag("LETTERBOX_PADDING").Set<std::array<float, 4>>();
+        return absl::OkStatus();
+      }
+
       absl::Status Open(CalculatorContext* cc) override {
         min_size_ = GetSharedState().NUM_HANDS;
         MemoryManager* memory_manager_ = nullptr;
@@ -56,6 +80,19 @@ namespace mediapipe {
         static constexpr api2::Input<api2::OneOf<Image, ImageFrame>>::Optional kIn{"IMAGE"};
         MP_ASSIGN_OR_RETURN(GetSharedState().image, GetInputImage(kIn(cc)));
 
+        // Legacy has_min_size computation (mirrors CollectionHasMinSizeCalculator behavior)
+        bool iterable_is_empty = cc->Inputs().Tag("ITERABLE").IsEmpty();
+        int iterable_size = 0;
+        if (!iterable_is_empty) {
+          const auto& rects = cc->Inputs().Tag("ITERABLE").Get<std::vector<NormalizedRect>>();
+          iterable_size = static_cast<int>(rects.size());
+        }
+        bool has_min_size = (iterable_is_empty || iterable_size < min_size_) ? false : true;
+        ABSL_LOG(INFO) << "HeadCalculator has_min_size: " << has_min_size
+                        << " (min_size_=" << min_size_
+                        << ", iterable_size=" << iterable_size << ")";
+        cc->Outputs().Index(0).AddPacket(MakePacket<bool>(has_min_size).At(cc->InputTimestamp()));
+
         std::shared_ptr<const mediapipe::Image> image = GetSharedState().image;
         ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks: " << GetSharedState().prev_hand_rects_from_landmarks.size();
         if (GetSharedState().prev_hand_rects_from_landmarks.size() < min_size_) {
@@ -67,15 +104,10 @@ namespace mediapipe {
           absl::optional<mediapipe::NormalizedRect> norm_rect = absl::nullopt;
           MP_RETURN_IF_ERROR(image_to_tensor_core_->Process(*image, norm_rect, &core_result));
 
-          // if (kOutMatrix(cc).IsConnected()) { kOutMatrix(cc).Send(core_result.matrix); }
-          // if (kOutLetterboxPadding(cc).IsConnected()) { kOutLetterboxPadding(cc).Send(core_result.padding); }
-          // if (kOutTensors(cc).IsConnected()) {
-          //   auto result = std::make_unique<std::vector<Tensor>>();
-          //   *result = std::move(core_result.tensors);
-          //   kOutTensors(cc).Send(std::move(result));
-          // } else if (core_result.tensor) {
-          //   kOutTensor(cc).Send(std::move(*core_result.tensor));
-          // }
+          kOutLetterboxPadding(cc).Send(core_result.padding);
+          auto result = std::make_unique<std::vector<Tensor>>();
+          *result = std::move(core_result.tensors);
+          kOutTensors(cc).Send(std::move(result));
 
         } else {
 
@@ -89,7 +121,6 @@ namespace mediapipe {
           }
         }
 
-        return CollectionHasMinSizeCalculator::Process(cc);
         return absl::OkStatus();
       }
 
