@@ -109,10 +109,6 @@ namespace mediapipe {
           absl::optional<mediapipe::NormalizedRect> norm_rect = absl::nullopt;
           MP_RETURN_IF_ERROR(image_to_tensor_core_->Process(*image, norm_rect, &core_result));
 
-          // kOutLetterboxPadding(cc).Send(core_result.padding);
-          // auto result = std::make_unique<std::vector<Tensor>>();
-          // *result = std::move(core_result.tensors);
-          // kOutTensors(cc).Send(std::move(result));
         } else {
           // avoid applying hand detection as we have an amount of hand detections from the previous frame's landmarks processing
           // which is the same or more than the amount of hands our pipeline has been configured to track.
@@ -122,8 +118,6 @@ namespace mediapipe {
 
         return absl::OkStatus();
       }
-
-
     };
   REGISTER_CALCULATOR(HeadCalculator);
 }

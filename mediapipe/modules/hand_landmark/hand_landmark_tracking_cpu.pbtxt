@@ -93,7 +93,7 @@ node {
 node {
   calculator: "ImageSize"
   input_stream: "IMAGE:image"
-  output_stream: "SIZE:image_size1"
+  output_stream: "SIZE:image_size"
 }
 
 # loop inducer node:
@@ -105,7 +105,7 @@ node {
 node {
   calculator: "DetectionsFanOut"
   input_stream: "ITERABLE:palm_detections"
-  input_stream: "CLONE:image_size1"
+  input_stream: "CLONE:image_size"
   output_stream: "ITEM:palm_detection"
   output_stream: "CLONE:image_size_for_palms"
   output_stream: "BATCH_END:palm_detections_timestamp"
@@ -186,13 +186,6 @@ node {
   }
 }
 
-# Extracts the size of the image again (superfluosly, as we previously extract but fan it out, framework limitation).
-node {
-  calculator: "ImageSize2"
-  input_stream: "IMAGE_CPU:image"
-  output_stream: "SIZE:image_size"
-}
-
 # loop inducer node:
 # Outputs each element of hand_rects for the rest of the graph to process.
 # Clones image and image size packets for each single_hand_rect at a synthetic timestamp per each hand_rect.
@@ -214,7 +207,7 @@ node {
 # Transforms a region of image into a 224x224 tensor while keeping the aspect
 # ratio, and therefore may result in potential letterboxing.
 node {
-  calculator: "ExtractSubImage"
+  calculator: "ExtractSubImageForInference"
   input_stream: "IMAGE:image_for_landmarks"
   input_stream: "NORM_RECT:single_hand_rect"
   output_stream: "TENSORS:input_tensor"
