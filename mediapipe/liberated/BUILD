@@ -6,8 +6,14 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "HeadCalculator",
-    srcs = ["HeadCalculator.cc"],
-    hdrs = ["HeadCalculator.h"],
+    srcs = [
+        "HeadCalculator.cc",
+        "liberated.cc",
+    ],
+    hdrs = [
+        "HeadCalculator.h",
+        "liberated.h",
+    ],
     deps = [
         "//mediapipe/calculators/tensor:image_to_tensor_calculator_core",
         "//mediapipe/calculators/tensor:image_to_tensor_utils",

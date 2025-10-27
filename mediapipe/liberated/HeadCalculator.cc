@@ -67,6 +67,8 @@ namespace mediapipe {
             options_, tensor_width, tensor_height, params_,
             gpu_converter_, cpu_converter_, memory_manager_);
 
+        ABSL_LOG(INFO) << "globally set maximum number of hands to track is " << min_size_ ;
+
         return absl::OkStatus();
       }
 
@@ -78,7 +80,9 @@ namespace mediapipe {
         ABSL_LOG(INFO) << "HeadCalculator starting to process";
 
         static constexpr api2::Input<api2::OneOf<Image, ImageFrame>>::Optional kIn{"IMAGE"};
-        MP_ASSIGN_OR_RETURN(GetSharedState().image, GetInputImage(kIn(cc)));
+        std::shared_ptr<const mediapipe::Image> image;
+        MP_ASSIGN_OR_RETURN(image, GetInputImage(kIn(cc)));
+        GetSharedState().image = image;
 
         // Legacy has_min_size computation (mirrors CollectionHasMinSizeCalculator behavior)
         bool iterable_is_empty = cc->Inputs().Tag("ITERABLE").IsEmpty();
@@ -87,44 +91,30 @@ namespace mediapipe {
           const auto& rects = cc->Inputs().Tag("ITERABLE").Get<std::vector<NormalizedRect>>();
           iterable_size = static_cast<int>(rects.size());
         }
-        bool has_min_size = (iterable_is_empty || iterable_size < min_size_) ? false : true;
-        ABSL_LOG(INFO) << "HeadCalculator has_min_size: " << has_min_size
-                        << " (min_size_=" << min_size_
-                        << ", iterable_size=" << iterable_size << ")";
-        cc->Outputs().Index(0).AddPacket(MakePacket<bool>(has_min_size).At(cc->InputTimestamp()));
 
-        std::shared_ptr<const mediapipe::Image> image = GetSharedState().image;
+        bool has_min_size = (iterable_is_empty || iterable_size < min_size_) ? false : true;
+        ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks: " << GetSharedState().prev_hand_rects_from_landmarks.size();
+        if (GetSharedState().prev_hand_rects_from_landmarks.size() > min_size_) { ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks (" << GetSharedState().prev_hand_rects_from_landmarks.size() << ") is larger than globally set maximum number of hands to track " << min_size_ ; }
+
         if (GetSharedState().prev_hand_rects_from_landmarks.size() < min_size_) {
 
-          GetSharedState().palm_detection_image = GetSharedState().image;
-          ABSL_LOG(INFO) << "palm detection is being triggered";
+          // GetSharedState().palm_detection_image = image;
+          ABSL_LOG(INFO) << "palm detection will be triggered for the current frame";
 
           api2::ImageToTensorCoreResult core_result;
           absl::optional<mediapipe::NormalizedRect> norm_rect = absl::nullopt;
           MP_RETURN_IF_ERROR(image_to_tensor_core_->Process(*image, norm_rect, &core_result));
 
-          kOutLetterboxPadding(cc).Send(core_result.padding);
-          auto result = std::make_unique<std::vector<Tensor>>();
-          *result = std::move(core_result.tensors);
-          kOutTensors(cc).Send(std::move(result));
-
+          // kOutLetterboxPadding(cc).Send(core_result.padding);
+          // auto result = std::make_unique<std::vector<Tensor>>();
+          // *result = std::move(core_result.tensors);
+          // kOutTensors(cc).Send(std::move(result));
         } else {
-
           // avoid applying hand detection as we have an amount of hand detections from the previous frame's landmarks processing
           // which is the same or more than the amount of hands our pipeline has been configured to track.
-          GetSharedState().palm_detection_image = nullptr;
           ABSL_LOG(INFO) << "skipping palm detection as " << GetSharedState().prev_hand_rects_from_landmarks.size() << " hands have been detected from the previous frame's landmarks processing.";
-
-          // send empty result packet to keep calculators which end up building an empty packet for the AssociationCalculator going
-          auto empty_result = std::make_unique<std::vector<Tensor>>();
-          kOutTensors(cc).Send(std::move(empty_result));
-          // cc->Outputs().Tag("ITERABLE").AddPacket(Packet().At(cc->InputTimestamp()));
-
-          if (GetSharedState().prev_hand_rects_from_landmarks.size() > min_size_) {
-            ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks (" << GetSharedState().prev_hand_rects_from_landmarks.size() << ") is larger than the number of hands being tracked (" << min_size_ << ") which is unexpected.";
-          }
+          GetSharedState().palm_detection_image = nullptr;
         }
-        ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks: " << GetSharedState().prev_hand_rects_from_landmarks.size();
 
         return absl::OkStatus();
       }

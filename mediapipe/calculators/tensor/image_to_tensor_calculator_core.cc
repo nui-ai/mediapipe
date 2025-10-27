@@ -82,12 +82,6 @@ absl::Status ImageToTensorCalculatorCore::Process(
     absl::optional<mediapipe::NormalizedRect> norm_rect,
     ImageToTensorCoreResult* result) {
 
-  // ABSL_LOG(INFO) << "image dimensions: " << image.width() << "x" << image.height();
-  // if (norm_rect) {
-  //   ABSL_LOG(INFO) << "norm_rect: " << norm_rect.value().DebugString();
-  // } else {
-  //   ABSL_LOG(INFO) << "no norm_rect provided";
-  // }
   mediapipe::RotatedRect roi = mediapipe::GetRoi(image.width(), image.height(), norm_rect);
   MP_ASSIGN_OR_RETURN(auto padding, mediapipe::PadRoi(tensor_width_, tensor_height_, options_.keep_aspect_ratio(), &roi));
   result->padding = padding;
