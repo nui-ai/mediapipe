@@ -1,48 +1,10 @@
 type: "HandLandmarkTrackingCpu"
-
-# CPU image. (ImageFrame)
 input_stream: "IMAGE:image"
-
-# Whether landmarks on the previous image should be used to help localize
-# landmarks on the current image. (bool)
-input_side_packet: "USE_PREV_LANDMARKS:use_prev_landmarks"
-
-# Collection of detected/predicted hands, each represented as a list of
-# landmarks. (std::vector<NormalizedLandmarkList>)
-# NOTE: there will not be an output packet in the LANDMARKS stream follr this
-# particular timestamp if none of hands detected. However, the MediaPipe
-# framework will internally inform the downstream calculators of the absence of
-# this packet so that they don't wait for it unnecessarily.
 output_stream: "LANDMARKS:multi_hand_landmarks"
-
-# Collection of detected/predicted hand world landmarks.
-# (std::vector<LandmarkList>)
-#
-# World landmarks are real-world 3D coordinates in meters with the origin in the
-# center of the hand bounding box calculated from the landmarks.
-#
-# WORLD_LANDMARKS shares the same landmark topology as LANDMARKS. However,
-# LANDMARKS provides coordinates (in pixels) of a 3D object projected onto the
-# 2D image surface, while WORLD_LANDMARKS provides coordinates (in meters) of
-# the 3D object itself.
 output_stream: "WORLD_LANDMARKS:multi_hand_world_landmarks"
-
-# Collection of handedness of the detected hands (i.e. is hand left or right),
-# each represented as a ClassificationList proto with a single Classification
-# entry. (std::vector<ClassificationList>)
-# Note that handedness is determined assuming the input image is mirrored,
-# i.e., taken with a front-facing/selfie camera with images flipped
-# horizontally.
 output_stream: "HANDEDNESS:multi_handedness"
-
-# Extra outputs (for debugging, for instance).
-# Detected palms. (std::vector<Detection>)
 output_stream: "PALM_DETECTIONS:palm_detections"
-# Regions of interest calculated based on landmarks.
-# (std::vector<NormalizedRect>)
 output_stream: "HAND_ROIS_FROM_LANDMARKS:hand_rects_from_landmarks"
-# Regions of interest calculated based on palm detections.
-# (std::vector<NormalizedRect>)
 output_stream: "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
 
 # Determines if the number of hands detected for the previous frame is equal to (or larger than)
