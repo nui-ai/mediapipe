@@ -43,6 +43,7 @@ namespace mediapipe {
 
         cc->Outputs().Tag("TENSORS").Set<std::vector<Tensor>>();
         cc->Outputs().Tag("LETTERBOX_PADDING").Set<std::array<float, 4>>();
+        // cc->Outputs().Tag("ITERABLE").Set<NormalizedRect>();
         return absl::OkStatus();
       }
 
@@ -94,7 +95,6 @@ namespace mediapipe {
         cc->Outputs().Index(0).AddPacket(MakePacket<bool>(has_min_size).At(cc->InputTimestamp()));
 
         std::shared_ptr<const mediapipe::Image> image = GetSharedState().image;
-        ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks: " << GetSharedState().prev_hand_rects_from_landmarks.size();
         if (GetSharedState().prev_hand_rects_from_landmarks.size() < min_size_) {
 
           GetSharedState().palm_detection_image = GetSharedState().image;
@@ -116,10 +116,16 @@ namespace mediapipe {
           GetSharedState().palm_detection_image = nullptr;
           ABSL_LOG(INFO) << "skipping palm detection as " << GetSharedState().prev_hand_rects_from_landmarks.size() << " hands have been detected from the previous frame's landmarks processing.";
 
+          // send empty result packet to keep calculators which end up building an empty packet for the AssociationCalculator going
+          auto empty_result = std::make_unique<std::vector<Tensor>>();
+          kOutTensors(cc).Send(std::move(empty_result));
+          // cc->Outputs().Tag("ITERABLE").AddPacket(Packet().At(cc->InputTimestamp()));
+
           if (GetSharedState().prev_hand_rects_from_landmarks.size() > min_size_) {
             ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks (" << GetSharedState().prev_hand_rects_from_landmarks.size() << ") is larger than the number of hands being tracked (" << min_size_ << ") which is unexpected.";
           }
         }
+        ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks: " << GetSharedState().prev_hand_rects_from_landmarks.size();
 
         return absl::OkStatus();
       }
