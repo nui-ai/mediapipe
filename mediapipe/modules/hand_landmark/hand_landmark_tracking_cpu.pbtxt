@@ -328,7 +328,7 @@ node {
 
 # Converts the handedness tensor into a float that represents the classification score of handedness.
 node {
-  calculator: "ExtractHandedness"
+  calculator: "ExtractHandednessClassification"
   input_stream: "TENSORS:ensured_handedness_tensor"
   output_stream: "CLASSIFICATIONS:single_handedness"
   options: {

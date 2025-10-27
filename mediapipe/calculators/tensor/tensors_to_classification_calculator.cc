@@ -48,7 +48,7 @@ namespace api2 {
 
 // Convert result tensors from classification models into MediaPipe
 // classifications.
-class ExtractHandedness : public Node {
+class ExtractHandednessClassification : public Node {
  public:
   static constexpr Input<std::vector<Tensor>> kInTensors{"TENSORS"};
   static constexpr Output<ClassificationList> kOutClassificationList{
@@ -66,9 +66,9 @@ class ExtractHandedness : public Node {
   const std::unordered_map<int64_t, LabelMapItem>& GetLabelMap(
       CalculatorContext* cc);
 };
-MEDIAPIPE_REGISTER_NODE(ExtractHandedness);
+MEDIAPIPE_REGISTER_NODE(ExtractHandednessClassification);
 
-absl::Status ExtractHandedness::Open(CalculatorContext* cc) {
+absl::Status ExtractHandednessClassification::Open(CalculatorContext* cc) {
   const auto& options = cc->Options<TensorsToClassificationCalculatorOptions>();
 
   // Handle label map loading from file path
@@ -93,7 +93,7 @@ absl::Status ExtractHandedness::Open(CalculatorContext* cc) {
   return InitializeTensorsToClassificationConfig(options, external_label_map_, &config_);
 }
 
-absl::Status ExtractHandedness::Process(CalculatorContext* cc) {
+absl::Status ExtractHandednessClassification::Process(CalculatorContext* cc) {
   const auto& input_tensors = *kInTensors(cc);
   RET_CHECK_EQ(input_tensors.size(), 1);
   RET_CHECK(input_tensors[0].element_type() == Tensor::ElementType::kFloat32);
@@ -119,12 +119,12 @@ absl::Status ExtractHandedness::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-absl::Status ExtractHandedness::Close(CalculatorContext* cc) {
+absl::Status ExtractHandednessClassification::Close(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
 const std::unordered_map<int64_t, LabelMapItem>&
-ExtractHandedness::GetLabelMap(CalculatorContext* cc) {
+ExtractHandednessClassification::GetLabelMap(CalculatorContext* cc) {
   static std::unordered_map<int64_t, LabelMapItem> temp_map;
   if (!external_label_map_.empty()) {
     return external_label_map_;
