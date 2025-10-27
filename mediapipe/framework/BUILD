@@ -1998,7 +1998,6 @@ cc_library(
     includes = ["mediapipe/nui/desktop"],
     visibility = ["//visibility:public"],
     deps = [
-        "//mediapipe/framework/formats:image",
         "//mediapipe/framework/formats:rect_cc_proto",
     ],
 )

@@ -9,9 +9,10 @@
 #include <string>
 #include <mutex>
 #include "mediapipe/framework/formats/rect.pb.h"
-#include "mediapipe/framework/formats/image.h"
 
 namespace mediapipe {
+    // Forward declaration to break circular dependency
+    class Image;
     class SharedCalculatorState {
     public:
 

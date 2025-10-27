@@ -24,8 +24,9 @@
 #include "mediapipe/framework/port/status.h"
 
 namespace mediapipe {
+  class ImageFrame;
 
-// Deterimines if an input iterable collection has a minimum size, specified
+  // Deterimines if an input iterable collection has a minimum size, specified
 // in CollectionHasMinSizeCalculatorOptions. Example usage:
 // node {
 //   calculator: "IntVectorHasMinSizeCalculator"
