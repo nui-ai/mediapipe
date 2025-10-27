@@ -326,7 +326,7 @@ alias(
         "//mediapipe:ios": "@ios_opencv//:opencv",
         "//mediapipe:macos": "@macos_opencv//:opencv",
         "//mediapipe:windows": "@windows_opencv//:opencv",
-        "//conditions:default": "@linux_opencv//:opencv",
+        "//conditions:default": ":opencv_cmake",
     }),
 )
 
