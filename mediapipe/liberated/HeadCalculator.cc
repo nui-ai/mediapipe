@@ -14,6 +14,7 @@
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_calculator_core.h"
+#include "mediapipe/liberated/liberated.h"
 
 namespace mediapipe {
 
@@ -23,6 +24,7 @@ namespace mediapipe {
       std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
       std::unique_ptr<ImageToTensorConverter> gpu_converter_;
       std::unique_ptr<ImageToTensorConverter> cpu_converter_;
+      std::unique_ptr<Liberated> liberated_;
       int min_size_ = 0;
 
       static constexpr api2::Output<std::vector<Tensor>>::Optional kOutTensors{"TENSORS"};
@@ -52,6 +54,8 @@ namespace mediapipe {
         if (cc->Service(kMemoryManagerService).IsAvailable()) {
           memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();
         }
+        // Instantiate helper that mirrors core construction.
+        liberated_ = std::make_unique<Liberated>(memory_manager_);
         // Configure fixed 192x192 core options.
         auto options_ = ImageToTensorCalculatorOptions();
         options_.set_output_tensor_width(192);
