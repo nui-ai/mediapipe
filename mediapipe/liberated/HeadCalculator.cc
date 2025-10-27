@@ -2,12 +2,11 @@
 #include <vector>
 #include <memory>
 #include <array>
+#include "absl/log/absl_log.h"
 #include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/framework/memory_manager_service.h"
 #include "mediapipe/framework/api2/port.h"
 #include "mediapipe/framework/port/status.h"
-#include "mediapipe/framework/formats/classification.pb.h"
-#include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_utils.h"
 #include "mediapipe/framework/calculator_framework.h"
