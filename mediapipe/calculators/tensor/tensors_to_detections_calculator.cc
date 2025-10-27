@@ -37,7 +37,7 @@
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/calculators/tensor/tensors_to_detections_calculator_core.h"
-using mediapipe::api2::TensorsToDetectionsCore;
+using mediapipe::api2::ConvertDetectionTensors;
 
 // Note: On Apple platforms MEDIAPIPE_DISABLE_GL_COMPUTE is automatically
 // defined in mediapipe/framework/port.h. Therefore,
@@ -95,7 +95,7 @@ namespace api2 {
   // Output:
   //  DETECTIONS - Result MediaPipe detections.
   //
-  class TensorsToDetectionsCalculator : public Node {
+  class ConvertDetectionTensorsCalculator : public Node {
   public:
     static constexpr Input<std::vector<Tensor>> kInTensors{"TENSORS"};
     static constexpr SideInput<std::vector<Anchor>>::Optional kInAnchors{
@@ -160,16 +160,16 @@ namespace api2 {
     std::unique_ptr<Tensor> raw_anchors_buffer_;
     std::unique_ptr<Tensor> decoded_boxes_buffer_;
     std::unique_ptr<Tensor> scored_boxes_buffer_;
-    std::unique_ptr<TensorsToDetectionsCore> core_;
+    std::unique_ptr<ConvertDetectionTensors> core_;
 
     bool gpu_inited_ = false;
     bool gpu_input_ = false;
     bool gpu_has_enough_work_groups_ = true;
     bool anchors_init_ = false;
   };
-  MEDIAPIPE_REGISTER_NODE(TensorsToDetectionsCalculator);
+  MEDIAPIPE_REGISTER_NODE(ConvertDetectionTensorsCalculator);
 
-  absl::Status TensorsToDetectionsCalculator::UpdateContract(
+  absl::Status ConvertDetectionTensorsCalculator::UpdateContract(
       CalculatorContract* cc) {
     if (CanUseGpu()) {
 #ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
@@ -183,7 +183,7 @@ namespace api2 {
     return absl::OkStatus();
   }
 
-  absl::Status TensorsToDetectionsCalculator::Open(CalculatorContext* cc) {
+  absl::Status ConvertDetectionTensorsCalculator::Open(CalculatorContext* cc) {
     initialized_ = true;
 
     if (CanUseGpu()) {
@@ -194,7 +194,7 @@ namespace api2 {
 #endif  // !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
     }
     // Instantiate and open core
-    core_ = std::make_unique<TensorsToDetectionsCore>();
+    core_ = std::make_unique<ConvertDetectionTensors>();
     MP_RETURN_IF_ERROR(core_->Open());
     return absl::OkStatus();
   }
@@ -205,7 +205,7 @@ namespace api2 {
   //    so basically this class performs the pedantic work of extracting the raw SSD neural network outputs,
   //    with only some optional leverage for filtering the raw detections.
   // 2. it also transforms them into mediapipe vector types.
-  absl::Status TensorsToDetectionsCalculator::Process(CalculatorContext* cc) {
+  absl::Status ConvertDetectionTensorsCalculator::Process(CalculatorContext* cc) {
     assert (initialized_);
 
     auto output_detections = absl::make_unique<std::vector<Detection>>();
@@ -223,7 +223,7 @@ namespace api2 {
     return absl::OkStatus();
   }
 
-  absl::Status TensorsToDetectionsCalculator::Close(CalculatorContext* cc) {
+  absl::Status ConvertDetectionTensorsCalculator::Close(CalculatorContext* cc) {
 #ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
     if (gpu_inited_) {
       gpu_helper_.RunInGlContext([this] {

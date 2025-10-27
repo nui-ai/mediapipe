@@ -76,7 +76,7 @@ void RectFromBox(B box, R* rect) {
 
 }  // namespace
 
-absl::Status DetectionsToRectsCalculator::DetectionToRect(
+absl::Status PalmDetectionToHandRectStage1::DetectionToRect(
     const Detection& detection, const DetectionSpec& detection_spec,
     Rect* rect) {
   const LocationData location_data = detection.location_data();
@@ -108,7 +108,7 @@ absl::Status DetectionsToRectsCalculator::DetectionToRect(
   return absl::OkStatus();
 }
 
-absl::Status DetectionsToRectsCalculator::DetectionToNormalizedRect(
+absl::Status PalmDetectionToHandRectStage1::DetectionToNormalizedRect(
     const Detection& detection, const DetectionSpec& detection_spec,
     NormalizedRect* rect) {
   const LocationData location_data = detection.location_data();
@@ -131,7 +131,7 @@ absl::Status DetectionsToRectsCalculator::DetectionToNormalizedRect(
   return absl::OkStatus();
 }
 
-absl::Status DetectionsToRectsCalculator::GetContract(CalculatorContract* cc) {
+absl::Status PalmDetectionToHandRectStage1::GetContract(CalculatorContract* cc) {
   RET_CHECK(cc->Inputs().HasTag(kDetectionTag) ^
             cc->Inputs().HasTag(kDetectionsTag))
       << "Exactly one of DETECTION or DETECTIONS input stream should be "
@@ -170,7 +170,7 @@ absl::Status DetectionsToRectsCalculator::GetContract(CalculatorContract* cc) {
   return absl::OkStatus();
 }
 
-absl::Status DetectionsToRectsCalculator::Open(CalculatorContext* cc) {
+absl::Status PalmDetectionToHandRectStage1::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
 
   options_ = DetectionsToRectsCalculatorOptions();
@@ -187,7 +187,7 @@ absl::Status DetectionsToRectsCalculator::Open(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-absl::Status DetectionsToRectsCalculator::Process(CalculatorContext* cc) {
+absl::Status PalmDetectionToHandRectStage1::Process(CalculatorContext* cc) {
   if (cc->Inputs().HasTag(kDetectionTag) &&
       cc->Inputs().Tag(kDetectionTag).IsEmpty()) {
     return absl::OkStatus();
@@ -256,7 +256,7 @@ absl::Status DetectionsToRectsCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-absl::Status DetectionsToRectsCalculator::ComputeRotation(
+absl::Status PalmDetectionToHandRectStage1::ComputeRotation(
     const Detection& detection, const DetectionSpec& detection_spec,
     float* rotation) {
   const auto& location_data = detection.location_data();
@@ -277,7 +277,7 @@ absl::Status DetectionsToRectsCalculator::ComputeRotation(
   return absl::OkStatus();
 }
 
-DetectionSpec DetectionsToRectsCalculator::GetDetectionSpec(
+DetectionSpec PalmDetectionToHandRectStage1::GetDetectionSpec(
     const CalculatorContext* cc) {
   absl::optional<std::pair<int, int>> image_size;
   if (HasTagValue(cc->Inputs(), kImageSizeTag)) {
@@ -287,6 +287,6 @@ DetectionSpec DetectionsToRectsCalculator::GetDetectionSpec(
   return {image_size};
 }
 
-REGISTER_CALCULATOR(DetectionsToRectsCalculator);
+REGISTER_CALCULATOR(PalmDetectionToHandRectStage1);
 
 }  // namespace mediapipe

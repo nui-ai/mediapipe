@@ -26,7 +26,7 @@ typedef ClipVectorSizeCalculator<::mediapipe::NormalizedRect>
     ClipNormalizedRectVectorSizeCalculator;
 REGISTER_CALCULATOR(ClipNormalizedRectVectorSizeCalculator);
 
-class ClipDetectionVectorSizeCalculator : public ClipVectorSizeCalculator<::mediapipe::Detection> {
+class FilterDetectionsToMaxNumHands : public ClipVectorSizeCalculator<::mediapipe::Detection> {
  public:
   absl::Status Open(CalculatorContext* cc) override {
     MP_RETURN_IF_ERROR(ClipVectorSizeCalculator::Open(cc));
@@ -34,6 +34,6 @@ class ClipDetectionVectorSizeCalculator : public ClipVectorSizeCalculator<::medi
     return absl::OkStatus();
   }
 };
-REGISTER_CALCULATOR(ClipDetectionVectorSizeCalculator);
+REGISTER_CALCULATOR(FilterDetectionsToMaxNumHands);
 
 }  // namespace mediapipe

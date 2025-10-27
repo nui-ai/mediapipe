@@ -43,7 +43,7 @@ namespace mediapipe {
 //   }
 // }
 //
-class FaceToRectCalculator : public DetectionsToRectsCalculator {
+class FaceToRectCalculator : public PalmDetectionToHandRectStage1 {
  public:
   absl::Status Open(CalculatorContext* cc) override {
     cc->SetOffset(TimestampDiff(0));

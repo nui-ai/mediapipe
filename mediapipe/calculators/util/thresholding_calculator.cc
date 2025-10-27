@@ -55,7 +55,7 @@ constexpr char kFloatTag[] = "FLOAT";
 //     }
 //   }
 // }
-class ThresholdingCalculator : public CalculatorBase {
+class HandPresenceGating : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc);
   absl::Status Open(CalculatorContext* cc) override;
@@ -65,9 +65,9 @@ class ThresholdingCalculator : public CalculatorBase {
  private:
   double threshold_{};
 };
-REGISTER_CALCULATOR(ThresholdingCalculator);
+REGISTER_CALCULATOR(HandPresenceGating);
 
-absl::Status ThresholdingCalculator::GetContract(CalculatorContract* cc) {
+absl::Status HandPresenceGating::GetContract(CalculatorContract* cc) {
   RET_CHECK(cc->Inputs().HasTag(kFloatTag));
   cc->Inputs().Tag(kFloatTag).Set<float>();
 
@@ -93,7 +93,7 @@ absl::Status ThresholdingCalculator::GetContract(CalculatorContract* cc) {
   return absl::OkStatus();
 }
 
-absl::Status ThresholdingCalculator::Open(CalculatorContext* cc) {
+absl::Status HandPresenceGating::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
 
   const auto& options =
@@ -112,7 +112,7 @@ absl::Status ThresholdingCalculator::Open(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-absl::Status ThresholdingCalculator::Process(CalculatorContext* cc) {
+absl::Status HandPresenceGating::Process(CalculatorContext* cc) {
   // Get the input float value
   RET_CHECK(!cc->Inputs().Tag(kFloatTag).IsEmpty());
   const float input_float_value = cc->Inputs().Tag(kFloatTag).Get<float>();

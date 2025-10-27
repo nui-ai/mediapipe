@@ -71,7 +71,7 @@ namespace api2 {
 //     }
 //   }
 // }
-class TensorsToWorldLandmarksCalculator : public Node {
+class ExtractWorldLandmarks : public Node {
  public:
   static constexpr Input<std::vector<Tensor>> kInTensors{"TENSORS"};
   static constexpr Output<LandmarkList>::Optional kOutLandmarkList{"LANDMARKS"};
@@ -87,16 +87,16 @@ class TensorsToWorldLandmarksCalculator : public Node {
   std::unique_ptr<TensorsToWorldLandmarksCore> core_;
   ::mediapipe::TensorsToLandmarksCalculatorOptions options_;
 };
-MEDIAPIPE_REGISTER_NODE(TensorsToWorldLandmarksCalculator);
+MEDIAPIPE_REGISTER_NODE(ExtractWorldLandmarks);
 
-absl::Status TensorsToWorldLandmarksCalculator::Open(CalculatorContext* cc) {
+absl::Status ExtractWorldLandmarks::Open(CalculatorContext* cc) {
   MP_RETURN_IF_ERROR(LoadOptions(cc));
   // Instantiate the core with input image size and option-derived parameters.
   core_ = std::make_unique<TensorsToWorldLandmarksCore>(options_.visibility_activation(), options_.presence_activation());
   return absl::OkStatus();
 }
 
-absl::Status TensorsToWorldLandmarksCalculator::Process(CalculatorContext* cc) {
+absl::Status ExtractWorldLandmarks::Process(CalculatorContext* cc) {
   if (kInTensors(cc).IsEmpty()) {
     return absl::OkStatus();
   }
@@ -124,7 +124,7 @@ absl::Status TensorsToWorldLandmarksCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-absl::Status TensorsToWorldLandmarksCalculator::LoadOptions(CalculatorContext* cc) {
+absl::Status ExtractWorldLandmarks::LoadOptions(CalculatorContext* cc) {
   // Get calculator options specified in the graph.
   options_ = cc->Options<::mediapipe::TensorsToLandmarksCalculatorOptions>();
   // num_landmarks is not required anymore; default of core is 21.

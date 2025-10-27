@@ -101,7 +101,7 @@ node {
 # mediapipe Detection objects, while filtering the network's outputs by several
 # criteria including finally applying Non-Maximum Suppression (NMS).
 node {
-  calculator: "TensorsToDetectionsCalculator"
+  calculator: "ConvertDetectionTensorsCalculator"
   input_stream: "TENSORS:detection_tensors"
   output_stream: "DETECTIONS:filtered_detections"
 }
@@ -112,7 +112,7 @@ node {
 # transformation with the FIT scale mode) to the corresponding locations on the same image with the letterbox
 # removed (the input image to the graph before image transformation).
 node {
-  calculator: "DetectionLetterboxRemovalCalculator"
+  calculator: "UnletterboxCalculator"
   input_stream: "DETECTIONS:filtered_detections"
   input_stream: "LETTERBOX_PADDING:detection_letterbox_padding"
   output_stream: "DETECTIONS:detections"
@@ -120,7 +120,7 @@ node {
 
 # Makes sure there are no more detections than the provided num_hands.
 node {
-  calculator: "ClipDetectionVectorSizeCalculator"
+  calculator: "FilterDetectionsToMaxNumHands"
   input_stream: "detections"
   output_stream: "palm_detections"
 }
@@ -129,9 +129,9 @@ node {
 
 # Extracts image size.
 node {
-  calculator: "ImagePropertiesCalculator"
+  calculator: "ImageSize"
   input_stream: "IMAGE:image"
-  output_stream: "SIZE:palm_detection_image_size"
+  output_stream: "SIZE:image_size1"
 }
 
 # loop inducer node:
@@ -141,20 +141,20 @@ node {
 # for downstream calculators to inform them that all elements in the vector have
 # been processed.
 node {
-  calculator: "BeginLoopDetectionCalculator"
+  calculator: "DetectionsFanOut"
   input_stream: "ITERABLE:palm_detections"
-  input_stream: "CLONE:palm_detection_image_size"
+  input_stream: "CLONE:image_size1"
   output_stream: "ITEM:palm_detection"
   output_stream: "CLONE:image_size_for_palms"
   output_stream: "BATCH_END:palm_detections_timestamp"
 }
 
-# Converts results of palm detection into a rectangle (normalized by image size)
+# Converts results of a single palm detection into a rectangle (normalized by image size)
 # that encloses the palm and is rotated such that the line connecting center of
 # the wrist and MCP of the middle finger is aligned with the Y-axis of the
 # rectangle.
 node {
-  calculator: "DetectionsToRectsCalculator"
+  calculator: "PalmDetectionToHandRectStage1"
   input_stream: "DETECTION:palm_detection"
   input_stream: "IMAGE_SIZE:image_size_for_palms"
   output_stream: "NORM_RECT:raw_roi"
@@ -162,7 +162,7 @@ node {
 
 # Expands and shifts the rectangle that contains the palm so that it's likely to cover the entire hand.
 node {
-  calculator: "RectTransformationCalculator_1"
+  calculator: "PalmDetectionToHandRectStage2"
   input_stream: "NORM_RECT:raw_roi"
   input_stream: "IMAGE_SIZE:image_size_for_palms"
   output_stream: "hand_rect_from_palm_detection"
@@ -179,7 +179,7 @@ node {
 # collects the final set of hand detection rectangles, into a vector of them.
 # outputs that vector upon receiving the BATCH_END timestamp.
 node {
-  calculator: "EndLoopHandRectangleFromDetectionCalculator"
+  calculator: "DetectionHandRectsCollector"
   input_stream: "ITEM:hand_rect_from_palm_detection"
   input_stream: "BATCH_END:palm_detections_timestamp"
   output_stream: "ITERABLE:hand_rects_from_palm_detections"
@@ -213,7 +213,7 @@ node {
 # v0.10.13 code level which our baseline branch represents.
 #
 node {
-  calculator: "AssociationNormRectCalculator"
+  calculator: "HandRectsAssociation"
   input_stream: "hand_rects_from_palm_detections"
   input_stream: "prev_hand_rects_from_landmarks"
   output_stream: "hand_rects"
@@ -224,9 +224,9 @@ node {
   }
 }
 
-# Extracts the size of the image
+# Extracts the size of the image again (superfluosly, as we previously extract but fan it out, framework limitation).
 node {
-  calculator: "ImagePropertiesCalculator2"
+  calculator: "ImageSize2"
   input_stream: "IMAGE_CPU:image"
   output_stream: "SIZE:image_size"
 }
@@ -237,7 +237,7 @@ node {
 # At the end of the loop, outputs the BATCH_END timestamp for downstream calculators to inform them that all
 # elements in the vector have been processed.
 node {
-  calculator: "BeginLoopNormalizedRectCalculator"
+  calculator: "HandRectsFanOut"
   input_stream: "ITERABLE:hand_rects"
   input_stream: "CLONE:0:image"
   input_stream: "CLONE:1:image_size"
@@ -252,7 +252,7 @@ node {
 # Transforms a region of image into a 224x224 tensor while keeping the aspect
 # ratio, and therefore may result in potential letterboxing.
 node {
-  calculator: "ImageToTensorCalculator2"
+  calculator: "ExtractSubImage"
   input_stream: "IMAGE:image_for_landmarks"
   input_stream: "NORM_RECT:single_hand_rect"
   output_stream: "TENSORS:input_tensor"
@@ -281,7 +281,7 @@ node {
 # • handedness_tensor: the handedness classification scores (left vs right hand confidence)
 # • world_landmark_tensor: the inferred object hand landmark coordinates
 node {
-  calculator: "SplitTensorVectorCalculator"
+  calculator: "SplitInferenceOutputTopics"
   input_stream: "output_tensors"
   output_stream: "landmark_tensors"
   output_stream: "hand_flag_tensor"
@@ -299,7 +299,7 @@ node {
 
 # Converts the hand-flag tensor into a float that represents the confidence score of hand presence.
 node {
-  calculator: "TensorsToFloatsCalculator"
+  calculator: "ExtractHandPresence"
   input_stream: "TENSORS:hand_flag_tensor"
   output_stream: "FLOAT:hand_presence_score"
 }
@@ -308,7 +308,7 @@ node {
 # Presumbaly, when the threshold isn't met, the hand will be ignored,
 # and also not pass back a hand rectangle for the next frame's processing.
 node {
-  calculator: "ThresholdingCalculator"
+  calculator: "HandPresenceGating"
   input_stream: "FLOAT:hand_presence_score"
   output_stream: "FLAG:hand_presence"
   options: {
@@ -328,7 +328,7 @@ node {
 
 # Converts the handedness tensor into a float that represents the classification score of handedness.
 node {
-  calculator: "TensorsToClassificationCalculator"
+  calculator: "ExtractHandedness"
   input_stream: "TENSORS:ensured_handedness_tensor"
   output_stream: "CLASSIFICATIONS:single_handedness"
   options: {
@@ -352,7 +352,7 @@ node {
 # and normalizes them to the size of the input image given to the model.
 # this isn't a very great example of software engineering cohesion.
 node {
-  calculator: "TensorsToLandmarksCalculator"
+  calculator: "ExtractLandmarks"
   input_stream: "TENSORS:ensured_landmark_tensors"
   output_stream: "NORM_LANDMARKS:landmarks"
   options: {
@@ -371,7 +371,7 @@ node {
 # by the inference step to the corresponding locations on the same image with the letterbox removed
 # (i.e. to the hand image as it were before the letterboxing).
 node {
-  calculator: "LandmarkLetterboxRemovalCalculator"
+  calculator: "UnletterboxLandmarksPrediction"
   input_stream: "LANDMARKS:landmarks"
   input_stream: "LETTERBOX_PADDING:letterbox_padding"
   output_stream: "LANDMARKS:scaled_landmarks"
@@ -400,7 +400,7 @@ node {
 
 # merely converts the tensors into the mediapipe landmark object type.
 node {
-  calculator: "TensorsToWorldLandmarksCalculator"
+  calculator: "ExtractWorldLandmarks"
   input_stream: "TENSORS:ensured_world_landmark_tensor"
   output_stream: "LANDMARKS:unprojected_world_landmarks"
   options: {
@@ -425,7 +425,7 @@ node {
 # collects the handedness for each single hand, into a vector of them.
 # Upon receiving the BATCH_END timestamp, outputs a vector of them
 node {
-  calculator: "EndLoopClassificationListCalculator"
+  calculator: "CollectHandednessClassifications"
   input_stream: "ITEM:single_handedness"
   input_stream: "BATCH_END:hand_rects_timestamp"
   output_stream: "ITERABLE:multi_handedness"
@@ -435,7 +435,7 @@ node {
 # so this bounding box which is heuristically computed by hand anatomy assumptions, is expected to more tightly
 # wrap the hand than the one which was given to the landmark inference step to begin with.
 node {
-  calculator: "HandLandmarksToRectCalculator"
+  calculator: "HandRectFromLandmarksStage"
   input_stream: "NORM_LANDMARKS:single_hand_landmarks"
   input_stream: "IMAGE_SIZE:image_size_for_landmarks"
   output_stream: "NORM_RECT:hand_rect_from_landmarks"
@@ -444,7 +444,7 @@ node {
 # expands that hand rectangle so that it's likely to still contain the hand
 # after whatever motion of the hand in the next video frame.
 node {
-  calculator: "RectTransformationCalculator_2"
+  calculator: "DeriveAnticipatoryHandRect"
   input_stream: "NORM_RECT:hand_rect_from_landmarks"
   input_stream: "IMAGE_SIZE:image_size_for_landmarks"
   output_stream: "single_hand_rect_from_landmarks"
@@ -461,7 +461,7 @@ node {
 # collects the set of landmarks of each hand, into a vector of them.
 # outputs that vector upon receiving the BATCH_END timestamp.
 node {
-  calculator: "EndLoopNormalizedLandmarkListVectorCalculator"
+  calculator: "CollectFinalLandmarksOfHands"
   input_stream: "ITEM:single_hand_landmarks"
   input_stream: "BATCH_END:hand_rects_timestamp"
   output_stream: "ITERABLE:multi_hand_landmarks"
@@ -470,7 +470,7 @@ node {
 # collects a set of world landmarks of each hand, into a vector of them.
 # outputs that vector upon receiving the BATCH_END timestamp.
 node {
-  calculator: "EndLoopLandmarkListVectorCalculator"
+  calculator: "CollectFinalWorldLandmarksOfHands"
   input_stream: "ITEM:single_hand_world_landmarks"
   input_stream: "BATCH_END:hand_rects_timestamp"
   output_stream: "ITERABLE:multi_hand_world_landmarks"
@@ -479,7 +479,7 @@ node {
 # collects the set of hand rects calculated from the inferred landmarks, into a vector of them.
 # outputs that vector upon receiving the BATCH_END timestamp.
 node {
-  calculator: "EndLoopHandRectangleFromLandmarksCalculator" # 2 V
+  calculator: "CollectAnticipatoryHandRects"
   input_stream: "ITEM:single_hand_rect_from_landmarks"
   input_stream: "BATCH_END:hand_rects_timestamp"
   output_stream: "ITERABLE:hand_rects_from_landmarks"
@@ -491,7 +491,7 @@ node {
 # hand rects. Note that upon the arrival of the very first input image, a
 # timestamp bound update occurs to jump start the feedback loop.
 node {
-  calculator: "PreviousLoopbackCalculator"
+  calculator: "LoopbackAnticipatoryHandRects"
   input_stream: "MAIN:image"
   input_stream: "LOOP:hand_rects_from_landmarks"
   input_stream_info: {

@@ -167,7 +167,7 @@ namespace api2 {
   // Output:
   //  DETECTIONS - Result MediaPipe detections.
   //
-  absl::Status TensorsToDetectionsCore::Open() {
+  absl::Status ConvertDetectionTensors::Open() {
     MP_RETURN_IF_ERROR(SetDecodingParameters());
     MP_RETURN_IF_ERROR(SetNmsParameters());
     initialized_ = true;
@@ -189,7 +189,7 @@ namespace api2 {
   //    so basically this class performs the pedantic work of extracting the raw SSD neural network outputs,
   //    with only some optional leverage for filtering the raw detections.
   // 2. it also transforms them into mediapipe vector types.
-  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> TensorsToDetectionsCore::Process(const std::vector<Tensor>& input_tensors) {
+  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> ConvertDetectionTensors::Process(const std::vector<Tensor>& input_tensors) {
     assert (initialized_);
 
 
@@ -217,7 +217,7 @@ namespace api2 {
     return nms_surviving_detections;
   }
 
-  absl::Status TensorsToDetectionsCore::ProcessCPU(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors) {
+  absl::Status ConvertDetectionTensors::ProcessCPU(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors) {
 
     if (input_tensors.size() == 2 ||
         input_tensors.size() == kNumInputTensorsWithAnchors) {
@@ -371,7 +371,7 @@ namespace api2 {
     return absl::OkStatus();
   }
 
-  absl::Status TensorsToDetectionsCore::SetDecodingParameters() {
+  absl::Status ConvertDetectionTensors::SetDecodingParameters() {
     MP_RETURN_IF_ERROR(SetSsdAnchors());
     MP_RETURN_IF_ERROR(SetSsdDecodingOptions());
     return absl::OkStatus();
@@ -380,7 +380,7 @@ namespace api2 {
   // Configure to extract the detections from the neural network output in compliance to the detection neural network's
   // shapes, strides, scales, etc. which must be known here in order to extract the neural network's output. so these
   // just replicate the anchors which the neural network was trained with/for.
-  absl::Status TensorsToDetectionsCore::SetSsdAnchors() {
+  absl::Status ConvertDetectionTensors::SetSsdAnchors() {
 
     // The SSD anchors parameters of the detection neural network
     SsdAnchorsCalculatorOptions ssd_anchors;
@@ -402,7 +402,7 @@ namespace api2 {
     return SsdAnchorsCalculatorUtils::GenerateAnchors(&ssd_anchors_, ssd_anchors);
   }
 
-  absl::Status TensorsToDetectionsCore::SetNmsParameters() {
+  absl::Status ConvertDetectionTensors::SetNmsParameters() {
     nms_options_ = NonMaxSuppressionCalculatorOptions();
 
     // Directly set the non-maximum suppression options from the values that were previously provided as pipeline node options:
@@ -422,7 +422,7 @@ namespace api2 {
 
   // Configure specific post-SSD decoding parameters and options ― hardwired for coupling to the class itself.
   // (originally these values were given as mediapipe graph calculator node "options")
-  absl::Status TensorsToDetectionsCore::SetSsdDecodingOptions() {
+  absl::Status ConvertDetectionTensors::SetSsdDecodingOptions() {
 
     ssd_decoding_options_ = TensorsToDetectionsCalculatorOptions();
 
@@ -506,7 +506,7 @@ namespace api2 {
   }
 
 
-  absl::Status TensorsToDetectionsCore::DecodeBoxes(
+  absl::Status ConvertDetectionTensors::DecodeBoxes(
       const float* raw_boxes, const std::vector<Anchor>& anchors,
       std::vector<float>* boxes) {
     for (int i = 0; i < num_boxes_; ++i) {
@@ -597,7 +597,7 @@ namespace api2 {
   // 1. filtering to only pass forward the maximum requested number of detections
   // 2. filtering out by the set score threshold (within the ConvertToDetection() call)
   // 2. optionally vertically flipping the detection coordinates
-  absl::Status TensorsToDetectionsCore::ConvertToDetections(
+  absl::Status ConvertDetectionTensors::ConvertToDetections(
       const float* detection_boxes, const float* detection_scores,
       const int* detection_classes, std::vector<Detection>* output_detections) {
 
@@ -651,7 +651,7 @@ namespace api2 {
   // converts to mediapipe detection object, while also filtering out by the set score threshold.
   // (really bad coupling by the original mediapipe code, these should not optimally be in the same fn).
   // the class filtering is vacuous in our case as it is a single class SSD model we consume from.
-  Detection TensorsToDetectionsCore::ConvertToDetection(
+  Detection ConvertDetectionTensors::ConvertToDetection(
       float box_ymin, float box_xmin, float box_ymax, float box_xmax,
       absl::Span<const float> scores, absl::Span<const int> class_ids,
       bool flip_vertically) {

@@ -63,7 +63,7 @@ constexpr char kLetterboxPaddingTag[] = "LETTERBOX_PADDING";
 //   output_stream: "LANDMARKS:0:adjusted_landmarks_0"
 //   output_stream: "LANDMARKS:1:adjusted_landmarks_1"
 // }
-class LandmarkLetterboxRemovalCalculator : public CalculatorBase {
+class UnletterboxLandmarksPrediction : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
     RET_CHECK(cc->Inputs().HasTag(kLandmarksTag) &&
@@ -121,6 +121,6 @@ class LandmarkLetterboxRemovalCalculator : public CalculatorBase {
     return absl::OkStatus();
   }
 };
-REGISTER_CALCULATOR(LandmarkLetterboxRemovalCalculator);
+REGISTER_CALCULATOR(UnletterboxLandmarksPrediction);
 
 }  // namespace mediapipe

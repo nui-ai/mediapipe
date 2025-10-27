@@ -37,7 +37,7 @@ namespace {}  // namespace
 //   output_stream: "NORM_RECT:hand_roi_from_pose"
 // }
 class HandDetectionsFromPoseToRectsCalculator
-    : public DetectionsToRectsCalculator {
+    : public PalmDetectionToHandRectStage1 {
  public:
   absl::Status Open(CalculatorContext* cc) override;
 

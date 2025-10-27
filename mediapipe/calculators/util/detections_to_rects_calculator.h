@@ -81,7 +81,7 @@ struct DetectionSpec {
 //     }
 //   }
 // }
-class DetectionsToRectsCalculator : public CalculatorBase {
+class PalmDetectionToHandRectStage1 : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc);
 

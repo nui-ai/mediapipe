@@ -46,7 +46,7 @@ inline float Sigmoid(float value) { return 1.0f / (1.0f + std::exp(-value)); }
 //   output_stream: "FLOATS:floats"
 // }
 namespace api2 {
-class TensorsToFloatsCalculator : public Node {
+class ExtractHandPresence : public Node {
  public:
   static constexpr Input<std::vector<Tensor>> kInTensors{"TENSORS"};
   static constexpr Output<float>::Optional kOutFloat{"FLOAT"};
@@ -61,20 +61,20 @@ class TensorsToFloatsCalculator : public Node {
  private:
   ::mediapipe::TensorsToFloatsCalculatorOptions options_;
 };
-MEDIAPIPE_REGISTER_NODE(TensorsToFloatsCalculator);
+MEDIAPIPE_REGISTER_NODE(ExtractHandPresence);
 
-absl::Status TensorsToFloatsCalculator::UpdateContract(CalculatorContract* cc) {
+absl::Status ExtractHandPresence::UpdateContract(CalculatorContract* cc) {
   // Only exactly a single output allowed.
   RET_CHECK(kOutFloat(cc).IsConnected() ^ kOutFloats(cc).IsConnected());
   return absl::OkStatus();
 }
 
-absl::Status TensorsToFloatsCalculator::Open(CalculatorContext* cc) {
+absl::Status ExtractHandPresence::Open(CalculatorContext* cc) {
   options_ = cc->Options<::mediapipe::TensorsToFloatsCalculatorOptions>();
   return tensors_to_floats_calculator_core::Open(options_);
 }
 
-absl::Status TensorsToFloatsCalculator::Process(CalculatorContext* cc) {
+absl::Status ExtractHandPresence::Process(CalculatorContext* cc) {
   const auto& input_tensors = *kInTensors(cc);
 
   auto result = tensors_to_floats_calculator_core::Process(input_tensors, options_);

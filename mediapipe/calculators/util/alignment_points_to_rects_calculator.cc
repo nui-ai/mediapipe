@@ -38,10 +38,10 @@ namespace {}  // namespace
 //       }
 //     }
 //   }
-class AlignmentPointsRectsCalculator : public DetectionsToRectsCalculator {
+class AlignmentPointsRectsCalculator : public PalmDetectionToHandRectStage1 {
  public:
   absl::Status Open(CalculatorContext* cc) override {
-    RET_CHECK_OK(DetectionsToRectsCalculator::Open(cc));
+    RET_CHECK_OK(PalmDetectionToHandRectStage1::Open(cc));
 
     // Make sure that start and end keypoints are provided.
     // They are required for the rect size calculation and will also force base

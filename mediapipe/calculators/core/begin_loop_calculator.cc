@@ -40,17 +40,16 @@ typedef BeginLoopCalculator<std::vector<int>> BeginLoopIntCalculator;
 REGISTER_CALCULATOR(BeginLoopIntCalculator);
 
 // A calculator to process std::vector<NormalizedRect>.
-class BeginLoopNormalizedRectCalculator : public BeginLoopCalculator<std::vector<::mediapipe::NormalizedRect>> {
+class HandRectsFanOut : public BeginLoopCalculator<std::vector<::mediapipe::NormalizedRect>> {
     absl::Status Process(CalculatorContext* cc) override {
         return BeginLoopCalculator::Process(cc);
     }
 };
-REGISTER_CALCULATOR(BeginLoopNormalizedRectCalculator);
+REGISTER_CALCULATOR(HandRectsFanOut);
 
 // A calculator to process std::vector<Detection>.
-typedef BeginLoopCalculator<std::vector<::mediapipe::Detection>>
-    BeginLoopDetectionCalculator;
-REGISTER_CALCULATOR(BeginLoopDetectionCalculator);
+typedef BeginLoopCalculator<std::vector<::mediapipe::Detection>> DetectionsFanOut;
+REGISTER_CALCULATOR(DetectionsFanOut);
 
 // A calculator to process std::vector<Matrix>.
 typedef BeginLoopCalculator<std::vector<Matrix>> BeginLoopMatrixCalculator;

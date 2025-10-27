@@ -37,7 +37,7 @@ using GpuBuffer = mediapipe::GpuBuffer;
 //   input_stream: "IMAGE:image"
 //   output_stream: "SIZE:size"
 // }
-class ImagePropertiesCalculator2 : public Node {
+class ImageSize2 : public Node {
  public:
   static constexpr Input<
       OneOf<mediapipe::Image, mediapipe::ImageFrame>>::Optional kIn{"IMAGE"};
@@ -94,7 +94,7 @@ class ImagePropertiesCalculator2 : public Node {
   }
 };
 
-MEDIAPIPE_REGISTER_NODE(ImagePropertiesCalculator2);
+MEDIAPIPE_REGISTER_NODE(ImageSize2);
 
 }  // namespace api2
 }  // namespace mediapipe

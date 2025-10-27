@@ -52,8 +52,8 @@ typedef SplitVectorCalculator<TfLiteTensor, false>
     SplitTfLiteTensorVectorCalculator;
 REGISTER_CALCULATOR(SplitTfLiteTensorVectorCalculator);
 
-typedef SplitVectorCalculator<Tensor, true> SplitTensorVectorCalculator;
-REGISTER_CALCULATOR(SplitTensorVectorCalculator);
+typedef SplitVectorCalculator<Tensor, true> SplitInferenceOutputTopics;
+REGISTER_CALCULATOR(SplitInferenceOutputTopics);
 
 typedef SplitVectorCalculator<mediapipe::NormalizedLandmark, false>
     SplitLandmarkVectorCalculator;

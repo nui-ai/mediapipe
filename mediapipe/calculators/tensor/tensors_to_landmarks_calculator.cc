@@ -71,7 +71,7 @@ namespace api2 {
 //     }
 //   }
 // }
-class TensorsToLandmarksCalculator : public Node {
+class ExtractLandmarks : public Node {
  public:
   static constexpr Input<std::vector<Tensor>> kInTensors{"TENSORS"};
   static constexpr Output<LandmarkList>::Optional kOutLandmarkList{"LANDMARKS"};
@@ -87,9 +87,9 @@ class TensorsToLandmarksCalculator : public Node {
   std::unique_ptr<TensorsToLandmarksCore> core_;
   ::mediapipe::TensorsToLandmarksCalculatorOptions options_;
 };
-MEDIAPIPE_REGISTER_NODE(TensorsToLandmarksCalculator);
+MEDIAPIPE_REGISTER_NODE(ExtractLandmarks);
 
-absl::Status TensorsToLandmarksCalculator::Open(CalculatorContext* cc) {
+absl::Status ExtractLandmarks::Open(CalculatorContext* cc) {
   MP_RETURN_IF_ERROR(LoadOptions(cc));
   // Instantiate the core with input image size and option-derived parameters.
   core_ = std::make_unique<TensorsToLandmarksCore>(
@@ -99,7 +99,7 @@ absl::Status TensorsToLandmarksCalculator::Open(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-absl::Status TensorsToLandmarksCalculator::Process(CalculatorContext* cc) {
+absl::Status ExtractLandmarks::Process(CalculatorContext* cc) {
   if (kInTensors(cc).IsEmpty()) {
     return absl::OkStatus();
   }
@@ -122,7 +122,7 @@ absl::Status TensorsToLandmarksCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-absl::Status TensorsToLandmarksCalculator::LoadOptions(CalculatorContext* cc) {
+absl::Status ExtractLandmarks::LoadOptions(CalculatorContext* cc) {
   // Get calculator options specified in the graph.
   options_ = cc->Options<::mediapipe::TensorsToLandmarksCalculatorOptions>();
   // num_landmarks is not required anymore; default of core is 21.

@@ -19,7 +19,7 @@ namespace api2 {
 using BoxFormat = ::mediapipe::TensorsToDetectionsCalculatorOptions::BoxFormat;
 using Anchor = ::mediapipe::Anchor;
 
-class TensorsToDetectionsCore {
+class ConvertDetectionTensors {
 public:
   absl::Status Open();
   absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Process(const std::vector<Tensor>& input_tensors);

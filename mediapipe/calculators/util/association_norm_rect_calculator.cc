@@ -33,7 +33,7 @@ namespace mediapipe {
 //       min_similarity_threshold: 0.1
 //     }
 // }
-class AssociationNormRectCalculator
+class HandRectsAssociation
     : public AssociationCalculator<::mediapipe::NormalizedRect> {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
@@ -66,6 +66,6 @@ class AssociationNormRectCalculator
   }
 };
 
-REGISTER_CALCULATOR(AssociationNormRectCalculator);
+REGISTER_CALCULATOR(HandRectsAssociation);
 
 }  // namespace mediapipe

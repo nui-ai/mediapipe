@@ -114,7 +114,7 @@ namespace api2 {
 //     padding of 10 pixels at the top and the bottom. The resulting array is
 //     therefore [0.f, 0.25f, 0.f, 0.25f] (10/40 = 0.25f).
 //
-class ImageToTensorCalculator2 : public Node {
+class ExtractSubImage : public Node {
  public:
   static constexpr Input<
       OneOf<mediapipe::Image, mediapipe::ImageFrame>>::Optional kIn{"IMAGE"};
@@ -206,7 +206,7 @@ class ImageToTensorCalculator2 : public Node {
   MemoryManager* memory_manager_ = nullptr;
 };
 
-MEDIAPIPE_REGISTER_NODE(ImageToTensorCalculator2);
+MEDIAPIPE_REGISTER_NODE(ExtractSubImage);
 
 }  // namespace api2
 }  // namespace mediapipe

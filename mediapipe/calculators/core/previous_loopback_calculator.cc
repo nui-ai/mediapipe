@@ -60,7 +60,7 @@ namespace api2 {
 //   input_stream: "PREV_TRACK:prev_output"
 //   output_stream: "TRACK:output"
 // }
-class PreviousLoopbackCalculator : public Node {
+class LoopbackAnticipatoryHandRects : public Node {
  public:
   static constexpr Input<AnyType> kMain{"MAIN"};
   static constexpr Input<AnyType> kLoop{"LOOP"};
@@ -196,7 +196,7 @@ class PreviousLoopbackCalculator : public Node {
   // timestamp bound change necessarily).
   Timestamp prev_loop_ts_ = Timestamp::Unset();
 };
-MEDIAPIPE_REGISTER_NODE(PreviousLoopbackCalculator);
+MEDIAPIPE_REGISTER_NODE(LoopbackAnticipatoryHandRects);
 
 }  // namespace api2
 }  // namespace mediapipe

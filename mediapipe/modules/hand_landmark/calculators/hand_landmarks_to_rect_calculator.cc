@@ -51,7 +51,7 @@ constexpr float kTargetAngle = M_PI * 0.5f;
 // finger and ring finger. After rotation, the vector from the wrist to the mean
 // of PIP joints is expected to be vertical with wrist at the bottom and the
 // mean of PIP joints at the top.
-class HandLandmarksToRectCalculator : public CalculatorBase {
+class HandRectFromLandmarksStage : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
     cc->Inputs().Tag(kNormalizedLandmarksTag).Set<NormalizedLandmarkList>();
@@ -89,6 +89,6 @@ class HandLandmarksToRectCalculator : public CalculatorBase {
 
  private:
 };
-REGISTER_CALCULATOR(HandLandmarksToRectCalculator);
+REGISTER_CALCULATOR(HandRectFromLandmarksStage);
 
 }  // namespace mediapipe

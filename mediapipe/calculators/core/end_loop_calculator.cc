@@ -37,20 +37,20 @@ typedef EndLoopCalculator<std::vector<::mediapipe::NormalizedRect>>
 REGISTER_CALCULATOR(EndLoopNormalizedRectCalculator);
 
 typedef EndLoopCalculator<std::vector<::mediapipe::NormalizedRect>>
-    EndLoopHandRectangleFromDetectionCalculator;
-REGISTER_CALCULATOR(EndLoopHandRectangleFromDetectionCalculator);
+    DetectionHandRectsCollector;
+REGISTER_CALCULATOR(DetectionHandRectsCollector);
 
 typedef EndLoopCalculator<std::vector<::mediapipe::NormalizedRect>>
-    EndLoopHandRectangleFromLandmarksCalculator;
-REGISTER_CALCULATOR(EndLoopHandRectangleFromLandmarksCalculator);
+    CollectAnticipatoryHandRects;
+REGISTER_CALCULATOR(CollectAnticipatoryHandRects);
 
 typedef EndLoopCalculator<std::vector<::mediapipe::LandmarkList>>
-    EndLoopLandmarkListVectorCalculator;
-REGISTER_CALCULATOR(EndLoopLandmarkListVectorCalculator);
+    CollectFinalWorldLandmarksOfHands;
+REGISTER_CALCULATOR(CollectFinalWorldLandmarksOfHands);
 
 typedef EndLoopCalculator<std::vector<::mediapipe::NormalizedLandmarkList>>
-    EndLoopNormalizedLandmarkListVectorCalculator;
-REGISTER_CALCULATOR(EndLoopNormalizedLandmarkListVectorCalculator);
+    CollectFinalLandmarksOfHands;
+REGISTER_CALCULATOR(CollectFinalLandmarksOfHands);
 
 typedef EndLoopCalculator<std::vector<bool>> EndLoopBooleanCalculator;
 REGISTER_CALCULATOR(EndLoopBooleanCalculator);
@@ -63,8 +63,8 @@ typedef EndLoopCalculator<std::vector<::mediapipe::RenderData>>
 REGISTER_CALCULATOR(EndLoopRenderDataCalculator);
 
 typedef EndLoopCalculator<std::vector<::mediapipe::ClassificationList>>
-    EndLoopClassificationListCalculator;
-REGISTER_CALCULATOR(EndLoopClassificationListCalculator);
+    CollectHandednessClassifications;
+REGISTER_CALCULATOR(CollectHandednessClassifications);
 
 typedef EndLoopCalculator<std::vector<TfLiteTensor>>
     EndLoopTfLiteTensorCalculator;

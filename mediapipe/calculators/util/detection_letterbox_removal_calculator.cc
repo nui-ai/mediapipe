@@ -43,7 +43,7 @@ constexpr char kLetterboxPaddingTag[] = "LETTERBOX_PADDING";
 
 // Processes detections from a letterboxed image to adjust their locations
 // to the corresponding non-letterboxed image.
-std::unique_ptr<std::vector<Detection>> RemoveLetterboxFromDetections(
+std::unique_ptr<std::vector<Detection>> UnLetterBox(
     const std::vector<Detection>& input_detections,
     const std::array<float, 4>& letterbox_padding) {
   const float left = letterbox_padding[0];
@@ -119,7 +119,7 @@ std::unique_ptr<std::vector<Detection>> RemoveLetterboxFromDetections(
 //   input_stream: "LETTERBOX_PADDING:letterbox_padding"
 //   output_stream: "DETECTIONS:adjusted_detections"
 // }
-class DetectionLetterboxRemovalCalculator : public CalculatorBase {
+class UnletterboxCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
     RET_CHECK(cc->Inputs().HasTag(kDetectionsTag) &&
@@ -151,7 +151,7 @@ class DetectionLetterboxRemovalCalculator : public CalculatorBase {
     const auto& letterbox_padding =
         cc->Inputs().Tag(kLetterboxPaddingTag).Get<std::array<float, 4>>();
 
-    auto output_detections = RemoveLetterboxFromDetections(
+    auto output_detections = UnLetterBox(
         input_detections, letterbox_padding);
 
     cc->Outputs()
@@ -160,6 +160,6 @@ class DetectionLetterboxRemovalCalculator : public CalculatorBase {
     return absl::OkStatus();
   }
 };
-REGISTER_CALCULATOR(DetectionLetterboxRemovalCalculator);
+REGISTER_CALCULATOR(UnletterboxCalculator);
 
 }  // namespace mediapipe

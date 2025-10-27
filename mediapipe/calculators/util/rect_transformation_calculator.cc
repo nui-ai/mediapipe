@@ -65,10 +65,10 @@ class RectTransformationCalculator : public CalculatorBase {
   std::unique_ptr<RectTransformationCalculatorCore> core_;
 };
 
-class RectTransformationCalculator_1 : public RectTransformationCalculator {};
-class RectTransformationCalculator_2 : public RectTransformationCalculator {};
-REGISTER_CALCULATOR(RectTransformationCalculator_1);
-REGISTER_CALCULATOR(RectTransformationCalculator_2);
+class PalmDetectionToHandRectStage2 : public RectTransformationCalculator {};  // used as part of detection handling
+class DeriveAnticipatoryHandRect : public RectTransformationCalculator {}; // used outside detection handling
+REGISTER_CALCULATOR(PalmDetectionToHandRectStage2);
+REGISTER_CALCULATOR(DeriveAnticipatoryHandRect);
 
 absl::Status RectTransformationCalculator::GetContract(CalculatorContract* cc) {
   RET_CHECK_EQ((cc->Inputs().HasTag(kNormRectTag) ? 1 : 0) +
