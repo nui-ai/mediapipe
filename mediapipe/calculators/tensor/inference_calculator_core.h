@@ -30,10 +30,10 @@
 namespace mediapipe {
 namespace api2 {
 
-class DetectionInferenceCalculatorCore {
+class InferenceCalculatorCore {
  public:
-  DetectionInferenceCalculatorCore(const std::string& model_path);
-  ~DetectionInferenceCalculatorCore() = default;
+  InferenceCalculatorCore(const std::string& model_path);
+  ~InferenceCalculatorCore() = default;
 
   absl::StatusOr<std::vector<Tensor>> Process(const TensorSpan& tensor_span);
 

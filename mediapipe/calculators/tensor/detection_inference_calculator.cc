@@ -21,7 +21,7 @@
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/time/time.h"
-#include "mediapipe/calculators/tensor/detection_inference_calculator_core.h"
+#include "mediapipe/calculators/tensor/inference_calculator_core.h"
 #include "mediapipe/calculators/tensor/inference_calculator.h"
 #include "mediapipe/calculators/tensor/inference_calculator_utils.h"
 #include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
@@ -61,7 +61,7 @@ class DetectionInferenceCalculator : public Node {
  private:
   absl::Status Process(CalculatorContext* cc) override;
 
-  std::unique_ptr<DetectionInferenceCalculatorCore> core_;
+  std::unique_ptr<InferenceCalculatorCore> core_;
   std::vector<int> input_tensor_indices_;
   std::vector<int> output_tensor_indices_;
 
@@ -72,10 +72,7 @@ absl::Status DetectionInferenceCalculator::Open(CalculatorContext* cc) {
   ABSL_LOG(INFO) << "starting DetectionInferenceCalculator";
   const std::string& model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
   try {
-    // io_mapper_ is a member of the InferenceCalculator class
-    // io_mapper_ = std::make_unique<InferenceIoMapper>();
-    // core_ = std::make_unique<DetectionInferenceCalculatorCore>(model_path, io_mapper_.get());
-    core_ = std::make_unique<DetectionInferenceCalculatorCore>(model_path);
+    core_ = std::make_unique<InferenceCalculatorCore>(model_path);
   } catch (const std::exception& e) {
     return absl::InternalError(e.what());
   }

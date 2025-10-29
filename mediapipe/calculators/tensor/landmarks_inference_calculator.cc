@@ -23,6 +23,8 @@
 #include "absl/time/time.h"
 #include "mediapipe/calculators/tensor/inference_calculator.h"
 #include "mediapipe/calculators/tensor/inference_calculator_utils.h"
+#include "mediapipe/calculators/tensor/inference_calculator_core.h"
+#include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
 #include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
 #include "mediapipe/calculators/tensor/inference_runner.h"
 #include "mediapipe/calculators/tensor/tensor_span.h"
@@ -58,7 +60,7 @@ class LandmarksInferenceCalculator
       CalculatorContext* cc, const TensorSpan& tensor_span) override;
 
   std::unique_ptr<InferenceRunner> inference_runner_;
-  // std::unique_ptr<InferenceIoMapper> io_mapper_;
+  std::unique_ptr<InferenceCalculatorCore> core_;
   std::vector<int> input_tensor_indices_;
   std::vector<int> output_tensor_indices_;
 
@@ -73,39 +75,12 @@ absl::Status LandmarksInferenceCalculator::UpdateContract(CalculatorContract* cc
 absl::Status LandmarksInferenceCalculator::Open(CalculatorContext* cc) {
 
   const std::string& model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
-
-  // make the model file loadable using the mediapipe resource loading system,
-  // which may (or may not) prove useful to reuse rather than just loading on our own.
-  auto default_resources = CreateDefaultResources();
-  MP_ASSIGN_OR_RETURN(auto model_packet, TfLiteModelLoader::LoadFromPath(*default_resources, model_path, false));
-  ABSL_CHECK(!model_packet.IsEmpty());
-  ABSL_LOG(INFO) << absl::StrFormat(
-    "GetModelAsPacket successfully loaded model from path: %s. Model size: %ld bytes",
-    model_path, model_packet.Get()->allocation()->bytes());
-
-  auto op_resolver = std::make_unique<mediapipe::CpuOpResolver>();
-
-  auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
-  xnnpack_opts.num_threads = 1;
-  auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts),&TfLiteXNNPackDelegateDelete);
-
-  tflite::InterpreterBuilder interpreter_builder(*model_packet.Get(), *op_resolver);
-  interpreter_builder.AddDelegate(delegate.get());
-  interpreter_builder.SetNumThreads(-1);
-
-  auto options = InferenceCalculatorOptions();
-
-  MP_ASSIGN_OR_RETURN(inference_runner_, CreateInferenceInterpreterDelegateRunner(
-    model_packet,
-    PacketAdopting<tflite::OpResolver>(std::move(op_resolver)),
-    std::move(delegate),
-    -1,
-    &options.input_output_config(),
-    false));
-
-  // Update IoMapper with input/output tensor names from the TfLite model.
-  io_mapper_ = std::make_unique<InferenceIoMapper>();
-  return io_mapper_->UpdateIoMap(options.input_output_config(), inference_runner_->GetInputOutputTensorNames());
+  try {
+    core_ = std::make_unique<InferenceCalculatorCore>(model_path);
+  } catch (const std::exception& e) {
+    return absl::InternalError(e.what());
+  }
+  return absl::OkStatus();
 }
 
 /// does not really use its CalculatorContext argument in the cascade of called functions

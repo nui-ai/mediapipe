@@ -418,9 +418,9 @@ config_setting(
 
 # detection inference calculator core
 cc_library(
-    name = "detection_inference_calculator_core",
-    srcs = ["detection_inference_calculator_core.cc"],
-    hdrs = ["detection_inference_calculator_core.h"],
+    name = "inference_calculator_core",
+    srcs = ["inference_calculator_core.cc"],
+    hdrs = ["inference_calculator_core.h"],
     deps = [
         ":inference_interpreter_delegate_runner_new",
         "//mediapipe/calculators/tensor:inference_calculator",
@@ -438,7 +438,7 @@ cc_library(
         "detection_inference_calculator.cc",
     ],
     deps = [
-        ":detection_inference_calculator_core",
+        ":inference_calculator_core",
     ],
     alwayslink = 1,
 )
@@ -448,11 +448,12 @@ cc_library(
     name = "landmarks_inference_calculator",
     srcs = ["landmarks_inference_calculator.cc"],
     deps = [
-        ":inference_interpreter_delegate_runner_new",
-        "//mediapipe/calculators/tensor:inference_calculator",
-        "//mediapipe/framework:calculator_framework",
-        "//mediapipe/framework/api2:node",
-        "@com_google_absl//absl/status",
+        ":inference_calculator_core",
+        #        ":inference_interpreter_delegate_runner_new",
+        #        "//mediapipe/calculators/tensor:inference_calculator",
+        #        "//mediapipe/framework:calculator_framework",
+        #        "//mediapipe/framework/api2:node",
+        #        "@com_google_absl//absl/status",
     ],
     alwayslink = 1,
 )

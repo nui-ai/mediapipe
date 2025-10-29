@@ -18,7 +18,7 @@
 #include <utility>
 #include <vector>
 
-#include "mediapipe/calculators/tensor/detection_inference_calculator_core.h"
+#include "mediapipe/calculators/tensor/inference_calculator_core.h"
 #include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
 #include "mediapipe/framework/deps/status_macros.h"
 #include "absl/log/log.h"
@@ -31,7 +31,7 @@ namespace mediapipe {
 namespace api2 {
 
 
-DetectionInferenceCalculatorCore::DetectionInferenceCalculatorCore(const std::string& model_path) {
+InferenceCalculatorCore::InferenceCalculatorCore(const std::string& model_path) {
   auto default_resources = CreateDefaultResources();
   auto model_packet_status = TfLiteModelLoader::LoadFromPath(*default_resources, model_path, false);
   if (!model_packet_status.ok()) {
@@ -70,7 +70,7 @@ DetectionInferenceCalculatorCore::DetectionInferenceCalculatorCore(const std::st
   inference_runner_ = std::move(runner_construction_status.value());
 }
 
-absl::StatusOr<std::vector<Tensor>> DetectionInferenceCalculatorCore::Process(const TensorSpan& tensor_span) {
+absl::StatusOr<std::vector<Tensor>> InferenceCalculatorCore::Process(const TensorSpan& tensor_span) {
   return inference_runner_->Run(tensor_span);
 }
 
