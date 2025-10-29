@@ -139,7 +139,6 @@ class InferenceInterpreterDelegateRunner : public InferenceRunner {
   bool enable_zero_copy_tensor_io_ = false;
 };
 
-/// does not really use its CalculatorContext argument (only used it for performance tracing before)
 absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(const TensorSpan& tensor_span) {
   const int num_feedback_tensors =
       feedback_manager_ ? feedback_manager_->GetNumberOfFeedbackTensors() : 0;
@@ -273,7 +272,7 @@ absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(cons
   return output_tensors;
 }
 
-/// creates a runner for the given model, op resolver and delegate
+/// creates a mediapipe tf-lite wrapper for the given model, op resolver and already built delegate
 absl::StatusOr<std::unique_ptr<InferenceRunner>>
 CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
@@ -282,10 +281,12 @@ CreateInferenceInterpreterDelegateRunner(
     const InferenceCalculatorOptions::InputOutputConfig* input_output_config,
     int interpreter_num_threads,
     bool enable_zero_copy_tensor_io) {
+
   InterpreterBuilder interpreter_builder(*model.Get(), op_resolver.Get());
   if (delegate) {
     interpreter_builder.AddDelegate(delegate.get());
   }
+
 #if defined(__EMSCRIPTEN__)
   interpreter_builder.SetNumThreads(1);
 #else

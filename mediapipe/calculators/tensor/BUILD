@@ -419,7 +419,7 @@ config_setting(
 # detection inference calculator core
 cc_library(
     name = "inference_calculator_core",
-    srcs = ["inference_calculator_core.cc"],
+    srcs = ["model_inference.cc"],
     hdrs = ["inference_calculator_core.h"],
     deps = [
         ":inference_interpreter_delegate_runner_new",
