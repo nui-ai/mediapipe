@@ -115,14 +115,12 @@ class InferenceInterpreterDelegateRunner : public InferenceRunner {
       api2::Packet<TfLiteModelPtr> model,
       std::unique_ptr<Interpreter> interpreter, TfLiteDelegatePtr delegate,
       InputOutputTensorNames&& input_output_tensor_names,
-      std::unique_ptr<InferenceFeedbackManager> feedback_manager,
-      bool enable_zero_copy_tensor_io)
+      std::unique_ptr<InferenceFeedbackManager> feedback_manager)
       : model_(std::move(model)),
         delegate_(std::move(delegate)),
         interpreter_(std::move(interpreter)),
         input_output_tensor_names_(std::move(input_output_tensor_names)),
-        feedback_manager_(std::move(feedback_manager)),
-        enable_zero_copy_tensor_io_(enable_zero_copy_tensor_io) {}
+        feedback_manager_(std::move(feedback_manager)){}
 
   absl::StatusOr<std::vector<Tensor>> Run(const TensorSpan& tensor_span);
 
@@ -136,6 +134,9 @@ class InferenceInterpreterDelegateRunner : public InferenceRunner {
   std::unique_ptr<Interpreter> interpreter_;
   InputOutputTensorNames input_output_tensor_names_;
   std::unique_ptr<InferenceFeedbackManager> feedback_manager_;
+
+  // Copy output tensors from the interpreter always, because zero copy may cause a stability issue,
+  // as seen in inline code comments from the mediapipe team around the use of this variable.
   bool enable_zero_copy_tensor_io_ = false;
 };
 
@@ -258,7 +259,6 @@ absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(cons
     // downstream calculators), we should invalidate TfLiteCustomAllocation
     // assignments here.
   } else {
-    // Copy output tensors from the interpreter.
     for (int i = 0; i < output_indices_excluding_feedback_tensors.size(); ++i) {
       const int output_tensor_index =
           interpreter_->outputs()[output_indices_excluding_feedback_tensors[i]];
@@ -280,8 +280,7 @@ CreateInferenceInterpreterDelegateRunner(
     api2::Packet<tflite::OpResolver> op_resolver,
     TfLiteDelegatePtr delegate,
     const InferenceCalculatorOptions::InputOutputConfig* input_output_config,
-    int interpreter_num_threads,
-    bool enable_zero_copy_tensor_io) {
+    int interpreter_num_threads) {
 
   InterpreterBuilder interpreter_builder(*model.Get(), op_resolver.Get());
   if (delegate) {
@@ -308,13 +307,15 @@ CreateInferenceInterpreterDelegateRunner(
     MP_RETURN_IF_ERROR(inference_feedback_manager->Init(
         *input_output_config, input_output_tensor_names, interpreter.get()));
   }
-  if (enable_zero_copy_tensor_io) {
-    MP_RETURN_IF_ERROR(VerifyModelTensorsForCustomAllocation(*interpreter));
-  }
+
+  // if (enable_zero_copy_tensor_io) {
+  //   MP_RETURN_IF_ERROR(VerifyModelTensorsForCustomAllocation(*interpreter));
+  // }
+
   return std::make_unique<InferenceInterpreterDelegateRunner>(
       std::move(model), std::move(interpreter), std::move(delegate),
       std::move(input_output_tensor_names),
-      std::move(inference_feedback_manager), enable_zero_copy_tensor_io);
+      std::move(inference_feedback_manager));
 }
 
 }  // namespace mediapipe

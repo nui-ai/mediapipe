@@ -48,8 +48,7 @@ CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
     api2::Packet<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
     const mediapipe::InferenceCalculatorOptions::InputOutputConfig* input_output_config = nullptr,
-    int interpreter_num_threads = -1,
-    bool enable_zero_copy_tensor_io = true);  // modified to true Oct 29
+    int interpreter_num_threads = -1);
 
 }  // namespace mediapipe
 
