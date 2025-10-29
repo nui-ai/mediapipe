@@ -111,7 +111,9 @@ namespace mediapipe {
 
         } else {
           // avoid applying hand detection as we have an amount of hand detections from the previous frame's landmarks processing
-          // which is the same or more than the amount of hands our pipeline has been configured to track.
+          // which is the same or more than the amount of hands our pipeline has been configured to track ― as if making the detection
+          // superfluous under such a naive view that using the (naively) expanded hand rects from the previous frame's landmark
+          // detections is good enough for continuing to track those hands in the current frame.
           ABSL_LOG(INFO) << "skipping palm detection as " << GetSharedState().prev_hand_rects_from_landmarks.size() << " hands have been detected from the previous frame's landmarks processing.";
           GetSharedState().palm_detection_image = nullptr;
         }

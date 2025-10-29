@@ -383,6 +383,9 @@ namespace api2 {
   absl::Status ConvertDetectionTensors::SetSsdAnchors() {
 
     // The SSD anchors parameters of the detection neural network
+    // see https://chatgpt.com/s/t_6900bef5d9788191946d78b7ac6e27c9 regarding the sizes, and overlaps, of the trained anchors,
+    // which the following variable values merely reproduce for reading the detections out from the network by this calculator.
+    // the patterns of overlap are also relevant to thiking about intuition into probabilities of the input that our NMS is handling.
     SsdAnchorsCalculatorOptions ssd_anchors;
     ssd_anchors.set_num_layers(4);
     ssd_anchors.set_min_scale(0.1484375);
