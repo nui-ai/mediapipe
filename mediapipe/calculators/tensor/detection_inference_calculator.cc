@@ -61,7 +61,7 @@ class DetectionInferenceCalculator : public Node {
  private:
   absl::Status Process(CalculatorContext* cc) override;
 
-  std::unique_ptr<InferenceCalculatorCore> core_;
+  std::unique_ptr<ModelInference> core_;
   std::vector<int> input_tensor_indices_;
   std::vector<int> output_tensor_indices_;
 
@@ -72,7 +72,7 @@ absl::Status DetectionInferenceCalculator::Open(CalculatorContext* cc) {
   ABSL_LOG(INFO) << "starting DetectionInferenceCalculator";
   const std::string& model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
   try {
-    core_ = std::make_unique<InferenceCalculatorCore>(model_path);
+    core_ = std::make_unique<ModelInference>(model_path);
   } catch (const std::exception& e) {
     return absl::InternalError(e.what());
   }

@@ -60,7 +60,7 @@ class LandmarksInferenceCalculator
       CalculatorContext* cc, const TensorSpan& tensor_span) override;
 
   std::unique_ptr<InferenceRunner> inference_runner_;
-  std::unique_ptr<InferenceCalculatorCore> core_;
+  std::unique_ptr<ModelInference> core_;
   std::vector<int> input_tensor_indices_;
   std::vector<int> output_tensor_indices_;
 
@@ -76,7 +76,7 @@ absl::Status LandmarksInferenceCalculator::Open(CalculatorContext* cc) {
 
   const std::string& model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
   try {
-    core_ = std::make_unique<InferenceCalculatorCore>(model_path);
+    core_ = std::make_unique<ModelInference>(model_path);
   } catch (const std::exception& e) {
     return absl::InternalError(e.what());
   }

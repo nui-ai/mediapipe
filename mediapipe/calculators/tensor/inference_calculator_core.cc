@@ -31,7 +31,7 @@ namespace mediapipe {
 namespace api2 {
 
 /// a tensorflow interpreter, which is always using the XNNPACK delegate for CPU inference.
-InferenceCalculatorCore::InferenceCalculatorCore(const std::string& model_path, int32_t XNNPackDelegate_threads) {
+ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDelegate_threads) {
 
   // load the model
   auto default_resources = CreateDefaultResources();
@@ -67,7 +67,7 @@ InferenceCalculatorCore::InferenceCalculatorCore(const std::string& model_path, 
   inference_runner_ = std::move(runner_construction_status.value());
 }
 
-absl::StatusOr<std::vector<Tensor>> InferenceCalculatorCore::Process(const TensorSpan& tensor_span) {
+absl::StatusOr<std::vector<Tensor>> ModelInference::Process(const TensorSpan& tensor_span) {
   return inference_runner_->Run(tensor_span);
 }
 
