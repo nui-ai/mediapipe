@@ -18,7 +18,7 @@
 #include <utility>
 #include <vector>
 
-#include "mediapipe/calculators/tensor/inference_calculator_core.h"
+#include "mediapipe/calculators/tensor/model_inference.h"
 #include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
 #include "mediapipe/framework/deps/status_macros.h"
 #include "absl/log/log.h"

@@ -420,7 +420,7 @@ config_setting(
 cc_library(
     name = "inference_calculator_core",
     srcs = ["model_inference.cc"],
-    hdrs = ["inference_calculator_core.h"],
+    hdrs = ["model_inference.h"],
     deps = [
         ":inference_interpreter_delegate_runner_new",
         "//mediapipe/calculators/tensor:inference_calculator",

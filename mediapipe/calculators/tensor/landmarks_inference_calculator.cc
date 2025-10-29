@@ -23,7 +23,7 @@
 #include "absl/time/time.h"
 #include "mediapipe/calculators/tensor/inference_calculator.h"
 #include "mediapipe/calculators/tensor/inference_calculator_utils.h"
-#include "mediapipe/calculators/tensor/inference_calculator_core.h"
+#include "mediapipe/calculators/tensor/model_inference.h"
 #include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
 #include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
 #include "mediapipe/calculators/tensor/inference_runner.h"
