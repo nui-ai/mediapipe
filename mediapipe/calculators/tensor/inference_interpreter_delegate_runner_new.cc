@@ -272,7 +272,8 @@ absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(cons
   return output_tensors;
 }
 
-/// creates a mediapipe tf-lite wrapper for the given model, op resolver and already built delegate
+/// creates a mediapipe tf-lite wrapper for the given model, op resolver and already built delegate.
+/// sets the number of threads the delegate will use.
 absl::StatusOr<std::unique_ptr<InferenceRunner>>
 CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,

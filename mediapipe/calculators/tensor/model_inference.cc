@@ -20,7 +20,6 @@
 
 #include "mediapipe/calculators/tensor/model_inference.h"
 #include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
-#include "mediapipe/framework/deps/status_macros.h"
 #include "absl/log/log.h"
 #include "absl/strings/str_format.h"
 #include "mediapipe/calculators/tensor/inference_calculator_utils.h"
@@ -46,7 +45,8 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
     "successfully loaded model from path: %s. Model size: %ld bytes",
     model_path, model_packet.Get()->allocation()->bytes());
 
-  // use the mediapipe default CPU ops resolver
+  // set the tflite interpreter to use the mediapipe default CPU ops resolver,
+  // for any ops which are not claimed by our XNNPACK delegate, if any.
   auto op_resolver = std::make_unique<mediapipe::CpuOpResolver>();
 
   // use the XNNPACK delegate, which will use the requested number of threads
@@ -54,14 +54,14 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
   xnnpack_opts.num_threads = XNNPackDelegate_threads;
   auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts), &TfLiteXNNPackDelegateDelete);
 
-  // create a runner for the interpeter and delegate
+  // create a mediapipe wrapper class called a runner, for the interpeter and delegate
   auto runner_construction_status = CreateInferenceInterpreterDelegateRunner(
       model_packet,
       PacketAdopting<tflite::OpResolver>(std::move(op_resolver)),
       std::move(delegate),
       &InferenceCalculatorOptions().input_output_config());
   if (!runner_construction_status.ok()) {
-    ABSL_LOG(ERROR) << "Failed to create inference runner.";
+    ABSL_LOG(ERROR) << "failed to create the mediapipe inference runner object";
     throw std::runtime_error(runner_construction_status.status().ToString());
   }
   inference_runner_ = std::move(runner_construction_status.value());
