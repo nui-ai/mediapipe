@@ -30,6 +30,8 @@ namespace mediapipe {
 namespace api2 {
 
 /// a tensorflow interpreter, which is always using the XNNPACK delegate for CPU inference.
+/// see https://github.com/nui-ai/tflite-analysis/blob/8e6f4e7b4211dc78fa4c6d9c0f77aa783fdf669a/readme.md
+/// as a starting point for performance analysis of any tflite model used.
 ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDelegate_threads) {
 
   // load the model
