@@ -47,10 +47,9 @@ absl::StatusOr<std::unique_ptr<InferenceRunner>>
 CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
     api2::Packet<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
-    int interpreter_num_threads,
-    const mediapipe::InferenceCalculatorOptions::InputOutputConfig*
-        input_output_config = nullptr,
-    bool enable_zero_copy_tensor_io = false);
+    const mediapipe::InferenceCalculatorOptions::InputOutputConfig* input_output_config = nullptr,
+    int interpreter_num_threads = -1,
+    bool enable_zero_copy_tensor_io = true);  // modified to true Oct 29
 
 }  // namespace mediapipe
 

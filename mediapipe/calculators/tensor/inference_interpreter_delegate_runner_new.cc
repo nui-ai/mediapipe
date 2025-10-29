@@ -273,12 +273,14 @@ absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(cons
   return output_tensors;
 }
 
+/// creates a runner for the given model, op resolver and delegate
 absl::StatusOr<std::unique_ptr<InferenceRunner>>
 CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
-    api2::Packet<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
+    api2::Packet<tflite::OpResolver> op_resolver,
+    TfLiteDelegatePtr delegate,
+    const InferenceCalculatorOptions::InputOutputConfig* input_output_config,
     int interpreter_num_threads,
-    const mediapipe::InferenceCalculatorOptions::InputOutputConfig* input_output_config,
     bool enable_zero_copy_tensor_io) {
   InterpreterBuilder interpreter_builder(*model.Get(), op_resolver.Get());
   if (delegate) {

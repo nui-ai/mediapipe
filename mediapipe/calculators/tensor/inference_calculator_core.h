@@ -32,7 +32,7 @@ namespace api2 {
 
 class InferenceCalculatorCore {
  public:
-  InferenceCalculatorCore(const std::string& model_path);
+  InferenceCalculatorCore(const std::string& model_path, int32_t XNNPackDelegate_threads=-1);
   ~InferenceCalculatorCore() = default;
 
   absl::StatusOr<std::vector<Tensor>> Process(const TensorSpan& tensor_span);
