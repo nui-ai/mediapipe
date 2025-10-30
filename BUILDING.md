@@ -26,12 +26,13 @@ Unlike original mediapipe, this build builds OpenCV from source which avoids [pr
   3. Only optionally add the `FlatBuffers` from a 3rd party developer.
 + Why plugins?
   + Chiefly, the first two plugins make the editor aware of `pb.h` header files which are only generated during each bazel build, outside the codebase source-tree, from the underlying protobuf definitions which mediapipe uses for mostly all of its C++ classes; these `pb.h` are expected by C++ include statements, without which most code symbols are marked as unknown in the editor, rendering code editing noisy and unusable.
-  + The editing awareness through these plugins is only materialized after you perform the "Sync" action in the Bazel menu or in context menus ― it basically draws the bazel build graph into the IDE's project model to make the IDE understand the project code. You have to repeat the "Sync" after build changes.
+  + The editing awareness through these plugins is only materialized after you trigger the "bazel Sync" action of the bazel plugin, from the Bazel menu, the IDE icon, or context menus ― it basically draws the bazel build graph into the IDE's project model to make the IDE understand the project code. You have to repeat this plugin sync after build file changes. this sync is not really related to the bazel sync commmand so
+    much, for the fine relationship of the plugin's sync operation to the bazel sync command see here ― https://chatgpt.com/s/t_6903a8d2adf08191ba71a9d65f4510c8.
   + They also enable more fluency with bazel run configurations and stuff in the IDE.
   + Case in point: jumping from a CC source file directly to its very build definition in the respective BAZEL file! (available as a right click option)
   + Don't install conflicting Clion plugins for Protocol Buffers IDE support, they will make the IDE silently fail on many features and become defunct. Just use the JetBrains one.
 
-+ As a byproduct of the Bazel for Clion plugin, Clion may use the `.clwb` (Clion With Bazel Acronym) path as the working directory or the console home directory; you usually want to revert to the project root path for running stuff.
++ As a byproduct of the Bazel for Clion plugin, Clion uses the `.clwb` (Clion With Bazel Acronym) path as the working directory or the console home directory; you usually want to revert to the project root path for running stuff.
 
 ### VS Code as IDE
   + VSCode has popular bazel extensions which provide a different set of features; some things from those VSCode plugins you'd want in JetBrains and vice versa.

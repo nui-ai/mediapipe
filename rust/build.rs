@@ -54,11 +54,17 @@ fn main() {
     println!("cargo:rustc-link-arg=-Wl,--enable-new-dtags");
     println!("cargo:rustc-link-arg=-Wl,-rpath,{}", opencv_dir);
 
-    // static linking would trigger a cascade of rendering all dependencies of the C API as static libraries,
-    // which is typically intractable or extremely hard to accoplish, so dynamic linking is our only option.
-    // we could also directly feed in an object file from the Bazel build, not a lib built by it, but then we also
-    // have to cater for aspects that linking on the bazel side took ownership of before, not to mention that bazel
-    // does not in its default behavior leave behind object files built for cc_library rules for cargo to consume.
-    // the object of integration between C and rust (pun not intended) is the library file.
+    // static linking our C API library would make it necessary to have all dependencies of the C API as static libraries too,
+    // and their own dependencies too as this requirement is recursively transitive, which is typically intractable or extremely
+    // hard to accoplish in dependency chains which aren't very small, so dynamic linking the C API library is our only option.
+    //
+    // theoretically we could alternatively directly feed in an object file from the Bazel build to the rust build instead of
+    // using the bazel built library of the C API as the object of integration for rust to consume,
+    // but such C++ object files may likely not play well in rust's mechanics of linking as that would be a non-standard mix.
+    // also in terms of build lifecycle mechanics bazel does not in its default behavior leave behind object files for cargo
+    // to consume nor trigger cargo once it is done building its part.
+    //
+    // therefor, the object of integration providing the C library to rust is the bazel built library file of the C API,
+    // and it is dynamically linked by the rust binary due to the above reason.
     println!("cargo:rustc-link-lib=dylib=hands_pipeline_operator_c_api");
 }
