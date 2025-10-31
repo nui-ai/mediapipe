@@ -6,7 +6,6 @@
 #include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/framework/memory_manager_service.h"
 #include "mediapipe/framework/api2/port.h"
-#include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_utils.h"
 #include "mediapipe/framework/calculator_framework.h"
@@ -20,12 +19,11 @@ namespace mediapipe {
 
   class HeadCalculator : public CalculatorBase {
 
-    private:
       std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
       std::unique_ptr<ImageToTensorConverter> gpu_converter_;
       std::unique_ptr<ImageToTensorConverter> cpu_converter_;
       std::unique_ptr<Liberated> liberated_;
-      int min_size_ = 0;
+      int max_hands_to_track = 0;
 
       static constexpr api2::Output<std::vector<Tensor>>::Optional kOutTensors{"TENSORS"};
       static constexpr api2::Output<Tensor>::Optional kOutTensor{"TENSOR"};
@@ -33,15 +31,13 @@ namespace mediapipe {
 
     public:
       static absl::Status GetContract(CalculatorContract* cc) {
+
         RET_CHECK(cc->Inputs().HasTag("IMAGE"));
         RET_CHECK(cc->Inputs().HasTag("ITERABLE"));
-        // Accept ImageFrame for IMAGE input; helper converts to Image if needed.
         cc->Inputs().Tag("IMAGE").Set<ImageFrame>();
-        // Iterable input is a vector of NormalizedRect.
         cc->Inputs().Tag("ITERABLE").Set<std::vector<NormalizedRect>>();
-        // Unnamed boolean output at index 0 (legacy behavior expected by graph).
-        cc->Outputs().Index(0).Set<bool>();
 
+        cc->Outputs().Index(0).Set<bool>(); // Unnamed boolean output at index 0 (legacy behavior expected by graph).
         cc->Outputs().Tag("TENSORS").Set<std::vector<Tensor>>();
         cc->Outputs().Tag("LETTERBOX_PADDING").Set<std::array<float, 4>>();
         // cc->Outputs().Tag("ITERABLE").Set<NormalizedRect>();
@@ -49,36 +45,15 @@ namespace mediapipe {
       }
 
       absl::Status Open(CalculatorContext* cc) override {
-        min_size_ = GetSharedState().NUM_HANDS;
+        max_hands_to_track = GetSharedState().NUM_HANDS;
         MemoryManager* memory_manager_ = nullptr;
         if (cc->Service(kMemoryManagerService).IsAvailable()) {
           memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();
         }
-        // Instantiate helper that mirrors core construction.
         liberated_ = std::make_unique<Liberated>(memory_manager_);
-        // Configure fixed 192x192 core options.
-        auto options_ = ImageToTensorCalculatorOptions();
-        options_.set_output_tensor_width(192);
-        options_.set_output_tensor_height(192);
-        options_.set_keep_aspect_ratio(true);
-        options_.mutable_output_tensor_float_range()->set_min(0.0f);
-        options_.mutable_output_tensor_float_range()->set_max(1.0f);
-        options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_ZERO);
-        auto params_ = GetOutputTensorParams(options_);
-        int tensor_width = params_.output_width.value_or(0);
-        int tensor_height = params_.output_height.value_or(0);
-        image_to_tensor_core_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
-            options_, tensor_width, tensor_height, params_,
-            gpu_converter_, cpu_converter_, memory_manager_);
-
-        ABSL_LOG(INFO) << "globally set maximum number of hands to track is " << min_size_ ;
-
         return absl::OkStatus();
       }
 
-      /// Determines if an input vector of NormalizedRect has a size greater than or equal to the globally defined num_hands (previously done by NormalizedRectVectorHasMinSizeCalculator).
-      /// proceeds to palm detection if not enough hands have been passed from the previous iteration of the pipeline.
-      ///
       absl::Status Process(CalculatorContext* cc) override {
 
         ABSL_LOG(INFO) << "HeadCalculator starting to process";
@@ -88,37 +63,12 @@ namespace mediapipe {
         MP_ASSIGN_OR_RETURN(image, GetInputImage(kIn(cc)));
         GetSharedState().image = image;
 
-        // Legacy has_min_size computation (mirrors CollectionHasMinSizeCalculator behavior)
         bool iterable_is_empty = cc->Inputs().Tag("ITERABLE").IsEmpty();
-        int iterable_size = 0;
         if (!iterable_is_empty) {
           const auto& rects = cc->Inputs().Tag("ITERABLE").Get<std::vector<NormalizedRect>>();
-          iterable_size = static_cast<int>(rects.size());
         }
 
-        bool has_min_size = (iterable_is_empty || iterable_size < min_size_) ? false : true;
-        ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks: " << GetSharedState().prev_hand_rects_from_landmarks.size();
-        if (GetSharedState().prev_hand_rects_from_landmarks.size() > min_size_) { ABSL_LOG(INFO) << "number of hands detected from previous frame's landmarks (" << GetSharedState().prev_hand_rects_from_landmarks.size() << ") is larger than globally set maximum number of hands to track " << min_size_ ; }
-
-        if (GetSharedState().prev_hand_rects_from_landmarks.size() < min_size_) {
-
-          // GetSharedState().palm_detection_image = image;
-          ABSL_LOG(INFO) << "palm detection will be triggered for the current frame";
-
-          api2::ImageToTensorCoreResult core_result;
-          absl::optional<mediapipe::NormalizedRect> norm_rect = absl::nullopt;
-          MP_RETURN_IF_ERROR(image_to_tensor_core_->Process(*image, norm_rect, &core_result));
-
-        } else {
-          // avoid applying hand detection as we have an amount of hand detections from the previous frame's landmarks processing
-          // which is the same or more than the amount of hands our pipeline has been configured to track ― as if making the detection
-          // superfluous under such a naive view that using the (naively) expanded hand rects from the previous frame's landmark
-          // detections is good enough for continuing to track those hands in the current frame.
-          ABSL_LOG(INFO) << "skipping palm detection as " << GetSharedState().prev_hand_rects_from_landmarks.size() << " hands have been detected from the previous frame's landmarks processing.";
-          GetSharedState().palm_detection_image = nullptr;
-        }
-
-        return absl::OkStatus();
+        return liberated_->Process(GetSharedState().prev_hand_rects_from_landmarks, image, max_hands_to_track);
       }
     };
   REGISTER_CALCULATOR(HeadCalculator);
