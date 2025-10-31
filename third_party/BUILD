@@ -206,16 +206,16 @@ OPENCV_SHARED_LIBS = True  # changed as part of https://github.com/nui-ai/mediap
 # changed as part of https://github.com/nui-ai/mediapipe/issues/22 (https://chatgpt.com/s/t_68e77246a72081919d71625d69d34ba9)
 OPENCV_SO_VERSION = "4.10.0"
 
-OPENCV_SO_SONAME = "410"  # SONAME used by linkers/NEEDED
+# SONAME used by linkers/NEEDED
+OPENCV_SO_SONAME = "410"
 
+# custom build OpenCV yielding versioned .so names
 cmake(
     name = "opencv_cmake",
     # Values to be passed as -Dkey=value on the CMake command line;
-    # here are serving to provide some CMake script configuration options
     cache_entries = {
         "CMAKE_BUILD_TYPE": "Release",
-        # The module list is always sorted alphabetically so that we do not
-        # cause a rebuild when changing the link order.
+        # The module list is always sorted alphabetically so that we do not cause a rebuild when changing the link order.
         "BUILD_LIST": ",".join(sorted(OPENCV_MODULES)),
         "BUILD_TESTS": "OFF",
         "BUILD_PERF_TESTS": "OFF",
@@ -299,15 +299,114 @@ cmake(
             for module in OPENCV_MODULES
         ],
         "//conditions:default": (
-            # properly make it available at runtime as a non-versioned .so name.
-            [
-                "libopencv_%s.so.%s" % (module, OPENCV_SO_SONAME)
-                for module in OPENCV_MODULES
-            ] +
-            [
-                "libopencv_%s.so.%s" % (module, OPENCV_SO_VERSION)
-                for module in OPENCV_MODULES
-            ]
+            # Export versioned OpenCV .so files (e.g. .so.410 and .so.4.10.0). normally libs have one real .so file and symlinks to it,
+            # but the OpenCV build itself does not provide that feature, so we just an extra copy for the extra versioned .so name
+            # per each opencv lib here.
+            ["libopencv_%s.so.%s" % (module, OPENCV_SO_SONAME) for module in OPENCV_MODULES] +
+            ["libopencv_%s.so.%s" % (module, OPENCV_SO_VERSION) for module in OPENCV_MODULES]
+        ),
+    }) if OPENCV_SHARED_LIBS else None,
+    out_static_libs = [
+        "libopencv_%s.a" % module
+        for module in OPENCV_MODULES
+    ] if not OPENCV_SHARED_LIBS else None,
+)
+
+# same as above, but for unversioned .so names in their own separate lib directory for rust's OpenCV crate linking.
+cmake(
+    name = "opencv_cmake_for_rust",
+    # Values to be passed as -Dkey=value on the CMake command line;
+    cache_entries = {
+        "CMAKE_BUILD_TYPE": "Release",
+        # The module list is always sorted alphabetically so that we do not cause a rebuild when changing the link order.
+        "BUILD_LIST": ",".join(sorted(OPENCV_MODULES)),
+        "BUILD_TESTS": "OFF",
+        "BUILD_PERF_TESTS": "OFF",
+        "BUILD_EXAMPLES": "OFF",
+        "BUILD_SHARED_LIBS": "ON" if OPENCV_SHARED_LIBS else "OFF",
+        "WITH_ITT": "OFF",
+        "WITH_JASPER": "OFF",
+        "WITH_JPEG": "ON",
+        "WITH_PNG": "ON",
+        "WITH_TIFF": "ON",
+        "WITH_OPENCL": "OFF",
+        "WITH_WEBP": "OFF",
+        # Optimization flags
+        "CV_ENABLE_INTRINSICS": "ON",
+        "WITH_EIGEN": "ON",
+        "WITH_PTHREADS": "ON",
+        "WITH_PTHREADS_PF": "ON",
+        # When building tests, by default Bazel builds them in dynamic mode.
+        # See https://docs.bazel.build/versions/master/be/c-cpp.html#cc_binary.linkstatic
+        # For example, when building //mediapipe/calculators/video:opencv_video_encoder_calculator_test,
+        # the dependency //mediapipe/framework/formats:image_frame_opencv will
+        # be built as a shared library, which depends on a cv::Mat constructor,
+        # and expects it to be provided by the main executable. The main
+        # executable depends on libimage_frame_opencv.so and links in
+        # libopencv_core.a, which contains cv::Mat. However, if
+        # libopencv_core.a marks its symbols as hidden, then cv::Mat is in
+        # opencv_video_encoder_calculator_test but it is not exported, so
+        # libimage_frame_opencv.so fails to find it.
+        "OPENCV_SKIP_VISIBILITY_HIDDEN": "ON" if not OPENCV_SHARED_LIBS else "OFF",
+        # The COPY actions in modules/python/python_loader.cmake have issues with symlinks.
+        # In any case, we don't use this.
+        "OPENCV_SKIP_PYTHON_LOADER": "ON",
+        # Need to set this too, for the same reason.
+        "BUILD_opencv_python": "OFF",
+        # Ccache causes issues in some of our CI setups. It's not clear that
+        # ccache would be able to work across sandboxed Bazel builds, either.
+        # In any case, Bazel does its own caching of the rule's outputs.
+        "ENABLE_CCACHE": "OFF",
+        # Added to avoid the protobuf import by opencv as part of https://github.com/nui-ai/mediapipe/issues/22
+        "BUILD_PROTOBUF": "OFF",
+        # Added to avoid the protobuf import by opencv as part of https://github.com/nui-ai/mediapipe/issues/22
+        "BUILD_opencv_dnn": "OFF",
+        # added to avoid the DNN module import which brings in protobuf as part of https://github.com/nui-ai/mediapipe/issues/22
+        "BUILD_opencv_objdetect": "OFF",
+        # added to avoid the DNN module import which brings in protobuf as part of https://github.com/nui-ai/mediapipe/issues/22
+        "BUILD_opencv_tracking": "OFF",
+    },
+    lib_source = "@opencv//:all",
+    linkopts = [] if OPENCV_SHARED_LIBS else [
+        # When using static libraries, the binary that eventually depends on the
+        # libraries also needs to link in their dependencies, which therefore
+        # have to be listed here.
+        # This list depends on which dependencies CMake finds when it configures
+        # the build, and so depends on what is installed on the local system.
+        # After building, the linkopts for the current setup can be extracted
+        # from lib/pkgconfig/opencv.pc in bazel-out.
+        # NOTE: some of these seem to be outdated, or at least some of them fail to be recognized/found out of the box for me.
+        "-ljpeg",
+        "-lpng",
+        "-lz",
+        "-ltiff",
+        "-lImath",
+        "-lIlmImf",
+        "-lIex",
+        "-lHalf",
+        "-lIlmThread",
+        "-ldc1394",
+        "-lavcodec",
+        "-lavformat",
+        "-lavutil",
+        "-lswscale",
+        "-lavresample",
+        "-ldl",
+        "-lm",
+        "-lpthread",
+        "-lrt",
+    ],
+    out_shared_libs = select({
+        "@bazel_tools//src/conditions:darwin": [
+            "libopencv_%s.%s.dylib" % (module, OPENCV_SO_VERSION)
+            for module in OPENCV_MODULES
+        ],
+        "//conditions:default": (
+            # Export a non versioned OpenCV .so which is necessary for our rust OpenCV crate, which expects unversioned .so names.
+            # the cleaner way is to only build OpenCV once and generate symlinks from unversioned .so names to versioned .so names,
+            # which the OpenCV build itself does not have a feature to do internally, and making the symlinks from bazel is super-clumsy.
+            # so we just run the build one more time for the unversioned .so files here.
+            ["libopencv_%s.so" % module for module in OPENCV_MODULES]
         ),
     }) if OPENCV_SHARED_LIBS else None,
     out_static_libs = [

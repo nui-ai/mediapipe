@@ -72,7 +72,7 @@ fn read_reference_data(filename: &str) -> anyhow::Result<Vec<PipelineOutputData>
     Ok(out)
 }
 
-fn print_pipeline_output_diff(a: &PipelineOutputData, b: &PipelineOutputData, frame: usize) {
+fn print_pipeline_output_diff(a: &PipelineOutputData, b: &PipelineOutputData, frame_number: usize) {
     if a.frame_number != b.frame_number {
         eprintln!("frame_number differs: {} vs {}", a.frame_number, b.frame_number);
     }
@@ -110,6 +110,16 @@ fn print_pipeline_output_diff(a: &PipelineOutputData, b: &PipelineOutputData, fr
     }
 }
 
+fn cwdir() -> anyhow::Result<()> {
+    let current_dir = std::env::current_dir().context("Failed to get current directory")?;
+    let parent_dir = current_dir.parent().context("No parent directory")?;
+    std::env::set_current_dir(parent_dir).context("Failed to change directory")?;
+    println!("Changed working directory to: {}", std::env::current_dir()?.display());
+
+    // ... rest of your main logic ...
+    Ok(())
+}
+
 fn main() -> anyhow::Result<()> {
 
     let args = Args::parse();
@@ -130,7 +140,7 @@ fn main() -> anyhow::Result<()> {
     println!("Video/camera input successfully opened");
 
     // Check the reference output file
-    let reference_proto_path = "output_data_v0.10.13.pb";
+    let reference_proto_path = "../output_data_v0.10.13.pb";
     if !std::path::Path::new(reference_proto_path).is_file() {
         eprintln!("Error: the reference output data file '{}' not found or is not a regular file.", reference_proto_path);
         std::process::exit(1);
@@ -146,6 +156,11 @@ fn main() -> anyhow::Result<()> {
     let graph_file_cstr = CString::new(args.graph_file.to_str().unwrap())?;
     let output_streams_csv_cstr = CString::new("multi_hand_landmarks,multi_hand_world_landmarks,multi_handedness")?;
 
+    // temporarily change the working directory to the project-wide project root directory,
+    // so that relative pbtxt file paths expected by our mediapipe pipeline are resolved correctly,
+    // as our mediapipe pipeline does not take a variable for its base path for model loading from
+    // rust, and our rust runs under our `rust` directory, not the project-wide root directory.
+    cwdir().expect("failed setting the working directory for the mediapipe current pipeline");
     if graph_file_cstr.as_ptr().is_null() {
         eprintln!("Error: graph_file_cstr is a null pointer");
         std::process::exit(1);

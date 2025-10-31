@@ -19,6 +19,7 @@
 
 #include <cstdlib>
 #include <fstream>
+#include <filesystem>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -47,6 +48,54 @@ constexpr char kReferenceProtoFilename[] = "output_data_v0.10.13.pb";
 ABSL_FLAG(std::string, graph_file, "", "Name of pipeline pbtxt file.");
 ABSL_FLAG(std::string, input_video_path, "", "Full path of video to load. If not provided, will attempt to use webcam input (not tested).");
 ABSL_FLAG(std::string, output_video_path, "", "Full path of where to save result (.mp4 only). If not provided, show result in a window (not tested).");
+
+// Validates and logs the PROJECT_ROOT_DIR env variable.
+void ValidateProjectRootDirectoryOrExit() {
+    const char* root_dir = std::getenv("PROJECT_ROOT_DIR");
+    if (!root_dir || std::string(root_dir).empty()) {
+        std::cerr << "ERROR: the environment variable PROJECT_ROOT_DIR must be set.";
+        std::exit(EXIT_FAILURE);
+    }
+    std::string dir_str(root_dir);
+    if (!std::filesystem::path(dir_str).is_absolute()) {
+        std::cerr << "ERROR: the environment variable PROJECT_ROOT_DIR must be an absolute path, but got: '" << dir_str << "'\n";
+        std::exit(EXIT_FAILURE);
+    }
+    if (!std::filesystem::exists(dir_str)) {
+        std::cerr << "ERROR: the path provided by the environment variable PROJECT_ROOT_DIR does not exist: '" << dir_str << "'\n";
+        std::exit(EXIT_FAILURE);
+    }
+    if (!std::filesystem::is_directory(dir_str)) {
+        std::cerr << "ERROR: the value provided by the environment variable PROJECT_ROOT_DIR is not a directory: '" << dir_str << "'\n";
+        std::exit(EXIT_FAILURE);
+    }
+    std::cerr << "PROJECT_ROOT_DIR is set to: '" << dir_str << "'\n";
+}
+
+bool get_project_root_dir(const std::string &filename, std::string &value1) {
+    const char* root_dir = std::getenv("PROJECT_ROOT_DIR");
+    if (root_dir && std::string(root_dir).length() > 0) {
+        value1 = (std::filesystem::path(root_dir) / filename).string();
+        return true;
+    }
+    return false;
+}
+
+// Returns the full path by prefixing with PROJECT_ROOT_DIR if set and path is not absolute.
+std::string GetProjectRootedPath(const std::string& filename) {
+    if (filename.empty()) {
+        throw std::invalid_argument("filename cannot be empty");
+    }
+    if (std::filesystem::path(filename).is_absolute()) {
+        return filename;
+    }
+    std::string project_root_dir;
+    if (get_project_root_dir(filename, project_root_dir)) {
+        return project_root_dir;
+    }
+
+    throw std::runtime_error("a relative path cannot be resolved when the PROJECT_ROOT_DIR environment variable is not set");
+}
 
 // helper function to read the reference output data from file c style (we could just have used cpp)
 bool ReadReferenceData(const std::string& filename, std::vector<mediapipe::PipelineOutputData>& out) {
@@ -82,19 +131,22 @@ int main(int argc, char** argv) {
     google::InitGoogleLogging(argv[0]);
 
     ABSL_LOG(INFO) << "this is the c-api pipeline runner";
+    ABSL_LOG(INFO) << "working directory: " << std::filesystem::current_path();
 
     absl::ParseCommandLine(argc, argv);
 
+    ValidateProjectRootDirectoryOrExit();
+
     // load the reference output data (we could just read it using cpp)
     std::vector<mediapipe::PipelineOutputData> reference_data;
-    ReadReferenceData(kReferenceProtoFilename, reference_data);
+    ReadReferenceData(GetProjectRootedPath(kReferenceProtoFilename), reference_data);
 
     // output stream names as single string for c api simplicity
     const std::string output_streams_csv = "multi_hand_landmarks,multi_hand_world_landmarks,multi_handedness";
 
     // instantiate the graph operator object using file path
     HandsPipelineOperatorHandle pipeline_operator = hands_pipeline_operator_create(
-        absl::GetFlag(FLAGS_graph_file).c_str(), output_streams_csv.c_str());
+        GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)).c_str(), output_streams_csv.c_str());
     if (!pipeline_operator) {
         std::cerr << "Failed to create HandsPipelineOperator via C API: " << hands_pipeline_operator_get_last_error() << std::endl;
         return EXIT_FAILURE;
@@ -104,7 +156,7 @@ int main(int argc, char** argv) {
     cv::VideoCapture capture;
     const bool video_file_input = !absl::GetFlag(FLAGS_input_video_path).empty();
     if (video_file_input) {
-        capture.open(absl::GetFlag(FLAGS_input_video_path));
+        capture.open(GetProjectRootedPath(absl::GetFlag(FLAGS_input_video_path)));
     } else {
         capture.open(0);
     }

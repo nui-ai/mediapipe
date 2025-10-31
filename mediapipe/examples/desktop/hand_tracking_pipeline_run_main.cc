@@ -53,16 +53,30 @@ ABSL_FLAG(std::string, output_video_path, "",
           "output video file path (.mp4 only). "
           "if not provided, shows the result images in a window without saving them to an output video file.");
 
+
+bool get_project_root_dir(const std::string &filename, std::string &value1) {
+  const char* root_dir = std::getenv("PROJECT_ROOT_DIR");
+  if (root_dir && std::string(root_dir).length() > 0) {
+    value1 = (std::filesystem::path(root_dir) / filename).string();
+    return true;
+  }
+  return false;
+}
+
 // Returns the full path by prefixing with PROJECT_ROOT_DIR if set and path is not absolute.
 std::string GetProjectRootedPath(const std::string& filename) {
-    if (filename.empty() || std::filesystem::path(filename).is_absolute()) {
-        return filename;
-    }
-    const char* root_dir = std::getenv("PROJECT_ROOT_DIR");
-    if (root_dir && std::string(root_dir).length() > 0) {
-        return (std::filesystem::path(root_dir) / filename).string();
-    }
+  if (filename.empty()) {
+    throw std::invalid_argument("filename cannot be empty");
+  }
+  if (std::filesystem::path(filename).is_absolute()) {
     return filename;
+  }
+  std::string project_root_dir;
+  if (get_project_root_dir(filename, project_root_dir)) {
+    return project_root_dir;
+  }
+
+  throw std::runtime_error("a relative path cannot be resolved when the PROJECT_ROOT_DIR environment variable is not set");
 }
 
 // helper function to read the output reference data from file
@@ -196,23 +210,27 @@ absl::Status RunPipelineWithDiffing() {
   return absl::OkStatus();
 }
 
-// Validates PROJECT_ROOT_DIR env variable if set. Exits with error if invalid.
+// Validates and logs the PROJECT_ROOT_DIR env variable.
 void ValidateProjectRootDirectoryOrExit() {
     const char* root_dir = std::getenv("PROJECT_ROOT_DIR");
-    if (!root_dir || std::string(root_dir).empty()) return; // Not set, nothing to check
+    if (!root_dir || std::string(root_dir).empty()) {
+      std::cerr << "ERROR: the environment variable PROJECT_ROOT_DIR must be set.";
+      std::exit(EXIT_FAILURE);
+    }
     std::string dir_str(root_dir);
     if (!std::filesystem::path(dir_str).is_absolute()) {
-        std::cerr << "ERROR: PROJECT_ROOT_DIR must be an absolute path, but got: '" << dir_str << "'\n";
+        std::cerr << "ERROR: the environment variable PROJECT_ROOT_DIR must be an absolute path, but got: '" << dir_str << "'\n";
         std::exit(EXIT_FAILURE);
     }
     if (!std::filesystem::exists(dir_str)) {
-        std::cerr << "ERROR: PROJECT_ROOT_DIR does not exist: '" << dir_str << "'\n";
+        std::cerr << "ERROR: the path provided by the environment variable PROJECT_ROOT_DIR does not exist: '" << dir_str << "'\n";
         std::exit(EXIT_FAILURE);
     }
     if (!std::filesystem::is_directory(dir_str)) {
-        std::cerr << "ERROR: PROJECT_ROOT_DIR is not a directory: '" << dir_str << "'\n";
+        std::cerr << "ERROR: the value provided by the environment variable PROJECT_ROOT_DIR is not a directory: '" << dir_str << "'\n";
         std::exit(EXIT_FAILURE);
     }
+    std::cerr << "PROJECT_ROOT_DIR is set to: '" << dir_str << "'\n";
 }
 
 // Checks that the given file exists. Exits with error if not.
@@ -228,7 +246,7 @@ int main(int argc, char** argv) {
 
   google::InitGoogleLogging(argv[0]);
   ABSL_LOG(INFO) << "this is the pure c++ pipeline runner";
-  ABSL_LOG(INFO) << "working directory: " << std::filesystem::current_path() << std::endl;
+  ABSL_LOG(INFO) << "working directory: " << std::filesystem::current_path();
 
   absl::ParseCommandLine(argc, argv);
 

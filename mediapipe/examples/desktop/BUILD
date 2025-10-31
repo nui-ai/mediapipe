@@ -57,6 +57,7 @@ cc_library(
         "//mediapipe/framework/port:opencv_video",
         "//mediapipe/framework/port:parse_text_proto",
         "//mediapipe/framework/port:status",
+        "//mediapipe/liberated:HeadCalculator",
         "//mediapipe/modules/hand_landmark:hand_landmark_cpu",
         "//mediapipe/modules/hand_landmark:hand_landmark_landmarks_to_roi",
         "//mediapipe/modules/hand_landmark:palm_detection_detection_to_roi",
@@ -72,7 +73,7 @@ cc_library(
 cc_library(
     name = "hand_tracking_pipeline_run_main",
     srcs = ["hand_tracking_pipeline_run_main.cc"],
-    data = ["//mediapipe/modules/hand_landmark:handedness.txt"],  # needed when running the binary through the bazel command
+    data = ["//mediapipe/modules/hand_landmark:handedness.txt"],
     deps = [
         ":hands_pipeline_operator",
         ":pipeline_output_cc_proto",
@@ -87,7 +88,6 @@ cc_library(
         "//mediapipe/framework/port:opencv_video",
         "//mediapipe/framework/port:parse_text_proto",
         "//mediapipe/framework/port:status",
-        "//mediapipe/liberated:HeadCalculator",
         "//mediapipe/util:resource_util",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
@@ -98,6 +98,7 @@ cc_library(
 cc_library(
     name = "hand_tracking_pipeline_run_via_c_api",
     srcs = ["hand_tracking_pipeline_run_main_via_c_api.cc"],
+    data = ["//mediapipe/modules/hand_landmark:handedness.txt"],
     visibility = ["//visibility:public"],
     deps = [
         ":hands_pipeline_operator_c_api",

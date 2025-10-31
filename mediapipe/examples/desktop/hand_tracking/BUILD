@@ -50,7 +50,8 @@ cc_binary(
     visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/examples/desktop:hands_pipeline_operator_c_api",
-        "//third_party:opencv_cmake",  # explicit dependency to ensure Bazel builds it
+        "//third_party:opencv_cmake",  # build OpenCV to provide is directly rather than entangle with the arbitrary system OpenCV version, as per https://github.com/nui-ai/mediapipe/issues/22.
+        "//third_party:opencv_cmake_for_rust",  # build OpenCV again, just to yield separately the unversioned libs for rust's OpenCV crate's own linking, as it requires that in a separate directory (https://github.com/twistedfall/opencv-rust/issues/697).
     ],
 )
 
