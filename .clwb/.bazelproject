@@ -1,0 +1,27 @@
+directories:
+  # directories considered as source directories are defined for Clion here, when it's a bazel project.
+  # as long as the . entry is included here, we should include - entries as well to in the least avoid the
+  # target directories of downstream build systems like pip and cargo from being considered as source directories,
+  # which would otherwise cause cleans of bazel's bazel-bin output directory on clean operations of those build systems ― whenever Clion is running.
+  .
+  -rust/target  # seems to avoid indexing and thus clearing bazel-bin on cargo cleans
+  -.venv        # hopefully would likewise avoid indexing and thus clearing bazel-bin on pip uninstalls
+
+targets:
+  # we use the below to include all targets under the directories defined above rather than listing them individually here,
+  # which is a little sloppy but can ensure that everything is being included in bazel info and build commands.
+  # if redone, this should be replaced with explicit target listings as in the original file, as many
+  # mediapipe build targets issue errors from the bazel plugin's bazel info work on its sync operation,
+  # which clutter the bazel plugin log obfuscating the health of the targets which we are actually
+  # interested in.
+
+# Automatically includes all relevant targets under the 'directories' above
+derive_targets_from_directories: true
+
+additional_languages:
+  # Uncomment any additional languages you want supported
+  # dart
+  # javascript
+  # python
+  # typescript
+  python
