@@ -32,9 +32,14 @@ Liberated::Liberated(MemoryManager* memory_manager) {
     } else if (prev_hand_rects_from_landmarks.size() < max_hands_to_track) {
 
       ABSL_LOG(INFO) << "palm detection will be triggered for the current frame as the number of previous frame's detections from landmarks is smaller than the set maximum number of hands to track";
+
       api2::ImageToTensorCoreResult core_result;
       absl::optional<NormalizedRect> norm_rect = absl::nullopt;
       return image_to_tensor_core_->Process(*image, norm_rect, &core_result);
+
+
+
+
     }
 }
 
