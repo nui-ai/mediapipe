@@ -115,8 +115,6 @@ fn cwdir() -> anyhow::Result<()> {
     let parent_dir = current_dir.parent().context("No parent directory")?;
     std::env::set_current_dir(parent_dir).context("Failed to change directory")?;
     println!("Changed working directory to: {}", std::env::current_dir()?.display());
-
-    // ... rest of your main logic ...
     Ok(())
 }
 
@@ -157,9 +155,10 @@ fn main() -> anyhow::Result<()> {
     let output_streams_csv_cstr = CString::new("multi_hand_landmarks,multi_hand_world_landmarks,multi_handedness")?;
 
     // temporarily change the working directory to the project-wide project root directory,
-    // so that relative pbtxt file paths expected by our mediapipe pipeline are resolved correctly,
-    // as our mediapipe pipeline does not take a variable for its base path for model loading from
-    // rust, and our rust runs under our `rust` directory, not the project-wide root directory.
+    // so that relative paths to pbtxt files expected by our mediapipe pipeline are resolved correctly,
+    // as the mediapipe pipeline's loading of the pbtxt and other resource files can only search from a fixed base path ―
+    // and it does not take a variable for its base path for model loading from rust, while our rust runs under our `rust`
+    // directory, not the project-wide root directory (only because it's convenient in RustRover).
     cwdir().expect("failed setting the working directory for the mediapipe current pipeline");
     if graph_file_cstr.as_ptr().is_null() {
         eprintln!("Error: graph_file_cstr is a null pointer");
