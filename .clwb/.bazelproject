@@ -2,10 +2,19 @@ directories:
   # directories considered as source directories are defined for Clion here, when it's a bazel project.
   # as long as the . entry is included here, we should include - entries as well to in the least avoid the
   # target directories of downstream build systems like pip and cargo from being considered as source directories,
-  # which would otherwise cause cleans of bazel's bazel-bin output directory on clean operations of those build systems ― whenever Clion is running.
+  # which would otherwise cause their cleans (cargo clean, pip uninstall) to invalidate bazel build outputs,
+  # and even possibly cause non-determinism in the form of race conditions once a downstream build is generating
+  # its files while bazel is invalidating outputs which the downstream build is trying to read.
+  # if doint this from scratch, it is easy to only define what to include in .bazelproject,
+  # as we do in github.com/nui-ai/mediapipe-current already.
   .
-  -rust/target  # seems to avoid indexing and thus clearing bazel-bin on cargo cleans
-  -.venv        # hopefully would likewise avoid indexing and thus clearing bazel-bin on pip uninstalls
+  -rust   # should be ignored by bazel. may avoid bazel or the bazel IDE plugin invalidating build outputs on cargo operations.
+  -.venv  # should be ignored by bazel. may possibly avoid bazel or the bazel IDE plugin invalidating build outputs on pip uninstall which was previously observed.
+  -.run
+  -.idea
+  -.clwb
+  -.git
+  -.github
 
 targets:
   # we use the below to include all targets under the directories defined above rather than listing them individually here,
