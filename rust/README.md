@@ -47,7 +47,7 @@ cargo run --release -- \
 
 ---
 
-### System OpenCV and Compiler Prerequisites ― obsolete as we link to our bazel built version of OpenCV now which solves https://github.com/nui-ai/mediapipe/issues/22
+### System OpenCV and Compiler Prerequisites ― obsolete as we link to our bazel built version of OpenCV now to avoid and solve https://github.com/nui-ai/mediapipe/issues/22
 
 This project links to your system OpenCV installation, just like your C++ Bazel builds. You do NOT need to build OpenCV from source for Rust.
 
