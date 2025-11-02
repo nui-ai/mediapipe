@@ -195,7 +195,6 @@ namespace api2 {
     }
     // Instantiate and open core
     core_ = std::make_unique<ConvertDetectionTensors>();
-    MP_RETURN_IF_ERROR(core_->Open());
     return absl::OkStatus();
   }
 

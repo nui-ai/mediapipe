@@ -27,6 +27,10 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   // initialize for palm detection inference
   const std::string& model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
   palm_detection_inference_ = std::make_unique<api2::ModelInference>(model_path);
+
+  // initialize for detection inference conversion to tensors
+  inference_filter_stage_1 = std::make_unique<api2::ConvertDetectionTensors>();
+
 }
 
   absl::Status Liberated::Process(const std::vector<mediapipe::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
@@ -46,19 +50,22 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       api2::ImageToTensorCoreResult image_as_tensor;
       absl::optional<NormalizedRect> norm_rect = absl::nullopt;
       MP_RETURN_IF_ERROR(image_to_tensor_core_->Process(*image, norm_rect, &image_as_tensor));
-      TensorSpan tensor_span;
-      tensor_span = MakeTensorSpan(image_as_tensor.tensors);
+      TensorSpan image_as_tensor_span;
+      image_as_tensor_span = MakeTensorSpan(image_as_tensor.tensors);
 
       // palm detection inference
       absl::StatusOr<std::vector<Tensor>> inference;
-      MP_ASSIGN_OR_RETURN(inference, palm_detection_inference_->Process(tensor_span));
+      MP_ASSIGN_OR_RETURN(inference, palm_detection_inference_->Process(image_as_tensor_span));
       ABSL_LOG(INFO) << "palm detection inference completed";
 
-
-      return absl::OkStatus();
       // extract and first step filter the detection inference output
+      std::unique_ptr<std::vector<Detection>> filtered_detections;
+      MP_ASSIGN_OR_RETURN(filtered_detections, inference_filter_stage_1->Process(*inference));
 
+      ABSL_LOG(INFO) << "detection inference conversion to tensors completed";
     }
+
+    return absl::OkStatus();
 }
 
 }

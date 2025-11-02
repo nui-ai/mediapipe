@@ -167,9 +167,9 @@ namespace api2 {
   // Output:
   //  DETECTIONS - Result MediaPipe detections.
   //
-  absl::Status ConvertDetectionTensors::Open() {
-    MP_RETURN_IF_ERROR(SetDecodingParameters());
-    MP_RETURN_IF_ERROR(SetNmsParameters());
+  ConvertDetectionTensors::ConvertDetectionTensors() {
+    ABSL_CHECK_OK(SetDecodingParameters());
+    ABSL_CHECK_OK(SetNmsParameters());
     initialized_ = true;
 
     if (CanUseGpu()) {
@@ -179,8 +179,6 @@ namespace api2 {
       RET_CHECK(gpu_helper_);
 #endif  // !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
     }
-
-    return absl::OkStatus();
   }
 
   // 1. this method decodes the raw palm detections neural network output tensors into detections;

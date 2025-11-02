@@ -21,7 +21,8 @@ using Anchor = ::mediapipe::Anchor;
 
 class ConvertDetectionTensors {
 public:
-  absl::Status Open();
+  ConvertDetectionTensors();
+
   absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Process(const std::vector<Tensor>& input_tensors);
 
 private:
