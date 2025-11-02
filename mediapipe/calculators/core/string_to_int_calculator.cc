@@ -22,7 +22,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Calculator that converts a string into an integer type, or fails if the
 // conversion is not possible.
@@ -76,4 +76,4 @@ REGISTER_CALCULATOR(StringToInt64Calculator);
 using StringToUint64Calculator = StringToIntCalculatorTemplate<uint64_t>;
 REGISTER_CALCULATOR(StringToUint64Calculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

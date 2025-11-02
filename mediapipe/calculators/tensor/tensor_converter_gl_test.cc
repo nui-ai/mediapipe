@@ -18,7 +18,7 @@
 #include "mediapipe/gpu/gpu_test_base.h"
 #include "mediapipe/util/image_test_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 constexpr std::pair<float, float> kDefaultOutputRange =
@@ -291,4 +291,4 @@ TEST_P(TensorConverterGlTest,
 }
 
 }  // anonymous namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

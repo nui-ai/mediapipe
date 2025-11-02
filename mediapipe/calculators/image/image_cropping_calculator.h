@@ -37,7 +37,7 @@
 //
 // Note: input_stream values take precedence over options defined in the graph.
 //
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 struct RectSpec {
   int width;
@@ -76,7 +76,7 @@ class ImageCroppingCalculator : public CalculatorBase {
                            int* dst_width, int* dst_height);
   absl::Status GetBorderModeForOpenCV(CalculatorContext* cc, int* border_mode);
 
-  mediapipe::ImageCroppingCalculatorOptions options_;
+  mediapipe_v01013_based::ImageCroppingCalculatorOptions options_;
 
   bool use_gpu_ = false;
   // Output texture corners (4) after transformation in normalized coordinates.
@@ -85,10 +85,10 @@ class ImageCroppingCalculator : public CalculatorBase {
   float output_max_height_ = FLT_MAX;
 #if !MEDIAPIPE_DISABLE_GPU
   bool gpu_initialized_ = false;
-  mediapipe::GlCalculatorHelper gpu_helper_;
+  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
   GLuint program_ = 0;
 #endif  // !MEDIAPIPE_DISABLE_GPU
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 #endif  // MEDIAPIPE_CALCULATORS_IMAGE_IMAGE_CROPPING_CALCULATOR_H_

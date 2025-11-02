@@ -34,9 +34,9 @@
 #include "mediapipe/framework/profiler/reporter/statistic.h"
 #include "mediapipe/framework/tool/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-using mediapipe::reporter::Reporter;
+using mediapipe_v01013_based::reporter::Reporter;
 using ::testing::ElementsAre;
 using ::testing::HasSubstr;
 using ::testing::IsSupersetOf;
@@ -229,4 +229,4 @@ TEST(Reporter, LatencyCalculatedCorrectly) {
       testing::DoubleEq(1500));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

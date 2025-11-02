@@ -17,12 +17,12 @@
 
 #include "pybind11/pybind11.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace python {
 
 void ResourceUtilSubmodule(pybind11::module* module);
 
 }  // namespace python
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_PYTHON_PYBIND_RESOURCE_UTIL_H_

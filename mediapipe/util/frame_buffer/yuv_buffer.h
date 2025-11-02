@@ -20,7 +20,7 @@
 #include "HalideBuffer.h"
 #include "HalideRuntime.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace frame_buffer {
 class RgbBuffer;
 
@@ -155,6 +155,6 @@ class YuvBuffer {
 };
 
 }  // namespace frame_buffer
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_FRAME_BUFFER_YUV_BUFFER_H_

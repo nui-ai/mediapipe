@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/statusor.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 absl::StatusOr<std::unique_ptr<PacketSet>> FillPacketSet(
@@ -44,7 +44,7 @@ absl::StatusOr<std::unique_ptr<PacketSet>> FillPacketSet(
       if (missing_packet_count_ptr != nullptr) {
         ++(*missing_packet_count_ptr);
       } else {
-        errors.push_back(mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+        errors.push_back(mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                          << "Missing input side packet: " << name);
       }
       continue;
@@ -57,7 +57,7 @@ absl::StatusOr<std::unique_ptr<PacketSet>> FillPacketSet(
       std::pair<std::string, int> tag_index =
           input_side_packet_types.TagAndIndexFromId(id);
       errors.push_back(
-          mediapipe::StatusBuilder(status, MEDIAPIPE_LOC).SetPrepend()
+          mediapipe_v01013_based::StatusBuilder(status, MEDIAPIPE_LOC).SetPrepend()
           << "Packet \""
           << input_side_packet_types.TagMap()->Names()[id.value()]
           << "\" with tag \"" << tag_index.first << "\" and index "
@@ -71,4 +71,4 @@ absl::StatusOr<std::unique_ptr<PacketSet>> FillPacketSet(
 }
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

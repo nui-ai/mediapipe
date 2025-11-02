@@ -36,7 +36,7 @@
 //     return absl::OkStatus();
 //   }
 //
-// The macro ends with a `mediapipe::StatusBuilder` which allows the returned
+// The macro ends with a `mediapipe_v01013_based::StatusBuilder` which allows the returned
 // status to be extended with more details.  Any chained expressions after the
 // macro will not be evaluated unless there is an error.
 //
@@ -48,7 +48,7 @@
 //     return absl::OkStatus();
 //   }
 //
-// `mediapipe::StatusBuilder` supports adapting the builder chain using a
+// `mediapipe_v01013_based::StatusBuilder` supports adapting the builder chain using a
 // `With` method and a functor.  This allows for powerful extensions to the
 // macro.
 //
@@ -62,10 +62,10 @@
 //   MP_RETURN_IF_ERROR(bar()).With(TeamPolicy);
 //
 // Changing the return type allows the macro to be used with Task and Rpc
-// interfaces.  See `mediapipe::TaskReturn` and `rpc::RpcSetStatus` for
+// interfaces.  See `mediapipe_v01013_based::TaskReturn` and `rpc::RpcSetStatus` for
 // details.
 //
-//   void Read(StringPiece name, mediapipe::Task* task) {
+//   void Read(StringPiece name, mediapipe_v01013_based::Task* task) {
 //     int64 id;
 //     MP_RETURN_IF_ERROR(GetIdForName(name, &id)).With(TaskReturn(task));
 //     MP_RETURN_IF_ERROR(ReadForId(id)).With(TaskReturn(task));
@@ -73,7 +73,7 @@
 //   }
 //
 // If using this macro inside a lambda, you need to annotate the return type
-// to avoid confusion between a `mediapipe::StatusBuilder` and a
+// to avoid confusion between a `mediapipe_v01013_based::StatusBuilder` and a
 // `absl::Status` type. E.g.
 //
 //   []() -> absl::Status {
@@ -83,7 +83,7 @@
 //   }
 #define MP_RETURN_IF_ERROR(expr)                                     \
   MP_STATUS_MACROS_IMPL_ELSE_BLOCKER_                                \
-  if (mediapipe::status_macro_internal::StatusAdaptorForMacros       \
+  if (mediapipe_v01013_based::status_macro_internal::StatusAdaptorForMacros       \
           status_macro_internal_adaptor = {(expr), MEDIAPIPE_LOC}) { \
   } else /* NOLINT */                                                \
     return status_macro_internal_adaptor.Consume()
@@ -121,7 +121,7 @@
 //
 // If passed, the `error_expression` is evaluated to produce the return
 // value. The expression may reference any variable visible in scope, as
-// well as a `mediapipe::StatusBuilder` object populated with the error and
+// well as a `mediapipe_v01013_based::StatusBuilder` object populated with the error and
 // named by a single underscore `_`. The expression typically uses the
 // builder to modify the status and is returned directly in manner similar
 // to MP_RETURN_IF_ERROR. The expression may, however, evaluate to any type
@@ -153,7 +153,7 @@
 #define MP_STATUS_MACROS_IMPL_MP_ASSIGN_OR_RETURN_2_(lhs, rexpr)               \
   MP_STATUS_MACROS_IMPL_MP_ASSIGN_OR_RETURN_(                                  \
       MP_STATUS_MACROS_IMPL_CONCAT_(_status_or_value, __LINE__), lhs, rexpr,   \
-      return mediapipe::StatusBuilder(                                         \
+      return mediapipe_v01013_based::StatusBuilder(                                         \
           std::move(MP_STATUS_MACROS_IMPL_CONCAT_(_status_or_value, __LINE__)) \
               .status(),                                                       \
           MEDIAPIPE_LOC))
@@ -161,7 +161,7 @@
                                                      error_expression)         \
   MP_STATUS_MACROS_IMPL_MP_ASSIGN_OR_RETURN_(                                  \
       MP_STATUS_MACROS_IMPL_CONCAT_(_status_or_value, __LINE__), lhs, rexpr,   \
-      mediapipe::StatusBuilder _(                                              \
+      mediapipe_v01013_based::StatusBuilder _(                                              \
           std::move(MP_STATUS_MACROS_IMPL_CONCAT_(_status_or_value, __LINE__)) \
               .status(),                                                       \
           MEDIAPIPE_LOC);                                                      \
@@ -196,7 +196,7 @@
   case 0:                                   \
   default:  // NOLINT
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace status_macro_internal {
 
 // Provides a conversion to bool so that it can be used inside an if statement
@@ -228,6 +228,6 @@ class StatusAdaptorForMacros {
 };
 
 }  // namespace status_macro_internal
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_STATUS_MACROS_H_

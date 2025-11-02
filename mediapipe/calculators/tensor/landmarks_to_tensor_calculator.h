@@ -22,7 +22,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // A calculator for converting landmars into a Tensor.
@@ -53,9 +53,9 @@ namespace api2 {
 // }
 class LandmarksToTensorCalculator : public NodeIntf {
  public:
-  static constexpr Input<mediapipe::LandmarkList>::Optional kInLandmarkList{
+  static constexpr Input<mediapipe_v01013_based::LandmarkList>::Optional kInLandmarkList{
       "LANDMARKS"};
-  static constexpr Input<mediapipe::NormalizedLandmarkList>::Optional
+  static constexpr Input<mediapipe_v01013_based::NormalizedLandmarkList>::Optional
       kInNormLandmarkList{"NORM_LANDMARKS"};
   static constexpr Input<std::pair<int, int>>::Optional kImageSize{
       "IMAGE_SIZE"};
@@ -65,6 +65,6 @@ class LandmarksToTensorCalculator : public NodeIntf {
 };
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_LANDMARKS_TO_TENSOR_CALCULATOR_H_

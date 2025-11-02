@@ -9,7 +9,7 @@
 
 // This file contains utilities for working with constexpr tuples.
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace internal {
 
@@ -181,6 +181,6 @@ constexpr auto flatten_tuple(Tuple&& tuple) {
 
 }  // namespace internal
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_TUPLE_H_

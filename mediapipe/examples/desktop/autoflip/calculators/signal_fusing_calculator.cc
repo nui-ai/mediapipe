@@ -25,15 +25,15 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-using mediapipe::Packet;
-using mediapipe::PacketTypeSet;
-using mediapipe::autoflip::DetectionSet;
+using mediapipe_v01013_based::Packet;
+using mediapipe_v01013_based::PacketTypeSet;
+using mediapipe_v01013_based::autoflip::DetectionSet;
 
 constexpr char kIsShotBoundaryTag[] = "IS_SHOT_BOUNDARY";
 constexpr char kSignalInputsTag[] = "SIGNAL";
 constexpr char kOutputTag[] = "OUTPUT";
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 struct InputSignal {
@@ -43,7 +43,7 @@ struct InputSignal {
 
 struct Frame {
   std::vector<InputSignal> input_detections;
-  mediapipe::Timestamp time;
+  mediapipe_v01013_based::Timestamp time;
 };
 
 // This calculator takes one scene change signal (optional, see below) and an
@@ -97,21 +97,21 @@ struct Frame {
 //    }
 //    }
 //  }
-class SignalFusingCalculator : public mediapipe::CalculatorBase {
+class SignalFusingCalculator : public mediapipe_v01013_based::CalculatorBase {
  public:
   SignalFusingCalculator()
       : tag_input_interface_(false), process_by_scene_(true) {}
   SignalFusingCalculator(const SignalFusingCalculator&) = delete;
   SignalFusingCalculator& operator=(const SignalFusingCalculator&) = delete;
 
-  static absl::Status GetContract(mediapipe::CalculatorContract* cc);
-  absl::Status Open(mediapipe::CalculatorContext* cc) override;
-  absl::Status Process(mediapipe::CalculatorContext* cc) override;
-  absl::Status Close(mediapipe::CalculatorContext* cc) override;
+  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc);
+  absl::Status Open(mediapipe_v01013_based::CalculatorContext* cc) override;
+  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override;
+  absl::Status Close(mediapipe_v01013_based::CalculatorContext* cc) override;
 
  private:
-  absl::Status ProcessScene(mediapipe::CalculatorContext* cc);
-  std::vector<Packet> GetSignalPackets(mediapipe::CalculatorContext* cc);
+  absl::Status ProcessScene(mediapipe_v01013_based::CalculatorContext* cc);
+  std::vector<Packet> GetSignalPackets(mediapipe_v01013_based::CalculatorContext* cc);
   SignalFusingCalculatorOptions options_;
   std::map<std::string, SignalSettings> settings_by_type_;
   std::vector<Frame> scene_frames_;
@@ -134,7 +134,7 @@ std::string CreateKey(const InputSignal& detection) {
   std::string id = id_source + ":" + id_signal;
   return id;
 }
-void SetupTagInput(mediapipe::CalculatorContract* cc) {
+void SetupTagInput(mediapipe_v01013_based::CalculatorContract* cc) {
   if (cc->Inputs().HasTag(kIsShotBoundaryTag)) {
     cc->Inputs().Tag(kIsShotBoundaryTag).Set<bool>();
   }
@@ -144,7 +144,7 @@ void SetupTagInput(mediapipe::CalculatorContract* cc) {
   cc->Outputs().Tag(kOutputTag).Set<autoflip::DetectionSet>();
 }
 
-void SetupOrderedInput(mediapipe::CalculatorContract* cc) {
+void SetupOrderedInput(mediapipe_v01013_based::CalculatorContract* cc) {
   cc->Inputs().Index(0).Set<bool>();
   for (int i = 1; i < cc->Inputs().NumEntries(); ++i) {
     cc->Inputs().Index(i).Set<autoflip::DetectionSet>();
@@ -153,7 +153,7 @@ void SetupOrderedInput(mediapipe::CalculatorContract* cc) {
 }
 }  // namespace
 
-absl::Status SignalFusingCalculator::Open(mediapipe::CalculatorContext* cc) {
+absl::Status SignalFusingCalculator::Open(mediapipe_v01013_based::CalculatorContext* cc) {
   options_ = cc->Options<SignalFusingCalculatorOptions>();
   for (const auto& setting : options_.signal_settings()) {
     settings_by_type_[CreateSettingsKey(setting.type())] = setting;
@@ -167,7 +167,7 @@ absl::Status SignalFusingCalculator::Open(mediapipe::CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-absl::Status SignalFusingCalculator::Close(mediapipe::CalculatorContext* cc) {
+absl::Status SignalFusingCalculator::Close(mediapipe_v01013_based::CalculatorContext* cc) {
   if (!scene_frames_.empty()) {
     MP_RETURN_IF_ERROR(ProcessScene(cc));
     scene_frames_.clear();
@@ -176,7 +176,7 @@ absl::Status SignalFusingCalculator::Close(mediapipe::CalculatorContext* cc) {
 }
 
 absl::Status SignalFusingCalculator::ProcessScene(
-    mediapipe::CalculatorContext* cc) {
+    mediapipe_v01013_based::CalculatorContext* cc) {
   absl::btree_map<std::string, int> detection_count;
   absl::btree_map<std::string, float> multiframe_score;
   // Create a unified score for all items with temporal ids.
@@ -241,7 +241,7 @@ absl::Status SignalFusingCalculator::ProcessScene(
 }
 
 std::vector<Packet> SignalFusingCalculator::GetSignalPackets(
-    mediapipe::CalculatorContext* cc) {
+    mediapipe_v01013_based::CalculatorContext* cc) {
   std::vector<Packet> signal_packets;
   if (tag_input_interface_) {
     for (int i = 0; i < cc->Inputs().NumEntries(kSignalInputsTag); i++) {
@@ -257,7 +257,7 @@ std::vector<Packet> SignalFusingCalculator::GetSignalPackets(
   return signal_packets;
 }
 
-absl::Status SignalFusingCalculator::Process(mediapipe::CalculatorContext* cc) {
+absl::Status SignalFusingCalculator::Process(mediapipe_v01013_based::CalculatorContext* cc) {
   bool is_boundary = false;
   if (process_by_scene_) {
     const auto& shot_tag = (tag_input_interface_)
@@ -302,7 +302,7 @@ absl::Status SignalFusingCalculator::Process(mediapipe::CalculatorContext* cc) {
 }
 
 absl::Status SignalFusingCalculator::GetContract(
-    mediapipe::CalculatorContract* cc) {
+    mediapipe_v01013_based::CalculatorContract* cc) {
   if (cc->Inputs().NumEntries(kSignalInputsTag) > 0) {
     SetupTagInput(cc);
   } else {
@@ -312,4 +312,4 @@ absl::Status SignalFusingCalculator::GetContract(
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

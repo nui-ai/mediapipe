@@ -45,7 +45,7 @@
 #include "mediapipe/framework/tool/name_util.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 
@@ -67,7 +67,7 @@ absl::Status MediaPipeInternalSidePacketToPacketStreamCalculator::Open(
 absl::Status MediaPipeInternalSidePacketToPacketStreamCalculator::Process(
     CalculatorContext* cc) {
   // The framework treats this calculator as a source calculator.
-  return mediapipe::tool::StatusStop();
+  return mediapipe_v01013_based::tool::StatusStop();
 }
 
 REGISTER_CALCULATOR(MediaPipeInternalSidePacketToPacketStreamCalculator);
@@ -264,7 +264,7 @@ absl::Status CallbackCalculator::GetContract(CalculatorContract* cc) {
         .Set<std::function<void(const std::vector<Packet>&)>>();
     allow_multiple_streams = true;
   } else {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "InputSidePackets must use tags.";
   }
   if (cc->InputSidePackets().HasTag("OBSERVE_TIMESTAMP_BOUNDS")) {
@@ -294,12 +294,12 @@ absl::Status CallbackCalculator::Open(CalculatorContext* cc) {
     ABSL_LOG(FATAL) << "InputSidePackets must use tags.";
   }
   if (callback_ == nullptr && vector_callback_ == nullptr) {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "missing callback.";
   }
   if (cc->InputSidePackets().HasTag("OBSERVE_TIMESTAMP_BOUNDS") &&
       !cc->InputSidePackets().Tag("OBSERVE_TIMESTAMP_BOUNDS").Get<bool>()) {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "The value of the OBSERVE_TIMESTAMP_BOUNDS input side packet "
               "must be set to true";
   }
@@ -336,7 +336,7 @@ absl::Status CallbackWithHeaderCalculator::GetContract(CalculatorContract* cc) {
         .Tag("CALLBACK")
         .Set<std::function<void(const Packet&, const Packet&)>>();
   } else {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "InputSidePackets must use tags.";
   }
   return absl::OkStatus();
@@ -351,17 +351,17 @@ absl::Status CallbackWithHeaderCalculator::Open(CalculatorContext* cc) {
     ABSL_LOG(FATAL) << "InputSidePackets must use tags.";
   }
   if (callback_ == nullptr) {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "callback is nullptr.";
   }
   if (!cc->Inputs().HasTag("INPUT")) {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "No input stream connected.";
   }
   if (!cc->Inputs().HasTag("HEADER")) {
     // Note: for the current MediaPipe header implementation, we just need to
     // connect the output stream to both of the two inputs: INPUT and HEADER.
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "No header stream connected.";
   }
   // If the input stream has the header, just use it as the header. Otherwise,
@@ -377,7 +377,7 @@ absl::Status CallbackWithHeaderCalculator::Process(CalculatorContext* cc) {
       header_packet_.IsEmpty()) {
     // Header packet should be available before we receive any normal input
     // stream packet.
-    return mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "Header not available!";
   }
   if (header_packet_.IsEmpty() &&
@@ -393,4 +393,4 @@ absl::Status CallbackWithHeaderCalculator::Process(CalculatorContext* cc) {
 REGISTER_CALCULATOR(CallbackWithHeaderCalculator);
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

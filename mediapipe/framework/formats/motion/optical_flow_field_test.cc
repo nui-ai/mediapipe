@@ -28,7 +28,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "tensorflow/core/framework/tensor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 TEST(OpticalFlowField, ConstructsAndSerializes) {
@@ -363,4 +363,4 @@ TEST(OpticalFlowField, ResizeOneWay) {
 
 }  // namespace
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

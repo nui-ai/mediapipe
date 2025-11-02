@@ -26,11 +26,11 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace {
 
-using Node = ::mediapipe::CalculatorGraphConfig::Node;
+using Node = ::mediapipe_v01013_based::CalculatorGraphConfig::Node;
 
 Landmark CreateLandmark(float x, float y, float z) {
   Landmark lmk;
@@ -65,7 +65,7 @@ TEST_P(LandmarksTransformationest, LandmarksTransformationest) {
   const LandmarksTransformationestCase& tc = GetParam();
 
   // Prepare graph.
-  mediapipe::CalculatorRunner runner(ParseTextProtoOrDie<Node>(absl::Substitute(
+  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(absl::Substitute(
       R"(
       calculator: "LandmarksTransformationCalculator"
       input_stream: "LANDMARKS:in_landmarks"
@@ -88,7 +88,7 @@ TEST_P(LandmarksTransformationest, LandmarksTransformationest) {
   runner.MutableInputs()
       ->Tag("LANDMARKS")
       .packets.push_back(MakePacket<LandmarkList>(std::move(in_landmarks))
-                             .At(mediapipe::Timestamp(0)));
+                             .At(mediapipe_v01013_based::Timestamp(0)));
 
   // Run the graph.
   MP_ASSERT_OK(runner.Run());
@@ -164,4 +164,4 @@ INSTANTIATE_TEST_SUITE_P(
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

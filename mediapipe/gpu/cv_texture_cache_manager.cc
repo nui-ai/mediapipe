@@ -17,7 +17,7 @@
 #include "absl/log/absl_check.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 void CvTextureCacheManager::FlushTextureCaches() {
   absl::MutexLock lock(&mutex_);
@@ -53,4 +53,4 @@ CvTextureCacheManager::~CvTextureCacheManager() {
       << "Failed to unregister texture caches before deleting manager";
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

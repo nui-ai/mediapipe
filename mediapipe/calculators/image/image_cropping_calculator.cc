@@ -35,11 +35,11 @@ namespace {
 enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, NUM_ATTRIBUTES };
 }  // namespace
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::Rect;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::Rect;
 #if !MEDIAPIPE_DISABLE_GPU
 
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -86,14 +86,14 @@ absl::Status ImageCroppingCalculator::GetContract(CalculatorContract* cc) {
   if (cc->Inputs().HasTag(kNormRectTag)) {
     ++flags;
   }
-  if (cc->Options<mediapipe::ImageCroppingCalculatorOptions>()
+  if (cc->Options<mediapipe_v01013_based::ImageCroppingCalculatorOptions>()
           .has_norm_width() &&
-      cc->Options<mediapipe::ImageCroppingCalculatorOptions>()
+      cc->Options<mediapipe_v01013_based::ImageCroppingCalculatorOptions>()
           .has_norm_height()) {
     ++flags;
   }
-  if (cc->Options<mediapipe::ImageCroppingCalculatorOptions>().has_width() &&
-      cc->Options<mediapipe::ImageCroppingCalculatorOptions>().has_height()) {
+  if (cc->Options<mediapipe_v01013_based::ImageCroppingCalculatorOptions>().has_width() &&
+      cc->Options<mediapipe_v01013_based::ImageCroppingCalculatorOptions>().has_height()) {
     ++flags;
   }
   RET_CHECK(flags == 1) << "Illegal combination of input streams/options.";
@@ -113,7 +113,7 @@ absl::Status ImageCroppingCalculator::GetContract(CalculatorContract* cc) {
 
   if (use_gpu) {
 #if !MEDIAPIPE_DISABLE_GPU
-    MP_RETURN_IF_ERROR(mediapipe::GlCalculatorHelper::UpdateContract(cc));
+    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc));
 #endif  // !MEDIAPIPE_DISABLE_GPU
   }
 
@@ -127,7 +127,7 @@ absl::Status ImageCroppingCalculator::Open(CalculatorContext* cc) {
     use_gpu_ = true;
   }
 
-  options_ = cc->Options<mediapipe::ImageCroppingCalculatorOptions>();
+  options_ = cc->Options<mediapipe_v01013_based::ImageCroppingCalculatorOptions>();
   output_max_width_ =
       options_.has_output_max_width() ? options_.output_max_width() : FLT_MAX;
   output_max_height_ =
@@ -198,16 +198,16 @@ absl::Status ImageCroppingCalculator::ValidateBorderModeForCPU(
 
 absl::Status ImageCroppingCalculator::ValidateBorderModeForGPU(
     CalculatorContext* cc) {
-  mediapipe::ImageCroppingCalculatorOptions options =
-      cc->Options<mediapipe::ImageCroppingCalculatorOptions>();
+  mediapipe_v01013_based::ImageCroppingCalculatorOptions options =
+      cc->Options<mediapipe_v01013_based::ImageCroppingCalculatorOptions>();
 
   switch (options.border_mode()) {
-    case mediapipe::ImageCroppingCalculatorOptions::BORDER_ZERO:
+    case mediapipe_v01013_based::ImageCroppingCalculatorOptions::BORDER_ZERO:
       ABSL_LOG(WARNING)
           << "BORDER_ZERO mode is not supported by GPU "
           << "implementation and will fall back into BORDER_REPLICATE";
       break;
-    case mediapipe::ImageCroppingCalculatorOptions::BORDER_REPLICATE:
+    case mediapipe_v01013_based::ImageCroppingCalculatorOptions::BORDER_REPLICATE:
       break;
     default:
       RET_CHECK_FAIL() << "Unsupported border mode for GPU: "
@@ -288,7 +288,7 @@ absl::Status ImageCroppingCalculator::RenderGpu(CalculatorContext* cc) {
   }
 #if !MEDIAPIPE_DISABLE_GPU
   const Packet& input_packet = cc->Inputs().Tag(kImageGpuTag).Value();
-  const auto& input_buffer = input_packet.Get<mediapipe::GpuBuffer>();
+  const auto& input_buffer = input_packet.Get<mediapipe_v01013_based::GpuBuffer>();
   auto src_tex = gpu_helper_.CreateSourceTexture(input_buffer);
 
   int out_width, out_height;
@@ -311,7 +311,7 @@ absl::Status ImageCroppingCalculator::RenderGpu(CalculatorContext* cc) {
   }
 
   // Send result image in GPU packet.
-  auto output = dst_tex.GetFrame<mediapipe::GpuBuffer>();
+  auto output = dst_tex.GetFrame<mediapipe_v01013_based::GpuBuffer>();
   cc->Outputs().Tag(kImageGpuTag).Add(output.release(), cc->InputTimestamp());
 
   // Cleanup
@@ -409,7 +409,7 @@ absl::Status ImageCroppingCalculator::InitGpu(CalculatorContext* cc) {
   )";
 
   // Program
-  mediapipe::GlhCreateProgram(mediapipe::kBasicVertexShader, frag_src,
+  mediapipe_v01013_based::GlhCreateProgram(mediapipe_v01013_based::kBasicVertexShader, frag_src,
                               NUM_ATTRIBUTES, &attr_name[0], attr_location,
                               &program_);
   RET_CHECK(program_) << "Problem initializing the program.";
@@ -486,8 +486,8 @@ RectSpec ImageCroppingCalculator::GetCropSpecs(const CalculatorContext* cc,
   float normalized_width = 0.0f;
   float normalized_height = 0.0f;
 
-  mediapipe::ImageCroppingCalculatorOptions options =
-      cc->Options<mediapipe::ImageCroppingCalculatorOptions>();
+  mediapipe_v01013_based::ImageCroppingCalculatorOptions options =
+      cc->Options<mediapipe_v01013_based::ImageCroppingCalculatorOptions>();
 
   // width/height, norm_width/norm_height from input streams take precednece.
   if (cc->Inputs().HasTag(kRectTag)) {
@@ -562,14 +562,14 @@ RectSpec ImageCroppingCalculator::GetCropSpecs(const CalculatorContext* cc,
 
 absl::Status ImageCroppingCalculator::GetBorderModeForOpenCV(
     CalculatorContext* cc, int* border_mode) {
-  mediapipe::ImageCroppingCalculatorOptions options =
-      cc->Options<mediapipe::ImageCroppingCalculatorOptions>();
+  mediapipe_v01013_based::ImageCroppingCalculatorOptions options =
+      cc->Options<mediapipe_v01013_based::ImageCroppingCalculatorOptions>();
 
   switch (options.border_mode()) {
-    case mediapipe::ImageCroppingCalculatorOptions::BORDER_ZERO:
+    case mediapipe_v01013_based::ImageCroppingCalculatorOptions::BORDER_ZERO:
       *border_mode = cv::BORDER_CONSTANT;
       break;
-    case mediapipe::ImageCroppingCalculatorOptions::BORDER_REPLICATE:
+    case mediapipe_v01013_based::ImageCroppingCalculatorOptions::BORDER_REPLICATE:
       *border_mode = cv::BORDER_REPLICATE;
       break;
     default:
@@ -580,4 +580,4 @@ absl::Status ImageCroppingCalculator::GetBorderModeForOpenCV(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

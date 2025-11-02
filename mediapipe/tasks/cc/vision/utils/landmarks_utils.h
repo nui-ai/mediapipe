@@ -24,7 +24,7 @@ limitations under the License.
 
 #include "mediapipe/tasks/cc/components/containers/rect.h"
 
-namespace mediapipe::tasks::vision::utils {
+namespace mediapipe_v01013_based::tasks::vision::utils {
 
 // Calculates intersection over union for two bounds.
 float CalculateIOU(const components::containers::RectF& a,
@@ -36,6 +36,6 @@ float CalculateArea(const components::containers::RectF& rect);
 // Calucates intersection area of two face bounds
 float CalculateIntersectionArea(const components::containers::RectF& a,
                                 const components::containers::RectF& b);
-}  // namespace mediapipe::tasks::vision::utils
+}  // namespace mediapipe_v01013_based::tasks::vision::utils
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_UTILS_LANDMARKS_UTILS_H_

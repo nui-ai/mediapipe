@@ -21,7 +21,7 @@ node {
   output_stream: "TENSORS:initial_crop_tensor"
   output_stream: "LETTERBOX_PADDING:letterbox_padding"
   options: {
-    [mediapipe.ImageToTensorCalculatorOptions.ext] {
+    [mediapipe_v01013_based.ImageToTensorCalculatorOptions.ext] {
       output_tensor_width: 256
       output_tensor_height: 256
       keep_aspect_ratio: true
@@ -41,7 +41,7 @@ node {
   input_stream: "TENSORS:initial_crop_tensor"
   output_stream: "TENSORS:landmark_tensors"
   options: {
-    [mediapipe.InferenceCalculatorOptions.ext] {
+    [mediapipe_v01013_based.InferenceCalculatorOptions.ext] {
       model_path: "mediapipe/modules/holistic_landmark/hand_recrop.tflite"
     }
   }
@@ -55,7 +55,7 @@ node {
   input_stream: "TENSORS:landmark_tensors"
   output_stream: "NORM_LANDMARKS:landmarks"
   options: {
-    [mediapipe.TensorsToLandmarksCalculatorOptions.ext] {
+    [mediapipe_v01013_based.TensorsToLandmarksCalculatorOptions.ext] {
       num_landmarks: 2
       input_image_width: 256
       input_image_height: 256
@@ -105,7 +105,7 @@ node {
   input_stream: "IMAGE_SIZE:image_size"
   output_stream: "NORM_RECT:hand_roi_from_recrop"
   options: {
-    [mediapipe.DetectionsToRectsCalculatorOptions.ext] {
+    [mediapipe_v01013_based.DetectionsToRectsCalculatorOptions.ext] {
       rotation_vector_start_keypoint_index: 0
       rotation_vector_end_keypoint_index: 1
       rotation_vector_target_angle_degrees: -90
@@ -126,7 +126,7 @@ node {
   input_stream: "IMAGE_SIZE:image_size"
   output_stream: "hand_roi_from_recrop_refined"
   options: {
-    [mediapipe.RectTransformationCalculatorOptions.ext] {
+    [mediapipe_v01013_based.RectTransformationCalculatorOptions.ext] {
       scale_x: 1.0
       scale_y: 1.0
       shift_y: -0.1

@@ -8,7 +8,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 namespace {
 
 class TestDataProducer : public NodeIntf {
@@ -33,10 +33,10 @@ TEST(LoopbackTest, GetLoopbackData) {
 
   // PreviousLoopbackCalculator configuration is incorrect here and should be
   // updated when corresponding b/175887687 is fixed.
-  // Use mediapipe::aimatter::GraphBuilder to fix back edges in the graph.
+  // Use mediapipe_v01013_based::aimatter::GraphBuilder to fix back edges in the graph.
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "PreviousLoopbackCalculator"
           input_stream: "LOOP:__stream_2"
@@ -53,4 +53,4 @@ TEST(LoopbackTest, GetLoopbackData) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder

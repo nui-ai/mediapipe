@@ -16,7 +16,7 @@
 
 #include <string>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 #ifdef _WIN32
 #include <Windows.h>
 
@@ -50,4 +50,4 @@ std::string FormatLastError() {
 
 std::string FormatLastError() { return strerror(errno); }
 #endif  // _WIN32
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

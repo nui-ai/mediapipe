@@ -54,7 +54,7 @@
 #include "mediapipe/framework/tool/validate_name.h"
 #include "mediapipe/framework/validated_graph_config.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class CounterFactory;
 class InputStreamManager;
@@ -399,6 +399,6 @@ class CalculatorNode {
       absl::InfinitePast();
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_CALCULATOR_NODE_H_

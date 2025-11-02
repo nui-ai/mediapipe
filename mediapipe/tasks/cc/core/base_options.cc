@@ -25,7 +25,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/proto/base_options.pb.h"
 #include "mediapipe/tasks/cc/core/proto/external_file.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace core {
 
@@ -120,4 +120,4 @@ proto::BaseOptions ConvertBaseOptionsToProto(BaseOptions* base_options) {
 }
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

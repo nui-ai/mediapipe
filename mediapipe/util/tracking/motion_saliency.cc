@@ -31,7 +31,7 @@
 #include "mediapipe/util/tracking/region_flow.h"
 #include "mediapipe/util/tracking/region_flow.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 MotionSaliency::MotionSaliency(const MotionSaliencyOptions& options,
                                int frame_width, int frame_height)
@@ -698,4 +698,4 @@ void ForegroundWeightsFromFeatures(const RegionFlowFeatureList& feature_list,
   ABSL_CHECK_EQ(feature_list.feature_size(), weights->size());
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

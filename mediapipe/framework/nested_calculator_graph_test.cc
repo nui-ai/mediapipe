@@ -22,14 +22,14 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/gpu/gpu_service.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace {
 
-using ::mediapipe::MakePacket;
-using ::mediapipe::Packet;
-using ::mediapipe::Tensor;
-using ::mediapipe::api2::builder::Stream;
+using ::mediapipe_v01013_based::MakePacket;
+using ::mediapipe_v01013_based::Packet;
+using ::mediapipe_v01013_based::Tensor;
+using ::mediapipe_v01013_based::api2::builder::Stream;
 using ::testing::HasSubstr;
 
 constexpr const char kInt32ModelFile[] =
@@ -124,8 +124,8 @@ TEST(NestedCalculatorGraphTest, ExecutedNestedGraphWithInferenceCalculator) {
   MP_ASSERT_OK(graph.StartRun({}));
   MP_ASSERT_OK_AND_ASSIGN(Tensor input_tensor, Create1x3IntTensor({1, 2, 3}));
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "input", mediapipe::MakePacket<Tensor>(std::move(input_tensor))
-                   .At(mediapipe::Timestamp(1))));
+      "input", mediapipe_v01013_based::MakePacket<Tensor>(std::move(input_tensor))
+                   .At(mediapipe_v01013_based::Timestamp(1))));
 
   MP_ASSERT_OK(graph.CloseAllInputStreams());
   MP_ASSERT_OK(graph.WaitUntilDone());
@@ -238,9 +238,9 @@ TEST(NestedCalculatorGraphTest, TestNestedGraphServiceInheriting) {
 
   MP_ASSERT_OK(graph.StartRun({}));
 
-  const mediapipe::Timestamp timestamp(1);
+  const mediapipe_v01013_based::Timestamp timestamp(1);
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "test_value", mediapipe::MakePacket<int>(kTestValue).At(timestamp)));
+      "test_value", mediapipe_v01013_based::MakePacket<int>(kTestValue).At(timestamp)));
   MP_ASSERT_OK(graph.CloseAllInputStreams());
   MP_ASSERT_OK(graph.WaitUntilDone());
   MP_EXPECT_OK(result_status[0].Get<absl::Status>());
@@ -263,10 +263,10 @@ TEST(NestedCalculatorGraphTest, NestedGraphsCannotRegisterNewServices) {
   MP_ASSERT_OK(graph.StartRun({}));
   MP_ASSERT_OK(graph.AddPacketToInputStream(
       "test_value",
-      mediapipe::MakePacket<int>(
+      mediapipe_v01013_based::MakePacket<int>(
           -1  // disable service check in  NestedGraphServiceTestCalculator
           )
-          .At(mediapipe::Timestamp(1))));
+          .At(mediapipe_v01013_based::Timestamp(1))));
   MP_ASSERT_OK(graph.CloseAllInputStreams());
   MP_ASSERT_OK(graph.WaitUntilDone());
   EXPECT_THAT(
@@ -346,11 +346,11 @@ TEST(NestedCalculatorGraphTest, NestedGraphWithGpuServiceRequestShouldFail) {
   MP_ASSERT_OK(graph.Initialize(graph_config));
   MP_ASSERT_OK(graph.StartRun({}));
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "tick", mediapipe::MakePacket<int>(0).At(mediapipe::Timestamp(1))));
+      "tick", mediapipe_v01013_based::MakePacket<int>(0).At(mediapipe_v01013_based::Timestamp(1))));
   MP_ASSERT_OK(graph.CloseAllInputStreams());
   MP_ASSERT_OK(graph.WaitUntilDone());
 }
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

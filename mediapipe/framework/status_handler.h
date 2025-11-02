@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Pure virtual base class for status handlers.
 //
@@ -151,7 +151,7 @@ class StaticAccessToStatusHandlerTyped : public StaticAccessToStatusHandler {
   static_assert(
       std::is_base_of<StatusHandler, StatusHandlerSubclass>::value,
       "Classes registered with REGISTER_STATUS_HANDLER must be subclasses of "
-      "mediapipe::StatusHandler.");
+      "mediapipe_v01013_based::StatusHandler.");
   static_assert(
       StatusHandlerHasFillExpectations<StatusHandlerSubclass>(nullptr),
       "FillExpectations() must be defined with the correct signature in every "
@@ -191,11 +191,11 @@ class StaticAccessToStatusHandlerTyped : public StaticAccessToStatusHandler {
 // StaticAccessToStatusHandlerTyped class.
 #define REGISTER_STATUS_HANDLER(name)                           \
   REGISTER_FACTORY_FUNCTION_QUALIFIED(                          \
-      mediapipe::internal::StaticAccessToStatusHandlerRegistry, \
+      mediapipe_v01013_based::internal::StaticAccessToStatusHandlerRegistry, \
       status_handler_registration, name,                        \
       std::make_unique<                                         \
-          mediapipe::internal::StaticAccessToStatusHandlerTyped<name>>)
+          mediapipe_v01013_based::internal::StaticAccessToStatusHandlerTyped<name>>)
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_STATUS_HANDLER_H_

@@ -10,7 +10,7 @@
 // To use, build with:
 //   --define MEDIAPIPE_PROFILING=1 --define MEDIAPIPE_WEB_PROFILING=1
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class WepPerformanceTraceScope {
  public:
@@ -55,11 +55,11 @@ class WepPerformanceTraceScope {
   CalculatorContext* cc_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #define MEDIAPIPE_WEB_PERFORMANCE_SCOPE(event_type, calculator_context) \
-  mediapipe::WepPerformanceTraceScope web_trace_scope(                  \
-      mediapipe::TraceEvent::event_type, #event_type, calculator_context)
+  mediapipe_v01013_based::WepPerformanceTraceScope web_trace_scope(                  \
+      mediapipe_v01013_based::TraceEvent::event_type, #event_type, calculator_context)
 
 #else
 #define MEDIAPIPE_WEB_PERFORMANCE_SCOPE(event_type, calculator_context)

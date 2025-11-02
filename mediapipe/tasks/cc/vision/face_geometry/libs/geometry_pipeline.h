@@ -24,7 +24,7 @@
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/face_geometry.pb.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/geometry_pipeline_metadata.pb.h"
 
-namespace mediapipe::tasks::vision::face_geometry {
+namespace mediapipe_v01013_based::tasks::vision::face_geometry {
 
 // Encapsulates a stateless estimator of facial geometry in a Metric space based
 // on the normalized face landmarks in the Screen space.
@@ -48,7 +48,7 @@ class GeometryPipeline {
   //
   // Both `frame_width` and `frame_height` must be positive.
   virtual absl::StatusOr<std::vector<proto::FaceGeometry>> EstimateFaceGeometry(
-      const std::vector<mediapipe::NormalizedLandmarkList>&
+      const std::vector<mediapipe_v01013_based::NormalizedLandmarkList>&
           multi_face_landmarks,
       int frame_width, int frame_height) const = 0;
 };
@@ -64,6 +64,6 @@ absl::StatusOr<std::unique_ptr<GeometryPipeline>> CreateGeometryPipeline(
     const proto::Environment& environment,
     const proto::GeometryPipelineMetadata& metadata);
 
-}  // namespace mediapipe::tasks::vision::face_geometry
+}  // namespace mediapipe_v01013_based::tasks::vision::face_geometry
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_FACE_GEOMETRY_LIBS_GEOMETRY_PIPELINE_H_

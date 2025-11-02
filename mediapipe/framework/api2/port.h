@@ -31,7 +31,7 @@
 #include "mediapipe/framework/port/logging.h"
 #include "mediapipe/framework/tool/type_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // This is a base class for various types of port. It is not meant to be used
@@ -186,42 +186,42 @@ inline void SetType(CalculatorContract* cc, PacketType& pt) {
 }
 
 template <typename ValueT>
-InputShardAccess<ValueT> SinglePortAccess(mediapipe::CalculatorContext* cc,
+InputShardAccess<ValueT> SinglePortAccess(mediapipe_v01013_based::CalculatorContext* cc,
                                           InputStreamShard* stream) {
   return InputShardAccess<ValueT>(*cc, stream);
 }
 
 template <typename ValueT>
-OutputShardAccess<ValueT> SinglePortAccess(mediapipe::CalculatorContext* cc,
+OutputShardAccess<ValueT> SinglePortAccess(mediapipe_v01013_based::CalculatorContext* cc,
                                            OutputStreamShard* stream) {
   return OutputShardAccess<ValueT>(*cc, stream);
 }
 
 template <typename ValueT>
 InputSidePacketAccess<ValueT> SinglePortAccess(
-    mediapipe::CalculatorContext* cc, const mediapipe::Packet* packet) {
+    mediapipe_v01013_based::CalculatorContext* cc, const mediapipe_v01013_based::Packet* packet) {
   return InputSidePacketAccess<ValueT>(packet);
 }
 
 template <typename ValueT>
 OutputSidePacketAccess<ValueT> SinglePortAccess(
-    mediapipe::CalculatorContext* cc, OutputSidePacket* osp) {
+    mediapipe_v01013_based::CalculatorContext* cc, OutputSidePacket* osp) {
   return OutputSidePacketAccess<ValueT>(osp);
 }
 
 template <typename ValueT>
 InputShardOrSideAccess<ValueT> SinglePortAccess(
-    mediapipe::CalculatorContext* cc, InputStreamShard* stream,
-    const mediapipe::Packet* packet) {
+    mediapipe_v01013_based::CalculatorContext* cc, InputStreamShard* stream,
+    const mediapipe_v01013_based::Packet* packet) {
   return InputShardOrSideAccess<ValueT>(*cc, stream, packet);
 }
 
 template <typename ValueT>
-PacketTypeAccess SinglePortAccess(mediapipe::CalculatorContract* cc,
+PacketTypeAccess SinglePortAccess(mediapipe_v01013_based::CalculatorContract* cc,
                                   PacketType* pt);
 
 template <typename ValueT>
-PacketTypeAccessFallback SinglePortAccess(mediapipe::CalculatorContract* cc,
+PacketTypeAccessFallback SinglePortAccess(mediapipe_v01013_based::CalculatorContract* cc,
                                           PacketType* pt, bool is_stream);
 
 template <typename ValueT, typename PortT, class CC>
@@ -396,7 +396,7 @@ class PortCommon : public Base {
   template <typename...>
   friend class internal::Contract;
   template <typename B, typename VT, bool, bool>
-  friend class mediapipe::api2::SideFallbackT;
+  friend class mediapipe_v01013_based::api2::SideFallbackT;
 };
 
 // Use one of these templates to define a port in node code.
@@ -550,7 +550,7 @@ class OutputShardAccess : public OutputShardAccessBase {
       : OutputShardAccessBase(cc, output) {}
 
   friend OutputShardAccess<T> internal::SinglePortAccess<T>(
-      mediapipe::CalculatorContext*, OutputStreamShard*);
+      mediapipe_v01013_based::CalculatorContext*, OutputStreamShard*);
 };
 
 template <>
@@ -573,7 +573,7 @@ class OutputShardAccess<internal::Generic> : public OutputShardAccessBase {
       : OutputShardAccessBase(cc, output) {}
 
   friend OutputShardAccess<internal::Generic>
-  internal::SinglePortAccess<internal::Generic>(mediapipe::CalculatorContext*,
+  internal::SinglePortAccess<internal::Generic>(mediapipe_v01013_based::CalculatorContext*,
                                                 OutputStreamShard*);
 };
 
@@ -595,7 +595,7 @@ class OutputSidePacketAccess {
   OutputSidePacket* output_;
 
   friend OutputSidePacketAccess<T> internal::SinglePortAccess<T>(
-      mediapipe::CalculatorContext*, OutputSidePacket*);
+      mediapipe_v01013_based::CalculatorContext*, OutputSidePacket*);
 };
 
 template <typename T>
@@ -658,7 +658,7 @@ class InputShardAccess : public Packet<T> {
   InputStreamShard* stream_;
 
   friend InputShardAccess<T> internal::SinglePortAccess<T>(
-      mediapipe::CalculatorContext*, InputStreamShard*);
+      mediapipe_v01013_based::CalculatorContext*, InputStreamShard*);
 };
 
 template <typename T>
@@ -670,14 +670,14 @@ class InputSidePacketAccess : public Packet<T> {
   bool IsConnected() const { return connected_; }
 
  private:
-  InputSidePacketAccess(const mediapipe::Packet* packet)
+  InputSidePacketAccess(const mediapipe_v01013_based::Packet* packet)
       : Packet<T>(packet ? FromOldPacket(*packet).template As<T>()
                          : Packet<T>()),
         connected_(packet != nullptr) {}
   const bool connected_;
 
   friend InputSidePacketAccess<T> internal::SinglePortAccess<T>(
-      mediapipe::CalculatorContext*, const mediapipe::Packet*);
+      mediapipe_v01013_based::CalculatorContext*, const mediapipe_v01013_based::Packet*);
 };
 
 template <typename T>
@@ -694,7 +694,7 @@ class InputShardOrSideAccess : public Packet<T> {
 
  private:
   InputShardOrSideAccess(const CalculatorContext&, InputStreamShard* stream,
-                         const mediapipe::Packet* packet)
+                         const mediapipe_v01013_based::Packet* packet)
       : Packet<T>(stream   ? FromOldPacket(stream->Value()).template As<T>()
                   : packet ? FromOldPacket(*packet).template As<T>()
                            : Packet<T>()),
@@ -704,8 +704,8 @@ class InputShardOrSideAccess : public Packet<T> {
   bool connected_;
 
   friend InputShardOrSideAccess<T> internal::SinglePortAccess<T>(
-      mediapipe::CalculatorContext*, InputStreamShard*,
-      const mediapipe::Packet*);
+      mediapipe_v01013_based::CalculatorContext*, InputStreamShard*,
+      const mediapipe_v01013_based::Packet*);
 };
 
 class PacketTypeAccess {
@@ -718,7 +718,7 @@ class PacketTypeAccess {
 
   template <typename T>
   friend PacketTypeAccess internal::SinglePortAccess(
-      mediapipe::CalculatorContract*, PacketType*);
+      mediapipe_v01013_based::CalculatorContract*, PacketType*);
 };
 
 class PacketTypeAccessFallback : public PacketTypeAccess {
@@ -732,23 +732,23 @@ class PacketTypeAccessFallback : public PacketTypeAccess {
 
   template <typename T>
   friend PacketTypeAccessFallback internal::SinglePortAccess(
-      mediapipe::CalculatorContract*, PacketType*, bool);
+      mediapipe_v01013_based::CalculatorContract*, PacketType*, bool);
 };
 
 namespace internal {
 template <typename ValueT>
-PacketTypeAccess SinglePortAccess(mediapipe::CalculatorContract* cc,
+PacketTypeAccess SinglePortAccess(mediapipe_v01013_based::CalculatorContract* cc,
                                   PacketType* pt) {
   return PacketTypeAccess(pt);
 }
 template <typename ValueT>
-PacketTypeAccessFallback SinglePortAccess(mediapipe::CalculatorContract* cc,
+PacketTypeAccessFallback SinglePortAccess(mediapipe_v01013_based::CalculatorContract* cc,
                                           PacketType* pt, bool is_stream) {
   return PacketTypeAccessFallback(pt, is_stream);
 }
 }  // namespace internal
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_PORT_H_

@@ -5,7 +5,7 @@
 
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace internal {
 
 // Tries to return the contents of a file given the path. Implementation is
@@ -15,5 +15,5 @@ absl::Status DefaultGetResourceContents(const std::string& path,
                                         bool read_as_binary);
 
 }  // namespace internal
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 #endif  // MEDIAPIPE_UTIL_RESOURCE_UTIL_INTERNAL_H_

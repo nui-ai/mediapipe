@@ -19,7 +19,7 @@
 #include "mediapipe/framework/port/rectangle.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A subclass of AssociationCalculator<T> for NormalizedRect. Example use case:
 // node {
@@ -34,27 +34,27 @@ namespace mediapipe {
 //     }
 // }
 class HandRectsAssociation
-    : public AssociationCalculator<::mediapipe::NormalizedRect> {
+    : public AssociationCalculator<::mediapipe_v01013_based::NormalizedRect> {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
-    return AssociationCalculator<::mediapipe::NormalizedRect>::GetContract(cc);
+    return AssociationCalculator<::mediapipe_v01013_based::NormalizedRect>::GetContract(cc);
   }
 
   absl::Status Open(CalculatorContext* cc) override {
-    return AssociationCalculator<::mediapipe::NormalizedRect>::Open(cc);
+    return AssociationCalculator<::mediapipe_v01013_based::NormalizedRect>::Open(cc);
   }
 
   absl::Status Process(CalculatorContext* cc) override {
-    return AssociationCalculator<::mediapipe::NormalizedRect>::Process(cc);
+    return AssociationCalculator<::mediapipe_v01013_based::NormalizedRect>::Process(cc);
   }
 
   absl::Status Close(CalculatorContext* cc) override {
-    return AssociationCalculator<::mediapipe::NormalizedRect>::Close(cc);
+    return AssociationCalculator<::mediapipe_v01013_based::NormalizedRect>::Close(cc);
   }
 
  protected:
   absl::StatusOr<Rectangle_f> GetRectangle(
-      const ::mediapipe::NormalizedRect& input) override {
+      const ::mediapipe_v01013_based::NormalizedRect& input) override {
     if (!input.has_x_center() || !input.has_y_center() || !input.has_width() ||
         !input.has_height()) {
       return absl::InternalError("Missing dimensions in NormalizedRect.");
@@ -68,4 +68,4 @@ class HandRectsAssociation
 
 REGISTER_CALCULATOR(HandRectsAssociation);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

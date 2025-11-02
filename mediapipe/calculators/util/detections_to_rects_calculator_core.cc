@@ -9,7 +9,7 @@
 #include <cassert>
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 DetectionsToRectsCoreConfig SetDetectionsToRectsConfig(const DetectionsToRectsCalculatorOptions& options) {
   DetectionsToRectsCoreConfig config;
@@ -96,4 +96,4 @@ void ComputeRectsFromDetections(
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

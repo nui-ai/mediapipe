@@ -18,16 +18,16 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/port/opencv_core_inc.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-void DrawPose(const mediapipe::NormalizedLandmarkList& pose, bool flip_y,
+void DrawPose(const mediapipe_v01013_based::NormalizedLandmarkList& pose, bool flip_y,
               cv::Mat* image);
 
-void DrawFace(const mediapipe::NormalizedLandmarkList& face,
+void DrawFace(const mediapipe_v01013_based::NormalizedLandmarkList& face,
               const std::pair<int, int>& image_size, const cv::Mat& affine,
               bool flip_y, bool draw_nose, int color_style, bool reverse_color,
               int draw_line_width, cv::Mat* image);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_POSE_UTIL_H_

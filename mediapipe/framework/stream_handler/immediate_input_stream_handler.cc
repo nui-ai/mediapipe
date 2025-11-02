@@ -28,7 +28,7 @@
 #include "mediapipe/framework/mediapipe_options.pb.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using SyncSet = InputStreamHandler::SyncSet;
 
@@ -37,7 +37,7 @@ REGISTER_INPUT_STREAM_HANDLER(ImmediateInputStreamHandler);
 ImmediateInputStreamHandler::ImmediateInputStreamHandler(
     std::shared_ptr<tool::TagMap> tag_map,
     CalculatorContextManager* calculator_context_manager,
-    const mediapipe::MediaPipeOptions& options, bool calculator_run_in_parallel)
+    const mediapipe_v01013_based::MediaPipeOptions& options, bool calculator_run_in_parallel)
     : InputStreamHandler(tag_map, calculator_context_manager, options,
                          calculator_run_in_parallel) {
   for (auto id = tag_map->BeginId(); id < tag_map->EndId(); ++id) {
@@ -144,4 +144,4 @@ int ImmediateInputStreamHandler::SyncSetCount() {
   return sync_sets_.size();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

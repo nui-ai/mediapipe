@@ -16,10 +16,10 @@
 
 #include "tensorflow/lite/c/common.h"
 
-namespace mediapipe::util::tflite {
+namespace mediapipe_v01013_based::util::tflite {
 
 // Returns
 bool IsDynamicTensor(const TfLiteTensor& tensor);
-}  // namespace mediapipe::util::tflite
+}  // namespace mediapipe_v01013_based::util::tflite
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_UTILS_H_

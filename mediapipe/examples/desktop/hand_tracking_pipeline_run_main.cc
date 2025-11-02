@@ -80,7 +80,7 @@ std::string GetProjectRootedPath(const std::string& filename) {
 }
 
 // helper function to read the output reference data from file
-bool ReadReferenceData(const std::string& filename, std::vector<mediapipe::PipelineOutputData>& out) {
+bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013_based::PipelineOutputData>& out) {
     std::ifstream input(filename, std::ios::binary);
     if (!input.is_open()) {
         ABSL_LOG(ERROR) << "Failed to open reference file: " << filename;
@@ -90,7 +90,7 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe::Pipel
     bool clean_eof = false;
     int msg_count = 0;
     while (true) {
-        mediapipe::PipelineOutputData msg;
+        mediapipe_v01013_based::PipelineOutputData msg;
         std::streampos pos = input.tellg();
         if (!google::protobuf::util::ParseDelimitedFromZeroCopyStream(&msg, &zero_copy_input, &clean_eof)) {
             if (msg_count == 0) {
@@ -115,7 +115,7 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe::Pipel
 
 absl::Status RunPipelineWithDiffing() {
   // Load reference data from output_data_v0.10.13.pb
-  std::vector<mediapipe::PipelineOutputData> reference_data;
+  std::vector<mediapipe_v01013_based::PipelineOutputData> reference_data;
   if (!ReadReferenceData(GetProjectRootedPath(absl::GetFlag(FLAGS_reference_data_path)), reference_data)) {
     ABSL_LOG(WARNING) << "failed to load reference data from " << GetProjectRootedPath(kReferenceProtoFilename)
                      << ". will proceed without real-time comparison.";
@@ -131,7 +131,7 @@ absl::Status RunPipelineWithDiffing() {
     // "hand_rects_from_palm_detections"
   };
 
-  auto status_or_op = mediapipe::HandsPipelineOperator::Create(GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)), graph_output_streams_names);
+  auto status_or_op = mediapipe_v01013_based::HandsPipelineOperator::Create(GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)), graph_output_streams_names);
   if (!status_or_op.ok()) {
       std::cerr << "Failed to create HandsPipelineOperator: " << status_or_op.status().message() << std::endl;
       return status_or_op.status();
@@ -176,7 +176,7 @@ absl::Status RunPipelineWithDiffing() {
 
     size_t frame_timestamp_us = (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
     MP_RETURN_IF_ERROR(pipeline_operator->push_image(input_frame, frame_timestamp_us));
-    mediapipe::PipelineOutputData stream_data_msg;
+    mediapipe_v01013_based::PipelineOutputData stream_data_msg;
     MP_RETURN_IF_ERROR(pipeline_operator->wait_for_output(&stream_data_msg, i));
 
     // write the current frame output to file

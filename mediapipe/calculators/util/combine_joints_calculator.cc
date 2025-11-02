@@ -22,7 +22,7 @@
 #include "mediapipe/framework/formats/body_rig.pb.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 namespace {}  // namespace
@@ -76,4 +76,4 @@ class CombineJointsCalculatorImpl : public NodeImpl<CombineJointsCalculator> {
 MEDIAPIPE_NODE_IMPLEMENTATION(CombineJointsCalculatorImpl);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

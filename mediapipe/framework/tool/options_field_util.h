@@ -12,7 +12,7 @@
 #include "mediapipe/framework/tool/field_data.pb.h"
 #include "mediapipe/framework/tool/options_registry.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 
@@ -88,6 +88,6 @@ std::string ParseTypeUrl(absl::string_view type_url);
 
 }  // namespace options_field_util
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_OPTIONS_FIELD_UTIL_H_

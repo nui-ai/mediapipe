@@ -14,13 +14,13 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/packet_generator.proto";
 import "tensorflow/core/protobuf/config.proto";
 
 message TensorFlowSessionFromSavedModelGeneratorOptions {
-  extend mediapipe.PacketGeneratorOptions {
+  extend mediapipe_v01013_based.PacketGeneratorOptions {
     optional TensorFlowSessionFromSavedModelGeneratorOptions ext = 151486368;
   }
   // TODO: SessionBundles provided global step versioning of models

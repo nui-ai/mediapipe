@@ -18,7 +18,7 @@
 #include "absl/status/status.h"
 #include "mediapipe/framework/calculator_base.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Creates a callback which takes a packet and stores it either in a
 // vector of packets or stores only the packet at PostStream timestamp.
@@ -34,6 +34,6 @@ class CallbackPacketCalculator : public CalculatorBase {
   absl::Status Process(CalculatorContext* cc) override;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_INTERNAL_CALLBACK_PACKET_CALCULATOR_H_

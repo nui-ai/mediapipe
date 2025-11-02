@@ -30,7 +30,7 @@
 #include "mediapipe/util/tracking/motion_models.h"
 #include "mediapipe/util/tracking/region_flow.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 typedef RegionFlowFrame::RegionFlow RegionFlow;
 typedef std::vector<RegionFlowFeature*> RegionFlowFeatureView;
@@ -632,6 +632,6 @@ void BuildFeatureGrid(
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_REGION_FLOW_H_

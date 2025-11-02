@@ -19,21 +19,21 @@
 #include "mediapipe/framework/formats/image.h"
 #include "mediapipe/framework/port/opencv_core_inc.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace formats {
 
 // Image to OpenCV helper conversion function.
 // A view into existing data is created (zero copy).
-// The pixel data remains owned and maintained by mediapipe::Image.
+// The pixel data remains owned and maintained by mediapipe_v01013_based::Image.
 // When converting a const Image into a cv::Mat,
 // the const modifier is lost.  The caller must be careful
 // not to use the returned object to modify the data in a const Image,
 // even though the returned data is mutable.
 // Note: this returns a shared_ptr so it can keep the CPU memory referenced
 // by the Mat alive.
-std::shared_ptr<cv::Mat> MatView(const mediapipe::Image* image);
+std::shared_ptr<cv::Mat> MatView(const mediapipe_v01013_based::Image* image);
 
 }  // namespace formats
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_IMAGE_FRAME_OPENCV_H_

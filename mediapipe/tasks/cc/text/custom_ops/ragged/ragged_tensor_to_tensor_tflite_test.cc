@@ -30,7 +30,7 @@ limitations under the License.
 #include "tensorflow/lite/kernels/test_util.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe::tflite_operations {
+namespace mediapipe_v01013_based::tflite_operations {
 namespace {
 
 using ::tflite::TensorType;
@@ -283,4 +283,4 @@ TEST(RaggedTensorToTensorTest, RaggedTensorToTensorContractExpandedDense) {
                    .4,  1.4, .5,  1.5, .6,  1.6, .7,  1.7, 1.5, 1.5}));
 }
 }  // namespace
-}  // namespace mediapipe::tflite_operations
+}  // namespace mediapipe_v01013_based::tflite_operations

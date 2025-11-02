@@ -29,13 +29,13 @@ limitations under the License.
 
 #include <cstdint>
 
-namespace mediapipe::tasks::text::language_detector::custom_ops::hash {
+namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops::hash {
 
 // Hash function for a byte array. Has a seed which allows this hash function to
 // be used in algorithms that need a family of parameterized hash functions.
 // e.g. Minhash.
 unsigned long long MurmurHash64WithSeed(const char* buf, size_t len,  // NOLINT
                                         uint64_t seed);
-}  // namespace mediapipe::tasks::text::language_detector::custom_ops::hash
+}  // namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops::hash
 
 #endif  // UTIL_HASH_MURMUR_H_

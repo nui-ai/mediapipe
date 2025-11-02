@@ -7,7 +7,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/tool/proto_util_lite.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 namespace {
@@ -226,4 +226,4 @@ const Descriptor* FieldDescriptor::message_type() const {
 }
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

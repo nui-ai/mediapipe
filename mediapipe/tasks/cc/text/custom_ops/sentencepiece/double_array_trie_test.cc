@@ -21,7 +21,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/custom_ops/sentencepiece/encoder_config_generated.h"
 #include "mediapipe/tasks/cc/text/custom_ops/sentencepiece/utils.h"
 
-namespace mediapipe::tflite_operations::sentencepiece {
+namespace mediapipe_v01013_based::tflite_operations::sentencepiece {
 
 TEST(DoubleArrayTrieTest, Match) {
   flatbuffers::FlatBufferBuilder builder(1024);
@@ -70,4 +70,4 @@ TEST(DoubleArrayTrieTest, ComplexMatch) {
   EXPECT_THAT(matches, testing::ElementsAre(DoubleArrayTrie::Match(15, 8)));
 }
 
-}  // namespace mediapipe::tflite_operations::sentencepiece
+}  // namespace mediapipe_v01013_based::tflite_operations::sentencepiece

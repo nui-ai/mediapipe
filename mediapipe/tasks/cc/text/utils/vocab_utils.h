@@ -21,7 +21,7 @@ limitations under the License.
 
 #include "absl/container/node_hash_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 
@@ -45,6 +45,6 @@ absl::node_hash_map<std::string, int> LoadVocabAndIndexFromBuffer(
 
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_UTILS_VOCAB_UTILS_H_

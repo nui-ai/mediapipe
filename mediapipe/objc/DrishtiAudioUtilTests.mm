@@ -69,7 +69,7 @@ class AudioBufferListWrapper {
 
   DataType ToDataType(float value) const;
 
-  void InitFromMatrix(const mediapipe::Matrix& matrix) {
+  void InitFromMatrix(const mediapipe_v01013_based::Matrix& matrix) {
     assert(matrix.rows() == num_channels_);
     assert(matrix.cols() == num_frames_);
     for (int channel = 0; channel < num_channels_; ++channel) {
@@ -103,7 +103,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
 - (void)testBufferListToMatrixStereoNonInterleavedFloat {
   constexpr int kChannels = 2;
   constexpr int kFrames = 5;
-  mediapipe::Matrix inputMatrix(kChannels, kFrames);
+  mediapipe_v01013_based::Matrix inputMatrix(kChannels, kFrames);
   inputMatrix << 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9;
   AudioBufferListWrapper<float> bufferList(/*num_frames=*/kFrames,
                                            /*num_channels=*/kChannels,
@@ -122,7 +122,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
       .mBitsPerChannel = bufferList.BytesPerSample() * 8,
   };
 
-  absl::StatusOr<std::unique_ptr<mediapipe::Matrix>> matrix =
+  absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Matrix>> matrix =
       MediaPipeConvertAudioBufferListToAudioMatrix(bufferList.GetBufferList(), &kStreamDescription,
                                                  static_cast<CMItemCount>(kFrames));
   if (!matrix.ok()) {
@@ -136,7 +136,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
 - (void)testBufferListToMatrixStereoInterleavedFloat {
   constexpr int kChannels = 2;
   constexpr int kFrames = 5;
-  mediapipe::Matrix inputMatrix(kChannels, kFrames);
+  mediapipe_v01013_based::Matrix inputMatrix(kChannels, kFrames);
   inputMatrix << 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9;
   AudioBufferListWrapper<float> bufferList(/*num_frames=*/kFrames,
                                            /*num_channels=*/kChannels,
@@ -154,7 +154,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
       .mBitsPerChannel = bufferList.BytesPerSample() * 8,
   };
 
-  absl::StatusOr<std::unique_ptr<mediapipe::Matrix>> matrix =
+  absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Matrix>> matrix =
       MediaPipeConvertAudioBufferListToAudioMatrix(bufferList.GetBufferList(), &kStreamDescription,
                                                  static_cast<CMItemCount>(kFrames));
   if (!matrix.ok()) {
@@ -168,7 +168,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
 - (void)testBufferListToMatrixMonoNonInterleavedFloat {
   constexpr int kChannels = 1;
   constexpr int kFrames = 5;
-  mediapipe::Matrix inputMatrix(kChannels, kFrames);
+  mediapipe_v01013_based::Matrix inputMatrix(kChannels, kFrames);
   inputMatrix << 0, 0.1, 0.2, 0.3, 0.4;
   AudioBufferListWrapper<float> bufferList(/*num_frames=*/kFrames,
                                            /*num_channels=*/kChannels,
@@ -187,7 +187,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
       .mBitsPerChannel = bufferList.BytesPerSample() * 8,
   };
 
-  absl::StatusOr<std::unique_ptr<mediapipe::Matrix>> matrix =
+  absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Matrix>> matrix =
       MediaPipeConvertAudioBufferListToAudioMatrix(bufferList.GetBufferList(), &kStreamDescription,
                                                  static_cast<CMItemCount>(kFrames));
   if (!matrix.ok()) {
@@ -201,7 +201,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
 - (void)testBufferListToMatrixMonoInterleavedFloat {
   constexpr int kChannels = 1;
   constexpr int kFrames = 5;
-  mediapipe::Matrix inputMatrix(kChannels, kFrames);
+  mediapipe_v01013_based::Matrix inputMatrix(kChannels, kFrames);
   inputMatrix << 0, 0.1, 0.2, 0.3, 0.4;
   AudioBufferListWrapper<float> bufferList(/*num_frames=*/kFrames,
                                            /*num_channels=*/kChannels,
@@ -219,7 +219,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
       .mBitsPerChannel = bufferList.BytesPerSample() * 8,
   };
 
-  absl::StatusOr<std::unique_ptr<mediapipe::Matrix>> matrix =
+  absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Matrix>> matrix =
       MediaPipeConvertAudioBufferListToAudioMatrix(bufferList.GetBufferList(), &kStreamDescription,
                                                  static_cast<CMItemCount>(kFrames));
   if (!matrix.ok()) {
@@ -233,7 +233,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
 - (void)testBufferListToMatrixStereoNonInterleavedInt16 {
   constexpr int kChannels = 2;
   constexpr int kFrames = 5;
-  mediapipe::Matrix inputMatrix(kChannels, kFrames);
+  mediapipe_v01013_based::Matrix inputMatrix(kChannels, kFrames);
   inputMatrix << 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9;
   AudioBufferListWrapper<int16_t> bufferList(/*num_frames=*/kFrames,
                                              /*num_channels=*/kChannels,
@@ -252,7 +252,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
       .mBitsPerChannel = bufferList.BytesPerSample() * 8,
   };
 
-  absl::StatusOr<std::unique_ptr<mediapipe::Matrix>> matrix =
+  absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Matrix>> matrix =
       MediaPipeConvertAudioBufferListToAudioMatrix(bufferList.GetBufferList(), &kStreamDescription,
                                                  static_cast<CMItemCount>(kFrames));
   if (!matrix.ok()) {
@@ -266,7 +266,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
 - (void)testBufferListToMatrixStereoInterleavedInt16 {
   constexpr int kChannels = 2;
   constexpr int kFrames = 5;
-  mediapipe::Matrix inputMatrix(kChannels, kFrames);
+  mediapipe_v01013_based::Matrix inputMatrix(kChannels, kFrames);
   inputMatrix << 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9;
   AudioBufferListWrapper<int16_t> bufferList(/*num_frames=*/kFrames,
                                              /*num_channels=*/kChannels,
@@ -284,7 +284,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
       .mBitsPerChannel = bufferList.BytesPerSample() * 8,
   };
 
-  absl::StatusOr<std::unique_ptr<mediapipe::Matrix>> matrix =
+  absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Matrix>> matrix =
       MediaPipeConvertAudioBufferListToAudioMatrix(bufferList.GetBufferList(), &kStreamDescription,
                                                  static_cast<CMItemCount>(kFrames));
   if (!matrix.ok()) {
@@ -298,7 +298,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
 - (void)testBufferListToMatrixMonoNonInterleavedInt16 {
   constexpr int kChannels = 1;
   constexpr int kFrames = 5;
-  mediapipe::Matrix inputMatrix(kChannels, kFrames);
+  mediapipe_v01013_based::Matrix inputMatrix(kChannels, kFrames);
   inputMatrix << 0, 0.1, 0.2, 0.3, 0.4;
   AudioBufferListWrapper<int16_t> bufferList(/*num_frames=*/kFrames,
                                              /*num_channels=*/kChannels,
@@ -317,7 +317,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
       .mBitsPerChannel = bufferList.BytesPerSample() * 8,
   };
 
-  absl::StatusOr<std::unique_ptr<mediapipe::Matrix>> matrix =
+  absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Matrix>> matrix =
       MediaPipeConvertAudioBufferListToAudioMatrix(bufferList.GetBufferList(), &kStreamDescription,
                                                  static_cast<CMItemCount>(kFrames));
   if (!matrix.ok()) {
@@ -331,7 +331,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
 - (void)testBufferListToMatrixMonoInterleavedInt16 {
   constexpr int kChannels = 1;
   constexpr int kFrames = 5;
-  mediapipe::Matrix inputMatrix(kChannels, kFrames);
+  mediapipe_v01013_based::Matrix inputMatrix(kChannels, kFrames);
   inputMatrix << 0, 0.1, 0.2, 0.3, 0.4;
   AudioBufferListWrapper<int16_t> bufferList(/*num_frames=*/kFrames,
                                              /*num_channels=*/kChannels,
@@ -349,7 +349,7 @@ int16_t AudioBufferListWrapper<int16_t>::ToDataType(float value) const {
       .mBitsPerChannel = bufferList.BytesPerSample() * 8,
   };
 
-  absl::StatusOr<std::unique_ptr<mediapipe::Matrix>> matrix =
+  absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Matrix>> matrix =
       MediaPipeConvertAudioBufferListToAudioMatrix(bufferList.GetBufferList(), &kStreamDescription,
                                                  static_cast<CMItemCount>(kFrames));
   if (!matrix.ok()) {

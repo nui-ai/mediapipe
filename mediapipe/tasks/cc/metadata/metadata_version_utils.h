@@ -3,7 +3,7 @@
 
 #include "absl/strings/string_view.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace metadata {
 
@@ -16,6 +16,6 @@ int CompareVersions(absl::string_view version_a, absl::string_view version_b);
 
 }  // namespace metadata
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_METADATA_METADATA_VERSION_UTIL_H_

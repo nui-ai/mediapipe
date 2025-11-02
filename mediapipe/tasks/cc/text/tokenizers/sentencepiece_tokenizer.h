@@ -27,7 +27,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/tokenizers/tokenizer.h"
 #include "sentencepiece/src/sentencepiece_processor.h"  // from @com_google_sentencepiece
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 namespace tokenizers {
@@ -80,6 +80,6 @@ class SentencePieceTokenizer : public Tokenizer {
 }  // namespace tokenizers
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_TOKENIZERS_SENTENCEPIECE_TOKENIZER_H_

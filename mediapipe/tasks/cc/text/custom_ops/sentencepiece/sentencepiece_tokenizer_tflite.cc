@@ -26,7 +26,7 @@ limitations under the License.
 #include "tensorflow/lite/model.h"
 #include "tensorflow/lite/string_util.h"
 
-namespace mediapipe::tflite_operations {
+namespace mediapipe_v01013_based::tflite_operations {
 namespace sentencepiece::tokenizer {
 namespace {
 
@@ -128,4 +128,4 @@ TfLiteRegistration* Register_SENTENCEPIECE_TOKENIZER() {
   return &r;
 }
 
-}  // namespace mediapipe::tflite_operations
+}  // namespace mediapipe_v01013_based::tflite_operations

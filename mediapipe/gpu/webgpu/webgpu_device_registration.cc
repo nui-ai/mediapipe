@@ -20,7 +20,7 @@
 #include "mediapipe/framework/deps/no_destructor.h"
 #include "third_party/dawn/include/webgpu/webgpu_cpp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // static
 WebGpuDeviceRegistration& WebGpuDeviceRegistration::GetInstance() {
@@ -38,4 +38,4 @@ WebGpuDeviceRegistration::WebGpuDeviceRegistration() = default;
 
 WebGpuDeviceRegistration::~WebGpuDeviceRegistration() = default;
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

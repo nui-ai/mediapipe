@@ -16,7 +16,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // A Calculator that returns 0 if INPUT is 0, and 1 otherwise.
@@ -51,4 +51,4 @@ class NonZeroCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(NonZeroCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

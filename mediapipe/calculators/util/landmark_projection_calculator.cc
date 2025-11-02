@@ -29,9 +29,9 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
-using ::mediapipe::NormalizedRect;
+using ::mediapipe_v01013_based::NormalizedRect;
 
 class LandmarkProjectionNodeImpl
     : public Calculator<LandmarkProjectionNode, LandmarkProjectionNodeImpl> {
@@ -64,4 +64,4 @@ class LandmarkProjectionNodeImpl
   }
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3

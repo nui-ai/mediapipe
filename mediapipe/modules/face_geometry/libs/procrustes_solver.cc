@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace face_geometry {
 namespace {
 
@@ -263,4 +263,4 @@ std::unique_ptr<ProcrustesSolver> CreateFloatPrecisionProcrustesSolver() {
 }
 
 }  // namespace face_geometry
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

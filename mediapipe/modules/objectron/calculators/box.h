@@ -19,7 +19,7 @@
 
 #include "mediapipe/modules/objectron/calculators/model.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Model for the bounding box in 3D
 // The box has 9 degrees of freedom, which uniquely defines 8 keypoints in the
@@ -127,6 +127,6 @@ class Box : public Model {
   std::vector<Vector3f> bounding_box_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_MODULES_OBJECTRON_CALCULATORS_BOX_H_

@@ -47,22 +47,22 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/utils/image_tensor_specs.h"
 #include "mediapipe/util/graph_builder_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace pose_landmarker {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::GetImageSize;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::SmoothLandmarks;
-using ::mediapipe::api2::builder::SmoothLandmarksVisibility;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::api2::builder::Stream;
-using ::mediapipe::tasks::core::ModelResources;
-using ::mediapipe::tasks::vision::pose_landmarker::proto::
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::GetImageSize;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::SmoothLandmarks;
+using ::mediapipe_v01013_based::api2::builder::SmoothLandmarksVisibility;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::mediapipe_v01013_based::tasks::core::ModelResources;
+using ::mediapipe_v01013_based::tasks::vision::pose_landmarker::proto::
     PoseLandmarksDetectorGraphOptions;
 
 constexpr char kImageTag[] = "IMAGE";
@@ -131,7 +131,7 @@ absl::Status SanityCheckOptions(
 // representing landmarks, presence scores, segmentation, heatmap, and world
 // landmarks respectively.
 void ConfigureSplitTensorVectorCalculator(
-    mediapipe::SplitVectorCalculatorOptions* options) {
+    mediapipe_v01013_based::SplitVectorCalculatorOptions* options) {
   for (int i = 0; i < kModelOutputTensorSplitNum; ++i) {
     auto* range = options->add_ranges();
     range->set_begin(i);
@@ -142,7 +142,7 @@ void ConfigureSplitTensorVectorCalculator(
 void ConfigureTensorsToLandmarksCalculator(
     const ImageTensorSpecs& input_image_tensor_spec, bool normalize,
     bool sigmoid_activation,
-    mediapipe::TensorsToLandmarksCalculatorOptions* options) {
+    mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions* options) {
   options->set_num_landmarks(kLandmarksNum);
   options->set_input_image_height(input_image_tensor_spec.image_height);
   options->set_input_image_width(input_image_tensor_spec.image_width);
@@ -153,28 +153,28 @@ void ConfigureTensorsToLandmarksCalculator(
 
   if (sigmoid_activation) {
     options->set_visibility_activation(
-        mediapipe::TensorsToLandmarksCalculatorOptions_Activation_SIGMOID);
+        mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions_Activation_SIGMOID);
     options->set_presence_activation(
-        mediapipe::TensorsToLandmarksCalculatorOptions_Activation_SIGMOID);
+        mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions_Activation_SIGMOID);
   }
 }
 
 void ConfigureTensorsToSegmentationCalculator(
-    mediapipe::TensorsToSegmentationCalculatorOptions* options) {
+    mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions* options) {
   options->set_activation(
-      mediapipe::TensorsToSegmentationCalculatorOptions_Activation_SIGMOID);
-  options->set_gpu_origin(mediapipe::GpuOrigin::TOP_LEFT);
+      mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions_Activation_SIGMOID);
+  options->set_gpu_origin(mediapipe_v01013_based::GpuOrigin::TOP_LEFT);
 }
 
 void ConfigureRefineLandmarksFromHeatmapCalculator(
-    mediapipe::RefineLandmarksFromHeatmapCalculatorOptions* options) {
+    mediapipe_v01013_based::RefineLandmarksFromHeatmapCalculatorOptions* options) {
   // Derived from
   // mediapipe/modules/pose_landmark/tensors_to_pose_landmarks_and_segmentation.pbtxt.
   options->set_kernel_size(7);
 }
 
 void ConfigureSplitNormalizedLandmarkListCalculator(
-    mediapipe::SplitVectorCalculatorOptions* options) {
+    mediapipe_v01013_based::SplitVectorCalculatorOptions* options) {
   // Derived from
   // mediapipe/modules/pose_landmark/tensors_to_pose_landmarks_and_segmentation.pbtxt
   auto* range = options->add_ranges();
@@ -186,7 +186,7 @@ void ConfigureSplitNormalizedLandmarkListCalculator(
 }
 
 void ConfigureSplitLandmarkListCalculator(
-    mediapipe::SplitVectorCalculatorOptions* options) {
+    mediapipe_v01013_based::SplitVectorCalculatorOptions* options) {
   // Derived from
   // mediapipe/modules/pose_landmark/tensors_to_pose_landmarks_and_segmentation.pbtxt
   auto* range = options->add_ranges();
@@ -195,7 +195,7 @@ void ConfigureSplitLandmarkListCalculator(
 }
 
 void ConfigureVisibilityCopyCalculator(
-    mediapipe::VisibilityCopyCalculatorOptions* options) {
+    mediapipe_v01013_based::VisibilityCopyCalculatorOptions* options) {
   // Derived from
   // mediapipe/modules/pose_landmark/tensors_to_pose_landmarks_and_segmentation.pbtxt
   options->set_copy_visibility(true);
@@ -203,14 +203,14 @@ void ConfigureVisibilityCopyCalculator(
 }
 
 void ConfigureRectTransformationCalculator(
-    mediapipe::RectTransformationCalculatorOptions* options) {
+    mediapipe_v01013_based::RectTransformationCalculatorOptions* options) {
   options->set_scale_x(1.25);
   options->set_scale_y(1.25);
   options->set_square_long(true);
 }
 
 void ConfigureAlignmentPointsRectsCalculator(
-    mediapipe::DetectionsToRectsCalculatorOptions* options) {
+    mediapipe_v01013_based::DetectionsToRectsCalculatorOptions* options) {
   // Derived from
   // mediapipe/modules/pose_landmark/pose_landmarks_to_roi.pbtxt
   options->set_rotation_vector_start_keypoint_index(0);
@@ -219,9 +219,9 @@ void ConfigureAlignmentPointsRectsCalculator(
 }
 
 void ConfigureWarpAffineCalculator(
-    mediapipe::WarpAffineCalculatorOptions* options) {
-  options->set_border_mode(mediapipe::WarpAffineCalculatorOptions::BORDER_ZERO);
-  options->set_gpu_origin(mediapipe::GpuOrigin::TOP_LEFT);
+    mediapipe_v01013_based::WarpAffineCalculatorOptions* options) {
+  options->set_border_mode(mediapipe_v01013_based::WarpAffineCalculatorOptions::BORDER_ZERO);
+  options->set_gpu_origin(mediapipe_v01013_based::GpuOrigin::TOP_LEFT);
 }
 
 template <typename TickT>
@@ -230,7 +230,7 @@ Stream<int> CreateIntConstantStream(Stream<TickT> tick_stream, int constant_int,
   auto& constant_side_packet_node =
       graph.AddNode("ConstantSidePacketCalculator");
   constant_side_packet_node
-      .GetOptions<mediapipe::ConstantSidePacketCalculatorOptions>()
+      .GetOptions<mediapipe_v01013_based::ConstantSidePacketCalculatorOptions>()
       .add_packet()
       ->set_int_value(constant_int);
   auto side_packet = constant_side_packet_node.SideOut("PACKET");
@@ -367,7 +367,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
     auto& split_tensors_vector = graph.AddNode("SplitTensorVectorCalculator");
     ConfigureSplitTensorVectorCalculator(
         &split_tensors_vector
-             .GetOptions<mediapipe::SplitVectorCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::SplitVectorCalculatorOptions>());
     inference.Out(kTensorsTag) >> split_tensors_vector.In("");
     auto landmark_tensors = split_tensors_vector.Out(0);
     auto pose_flag_tensors = split_tensors_vector.Out(1);
@@ -386,7 +386,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
     // pose is present.
     auto& pose_presence_thresholding = graph.AddNode("ThresholdingCalculator");
     pose_presence_thresholding
-        .GetOptions<mediapipe::ThresholdingCalculatorOptions>()
+        .GetOptions<mediapipe_v01013_based::ThresholdingCalculatorOptions>()
         .set_threshold(subgraph_options.min_detection_confidence());
     pose_presence_score >> pose_presence_thresholding.In(kFloatTag);
     auto pose_presence = pose_presence_thresholding[Output<bool>(kFlagTag)];
@@ -410,7 +410,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
         image_tensor_specs, /* normalize = */ false,
         /*sigmoid_activation= */ true,
         &tensors_to_landmarks
-             .GetOptions<mediapipe::TensorsToLandmarksCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions>());
     ensured_landmarks_tensors >> tensors_to_landmarks.In(kTensorsTag);
 
     auto raw_landmarks =
@@ -421,7 +421,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
         graph.AddNode("RefineLandmarksFromHeatmapCalculator");
     ConfigureRefineLandmarksFromHeatmapCalculator(
         &refine_landmarks_from_heatmap.GetOptions<
-            mediapipe::RefineLandmarksFromHeatmapCalculatorOptions>());
+            mediapipe_v01013_based::RefineLandmarksFromHeatmapCalculatorOptions>());
     ensured_heatmap_tensors >> refine_landmarks_from_heatmap.In(kTensorsTag);
     raw_landmarks >> refine_landmarks_from_heatmap.In(kNormLandmarksTag);
     auto landmarks_from_heatmap =
@@ -434,7 +434,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
         graph.AddNode("SplitNormalizedLandmarkListCalculator");
     ConfigureSplitNormalizedLandmarkListCalculator(
         &split_normalized_landmark_list
-             .GetOptions<mediapipe::SplitVectorCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::SplitVectorCalculatorOptions>());
     landmarks_from_heatmap >> split_normalized_landmark_list.In("");
     auto landmarks = split_normalized_landmark_list.Out("")[0]
                          .Cast<NormalizedLandmarkList>();
@@ -448,7 +448,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
         image_tensor_specs, /* normalize = */ false,
         /* sigmoid_activation= */ false,
         &tensors_to_world_landmarks
-             .GetOptions<mediapipe::TensorsToLandmarksCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions>());
     ensured_world_landmark_tensors >>
         tensors_to_world_landmarks.In(kTensorsTag);
     auto raw_world_landmarks =
@@ -458,7 +458,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
     auto& split_landmark_list = graph.AddNode("SplitLandmarkListCalculator");
     ConfigureSplitLandmarkListCalculator(
         &split_landmark_list
-             .GetOptions<mediapipe::SplitVectorCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::SplitVectorCalculatorOptions>());
     raw_world_landmarks >> split_landmark_list.In("");
     auto split_landmarks = split_landmark_list.Out(0);
 
@@ -467,7 +467,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
     auto& visibility_copy = graph.AddNode("VisibilityCopyCalculator");
     ConfigureVisibilityCopyCalculator(
         &visibility_copy
-             .GetOptions<mediapipe::VisibilityCopyCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::VisibilityCopyCalculatorOptions>());
     split_landmarks >> visibility_copy.In(kLandmarksToTag);
     landmarks >> visibility_copy.In(kNormLandmarksFromTag);
     auto world_landmarks =
@@ -526,7 +526,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
           graph.AddNode("TensorsToSegmentationCalculator");
       ConfigureTensorsToSegmentationCalculator(
           &tensors_to_segmentation.GetOptions<
-              mediapipe::TensorsToSegmentationCalculatorOptions>());
+              mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions>());
       ensured_segmentation_tensors >> tensors_to_segmentation.In(kTensorsTag);
       auto raw_segmentation_mask =
           tensors_to_segmentation[Output<Image>(kMaskTag)];
@@ -540,7 +540,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
       // full image.
       auto& warp_affine = graph.AddNode("WarpAffineCalculator");
       ConfigureWarpAffineCalculator(
-          &warp_affine.GetOptions<mediapipe::WarpAffineCalculatorOptions>());
+          &warp_affine.GetOptions<mediapipe_v01013_based::WarpAffineCalculatorOptions>());
       image_size >> warp_affine.In(kOutputSizeTag);
       inverted_matrix >> warp_affine.In(kMatrixTag);
       raw_segmentation_mask >> warp_affine.In(kImageTag);
@@ -560,7 +560,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
     auto& detection_to_rect = graph.AddNode("AlignmentPointsRectsCalculator");
     ConfigureAlignmentPointsRectsCalculator(
         &detection_to_rect
-             .GetOptions<mediapipe::DetectionsToRectsCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::DetectionsToRectsCalculatorOptions>());
     detection >> detection_to_rect.In(kDetectionTag);
     image_size >> detection_to_rect.In(kImageSizeTag);
     auto raw_pose_rects = detection_to_rect.Out(kNormRectTag);
@@ -568,7 +568,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
     auto& rect_transformation = graph.AddNode("RectTransformationCalculator");
     ConfigureRectTransformationCalculator(
         &rect_transformation
-             .GetOptions<mediapipe::RectTransformationCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::RectTransformationCalculatorOptions>());
     image_size >> rect_transformation.In(kImageSizeTag);
     raw_pose_rects >> rect_transformation.In("NORM_RECT");
     auto pose_rect_next_frame = rect_transformation[Output<NormalizedRect>("")];
@@ -587,7 +587,7 @@ class SinglePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe::tasks::vision::pose_landmarker::SinglePoseLandmarksDetectorGraph); // NOLINT
+  ::mediapipe_v01013_based::tasks::vision::pose_landmarker::SinglePoseLandmarksDetectorGraph); // NOLINT
 // clang-format on
 
 // A "mediapipe.tasks.vision.pose_landmarker.MultiplePoseLandmarksDetectorGraph"
@@ -841,10 +841,10 @@ class MultiplePoseLandmarksDetectorGraph : public core::ModelTaskGraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe::tasks::vision::pose_landmarker::MultiplePoseLandmarksDetectorGraph); // NOLINT
+  ::mediapipe_v01013_based::tasks::vision::pose_landmarker::MultiplePoseLandmarksDetectorGraph); // NOLINT
 // clang-format on
 
 }  // namespace pose_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

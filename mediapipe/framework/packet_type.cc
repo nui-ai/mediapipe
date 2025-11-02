@@ -34,7 +34,7 @@
 #include "mediapipe/framework/tool/validate_name.h"
 #include "mediapipe/framework/type_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::Status PacketType::AcceptAny(const TypeSpec& type) {
   return absl::OkStatus();
@@ -45,7 +45,7 @@ absl::Status PacketType::AcceptNone(const TypeSpec& type) {
   if (special &&
       (special->accept_fn_ == AcceptNone || special->accept_fn_ == AcceptAny))
     return absl::OkStatus();
-  return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+  return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
          << "No packets are allowed for type: [No Type]";
 }
 
@@ -217,7 +217,7 @@ absl::Status PacketType::Validate(const Packet& packet) const {
     return packet.ValidateAsType(*type_id);
   }
   if (packet.IsEmpty()) {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "Empty packets are not allowed for type: " << DebugTypeName();
   }
   if (auto* multi_type = absl::get_if<MultiType>(&type_spec_)) {
@@ -300,7 +300,7 @@ absl::Status ValidatePacketSet(const PacketTypeSet& packet_type_set,
       std::pair<std::string, int> tag_index =
           packet_type_set.TagAndIndexFromId(id);
       errors.push_back(
-          mediapipe::StatusBuilder(status, MEDIAPIPE_LOC).SetPrepend()
+          mediapipe_v01013_based::StatusBuilder(status, MEDIAPIPE_LOC).SetPrepend()
           << "Packet \"" << packet_type_set.TagMap()->Names()[id.value()]
           << "\" with tag \"" << tag_index.first << "\" and index "
           << tag_index.second << " failed validation.  ");
@@ -312,4 +312,4 @@ absl::Status ValidatePacketSet(const PacketTypeSet& packet_type_set,
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

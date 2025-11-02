@@ -16,7 +16,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include <cmath>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 namespace {
@@ -24,7 +24,7 @@ namespace {
 inline float Sigmoid(float value) { return 1.0f / (1.0f + std::exp(-value)); }
 
 /// optionally applies sigmoid to the activation value of hand visibility/presence. our code paths never reach it.
-float ProcessExtraActivation(::mediapipe::TensorsToLandmarksCalculatorOptions::Activation activation, float value) {
+float ProcessExtraActivation(::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation activation, float value) {
   switch (activation) {
     case TensorsToLandmarksCalculatorOptions::SIGMOID:
       return Sigmoid(value);
@@ -37,8 +37,8 @@ float ProcessExtraActivation(::mediapipe::TensorsToLandmarksCalculatorOptions::A
 }  // namespace
 
 TensorsToWorldLandmarksCore::TensorsToWorldLandmarksCore(
-    ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
-    ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
+    ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
+    ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
     int num_landmarks)
     : num_landmarks_(num_landmarks),
       visibility_activation_(visibility_activation),
@@ -82,4 +82,4 @@ absl::Status TensorsToWorldLandmarksCore::TensorsToWorldLandmarks(
 }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

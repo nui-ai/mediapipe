@@ -16,11 +16,11 @@
 
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
+using ::mediapipe_v01013_based::NormalizedRect;
 
 // Struct for carrying boundary information.
 struct NormalizedRectBounds {
@@ -143,4 +143,4 @@ std::array<Vector2_f, 4> TrackedDetection::GetCorners(
   return ComputeCorners(bounding_box_, center, image_width, image_height);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

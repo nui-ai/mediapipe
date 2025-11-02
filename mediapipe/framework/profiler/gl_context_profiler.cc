@@ -22,4 +22,4 @@
 #include "absl/types/optional.h"
 #include "mediapipe/framework/profiler/graph_profiler.h"
 
-namespace mediapipe {}  // namespace mediapipe
+namespace mediapipe_v01013_based {}  // namespace mediapipe_v01013_based

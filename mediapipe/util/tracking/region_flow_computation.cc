@@ -53,7 +53,7 @@
 using std::max;
 using std::min;
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 typedef RegionFlowFrame::RegionFlow RegionFlow;
 typedef RegionFlowFeature Feature;
@@ -3541,4 +3541,4 @@ float RegionFlowComputation::ComputeBlurScore(const cv::Mat& input) {
   return blur_score;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

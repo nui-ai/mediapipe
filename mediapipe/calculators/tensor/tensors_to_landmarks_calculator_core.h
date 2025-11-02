@@ -20,15 +20,15 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "absl/status/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 class TensorsToLandmarksCore {
  public:
   explicit TensorsToLandmarksCore(int input_image_width,
                                   int input_image_height,
-                                  ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
-                                  ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
+                                  ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
+                                  ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
                                   float normalize_z,
                                   int num_landmarks = 21);
 
@@ -46,6 +46,6 @@ class TensorsToLandmarksCore {
 };
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_LANDMARKS_CALCULATOR_CORE_H_

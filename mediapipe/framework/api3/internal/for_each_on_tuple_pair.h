@@ -19,7 +19,7 @@
 #include <tuple>
 #include <utility>
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 template <typename TupleA, typename TupleB, typename Func, size_t... I>
 void ForEachOnTuplePairImpl(const TupleA& ta, const TupleB& tb, Func f,
@@ -39,6 +39,6 @@ void ForEachOnTuplePair(const TupleA& ta, const TupleB& tb, F f) {
       ta, tb, f, std::make_index_sequence<std::tuple_size_v<TupleA>>{});
 }
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_INTERNAL_FOR_EACH_ON_TUPLE_PAIR_H_

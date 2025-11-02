@@ -17,7 +17,7 @@
 #include "mediapipe/framework/api3/node.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 namespace {
 
 TEST(NodeTest, NameIsRequiredAndCanBeSpecified) {
@@ -28,4 +28,4 @@ TEST(NodeTest, NameIsRequiredAndCanBeSpecified) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3

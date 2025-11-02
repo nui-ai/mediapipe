@@ -22,7 +22,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Creates a projection function based on the provided inputs.
 // Only one of the input parameter groups should be non-null:
@@ -37,6 +37,6 @@ void ProcessLandmarkList(
     const NormalizedRect* input_rect,
     NormalizedLandmarkList* output_landmarks);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_LANDMARK_PROJECTION_CALCULATOR_CORE_H_

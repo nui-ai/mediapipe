@@ -6,7 +6,7 @@
 #include "mediapipe/framework/api2/node.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe::api2 {
+namespace mediapipe_v01013_based::api2 {
 
   // this is the newer mediapipe internal api way of defining a calculator not the older one which inherits CalculatorBase.
   // it is supposed to have many advantages: more strongly typed, Less boilerplate, more compile-time checking,
@@ -23,6 +23,6 @@ namespace mediapipe::api2 {
     absl::Status Process(CalculatorContext* cc) override;
   };
 
-}  // namespace mediapipe::api2
+}  // namespace mediapipe_v01013_based::api2
 
 #endif  // MEDIAPIPE_CALCULATORS_DETECTION_INFERENCE_H

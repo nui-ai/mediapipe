@@ -55,7 +55,7 @@ node {
   input_side_packet: "BUFFER_SIZE:segment_size_int"
   input_side_packet: "OVERLAP:overlap_int"
   node_options: {
-    [type.googleapis.com/mediapipe.LappedTensorBufferCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.LappedTensorBufferCalculatorOptions] {
       add_batch_dim_to_tensors: true
     }
   }
@@ -84,7 +84,7 @@ node {
   calculator: "TensorFlowSessionFromSavedModelCalculator"
   output_side_packet: "SESSION:session"
   node_options: {
-    [type.googleapis.com/mediapipe.TensorFlowSessionFromSavedModelCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.TensorFlowSessionFromSavedModelCalculatorOptions]: {
       saved_model_path: "/tmp/mediapipe/saved_model"
     }
   }
@@ -97,7 +97,7 @@ node: {
   input_stream: "RGB_AND_AUDIO:lapped_feature_tensor"
   output_stream: "PREDICTIONS:prediction_tensor"
   node_options: {
-    [type.googleapis.com/mediapipe.TensorFlowInferenceCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.TensorFlowInferenceCalculatorOptions]: {
       batch_size: 32
     }
   }
@@ -116,7 +116,7 @@ node {
   output_stream: "TOP_K_SCORES:top_k_scores"
   output_stream: "TOP_K_LABELS:top_k_labels"
   node_options: {
-    [type.googleapis.com/mediapipe.TopKScoresCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.TopKScoresCalculatorOptions]: {
       top_k: 3
       label_map_path: "mediapipe/graphs/youtube8m/label_map.txt"
     }
@@ -137,7 +137,7 @@ node {
   input_stream: "VIDEO_PRESTREAM:input_video_header"
   output_stream: "RENDER_DATA:render_data"
   node_options: {
-    [type.googleapis.com/mediapipe.LabelsToRenderDataCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.LabelsToRenderDataCalculatorOptions]: {
       color { r: 255 g: 0 b: 0 }
       color { r: 0 g: 255 b: 0 }
       color { r: 0 g: 0 b: 255 }
@@ -169,7 +169,7 @@ node {
   input_stream: "VIDEO_PRESTREAM:input_video_header"
   input_side_packet: "OUTPUT_FILE_PATH:output_video_path"
   node_options: {
-    [type.googleapis.com/mediapipe.OpenCvVideoEncoderCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.OpenCvVideoEncoderCalculatorOptions]: {
       codec: "avc1"
       video_format: "mp4"
     }

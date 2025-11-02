@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_builder.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Calculator to encode raw image frames. This will result in considerable space
 // savings if the frames need to be stored on disk.
@@ -84,10 +84,10 @@ absl::Status OpenCvImageEncoderCalculator::Process(CalculatorContext* cc) {
       encoded_result->set_colorspace(OpenCvImageEncoderCalculatorResults::RGB);
       break;
     case 4:
-      return mediapipe::UnimplementedErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::UnimplementedErrorBuilder(MEDIAPIPE_LOC)
              << "4-channel image isn't supported yet";
     default:
-      return mediapipe::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
              << "Unsupported number of channels: " << original_mat.channels();
   }
 
@@ -100,7 +100,7 @@ absl::Status OpenCvImageEncoderCalculator::Process(CalculatorContext* cc) {
   // Check its JpegEncoder::write() in "imgcodecs/src/grfmt_jpeg.cpp" for more
   // info.
   if (!cv::imencode(".jpg", input_mat, encode_buffer, parameters)) {
-    return mediapipe::InternalErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InternalErrorBuilder(MEDIAPIPE_LOC)
            << "Fail to encode the image to be jpeg format.";
   }
 
@@ -116,4 +116,4 @@ absl::Status OpenCvImageEncoderCalculator::Close(CalculatorContext* cc) {
 
 REGISTER_CALCULATOR(OpenCvImageEncoderCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

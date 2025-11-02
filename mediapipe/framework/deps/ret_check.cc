@@ -14,26 +14,26 @@
 
 #include "mediapipe/framework/deps/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-mediapipe::StatusBuilder RetCheckFailSlowPath(
-    mediapipe::source_location location) {
+mediapipe_v01013_based::StatusBuilder RetCheckFailSlowPath(
+    mediapipe_v01013_based::source_location location) {
   // TODO Implement LogWithStackTrace().
-  return mediapipe::InternalErrorBuilder(location)
+  return mediapipe_v01013_based::InternalErrorBuilder(location)
          << "RET_CHECK failure (" << location.file_name() << ":"
          << location.line() << ") ";
 }
 
-mediapipe::StatusBuilder RetCheckFailSlowPath(
-    mediapipe::source_location location, const char* condition) {
-  return mediapipe::RetCheckFailSlowPath(location) << condition;
+mediapipe_v01013_based::StatusBuilder RetCheckFailSlowPath(
+    mediapipe_v01013_based::source_location location, const char* condition) {
+  return mediapipe_v01013_based::RetCheckFailSlowPath(location) << condition;
 }
 
-mediapipe::StatusBuilder RetCheckFailSlowPath(
-    mediapipe::source_location location, const char* condition,
+mediapipe_v01013_based::StatusBuilder RetCheckFailSlowPath(
+    mediapipe_v01013_based::source_location location, const char* condition,
     const absl::Status& status) {
-  return mediapipe::RetCheckFailSlowPath(location)
+  return mediapipe_v01013_based::RetCheckFailSlowPath(location)
          << condition << " returned " << status << " ";
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

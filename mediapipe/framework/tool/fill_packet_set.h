@@ -23,7 +23,7 @@
 #include "mediapipe/framework/packet_type.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 // Finds the packet names from input_side_packet_types's TagMap, looks
@@ -38,6 +38,6 @@ absl::StatusOr<std::unique_ptr<PacketSet>> FillPacketSet(
     int* missing_packet_count_ptr);
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_FILL_PACKET_SET_H_

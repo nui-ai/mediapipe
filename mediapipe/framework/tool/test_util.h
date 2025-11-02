@@ -19,8 +19,8 @@
 #include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/framework/formats/image_frame.h"
 
-namespace mediapipe {
-using mediapipe::CalculatorGraphConfig;
+namespace mediapipe_v01013_based {
+using mediapipe_v01013_based::CalculatorGraphConfig;
 
 struct ImageFrameComparisonOptions {
   // NOTE: these values are not normalized: use a value from 0 to 2^8-1
@@ -121,13 +121,13 @@ std::unique_ptr<ImageFrame> LoadTestPng(
 // If successful, returns the path to the output file relative to the output
 // directory.
 absl::StatusOr<std::string> SavePngTestOutput(
-    const mediapipe::ImageFrame& image, absl::string_view prefix);
+    const mediapipe_v01013_based::ImageFrame& image, absl::string_view prefix);
 
 // Returns the luminance image of |original_image|.
 // The format of |original_image| must be sRGB or sRGBA.
 std::unique_ptr<ImageFrame> GenerateLuminanceImage(
     const ImageFrame& original_image);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TEST_UTIL_H_

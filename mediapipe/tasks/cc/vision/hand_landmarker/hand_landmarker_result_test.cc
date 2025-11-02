@@ -25,38 +25,38 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/classification_result.h"
 #include "mediapipe/tasks/cc/components/containers/landmark.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
 
 TEST(ConvertFromProto, Succeeds) {
-  mediapipe::ClassificationList classification_list_proto;
-  mediapipe::Classification& classification_proto =
+  mediapipe_v01013_based::ClassificationList classification_list_proto;
+  mediapipe_v01013_based::Classification& classification_proto =
       *classification_list_proto.add_classification();
   classification_proto.set_index(1);
   classification_proto.set_score(0.5);
   classification_proto.set_label("Left");
   classification_proto.set_display_name("Left_Hand");
 
-  mediapipe::NormalizedLandmarkList normalized_landmark_list_proto;
-  mediapipe::NormalizedLandmark& normalized_landmark_proto =
+  mediapipe_v01013_based::NormalizedLandmarkList normalized_landmark_list_proto;
+  mediapipe_v01013_based::NormalizedLandmark& normalized_landmark_proto =
       *normalized_landmark_list_proto.add_landmark();
   normalized_landmark_proto.set_x(0.1);
   normalized_landmark_proto.set_y(0.2);
   normalized_landmark_proto.set_z(0.3);
 
-  mediapipe::LandmarkList landmark_list_proto;
-  mediapipe::Landmark& landmark_proto = *landmark_list_proto.add_landmark();
+  mediapipe_v01013_based::LandmarkList landmark_list_proto;
+  mediapipe_v01013_based::Landmark& landmark_proto = *landmark_list_proto.add_landmark();
   landmark_proto.set_x(3.1);
   landmark_proto.set_y(5.2);
   landmark_proto.set_z(4.3);
 
-  std::vector<mediapipe::ClassificationList> classification_lists = {
+  std::vector<mediapipe_v01013_based::ClassificationList> classification_lists = {
       classification_list_proto};
-  std::vector<mediapipe::NormalizedLandmarkList> normalized_landmarks_lists = {
+  std::vector<mediapipe_v01013_based::NormalizedLandmarkList> normalized_landmarks_lists = {
       normalized_landmark_list_proto};
-  std::vector<mediapipe::LandmarkList> landmarks_lists = {landmark_list_proto};
+  std::vector<mediapipe_v01013_based::LandmarkList> landmarks_lists = {landmark_list_proto};
 
   HandLandmarkerResult hand_landmarker_result = ConvertToHandLandmarkerResult(
       classification_lists, normalized_landmarks_lists, landmarks_lists);
@@ -85,4 +85,4 @@ TEST(ConvertFromProto, Succeeds) {
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 // Get a cv::Mat view of the ImageFrame (this is efficient):
-//   ::mediapipe::formats::MatView(&frame);
+//   ::mediapipe_v01013_based::formats::MatView(&frame);
 //
 // Copying data from raw data (stored contiguously):
 //   frame.CopyPixelData(format, width, height, raw_data_ptr,
@@ -22,14 +22,14 @@
 // Convert an RGB ImageFrame (rgb_frame) to Grayscale:
 //   ImageFrame gray_frame(ImageFormat::GRAY8, rgb_frame.Width(),
 //                         rgb_frame.Height());
-//   cv::Mat rgb_frame_mat = ::mediapipe::formats::MatView(&rgb_frame);
-//   cv::Mat gray_frame_mat = ::mediapipe::formats::MatView(&gray_frame);
+//   cv::Mat rgb_frame_mat = ::mediapipe_v01013_based::formats::MatView(&rgb_frame);
+//   cv::Mat gray_frame_mat = ::mediapipe_v01013_based::formats::MatView(&gray_frame);
 //   cv::cvtColor(rgb_frame_mat, gray_frame_mat, CV_RGB2GRAY);
 //
 // Resize an ImageFrame:
 //   ImageFrame small_image(ImageFormat::GRAY8, 10, 10);
-//   cv::Mat destination = ::mediapipe::formats::MatView(&small_image);
-//   cv::resize(::mediapipe::formats::MatView(&large_image), destination,
+//   cv::Mat destination = ::mediapipe_v01013_based::formats::MatView(&small_image);
+//   cv::resize(::mediapipe_v01013_based::formats::MatView(&large_image), destination,
 //              destination.size(), 0, 0, cv::INTER_LINEAR);
 
 #ifndef MEDIAPIPE_FRAMEWORK_FORMATS_IMAGE_FRAME_H_
@@ -47,7 +47,7 @@
 
 #define IMAGE_FRAME_RAW_IMAGE MEDIAPIPE_HAS_RTTI
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A container for storing an image or a video frame, in one of several
 // formats.  Pixels are encoded row-major in an interleaved fashion.
@@ -253,6 +253,6 @@ class ImageFrame {
   std::unique_ptr<uint8_t[], Deleter> pixel_data_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_IMAGE_FRAME_H_

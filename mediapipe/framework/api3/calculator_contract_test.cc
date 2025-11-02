@@ -29,11 +29,11 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 namespace {
 
 TEST(PortContractTest, PortsCanUpdateContract) {
-  mediapipe::CalculatorContract contract;
+  mediapipe_v01013_based::CalculatorContract contract;
   MP_ASSERT_OK(
       contract.Initialize(ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         input_stream: "INPUT:in"
@@ -47,9 +47,9 @@ TEST(PortContractTest, PortsCanUpdateContract) {
   ASSERT_TRUE(contract.Outputs().HasTag("OUTPUT"));
   ASSERT_TRUE(contract.OutputSidePackets().HasTag("SIDE_OUTPUT"));
 
-  mediapipe::PacketType input_output_expected_type;
+  mediapipe_v01013_based::PacketType input_output_expected_type;
   input_output_expected_type.Set<int>();
-  mediapipe::PacketType side_input_output_expected_type;
+  mediapipe_v01013_based::PacketType side_input_output_expected_type;
   side_input_output_expected_type.Set<std::string>();
 
   // Verify that ports lack type information.
@@ -81,7 +81,7 @@ TEST(PortContractTest, PortsCanUpdateContract) {
 }
 
 TEST(PortContractTest, RepeatedPortsCanUpdateContract) {
-  mediapipe::CalculatorContract contract;
+  mediapipe_v01013_based::CalculatorContract contract;
   MP_ASSERT_OK(
       contract.Initialize(ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         input_stream: "INPUT:in"
@@ -100,9 +100,9 @@ TEST(PortContractTest, RepeatedPortsCanUpdateContract) {
   ASSERT_TRUE(contract.Outputs().HasTag("OUTPUT"));
   ASSERT_TRUE(contract.OutputSidePackets().HasTag("SIDE_OUTPUT"));
 
-  mediapipe::PacketType input_output_expected_type;
+  mediapipe_v01013_based::PacketType input_output_expected_type;
   input_output_expected_type.Set<int>();
-  mediapipe::PacketType side_input_output_expected_type;
+  mediapipe_v01013_based::PacketType side_input_output_expected_type;
   side_input_output_expected_type.Set<std::string>();
 
   // Verify that ports lack type information.
@@ -138,7 +138,7 @@ TEST(PortContractTest, RepeatedPortsCanUpdateContract) {
 }
 
 TEST(PortContractTest, CanCheckRepeatedPortEntriesCount) {
-  mediapipe::CalculatorContract contract;
+  mediapipe_v01013_based::CalculatorContract contract;
   MP_ASSERT_OK(
       contract.Initialize(ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         input_stream: "INPUT:in"
@@ -162,7 +162,7 @@ TEST(PortContractTest, CanCheckRepeatedPortEntriesCount) {
 }
 
 TEST(PortContractTest, CanAccessRepeatedPortEntriesAt) {
-  mediapipe::CalculatorContract contract;
+  mediapipe_v01013_based::CalculatorContract contract;
   MP_ASSERT_OK(
       contract.Initialize(ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         input_stream: "INPUT:in"
@@ -191,7 +191,7 @@ TEST(PortContractTest, CanAccessRepeatedPortEntriesAt) {
 }
 
 TEST(PortContractTest, CanAccessRepeatedPortEntriesSubscript) {
-  mediapipe::CalculatorContract contract;
+  mediapipe_v01013_based::CalculatorContract contract;
   MP_ASSERT_OK(
       contract.Initialize(ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         input_stream: "INPUT:in"
@@ -220,7 +220,7 @@ TEST(PortContractTest, CanAccessRepeatedPortEntriesSubscript) {
 }
 
 TEST(PortContractTest, CanAccessRepeatedPortEntriesIterator) {
-  mediapipe::CalculatorContract contract;
+  mediapipe_v01013_based::CalculatorContract contract;
   MP_ASSERT_OK(
       contract.Initialize(ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         input_stream: "INPUT:in"
@@ -285,7 +285,7 @@ TEST(PortContractTest, CanGetOptionalPortTags) {
 }
 
 TEST(PortContractTest, CanCheckOptionalPortIsConnected) {
-  mediapipe::CalculatorContract contract;
+  mediapipe_v01013_based::CalculatorContract contract;
   MP_ASSERT_OK(
       contract.Initialize(ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         input_stream: "INPUT:in"
@@ -304,7 +304,7 @@ TEST(PortContractTest, CanCheckOptionalPortIsConnected) {
 }
 
 TEST(PortContractTest, CanCheckOptionalPortIsNotConnected) {
-  mediapipe::CalculatorContract contract;
+  mediapipe_v01013_based::CalculatorContract contract;
   MP_ASSERT_OK(
       contract.Initialize(ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         input_stream: "INPUT_OTHER:in"
@@ -323,4 +323,4 @@ TEST(PortContractTest, CanCheckOptionalPortIsNotConnected) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3

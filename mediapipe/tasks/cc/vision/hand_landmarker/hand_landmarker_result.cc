@@ -21,22 +21,22 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/classification_result.h"
 #include "mediapipe/tasks/cc/components/containers/landmark.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
 
 HandLandmarkerResult ConvertToHandLandmarkerResult(
-    const std::vector<mediapipe::ClassificationList>& handedness_proto,
-    const std::vector<mediapipe::NormalizedLandmarkList>& hand_landmarks_proto,
-    const std::vector<mediapipe::LandmarkList>& hand_world_landmarks_proto) {
+    const std::vector<mediapipe_v01013_based::ClassificationList>& handedness_proto,
+    const std::vector<mediapipe_v01013_based::NormalizedLandmarkList>& hand_landmarks_proto,
+    const std::vector<mediapipe_v01013_based::LandmarkList>& hand_world_landmarks_proto) {
   HandLandmarkerResult result;
   result.handedness.resize(handedness_proto.size());
   result.hand_landmarks.resize(hand_landmarks_proto.size());
   result.hand_world_landmarks.resize(hand_world_landmarks_proto.size());
   std::transform(handedness_proto.begin(), handedness_proto.end(),
                  result.handedness.begin(),
-                 [](const mediapipe::ClassificationList& classification_list) {
+                 [](const mediapipe_v01013_based::ClassificationList& classification_list) {
                    return components::containers::ConvertToClassifications(
                        classification_list);
                  });
@@ -53,4 +53,4 @@ HandLandmarkerResult ConvertToHandLandmarkerResult(
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

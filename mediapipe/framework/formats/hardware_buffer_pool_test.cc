@@ -7,7 +7,7 @@
 #include "mediapipe/gpu/multi_pool.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 HardwareBufferSpec GetTestHardwareBufferSpec(uint32_t size_bytes) {
@@ -75,4 +75,4 @@ TEST(HardwareBufferPoolTest, ShouldReturnNewHardwareBuffer) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

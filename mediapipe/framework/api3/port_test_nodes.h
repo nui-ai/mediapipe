@@ -21,7 +21,7 @@
 #include "mediapipe/framework/api3/contract.h"
 #include "mediapipe/framework/api3/node.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 inline constexpr absl::string_view kFooName = "Foo";
 struct FooNode : Node<kFooName> {
@@ -45,6 +45,6 @@ struct RepeatedFooNode : Node<kRepeatedFooName> {
   };
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_PORT_TEST_NODES_H_

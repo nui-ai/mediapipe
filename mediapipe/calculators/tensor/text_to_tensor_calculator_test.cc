@@ -29,7 +29,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/options_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using ::testing::StrEq;
@@ -83,4 +83,4 @@ TEST(TextToTensorCalculatorTest, Empty) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

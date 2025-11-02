@@ -13,7 +13,7 @@
 #include "mediapipe/gpu/gl_base.h"
 #include "mediapipe/gpu/gl_context.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Intended to override and automatically revert various OpenGL attributes.
 // (e.g. overriding texture parameters like GL_TEXTURE_MIN_FILTER,
@@ -36,9 +36,9 @@ template <int kNumValues>
 ABSL_MUST_USE_RESULT std::unique_ptr<GlOverride> OverrideGlTexParameterfv(
     GLenum name, std::array<GLfloat, kNumValues> values);
 
-bool IsGlClampToBorderSupported(const mediapipe::GlContext& gl_context);
+bool IsGlClampToBorderSupported(const mediapipe_v01013_based::GlContext& gl_context);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_30
 

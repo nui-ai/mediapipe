@@ -30,7 +30,7 @@ limitations under the License.
 #include "mediapipe/framework/formats/classification.pb.h"
 #include "mediapipe/tasks/cc/vision/gesture_recognizer/calculators/combined_prediction_calculator.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace {
 
@@ -183,4 +183,4 @@ class CombinedPredictionCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(CombinedPredictionCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

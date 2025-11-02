@@ -21,7 +21,7 @@ node {
   input_stream: "all_left_eye_contour_landmarks"
   output_stream: "left_eye_contour_landmarks"
   node_options: {
-    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.SplitVectorCalculatorOptions] {
       ranges: { begin: 0 end: 15 }
     }
   }
@@ -32,7 +32,7 @@ node {
   input_stream: "all_right_eye_contour_landmarks"
   output_stream: "right_eye_contour_landmarks"
   node_options: {
-    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.SplitVectorCalculatorOptions] {
       ranges: { begin: 0 end: 15 }
     }
   }
@@ -52,7 +52,7 @@ node {
   input_stream: "NORM_LANDMARKS:face_landmarks"
   output_stream: "RENDER_DATA:face_landmarks_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe.LandmarksToRenderDataCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.LandmarksToRenderDataCalculatorOptions] {
       landmark_color { r: 150 g: 0 b: 0 }
       connection_color { r: 0 g: 150 b: 0 }
       thickness: 2
@@ -73,7 +73,7 @@ node {
   input_stream: "detections"
   output_stream: "labeled_detections"
   node_options: {
-    [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.DetectionLabelIdToTextCalculatorOptions] {
       label: "Face"
     }
   }
@@ -85,7 +85,7 @@ node {
   input_stream: "DETECTIONS:labeled_detections"
   output_stream: "RENDER_DATA:detection_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe.DetectionsToRenderDataCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.DetectionsToRenderDataCalculatorOptions] {
       thickness: 4.0
       color { r: 0 g: 255 b: 0 }
     }
@@ -98,7 +98,7 @@ node {
   input_stream: "NORM_LANDMARKS:left_eye_contour_landmarks"
   output_stream: "RENDER_DATA:left_eye_contour_landmarks_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe.LandmarksToRenderDataCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.LandmarksToRenderDataCalculatorOptions] {
       landmark_connections: 0
       landmark_connections: 1
       landmark_connections: 1
@@ -143,7 +143,7 @@ node {
   input_stream: "NORM_LANDMARKS:right_eye_contour_landmarks"
   output_stream: "RENDER_DATA:right_eye_contour_landmarks_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe.LandmarksToRenderDataCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.LandmarksToRenderDataCalculatorOptions] {
       landmark_connections: 0
       landmark_connections: 1
       landmark_connections: 1
@@ -188,7 +188,7 @@ node {
   input_stream: "NORM_RECT:rect"
   output_stream: "RENDER_DATA:rect_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe.RectToRenderDataCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.RectToRenderDataCalculatorOptions] {
       filled: false
       color { r: 255 g: 0 b: 0 }
       thickness: 4.0
@@ -201,7 +201,7 @@ node {
   input_stream: "NORM_RECT:right_eye_rect_from_landmarks"
   output_stream: "RENDER_DATA:right_eye_rect_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe.RectToRenderDataCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.RectToRenderDataCalculatorOptions] {
       filled: false
       color { r: 255 g: 0 b: 0 }
       thickness: 4.0
@@ -214,7 +214,7 @@ node {
   input_stream: "NORM_RECT:left_eye_rect_from_landmarks"
   output_stream: "RENDER_DATA:left_eye_rect_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe.RectToRenderDataCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.RectToRenderDataCalculatorOptions] {
       filled: false
       color { r: 255 g: 0 b: 0 }
       thickness: 4.0
@@ -239,7 +239,7 @@ node {
   input_stream: "RIGHT_IRIS_DEPTH_MM:right_iris_depth_mm"
   output_stream: "RENDER_DATA:iris_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe.IrisToRenderDataCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.IrisToRenderDataCalculatorOptions] {
       oval_color { r: 0 g: 0 b: 255 }
       landmark_color { r: 0 g: 255 b: 0 }
       oval_thickness: 4.0
@@ -263,7 +263,7 @@ node {
   input_stream: "iris_render_data"
   output_stream: "IMAGE_GPU:output_image"
   node_options: {
-    [type.googleapis.com/mediapipe.AnnotationOverlayCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.AnnotationOverlayCalculatorOptions] {
       gpu_scale_factor: 0.5
     }
   }

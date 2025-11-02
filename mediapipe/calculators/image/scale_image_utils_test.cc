@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace scale_image {
 namespace {
 
@@ -236,4 +236,4 @@ TEST(ScaleImageUtilsTest, FindOutputDimensionsMaxArea) {
 
 }  // namespace
 }  // namespace scale_image
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

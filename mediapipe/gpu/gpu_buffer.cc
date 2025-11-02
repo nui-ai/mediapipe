@@ -13,7 +13,7 @@
 #include "mediapipe/objc/util.h"
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -149,4 +149,4 @@ CVPixelBufferRef GetCVPixelBufferRef(const GpuBuffer& buffer) {
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

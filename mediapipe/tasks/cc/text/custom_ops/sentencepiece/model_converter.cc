@@ -22,7 +22,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/custom_ops/sentencepiece/sentencepiece_constants.h"
 #include "sentencepiece/src/sentencepiece_model.pb.h"  // from @com_google_sentencepiece
 
-namespace mediapipe::tflite_operations::sentencepiece {
+namespace mediapipe_v01013_based::tflite_operations::sentencepiece {
 
 std::tuple<std::vector<uint32_t>, std::vector<int8_t>>
 DecodePrecompiledCharsmap(
@@ -128,4 +128,4 @@ std::string ConvertSentencepieceModel(const std::string& model_string) {
   return result.value();
 }
 
-}  // namespace mediapipe::tflite_operations::sentencepiece
+}  // namespace mediapipe_v01013_based::tflite_operations::sentencepiece

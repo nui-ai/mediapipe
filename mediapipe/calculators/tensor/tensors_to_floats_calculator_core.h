@@ -22,7 +22,7 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "absl/status/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tensors_to_floats_calculator_core {
 
 // Struct to hold the result of processing
@@ -36,14 +36,14 @@ struct ProcessingResult {
 };
 
 // Open function that processes the calculator options
-absl::Status Open(const ::mediapipe::TensorsToFloatsCalculatorOptions& options);
+absl::Status Open(const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions& options);
 
 // Process function that handles the tensor processing
 ProcessingResult Process(
     const std::vector<Tensor>& input_tensors,
-    const ::mediapipe::TensorsToFloatsCalculatorOptions& options);
+    const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions& options);
 
 }  // namespace tensors_to_floats_calculator_core
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_FLOATS_CALCULATOR_CORE_H_

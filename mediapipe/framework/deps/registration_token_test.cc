@@ -19,7 +19,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 class RegistrationTokenTest : public testing::Test {
  public:
@@ -123,4 +123,4 @@ TEST_F(RegistrationTokenTest, TestMove) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

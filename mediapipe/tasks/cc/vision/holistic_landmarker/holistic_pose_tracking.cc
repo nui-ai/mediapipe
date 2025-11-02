@@ -41,30 +41,30 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/pose_detector/proto/pose_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/pose_landmarker/proto/pose_landmarks_detector_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::builder::ConvertAlignmentPointsDetectionsToRect;
-using ::mediapipe::api2::builder::ConvertAlignmentPointsDetectionToRect;
-using ::mediapipe::api2::builder::ConvertLandmarksToDetection;
-using ::mediapipe::api2::builder::GenericNode;
-using ::mediapipe::api2::builder::GetImageSize;
-using ::mediapipe::api2::builder::GetLoopbackData;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::IsPresent;
-using ::mediapipe::api2::builder::Merge;
-using ::mediapipe::api2::builder::ScaleAndMakeSquare;
-using ::mediapipe::api2::builder::SmoothLandmarks;
-using ::mediapipe::api2::builder::SmoothLandmarksVisibility;
-using ::mediapipe::api2::builder::SmoothSegmentationMask;
-using ::mediapipe::api2::builder::SplitToRanges;
-using ::mediapipe::api2::builder::Stream;
-using ::mediapipe::tasks::components::utils::DisallowIf;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::builder::ConvertAlignmentPointsDetectionsToRect;
+using ::mediapipe_v01013_based::api2::builder::ConvertAlignmentPointsDetectionToRect;
+using ::mediapipe_v01013_based::api2::builder::ConvertLandmarksToDetection;
+using ::mediapipe_v01013_based::api2::builder::GenericNode;
+using ::mediapipe_v01013_based::api2::builder::GetImageSize;
+using ::mediapipe_v01013_based::api2::builder::GetLoopbackData;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::IsPresent;
+using ::mediapipe_v01013_based::api2::builder::Merge;
+using ::mediapipe_v01013_based::api2::builder::ScaleAndMakeSquare;
+using ::mediapipe_v01013_based::api2::builder::SmoothLandmarks;
+using ::mediapipe_v01013_based::api2::builder::SmoothLandmarksVisibility;
+using ::mediapipe_v01013_based::api2::builder::SmoothSegmentationMask;
+using ::mediapipe_v01013_based::api2::builder::SplitToRanges;
+using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::mediapipe_v01013_based::tasks::components::utils::DisallowIf;
 using Size = std::pair<int, int>;
 
 constexpr int kAuxLandmarksStartKeypointIndex = 0;
@@ -260,7 +260,7 @@ TrackHolisticPoseUsingCustomPoseDetection(
   if (landmarks_detection_result.segmentation_mask) {
     auto mask = *landmarks_detection_result.segmentation_mask;
     auto [prev_mask_as_img, set_prev_mask_as_img_fn] =
-        GetLoopbackData<mediapipe::Image>(
+        GetLoopbackData<mediapipe_v01013_based::Image>(
             /*tick=*/*landmarks_detection_result.segmentation_mask, graph);
     auto mask_smoothed =
         SmoothSegmentationMask(mask, prev_mask_as_img,
@@ -287,14 +287,14 @@ absl::StatusOr<HolisticPoseTrackingOutput> TrackHolisticPose(
     const HolisticPoseTrackingRequest& request, Graph& graph) {
   PoseDetectionFn pose_detection_fn = [&pose_detector_graph_options](
                                           Stream<Image> image, Graph& graph)
-      -> absl::StatusOr<Stream<std::vector<mediapipe::Detection>>> {
+      -> absl::StatusOr<Stream<std::vector<mediapipe_v01013_based::Detection>>> {
     GenericNode& pose_detector =
         graph.AddNode("mediapipe.tasks.vision.pose_detector.PoseDetectorGraph");
     pose_detector.GetOptions<pose_detector::proto::PoseDetectorGraphOptions>() =
         pose_detector_graph_options;
     image >> pose_detector.In("IMAGE");
     return pose_detector.Out("DETECTIONS")
-        .Cast<std::vector<mediapipe::Detection>>();
+        .Cast<std::vector<mediapipe_v01013_based::Detection>>();
   };
   return TrackHolisticPoseUsingCustomPoseDetection(
       image, pose_detection_fn, pose_landmarks_detector_graph_options, request,
@@ -304,4 +304,4 @@ absl::StatusOr<HolisticPoseTrackingOutput> TrackHolisticPose(
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

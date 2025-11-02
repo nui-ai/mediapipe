@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/util/resource_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 absl::StatusOr<std::string> PathToResourceAsFileInternal(
@@ -101,4 +101,4 @@ absl::StatusOr<std::string> PathToResourceAsFile(const std::string& path,
   return path;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

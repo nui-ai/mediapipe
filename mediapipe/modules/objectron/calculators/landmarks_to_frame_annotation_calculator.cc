@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -109,4 +109,4 @@ void LandmarksToFrameAnnotationCalculator::AddLandmarksToFrameAnnotation(
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

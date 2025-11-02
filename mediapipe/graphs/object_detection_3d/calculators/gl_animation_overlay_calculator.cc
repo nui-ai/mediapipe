@@ -32,7 +32,7 @@
 #include "mediapipe/graphs/object_detection_3d/calculators/model_matrix.pb.h"
 #include "mediapipe/modules/objectron/calculators/camera_parameters.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -375,8 +375,8 @@ bool GlAnimationOverlayCalculator::ReadBytesFromAsset(AAsset *asset,
 // JNI helper classes AAssetManager and AAsset.
 bool GlAnimationOverlayCalculator::LoadAnimationAndroid(
     const std::string &filename, std::vector<TriangleMesh> *meshes) {
-  mediapipe::AssetManager *mediapipe_asset_manager =
-      Singleton<mediapipe::AssetManager>::get();
+  mediapipe_v01013_based::AssetManager *mediapipe_asset_manager =
+      Singleton<mediapipe_v01013_based::AssetManager>::get();
   AAssetManager *asset_manager = mediapipe_asset_manager->GetAssetManager();
   if (!asset_manager) {
     ABSL_LOG(ERROR) << "Failed to access Android asset manager.";
@@ -951,4 +951,4 @@ GlAnimationOverlayCalculator::~GlAnimationOverlayCalculator() {
   });
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

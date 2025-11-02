@@ -40,7 +40,7 @@
 #include "mediapipe/framework/formats/tensor_mtl_buffer_view.h"
 #endif  // MEDIAPIPE_METAL_ENABLED
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -351,13 +351,13 @@ class ImageToTensorMetalConverter : public ImageToTensorConverter {
     return absl::OkStatus();
   }
 
-  absl::Status Convert(const mediapipe::Image& input, const RotatedRect& roi,
+  absl::Status Convert(const mediapipe_v01013_based::Image& input, const RotatedRect& roi,
                        float range_min, float range_max,
                        int tensor_buffer_offset,
                        Tensor& output_tensor) override {
-    if (input.format() != mediapipe::GpuBufferFormat::kBGRA32 &&
-        input.format() != mediapipe::GpuBufferFormat::kRGBAHalf64 &&
-        input.format() != mediapipe::GpuBufferFormat::kRGBAFloat128) {
+    if (input.format() != mediapipe_v01013_based::GpuBufferFormat::kBGRA32 &&
+        input.format() != mediapipe_v01013_based::GpuBufferFormat::kRGBAHalf64 &&
+        input.format() != mediapipe_v01013_based::GpuBufferFormat::kRGBAFloat128) {
       return InvalidArgumentError(absl::StrCat(
           "Only 4-channel texture input formats are supported, passed format: ",
           static_cast<uint32_t>(input.format())));
@@ -417,6 +417,6 @@ absl::StatusOr<std::unique_ptr<ImageToTensorConverter>> CreateMetalConverter(
   return result;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_METAL_ENABLED

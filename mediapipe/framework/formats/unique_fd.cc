@@ -16,7 +16,7 @@
 
 #endif  // (__ANDROID_API__ >= 29) && defined(__BIONIC__) && !defined(NDEBUG)
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -111,7 +111,7 @@ void UniqueFd::Reset(int new_fd) {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #ifdef MEDIAPIPE_UNIQUE_FD_USE_FDSAN
 #undef MEDIAPIPE_UNIQUE_FD_USE_FDSAN

@@ -30,7 +30,7 @@
 #include "mediapipe/framework/tool/tag_map.h"
 #include "mediapipe/framework/tool/tag_map_helper.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -85,7 +85,7 @@ class BarrierInputStreamHandlerTest : public ::testing::Test {
         /*output_tag_map=*/tool::CreateTagMap({"output_a"}).value(),
         /*calculator_run_in_parallel=*/false);
 
-    absl::StatusOr<std::unique_ptr<mediapipe::InputStreamHandler>>
+    absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::InputStreamHandler>>
         status_or_handler = InputStreamHandlerRegistry::CreateByName(
             "BarrierInputStreamHandler", input_tag_map,
             &calculator_context_manager_, MediaPipeOptions(),
@@ -250,4 +250,4 @@ TEST_F(BarrierInputStreamHandlerTest, SimulateProcessNode) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

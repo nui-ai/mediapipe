@@ -15,7 +15,7 @@
 // Proto messages used for the AutoFlip Pipeline.
 syntax = "proto2";
 
-package mediapipe.autoflip;
+package mediapipe_v01013_based.autoflip;
 
 import "mediapipe/framework/calculator_options.proto";
 
@@ -155,7 +155,7 @@ message DetectionSet {
 
 // General settings needed for multiple calculators.
 message ConversionOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional ConversionOptions ext = 284806832;
   }
   // Target output width of the conversion.

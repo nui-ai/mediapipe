@@ -17,7 +17,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 constexpr int kImageWidth = 1280;
@@ -149,4 +149,4 @@ TEST(FaceToRectCalculator, LandmarksToNormalizedRectObtuseAngle) {
   EXPECT_THAT(rect.rotation(), testing::FloatNear(-2.35619f, kEps));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

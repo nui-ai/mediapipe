@@ -19,7 +19,7 @@
 #include "absl/synchronization/mutex.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 TEST(ThreadPoolTest, DestroyWithoutStart) {
   ThreadPool thread_pool("testpool", 10);
@@ -115,4 +115,4 @@ TEST(ThreadPoolTest, CreateThreadName) {
             internal::CreateThreadName("name_prefix_lon", 1234));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

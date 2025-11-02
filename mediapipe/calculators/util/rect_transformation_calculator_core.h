@@ -2,7 +2,7 @@
 #include "mediapipe/calculators/util/rect_transformation_calculator.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class RectTransformationCalculatorCore {
 
@@ -18,4 +18,4 @@ public:
   RectTransformationCalculatorOptions options_;
 };
 
-} // namespace mediapipe
+} // namespace mediapipe_v01013_based

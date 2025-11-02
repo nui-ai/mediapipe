@@ -43,7 +43,7 @@ node: {
   input_stream: "WIDTH:input_width"
   input_stream: "HEIGHT:input_height"
   node_options: {
-    [type.googleapis.com/mediapipe.ImageCroppingCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.ImageCroppingCalculatorOptions] {
       border_mode: BORDER_REPLICATE
     }
   }
@@ -75,7 +75,7 @@ node {
   input_stream: "ANNOTATIONS:lifted_objects"
   output_stream: "MODEL_MATRICES:model_matrices"
   node_options: {
-    [type.googleapis.com/mediapipe.AnnotationsToModelMatricesCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.AnnotationsToModelMatricesCalculatorOptions] {
       # Re-scale the CAD model to the size of a unit box
       model_scale: [0.04, 0.04, 0.04]
       # Bring the box CAD model to objectron's coordinate system. This
@@ -113,7 +113,7 @@ node: {
   input_side_packet: "MASK_TEXTURE:obj_texture"
   input_side_packet: "MASK_ASSET:obj_asset_name"
   node_options: {
-    [type.googleapis.com/mediapipe.GlAnimationOverlayCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.GlAnimationOverlayCalculatorOptions] {
       aspect_ratio: 0.75
       vertical_fov_degrees: 70.
       animation_speed_fps: 25

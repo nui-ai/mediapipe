@@ -28,7 +28,7 @@
 #include "third_party/OpenCV/core/mat.hpp"
 #include "third_party/OpenCV/core/types.hpp"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -433,4 +433,4 @@ TEST(ImageTransformationCalculatorTest, FitScalingClearsBackground) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

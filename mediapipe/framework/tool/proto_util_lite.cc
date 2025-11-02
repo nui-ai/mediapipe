@@ -29,7 +29,7 @@
 
 #define RET_CHECK_NO_LOG(cond) RET_CHECK(cond).SetNoLogging()
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 using proto_ns::io::ArrayInputStream;
@@ -41,7 +41,7 @@ using FieldAccess = ProtoUtilLite::FieldAccess;
 using FieldValue = ProtoUtilLite::FieldValue;
 using ProtoPath = ProtoUtilLite::ProtoPath;
 using FieldType = ProtoUtilLite::FieldType;
-using mediapipe::FieldData;
+using mediapipe_v01013_based::FieldData;
 
 // Returns true if a wire type includes a length indicator.
 bool IsLengthDelimited(WireFormatLite::WireType wire_type) {
@@ -582,7 +582,7 @@ absl::Status ProtoUtilLite::ReadValue(absl::string_view field_bytes,
                                       FieldType field_type,
                                       absl::string_view message_type,
                                       FieldData* result) {
-  return mediapipe::tool::ReadValue(field_bytes, field_type, message_type,
+  return mediapipe_v01013_based::tool::ReadValue(field_bytes, field_type, message_type,
                                     result);
 }
 
@@ -600,4 +600,4 @@ std::string ProtoUtilLite::ParseTypeUrl(absl::string_view type_url) {
 }
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

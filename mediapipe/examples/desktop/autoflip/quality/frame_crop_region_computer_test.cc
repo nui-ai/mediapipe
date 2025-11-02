@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 using ::testing::HasSubstr;
@@ -576,4 +576,4 @@ TEST(FrameCropRegionComputerTest, ComputesScoreWhenAggregationIsConstant) {
   EXPECT_FLOAT_EQ(crop_result.region_score(), 1.0f);
 }
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

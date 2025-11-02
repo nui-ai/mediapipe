@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/util/resource_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::StatusOr<std::string> PathToResourceAsFile(const std::string& path,
                                                  bool /*shadow_copy*/) {
@@ -62,4 +62,4 @@ absl::Status DefaultGetResourceContents(const std::string& path,
 }
 
 }  // namespace internal
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

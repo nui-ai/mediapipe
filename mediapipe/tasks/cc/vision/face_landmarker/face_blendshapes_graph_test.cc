@@ -33,19 +33,19 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_blendshapes_graph_options.pb.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
 namespace {
 
 using ::file::Defaults;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::core::TaskRunner;
-using ::mediapipe::tasks::vision::face_landmarker::proto::
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::core::TaskRunner;
+using ::mediapipe_v01013_based::tasks::vision::face_landmarker::proto::
     FaceBlendshapesGraphOptions;
 
 constexpr char kTestDataDirectory[] = "/mediapipe/tasks/testdata/vision/";
@@ -66,7 +66,7 @@ constexpr char kBlendshapesName[] = "blendshapes";
 absl::StatusOr<CalculatorGraphConfig> ExpandConfig(
     const std::string& config_str) {
   auto config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
   CalculatorGraph graph;
   MP_RETURN_IF_ERROR(graph.Initialize(config));
   return graph.Config();
@@ -162,7 +162,7 @@ TEST(FaceRigGhumGpuTest, VerifyGraph) {
   MP_ASSERT_OK(file::GetContents(
       file::JoinPath("./", kTestDataDirectory, kGeneratedGraph),
       &expected_graph_contents));
-  auto expected_graph = mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(
+  auto expected_graph = mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
       expected_graph_contents);
   EXPECT_THAT(actual_graph, testing::proto::IgnoringRepeatedFieldOrdering(
                                 testing::EqualsProto(expected_graph)));
@@ -172,4 +172,4 @@ TEST(FaceRigGhumGpuTest, VerifyGraph) {
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

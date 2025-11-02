@@ -4,14 +4,14 @@
 #include "mediapipe/framework/formats/detection.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 
-Stream<mediapipe::Detection> ConvertLandmarksToDetection(
-    Stream<mediapipe::NormalizedLandmarkList> landmarks, Graph& graph) {
+Stream<mediapipe_v01013_based::Detection> ConvertLandmarksToDetection(
+    Stream<mediapipe_v01013_based::NormalizedLandmarkList> landmarks, Graph& graph) {
   auto& landmarks_to_detection =
       graph.AddNode("LandmarksToDetectionCalculator");
   landmarks.ConnectTo(landmarks_to_detection.In("NORM_LANDMARKS"));
-  return landmarks_to_detection.Out("DETECTION").Cast<mediapipe::Detection>();
+  return landmarks_to_detection.Out("DETECTION").Cast<mediapipe_v01013_based::Detection>();
 }
 
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder

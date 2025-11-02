@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/graphs/iris_tracking/calculators/iris_to_depth_calculator.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -130,7 +130,7 @@ class IrisToDepthCalculator : public CalculatorBase {
                    NormalizedLandmarkList* iris);
   void GetRightIris(const NormalizedLandmarkList& lds,
                     NormalizedLandmarkList* iris);
-  ::mediapipe::IrisToDepthCalculatorOptions options_;
+  ::mediapipe_v01013_based::IrisToDepthCalculatorOptions options_;
 };
 REGISTER_CALCULATOR(IrisToDepthCalculator);
 
@@ -154,7 +154,7 @@ absl::Status IrisToDepthCalculator::Open(CalculatorContext* cc) {
     compute_depth_from_iris_ = true;
   }
 
-  options_ = cc->Options<::mediapipe::IrisToDepthCalculatorOptions>();
+  options_ = cc->Options<::mediapipe_v01013_based::IrisToDepthCalculatorOptions>();
   return absl::OkStatus();
 }
 
@@ -242,4 +242,4 @@ void IrisToDepthCalculator::GetRightIris(const NormalizedLandmarkList& lds,
   *iris->add_landmark() = lds.landmark(options_.right_iris_left_index());
   *iris->add_landmark() = lds.landmark(options_.right_iris_right_index());
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

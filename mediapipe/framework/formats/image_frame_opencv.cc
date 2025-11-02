@@ -20,52 +20,52 @@ namespace {
 // Maps ImageFrame format to OpenCV Mat type.
 // See mediapipe...image_format.proto and cv...opencv2/core/hal/interface.h
 // for more details on respective formats.
-int GetMatType(const mediapipe::ImageFormat::Format format) {
+int GetMatType(const mediapipe_v01013_based::ImageFormat::Format format) {
   int type = 0;
   switch (format) {
-    case mediapipe::ImageFormat::UNKNOWN:
+    case mediapipe_v01013_based::ImageFormat::UNKNOWN:
       // Invalid; Default to uchar.
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::SRGB:
+    case mediapipe_v01013_based::ImageFormat::SRGB:
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::SRGBA:
+    case mediapipe_v01013_based::ImageFormat::SRGBA:
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::GRAY8:
+    case mediapipe_v01013_based::ImageFormat::GRAY8:
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::GRAY16:
+    case mediapipe_v01013_based::ImageFormat::GRAY16:
       type = CV_16U;
       break;
-    case mediapipe::ImageFormat::YCBCR420P:
+    case mediapipe_v01013_based::ImageFormat::YCBCR420P:
       // Invalid; Default to uchar.
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::YCBCR420P10:
+    case mediapipe_v01013_based::ImageFormat::YCBCR420P10:
       // Invalid; Default to uint16.
       type = CV_16U;
       break;
-    case mediapipe::ImageFormat::SRGB48:
+    case mediapipe_v01013_based::ImageFormat::SRGB48:
       type = CV_16U;
       break;
-    case mediapipe::ImageFormat::SRGBA64:
+    case mediapipe_v01013_based::ImageFormat::SRGBA64:
       type = CV_16U;
       break;
-    case mediapipe::ImageFormat::VEC32F1:
+    case mediapipe_v01013_based::ImageFormat::VEC32F1:
       type = CV_32F;
       break;
-    case mediapipe::ImageFormat::VEC32F2:
+    case mediapipe_v01013_based::ImageFormat::VEC32F2:
       type = CV_32FC2;
       break;
-    case mediapipe::ImageFormat::VEC32F4:
+    case mediapipe_v01013_based::ImageFormat::VEC32F4:
       type = CV_32FC4;
       break;
-    case mediapipe::ImageFormat::LAB8:
+    case mediapipe_v01013_based::ImageFormat::LAB8:
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::SBGRA:
+    case mediapipe_v01013_based::ImageFormat::SBGRA:
       type = CV_8U;
       break;
     default:
@@ -77,7 +77,7 @@ int GetMatType(const mediapipe::ImageFormat::Format format) {
 }
 }  // namespace
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace formats {
 
 cv::Mat MatView(const ImageFrame* image) {
@@ -93,4 +93,4 @@ cv::Mat MatView(const ImageFrame* image) {
 }
 
 }  // namespace formats
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

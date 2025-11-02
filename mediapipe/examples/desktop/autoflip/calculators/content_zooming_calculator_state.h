@@ -8,7 +8,7 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 struct ContentZoomingCalculatorState {
@@ -21,7 +21,7 @@ struct ContentZoomingCalculatorState {
   // Stores the time of the first crop rectangle.
   Timestamp first_rect_timestamp;
   // Stores the first crop rectangle.
-  mediapipe::NormalizedRect first_rect;
+  mediapipe_v01013_based::NormalizedRect first_rect;
   // Stores the time of the last "only_required" input.
   int64_t last_only_required_detection = 0;
   // Rect values of last message with detection(s).
@@ -34,6 +34,6 @@ using ContentZoomingCalculatorStateCacheType =
     std::optional<ContentZoomingCalculatorState>;
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_EXAMPLES_DESKTOP_AUTOFLIP_CALCULATORS_CONTENT_ZOOMING_CALCULATOR_STATE_H_

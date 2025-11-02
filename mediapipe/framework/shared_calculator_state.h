@@ -10,7 +10,7 @@
 #include <mutex>
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
     // Forward declaration to break circular dependency
     class Image;
     class SharedCalculatorState {
@@ -24,12 +24,12 @@ namespace mediapipe {
         const bool USE_PREV_LANDMARKS = true;
 
         // image being input to the pipeline
-        std::shared_ptr<const mediapipe::Image> image;
+        std::shared_ptr<const mediapipe_v01013_based::Image> image;
         // image to apply palm detection to, or null pointer when palm detection should be skipped
-        std::shared_ptr<const mediapipe::Image> palm_detection_image;
+        std::shared_ptr<const mediapipe_v01013_based::Image> palm_detection_image;
 
         // rects from landmarks tracking in the previous frame
-        std::vector<::mediapipe::NormalizedRect> prev_hand_rects_from_landmarks;
+        std::vector<::mediapipe_v01013_based::NormalizedRect> prev_hand_rects_from_landmarks;
 
         uint32_t ImageToTensorCalculatorOptions_input_selection_field;  //  0 => use palm_detection_image as input;
         int32_t ImageToTensorCalculatorOptions_num_landmakrs;
@@ -47,6 +47,6 @@ namespace mediapipe {
     };
 
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_NUI_DESKTOP_SHARED_CALCULATOR_STATE_H_

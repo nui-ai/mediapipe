@@ -21,7 +21,7 @@
 #include "mediapipe/examples/desktop/autoflip/quality/cropping.pb.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 // This class computes per-frame crop regions based on crop frame options.
@@ -105,6 +105,6 @@ class FrameCropRegionComputer {
   KeyFrameCropOptions options_;
 };
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_EXAMPLES_DESKTOP_AUTOFLIP_QUALITY_FRAME_CROP_REGION_COMPUTER_H_

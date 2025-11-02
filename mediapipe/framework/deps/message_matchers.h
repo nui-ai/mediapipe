@@ -20,7 +20,7 @@
 #include "gmock/gmock.h"
 #include "mediapipe/framework/port/core_proto_inc.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class ProtoMatcher {
  public:
@@ -85,6 +85,6 @@ MATCHER(EqualsProto, "") {
   return ::testing::ExplainMatchResult(EqualsProto(b), a, result_listener);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_MESSAGE_MATCHERS_H_

@@ -14,14 +14,14 @@
 
 syntax = "proto2";
 
-// TODO: Switch to package mediapipe.
-package mediapipe;
+// TODO: Switch to package mediapipe_v01013_based.
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 
 // Options for PacketFrequencyCalculator.
 message PacketFrequencyCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional PacketFrequencyCalculatorOptions ext = 168468918;
   }
 

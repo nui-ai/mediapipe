@@ -1,11 +1,11 @@
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/packet_generator.proto";
 
 message GeneratorOptions {
-  extend mediapipe.PacketGeneratorOptions {
+  extend mediapipe_v01013_based.PacketGeneratorOptions {
     optional GeneratorOptions ext = 4200000;
   }
   optional int32 value = 1;

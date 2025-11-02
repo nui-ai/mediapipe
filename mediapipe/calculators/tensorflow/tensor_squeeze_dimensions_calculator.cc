@@ -19,7 +19,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "tensorflow/core/framework/tensor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tf = ::tensorflow;
 
@@ -110,4 +110,4 @@ class TensorSqueezeDimensionsCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(TensorSqueezeDimensionsCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

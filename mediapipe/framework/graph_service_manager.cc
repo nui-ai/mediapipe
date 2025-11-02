@@ -7,7 +7,7 @@
 #include "mediapipe/framework/packet.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::Status GraphServiceManager::SetServicePacket(
     const GraphServiceBase& service, Packet p) {
@@ -27,4 +27,4 @@ Packet GraphServiceManager::GetServicePacket(
   return it->second;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

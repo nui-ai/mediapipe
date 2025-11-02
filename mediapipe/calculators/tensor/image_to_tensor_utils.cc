@@ -32,10 +32,10 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 RotatedRect GetRoi(int input_width, int input_height,
-                   absl::optional<mediapipe::NormalizedRect> norm_rect) {
+                   absl::optional<mediapipe_v01013_based::NormalizedRect> norm_rect) {
   if (norm_rect) {
     return {/*center_x=*/norm_rect->x_center() * input_width,
             /*center_y =*/norm_rect->y_center() * input_height,
@@ -227,14 +227,14 @@ void GetTransposedRotatedSubRectToRectTransformMatrix(
 }
 
 BorderMode GetBorderMode(
-    const mediapipe::ImageToTensorCalculatorOptions::BorderMode& mode) {
+    const mediapipe_v01013_based::ImageToTensorCalculatorOptions::BorderMode& mode) {
   switch (mode) {
-    case mediapipe::
+    case mediapipe_v01013_based::
         ImageToTensorCalculatorOptions_BorderMode_BORDER_UNSPECIFIED:
       return BorderMode::kReplicate;
-    case mediapipe::ImageToTensorCalculatorOptions_BorderMode_BORDER_ZERO:
+    case mediapipe_v01013_based::ImageToTensorCalculatorOptions_BorderMode_BORDER_ZERO:
       return BorderMode::kZero;
-    case mediapipe::ImageToTensorCalculatorOptions_BorderMode_BORDER_REPLICATE:
+    case mediapipe_v01013_based::ImageToTensorCalculatorOptions_BorderMode_BORDER_REPLICATE:
       return BorderMode::kReplicate;
   }
 }
@@ -255,7 +255,7 @@ Tensor::ElementType GetOutputTensorType(bool uses_gpu,
   return Tensor::ElementType::kFloat32;
 }
 
-int GetNumOutputChannels(const mediapipe::Image& image) {
+int GetNumOutputChannels(const mediapipe_v01013_based::Image& image) {
 #if !MEDIAPIPE_DISABLE_GPU
 #if MEDIAPIPE_METAL_ENABLED
   if (image.UsesGpu()) {
@@ -274,31 +274,31 @@ int GetNumOutputChannels(const mediapipe::Image& image) {
   return 3;
 }
 
-absl::StatusOr<std::shared_ptr<const mediapipe::Image>> GetInputImage(
-    const api2::Packet<api2::OneOf<Image, mediapipe::ImageFrame>>&
+absl::StatusOr<std::shared_ptr<const mediapipe_v01013_based::Image>> GetInputImage(
+    const api2::Packet<api2::OneOf<Image, mediapipe_v01013_based::ImageFrame>>&
         image_packet) {
   return image_packet.Visit(
-      [&image_packet](const mediapipe::Image&) {
-        return image_packet.Share<mediapipe::Image>();
+      [&image_packet](const mediapipe_v01013_based::Image&) {
+        return image_packet.Share<mediapipe_v01013_based::Image>();
       },
-      [&image_packet](const mediapipe::ImageFrame&)
-          -> absl::StatusOr<std::shared_ptr<const mediapipe::Image>> {
+      [&image_packet](const mediapipe_v01013_based::ImageFrame&)
+          -> absl::StatusOr<std::shared_ptr<const mediapipe_v01013_based::Image>> {
         MP_ASSIGN_OR_RETURN(
-            std::shared_ptr<const mediapipe::ImageFrame> image_frame,
-            image_packet.Share<mediapipe::ImageFrame>());
-        return std::make_shared<const mediapipe::Image>(
-            std::const_pointer_cast<mediapipe::ImageFrame>(
+            std::shared_ptr<const mediapipe_v01013_based::ImageFrame> image_frame,
+            image_packet.Share<mediapipe_v01013_based::ImageFrame>());
+        return std::make_shared<const mediapipe_v01013_based::Image>(
+            std::const_pointer_cast<mediapipe_v01013_based::ImageFrame>(
                 std::move(image_frame)));
       });
 }
 
 #if !MEDIAPIPE_DISABLE_GPU
-absl::StatusOr<std::shared_ptr<const mediapipe::Image>> GetInputImage(
-    const api2::Packet<mediapipe::GpuBuffer>& image_gpu_packet) {
+absl::StatusOr<std::shared_ptr<const mediapipe_v01013_based::Image>> GetInputImage(
+    const api2::Packet<mediapipe_v01013_based::GpuBuffer>& image_gpu_packet) {
   // A shallow copy is okay since the resulting 'image' object is local in
   // Process(), and thus never outlives 'input'.
-  return std::make_shared<const mediapipe::Image>(image_gpu_packet.Get());
+  return std::make_shared<const mediapipe_v01013_based::Image>(image_gpu_packet.Get());
 }
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

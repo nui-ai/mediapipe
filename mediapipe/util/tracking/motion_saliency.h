@@ -25,13 +25,13 @@
 #include "mediapipe/util/tracking/motion_saliency.pb.h"
 #include "mediapipe/util/tracking/region_flow.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 class RegionFlowFeatureList;
 class RegionFlowFrame;
 class SalientPointFrame;
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class MotionSaliency {
  public:
@@ -145,6 +145,6 @@ void ForegroundWeightsFromFeatures(
     const CameraMotion* camera_motion,  // optional, can be nullptr.
     std::vector<float>* weights);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_MOTION_SALIENCY_H_

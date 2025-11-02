@@ -32,21 +32,21 @@ limitations under the License.
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 #include "mediapipe/tasks/cc/text/utils/text_model_utils.h"
 
-namespace mediapipe::tasks::components::processors {
+namespace mediapipe_v01013_based::tasks::components::processors {
 namespace {
 
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::SideInput;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::SideSource;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::processors::proto::TextModelType;
-using ::mediapipe::tasks::components::processors::proto::
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::SideInput;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::SideSource;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::processors::proto::TextModelType;
+using ::mediapipe_v01013_based::tasks::components::processors::proto::
     TextPreprocessingGraphOptions;
-using ::mediapipe::tasks::core::ModelResources;
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
-using ::mediapipe::tasks::text::utils::GetModelType;
+using ::mediapipe_v01013_based::tasks::core::ModelResources;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::tasks::text::utils::GetModelType;
 
 constexpr char kTextTag[] = "TEXT";
 constexpr char kMetadataExtractorTag[] = "METADATA_EXTRACTOR";
@@ -222,10 +222,10 @@ absl::Status ConfigureTextPreprocessingGraph(
 // The recommended way of using this subgraph is through the GraphBuilder API
 // using the 'ConfigureTextPreprocessingGraph()' function. See header file for
 // more details.
-class TextPreprocessingGraph : public mediapipe::Subgraph {
+class TextPreprocessingGraph : public mediapipe_v01013_based::Subgraph {
  public:
-  absl::StatusOr<mediapipe::CalculatorGraphConfig> GetConfig(
-      mediapipe::SubgraphContext* sc) override {
+  absl::StatusOr<mediapipe_v01013_based::CalculatorGraphConfig> GetConfig(
+      mediapipe_v01013_based::SubgraphContext* sc) override {
     Graph graph;
     MP_ASSIGN_OR_RETURN(
         Source<std::vector<Tensor>> tensors_in,
@@ -277,6 +277,6 @@ class TextPreprocessingGraph : public mediapipe::Subgraph {
   }
 };
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::components::processors::TextPreprocessingGraph);
+    ::mediapipe_v01013_based::tasks::components::processors::TextPreprocessingGraph);
 
-}  // namespace mediapipe::tasks::components::processors
+}  // namespace mediapipe_v01013_based::tasks::components::processors

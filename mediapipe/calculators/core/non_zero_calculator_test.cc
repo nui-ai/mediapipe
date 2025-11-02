@@ -22,7 +22,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/validate_type.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class NonZeroCalculatorTest : public ::testing::Test {
  protected:
@@ -90,4 +90,4 @@ TEST_F(NonZeroCalculatorTest, SwitchesBetweenNonZeroAndZeroOutput) {
               ::testing::ElementsAre(true, false, true, false, true));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

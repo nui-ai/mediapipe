@@ -23,16 +23,16 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 typedef CollectionHasMinSizeCalculator<
-    std::vector<mediapipe::NormalizedLandmarkList>>
+    std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>
     NormalizedLandmarkListVectorHasMinSizeCalculator;
 REGISTER_CALCULATOR(NormalizedLandmarkListVectorHasMinSizeCalculator);
 
 typedef CollectionHasMinSizeCalculator<
-    std::vector<mediapipe::ClassificationList>>
+    std::vector<mediapipe_v01013_based::ClassificationList>>
     ClassificationListVectorHasMinSizeCalculator;
 REGISTER_CALCULATOR(ClassificationListVectorHasMinSizeCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

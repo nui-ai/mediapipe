@@ -37,7 +37,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/task_runner.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace core {
 
@@ -96,7 +96,7 @@ class TaskApiFactory {
   template <typename Options>
   static absl::Status CheckHasValidOptions(
       const CalculatorGraphConfig::Node& node) {
-    if constexpr (mediapipe::Requires<Options>(
+    if constexpr (mediapipe_v01013_based::Requires<Options>(
                       [](auto&& o) -> decltype(o.ext) {})) {
       if (node.options().HasExtension(Options::ext)) {
         return absl::OkStatus();
@@ -124,6 +124,6 @@ class TaskApiFactory {
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_CORE_TASK_API_FACTORY_H_

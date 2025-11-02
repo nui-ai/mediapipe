@@ -3,7 +3,7 @@
 
 #include "mediapipe/framework/api2/builder.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 
 // Updates @graph to choose @a stream if it's available (not empty stream at
 // specific timestamp) or @b stream otherwise.
@@ -15,6 +15,6 @@ Stream<T> Merge(Stream<T> a, Stream<T> b, Graph& graph) {
   return merge_node.Out("").template Cast<T>();
 }
 
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_STREAM_MERGE_H_

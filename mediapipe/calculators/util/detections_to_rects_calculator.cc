@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -38,8 +38,8 @@ constexpr char kNormRectTag[] = "NORM_RECT";
 constexpr char kRectsTag[] = "RECTS";
 constexpr char kNormRectsTag[] = "NORM_RECTS";
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::Rect;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::Rect;
 
 constexpr float kMinFloat = std::numeric_limits<float>::lowest();
 constexpr float kMaxFloat = std::numeric_limits<float>::max();
@@ -81,8 +81,8 @@ absl::Status PalmDetectionToHandRectStage1::DetectionToRect(
     Rect* rect) {
   const LocationData location_data = detection.location_data();
   switch (options_.conversion_mode()) {
-    case mediapipe::DetectionsToRectsCalculatorOptions_ConversionMode_DEFAULT:
-    case mediapipe::
+    case mediapipe_v01013_based::DetectionsToRectsCalculatorOptions_ConversionMode_DEFAULT:
+    case mediapipe_v01013_based::
         DetectionsToRectsCalculatorOptions_ConversionMode_USE_BOUNDING_BOX: {
       RET_CHECK(location_data.format() == LocationData::BOUNDING_BOX)
           << "Only Detection with formats of BOUNDING_BOX can be converted to "
@@ -90,7 +90,7 @@ absl::Status PalmDetectionToHandRectStage1::DetectionToRect(
       RectFromBox(location_data.bounding_box(), rect);
       break;
     }
-    case mediapipe::
+    case mediapipe_v01013_based::
         DetectionsToRectsCalculatorOptions_ConversionMode_USE_KEYPOINTS: {
       RET_CHECK(detection_spec.image_size.has_value())
           << "Rect with absolute coordinates calculation requires image size.";
@@ -113,8 +113,8 @@ absl::Status PalmDetectionToHandRectStage1::DetectionToNormalizedRect(
     NormalizedRect* rect) {
   const LocationData location_data = detection.location_data();
   switch (options_.conversion_mode()) {
-    case mediapipe::DetectionsToRectsCalculatorOptions_ConversionMode_DEFAULT:
-    case mediapipe::
+    case mediapipe_v01013_based::DetectionsToRectsCalculatorOptions_ConversionMode_DEFAULT:
+    case mediapipe_v01013_based::
         DetectionsToRectsCalculatorOptions_ConversionMode_USE_BOUNDING_BOX: {
       RET_CHECK(location_data.format() == LocationData::RELATIVE_BOUNDING_BOX)
           << "Only Detection with formats of RELATIVE_BOUNDING_BOX can be "
@@ -122,7 +122,7 @@ absl::Status PalmDetectionToHandRectStage1::DetectionToNormalizedRect(
       RectFromBox(location_data.relative_bounding_box(), rect);
       break;
     }
-    case mediapipe::
+    case mediapipe_v01013_based::
         DetectionsToRectsCalculatorOptions_ConversionMode_USE_KEYPOINTS: {
       MP_RETURN_IF_ERROR(NormRectFromKeyPoints(location_data, rect));
       break;
@@ -289,4 +289,4 @@ DetectionSpec PalmDetectionToHandRectStage1::GetDetectionSpec(
 
 REGISTER_CALCULATOR(PalmDetectionToHandRectStage1);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

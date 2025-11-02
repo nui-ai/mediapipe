@@ -20,7 +20,7 @@ limitations under the License.
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe::tasks::text::language_detector::custom_ops {
+namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops {
 
 namespace {
 
@@ -132,4 +132,4 @@ TEST(LowercaseUnicodeTest, TestLowercaseUnicode) {
 }
 
 }  // namespace
-}  // namespace mediapipe::tasks::text::language_detector::custom_ops
+}  // namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops

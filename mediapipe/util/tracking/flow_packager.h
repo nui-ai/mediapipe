@@ -24,7 +24,7 @@
 #include "mediapipe/util/tracking/motion_estimation.pb.h"
 #include "mediapipe/util/tracking/region_flow.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Usage (output):
 // FlowPackager flow_packager((FlowPackagerOptions()));
@@ -162,6 +162,6 @@ class FlowPackager {
   FlowPackagerOptions options_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_FLOW_PACKAGER_H_

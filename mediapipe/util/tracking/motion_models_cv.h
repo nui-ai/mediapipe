@@ -19,7 +19,7 @@
 #include "mediapipe/util/tracking/motion_models.h"
 #include "mediapipe/util/tracking/motion_models.pb.h"  // NOLINT
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 template <class Model>
 class ModelCvConvert {};
@@ -58,6 +58,6 @@ void ModelToCvMat(const Model& model, cv::Mat* matrix) {
   ModelCvConvert<Model>::ToCvMat(model, matrix);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_MOTION_MODELS_CV_H_

@@ -22,7 +22,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // This calculator assigns a timestamp to each "INPUT" packet reflecting
@@ -100,4 +100,4 @@ class PacketSequencerCalculator : public Node {
 
 MEDIAPIPE_REGISTER_NODE(PacketSequencerCalculator);
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -23,7 +23,7 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/types.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tf = ::tensorflow;
 namespace {
@@ -229,4 +229,4 @@ TEST_F(TensorToMatrixCalculatorTest, TimeSeriesOverridesWork) {
   EXPECT_EQ(output_header.num_channels(), 5);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

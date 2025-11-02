@@ -14,11 +14,11 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/util/color.proto";
 
-option java_package = "com.google.mediapipe.util.proto";
+option java_package = "com.google.mediapipe_v01013_based.util.proto";
 option java_outer_classname = "RenderDataProto";
 
 // A RenderData is a collection of multiple RenderAnnotations. For example, a

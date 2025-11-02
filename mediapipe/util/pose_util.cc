@@ -140,8 +140,8 @@ void ReverseRGB(cv::Scalar* color) {
 }
 }  // namespace
 
-namespace mediapipe {
-void DrawPose(const mediapipe::NormalizedLandmarkList& pose, bool flip_y,
+namespace mediapipe_v01013_based {
+void DrawPose(const mediapipe_v01013_based::NormalizedLandmarkList& pose, bool flip_y,
               cv::Mat* image) {
   const int target_width = image->cols;
   const int target_height = image->rows;
@@ -198,7 +198,7 @@ void DrawPose(const mediapipe::NormalizedLandmarkList& pose, bool flip_y,
   }
 }
 
-void DrawFace(const mediapipe::NormalizedLandmarkList& face,
+void DrawFace(const mediapipe_v01013_based::NormalizedLandmarkList& face,
               const std::pair<int, int>& image_size, const cv::Mat& affine,
               bool flip_y, bool draw_nose, int color_style, bool reverse_color,
               int draw_line_width, cv::Mat* image) {
@@ -325,4 +325,4 @@ void DrawFace(const mediapipe::NormalizedLandmarkList& face,
     }
   }
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

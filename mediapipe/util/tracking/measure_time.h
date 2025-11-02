@@ -41,9 +41,9 @@
 
 extern bool flags_measure_time;
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 class MeasureTimeFilter;
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #define MEASURE_TIME \
   MEASURE_TIME_PRE_IMPL(flags_measure_time, __LINE__, __FILE__)
@@ -53,19 +53,19 @@ class MeasureTimeFilter;
   MEASURE_TIME_IMPL(show_output, line, file)
 
 #define MEASURE_TIME_IMPL(show_output, line, file)                      \
-  std::unique_ptr<mediapipe::ScopedWallTimer> scoped_wall_timer_##line; \
+  std::unique_ptr<mediapipe_v01013_based::ScopedWallTimer> scoped_wall_timer_##line; \
   const bool activated##line = show_output;                             \
   if (activated##line) {                                                \
-    static mediapipe::ScopedWallTimer::Accumulator*                     \
+    static mediapipe_v01013_based::ScopedWallTimer::Accumulator*                     \
         scoped_wall_timer_accum_##line =                                \
-            new mediapipe::ScopedWallTimer::Accumulator;                \
-    scoped_wall_timer_##line.reset(new mediapipe::ScopedWallTimer(      \
+            new mediapipe_v01013_based::ScopedWallTimer::Accumulator;                \
+    scoped_wall_timer_##line.reset(new mediapipe_v01013_based::ScopedWallTimer(      \
         file, line, show_output, scoped_wall_timer_accum_##line));      \
   }                                                                     \
   if (activated##line) /* NOLINT */                                     \
   scoped_wall_timer_##line->stream()
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class ScopedWallTimer {
  public:
@@ -165,6 +165,6 @@ class MeasureTimeFilter {
   std::vector<std::string> match_items_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_MEASURE_TIME_H_

@@ -50,7 +50,7 @@ std::ostream& operator<<(std::ostream& out, const std::vector<Ts...>& v) {
 
 }  // namespace std
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 using LogSeverity = google::LogSeverity;
 const auto SetVLOGLevel = google::SetVLOGLevel;
 class LogEntry {
@@ -91,6 +91,6 @@ inline void AddLogSink(LogSink* destination) {
 inline void RemoveLogSink(LogSink* destination) {
   google::RemoveLogSink(destination);
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_PORT_LOGGING_H_

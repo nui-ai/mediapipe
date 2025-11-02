@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 // Packs detected features and timestamp (ms) into a KeyFrameInfo object. Scales
@@ -111,6 +111,6 @@ absl::Status AffineRetarget(const cv::Size& output_size,
                             std::vector<cv::Mat>* cropped_frames);
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_EXAMPLES_DESKTOP_AUTOFLIP_QUALITY_UTILS_H_

@@ -28,8 +28,8 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-using mediapipe::ImageFrame;
-using mediapipe::PacketTypeSet;
+using mediapipe_v01013_based::ImageFrame;
+using mediapipe_v01013_based::PacketTypeSet;
 
 constexpr char kDetectedBorders[] = "DETECTED_BORDERS";
 constexpr int kMinBorderDistance = 5;
@@ -37,7 +37,7 @@ constexpr int kKMeansClusterCount = 4;
 constexpr int kMaxPixelsToProcess = 300000;
 constexpr char kVideoInputTag[] = "VIDEO";
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 namespace {
@@ -65,9 +65,9 @@ class BorderDetectionCalculator : public CalculatorBase {
   BorderDetectionCalculator& operator=(const BorderDetectionCalculator&) =
       delete;
 
-  static absl::Status GetContract(mediapipe::CalculatorContract* cc);
-  absl::Status Open(mediapipe::CalculatorContext* cc) override;
-  absl::Status Process(mediapipe::CalculatorContext* cc) override;
+  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc);
+  absl::Status Open(mediapipe_v01013_based::CalculatorContext* cc) override;
+  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override;
 
  private:
   // Given a color and image direction, check to see if a border of that color
@@ -94,7 +94,7 @@ class BorderDetectionCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(BorderDetectionCalculator);
 
-absl::Status BorderDetectionCalculator::Open(mediapipe::CalculatorContext* cc) {
+absl::Status BorderDetectionCalculator::Open(mediapipe_v01013_based::CalculatorContext* cc) {
   options_ = cc->Options<BorderDetectionCalculatorOptions>();
   RET_CHECK_LT(options_.vertical_search_distance(), 0.5)
       << "Search distance must be less than half the full image.";
@@ -118,14 +118,14 @@ absl::Status BorderDetectionCalculator::SetAndCheckInputs(
 }
 
 absl::Status BorderDetectionCalculator::Process(
-    mediapipe::CalculatorContext* cc) {
+    mediapipe_v01013_based::CalculatorContext* cc) {
   if (!cc->Inputs().HasTag(kVideoInputTag) ||
       cc->Inputs().Tag(kVideoInputTag).Value().IsEmpty()) {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "Input tag VIDEO not set or empty at timestamp: "
            << cc->InputTimestamp().Value();
   }
-  cv::Mat frame = mediapipe::formats::MatView(
+  cv::Mat frame = mediapipe_v01013_based::formats::MatView(
       &cc->Inputs().Tag(kVideoInputTag).Get<ImageFrame>());
   MP_RETURN_IF_ERROR(SetAndCheckInputs(frame));
 
@@ -288,11 +288,11 @@ void BorderDetectionCalculator::DetectBorder(
 }
 
 absl::Status BorderDetectionCalculator::GetContract(
-    mediapipe::CalculatorContract* cc) {
+    mediapipe_v01013_based::CalculatorContract* cc) {
   cc->Inputs().Tag(kVideoInputTag).Set<ImageFrame>();
   cc->Outputs().Tag(kDetectedBorders).Set<StaticFeatures>();
   return absl::OkStatus();
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -39,7 +39,7 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 
-namespace mediapipe::debug {
+namespace mediapipe_v01013_based::debug {
 namespace {
 
 // Returns true if the terminal supports true color.
@@ -382,4 +382,4 @@ void LogHalideBuffer(Halide::Runtime::Buffer<const uint8_t> buffer,
   LogMatImpl(mat, name);
 }
 
-}  // namespace mediapipe::debug
+}  // namespace mediapipe_v01013_based::debug

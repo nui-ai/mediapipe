@@ -4,7 +4,7 @@
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/gpu/gpu_buffer_storage.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace internal {
 
 template <>
@@ -17,6 +17,6 @@ class ViewProvider<ImageFrame> {
 };
 
 }  // namespace internal
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_IMAGE_FRAME_VIEW_H_

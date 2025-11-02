@@ -33,15 +33,15 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/task_runner.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace audio {
 namespace audio_classifier {
 
 namespace {
 
-using ::mediapipe::tasks::components::containers::ConvertToClassificationResult;
-using ::mediapipe::tasks::components::containers::proto::ClassificationResult;
+using ::mediapipe_v01013_based::tasks::components::containers::ConvertToClassificationResult;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
 
 constexpr char kAudioStreamName[] = "audio_in";
 constexpr char kAudioTag[] = "AUDIO";
@@ -160,4 +160,4 @@ absl::Status AudioClassifier::ClassifyAsync(Matrix audio_block,
 }  // namespace audio_classifier
 }  // namespace audio
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

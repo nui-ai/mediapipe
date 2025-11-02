@@ -19,7 +19,7 @@ limitations under the License.
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 
 // Name (aka type URL key) of the `absl::Status` payload which contains a
@@ -203,6 +203,6 @@ absl::Status AddPayload(
     MediaPipeTasksStatus mediapipe_tasks_code = MediaPipeTasksStatus::kError);
 
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_COMMON_H_

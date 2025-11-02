@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/template_parser.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -71,7 +71,7 @@ TEST(GraphValidationTest, InitializeGraphFromProtos) {
       graph_1.Initialize({config_1, config_2}, {}, {}, "PassThroughGraph"));
   EXPECT_THAT(
       graph_1.Config(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         type: "PassThroughGraph"
         input_stream: "INPUT:stream_1"
         output_stream: "OUTPUT:stream_2"
@@ -89,7 +89,7 @@ TEST(GraphValidationTest, InitializeGraphFromProtos) {
   MP_EXPECT_OK(graph_2.Initialize({config_1, config_2}, {}));
   EXPECT_THAT(
       graph_2.Config(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "INPUT:stream_1"
         output_stream: "OUTPUT:stream_2"
         node {
@@ -120,7 +120,7 @@ TEST(GraphValidationTest, InitializeGraphFromLinker) {
 
 // Shows validation success for a graph and a template subgraph.
 TEST(GraphValidationTest, InitializeTemplateFromProtos) {
-  mediapipe::tool::TemplateParser::Parser parser;
+  mediapipe_v01013_based::tool::TemplateParser::Parser parser;
   CalculatorGraphTemplate config_1;
   ABSL_CHECK(parser.ParseFromString(R"(
     type: "PassThroughGraph"
@@ -178,7 +178,7 @@ TEST(GraphValidationTest, InitializeTemplateFromProtos) {
                                   "PassThroughGraph", &options));
   EXPECT_THAT(
       graph_1.Config(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         type: "PassThroughGraph"
         input_stream: "INPUT:stream_9"
         output_stream: "OUTPUT:stream_2"
@@ -197,7 +197,7 @@ TEST(GraphValidationTest, InitializeTemplateFromProtos) {
   MP_EXPECT_OK(graph_2.Initialize({config_2}, {config_1}));
   EXPECT_THAT(
       graph_2.Config(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "INPUT:stream_1"
         output_stream: "OUTPUT:stream_2"
         node {
@@ -258,7 +258,7 @@ TEST(GraphValidationTest, OptionalSubgraphStreams) {
       graph_1.Config(),
 
       // The result includes only the requested input and output streams.
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "INPUT:foo_in"
         output_stream: "OUTPUT:foo_out"
         node {
@@ -379,7 +379,7 @@ TEST(GraphValidationTest, OptionalInputNotProvidedForSubgraphCalculator) {
       graph_1.Config(),
 
       // The expanded graph omits the optional input-side-packet.
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_side_packet: "INPUT:foo_in"
         output_stream: "OUTPUT:foo_out"
         node {
@@ -391,7 +391,7 @@ TEST(GraphValidationTest, OptionalInputNotProvidedForSubgraphCalculator) {
       )pb")));
 
   std::map<std::string, Packet> side_packets;
-  side_packets.insert({"foo_in", mediapipe::Adopt(new std::string("input"))});
+  side_packets.insert({"foo_in", mediapipe_v01013_based::Adopt(new std::string("input"))});
   MP_EXPECT_OK(graph_1.StartRun(side_packets));
   MP_EXPECT_OK(graph_1.CloseAllPacketSources());
   MP_EXPECT_OK(graph_1.WaitUntilDone());
@@ -436,7 +436,7 @@ TEST(GraphValidationTest, MultipleOptionalInputsForSubgraph) {
       // The expanded graph includes only the specified input, "SELECT".
       // Without the fix to RemoveIgnoredStreams(), the expanded graph
       // includes the wrong input.
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_side_packet: "INPUT:foo_in"
         input_stream: "SELECT:foo_select"
         output_stream: "OUTPUT:foo_out"
@@ -450,7 +450,7 @@ TEST(GraphValidationTest, MultipleOptionalInputsForSubgraph) {
       )pb")));
 
   std::map<std::string, Packet> side_packets;
-  side_packets.insert({"foo_in", mediapipe::Adopt(new std::string("input"))});
+  side_packets.insert({"foo_in", mediapipe_v01013_based::Adopt(new std::string("input"))});
   MP_EXPECT_OK(graph_1.StartRun(side_packets));
   MP_EXPECT_OK(graph_1.CloseAllPacketSources());
   MP_EXPECT_OK(graph_1.WaitUntilDone());
@@ -556,4 +556,4 @@ TEST(GraphValidationTest, DefaultOptionalInputsForGraph) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

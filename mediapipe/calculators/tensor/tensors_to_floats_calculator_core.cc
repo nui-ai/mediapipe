@@ -14,7 +14,7 @@
 
 #include "mediapipe/calculators/tensor/tensors_to_floats_calculator_core.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tensors_to_floats_calculator_core {
 
 namespace {
@@ -23,14 +23,14 @@ inline float Sigmoid(float value) { return 1.0f / (1.0f + std::exp(-value)); }
 
 }  // namespace
 
-absl::Status Open(const ::mediapipe::TensorsToFloatsCalculatorOptions& options) {
+absl::Status Open(const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions& options) {
   // Nothing to do here, just return OK status
   return absl::OkStatus();
 }
 
 ProcessingResult Process(
     const std::vector<Tensor>& input_tensors,
-    const ::mediapipe::TensorsToFloatsCalculatorOptions& options) {
+    const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions& options) {
 
   ProcessingResult result;
 
@@ -69,4 +69,4 @@ ProcessingResult Process(
 }
 
 }  // namespace tensors_to_floats_calculator_core
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

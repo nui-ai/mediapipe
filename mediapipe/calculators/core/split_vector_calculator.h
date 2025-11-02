@@ -31,7 +31,7 @@
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/model.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 template <typename T>
 using IsCopyable = std::enable_if_t<std::is_copy_constructible<T>::value, bool>;
@@ -67,7 +67,7 @@ class SplitVectorCalculator : public CalculatorBase {
     cc->Inputs().Index(0).Set<std::vector<T>>();
 
     const auto& options =
-        cc->Options<::mediapipe::SplitVectorCalculatorOptions>();
+        cc->Options<::mediapipe_v01013_based::SplitVectorCalculatorOptions>();
 
     if (!std::is_copy_constructible<T>::value || move_elements) {
       // Ranges of elements shouldn't overlap when the vector contains
@@ -113,7 +113,7 @@ class SplitVectorCalculator : public CalculatorBase {
     cc->SetOffset(TimestampDiff(0));
 
     const auto& options =
-        cc->Options<::mediapipe::SplitVectorCalculatorOptions>();
+        cc->Options<::mediapipe_v01013_based::SplitVectorCalculatorOptions>();
 
     // Use extracted function to initialize calculator state
     return InitializeSplitVectorCalculator<T>(
@@ -140,7 +140,7 @@ class SplitVectorCalculator : public CalculatorBase {
     std::unique_ptr<std::vector<T>> combined_output;
 
     // Use extracted function to process the input
-    auto status = ::mediapipe::ProcessCopyableElements<T>(
+    auto status = ::mediapipe_v01013_based::ProcessCopyableElements<T>(
         input, ranges_, max_range_end_, total_elements_,
         element_only_, combine_outputs_,
         &output_vectors, &output_elements, &combined_output);
@@ -184,7 +184,7 @@ class SplitVectorCalculator : public CalculatorBase {
     std::unique_ptr<std::vector<T>> combined_output;
 
     // Use extracted function to process the input
-    auto status = ::mediapipe::ProcessMovableElements<T>(
+    auto status = ::mediapipe_v01013_based::ProcessMovableElements<T>(
         &input_vector, ranges_, max_range_end_, total_elements_,
         element_only_, combine_outputs_,
         &output_vectors, &output_elements, &combined_output);
@@ -224,6 +224,6 @@ class SplitVectorCalculator : public CalculatorBase {
   bool combine_outputs_ = false;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_SPLIT_VECTOR_CALCULATOR_H_

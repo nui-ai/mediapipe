@@ -16,23 +16,23 @@ limitations under the License.
 syntax = "proto2";
 
 // TODO: consolidate TensorToSegmentationCalculator.
-package mediapipe.tasks;
+package mediapipe_v01013_based.tasks;
 
 import "mediapipe/framework/calculator_options.proto";
 import "mediapipe/tasks/cc/vision/image_segmenter/proto/segmenter_options.proto";
 import "mediapipe/util/label_map.proto";
 
-option java_package = "com.google.mediapipe.tasks";
+option java_package = "com.google.mediapipe_v01013_based.tasks";
 option java_outer_classname = "TensorsToSegmentationCalculatorOptionsProto";
 
 message TensorsToSegmentationCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional TensorsToSegmentationCalculatorOptions ext = 458105876;
   }
 
-  optional mediapipe.tasks.vision.image_segmenter.proto.SegmenterOptions
+  optional mediapipe_v01013_based.tasks.vision.image_segmenter.proto.SegmenterOptions
       segmenter_options = 1;
 
   // Identifying information for each classification label.
-  map<int64, mediapipe.LabelMapItem> label_items = 2;
+  map<int64, mediapipe_v01013_based.LabelMapItem> label_items = 2;
 }

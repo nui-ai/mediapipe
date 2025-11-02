@@ -7,7 +7,7 @@
 #include "absl/container/flat_hash_map.h"
 #include "mediapipe/framework/resources.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Creates resources which are held solely in memory.
 //
@@ -15,6 +15,6 @@ namespace mediapipe {
 std::unique_ptr<Resources> CreateInMemoryResources(
     absl::flat_hash_map<std::string, std::string> resources);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_RESOURCES_TEST_UTIL_H_

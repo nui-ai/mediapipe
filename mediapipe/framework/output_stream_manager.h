@@ -29,7 +29,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class InputStreamHandler;
 
@@ -131,6 +131,6 @@ class OutputStreamManager {
   int64_t num_packets_added_ ABSL_GUARDED_BY(stream_mutex_) = 0;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_OUTPUT_STREAM_MANAGER_H_

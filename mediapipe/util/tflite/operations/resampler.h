@@ -17,13 +17,13 @@
 
 #include "tensorflow/lite/kernels/kernel_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tflite_operations {
 
 // Register tfa.image.resampler custom operator implementation.
 TfLiteRegistration* RegisterResampler();
 
 }  // namespace tflite_operations
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_OPERATIONS_RESAMPLER_H_

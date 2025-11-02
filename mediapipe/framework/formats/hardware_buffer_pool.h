@@ -11,7 +11,7 @@
 #include "mediapipe/gpu/multi_pool.h"
 #include "mediapipe/gpu/reusable_pool.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace internal {
 
@@ -68,6 +68,6 @@ class HardwareBufferPool
   }
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_HARDWARE_BUFFER_POOL_H_

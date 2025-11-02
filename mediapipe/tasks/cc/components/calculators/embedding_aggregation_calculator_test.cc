@@ -33,15 +33,15 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/proto/embeddings.pb.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-using ::mediapipe::ParseTextProtoOrDie;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::containers::proto::EmbeddingResult;
+using ::mediapipe_v01013_based::ParseTextProtoOrDie;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
 using ::testing::Pointwise;
 
 constexpr char kEmbeddingsTag[] = "EMBEDDINGS";
@@ -157,4 +157,4 @@ TEST_F(EmbeddingAggregationCalculatorTest, SucceedsWithAggregation) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

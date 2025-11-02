@@ -15,7 +15,7 @@ limitations under the License.
 
 syntax = "proto3";
 
-package mediapipe.tasks.components.processors.proto;
+package mediapipe_v01013_based.tasks.components.processors.proto;
 
 import "mediapipe/calculators/tensor/tensors_to_detections_calculator.proto";
 import "mediapipe/calculators/tflite/ssd_anchors_calculator.proto";
@@ -27,16 +27,16 @@ import "mediapipe/tasks/cc/components/calculators/score_calibration_calculator.p
 message DetectionPostprocessingGraphOptions {
   // Optional SsdAnchorsCalculatorOptions for models without
   // non-maximum-suppression in tflite model graph.
-  optional mediapipe.SsdAnchorsCalculatorOptions ssd_anchors_options = 1;
+  optional mediapipe_v01013_based.SsdAnchorsCalculatorOptions ssd_anchors_options = 1;
 
   // Optional TensorsToDetectionsCalculatorOptions for models without
   // non-maximum-suppression in tflite model graph.
-  optional mediapipe.TensorsToDetectionsCalculatorOptions
+  optional mediapipe_v01013_based.TensorsToDetectionsCalculatorOptions
       tensors_to_detections_options = 2;
 
   // Optional NonMaxSuppressionCalculatorOptions for models without
   // non-maximum-suppression in tflite model graph.
-  optional mediapipe.NonMaxSuppressionCalculatorOptions
+  optional mediapipe_v01013_based.NonMaxSuppressionCalculatorOptions
       non_max_suppression_options = 3;
 
   // Optional score calibration options for models with non-maximum-suppression
@@ -44,7 +44,7 @@ message DetectionPostprocessingGraphOptions {
   optional ScoreCalibrationCalculatorOptions score_calibration_options = 4;
 
   // Optional detection label id to text calculator options.
-  optional mediapipe.DetectionLabelIdToTextCalculatorOptions
+  optional mediapipe_v01013_based.DetectionLabelIdToTextCalculatorOptions
       detection_label_ids_to_text_options = 5;
 
   // Whether output tensors are quantized (kTfLiteUint8) or not (kFloat32).

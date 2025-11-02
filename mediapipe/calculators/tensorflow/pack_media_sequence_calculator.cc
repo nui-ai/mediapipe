@@ -35,7 +35,7 @@
 #include "tensorflow/core/example/example.pb.h"
 #include "tensorflow/core/example/feature.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 const char kSequenceExampleTag[] = "SEQUENCE_EXAMPLE";
 const char kImageTag[] = "IMAGE";
@@ -54,7 +54,7 @@ const char kSegmentationMaskTag[] = "CLASS_SEGMENTATION";
 const char kClipMediaIdTag[] = "CLIP_MEDIA_ID";
 
 namespace tf = ::tensorflow;
-namespace mpms = mediapipe::mediasequence;
+namespace mpms = mediapipe_v01013_based::mediasequence;
 
 // Sink calculator to package streams into tf.SequenceExamples.
 //
@@ -76,7 +76,7 @@ namespace mpms = mediapipe::mediasequence;
 //   vector<pair<float, float>>>,
 // * "CLIP_MEDIA_ID", which stores the clip's media ID as a string.
 // * "CLIP_LABEL_${NAME}" which stores sparse feature labels, ID and scores in
-//   mediapipe::Detection. In the input Detection, the score field is required,
+//   mediapipe_v01013_based::Detection. In the input Detection, the score field is required,
 //   and label and label_id are optional but at least one of them should be set.
 // "IMAGE_${NAME}", "BBOX_${NAME}", and "KEYPOINTS_${NAME}" will also store
 // prefixed versions of each stream, which allows for multiple image streams to
@@ -359,7 +359,7 @@ class PackMediaSequenceCalculator : public CalculatorBase {
     if (all_present) {
       return absl::OkStatus();
     } else {
-      return ::mediapipe::NotFoundErrorBuilder(MEDIAPIPE_LOC) << error_msg;
+      return ::mediapipe_v01013_based::NotFoundErrorBuilder(MEDIAPIPE_LOC) << error_msg;
     }
   }
 
@@ -486,7 +486,7 @@ class PackMediaSequenceCalculator : public CalculatorBase {
         const OpenCvImageEncoderCalculatorResults& image =
             cc->Inputs().Tag(tag).Get<OpenCvImageEncoderCalculatorResults>();
         if (!image.has_encoded_image()) {
-          return ::mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+          return ::mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                  << "No encoded image";
         }
         image_height = image.height();
@@ -681,7 +681,7 @@ class PackMediaSequenceCalculator : public CalculatorBase {
             }
             if (location_format != LocationData::RELATIVE_BOUNDING_BOX &&
                 (image_height == -1 || image_width == -1)) {
-              return ::mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+              return ::mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                      << "Images must be provided with bounding boxes or the "
                         "image "
                      << "height and width must already be in the example.";
@@ -726,7 +726,7 @@ class PackMediaSequenceCalculator : public CalculatorBase {
               .Tag(kForwardFlowEncodedTag)
               .Get<OpenCvImageEncoderCalculatorResults>();
       if (!forward_flow.has_encoded_image()) {
-        return ::mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+        return ::mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                << "No encoded forward flow";
       }
       mpms::AddForwardFlowTimestamp(cc->InputTimestamp().Value(),
@@ -776,4 +776,4 @@ class PackMediaSequenceCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(PackMediaSequenceCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

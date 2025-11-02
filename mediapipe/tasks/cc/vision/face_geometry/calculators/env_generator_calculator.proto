@@ -14,13 +14,13 @@
 
 syntax = "proto2";
 
-package mediapipe.tasks.vision.face_geometry;
+package mediapipe_v01013_based.tasks.vision.face_geometry;
 
 import "mediapipe/framework/calculator_options.proto";
 import "mediapipe/tasks/cc/vision/face_geometry/proto/environment.proto";
 
 message FaceGeometryEnvGeneratorCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional FaceGeometryEnvGeneratorCalculatorOptions ext = 512499201;
   }
 

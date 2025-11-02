@@ -24,7 +24,7 @@
 // Macro for registering calculators.
 #define REGISTER_CALCULATOR(name)                                       \
   REGISTER_FACTORY_FUNCTION_QUALIFIED(                                  \
-      mediapipe::CalculatorBaseRegistry, calculator_registration, name, \
-      std::make_unique<mediapipe::internal::CalculatorBaseFactoryFor<name>>)
+      mediapipe_v01013_based::CalculatorBaseRegistry, calculator_registration, name, \
+      std::make_unique<mediapipe_v01013_based::internal::CalculatorBaseFactoryFor<name>>)
 
 #endif  // MEDIAPIPE_FRAMEWORK_CALCULATOR_REGISTRY_H_

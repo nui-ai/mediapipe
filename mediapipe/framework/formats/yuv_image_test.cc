@@ -6,7 +6,7 @@
 #include "libyuv/video_common.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 // See:
@@ -168,4 +168,4 @@ TEST(YUVImageTest, TestMoveAssignment) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

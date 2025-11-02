@@ -30,7 +30,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/sink.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -495,4 +495,4 @@ TEST(RealTimeFlowLimiterCalculator, CanConsume) {
 }
 
 }  // anonymous namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

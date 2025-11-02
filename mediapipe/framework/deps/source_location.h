@@ -17,7 +17,7 @@
 
 #include <cstdint>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Class representing a specific location in the source code of a program.
 // source_location is copyable.
@@ -55,10 +55,10 @@ class source_location {
   const char* file_name_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 // If a function takes a source_location parameter, pass this as the argument.
 #define MEDIAPIPE_LOC \
-  mediapipe::source_location::DoNotInvokeDirectly(__LINE__, __FILE__)
+  mediapipe_v01013_based::source_location::DoNotInvokeDirectly(__LINE__, __FILE__)
 
 #endif  // MEDIAPIPE_DEPS_SOURCE_LOCATION_H_

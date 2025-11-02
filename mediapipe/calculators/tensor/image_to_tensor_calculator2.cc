@@ -70,7 +70,7 @@
 #endif  // MEDIAPIPE_METAL_ENABLED
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // Converts image into Tensor, possibly with cropping, resizing and
@@ -117,9 +117,9 @@ namespace api2 {
 class ExtractSubImageForInference : public Node {
  public:
   static constexpr Input<
-      OneOf<mediapipe::Image, mediapipe::ImageFrame>>::Optional kIn{"IMAGE"};
+      OneOf<mediapipe_v01013_based::Image, mediapipe_v01013_based::ImageFrame>>::Optional kIn{"IMAGE"};
   static constexpr Input<GpuBuffer>::Optional kInGpu{"IMAGE_GPU"};
-  static constexpr Input<mediapipe::NormalizedRect>::Optional kInNormRect{
+  static constexpr Input<mediapipe_v01013_based::NormalizedRect>::Optional kInNormRect{
       "NORM_RECT"};
   static constexpr Output<std::vector<Tensor>>::Optional kOutTensors{"TENSORS"};
   static constexpr Output<Tensor>::Optional kOutTensor{"TENSOR"};
@@ -132,7 +132,7 @@ class ExtractSubImageForInference : public Node {
 
   static absl::Status UpdateContract(CalculatorContract* cc) {
     const auto& options =
-        cc->Options<mediapipe::ImageToTensorCalculatorOptions>();
+        cc->Options<mediapipe_v01013_based::ImageToTensorCalculatorOptions>();
     cc->UseService(kMemoryManagerService).Optional();
     return absl::OkStatus();
   }
@@ -148,7 +148,7 @@ class ExtractSubImageForInference : public Node {
     options_.set_keep_aspect_ratio(true);
     options_.mutable_output_tensor_float_range()->set_min(0.0f);
     options_.mutable_output_tensor_float_range()->set_max(1.0f);
-    options_.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_UNSPECIFIED);
+    options_.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_UNSPECIFIED);
     params_ = GetOutputTensorParams(options_);
     int tensor_width = params_.output_width.value_or(0);
     int tensor_height = params_.output_height.value_or(0);
@@ -161,7 +161,7 @@ class ExtractSubImageForInference : public Node {
   absl::Status Process(CalculatorContext* cc) {
     if ((kIn(cc).IsConnected() && kIn(cc).IsEmpty()) || (kInGpu(cc).IsConnected() && kInGpu(cc).IsEmpty())) { return absl::OkStatus(); }
 
-    absl::optional<mediapipe::NormalizedRect> norm_rect;
+    absl::optional<mediapipe_v01013_based::NormalizedRect> norm_rect;
     if (kInNormRect(cc).IsConnected()) {
       if (kInNormRect(cc).IsEmpty()) {
         // Timestamp bound update happens automatically. (See Open().)
@@ -201,7 +201,7 @@ class ExtractSubImageForInference : public Node {
   std::unique_ptr<ImageToTensorCalculatorCore> core_;
   std::unique_ptr<ImageToTensorConverter> gpu_converter_;
   std::unique_ptr<ImageToTensorConverter> cpu_converter_;
-  mediapipe::ImageToTensorCalculatorOptions options_;
+  mediapipe_v01013_based::ImageToTensorCalculatorOptions options_;
   OutputTensorParams params_;
   MemoryManager* memory_manager_ = nullptr;
 };
@@ -209,4 +209,4 @@ class ExtractSubImageForInference : public Node {
 MEDIAPIPE_REGISTER_NODE(ExtractSubImageForInference);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

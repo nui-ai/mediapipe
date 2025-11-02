@@ -26,7 +26,7 @@
 
 #include "mediapipe/gpu/gl_context.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class GlContext::DedicatedThread {
  public:
@@ -61,6 +61,6 @@ class GlContext::DedicatedThread {
   bool self_destruct_ = false;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_GL_CONTEXT_INTERNAL_H_

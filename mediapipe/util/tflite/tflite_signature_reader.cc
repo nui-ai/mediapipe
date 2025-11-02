@@ -17,7 +17,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -125,4 +125,4 @@ TfLiteSignatureReader::GetInputOutputTensorNamesFromAllTfliteSignatures(
   }
   return result;
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

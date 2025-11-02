@@ -30,7 +30,7 @@ limitations under the License.
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe::tasks::text::language_detector::custom_ops::hash {
+namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops::hash {
 
 TEST(Murmur, EmptyData64) {
   EXPECT_EQ(uint64_t{0}, MurmurHash64WithSeed(nullptr, uint64_t{0}, 0));
@@ -62,4 +62,4 @@ TEST(Murmur, Idempotence) {
               MurmurHash64WithSeed(next_data, next_dlen, i));
   }
 }
-}  // namespace mediapipe::tasks::text::language_detector::custom_ops::hash
+}  // namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops::hash

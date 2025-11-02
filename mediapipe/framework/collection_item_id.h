@@ -17,7 +17,7 @@
 
 #include "mediapipe/framework/deps/strong_int.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 class TagMap;
@@ -157,7 +157,7 @@ class CollectionItemId {
   }
 
  private:
-  friend class mediapipe::tool::TagMap;
+  friend class mediapipe_v01013_based::tool::TagMap;
 
   // Initialization from a value.
   explicit constexpr CollectionItemId(int init_value) : value_(init_value) {}
@@ -172,6 +172,6 @@ CollectionItemId operator+(int lhs, CollectionItemId rhs);
 CollectionItemId operator-(int lhs, CollectionItemId rhs);
 CollectionItemId operator*(int lhs, CollectionItemId rhs);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_COLLECTION_ITEM_ID_H_

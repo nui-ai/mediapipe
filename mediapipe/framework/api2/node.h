@@ -12,7 +12,7 @@
 #include "mediapipe/framework/deps/registration.h"
 #include "mediapipe/framework/subgraph.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // Node (calculator / subgraph) interface.
@@ -31,8 +31,8 @@ namespace api2 {
 //
 //   class FooNode : public NodeIntf {
 //    public:
-//     static constexpr mediapipe::api2::Input<InputData> kInput{"IN"};
-//     static constexpr mediapipe::api2::Output<OutputData> kOutput{"OUT"};
+//     static constexpr mediapipe_v01013_based::api2::Input<InputData> kInput{"IN"};
+//     static constexpr mediapipe_v01013_based::api2::Output<OutputData> kOutput{"OUT"};
 //
 //     MEDIAPIPE_NODE_INTERFACE(FooNode, kInputData, kOutput);
 //   };
@@ -43,8 +43,8 @@ namespace api2 {
 //
 //   class FooNode : public NodeIntf {
 //    public:
-//     static constexpr mediapipe::api2::Input<InputData> kInput{"IN"};
-//     static constexpr mediapipe::api2::Output<OutputData> kOutput{"OUT"};
+//     static constexpr mediapipe_v01013_based::api2::Input<InputData> kInput{"IN"};
+//     static constexpr mediapipe_v01013_based::api2::Output<OutputData> kOutput{"OUT"};
 //
 //     MEDIAPIPE_NODE_INTERFACE(FooNode, kInputData, kOutput,
 //                              TimestampChange::Arbitrary(),
@@ -248,7 +248,7 @@ namespace internal {
 template <class T>
 class CalculatorBaseFactoryFor<
     T,
-    typename std::enable_if<std::is_base_of<mediapipe::api2::Node, T>{}>::type>
+    typename std::enable_if<std::is_base_of<mediapipe_v01013_based::api2::Node, T>{}>::type>
     : public CalculatorBaseFactory {
  public:
   absl::Status GetContract(CalculatorContract* cc) final {
@@ -282,11 +282,11 @@ namespace api2 {
 namespace internal {
 
 MEDIAPIPE_STATIC_REGISTRATOR_TEMPLATE(
-    NodeRegistrator, mediapipe::CalculatorBaseRegistry, T::kCalculatorName,
-    std::make_unique<mediapipe::internal::CalculatorBaseFactoryFor<T>>)
+    NodeRegistrator, mediapipe_v01013_based::CalculatorBaseRegistry, T::kCalculatorName,
+    std::make_unique<mediapipe_v01013_based::internal::CalculatorBaseFactoryFor<T>>)
 
 MEDIAPIPE_STATIC_REGISTRATOR_TEMPLATE(SubgraphRegistrator,
-                                      mediapipe::SubgraphRegistry,
+                                      mediapipe_v01013_based::SubgraphRegistry,
                                       T::kCalculatorName, std::make_unique<T>)
 
 }  // namespace internal
@@ -366,9 +366,9 @@ class NodeImpl : public RegisteredNode<Impl>, public Intf {
 // node a type name. It can be used directly in pure interfaces.
 #define MEDIAPIPE_NODE_CONTRACT(...)                                          \
   static constexpr auto kContract =                                           \
-      mediapipe::api2::internal::MakeContract(__VA_ARGS__);                   \
+      mediapipe_v01013_based::api2::internal::MakeContract(__VA_ARGS__);                   \
   using Contract =                                                            \
-      typename mediapipe::api2::internal::TaggedContract<decltype(kContract), \
+      typename mediapipe_v01013_based::api2::internal::TaggedContract<decltype(kContract), \
                                                          kContract>;
 
 // This macro is used to define the contract and the type name of a node.
@@ -397,9 +397,9 @@ class SubgraphImpl : public Subgraph,
 // registration.
 #define MEDIAPIPE_NODE_IMPLEMENTATION(Impl)                       \
   MEDIAPIPE_REGISTER_FACTORY_FUNCTION_QUALIFIED(                  \
-      mediapipe::CalculatorBaseRegistry, calculator_registration, \
+      mediapipe_v01013_based::CalculatorBaseRegistry, calculator_registration, \
       Impl::kCalculatorName,                                      \
-      std::make_unique<mediapipe::internal::CalculatorBaseFactoryFor<Impl>>)
+      std::make_unique<mediapipe_v01013_based::internal::CalculatorBaseFactoryFor<Impl>>)
 
 // DEPRECATED: use NodeIntf/NodeImpl and automatic registration it provides.
 //   Consult NodeIntf/NodeImpl for more details.
@@ -407,8 +407,8 @@ class SubgraphImpl : public Subgraph,
 // This macro is used to register a non-split-contract calculator.
 #define MEDIAPIPE_REGISTER_NODE(name)                                    \
   MEDIAPIPE_REGISTER_FACTORY_FUNCTION_QUALIFIED(                         \
-      mediapipe::CalculatorBaseRegistry, calculator_registration, #name, \
-      std::make_unique<mediapipe::internal::CalculatorBaseFactoryFor<name>>)
+      mediapipe_v01013_based::CalculatorBaseRegistry, calculator_registration, #name, \
+      std::make_unique<mediapipe_v01013_based::internal::CalculatorBaseFactoryFor<name>>)
 
 // DEPRECATED: use NodeIntf/SubgraphImpl and automatic registration it provides.
 //   Consult NodeIntf/NodeImpl for more details.
@@ -417,10 +417,10 @@ class SubgraphImpl : public Subgraph,
 // registration.
 #define MEDIAPIPE_SUBGRAPH_IMPLEMENTATION(Impl)           \
   MEDIAPIPE_REGISTER_FACTORY_FUNCTION_QUALIFIED(          \
-      mediapipe::SubgraphRegistry, subgraph_registration, \
+      mediapipe_v01013_based::SubgraphRegistry, subgraph_registration, \
       Impl::kCalculatorName, std::make_unique<Impl>)
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_NODE_H_

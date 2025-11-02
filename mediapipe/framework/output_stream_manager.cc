@@ -22,7 +22,7 @@
 #include "mediapipe/framework/input_stream_handler.h"
 #include "mediapipe/framework/port/status_builder.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::Status OutputStreamManager::Initialize(const std::string& name,
                                              const PacketType* packet_type) {
@@ -71,7 +71,7 @@ bool OutputStreamManager::IsClosed() const {
 void OutputStreamManager::PropagateHeader() {
   if (output_stream_spec_.locked_intro_data) {
     output_stream_spec_.TriggerErrorCallback(
-        mediapipe::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+        mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
         << "PropagateHeader must be called in CalculatorNode::OpenNode(). "
            "Stream: \""
         << output_stream_spec_.name << "\".");
@@ -111,7 +111,7 @@ Timestamp OutputStreamManager::ComputeOutputTimestampBound(
   if (input_timestamp != Timestamp::Unstarted() &&
       !input_timestamp.IsAllowedInStream()) {
     output_stream_spec_.TriggerErrorCallback(
-        mediapipe::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+        mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
         << "Invalid input timestamp to compute the output timestamp bound. "
            "Stream: \""
         << output_stream_spec_.name
@@ -228,4 +228,4 @@ int OutputStreamManager::NumPacketsAdded() const {
   return num_packets_added_;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

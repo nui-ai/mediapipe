@@ -4,7 +4,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Returns a valid system file descriptor.
 inline int GetValidFd() { return dup(STDOUT_FILENO); }
@@ -12,6 +12,6 @@ inline int GetValidFd() { return dup(STDOUT_FILENO); }
 // Helper function to check if the file descriptor is valid (still open).
 inline int IsFdValid(int fd) { return fcntl(fd, F_GETFD) != -1; }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_FD_TEST_UTIL_H_

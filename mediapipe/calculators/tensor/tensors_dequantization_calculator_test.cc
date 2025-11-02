@@ -25,12 +25,12 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-using ::mediapipe::ParseTextProtoOrDie;
+using ::mediapipe_v01013_based::ParseTextProtoOrDie;
 using ::testing::HasSubstr;
-using Node = ::mediapipe::CalculatorGraphConfig::Node;
+using Node = ::mediapipe_v01013_based::CalculatorGraphConfig::Node;
 
 constexpr char kCalculatorConfig[] = R"pb(
   calculator: "TensorsDequantizationCalculator"
@@ -135,4 +135,4 @@ TEST_F(TensorsDequantizationCalculatorTest, SucceedsWithBoolTensors) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

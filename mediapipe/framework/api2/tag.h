@@ -5,7 +5,7 @@
 
 #include "mediapipe/framework/api2/const_str.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // This template is used to define a separate type for each tag.
@@ -61,12 +61,12 @@ constexpr auto tag_build(S) {
 #define MPP_TAG(s)                                      \
   ([] {                                                 \
     struct S {                                          \
-      const ::mediapipe::api2::const_str tag{s};        \
+      const ::mediapipe_v01013_based::api2::const_str tag{s};        \
     };                                                  \
-    return ::mediapipe::api2::internal::tag_build(S()); \
+    return ::mediapipe_v01013_based::api2::internal::tag_build(S()); \
   }())
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_TAG_H_

@@ -29,7 +29,7 @@
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31 &&
         // defined(__ANDROID__)
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 
 class SegmentationPostprocessorGl {
@@ -85,6 +85,6 @@ class SegmentationPostprocessorGl {
 };
 
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_IMAGE_SEGMENTER_CALCULATORS_SEGMENTATION_POSTPROCESSOR_GL_H_

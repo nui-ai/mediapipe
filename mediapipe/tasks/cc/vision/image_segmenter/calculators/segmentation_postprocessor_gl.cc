@@ -13,7 +13,7 @@
 #include "mediapipe/gpu/shader_util.h"
 #include "mediapipe/tasks/cc/vision/image_segmenter/proto/segmenter_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace {
 
@@ -25,11 +25,11 @@ const GLint kUniformErrorStatus = 0;
 const GLint kUniformErrorStatus = -1;
 #endif  // __EMSCRIPTEN__
 
-using mediapipe::kBasicSquareVertices;
-using mediapipe::kBasicTextureVertices;
-using mediapipe::kBasicVertexShader;
-using ::mediapipe::tasks::vision::Shape;
-using ::mediapipe::tasks::vision::image_segmenter::proto::SegmenterOptions;
+using mediapipe_v01013_based::kBasicSquareVertices;
+using mediapipe_v01013_based::kBasicTextureVertices;
+using mediapipe_v01013_based::kBasicVertexShader;
+using ::mediapipe_v01013_based::tasks::vision::Shape;
+using ::mediapipe_v01013_based::tasks::vision::image_segmenter::proto::SegmenterOptions;
 
 // TODO: This part of the setup code is so common, we should really
 // refactor to a helper utility.
@@ -334,12 +334,12 @@ absl::Status SegmentationPostprocessorGl::CreateBasicFragmentShaderProgram(
   // Format source and create basic ES3.0+ fragment-shader-only program
   const std::string frag_shader_source =
       absl::StrCat(is_es30_only ? std::string(kEs30RequirementHeader) : "",
-                   std::string(mediapipe::kMediaPipeFragmentShaderPreamble),
+                   std::string(mediapipe_v01013_based::kMediaPipeFragmentShaderPreamble),
                    std::string(fragment_shader_source));
   const std::string vert_shader_source =
       absl::StrCat(is_es30_only ? std::string(kEs30RequirementHeader) : "",
                    std::string(kBasicVertexShader));
-  mediapipe::GlhCreateProgram(
+  mediapipe_v01013_based::GlhCreateProgram(
       vert_shader_source.c_str(), frag_shader_source.c_str(), NUM_ATTRIBUTES,
       &attr_name[0], attr_location, &shader_struct_ptr->program,
       /* force_log_errors */ true);
@@ -389,10 +389,10 @@ absl::Status SegmentationPostprocessorGl::GlInit(
         absl::StrFormat(kActivationFragmentShader, activation_fn);
 
     const std::string split_fragment_shader_source =
-        absl::StrCat(std::string(mediapipe::kMediaPipeFragmentShaderPreamble),
+        absl::StrCat(std::string(mediapipe_v01013_based::kMediaPipeFragmentShaderPreamble),
                      std::string(kPassthroughShader));
     const std::string split_vertex_shader_source =
-        absl::StrCat(std::string(mediapipe::kMediaPipeVertexShaderPreamble),
+        absl::StrCat(std::string(mediapipe_v01013_based::kMediaPipeVertexShaderPreamble),
                      std::string(kSplitVertexShader));
 
     // Compile all our shader programs and grab uniforms.
@@ -427,7 +427,7 @@ absl::Status SegmentationPostprocessorGl::GlInit(
 
     // Split shader. This is created separately since it uses a custom vertex
     // shader. TODO: Refactor so this shares common init code as well.
-    mediapipe::GlhCreateProgram(split_vertex_shader_source.c_str(),
+    mediapipe_v01013_based::GlhCreateProgram(split_vertex_shader_source.c_str(),
                                 split_fragment_shader_source.c_str(),
                                 NUM_ATTRIBUTES, &attr_name[0], attr_location,
                                 &split_program_,
@@ -886,4 +886,4 @@ SegmentationPostprocessorGl::~SegmentationPostprocessorGl() {
 }
 
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

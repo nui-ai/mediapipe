@@ -17,9 +17,9 @@
 #include <cstdint>
 
 @implementation MPPTimestampConverter {
-  mediapipe::Timestamp _mediapipeTimestamp;
-  mediapipe::Timestamp _lastTimestamp;
-  mediapipe::TimestampDiff _timestampOffset;
+  mediapipe_v01013_based::Timestamp _mediapipeTimestamp;
+  mediapipe_v01013_based::Timestamp _lastTimestamp;
+  mediapipe_v01013_based::TimestampDiff _timestampOffset;
 }
 
 - (instancetype)init {
@@ -31,17 +31,17 @@
 }
 
 - (void)reset {
-  _mediapipeTimestamp = mediapipe::Timestamp::Min();
+  _mediapipeTimestamp = mediapipe_v01013_based::Timestamp::Min();
   _lastTimestamp = _mediapipeTimestamp;
   _timestampOffset = 0;
 }
 
-- (mediapipe::Timestamp)timestampForMediaTime:(CMTime)mediaTime {
+- (mediapipe_v01013_based::Timestamp)timestampForMediaTime:(CMTime)mediaTime {
   Float64 sampleSeconds =
       CMTIME_IS_VALID(mediaTime) ? CMTimeGetSeconds(mediaTime) : 0;
   const int64_t sampleUsec =
-      sampleSeconds * mediapipe::Timestamp::kTimestampUnitsPerSecond;
-  _mediapipeTimestamp = mediapipe::Timestamp(sampleUsec) + _timestampOffset;
+      sampleSeconds * mediapipe_v01013_based::Timestamp::kTimestampUnitsPerSecond;
+  _mediapipeTimestamp = mediapipe_v01013_based::Timestamp(sampleUsec) + _timestampOffset;
   if (_mediapipeTimestamp <= _lastTimestamp) {
     _timestampOffset =
         _timestampOffset + _lastTimestamp + 1 - _mediapipeTimestamp;

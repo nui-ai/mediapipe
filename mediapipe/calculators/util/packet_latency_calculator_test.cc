@@ -24,7 +24,7 @@
 #include "mediapipe/framework/tool/simulation_clock_executor.h"
 #include "mediapipe/framework/tool/sink.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -60,14 +60,14 @@ class PacketLatencyCalculatorTest : public ::testing::Test {
       }
     )pb");
 
-    mediapipe::tool::AddVectorSink("packet_latency_0", &graph_config_,
+    mediapipe_v01013_based::tool::AddVectorSink("packet_latency_0", &graph_config_,
                                    &out_0_packets_);
 
     // Create the simulation clock side packet.
     SetupSimulationClock();
-    std::map<std::string, ::mediapipe::Packet> side_packet;
+    std::map<std::string, ::mediapipe_v01013_based::Packet> side_packet;
     side_packet["clock"] =
-        ::mediapipe::MakePacket<std::shared_ptr<::mediapipe::Clock>>(
+        ::mediapipe_v01013_based::MakePacket<std::shared_ptr<::mediapipe_v01013_based::Clock>>(
             simulation_clock_);
 
     // Start graph run.
@@ -108,19 +108,19 @@ class PacketLatencyCalculatorTest : public ::testing::Test {
       }
     )pb");
 
-    mediapipe::tool::AddVectorSink("packet_latency_0", &graph_config_,
+    mediapipe_v01013_based::tool::AddVectorSink("packet_latency_0", &graph_config_,
                                    &out_0_packets_);
-    mediapipe::tool::AddVectorSink("packet_latency_1", &graph_config_,
+    mediapipe_v01013_based::tool::AddVectorSink("packet_latency_1", &graph_config_,
                                    &out_1_packets_);
-    mediapipe::tool::AddVectorSink("packet_latency_2", &graph_config_,
+    mediapipe_v01013_based::tool::AddVectorSink("packet_latency_2", &graph_config_,
                                    &out_2_packets_);
     MP_ASSERT_OK(graph_.Initialize(graph_config_, {}));
 
     // Create the simulation clock side packet.
     simulation_clock_.reset(new SimulationClock());
-    std::map<std::string, ::mediapipe::Packet> side_packet;
+    std::map<std::string, ::mediapipe_v01013_based::Packet> side_packet;
     side_packet["clock"] =
-        ::mediapipe::MakePacket<std::shared_ptr<::mediapipe::Clock>>(
+        ::mediapipe_v01013_based::MakePacket<std::shared_ptr<::mediapipe_v01013_based::Clock>>(
             simulation_clock_);
 
     // Start graph run.
@@ -151,14 +151,14 @@ class PacketLatencyCalculatorTest : public ::testing::Test {
       }
     )pb");
 
-    mediapipe::tool::AddVectorSink("packet_latency_0", &graph_config_,
+    mediapipe_v01013_based::tool::AddVectorSink("packet_latency_0", &graph_config_,
                                    &out_0_packets_);
 
     // Create the simulation clock side packet.
     SetupSimulationClock();
-    std::map<std::string, ::mediapipe::Packet> side_packet;
+    std::map<std::string, ::mediapipe_v01013_based::Packet> side_packet;
     side_packet["clock"] =
-        ::mediapipe::MakePacket<std::shared_ptr<::mediapipe::Clock>>(
+        ::mediapipe_v01013_based::MakePacket<std::shared_ptr<::mediapipe_v01013_based::Clock>>(
             simulation_clock_);
 
     // Start graph run.
@@ -189,7 +189,7 @@ class PacketLatencyCalculatorTest : public ::testing::Test {
     return latency_info;
   }
 
-  std::shared_ptr<::mediapipe::Clock> simulation_clock_;
+  std::shared_ptr<::mediapipe_v01013_based::Clock> simulation_clock_;
   CalculatorGraphConfig graph_config_;
   CalculatorGraph graph_;
   std::vector<Packet> out_0_packets_;
@@ -485,4 +485,4 @@ TEST_F(PacketLatencyCalculatorTest, OutputsCorrectLatencyForMultipleStreams) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

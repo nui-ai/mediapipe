@@ -14,7 +14,7 @@
 
 #include "mediapipe/framework/test_service.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::Status TestServiceCalculator::GetContract(CalculatorContract* cc) {
   cc->Inputs().Index(0).Set<int>();
@@ -48,4 +48,4 @@ absl::Status TestServiceCalculator::Process(CalculatorContext* cc) {
 
 REGISTER_CALCULATOR(TestServiceCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

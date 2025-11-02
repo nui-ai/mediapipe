@@ -21,7 +21,7 @@
 
 #include "tensorflow/lite/minimal_logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace util {
 namespace tflite {
 
@@ -48,4 +48,4 @@ std::string ErrorReporter::previous_message() { return previous_message_; }
 
 }  // namespace tflite
 }  // namespace util
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

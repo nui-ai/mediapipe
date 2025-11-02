@@ -1,6 +1,6 @@
 #include "mediapipe/gpu/gl_texture_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 void CopyGlTexture(const GlTextureView& src, GlTextureView& dst) {
   glViewport(0, 0, src.width(), src.height());
@@ -27,4 +27,4 @@ void FillGlTextureRgba(GlTextureView& view, float r, float g, float b,
                          0);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

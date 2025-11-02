@@ -56,7 +56,7 @@ inline cv::Vec3b Blend(const cv::Vec3b& color1, const cv::Vec3b& color2,
 
 }  // namespace
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A calculator to recolor a masked area of an image to a specified color.
 //
@@ -115,13 +115,13 @@ class RecolorCalculator : public CalculatorBase {
 
   bool initialized_ = false;
   std::vector<uint8_t> color_;
-  mediapipe::RecolorCalculatorOptions::MaskChannel mask_channel_;
+  mediapipe_v01013_based::RecolorCalculatorOptions::MaskChannel mask_channel_;
 
   bool use_gpu_ = false;
   bool invert_mask_ = false;
   bool adjust_with_luminance_ = false;
 #if !MEDIAPIPE_DISABLE_GPU
-  mediapipe::GlCalculatorHelper gpu_helper_;
+  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
   GLuint program_ = 0;
 #endif  // !MEDIAPIPE_DISABLE_GPU
 };
@@ -136,7 +136,7 @@ absl::Status RecolorCalculator::GetContract(CalculatorContract* cc) {
 
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Inputs().HasTag(kGpuBufferTag)) {
-    cc->Inputs().Tag(kGpuBufferTag).Set<mediapipe::GpuBuffer>();
+    cc->Inputs().Tag(kGpuBufferTag).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -146,7 +146,7 @@ absl::Status RecolorCalculator::GetContract(CalculatorContract* cc) {
 
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Inputs().HasTag(kMaskGpuTag)) {
-    cc->Inputs().Tag(kMaskGpuTag).Set<mediapipe::GpuBuffer>();
+    cc->Inputs().Tag(kMaskGpuTag).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -156,7 +156,7 @@ absl::Status RecolorCalculator::GetContract(CalculatorContract* cc) {
 
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Outputs().HasTag(kGpuBufferTag)) {
-    cc->Outputs().Tag(kGpuBufferTag).Set<mediapipe::GpuBuffer>();
+    cc->Outputs().Tag(kGpuBufferTag).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -173,7 +173,7 @@ absl::Status RecolorCalculator::GetContract(CalculatorContract* cc) {
 
   if (use_gpu) {
 #if !MEDIAPIPE_DISABLE_GPU
-    MP_RETURN_IF_ERROR(mediapipe::GlCalculatorHelper::UpdateContract(cc));
+    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc));
 #endif  // !MEDIAPIPE_DISABLE_GPU
   }
 
@@ -244,7 +244,7 @@ absl::Status RecolorCalculator::RenderCpu(CalculatorContext* cc) {
   if (mask_mat.channels() > 1) {
     std::vector<cv::Mat> channels;
     cv::split(mask_mat, channels);
-    if (mask_channel_ == mediapipe::RecolorCalculatorOptions_MaskChannel_ALPHA)
+    if (mask_channel_ == mediapipe_v01013_based::RecolorCalculatorOptions_MaskChannel_ALPHA)
       mask_mat = channels[3];
     else
       mask_mat = channels[0];
@@ -255,7 +255,7 @@ absl::Status RecolorCalculator::RenderCpu(CalculatorContext* cc) {
 
   auto output_img = absl::make_unique<ImageFrame>(
       input_img.Format(), input_mat.cols, input_mat.rows);
-  cv::Mat output_mat = mediapipe::formats::MatView(output_img.get());
+  cv::Mat output_mat = mediapipe_v01013_based::formats::MatView(output_img.get());
 
   const int invert_mask = invert_mask_ ? 1 : 0;
   const int adjust_with_luminance = adjust_with_luminance_ ? 1 : 0;
@@ -310,8 +310,8 @@ absl::Status RecolorCalculator::RenderGpu(CalculatorContext* cc) {
   const Packet& input_packet = cc->Inputs().Tag(kGpuBufferTag).Value();
   const Packet& mask_packet = cc->Inputs().Tag(kMaskGpuTag).Value();
 
-  const auto& input_buffer = input_packet.Get<mediapipe::GpuBuffer>();
-  const auto& mask_buffer = mask_packet.Get<mediapipe::GpuBuffer>();
+  const auto& input_buffer = input_packet.Get<mediapipe_v01013_based::GpuBuffer>();
+  const auto& mask_buffer = mask_packet.Get<mediapipe_v01013_based::GpuBuffer>();
 
   auto img_tex = gpu_helper_.CreateSourceTexture(input_buffer);
   auto mask_tex = gpu_helper_.CreateSourceTexture(mask_buffer);
@@ -337,7 +337,7 @@ absl::Status RecolorCalculator::RenderGpu(CalculatorContext* cc) {
   }
 
   // Send result image in GPU packet.
-  auto output = dst_tex.GetFrame<mediapipe::GpuBuffer>();
+  auto output = dst_tex.GetFrame<mediapipe_v01013_based::GpuBuffer>();
   cc->Outputs().Tag(kGpuBufferTag).Add(output.release(), cc->InputTimestamp());
 
   // Cleanup
@@ -402,7 +402,7 @@ void RecolorCalculator::GlRender() {
 }
 
 absl::Status RecolorCalculator::LoadOptions(CalculatorContext* cc) {
-  const auto& options = cc->Options<mediapipe::RecolorCalculatorOptions>();
+  const auto& options = cc->Options<mediapipe_v01013_based::RecolorCalculatorOptions>();
 
   mask_channel_ = options.mask_channel();
 
@@ -431,11 +431,11 @@ absl::Status RecolorCalculator::InitGpu(CalculatorContext* cc) {
 
   std::string mask_component;
   switch (mask_channel_) {
-    case mediapipe::RecolorCalculatorOptions_MaskChannel_UNKNOWN:
-    case mediapipe::RecolorCalculatorOptions_MaskChannel_RED:
+    case mediapipe_v01013_based::RecolorCalculatorOptions_MaskChannel_UNKNOWN:
+    case mediapipe_v01013_based::RecolorCalculatorOptions_MaskChannel_RED:
       mask_component = "r";
       break;
-    case mediapipe::RecolorCalculatorOptions_MaskChannel_ALPHA:
+    case mediapipe_v01013_based::RecolorCalculatorOptions_MaskChannel_ALPHA:
       mask_component = "a";
       break;
   }
@@ -486,7 +486,7 @@ absl::Status RecolorCalculator::InitGpu(CalculatorContext* cc) {
   )";
 
   // shader program and params
-  mediapipe::GlhCreateProgram(mediapipe::kBasicVertexShader, frag_src.c_str(),
+  mediapipe_v01013_based::GlhCreateProgram(mediapipe_v01013_based::kBasicVertexShader, frag_src.c_str(),
                               NUM_ATTRIBUTES, &attr_name[0], attr_location,
                               &program_);
   RET_CHECK(program_) << "Problem initializing the program.";
@@ -504,4 +504,4 @@ absl::Status RecolorCalculator::InitGpu(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

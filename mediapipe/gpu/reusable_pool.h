@@ -34,7 +34,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/gpu/multi_pool.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 template <class Item>
 class ReusablePool : public std::enable_shared_from_this<ReusablePool<Item>> {
@@ -157,6 +157,6 @@ void ReusablePool<Item>::TrimAvailable(
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_REUSABLE_POOL_H_

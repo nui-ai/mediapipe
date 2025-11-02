@@ -44,18 +44,18 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/proto/external_file.pb.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace components {
 namespace processors {
 namespace {
 
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::core::ModelResources;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::core::ModelResources;
 using ::testing::ElementsAre;
 using ::testing::HasSubstr;
 using ::testing::Pointwise;
@@ -574,4 +574,4 @@ TEST_F(PostprocessingTest, SucceedsWithOutModelNms) {
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -25,7 +25,7 @@
 #include "mediapipe/framework/packet_set.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 const std::string& CalculatorContext::CalculatorType() const {
   ABSL_CHECK(calculator_state_);
@@ -112,4 +112,4 @@ const OutputStreamSet& CalculatorContext::OutputStreams() const {
   return *output_streams_;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

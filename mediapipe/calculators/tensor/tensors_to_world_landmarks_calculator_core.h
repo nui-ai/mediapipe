@@ -20,13 +20,13 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "absl/status/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 class TensorsToWorldLandmarksCore {
  public:
-  explicit TensorsToWorldLandmarksCore(::mediapipe::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
-                                       ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
+  explicit TensorsToWorldLandmarksCore(::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
+                                       ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
                                        int num_landmarks = 21);
 
   absl::Status TensorsToWorldLandmarks(
@@ -35,12 +35,12 @@ class TensorsToWorldLandmarksCore {
 
  private:
   int num_landmarks_;
-  ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation visibility_activation_;  // not used
-  ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation presence_activation_;  // not used
+  ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation visibility_activation_;  // not used
+  ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation presence_activation_;  // not used
 };
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_WORLD LANDMARKS_CALCULATOR_CORE_H_
 

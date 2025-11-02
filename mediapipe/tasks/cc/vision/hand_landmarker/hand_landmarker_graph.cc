@@ -44,26 +44,26 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/util/graph_builder_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Stream;
-using ::mediapipe::tasks::components::utils::DisallowIf;
-using ::mediapipe::tasks::core::ModelAssetBundleResources;
-using ::mediapipe::tasks::metadata::SetExternalFile;
-using ::mediapipe::tasks::vision::hand_detector::proto::
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::mediapipe_v01013_based::tasks::components::utils::DisallowIf;
+using ::mediapipe_v01013_based::tasks::core::ModelAssetBundleResources;
+using ::mediapipe_v01013_based::tasks::metadata::SetExternalFile;
+using ::mediapipe_v01013_based::tasks::vision::hand_detector::proto::
     HandDetectorGraphOptions;
-using ::mediapipe::tasks::vision::hand_landmarker::proto::
+using ::mediapipe_v01013_based::tasks::vision::hand_landmarker::proto::
     HandLandmarkerGraphOptions;
-using ::mediapipe::tasks::vision::hand_landmarker::proto::
+using ::mediapipe_v01013_based::tasks::vision::hand_landmarker::proto::
     HandLandmarksDetectorGraphOptions;
 
 constexpr char kImageTag[] = "IMAGE";
@@ -228,7 +228,7 @@ class HandLandmarkerGraph : public core::ModelTaskGraph {
       MP_RETURN_IF_ERROR(SetSubTaskBaseOptions(
           *model_asset_bundle_resources,
           sc->MutableOptions<HandLandmarkerGraphOptions>(),
-          !sc->Service(::mediapipe::tasks::core::kModelResourcesCacheService)
+          !sc->Service(::mediapipe_v01013_based::tasks::core::kModelResourcesCacheService)
                .IsAvailable()));
     }
     Stream<Image> image_in = graph.In(kImageTag).Cast<Image>();
@@ -264,7 +264,7 @@ class HandLandmarkerGraph : public core::ModelTaskGraph {
   // builder::Graph instance.
   //
   // tasks_options: the mediapipe tasks module HandLandmarkerGraphOptions.
-  // image_in: (mediapipe::Image) stream to run hand landmark detection on.
+  // image_in: (mediapipe_v01013_based::Image) stream to run hand landmark detection on.
   // graph: the mediapipe graph instance to be updated.
   absl::StatusOr<HandLandmarkerOutputs> BuildHandLandmarkerGraph(
       const HandLandmarkerGraphOptions& tasks_options, Stream<Image> image_in,
@@ -393,9 +393,9 @@ class HandLandmarkerGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::vision::hand_landmarker::HandLandmarkerGraph);
+    ::mediapipe_v01013_based::tasks::vision::hand_landmarker::HandLandmarkerGraph);
 
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/util/resource_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Splits an input packet of ListType with a repeated field of ItemType
 // into multiple ListType output packets using the [begin, end) ranges
@@ -44,7 +44,7 @@ class SplitListsCalculator : public CalculatorBase {
     cc->Inputs().Index(0).Set<ListType>();
 
     const auto& options =
-        cc->Options<::mediapipe::SplitVectorCalculatorOptions>();
+        cc->Options<::mediapipe_v01013_based::SplitVectorCalculatorOptions>();
 
     if (options.combine_outputs()) {
       RET_CHECK_EQ(cc->Outputs().NumEntries(), 1);
@@ -97,7 +97,7 @@ class SplitListsCalculator : public CalculatorBase {
     cc->SetOffset(TimestampDiff(0));
 
     const auto& options =
-        cc->Options<::mediapipe::SplitVectorCalculatorOptions>();
+        cc->Options<::mediapipe_v01013_based::SplitVectorCalculatorOptions>();
 
     element_only_ = options.element_only();
     combine_outputs_ = options.combine_outputs();
@@ -209,7 +209,7 @@ class SplitJointListCalculator : public SplitListsCalculator<Joint, JointList> {
 };
 REGISTER_CALCULATOR(SplitJointListCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 // NOLINTNEXTLINE
 #endif  // MEDIAPIPE_CALCULATORS_CORE_SPLIT_PROTO_LIST_CALCULATOR_H_

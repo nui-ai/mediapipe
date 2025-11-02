@@ -18,9 +18,9 @@
 namespace {
 
 using ::Halide::BoundaryConditions::repeat_edge;
-using ::mediapipe::frame_buffer::halide::common::is_interleaved;
-using ::mediapipe::frame_buffer::halide::common::is_planar;
-using ::mediapipe::frame_buffer::halide::common::resize_bilinear_int;
+using ::mediapipe_v01013_based::frame_buffer::halide::common::is_interleaved;
+using ::mediapipe_v01013_based::frame_buffer::halide::common::is_planar;
+using ::mediapipe_v01013_based::frame_buffer::halide::common::resize_bilinear_int;
 
 class YuvResize : public Halide::Generator<YuvResize> {
  public:

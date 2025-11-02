@@ -46,7 +46,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/utils/image_utils.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_detector {
@@ -54,15 +54,15 @@ namespace {
 
 using ::file::Defaults;
 using ::file::GetTextProto;
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::core::TaskRunner;
-using ::mediapipe::tasks::vision::DecodeImageFromFile;
-using ::mediapipe::tasks::vision::face_detector::proto::
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::core::TaskRunner;
+using ::mediapipe_v01013_based::tasks::vision::DecodeImageFromFile;
+using ::mediapipe_v01013_based::tasks::vision::face_detector::proto::
     FaceDetectorGraphOptions;
 using ::testing::EqualsProto;
 using ::testing::Pointwise;
@@ -185,4 +185,4 @@ INSTANTIATE_TEST_SUITE_P(
 }  // namespace face_detector
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

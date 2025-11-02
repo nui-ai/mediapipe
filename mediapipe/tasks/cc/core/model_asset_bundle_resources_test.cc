@@ -34,7 +34,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/utils.h"
 #include "mediapipe/tasks/cc/metadata/utils/zip_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace core {
 namespace {
@@ -224,4 +224,4 @@ TEST(ModelAssetBundleResourcesTest, ListModelFiles) {
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

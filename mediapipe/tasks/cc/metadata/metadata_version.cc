@@ -30,7 +30,7 @@ limitations under the License.
 #include "tensorflow/lite/kernels/internal/compatibility.h"
 #include "tensorflow/lite/tools/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace metadata {
 namespace {
@@ -354,4 +354,4 @@ TfLiteStatus GetMinimumMetadataParserVersion(const uint8_t* buffer_data,
 
 }  // namespace metadata
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

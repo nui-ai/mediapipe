@@ -24,13 +24,13 @@ limitations under the License.
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/tasks/cc/components/containers/embedding_result.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace components {
 namespace utils {
 namespace {
 
-using ::mediapipe::tasks::components::containers::Embedding;
+using ::mediapipe_v01013_based::tasks::components::containers::Embedding;
 using ::testing::HasSubstr;
 
 // Helper function to generate float Embedding.
@@ -106,4 +106,4 @@ TEST(CosineSimilarity, SucceedsWithQuantizedEntries) {
 }  // namespace utils
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

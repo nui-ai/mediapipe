@@ -39,7 +39,7 @@
 #include "mediapipe/framework/port/canonical_errors.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Usage:
 //
@@ -266,7 +266,7 @@ class FunctionRegistry {
   // The name must be either unqualified or fully qualified with a leading "::".
   // The leading "::" in a fully qualified name is stripped.
   std::string GetNormalizedName(absl::string_view name) {
-    using ::mediapipe::registration_internal::kCxxSep;
+    using ::mediapipe_v01013_based::registration_internal::kCxxSep;
     std::vector<std::string> names = absl::StrSplit(name, kCxxSep);
     if (names[0].empty()) {
       names.erase(names.begin());
@@ -282,8 +282,8 @@ class FunctionRegistry {
   // Namespaces are separated by kNameSep.
   std::string GetQualifiedName(absl::string_view ns,
                                absl::string_view name) const {
-    using ::mediapipe::registration_internal::kCxxSep;
-    using ::mediapipe::registration_internal::kNameSep;
+    using ::mediapipe_v01013_based::registration_internal::kCxxSep;
+    using ::mediapipe_v01013_based::registration_internal::kNameSep;
     std::vector<std::string> names = absl::StrSplit(name, kNameSep);
     if (names[0].empty()) {
       names.erase(names.begin());
@@ -324,7 +324,7 @@ class FunctionRegistry {
 
   // For names included in NamespaceAllowlist, strips the namespace.
   std::string GetAdjustedName(absl::string_view name) {
-    using ::mediapipe::registration_internal::kCxxSep;
+    using ::mediapipe_v01013_based::registration_internal::kCxxSep;
     std::vector<std::string> names = absl::StrSplit(name, kCxxSep);
     std::string base_name = names.back();
     names.pop_back();
@@ -468,7 +468,7 @@ static_assert(false,
 
 #define MEDIAPIPE_REGISTER_FACTORY_FUNCTION_QUALIFIED(RegistryType, var_name, \
                                                       name, ...)              \
-  static mediapipe::RegistrationToken* REGISTRY_STATIC_VAR(var_name,          \
+  static mediapipe_v01013_based::RegistrationToken* REGISTRY_STATIC_VAR(var_name,          \
                                                            __LINE__) = []() { \
     ABSL_RAW_LOG(WARNING, "Registration Dry Run: %s",                         \
                  INTERNAL_MEDIAPIPE_REGISTER_FACTORY_STRINGIFY(               \
@@ -480,9 +480,9 @@ static_assert(false,
                                               names, ...)                     \
   template <typename T>                                                       \
   struct Internal##RegistratorName {                                          \
-    static NoDestructor<mediapipe::RegistrationToken> registration;           \
+    static NoDestructor<mediapipe_v01013_based::RegistrationToken> registration;           \
                                                                               \
-    static mediapipe::RegistrationToken Make() {                              \
+    static mediapipe_v01013_based::RegistrationToken Make() {                              \
       ABSL_RAW_LOG(WARNING, "Registration Dry Run: %s",                       \
                    INTERNAL_MEDIAPIPE_REGISTER_FACTORY_STRINGIFY(             \
                        RegistryType::Register(names, __VA_ARGS__)));          \
@@ -496,7 +496,7 @@ static_assert(false,
   };                                                                          \
   /* Static members of template classes can be defined in the header. */      \
   template <typename T>                                                       \
-  NoDestructor<mediapipe::RegistrationToken>                                  \
+  NoDestructor<mediapipe_v01013_based::RegistrationToken>                                  \
       Internal##RegistratorName<T>::registration(                             \
           Internal##RegistratorName<T>::Make());                              \
                                                                               \
@@ -513,9 +513,9 @@ static_assert(false,
 
 #define MEDIAPIPE_REGISTER_FACTORY_FUNCTION_QUALIFIED(RegistryType, var_name, \
                                                       name, ...)              \
-  static mediapipe::RegistrationToken* REGISTRY_STATIC_VAR(var_name,          \
+  static mediapipe_v01013_based::RegistrationToken* REGISTRY_STATIC_VAR(var_name,          \
                                                            __LINE__) =        \
-      new mediapipe::RegistrationToken(                                       \
+      new mediapipe_v01013_based::RegistrationToken(                                       \
           RegistryType::Register(name, __VA_ARGS__));
 
 // Defines a utility registrator class which can be used to automatically
@@ -551,9 +551,9 @@ static_assert(false,
                                               name, ...)                      \
   template <typename T>                                                       \
   struct Internal##RegistratorName {                                          \
-    static NoDestructor<mediapipe::RegistrationToken> registration;           \
+    static NoDestructor<mediapipe_v01013_based::RegistrationToken> registration;           \
                                                                               \
-    static mediapipe::RegistrationToken Make() {                              \
+    static mediapipe_v01013_based::RegistrationToken Make() {                              \
       return RegistryType::Register(name, __VA_ARGS__);                       \
     }                                                                         \
                                                                               \
@@ -562,7 +562,7 @@ static_assert(false,
   };                                                                          \
   /* Static members of template classes can be defined in the header. */      \
   template <typename T>                                                       \
-  NoDestructor<mediapipe::RegistrationToken>                                  \
+  NoDestructor<mediapipe_v01013_based::RegistrationToken>                                  \
       Internal##RegistratorName<T>::registration(                             \
           Internal##RegistratorName<T>::Make());                              \
                                                                               \
@@ -585,6 +585,6 @@ static_assert(false,
   MEDIAPIPE_REGISTER_FACTORY_FUNCTION_QUALIFIED(RegistryType, var_name, #name, \
                                                 __VA_ARGS__)
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_REGISTRATION_H_

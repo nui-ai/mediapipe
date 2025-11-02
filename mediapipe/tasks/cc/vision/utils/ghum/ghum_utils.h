@@ -28,11 +28,11 @@ Pose and Hund Hand models and pose landmarks.
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/tasks/cc/vision/utils/ghum/ghum_topology.h"
 
-namespace mediapipe::tasks::vision::utils::ghum {
+namespace mediapipe_v01013_based::tasks::vision::utils::ghum {
 
 struct HundToGhumJointsMapping {
   // Joints produced by the HUND models.
-  mediapipe::api2::builder::Stream<mediapipe::JointList> hund_joints;
+  mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::JointList> hund_joints;
   // Order of joints in GHUM topology.
   absl::Span<const GhumJointName> ghum_joints_order;
 };
@@ -45,23 +45,23 @@ struct HundToGhumJointsMapping {
 //
 // All joints specified later in order will override those that were specified
 // earlier.
-mediapipe::api2::builder::Stream<mediapipe::JointList>
+mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::JointList>
 SetGhumJointsFromHundJoints(
     std::vector<HundToGhumJointsMapping>& hund_to_ghum_joints_mappings,
-    mediapipe::api2::builder::Graph& graph);
+    mediapipe_v01013_based::api2::builder::Graph& graph);
 
 // Sets visibility of 63 GHUM joints from 33 pose world landmarks.
-mediapipe::api2::builder::Stream<mediapipe::JointList>
+mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::JointList>
 SetGhumJointsVisibilityFromWorldLandmarks(
-    mediapipe::api2::builder::Stream<mediapipe::JointList> ghum_joints,
-    mediapipe::api2::builder::Stream<mediapipe::LandmarkList>
+    mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::JointList> ghum_joints,
+    mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::LandmarkList>
         pose_world_landmarks,
-    mediapipe::api2::builder::Graph& graph);
+    mediapipe_v01013_based::api2::builder::Graph& graph);
 
 // Gets a subset of kGhumRestingJointRotations in 6D format.
 std::vector<std::array<float, 6>> GetGhumRestingJointRotationsSubset(
     absl::Span<const GhumJointName> ghum_joint_names);
 
-}  // namespace mediapipe::tasks::vision::utils::ghum
+}  // namespace mediapipe_v01013_based::tasks::vision::utils::ghum
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_UTILS_GHUM_GHUM_UTILS_H_

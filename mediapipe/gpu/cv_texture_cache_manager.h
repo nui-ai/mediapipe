@@ -21,7 +21,7 @@
 #include "mediapipe/gpu/pixel_buffer_pool_util.h"
 #include "mediapipe/objc/CFHolder.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class CvTextureCacheManager {
  public:
@@ -44,6 +44,6 @@ class CvTextureCacheManager {
       ABSL_GUARDED_BY(mutex_);
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_CV_TEXTURE_CACHE_MANAGER_H_

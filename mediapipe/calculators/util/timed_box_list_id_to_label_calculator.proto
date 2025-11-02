@@ -14,12 +14,12 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 
 message TimedBoxListIdToLabelCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional TimedBoxListIdToLabelCalculatorOptions ext = 297701606;
   }
 

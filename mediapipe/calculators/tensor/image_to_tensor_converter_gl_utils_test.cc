@@ -8,11 +8,11 @@
 #include "mediapipe/gpu/gl_base.h"
 #include "mediapipe/gpu/gl_context.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 TEST(ImageToTensorConverterGlUtilsTest, GlTexParameteriOverrider) {
-  auto status_or_context = mediapipe::GlContext::Create(nullptr, false);
+  auto status_or_context = mediapipe_v01013_based::GlContext::Create(nullptr, false);
   MP_ASSERT_OK(status_or_context);
   auto context = status_or_context.value();
 
@@ -44,6 +44,6 @@ TEST(ImageToTensorConverterGlUtilsTest, GlTexParameteriOverrider) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_30

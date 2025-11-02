@@ -24,7 +24,7 @@
 #include "mediapipe/util/tracking/flow_packager.pb.h"
 #include "mediapipe/util/tracking/tracking.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Feature correspondences between target index and a specific frame.
 // The size of `points_frame` and `points_index` should be identical and the
@@ -158,6 +158,6 @@ class BoxDetectorInterface {
   BoxDetectorOptions options_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_BOX_DETECTOR_H_

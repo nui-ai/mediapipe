@@ -23,7 +23,7 @@
     EXPECT_GE((high), (value));          \
   } while (0)
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using ::testing::_;
@@ -147,4 +147,4 @@ TEST(ResourceCacheTest, EvictWithScrub) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

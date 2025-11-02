@@ -38,16 +38,16 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/utils/landmarks_duplicates_finder.h"
 #include "mediapipe/tasks/cc/vision/utils/landmarks_utils.h"
 
-namespace mediapipe::api2 {
+namespace mediapipe_v01013_based::api2 {
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::containers::RectF;
-using ::mediapipe::tasks::vision::utils::CalculateIOU;
-using ::mediapipe::tasks::vision::utils::DuplicatesFinder;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::containers::RectF;
+using ::mediapipe_v01013_based::tasks::vision::utils::CalculateIOU;
+using ::mediapipe_v01013_based::tasks::vision::utils::DuplicatesFinder;
 
 float Distance(const NormalizedLandmark& lm_a, const NormalizedLandmark& lm_b,
                int width, int height) {
@@ -246,7 +246,7 @@ std::unique_ptr<DuplicatesFinder> CreateHandDuplicatesFinder(
 }
 
 absl::Status HandLandmarksDeduplicationCalculator::Process(
-    mediapipe::CalculatorContext* cc) {
+    mediapipe_v01013_based::CalculatorContext* cc) {
   if (kInLandmarks(cc).IsEmpty()) return absl::OkStatus();
   if (kInSize(cc).IsEmpty()) return absl::OkStatus();
 
@@ -309,4 +309,4 @@ absl::Status HandLandmarksDeduplicationCalculator::Process(
 }
 MEDIAPIPE_REGISTER_NODE(HandLandmarksDeduplicationCalculator);
 
-}  // namespace mediapipe::api2
+}  // namespace mediapipe_v01013_based::api2

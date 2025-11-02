@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/util/image_test_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 Matrix CreateTestMatrix(int num_rows, int num_columns) {
@@ -177,4 +177,4 @@ TEST(TensorConverterCpuTest, ConvertMatrixToTensorOnCpu) {
 
 }  // namespace
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

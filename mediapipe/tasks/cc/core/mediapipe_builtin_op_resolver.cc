@@ -27,40 +27,40 @@ limitations under the License.
 #include "mediapipe/util/tflite/operations/transform_tensor_bilinear.h"
 #include "mediapipe/util/tflite/operations/transpose_conv_bias.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace core {
 
 MediaPipeBuiltinOpResolver::MediaPipeBuiltinOpResolver() {
   AddCustom("MaxPoolingWithArgmax2D",
-            mediapipe::tflite_operations::RegisterMaxPoolingWithArgmax2D());
+            mediapipe_v01013_based::tflite_operations::RegisterMaxPoolingWithArgmax2D());
   AddCustom("MaxUnpooling2D",
-            mediapipe::tflite_operations::RegisterMaxUnpooling2D());
+            mediapipe_v01013_based::tflite_operations::RegisterMaxUnpooling2D());
   AddCustom("Convolution2DTransposeBias",
-            mediapipe::tflite_operations::RegisterConvolution2DTransposeBias());
+            mediapipe_v01013_based::tflite_operations::RegisterConvolution2DTransposeBias());
   AddCustom("TransformTensorBilinear",
-            mediapipe::tflite_operations::RegisterTransformTensorBilinearV2(),
+            mediapipe_v01013_based::tflite_operations::RegisterTransformTensorBilinearV2(),
             /*version=*/2);
   AddCustom("TransformLandmarks",
-            mediapipe::tflite_operations::RegisterTransformLandmarksV2(),
+            mediapipe_v01013_based::tflite_operations::RegisterTransformLandmarksV2(),
             /*version=*/2);
   AddCustom(
       "Landmarks2TransformMatrix",
-      mediapipe::tflite_operations::RegisterLandmarksToTransformMatrixV2(),
+      mediapipe_v01013_based::tflite_operations::RegisterLandmarksToTransformMatrixV2(),
       /*version=*/2);
   // For the LanguageDetector model.
-//  AddCustom("NGramHash", mediapipe::tflite_operations::Register_NGRAM_HASH());
+//  AddCustom("NGramHash", mediapipe_v01013_based::tflite_operations::Register_NGRAM_HASH());
 //  AddCustom("KmeansEmbeddingLookup",
-//            mediapipe::tflite_operations::Register_KmeansEmbeddingLookup());
+//            mediapipe_v01013_based::tflite_operations::Register_KmeansEmbeddingLookup());
   // For the UniversalSentenceEncoder model.
 //  AddCustom("TFSentencepieceTokenizeOp",
-//            mediapipe::tflite_operations::Register_SENTENCEPIECE_TOKENIZER());
+//            mediapipe_v01013_based::tflite_operations::Register_SENTENCEPIECE_TOKENIZER());
 //  AddCustom("RaggedTensorToTensor",
-//            mediapipe::tflite_operations::Register_RAGGED_TENSOR_TO_TENSOR());
+//            mediapipe_v01013_based::tflite_operations::Register_RAGGED_TENSOR_TO_TENSOR());
   AddCustom("FusedBatchNormV3",
-            mediapipe::tflite_operations::Register_FusedBatchNorm());
+            mediapipe_v01013_based::tflite_operations::Register_FusedBatchNorm());
 }
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

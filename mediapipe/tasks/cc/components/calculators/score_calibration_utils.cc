@@ -26,7 +26,7 @@
 #include "mediapipe/tasks/cc/components/calculators/score_calibration_calculator.pb.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 
 namespace {
@@ -112,4 +112,4 @@ absl::Status ConfigureScoreCalibration(
 }
 
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/gtest-spi.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using ::testing::Eq;
@@ -105,4 +105,4 @@ TEST(PacketTestUtilTest, TypeMismatchContentWithMismatchingTimestamp) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

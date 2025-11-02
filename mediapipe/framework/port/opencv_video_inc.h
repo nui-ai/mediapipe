@@ -74,11 +74,11 @@ enum VideoCaptureProperties {
 };
 }  // namespace cv
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 inline int fourcc(char c1, char c2, char c3, char c4) {
   return CV_FOURCC(c1, c2, c3, c4);
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #else
 #include <opencv2/video.hpp>
@@ -94,11 +94,11 @@ inline Ptr<DenseOpticalFlow> createOptFlow_DualTVL1() {
 }  // namespace cv
 #endif
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 inline int fourcc(char c1, char c2, char c3, char c4) {
   return cv::VideoWriter::fourcc(c1, c2, c3, c4);
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 #endif
 
 #endif  // MEDIAPIPE_PORT_OPENCV_VIDEO_INC_H_

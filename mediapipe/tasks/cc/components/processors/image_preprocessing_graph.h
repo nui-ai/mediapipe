@@ -22,7 +22,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/model_resources.h"
 #include "mediapipe/tasks/cc/core/proto/acceleration.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace components {
 namespace processors {
@@ -65,7 +65,7 @@ namespace processors {
 //     GPU).
 absl::Status ConfigureImagePreprocessingGraph(
     const core::ModelResources& model_resources, bool use_gpu,
-    ::mediapipe::GpuOrigin::Mode gpu_origin,
+    ::mediapipe_v01013_based::GpuOrigin::Mode gpu_origin,
     proto::ImagePreprocessingGraphOptions* options);
 
 // A convenient function of the above. gpu_origin is set to TOP_LEFT by default.
@@ -81,6 +81,6 @@ bool DetermineImagePreprocessingGpuBackend(
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_PROCESSORS_IMAGE_PREPROCESSING_GRAPH_H_

@@ -29,11 +29,11 @@ limitations under the License.
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
+using ::mediapipe_v01013_based::NormalizedRect;
 
 constexpr char kLandmarksTag[] = "LANDMARKS";
 constexpr char kWorldLandmarksTag[] = "WORLD_LANDMARKS";
@@ -234,4 +234,4 @@ INSTANTIATE_TEST_CASE_P(
 
 }  // namespace
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

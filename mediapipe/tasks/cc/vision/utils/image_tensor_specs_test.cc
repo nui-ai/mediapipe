@@ -38,13 +38,13 @@ limitations under the License.
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace {
 
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
 using ::testing::ContainerEq;
 using ::testing::Optional;
 using ::tflite::ColorSpaceType_RGB;
@@ -197,4 +197,4 @@ TEST_F(ImageTensorSpecsTest, BuildInputImageTensorSpecsFromModelResources) {
 }  // namespace
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

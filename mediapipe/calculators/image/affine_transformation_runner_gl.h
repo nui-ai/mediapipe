@@ -23,15 +23,15 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #include "mediapipe/gpu/gpu_origin.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::StatusOr<std::unique_ptr<AffineTransformation::Runner<
-    mediapipe::GpuBuffer, std::unique_ptr<mediapipe::GpuBuffer>>>>
+    mediapipe_v01013_based::GpuBuffer, std::unique_ptr<mediapipe_v01013_based::GpuBuffer>>>>
 CreateAffineTransformationGlRunner(
-    std::shared_ptr<mediapipe::GlCalculatorHelper> gl_helper,
-    mediapipe::GpuOrigin::Mode gpu_origin,
+    std::shared_ptr<mediapipe_v01013_based::GlCalculatorHelper> gl_helper,
+    mediapipe_v01013_based::GpuOrigin::Mode gpu_origin,
     AffineTransformation::Interpolation interpolation);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_IMAGE_AFFINE_TRANSFORMATION_RUNNER_GL_H_

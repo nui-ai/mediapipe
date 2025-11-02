@@ -70,16 +70,16 @@ limitations under the License.
 #include "testing/base/public/googletest.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
 namespace {
 
-using ::mediapipe::api2::builder::GetImageSize;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Stream;
-using ::mediapipe::tasks::core::TaskRunner;
+using ::mediapipe_v01013_based::api2::builder::GetImageSize;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::mediapipe_v01013_based::tasks::core::TaskRunner;
 using ::testing::TestParamInfo;
 using ::testing::TestWithParam;
 using ::testing::Values;
@@ -123,8 +123,8 @@ enum RenderPart {
   FACE = 2,
 };
 
-mediapipe::Color GetColor(RenderPart render_part) {
-  mediapipe::Color color;
+mediapipe_v01013_based::Color GetColor(RenderPart render_part) {
+  mediapipe_v01013_based::Color color;
   switch (render_part) {
     case HAND:
       color.set_b(255);
@@ -150,10 +150,10 @@ std::string GetFilePath(absl::string_view filename) {
 }
 
 template <std::size_t N>
-mediapipe::LandmarksToRenderDataCalculatorOptions GetRendererOptions(
+mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions GetRendererOptions(
     const std::array<std::array<int, 2>, N>& connections,
-    mediapipe::Color color) {
-  mediapipe::LandmarksToRenderDataCalculatorOptions renderer_options;
+    mediapipe_v01013_based::Color color) {
+  mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions renderer_options;
   for (const auto& connection : connections) {
     renderer_options.add_landmark_connections(connection[0]);
     renderer_options.add_landmark_connections(connection[1]);
@@ -239,7 +239,7 @@ absl::StatusOr<std::unique_ptr<tasks::core::TaskRunner>> CreateTaskRunner(
     ConfigureFaceProtoOptions(options);
   }
 
-  std::vector<Stream<mediapipe::RenderData>> render_list;
+  std::vector<Stream<mediapipe_v01013_based::RenderData>> render_list;
   image >> holistic_graph.In("IMAGE");
   Stream<std::pair<int, int>> image_size = GetImageSize(image, graph);
 
@@ -321,7 +321,7 @@ absl::StatusOr<std::unique_ptr<tasks::core::TaskRunner>> CreateTaskRunner(
   render_list.push_back(pose_landmarks_render_data);
   auto rendered_image =
       utils::Render(
-          image, absl::Span<Stream<mediapipe::RenderData>>(render_list), graph)
+          image, absl::Span<Stream<mediapipe_v01013_based::RenderData>>(render_list), graph)
           .SetName(kRenderedImageOutStream);
 
   pose_landmarks >> graph.Out("POSE_LANDMARKS");
@@ -485,11 +485,11 @@ TEST_P(SmokeTest, Succeeds) {
   auto pose_segmentation_mask =
       output_packets.at(std::string(kPoseSegmentationMaskStream)).Get<Image>();
 
-  cv::Mat matting_mask = mediapipe::formats::MatView(
+  cv::Mat matting_mask = mediapipe_v01013_based::formats::MatView(
       pose_segmentation_mask.GetImageFrameSharedPtr().get());
   cv::Mat visualized_mask;
   matting_mask.convertTo(visualized_mask, CV_8UC1, 255);
-  ImageFrame visualized_image(mediapipe::ImageFormat::GRAY8,
+  ImageFrame visualized_image(mediapipe_v01013_based::ImageFormat::GRAY8,
                               visualized_mask.cols, visualized_mask.rows,
                               visualized_mask.step, visualized_mask.data,
                               [visualized_mask](uint8_t[]) {});
@@ -592,4 +592,4 @@ INSTANTIATE_TEST_SUITE_P(
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

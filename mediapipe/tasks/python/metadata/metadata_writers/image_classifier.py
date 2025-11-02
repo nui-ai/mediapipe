@@ -37,7 +37,7 @@ class MetadataWriter(metadata_writer.MetadataWriterBase):
   ) -> "MetadataWriter":
     """Creates MetadataWriter to write the metadata for image classifier.
 
-    The parameters required in this method are mandatory when using MediaPipe
+    The parameters required in this method are mandatory when using mediapipe_v01013_based
     Tasks.
 
     Note that only the output TFLite is used for deployment. The output JSON

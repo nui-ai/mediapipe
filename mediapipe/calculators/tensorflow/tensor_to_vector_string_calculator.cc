@@ -23,7 +23,7 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/types.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tf = ::tensorflow;
 
@@ -115,4 +115,4 @@ absl::Status TensorToVectorStringCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

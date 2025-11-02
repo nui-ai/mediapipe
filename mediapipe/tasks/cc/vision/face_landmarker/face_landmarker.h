@@ -28,7 +28,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/running_mode.h"
 #include "mediapipe/tasks/cc/vision/face_landmarker/face_landmarker_result.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
@@ -108,7 +108,7 @@ class FaceLandmarker : tasks::vision::core::BaseVisionTaskApi {
   // or streaming data. Face landmarker can be created with one of the following
   // three running modes:
   // 1) Image mode for detecting face landmarks on single image inputs. Users
-  //    provide mediapipe::Image to the `Detect` method, and will receive the
+  //    provide mediapipe_v01013_based::Image to the `Detect` method, and will receive the
   //    detected face landmarks results as the return value.
   // 2) Video mode for detecting face landmarks on the decoded frames of a
   //    video. Users call `DetectForVideo` method, and will receive the detected
@@ -193,6 +193,6 @@ class FaceLandmarker : tasks::vision::core::BaseVisionTaskApi {
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_FACE_LANDMARKER_FACE_LANDMARKER_H_

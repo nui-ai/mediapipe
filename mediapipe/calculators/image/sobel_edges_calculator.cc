@@ -20,7 +20,7 @@
 
 enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, NUM_ATTRIBUTES };
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Applies the Sobel filter to an image. Expects a grayscale image stored as
 // RGB, like LuminanceCalculator outputs.
@@ -235,4 +235,4 @@ absl::Status SobelEdgesCalculator::GlTeardown() {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

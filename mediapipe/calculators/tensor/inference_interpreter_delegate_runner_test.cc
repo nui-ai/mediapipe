@@ -28,11 +28,11 @@
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace {
 
-using ::mediapipe::Tensor;
+using ::mediapipe_v01013_based::Tensor;
 using ::testing::HasSubstr;
 
 constexpr const char kInt32ModelFile[] =
@@ -71,7 +71,7 @@ class InferenceCalculatorDelegateRunnnerTest : public ::testing::Test {
  public:
   absl::Status ExecuteAnyInvocableInGraphCalculator(
       absl::AnyInvocable<absl::Status(CalculatorContext*) const> invokable) {
-    mediapipe::api2::builder::Graph graph_builder;
+    mediapipe_v01013_based::api2::builder::Graph graph_builder;
     auto input = graph_builder.In("INPUT")
                      .SetName("input")
                      .Cast<absl::AnyInvocable<absl::Status() const>>();
@@ -83,9 +83,9 @@ class InferenceCalculatorDelegateRunnnerTest : public ::testing::Test {
     MP_RETURN_IF_ERROR(graph.Initialize(config));
     MP_RETURN_IF_ERROR(graph.StartRun({}));
     MP_RETURN_IF_ERROR(graph.AddPacketToInputStream(
-        "input", mediapipe::MakePacket<absl::AnyInvocable<absl::Status(
+        "input", mediapipe_v01013_based::MakePacket<absl::AnyInvocable<absl::Status(
                      CalculatorContext*) const>>(std::move(invokable))
-                     .At(mediapipe::Timestamp(0))));
+                     .At(mediapipe_v01013_based::Timestamp(0))));
     MP_RETURN_IF_ERROR(graph.CloseAllInputStreams());
     return graph.WaitUntilDone();
   }
@@ -350,4 +350,4 @@ TEST_F(InferenceCalculatorDelegateRunnnerTest,
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

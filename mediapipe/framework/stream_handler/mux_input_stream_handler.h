@@ -24,7 +24,7 @@
 #include "mediapipe/framework/collection_item_id.h"
 #include "mediapipe/framework/input_stream_handler.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Implementation of the input stream handler for the MuxCalculator.
 //
@@ -75,6 +75,6 @@ class MuxInputStreamHandler : public InputStreamHandler {
   absl::Mutex input_streams_mutex_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_STREAM_HANDLER_MUX_INPUT_STREAM_HANDLER_H_

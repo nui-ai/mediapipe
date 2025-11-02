@@ -29,7 +29,7 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 template <typename ImageT>
 inline constexpr absl::string_view kWarpAffineNodeName;
@@ -77,7 +77,7 @@ struct WarpAffineNode : Node<kWarpAffineNodeName<ImageT>> {
 
     Output<S, ImageT> out_image{"IMAGE"};
 
-    Options<S, mediapipe::WarpAffineCalculatorOptions> options;
+    Options<S, mediapipe_v01013_based::WarpAffineCalculatorOptions> options;
   };
 };
 
@@ -101,6 +101,6 @@ template <>
 inline constexpr absl::string_view kWarpAffineNodeName<Image> =
     "WarpAffineCalculator";
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_CALCULATORS_IMAGE_WARP_AFFINE_CALCULATOR_H_

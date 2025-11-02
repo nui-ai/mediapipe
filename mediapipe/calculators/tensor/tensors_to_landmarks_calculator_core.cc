@@ -16,7 +16,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include <cmath>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 namespace {
@@ -25,9 +25,9 @@ inline float Sigmoid(float value) { return 1.0f / (1.0f + std::exp(-value)); }
 
 /// optionally applies sigmoid to the input activation value. our code paths never reach it.
 float ProcessExtraActivation(
-    ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation activation, float value) {
+    ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation activation, float value) {
   switch (activation) {
-    case ::mediapipe::TensorsToLandmarksCalculatorOptions::SIGMOID:
+    case ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::SIGMOID:
       // ABSL_LOG(INFO) << "activation is sigmoid";
       return Sigmoid(value);
       break;
@@ -41,8 +41,8 @@ float ProcessExtraActivation(
 
 TensorsToLandmarksCore::TensorsToLandmarksCore(
     int input_image_width, int input_image_height,
-    ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
-    ::mediapipe::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
+    ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
+    ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
     float normalize_z,
     int num_landmarks)
     : input_image_width_(input_image_width),
@@ -111,4 +111,4 @@ absl::Status TensorsToLandmarksCore::TensorsToLandmarks(
 }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -15,17 +15,17 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe.tasks.components.containers.proto;
+package mediapipe_v01013_based.tasks.components.containers.proto;
 
 import "mediapipe/framework/formats/classification.proto";
 
-option java_package = "com.google.mediapipe.tasks.components.containers.proto";
+option java_package = "com.google.mediapipe_v01013_based.tasks.components.containers.proto";
 option java_outer_classname = "ClassificationsProto";
 
 // Classifications for a given classifier head, i.e. for a given output tensor.
 message Classifications {
   // The classification results for this head.
-  optional mediapipe.ClassificationList classification_list = 4;
+  optional mediapipe_v01013_based.ClassificationList classification_list = 4;
   // The index of the classifier head these categories refer to. This is useful
   // for multi-head models.
   optional int32 head_index = 2;

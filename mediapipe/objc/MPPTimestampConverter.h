@@ -22,7 +22,7 @@
 @interface MPPTimestampConverter : NSObject
 
 /// The last timestamp returned by timestampForMediaTime:.
-@property(nonatomic, readonly) mediapipe::Timestamp lastTimestamp;
+@property(nonatomic, readonly) mediapipe_v01013_based::Timestamp lastTimestamp;
 
 /// Initializer.
 - (instancetype)init NS_DESIGNATED_INITIALIZER;
@@ -38,6 +38,6 @@
 /// looping video), we shift all timestamps from that point on to keep the
 /// output increasing.
 /// This state is erased when reset is called.
-- (mediapipe::Timestamp)timestampForMediaTime:(CMTime)mediaTime;
+- (mediapipe_v01013_based::Timestamp)timestampForMediaTime:(CMTime)mediaTime;
 
 @end

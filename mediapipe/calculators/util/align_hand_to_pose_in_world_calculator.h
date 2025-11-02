@@ -20,7 +20,7 @@
 #include "mediapipe/framework/api2/port.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe::api2 {
+namespace mediapipe_v01013_based::api2 {
 
 // A calculator to align hand world landmarks with pose world landmarks.
 //
@@ -58,17 +58,17 @@ namespace mediapipe::api2 {
 //   }
 class AlignHandToPoseInWorldCalculator : public NodeIntf {
  public:
-  static constexpr Input<mediapipe::LandmarkList> kInHandLandmarks{
+  static constexpr Input<mediapipe_v01013_based::LandmarkList> kInHandLandmarks{
       "HAND_LANDMARKS"};
-  static constexpr Input<mediapipe::LandmarkList> kInPoseLandmarks{
+  static constexpr Input<mediapipe_v01013_based::LandmarkList> kInPoseLandmarks{
       "POSE_LANDMARKS"};
-  static constexpr Output<mediapipe::LandmarkList> kOutHandLandmarks{
+  static constexpr Output<mediapipe_v01013_based::LandmarkList> kOutHandLandmarks{
       "HAND_LANDMARKS"};
-  MEDIAPIPE_NODE_INTERFACE(::mediapipe::AlignHandToPoseInWorldCalculator,
+  MEDIAPIPE_NODE_INTERFACE(::mediapipe_v01013_based::AlignHandToPoseInWorldCalculator,
                            kInHandLandmarks, kInPoseLandmarks,
                            kOutHandLandmarks);
 };
 
-}  // namespace mediapipe::api2
+}  // namespace mediapipe_v01013_based::api2
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_ALIGN_HAND_TO_POSE_IN_WORLD_CALCULATOR_H_

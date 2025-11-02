@@ -37,7 +37,7 @@
 #include "mediapipe/util/cpu_util.h"
 #endif  // !MEDIAPIPE_MOBILE && !MEDIAPIPE_LITE
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 absl::Status RunGeneratorFillExpectations(
@@ -124,4 +124,4 @@ absl::Status RunGenerateAndValidateTypes(
 }
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

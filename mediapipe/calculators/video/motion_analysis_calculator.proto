@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/util/tracking/motion_analysis.proto";
@@ -25,7 +25,7 @@ message MotionAnalysisCalculatorOptions {
     optional MotionAnalysisCalculatorOptions ext = 270698255;
   }
 
-  optional mediapipe.MotionAnalysisOptions analysis_options = 1;
+  optional mediapipe_v01013_based.MotionAnalysisOptions analysis_options = 1;
 
   // Determines how optional input SELECTION (if present) is used to compute
   // the final camera motion.

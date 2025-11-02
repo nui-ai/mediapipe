@@ -16,7 +16,7 @@
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 static const char my_graph[] =
@@ -30,4 +30,4 @@ TEST(DataAsCString, CanDecodeCalculatorGraphConfig) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

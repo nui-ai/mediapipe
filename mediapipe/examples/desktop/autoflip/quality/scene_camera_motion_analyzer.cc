@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 absl::Status SceneCameraMotionAnalyzer::AnalyzeSceneAndPopulateFocusPointFrames(
@@ -440,4 +440,4 @@ absl::Status SceneCameraMotionAnalyzer::PopulateFocusPointFramesForTracking(
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

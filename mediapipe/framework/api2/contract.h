@@ -16,7 +16,7 @@
 #include "mediapipe/framework/output_side_packet.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 class StreamHandler {
@@ -73,7 +73,7 @@ template <class T>
 struct HasProcessMethod<
     T,
     std::void_t<decltype(absl::Status(std::declval<std::decay_t<T>>().Process(
-        std::declval<mediapipe::CalculatorContext*>())))>> : std::true_type {};
+        std::declval<mediapipe_v01013_based::CalculatorContext*>())))>> : std::true_type {};
 
 template <class T, class = void>
 struct HasNestedItems : std::false_type {};
@@ -93,7 +93,7 @@ struct TagTuple {
 
   template <std::size_t... I>
   static constexpr auto Make(std::index_sequence<I...> indices) {
-    return std::make_tuple(mediapipe::api2::internal::tag_build(S<I>{})...);
+    return std::make_tuple(mediapipe_v01013_based::api2::internal::tag_build(S<I>{})...);
   }
 
   static constexpr auto Make() {
@@ -141,7 +141,7 @@ class Contract {
   constexpr Contract(T&&... args)
       : Contract(std::tuple<T...>{std::move(args)...}) {}
 
-  absl::Status GetContract(mediapipe::CalculatorContract* cc) const {
+  absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc) const {
     std::vector<absl::Status> statuses;
     auto store_status = [&statuses](absl::Status status) {
       if (!status.ok()) statuses.push_back(std::move(status));
@@ -208,7 +208,7 @@ class TaggedContract {
  public:
   constexpr TaggedContract() = default;
 
-  static absl::Status GetContract(mediapipe::CalculatorContract* cc) {
+  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc) {
     return c2.GetContract(cc);
   }
 
@@ -377,6 +377,6 @@ constexpr auto ProcessFn(F&& f, P&&... args) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_CONTRACT_H_

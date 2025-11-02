@@ -70,7 +70,7 @@
 #include "mediapipe/util/tracking/region_flow_computation.h"
 #include "mediapipe/util/tracking/streaming_buffer.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 typedef PushPullFiltering<1, FilterWeightMultiplierOne> PushPullFlowC1;
 
@@ -224,6 +224,6 @@ class MotionAnalysis {
   bool feature_computation_ = true;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_MOTION_ANALYSIS_H_

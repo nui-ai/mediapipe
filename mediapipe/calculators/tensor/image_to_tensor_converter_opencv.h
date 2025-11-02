@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Creates OpenCV image-to-tensor converter.
 absl::StatusOr<std::unique_ptr<ImageToTensorConverter>> CreateOpenCvConverter(
@@ -30,6 +30,6 @@ absl::StatusOr<std::unique_ptr<ImageToTensorConverter>> CreateOpenCvConverter(
     Tensor::ElementType tensor_type,
     cv::InterpolationFlags flags = cv::INTER_LINEAR);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_IMAGE_TO_TENSOR_CONVERTER_OPENCV_H_

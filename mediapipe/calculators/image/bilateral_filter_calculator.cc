@@ -35,7 +35,7 @@
 #include "mediapipe/gpu/shader_util.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 constexpr char kInputFrameTag[] = "IMAGE";
@@ -97,14 +97,14 @@ class BilateralFilterCalculator : public CalculatorBase {
   absl::Status GlSetup(CalculatorContext* cc);
   void GlRender(CalculatorContext* cc);
 
-  mediapipe::BilateralFilterCalculatorOptions options_;
+  mediapipe_v01013_based::BilateralFilterCalculatorOptions options_;
   float sigma_color_ = -1.f;
   float sigma_space_ = -1.f;
 
   bool use_gpu_ = false;
   bool gpu_initialized_ = false;
 #if !MEDIAPIPE_DISABLE_GPU
-  mediapipe::GlCalculatorHelper gpu_helper_;
+  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
   GLuint program_ = 0;
   GLuint vao_;
   GLuint vbo_[2];  // vertex storage
@@ -129,7 +129,7 @@ absl::Status BilateralFilterCalculator::GetContract(CalculatorContract* cc) {
   // Input image to filter.
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Inputs().HasTag(kInputFrameTagGpu)) {
-    cc->Inputs().Tag(kInputFrameTagGpu).Set<mediapipe::GpuBuffer>();
+    cc->Inputs().Tag(kInputFrameTagGpu).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -140,7 +140,7 @@ absl::Status BilateralFilterCalculator::GetContract(CalculatorContract* cc) {
   // Input guide image mask (optional)
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Inputs().HasTag(kInputGuideTagGpu)) {
-    cc->Inputs().Tag(kInputGuideTagGpu).Set<mediapipe::GpuBuffer>();
+    cc->Inputs().Tag(kInputGuideTagGpu).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -151,7 +151,7 @@ absl::Status BilateralFilterCalculator::GetContract(CalculatorContract* cc) {
   // Output image.
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Outputs().HasTag(kOutputFrameTagGpu)) {
-    cc->Outputs().Tag(kOutputFrameTagGpu).Set<mediapipe::GpuBuffer>();
+    cc->Outputs().Tag(kOutputFrameTagGpu).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -161,7 +161,7 @@ absl::Status BilateralFilterCalculator::GetContract(CalculatorContract* cc) {
 
   if (use_gpu) {
 #if !MEDIAPIPE_DISABLE_GPU
-    MP_RETURN_IF_ERROR(mediapipe::GlCalculatorHelper::UpdateContract(cc));
+    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc));
 #endif  // !MEDIAPIPE_DISABLE_GPU
   }
 
@@ -171,7 +171,7 @@ absl::Status BilateralFilterCalculator::GetContract(CalculatorContract* cc) {
 absl::Status BilateralFilterCalculator::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
 
-  options_ = cc->Options<mediapipe::BilateralFilterCalculatorOptions>();
+  options_ = cc->Options<mediapipe_v01013_based::BilateralFilterCalculatorOptions>();
 
   if (cc->Inputs().HasTag(kInputFrameTagGpu) &&
       cc->Outputs().HasTag(kOutputFrameTagGpu)) {
@@ -238,7 +238,7 @@ absl::Status BilateralFilterCalculator::RenderCpu(CalculatorContext* cc) {
   }
 
   const auto& input_frame = cc->Inputs().Tag(kInputFrameTag).Get<ImageFrame>();
-  auto input_mat = mediapipe::formats::MatView(&input_frame);
+  auto input_mat = mediapipe_v01013_based::formats::MatView(&input_frame);
 
   // Only 1 or 3 channel images supported by OpenCV.
   if (!(input_mat.channels() == 1 || input_mat.channels() == 3)) {
@@ -256,7 +256,7 @@ absl::Status BilateralFilterCalculator::RenderCpu(CalculatorContext* cc) {
     return absl::UnimplementedError(
         "CPU joint filtering support is not implemented yet.");
   } else {
-    auto output_mat = mediapipe::formats::MatView(output_frame.get());
+    auto output_mat = mediapipe_v01013_based::formats::MatView(output_frame.get());
     // Prefer setting 'd = sigma_space * 2' to match GPU definition of radius.
     cv::bilateralFilter(input_mat, output_mat, /*d=*/sigma_space_ * 2.0,
                         sigma_color_, sigma_space_);
@@ -274,10 +274,10 @@ absl::Status BilateralFilterCalculator::RenderGpu(CalculatorContext* cc) {
   }
 #if !MEDIAPIPE_DISABLE_GPU
   const auto& input_frame =
-      cc->Inputs().Tag(kInputFrameTagGpu).Get<mediapipe::GpuBuffer>();
+      cc->Inputs().Tag(kInputFrameTagGpu).Get<mediapipe_v01013_based::GpuBuffer>();
   auto input_texture = gpu_helper_.CreateSourceTexture(input_frame);
 
-  mediapipe::GlTexture output_texture;
+  mediapipe_v01013_based::GlTexture output_texture;
   const bool has_guide_image = cc->Inputs().HasTag(kInputGuideTagGpu);
 
   // Setup textures and Update image in GPU shader.
@@ -286,13 +286,13 @@ absl::Status BilateralFilterCalculator::RenderGpu(CalculatorContext* cc) {
     // joint bilateral filter
     glUseProgram(program_);
     const auto& guide_image =
-        cc->Inputs().Tag(kInputGuideTagGpu).Get<mediapipe::GpuBuffer>();
+        cc->Inputs().Tag(kInputGuideTagGpu).Get<mediapipe_v01013_based::GpuBuffer>();
     auto guide_texture = gpu_helper_.CreateSourceTexture(guide_image);
     glUniform2f(glGetUniformLocation(program_, "texel_size_guide"),
                 1.0 / guide_image.width(), 1.0 / guide_image.height());
     output_texture = gpu_helper_.CreateDestinationTexture(
         guide_image.width(), guide_image.height(),
-        mediapipe::GpuBufferFormat::kBGRA32);
+        mediapipe_v01013_based::GpuBufferFormat::kBGRA32);
     gpu_helper_.BindFramebuffer(output_texture);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, input_texture.name());
@@ -310,7 +310,7 @@ absl::Status BilateralFilterCalculator::RenderGpu(CalculatorContext* cc) {
                 1.0 / input_frame.width(), 1.0 / input_frame.height());
     output_texture = gpu_helper_.CreateDestinationTexture(
         input_frame.width(), input_frame.height(),
-        mediapipe::GpuBufferFormat::kBGRA32);
+        mediapipe_v01013_based::GpuBufferFormat::kBGRA32);
     gpu_helper_.BindFramebuffer(output_texture);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, input_texture.name());
@@ -320,7 +320,7 @@ absl::Status BilateralFilterCalculator::RenderGpu(CalculatorContext* cc) {
   glFlush();
 
   // Send out image as GPU packet.
-  auto output_frame = output_texture.GetFrame<mediapipe::GpuBuffer>();
+  auto output_frame = output_texture.GetFrame<mediapipe_v01013_based::GpuBuffer>();
   cc->Outputs()
       .Tag(kOutputFrameTagGpu)
       .Add(output_frame.release(), cc->InputTimestamp());
@@ -381,7 +381,7 @@ absl::Status BilateralFilterCalculator::GlSetup(CalculatorContext* cc) {
   // Large kernel sizes are subsampled based on sqrt(sigma_space) window size,
   // denoted as 'sparsity' below.
   const std::string frag_src =
-      std::string(mediapipe::kMediaPipeFragmentShaderPreamble) + R"(
+      std::string(mediapipe_v01013_based::kMediaPipeFragmentShaderPreamble) + R"(
     DEFAULT_PRECISION(highp, float)
 
     in vec2 sample_coordinate;
@@ -426,7 +426,7 @@ absl::Status BilateralFilterCalculator::GlSetup(CalculatorContext* cc) {
   // Large kernel sizes are subsampled based on sqrt(sigma_space) window size,
   // denoted as 'sparsity' below.
   const std::string joint_frag_src =
-      std::string(mediapipe::kMediaPipeFragmentShaderPreamble) + R"(
+      std::string(mediapipe_v01013_based::kMediaPipeFragmentShaderPreamble) + R"(
     DEFAULT_PRECISION(highp, float)
 
     in vec2 sample_coordinate;
@@ -473,8 +473,8 @@ absl::Status BilateralFilterCalculator::GlSetup(CalculatorContext* cc) {
 
   if (has_guide_image) {
     // Create joint shader program and set parameters.
-    mediapipe::GlhCreateProgram(
-        mediapipe::kBasicVertexShader, joint_frag_src.c_str(), NUM_ATTRIBUTES,
+    mediapipe_v01013_based::GlhCreateProgram(
+        mediapipe_v01013_based::kBasicVertexShader, joint_frag_src.c_str(), NUM_ATTRIBUTES,
         (const GLchar**)&attr_name[0], attr_location, &program_);
     RET_CHECK(program_) << "Problem initializing the program.";
     glUseProgram(program_);
@@ -482,7 +482,7 @@ absl::Status BilateralFilterCalculator::GlSetup(CalculatorContext* cc) {
     glUniform1i(glGetUniformLocation(program_, "guide_frame"), 2);
   } else {
     // Create default shader program and set parameters.
-    mediapipe::GlhCreateProgram(mediapipe::kBasicVertexShader, frag_src.c_str(),
+    mediapipe_v01013_based::GlhCreateProgram(mediapipe_v01013_based::kBasicVertexShader, frag_src.c_str(),
                                 NUM_ATTRIBUTES, (const GLchar**)&attr_name[0],
                                 attr_location, &program_);
     RET_CHECK(program_) << "Problem initializing the program.";
@@ -498,14 +498,14 @@ absl::Status BilateralFilterCalculator::GlSetup(CalculatorContext* cc) {
   glBindVertexArray(vao_);
   glBindBuffer(GL_ARRAY_BUFFER, vbo_[0]);
   glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(GLfloat),
-               mediapipe::kBasicSquareVertices, GL_STATIC_DRAW);
+               mediapipe_v01013_based::kBasicSquareVertices, GL_STATIC_DRAW);
   glEnableVertexAttribArray(ATTRIB_VERTEX);
   glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, nullptr);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   // Fill in static vbo (vbo 1), to be reused in GlRender().
   glBindBuffer(GL_ARRAY_BUFFER, vbo_[1]);
   glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(GLfloat),
-               mediapipe::kBasicTextureVertices, GL_STATIC_DRAW);
+               mediapipe_v01013_based::kBasicTextureVertices, GL_STATIC_DRAW);
   glEnableVertexAttribArray(ATTRIB_TEXTURE_POSITION);
   glVertexAttribPointer(ATTRIB_TEXTURE_POSITION, 2, GL_FLOAT, 0, 0, nullptr);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -516,4 +516,4 @@ absl::Status BilateralFilterCalculator::GlSetup(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

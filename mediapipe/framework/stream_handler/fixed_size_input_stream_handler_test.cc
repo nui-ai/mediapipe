@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/threadpool.h"
 #include "mediapipe/framework/stream_handler/fixed_size_input_stream_handler.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -254,7 +254,7 @@ TEST_P(FixedSizeInputStreamHandlerTest, ParallelWriteAndRead) {
   MP_ASSERT_OK(graph.StartRun({}));
 
   {
-    mediapipe::ThreadPool pool(3);
+    mediapipe_v01013_based::ThreadPool pool(3);
     pool.StartWorkers();
 
     // Start 3 writers.
@@ -361,4 +361,4 @@ TEST_P(FixedSizeInputStreamHandlerTest, LateArrivalDrop) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

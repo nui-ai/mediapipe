@@ -21,7 +21,7 @@ limitations under the License.
 #include "mediapipe/calculators/core/gate_calculator.pb.h"
 #include "mediapipe/framework/api2/builder.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace components {
 namespace utils {
@@ -91,7 +91,7 @@ class DisallowGate {
       T disallow, api2::builder::Graph& graph) {
     auto& gate_node = graph.AddNode("GateCalculator");
     auto& gate_node_opts =
-        gate_node.GetOptions<mediapipe::GateCalculatorOptions>();
+        gate_node.GetOptions<mediapipe_v01013_based::GateCalculatorOptions>();
     // Supposedly, the most popular configuration for MediaPipe Tasks team
     // graphs. Hence, intentionally hard coded to catch and verify any other use
     // case (should help to workout a common approach and have a recommended way
@@ -106,7 +106,7 @@ class DisallowGate {
       T disallow, api2::builder::Graph& graph) {
     auto& gate_node = graph.AddNode("GateCalculator");
     auto& gate_node_opts =
-        gate_node.GetOptions<mediapipe::GateCalculatorOptions>();
+        gate_node.GetOptions<mediapipe_v01013_based::GateCalculatorOptions>();
     gate_node_opts.set_empty_packets_as_allow(true);
     disallow >> gate_node.SideIn("DISALLOW");
     return gate_node;
@@ -155,6 +155,6 @@ api2::builder::Source<T> AllowIf(api2::builder::Source<T> value,
 }  // namespace utils
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_UTILS_GATE_H_

@@ -15,7 +15,7 @@ node {
   input_stream: "DETECTIONS:detections"
   output_stream: "RENDER_DATA:render_data"
   options: {
-    [mediapipe.DetectionsToRenderDataCalculatorOptions.ext] {
+    [mediapipe_v01013_based.DetectionsToRenderDataCalculatorOptions.ext] {
       thickness: 4.0
       color { r: 255 g: 0 b: 0 }
     }

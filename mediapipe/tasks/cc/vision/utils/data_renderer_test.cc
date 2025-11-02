@@ -29,14 +29,14 @@ limitations under the License.
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe::tasks::vision::utils {
+namespace mediapipe_v01013_based::tasks::vision::utils {
 namespace {
 
-using ::mediapipe::CalculatorGraphConfig;
-using ::mediapipe::EqualsProto;
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Stream;
+using ::mediapipe_v01013_based::CalculatorGraphConfig;
+using ::mediapipe_v01013_based::EqualsProto;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Stream;
 
 TEST(DataRenderer, Render) {
   Graph graph;
@@ -49,7 +49,7 @@ TEST(DataRenderer, Render) {
   image_out.SetName("image_out");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "AnnotationOverlayCalculator"
           input_stream: "__stream_1"
@@ -70,7 +70,7 @@ TEST(DataRenderer, RenderLandmarks) {
   render_data.SetName("render_data");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "LandmarksToRenderDataCalculator"
           input_stream: "NORM_LANDMARKS:__stream_0"
@@ -92,7 +92,7 @@ TEST(DataRenderer, GetRenderScale) {
   render_scale.SetName("render_scale");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "RectToRenderScaleCalculator"
           input_stream: "IMAGE_SIZE:__stream_0"
@@ -116,7 +116,7 @@ TEST(DataRenderer, RenderRect) {
   render_data.SetName("render_data");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "RectToRenderDataCalculator"
           input_stream: "NORM_RECT:__stream_0"
@@ -130,4 +130,4 @@ TEST(DataRenderer, RenderRect) {
 }
 
 }  // namespace
-}  // namespace mediapipe::tasks::vision::utils
+}  // namespace mediapipe_v01013_based::tasks::vision::utils

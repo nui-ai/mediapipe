@@ -4,7 +4,7 @@
 #include "absl/status/status.h"
 #include "mediapipe/framework/api2/packet.h"
 
-namespace mediapipe::api2 {
+namespace mediapipe_v01013_based::api2 {
 
   absl::Status DummyCalculator::Open(CalculatorContext* cc) {
     return absl::OkStatus();
@@ -26,6 +26,6 @@ namespace mediapipe::api2 {
 
   MEDIAPIPE_REGISTER_NODE(DummyCalculator);
 
-}  // namespace mediapipe::api2
+}  // namespace mediapipe_v01013_based::api2
 
 

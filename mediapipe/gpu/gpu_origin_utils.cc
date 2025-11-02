@@ -4,14 +4,14 @@
 #include "absl/status/statusor.h"
 #include "absl/strings/str_format.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-absl::StatusOr<bool> IsGpuOriginAtBottom(mediapipe::GpuOrigin::Mode origin) {
+absl::StatusOr<bool> IsGpuOriginAtBottom(mediapipe_v01013_based::GpuOrigin::Mode origin) {
   switch (origin) {
-    case mediapipe::GpuOrigin::TOP_LEFT:
+    case mediapipe_v01013_based::GpuOrigin::TOP_LEFT:
       return false;
-    case mediapipe::GpuOrigin::DEFAULT:
-    case mediapipe::GpuOrigin::CONVENTIONAL:
+    case mediapipe_v01013_based::GpuOrigin::DEFAULT:
+    case mediapipe_v01013_based::GpuOrigin::CONVENTIONAL:
       // TOP_LEFT on Metal, BOTTOM_LEFT on OpenGL.
 #ifdef __APPLE__
       return false;
@@ -24,4 +24,4 @@ absl::StatusOr<bool> IsGpuOriginAtBottom(mediapipe::GpuOrigin::Mode origin) {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

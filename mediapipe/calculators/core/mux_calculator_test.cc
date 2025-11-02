@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 typedef SplitVectorCalculator<int, false> SplitIntVectorCalculator;
 REGISTER_CALCULATOR(SplitIntVectorCalculator);
@@ -140,7 +140,7 @@ void RunGraph(const std::string& graph_config_proto,
               const std::string& output_stream_name,
               std::function<absl::Status(const Packet&)> output_fn) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(graph_config_proto);
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(graph_config_proto);
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize(config));
   MP_ASSERT_OK(graph.ObserveOutputStream(output_stream_name, output_fn));
@@ -255,7 +255,7 @@ constexpr char kDualInputGraphConfig[] = R"pb(
 
 TEST(MuxCalculatorTest, DiscardSkippedInputs_MuxInputStreamHandler) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
           kDualInputGraphConfig);
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize(config));
@@ -306,11 +306,11 @@ TEST(MuxCalculatorTest, DiscardSkippedInputs_MuxInputStreamHandler) {
 
 }  // namespace
 
-class PassThroughAndTsBoundUpdateNode : public mediapipe::api2::Node {
+class PassThroughAndTsBoundUpdateNode : public mediapipe_v01013_based::api2::Node {
  public:
-  static constexpr mediapipe::api2::Input<int> kInValue{"VALUE"};
-  static constexpr mediapipe::api2::Output<int> kOutValue{"VALUE"};
-  static constexpr mediapipe::api2::Output<int> kOutTsBoundUpdate{
+  static constexpr mediapipe_v01013_based::api2::Input<int> kInValue{"VALUE"};
+  static constexpr mediapipe_v01013_based::api2::Output<int> kOutValue{"VALUE"};
+  static constexpr mediapipe_v01013_based::api2::Output<int> kOutTsBoundUpdate{
       "TS_BOUND_UPDATE"};
   MEDIAPIPE_NODE_CONTRACT(kInValue, kOutValue, kOutTsBoundUpdate);
 
@@ -323,11 +323,11 @@ class PassThroughAndTsBoundUpdateNode : public mediapipe::api2::Node {
 };
 MEDIAPIPE_REGISTER_NODE(PassThroughAndTsBoundUpdateNode);
 
-class ToOptionalNode : public mediapipe::api2::Node {
+class ToOptionalNode : public mediapipe_v01013_based::api2::Node {
  public:
-  static constexpr mediapipe::api2::Input<int> kTick{"TICK"};
-  static constexpr mediapipe::api2::Input<int> kInValue{"VALUE"};
-  static constexpr mediapipe::api2::Output<absl::optional<int>> kOutValue{
+  static constexpr mediapipe_v01013_based::api2::Input<int> kTick{"TICK"};
+  static constexpr mediapipe_v01013_based::api2::Input<int> kInValue{"VALUE"};
+  static constexpr mediapipe_v01013_based::api2::Output<absl::optional<int>> kOutValue{
       "OUTPUT"};
   MEDIAPIPE_NODE_CONTRACT(kTick, kInValue, kOutValue);
 
@@ -346,7 +346,7 @@ namespace {
 
 TEST(MuxCalculatorTest, HandleTimestampBoundUpdates) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "select"
             node {
@@ -400,7 +400,7 @@ TEST(MuxCalculatorTest, HandleTimestampBoundUpdates) {
 
 TEST(MuxCalculatorTest, HandlesCloseGracefully) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "select"
             input_stream: "value_0"
@@ -441,7 +441,7 @@ TEST(MuxCalculatorTest, HandlesCloseGracefully) {
 
 TEST(MuxCalculatorTest, HandlesCloseGracefullyWithDeafultInputStreamHandler) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             # This is required in order for EXPECT_DEATH to work everywhere
             executor { name: "" type: "ApplicationThreadExecutor" }
@@ -489,4 +489,4 @@ TEST(MuxCalculatorTest, HandlesCloseGracefullyWithDeafultInputStreamHandler) {
 
 }  // namespace
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

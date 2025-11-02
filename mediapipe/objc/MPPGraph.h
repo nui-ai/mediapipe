@@ -38,12 +38,12 @@
 - (void)mediapipeGraph:(MPPGraph *)graph
     didOutputPixelBuffer:(CVPixelBufferRef)pixelBuffer
               fromStream:(const std::string &)streamName
-               timestamp:(const mediapipe::Timestamp &)timestamp;
+               timestamp:(const mediapipe_v01013_based::Timestamp &)timestamp;
 
 /// Provides the delegate with a raw packet.
 @optional
 - (void)mediapipeGraph:(MPPGraph *)graph
-       didOutputPacket:(const mediapipe::Packet &)packet
+       didOutputPacket:(const mediapipe_v01013_based::Packet &)packet
             fromStream:(const std::string &)streamName;
 
 @end
@@ -95,40 +95,40 @@ typedef NS_ENUM(int, MPPPacketType) {
 
 /// Determines whether adding a packet to an input stream whose queue is full
 /// should fail or wait.
-@property mediapipe::CalculatorGraph::GraphInputStreamAddMode packetAddMode;
+@property mediapipe_v01013_based::CalculatorGraph::GraphInputStreamAddMode packetAddMode;
 
 - (instancetype)init NS_UNAVAILABLE;
 
 /// Copies the config and initializes the graph.
 /// @param config The configuration describing the graph.
-- (instancetype)initWithGraphConfig:(const mediapipe::CalculatorGraphConfig &)config
+- (instancetype)initWithGraphConfig:(const mediapipe_v01013_based::CalculatorGraphConfig &)config
     NS_DESIGNATED_INITIALIZER;
 
-- (mediapipe::ProfilingContext *)getProfiler;
+- (mediapipe_v01013_based::ProfilingContext *)getProfiler;
 
 /// Sets a stream header. If the header was already set, it is overwritten.
 /// @param packet The header.
 /// @param streamName The name of the stream.
-- (void)setHeaderPacket:(const mediapipe::Packet &)packet forStream:(const std::string &)streamName;
+- (void)setHeaderPacket:(const mediapipe_v01013_based::Packet &)packet forStream:(const std::string &)streamName;
 
 /// Sets a side packet. If it was already set, it is overwritten.
 /// Must be called before the graph is started.
 /// @param packet The packet to be associated with the input side packet.
 /// @param name The name of the input side packet.
-- (void)setSidePacket:(const mediapipe::Packet &)packet named:(const std::string &)name;
+- (void)setSidePacket:(const mediapipe_v01013_based::Packet &)packet named:(const std::string &)name;
 
 /// Sets a service packet. If it was already set, it is overwritten.
 /// Must be called before the graph is started.
 /// @param packet The packet to be associated with the service.
 /// @param service.
-- (void)setServicePacket:(mediapipe::Packet &)packet
-              forService:(const mediapipe::GraphServiceBase &)service;
+- (void)setServicePacket:(mediapipe_v01013_based::Packet &)packet
+              forService:(const mediapipe_v01013_based::GraphServiceBase &)service;
 
 /// Adds input side packets from a map. Any inputs that were already set are
 /// left unchanged.
 /// Must be called before the graph is started.
 /// @param extraInputSidePackets The input side packets to be added.
-- (void)addSidePackets:(const std::map<std::string, mediapipe::Packet> &)extraSidePackets;
+- (void)addSidePackets:(const std::map<std::string, mediapipe_v01013_based::Packet> &)extraSidePackets;
 
 // TODO: rename to addDelegateOutputStream:packetType:
 /// Add an output stream in the graph from which the delegate wants to receive
@@ -146,11 +146,11 @@ typedef NS_ENUM(int, MPPPacketType) {
 /// Sends a generic packet into a graph input stream.
 /// The graph must have been started before calling this.
 /// Returns YES if the packet was successfully sent.
-- (BOOL)sendPacket:(const mediapipe::Packet &)packet
+- (BOOL)sendPacket:(const mediapipe_v01013_based::Packet &)packet
         intoStream:(const std::string &)streamName
              error:(NSError **)error;
 
-- (BOOL)movePacket:(mediapipe::Packet &&)packet
+- (BOOL)movePacket:(mediapipe_v01013_based::Packet &&)packet
         intoStream:(const std::string &)streamName
              error:(NSError **)error;
 
@@ -162,11 +162,11 @@ typedef NS_ENUM(int, MPPPacketType) {
                   error:(NSError **)error;
 
 /// Creates a MediaPipe packet wrapping the given pixelBuffer;
-- (mediapipe::Packet)packetWithPixelBuffer:(CVPixelBufferRef)pixelBuffer
+- (mediapipe_v01013_based::Packet)packetWithPixelBuffer:(CVPixelBufferRef)pixelBuffer
                                 packetType:(MPPPacketType)packetType;
 
 /// Creates a MediaPipe packet of type Image, wrapping the given CVPixelBufferRef.
-- (mediapipe::Packet)imagePacketWithPixelBuffer:(CVPixelBufferRef)pixelBuffer;
+- (mediapipe_v01013_based::Packet)imagePacketWithPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 
 /// Sends a pixel buffer into a graph input stream, using the specified packet
 /// type. The graph must have been started before calling this. Drops frames and
@@ -176,7 +176,7 @@ typedef NS_ENUM(int, MPPPacketType) {
 - (BOOL)sendPixelBuffer:(CVPixelBufferRef)imageBuffer
              intoStream:(const std::string &)inputName
              packetType:(MPPPacketType)packetType
-              timestamp:(const mediapipe::Timestamp &)timestamp
+              timestamp:(const mediapipe_v01013_based::Timestamp &)timestamp
          allowOverwrite:(BOOL)allowOverwrite;
 
 /// Sends a pixel buffer into a graph input stream, using the specified packet
@@ -186,7 +186,7 @@ typedef NS_ENUM(int, MPPPacketType) {
 - (BOOL)sendPixelBuffer:(CVPixelBufferRef)pixelBuffer
              intoStream:(const std::string &)inputName
              packetType:(MPPPacketType)packetType
-              timestamp:(const mediapipe::Timestamp &)timestamp;
+              timestamp:(const mediapipe_v01013_based::Timestamp &)timestamp;
 
 /// Sends a pixel buffer into a graph input stream, using the specified packet
 /// type. The graph must have been started before calling this. Drops frames and
@@ -198,7 +198,7 @@ typedef NS_ENUM(int, MPPPacketType) {
 - (BOOL)sendPixelBuffer:(CVPixelBufferRef)imageBuffer
              intoStream:(const std::string &)inputName
              packetType:(MPPPacketType)packetType
-              timestamp:(const mediapipe::Timestamp &)timestamp
+              timestamp:(const mediapipe_v01013_based::Timestamp &)timestamp
          allowOverwrite:(BOOL)allowOverwrite
                   error:(NSError **)error;
 

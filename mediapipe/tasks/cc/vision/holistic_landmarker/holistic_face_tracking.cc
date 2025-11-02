@@ -40,23 +40,23 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_blendshapes_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_landmarks_detector_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::builder::ConvertDetectionsToRectUsingKeypoints;
-using ::mediapipe::api2::builder::ConvertDetectionToRect;
-using ::mediapipe::api2::builder::ConvertLandmarksToDetection;
-using ::mediapipe::api2::builder::GetImageSize;
-using ::mediapipe::api2::builder::GetLoopbackData;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Scale;
-using ::mediapipe::api2::builder::ScaleAndMakeSquare;
-using ::mediapipe::api2::builder::Stream;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::builder::ConvertDetectionsToRectUsingKeypoints;
+using ::mediapipe_v01013_based::api2::builder::ConvertDetectionToRect;
+using ::mediapipe_v01013_based::api2::builder::ConvertLandmarksToDetection;
+using ::mediapipe_v01013_based::api2::builder::GetImageSize;
+using ::mediapipe_v01013_based::api2::builder::GetLoopbackData;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Scale;
+using ::mediapipe_v01013_based::api2::builder::ScaleAndMakeSquare;
+using ::mediapipe_v01013_based::api2::builder::Stream;
 
 struct FaceLandmarksResult {
   std::optional<Stream<NormalizedLandmarkList>> landmarks;
@@ -86,7 +86,7 @@ absl::Status ValidateGraphOptions(
 Stream<NormalizedRect> GetFaceRoiFromPoseFaceLandmarks(
     Stream<NormalizedLandmarkList> pose_face_landmarks,
     Stream<std::pair<int, int>> image_size, Graph& graph) {
-  Stream<mediapipe::Detection> detection =
+  Stream<mediapipe_v01013_based::Detection> detection =
       ConvertLandmarksToDetection(pose_face_landmarks, graph);
 
   // Refer the pose face landmarks indices here:
@@ -105,7 +105,7 @@ Stream<NormalizedRect> GetFaceRoiFromPoseFaceLandmarks(
 Stream<NormalizedRect> GetFaceRoiFromFaceLandmarks(
     Stream<NormalizedLandmarkList> face_landmarks,
     Stream<std::pair<int, int>> image_size, Graph& graph) {
-  Stream<mediapipe::Detection> detection =
+  Stream<mediapipe_v01013_based::Detection> detection =
       ConvertLandmarksToDetection(face_landmarks, graph);
 
   Stream<NormalizedRect> rect = ConvertDetectionToRect(
@@ -258,4 +258,4 @@ absl::StatusOr<HolisticFaceTrackingOutput> TrackHolisticFace(
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

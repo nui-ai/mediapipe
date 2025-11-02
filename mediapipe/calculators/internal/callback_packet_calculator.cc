@@ -22,7 +22,7 @@
 #include "mediapipe/framework/calculator_registry.h"
 #include "mediapipe/framework/output_side_packet.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -54,7 +54,7 @@ absl::Status CallbackPacketCalculator::GetContract(CalculatorContract* cc) {
           .Set<std::function<void(const Packet&)>>();
       break;
     default:
-      return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Invalid type of callback to produce.";
   }
   return absl::OkStatus();
@@ -64,7 +64,7 @@ absl::Status CallbackPacketCalculator::Open(CalculatorContext* cc) {
   const auto& options = cc->Options<CallbackPacketCalculatorOptions>();
   void* ptr;
   if (sscanf(options.pointer().c_str(), "%p", &ptr) != 1) {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "Stored pointer value in options is invalid.";
   }
   switch (options.type()) {
@@ -81,7 +81,7 @@ absl::Status CallbackPacketCalculator::Open(CalculatorContext* cc) {
                         std::placeholders::_1)));
       break;
     default:
-      return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Invalid type to dump into.";
   }
   return absl::OkStatus();
@@ -93,4 +93,4 @@ absl::Status CallbackPacketCalculator::Process(CalculatorContext* cc) {
 
 REGISTER_CALCULATOR(CallbackPacketCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

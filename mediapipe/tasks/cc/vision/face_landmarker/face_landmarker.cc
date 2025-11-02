@@ -36,14 +36,14 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_landmarker_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_landmarks_detector_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
 
 namespace {
 
-using FaceLandmarkerGraphOptionsProto = ::mediapipe::tasks::vision::
+using FaceLandmarkerGraphOptionsProto = ::mediapipe_v01013_based::tasks::vision::
     face_landmarker::proto::FaceLandmarkerGraphOptions;
 
 constexpr char kFaceLandmarkerGraphTypeName[] =
@@ -195,7 +195,7 @@ absl::StatusOr<std::unique_ptr<FaceLandmarker>> FaceLandmarker::Create(
 }
 
 absl::StatusOr<FaceLandmarkerResult> FaceLandmarker::Detect(
-    mediapipe::Image image,
+    mediapipe_v01013_based::Image image,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   MP_ASSIGN_OR_RETURN(NormalizedRect norm_rect,
                       ConvertToNormalizedRect(image_processing_options, image,
@@ -213,7 +213,7 @@ absl::StatusOr<FaceLandmarkerResult> FaceLandmarker::Detect(
 }
 
 absl::StatusOr<FaceLandmarkerResult> FaceLandmarker::DetectForVideo(
-    mediapipe::Image image, int64_t timestamp_ms,
+    mediapipe_v01013_based::Image image, int64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   MP_ASSIGN_OR_RETURN(NormalizedRect norm_rect,
                       ConvertToNormalizedRect(image_processing_options, image,
@@ -234,7 +234,7 @@ absl::StatusOr<FaceLandmarkerResult> FaceLandmarker::DetectForVideo(
 }
 
 absl::Status FaceLandmarker::DetectAsync(
-    mediapipe::Image image, int64_t timestamp_ms,
+    mediapipe_v01013_based::Image image, int64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   MP_ASSIGN_OR_RETURN(NormalizedRect norm_rect,
                       ConvertToNormalizedRect(image_processing_options, image,
@@ -251,4 +251,4 @@ absl::Status FaceLandmarker::DetectAsync(
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

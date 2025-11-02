@@ -32,7 +32,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"  // NOLINT
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 MATCHER_P2(PacketOfIntsEq, timestamp, value, "") {
@@ -586,7 +586,7 @@ TEST(BeginEndTensorLoopCalculatorGraphTest, SingleNonEmptyVector) {
 
   // Prepare the inputs and run.
   Timestamp input_timestamp = Timestamp(0);
-  std::vector<mediapipe::Tensor> tensors;
+  std::vector<mediapipe_v01013_based::Tensor> tensors;
   for (int i = 0; i < 4; i++) {
     tensors.emplace_back(Tensor::ElementType::kFloat32,
                          Tensor::Shape{4, 3, 2, 1});
@@ -597,7 +597,7 @@ TEST(BeginEndTensorLoopCalculatorGraphTest, SingleNonEmptyVector) {
     std::fill(data, data + tensors.back().element_size(), i);
   }
   Packet vector_packet =
-      MakePacket<std::vector<mediapipe::Tensor>>(std::move(tensors));
+      MakePacket<std::vector<mediapipe_v01013_based::Tensor>>(std::move(tensors));
   MP_ASSERT_OK(graph.AddPacketToInputStream(
       "tensors", std::move(vector_packet).At(input_timestamp)));
   MP_ASSERT_OK(graph.WaitUntilIdle());
@@ -622,4 +622,4 @@ TEST(BeginEndTensorLoopCalculatorGraphTest, SingleNonEmptyVector) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

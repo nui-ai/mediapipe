@@ -19,7 +19,7 @@
 
 #include <cstdint>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class Counter {
  public:
@@ -31,6 +31,6 @@ class Counter {
   virtual int64_t Get() = 0;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_COUNTER_H_

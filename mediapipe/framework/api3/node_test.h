@@ -23,7 +23,7 @@
 #include "mediapipe/framework/api3/testing/bar.pb.h"
 #include "mediapipe/framework/api3/testing/foo.pb.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 inline constexpr absl::string_view kFooName = "Foo";
 struct FooNode : Node<kFooName> {
@@ -109,6 +109,6 @@ struct BarBNode : Node<kBarBName> {
   using Contract = Bar<S>;
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_NODE_TEST_H_

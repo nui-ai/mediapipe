@@ -18,7 +18,7 @@
 #include "mediapipe/framework/calculator_context.h"
 #include "mediapipe/framework/calculator_contract.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class LegacyCalculatorSupport {
  public:
@@ -82,6 +82,6 @@ thread_local CalculatorContract*
     LegacyCalculatorSupport::Scoped<CalculatorContract>::current_;
 #endif
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_LEGACY_CALCULATOR_SUPPORT_H_

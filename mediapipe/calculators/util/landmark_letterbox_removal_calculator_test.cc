@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/validate_type.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 constexpr char kLetterboxPaddingTag[] = "LETTERBOX_PADDING";
 constexpr char kLandmarksTag[] = "LANDMARKS";
@@ -113,4 +113,4 @@ TEST(LandmarkLetterboxRemovalCalculatorTest, PaddingTopBottom) {
   EXPECT_THAT(output_landmarks.landmark(2).y(), testing::FloatNear(1.0f, 1e-5));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -54,7 +54,7 @@ limitations under the License.
 #include "mediapipe/util/color.pb.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
@@ -63,11 +63,11 @@ namespace {
 
 using ::file::Defaults;
 using ::file::GetTextProto;
-using ::mediapipe::Image;
-using ::mediapipe::api2::builder::GetImageSize;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Stream;
-using ::mediapipe::tasks::core::TaskRunner;
+using ::mediapipe_v01013_based::Image;
+using ::mediapipe_v01013_based::api2::builder::GetImageSize;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::mediapipe_v01013_based::tasks::core::TaskRunner;
 using ::testing::proto::Approximately;
 using ::testing::proto::Partially;
 
@@ -94,8 +94,8 @@ std::string GetFilePath(const std::string& filename) {
   return file::JoinPath("./", kTestDataDirectory, filename);
 }
 
-mediapipe::LandmarksToRenderDataCalculatorOptions GetHandRendererOptions() {
-  mediapipe::LandmarksToRenderDataCalculatorOptions renderer_options;
+mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions GetHandRendererOptions() {
+  mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions renderer_options;
   for (const auto& connection : hand_landmarker::kHandConnections) {
     renderer_options.add_landmark_connections(connection[0]);
     renderer_options.add_landmark_connections(connection[1]);
@@ -129,13 +129,13 @@ void ConfigHandTrackingModelsOptions(
 absl::StatusOr<std::unique_ptr<tasks::core::TaskRunner>> CreateTaskRunner() {
   Graph graph;
   Stream<Image> image = graph.In("IMAGE").Cast<Image>().SetName(kImageInStream);
-  Stream<mediapipe::NormalizedLandmarkList> pose_landmarks =
+  Stream<mediapipe_v01013_based::NormalizedLandmarkList> pose_landmarks =
       graph.In("POSE_LANDMARKS")
-          .Cast<mediapipe::NormalizedLandmarkList>()
+          .Cast<mediapipe_v01013_based::NormalizedLandmarkList>()
           .SetName(kPoseLandmarksInStream);
-  Stream<mediapipe::LandmarkList> pose_world_landmarks =
+  Stream<mediapipe_v01013_based::LandmarkList> pose_world_landmarks =
       graph.In("POSE_WORLD_LANDMARKS")
-          .Cast<mediapipe::LandmarkList>()
+          .Cast<mediapipe_v01013_based::LandmarkList>()
           .SetName(kPoseWorldLandmarksInStream);
   hand_landmarker::proto::HandLandmarksDetectorGraphOptions
       hand_landmarks_detector_options;
@@ -186,11 +186,11 @@ absl::StatusOr<std::unique_ptr<tasks::core::TaskRunner>> CreateTaskRunner() {
                             right_hand_result.debug_output.roi_from_pose,
                             0.0001, graph),
       GetHandRendererOptions(), graph);
-  std::vector<Stream<mediapipe::RenderData>> render_list = {
+  std::vector<Stream<mediapipe_v01013_based::RenderData>> render_list = {
       left_hand_landmarks_render_data, right_hand_landmarks_render_data};
   auto rendered_image =
       utils::Render(
-          image, absl::Span<Stream<mediapipe::RenderData>>(render_list), graph)
+          image, absl::Span<Stream<mediapipe_v01013_based::RenderData>>(render_list), graph)
           .SetName(kRenderedImageOutStream);
   left_hand_result.landmarks->SetName(kLeftHandLandmarksOutStream) >>
       graph.Out("LEFT_HAND_LANDMARKS");
@@ -210,13 +210,13 @@ class HolisticHandTrackingTest : public ::testing::Test {};
 TEST_F(HolisticHandTrackingTest, VerifyGraph) {
   Graph graph;
   Stream<Image> image = graph.In("IMAGE").Cast<Image>().SetName(kImageInStream);
-  Stream<mediapipe::NormalizedLandmarkList> pose_landmarks =
+  Stream<mediapipe_v01013_based::NormalizedLandmarkList> pose_landmarks =
       graph.In("POSE_LANDMARKS")
-          .Cast<mediapipe::NormalizedLandmarkList>()
+          .Cast<mediapipe_v01013_based::NormalizedLandmarkList>()
           .SetName(kPoseLandmarksInStream);
-  Stream<mediapipe::LandmarkList> pose_world_landmarks =
+  Stream<mediapipe_v01013_based::LandmarkList> pose_world_landmarks =
       graph.In("POSE_WORLD_LANDMARKS")
-          .Cast<mediapipe::LandmarkList>()
+          .Cast<mediapipe_v01013_based::LandmarkList>()
           .SetName(kPoseWorldLandmarksInStream);
   hand_landmarker::proto::HandLandmarksDetectorGraphOptions
       hand_landmarks_detector_options;
@@ -301,4 +301,4 @@ TEST_F(HolisticHandTrackingTest, SmokeTest) {
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

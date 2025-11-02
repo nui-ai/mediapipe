@@ -16,11 +16,11 @@
 #ifndef MEDIAPIPE_GPU_GRAPH_SUPPORT_H_
 #define MEDIAPIPE_GPU_GRAPH_SUPPORT_H_
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 inline constexpr char kGpuSharedTagName[] = "GPU_SHARED";
 inline constexpr char kGpuSharedSidePacketName[] = "gpu_shared";
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_GRAPH_SUPPORT_H_

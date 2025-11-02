@@ -24,13 +24,13 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/status_handler.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
 TEST(CalculatorContractTest, Calculator) {
   const CalculatorGraphConfig::Node node =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         calculator: "MixtureOfExpertsFusionCalculator"
         input_stream: "FRAME:fdense_pca_moe_aggregated_detection"
         input_stream: "FNET:fnet_logreg_aggregated_detection"
@@ -50,7 +50,7 @@ TEST(CalculatorContractTest, Calculator) {
 
 TEST(CalculatorContractTest, CalculatorOptions) {
   const CalculatorGraphConfig::Node node =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         calculator: "CalculatorTestCalculator"
         input_stream: "DATA:ycbcr_frames"
         input_stream: "VIDEO_HEADER:ycbcr_frames_prestream"
@@ -73,7 +73,7 @@ TEST(CalculatorContractTest, CalculatorOptions) {
 
 TEST(CalculatorContractTest, PacketGenerator) {
   const PacketGeneratorConfig node =
-      mediapipe::ParseTextProtoOrDie<PacketGeneratorConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<PacketGeneratorConfig>(R"pb(
         packet_generator: "DaredevilLabeledTimeSeriesGenerator"
         input_side_packet: "labeled_time_series"
         output_side_packet: "time_series_header"
@@ -89,7 +89,7 @@ TEST(CalculatorContractTest, PacketGenerator) {
 
 TEST(CalculatorContractTest, StatusHandler) {
   const StatusHandlerConfig node =
-      mediapipe::ParseTextProtoOrDie<StatusHandlerConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<StatusHandlerConfig>(R"pb(
         status_handler: "TaskInjectorStatusHandler"
         input_side_packet: "ROW:cid"
         input_side_packet: "SPEC:task_specification"
@@ -100,4 +100,4 @@ TEST(CalculatorContractTest, StatusHandler) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

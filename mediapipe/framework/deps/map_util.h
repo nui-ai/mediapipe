@@ -30,7 +30,7 @@
 #include "absl/log/absl_check.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A note on terminology: `m` and `M` represent a map and its type.
 //
@@ -148,6 +148,6 @@ bool ReverseMap(const M& m, ReverseM* reverse) {
   return true;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_MAP_UTIL_H_

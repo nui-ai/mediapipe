@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class OutputStreamManager;
 
@@ -134,6 +134,6 @@ class OutputStreamShard : public OutputStream {
   friend class OutputStreamManager;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_OUTPUT_STREAM_SHARD_H_

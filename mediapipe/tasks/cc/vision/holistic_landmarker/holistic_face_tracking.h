@@ -27,7 +27,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_detector/proto/face_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_landmarks_detector_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
@@ -37,15 +37,15 @@ struct HolisticFaceTrackingRequest {
 };
 
 struct HolisticFaceTrackingOutput {
-  std::optional<api2::builder::Stream<mediapipe::NormalizedLandmarkList>>
+  std::optional<api2::builder::Stream<mediapipe_v01013_based::NormalizedLandmarkList>>
       landmarks;
-  std::optional<api2::builder::Stream<mediapipe::ClassificationList>>
+  std::optional<api2::builder::Stream<mediapipe_v01013_based::ClassificationList>>
       classifications;
 
   struct DebugOutput {
-    api2::builder::Stream<mediapipe::NormalizedRect> roi_from_pose;
-    api2::builder::Stream<mediapipe::NormalizedRect> roi_from_detection;
-    api2::builder::Stream<mediapipe::NormalizedRect> tracking_roi;
+    api2::builder::Stream<mediapipe_v01013_based::NormalizedRect> roi_from_pose;
+    api2::builder::Stream<mediapipe_v01013_based::NormalizedRect> roi_from_detection;
+    api2::builder::Stream<mediapipe_v01013_based::NormalizedRect> tracking_roi;
   };
 
   DebugOutput debug_output;
@@ -72,18 +72,18 @@ struct HolisticFaceTrackingOutput {
 // @graph - graph to update.
 absl::StatusOr<HolisticFaceTrackingOutput> TrackHolisticFace(
     api2::builder::Stream<Image> image,
-    api2::builder::Stream<mediapipe::NormalizedLandmarkList>
+    api2::builder::Stream<mediapipe_v01013_based::NormalizedLandmarkList>
         pose_face_landmarks,
     const face_detector::proto::FaceDetectorGraphOptions&
         face_detector_graph_options,
     const face_landmarker::proto::FaceLandmarksDetectorGraphOptions&
         face_landmarks_detector_graph_options,
     const HolisticFaceTrackingRequest& request,
-    mediapipe::api2::builder::Graph& graph);
+    mediapipe_v01013_based::api2::builder::Graph& graph);
 
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_HOLISTIC_LANDMARKER_HOLISTIC_FACE_TRACKING_H_

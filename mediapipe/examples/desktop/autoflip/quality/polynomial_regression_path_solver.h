@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 class PolynomialRegressionPathSolver {
@@ -64,6 +64,6 @@ class PolynomialRegressionPathSolver {
 };
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_EXAMPLES_DESKTOP_AUTOFLIP_QUALITY_POLYNOMIAL_REGRESSION_PATH_SOLVER_H_

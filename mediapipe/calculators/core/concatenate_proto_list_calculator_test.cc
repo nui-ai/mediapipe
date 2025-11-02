@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"  // NOLINT
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 constexpr float kLocationValue = 3;
 
@@ -231,4 +231,4 @@ TEST(ConcatenateClassificationListCalculatorTest, OneTimestamp) {
               EqualsProto(result));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

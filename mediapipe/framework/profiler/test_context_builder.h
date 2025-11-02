@@ -32,7 +32,7 @@
 #include "mediapipe/framework/tool/tag_map.h"
 #include "mediapipe/framework/tool/tag_map_helper.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using tool::TagMap;
 
@@ -159,6 +159,6 @@ class TestContextBuilder {
   std::unique_ptr<CalculatorContext> context_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PROFILER_TEST_CONTEXT_BUILDER_H_

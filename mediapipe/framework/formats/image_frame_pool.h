@@ -24,7 +24,7 @@
 #include "absl/synchronization/mutex.h"
 #include "mediapipe/framework/formats/image_frame.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using ImageFrameSharedPtr = std::shared_ptr<ImageFrame>;
 
@@ -73,6 +73,6 @@ class ImageFramePool : public std::enable_shared_from_this<ImageFramePool> {
   std::vector<std::unique_ptr<ImageFrame>> available_ ABSL_GUARDED_BY(mutex_);
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_IMAGE_FRAME_POOL_H_

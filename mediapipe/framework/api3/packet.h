@@ -23,7 +23,7 @@
 #include "mediapipe/framework/packet.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 // A generic container class which can hold data of a specific type.
 //
@@ -41,7 +41,7 @@ template <typename T>
 class Packet {
  public:
   explicit Packet() = default;
-  explicit Packet(mediapipe::Packet p) : packet_(std::move(p)) {}
+  explicit Packet(mediapipe_v01013_based::Packet p) : packet_(std::move(p)) {}
 
   Packet(const Packet& p) = default;
   Packet& operator=(const Packet& p) = default;
@@ -57,14 +57,14 @@ class Packet {
     return Packet(packet_.At(timestamp));
   }
 
-  mediapipe::Timestamp Timestamp() const { return packet_.Timestamp(); }
+  mediapipe_v01013_based::Timestamp Timestamp() const { return packet_.Timestamp(); }
 
-  const mediapipe::Packet& AsLegacyPacket() const { return packet_; }
+  const mediapipe_v01013_based::Packet& AsLegacyPacket() const { return packet_; }
 
   std::string DebugString() const { return packet_.DebugString(); }
 
  private:
-  mediapipe::Packet packet_;
+  mediapipe_v01013_based::Packet packet_;
 };
 
 // Create a packet containing an object of type T initialized with the
@@ -74,11 +74,11 @@ class Packet {
 // timestamp, the caller should do PointToForeign(...).At(...).
 template <typename T, typename... Args>
 Packet<T> MakePacket(Args&&... args) {
-  return Packet<T>(mediapipe::MakePacket<T>(std::forward<Args>(args)...));
+  return Packet<T>(mediapipe_v01013_based::MakePacket<T>(std::forward<Args>(args)...));
 }
 template <typename T>
 Packet<T> MakePacket(std::unique_ptr<T> ptr) {
-  return Packet<T>(mediapipe::Adopt(ptr.release()));
+  return Packet<T>(mediapipe_v01013_based::Adopt(ptr.release()));
 }
 
 // Returns a Packet that does not own its data. The data pointed to by *ptr
@@ -94,9 +94,9 @@ Packet<T> MakePacket(std::unique_ptr<T> ptr) {
 template <typename T>
 Packet<T> PointToForeign(const T* ptr,
                          absl::AnyInvocable<void()> cleanup = nullptr) {
-  return Packet<T>(mediapipe::PointToForeign(ptr, std::move(cleanup)));
+  return Packet<T>(mediapipe_v01013_based::PointToForeign(ptr, std::move(cleanup)));
 }
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_PACKET_H_

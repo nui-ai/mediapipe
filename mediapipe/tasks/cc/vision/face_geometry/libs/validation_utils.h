@@ -21,7 +21,7 @@
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/geometry_pipeline_metadata.pb.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/mesh_3d.pb.h"
 
-namespace mediapipe::tasks::vision::face_geometry {
+namespace mediapipe_v01013_based::tasks::vision::face_geometry {
 
 // Validates `perspective_camera`.
 //
@@ -65,6 +65,6 @@ absl::Status ValidateGeometryPipelineMetadata(
 // Both frame width and frame height must be positive.
 absl::Status ValidateFrameDimensions(int frame_width, int frame_height);
 
-}  // namespace mediapipe::tasks::vision::face_geometry
+}  // namespace mediapipe_v01013_based::tasks::vision::face_geometry
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_FACE_GEOMETRY_LIBS_VALIDATION_UTILS_H_

@@ -16,9 +16,9 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-using ::mediapipe::NormalizedRect;
+using ::mediapipe_v01013_based::NormalizedRect;
 
 const float kErrorMargin = 1e-4f;
 
@@ -108,4 +108,4 @@ TEST(TrackedDetectionTest, MergeLabels) {
   EXPECT_EQ(labels.find("4")->second, 4.f);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

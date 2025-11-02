@@ -12,10 +12,10 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 namespace {
 
-using ::mediapipe::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Graph;
 
 TEST(GetItem, GetNormalizedLandmarkListVectorItem) {
   Graph graph;
@@ -127,4 +127,4 @@ TEST(GetItem, GetRectVectorItem) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder

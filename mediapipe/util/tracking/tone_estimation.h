@@ -36,7 +36,7 @@
 #include "mediapipe/util/tracking/tone_estimation.pb.h"
 #include "mediapipe/util/tracking/tone_models.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class GainBiasModel;
 class RegionFlowFeatureList;
@@ -405,6 +405,6 @@ void ToneEstimation::ComputeToneMatches(
                  std::max(1, feature_list.feature_size());
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_TONE_ESTIMATION_H_

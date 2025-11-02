@@ -17,7 +17,7 @@
 
 #include "mediapipe/framework/deps/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Each of the functions below creates a canonical error with the given
 // message. The error code of the returned status object matches the name of
@@ -78,6 +78,6 @@ inline bool IsNotFound(const absl::Status& status) {
   return status.code() == absl::StatusCode::kNotFound;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_CANONICAL_ERRORS_H_

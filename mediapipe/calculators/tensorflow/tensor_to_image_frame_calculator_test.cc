@@ -21,7 +21,7 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/types.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tf = ::tensorflow;
 namespace {
@@ -40,7 +40,7 @@ class TensorToImageFrameCalculatorTest : public ::testing::Test {
     config.add_input_stream("TENSOR:input_tensor");
     config.add_output_stream("IMAGE:output_image");
     config.mutable_options()
-        ->MutableExtension(mediapipe::TensorToImageFrameCalculatorOptions::ext)
+        ->MutableExtension(mediapipe_v01013_based::TensorToImageFrameCalculatorOptions::ext)
         ->set_scale_per_frame_min_max(scale_per_frame_min_max);
     runner_ = absl::make_unique<CalculatorRunner>(config);
   }
@@ -205,4 +205,4 @@ TYPED_TEST(TensorToImageFrameCalculatorTest,
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

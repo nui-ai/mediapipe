@@ -16,7 +16,7 @@
 
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 using IntVectorIndicesCalculator = VectorIndicesCalculator<int>;
@@ -26,8 +26,8 @@ using Uint64tVectorIndicesCalculator = VectorIndicesCalculator<uint64_t>;
 REGISTER_CALCULATOR(Uint64tVectorIndicesCalculator);
 
 using NormalizedLandmarkListVectorIndicesCalculator =
-    VectorIndicesCalculator<mediapipe::NormalizedLandmarkList>;
+    VectorIndicesCalculator<mediapipe_v01013_based::NormalizedLandmarkList>;
 REGISTER_CALCULATOR(NormalizedLandmarkListVectorIndicesCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

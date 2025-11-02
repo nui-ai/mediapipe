@@ -26,7 +26,7 @@ extern "C" void halide_error(void*, const char* message) {
   ABSL_LOG(ERROR) << "Halide Error: " << message;
 }
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace frame_buffer {
 namespace {
 
@@ -220,4 +220,4 @@ TEST(GrayBufferTest, Flip_Vertically) {
 
 }  // namespace
 }  // namespace frame_buffer
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

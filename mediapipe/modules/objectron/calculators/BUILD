@@ -46,7 +46,7 @@ mediapipe_register_type(
     base_name = "annotation",
     include_headers = ["mediapipe/modules/objectron/calculators/annotation_data.pb.h"],
     types = [
-        "::mediapipe::FrameAnnotation",
+        "::mediapipe_v01013_based::FrameAnnotation",
     ],
     deps = [":annotation_cc_proto"],
 )

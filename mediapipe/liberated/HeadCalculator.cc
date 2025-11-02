@@ -15,7 +15,7 @@
 #include "mediapipe/calculators/tensor/image_to_tensor_calculator_core.h"
 #include "mediapipe/liberated/liberated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
   class HeadCalculator : public CalculatorBase {
 
@@ -60,7 +60,7 @@ namespace mediapipe {
         ABSL_LOG(INFO) << "HeadCalculator starting to process";
 
         static constexpr api2::Input<api2::OneOf<Image, ImageFrame>>::Optional kIn{"IMAGE"};
-        std::shared_ptr<const mediapipe::Image> image;
+        std::shared_ptr<const mediapipe_v01013_based::Image> image;
         MP_ASSIGN_OR_RETURN(image, GetInputImage(kIn(cc)));
         GetSharedState().image = image;
 

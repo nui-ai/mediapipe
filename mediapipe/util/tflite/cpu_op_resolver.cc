@@ -26,7 +26,7 @@
 #include "tensorflow/lite/builtin_op_data.h"
 #include "tensorflow/lite/mutable_op_resolver.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 void MediaPipe_RegisterTfLiteOpResolver(tflite::MutableOpResolver *resolver) {
   ABSL_CHECK(resolver != nullptr);
@@ -51,4 +51,4 @@ void MediaPipe_RegisterTfLiteOpResolver(tflite::MutableOpResolver *resolver) {
                       /*version=*/1);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -37,7 +37,7 @@
 #include <cxxabi.h>
 #endif
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Demangle a mangled symbol name and return the demangled name.
 // If 'mangled' isn't mangled in the first place, this function
@@ -62,7 +62,7 @@ namespace mediapipe {
 //  - MIPS is not supported because abi::__cxa_demangle() is not defined.
 //  - Android x86 is not supported because STLs don't define __cxa_demangle
 //
-// Prefer using MediaPipeTypeStringOrDemangled<T>() when possible (defined
+// Prefer using mediapipe_v01013_basedTypeStringOrDemangled<T>() when possible (defined
 // in type_map.h).
 inline std::string Demangle(const char* mangled) {
   int status = 0;
@@ -80,6 +80,6 @@ inline std::string Demangle(const char* mangled) {
   return out;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_DEMANGLE_H_

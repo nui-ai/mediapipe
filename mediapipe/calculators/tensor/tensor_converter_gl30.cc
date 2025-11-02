@@ -37,7 +37,7 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #include "mediapipe/gpu/shader_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -112,8 +112,8 @@ class TensorConverterGlImpl : public TensorConverterGpu {
     };
 
     // shader program and params
-    mediapipe::GlhCreateProgram(
-        mediapipe::kBasicVertexShader, shader_source.c_str(), NUM_ATTRIBUTES,
+    mediapipe_v01013_based::GlhCreateProgram(
+        mediapipe_v01013_based::kBasicVertexShader, shader_source.c_str(), NUM_ATTRIBUTES,
         &attr_name[0], attr_location, &to_tex2d_program_);
     RET_CHECK(to_tex2d_program_) << "Problem initializing the program.";
     glUseProgram(to_tex2d_program_);
@@ -150,10 +150,10 @@ class TensorConverterGlImpl : public TensorConverterGpu {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(input_texture.target(), input_texture.name());
     glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0,
-                          mediapipe::kBasicSquareVertices);
+                          mediapipe_v01013_based::kBasicSquareVertices);
     glEnableVertexAttribArray(ATTRIB_VERTEX);
     glVertexAttribPointer(ATTRIB_TEXTURE_POSITION, 2, GL_FLOAT, 0, 0,
-                          mediapipe::kBasicTextureVertices);
+                          mediapipe_v01013_based::kBasicTextureVertices);
     glEnableVertexAttribArray(ATTRIB_TEXTURE_POSITION);
 
     // draw
@@ -197,5 +197,5 @@ absl::StatusOr<std::unique_ptr<TensorConverterGpu>> CreateTensorConverterGl30(
   return converter;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_30

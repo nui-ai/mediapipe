@@ -30,7 +30,7 @@
 #define AUTORELEASEPOOL
 #endif  // __APPLE__
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace internal {
 
 SchedulerQueue::Item::Item(CalculatorNode* node, CalculatorContext* cc)
@@ -321,4 +321,4 @@ void SchedulerQueue::CleanupAfterRun() {
 }
 
 }  // namespace internal
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

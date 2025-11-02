@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Projects detections to a different coordinate system using a provided
 // projection matrix.
@@ -175,4 +175,4 @@ absl::Status DetectionProjectionCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

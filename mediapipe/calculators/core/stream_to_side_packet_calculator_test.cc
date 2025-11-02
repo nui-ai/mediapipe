@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using ::testing::Test;
 
@@ -64,4 +64,4 @@ TEST_F(StreamToSidePacketCalculatorTest,
   EXPECT_EQ(runner_->Run().code(), absl::StatusCode::kAlreadyExists);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

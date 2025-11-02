@@ -19,7 +19,7 @@ limitations under the License.
 
 #include "tensorflow_text/core/kernels/regex_split.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 namespace tokenizers {
@@ -107,4 +107,4 @@ WordpieceTokenizerResult BertTokenizer::TokenizeWordpiece(
 }  // namespace tokenizers
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

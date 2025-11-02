@@ -8,16 +8,16 @@
 #include "mediapipe/framework/formats/detection.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::builder::Graph;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::builder::Graph;
 
 void AddOptions(int start_keypoint_index, int end_keypoint_index,
                 float target_angle,
-                mediapipe::api2::builder::GenericNode& node) {
+                mediapipe_v01013_based::api2::builder::GenericNode& node) {
   auto& options = node.GetOptions<DetectionsToRectsCalculatorOptions>();
   options.set_rotation_vector_start_keypoint_index(start_keypoint_index);
   options.set_rotation_vector_end_keypoint_index(end_keypoint_index);
@@ -53,7 +53,7 @@ Stream<NormalizedRect> ConvertAlignmentPointsDetectionsToRect(
 Stream<NormalizedRect> ConvertDetectionToRect(
     Stream<Detection> detection, Stream<std::pair<int, int>> image_size,
     int start_keypoint_index, int end_keypoint_index, float target_angle,
-    mediapipe::api2::builder::Graph& graph) {
+    mediapipe_v01013_based::api2::builder::Graph& graph) {
   auto& align_node = graph.AddNode("DetectionsToRectsCalculator");
   AddOptions(start_keypoint_index, end_keypoint_index, target_angle,
              align_node);
@@ -66,7 +66,7 @@ Stream<std::vector<NormalizedRect>> ConvertDetectionsToRects(
     Stream<std::vector<Detection>> detections,
     Stream<std::pair<int, int>> image_size, int start_keypoint_index,
     int end_keypoint_index, float target_angle,
-    mediapipe::api2::builder::Graph& graph) {
+    mediapipe_v01013_based::api2::builder::Graph& graph) {
   // TODO: check if we can substitute DetectionsToRectsCalculator
   // with AlignmentPointsRectsCalculator and use it instead. Ideally, merge or
   // remove one of calculators.
@@ -82,7 +82,7 @@ Stream<NormalizedRect> ConvertDetectionsToRectUsingKeypoints(
     Stream<std::vector<Detection>> detections,
     Stream<std::pair<int, int>> image_size, int start_keypoint_index,
     int end_keypoint_index, float target_angle,
-    mediapipe::api2::builder::Graph& graph) {
+    mediapipe_v01013_based::api2::builder::Graph& graph) {
   auto& node = graph.AddNode("DetectionsToRectsCalculator");
 
   auto& options = node.GetOptions<DetectionsToRectsCalculatorOptions>();
@@ -97,4 +97,4 @@ Stream<NormalizedRect> ConvertDetectionsToRectUsingKeypoints(
   return node.Out("NORM_RECT").Cast<NormalizedRect>();
 }
 
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder

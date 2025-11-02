@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/util/sequence/media_sequence_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace mediasequence {
 
 namespace {
@@ -405,24 +405,24 @@ int GetBBoxSize(const std::string& prefix,
   return GetBBoxXMinSize(prefix, sequence);
 }
 
-std::vector<::mediapipe::Location> GetBBoxAt(
+std::vector<::mediapipe_v01013_based::Location> GetBBoxAt(
     const std::string& prefix, const tensorflow::SequenceExample& sequence,
     int index) {
-  std::vector<::mediapipe::Location> bboxes;
+  std::vector<::mediapipe_v01013_based::Location> bboxes;
   const auto& xmins = GetBBoxXMinAt(prefix, sequence, index);
   const auto& ymins = GetBBoxYMinAt(prefix, sequence, index);
   const auto& xmaxs = GetBBoxXMaxAt(prefix, sequence, index);
   const auto& ymaxs = GetBBoxYMaxAt(prefix, sequence, index);
   bboxes.reserve(xmins.size());
   for (int i = 0; i < xmins.size(); ++i) {
-    bboxes.push_back(::mediapipe::Location::CreateRelativeBBoxLocation(
+    bboxes.push_back(::mediapipe_v01013_based::Location::CreateRelativeBBoxLocation(
         xmins[i], ymins[i], xmaxs[i] - xmins[i], ymaxs[i] - ymins[i]));
   }
   return bboxes;
 }
 
 void AddBBox(const std::string& prefix,
-             const std::vector<::mediapipe::Location>& bboxes,
+             const std::vector<::mediapipe_v01013_based::Location>& bboxes,
              tensorflow::SequenceExample* sequence) {
   ::std::vector<float> xmins;
   ::std::vector<float> ymins;
@@ -527,7 +527,7 @@ void Clear3dPoint(const std::string& prefix,
   ClearBBox3dPointZ(prefix, sequence);
 }
 
-std::unique_ptr<mediapipe::Matrix> GetAudioFromFeatureAt(
+std::unique_ptr<mediapipe_v01013_based::Matrix> GetAudioFromFeatureAt(
     const std::string& prefix, const tensorflow::SequenceExample& sequence,
     int index) {
   const auto& flat_data = GetFeatureFloatsAt(prefix, sequence, index);
@@ -539,21 +539,21 @@ std::unique_ptr<mediapipe::Matrix> GetAudioFromFeatureAt(
       << "The data size is not a multiple of the number of channels: "
       << flat_data.size() << " % " << num_channels << " = "
       << flat_data.size() % num_channels << " for sequence index " << index;
-  auto output = absl::make_unique<mediapipe::Matrix>(
+  auto output = absl::make_unique<mediapipe_v01013_based::Matrix>(
       num_channels, flat_data.size() / num_channels);
   std::copy(flat_data.begin(), flat_data.end(), output->data());
   return output;
 }
 
 void AddAudioAsFeature(const std::string& prefix,
-                       const mediapipe::Matrix& audio,
+                       const mediapipe_v01013_based::Matrix& audio,
                        tensorflow::SequenceExample* sequence) {
   auto* value_list =
       MutableFeatureList(merge_prefix(prefix, kFeatureFloatsKey), sequence)
           ->add_feature()
           ->mutable_float_list()
           ->mutable_value();
-  mediapipe::proto_ns::RepeatedField<float>(
+  mediapipe_v01013_based::proto_ns::RepeatedField<float>(
       audio.data(), audio.data() + audio.rows() * audio.cols())
       .Swap(value_list);
 }
@@ -575,4 +575,4 @@ absl::Status ReconcileMetadata(bool reconcile_bbox_annotations,
 }
 
 }  // namespace mediasequence
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

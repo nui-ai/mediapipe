@@ -66,7 +66,7 @@ int NumGroups(const int size, const int group_size) {  // NOLINT
 }
 
 absl::StatusOr<bool> ShouldFlipVertically(
-    const mediapipe::TensorConverterCalculatorOptions& options, bool use_gpu) {
+    const mediapipe_v01013_based::TensorConverterCalculatorOptions& options, bool use_gpu) {
   if (options.has_flip_vertically() && options.has_gpu_origin()) {
     return absl::FailedPreconditionError(absl::StrFormat(
         "Cannot specify both flip_vertically and gpu_origin options"));
@@ -85,7 +85,7 @@ absl::StatusOr<bool> ShouldFlipVertically(
     return false;
   }
 
-  return mediapipe::IsGpuOriginAtBottom(options.gpu_origin());
+  return mediapipe_v01013_based::IsGpuOriginAtBottom(options.gpu_origin());
 }
 
 constexpr char kImageFrameTag[] = "IMAGE";
@@ -98,7 +98,7 @@ constexpr std::pair<float, float> kDefaultOutputRange = {0.0f, 1.0f};
 
 }  // namespace
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Calculator for normalizing and converting an ImageFrame, GpuBuffer or Matrix
 // into a Tensor.
@@ -188,7 +188,7 @@ absl::Status TensorConverterCalculator::GetContract(CalculatorContract* cc) {
   cc->UseService(kMemoryManagerService).Optional();
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Inputs().HasTag(kGpuBufferTag)) {
-    cc->Inputs().Tag(kGpuBufferTag).Set<mediapipe::GpuBuffer>();
+    cc->Inputs().Tag(kGpuBufferTag).Set<mediapipe_v01013_based::GpuBuffer>();
 #if MEDIAPIPE_METAL_ENABLED
     MP_RETURN_IF_ERROR([MPPMetalHelper updateContract:cc]);
 #elif MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_30
@@ -314,7 +314,7 @@ absl::StatusOr<std::optional<Tensor>> TensorConverterCalculator::ProcessGPU(
     initialized_ = true;
   }
   const auto& input =
-      cc->Inputs().Tag(kGpuBufferTag).Get<mediapipe::GpuBuffer>();
+      cc->Inputs().Tag(kGpuBufferTag).Get<mediapipe_v01013_based::GpuBuffer>();
 #if MEDIAPIPE_METAL_ENABLED
   Tensor output = tensor_converter_gpu_->Convert(input);
   return std::move(output);
@@ -338,25 +338,25 @@ absl::Status TensorConverterCalculator::InitGpu(CalculatorContext* cc) {
 #if !MEDIAPIPE_DISABLE_GPU
   // Get input image sizes.
   const auto& input =
-      cc->Inputs().Tag(kGpuBufferTag).Get<mediapipe::GpuBuffer>();
-  mediapipe::GpuBufferFormat format = input.format();
+      cc->Inputs().Tag(kGpuBufferTag).Get<mediapipe_v01013_based::GpuBuffer>();
+  mediapipe_v01013_based::GpuBufferFormat format = input.format();
   const bool include_alpha = (max_num_channels_ == 4);
   const bool single_channel = (max_num_channels_ == 1);
 
-  RET_CHECK(format == mediapipe::GpuBufferFormat::kBGRA32 ||
-            format == mediapipe::GpuBufferFormat::kRGB24 ||
-            format == mediapipe::GpuBufferFormat::kRGBA32 ||
-            format == mediapipe::GpuBufferFormat::kRGBAFloat128 ||
-            format == mediapipe::GpuBufferFormat::kRGBAHalf64 ||
-            format == mediapipe::GpuBufferFormat::kGrayFloat32 ||
-            format == mediapipe::GpuBufferFormat::kGrayHalf16 ||
-            format == mediapipe::GpuBufferFormat::kOneComponent8)
+  RET_CHECK(format == mediapipe_v01013_based::GpuBufferFormat::kBGRA32 ||
+            format == mediapipe_v01013_based::GpuBufferFormat::kRGB24 ||
+            format == mediapipe_v01013_based::GpuBufferFormat::kRGBA32 ||
+            format == mediapipe_v01013_based::GpuBufferFormat::kRGBAFloat128 ||
+            format == mediapipe_v01013_based::GpuBufferFormat::kRGBAHalf64 ||
+            format == mediapipe_v01013_based::GpuBufferFormat::kGrayFloat32 ||
+            format == mediapipe_v01013_based::GpuBufferFormat::kGrayHalf16 ||
+            format == mediapipe_v01013_based::GpuBufferFormat::kOneComponent8)
       << "Unsupported GPU input format: " << static_cast<uint32_t>(format);
   if (include_alpha) {
-    RET_CHECK(format == mediapipe::GpuBufferFormat::kBGRA32 ||
-              format == mediapipe::GpuBufferFormat::kRGBA32 ||
-              format == mediapipe::GpuBufferFormat::kRGBAFloat128 ||
-              format == mediapipe::GpuBufferFormat::kRGBAHalf64)
+    RET_CHECK(format == mediapipe_v01013_based::GpuBufferFormat::kBGRA32 ||
+              format == mediapipe_v01013_based::GpuBufferFormat::kRGBA32 ||
+              format == mediapipe_v01013_based::GpuBufferFormat::kRGBAFloat128 ||
+              format == mediapipe_v01013_based::GpuBufferFormat::kRGBAHalf64)
         << "Num input channels is less than desired output, input format: "
         << static_cast<uint32_t>(format);
   }
@@ -396,7 +396,7 @@ absl::Status TensorConverterCalculator::LoadOptions(CalculatorContext* cc,
                                                     bool use_gpu) {
   // Get calculator options specified in the graph.
   const auto& options =
-      cc->Options<::mediapipe::TensorConverterCalculatorOptions>();
+      cc->Options<::mediapipe_v01013_based::TensorConverterCalculatorOptions>();
 
   // if zero_center, set output float range to match [-1, 1] as specified in
   // calculator proto.
@@ -434,4 +434,4 @@ absl::Status TensorConverterCalculator::LoadOptions(CalculatorContext* cc,
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

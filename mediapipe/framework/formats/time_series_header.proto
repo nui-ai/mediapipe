@@ -19,7 +19,7 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 // Header for a uniformly sampled time series stream. Each Packet in
 // the stream is a Matrix, and each column is a (vector-valued) sample of

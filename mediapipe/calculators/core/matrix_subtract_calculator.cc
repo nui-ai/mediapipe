@@ -18,7 +18,7 @@
 #include "mediapipe/framework/formats/matrix.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // Subtract input matrix from the side input matrix and vice versa. The matrices
@@ -78,4 +78,4 @@ absl::Status MatrixSubtractCalculator::Process(CalculatorContext* cc) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

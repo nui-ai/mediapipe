@@ -14,11 +14,11 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Node;
-using ::mediapipe::api2::Output;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Node;
+using ::mediapipe_v01013_based::api2::Output;
 using ::testing::HasSubstr;
 
 namespace {
@@ -157,4 +157,4 @@ TEST(CalculatorGraphAsyncErrorsTest, ErrorCallbackMustBeSetBeforeInit) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

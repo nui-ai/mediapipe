@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/gpu/gpu_origin.proto";
@@ -12,14 +12,14 @@ import "mediapipe/gpu/gpu_origin.proto";
 //   input_stream: "IMAGE_IN:input_image"
 //   output_stream: "TENSOR_OUT:image_tensor"
 //   options {
-//     [mediapipe.TensorConverterCalculatorOptions.ext] {
+//     [mediapipe_v01013_based.TensorConverterCalculatorOptions.ext] {
 //       zero_center: true
 //     }
 //   }
 // }
 //
 message TensorConverterCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional TensorConverterCalculatorOptions ext = 335742637;
   }
 

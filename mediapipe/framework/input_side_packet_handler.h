@@ -27,7 +27,7 @@
 #include "mediapipe/framework/packet_type.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // The input side packet handler is invoked every time any of the input side
 // packets is set and notifies the calculator node when all the input side
@@ -80,6 +80,6 @@ class InputSidePacketHandler {
   std::function<void(absl::Status)> error_callback_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_INPUT_SIDE_PACKET_HANDLER_H_

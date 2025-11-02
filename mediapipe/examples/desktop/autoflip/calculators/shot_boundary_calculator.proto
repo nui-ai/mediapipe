@@ -14,12 +14,12 @@
 
 syntax = "proto2";
 
-package mediapipe.autoflip;
+package mediapipe_v01013_based.autoflip;
 
 import "mediapipe/framework/calculator.proto";
 
 message ShotBoundaryCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional ShotBoundaryCalculatorOptions ext = 281194049;
   }
   // Parameters to shot detection algorithm. All the constraints (the fields

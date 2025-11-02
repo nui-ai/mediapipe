@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/container_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 // Returns a CalculatorGraph to run a single calculator.
@@ -326,4 +326,4 @@ TEST_F(SwitchMuxCalculatorTest, OneChannelIsSlow) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

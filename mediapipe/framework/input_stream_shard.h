@@ -21,7 +21,7 @@
 #include "mediapipe/framework/input_stream.h"
 #include "mediapipe/framework/packet.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // For testing
 class MediaPipeProfilerTestPeer;
@@ -84,6 +84,6 @@ class InputStreamShard : public InputStream {
   friend class InputStreamHandler;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_INPUT_STREAM_SHARD_H_

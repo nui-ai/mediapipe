@@ -23,10 +23,10 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-using mediapipe::PacketTypeSet;
-using mediapipe::Timestamp;
+using mediapipe_v01013_based::PacketTypeSet;
+using mediapipe_v01013_based::Timestamp;
 
 namespace {
 
@@ -181,7 +181,7 @@ absl::Status SidePacketToStreamCalculator::Process(CalculatorContext* cc) {
     return absl::OkStatus();
   }
 
-  return mediapipe::tool::StatusStop();
+  return mediapipe_v01013_based::tool::StatusStop();
 }
 
 absl::Status SidePacketToStreamCalculator::Close(CalculatorContext* cc) {
@@ -206,4 +206,4 @@ absl::Status SidePacketToStreamCalculator::Close(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

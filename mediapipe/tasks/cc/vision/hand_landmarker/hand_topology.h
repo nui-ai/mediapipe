@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef MEDIAPIPE_TASKS_CC_VISION_HAND_LANDMARKER_HAND_TOPOLOGY_H_
 #define MEDIAPIPE_TASKS_CC_VISION_HAND_LANDMARKER_HAND_TOPOLOGY_H_
 
-namespace mediapipe::tasks::vision::hand_landmarker {
+namespace mediapipe_v01013_based::tasks::vision::hand_landmarker {
 
 // Hand model 21 landmark names.
 enum class HandLandmarkName {
@@ -43,6 +43,6 @@ enum class HandLandmarkName {
   kPinky4,
 };
 
-}  // namespace mediapipe::tasks::vision::hand_landmarker
+}  // namespace mediapipe_v01013_based::tasks::vision::hand_landmarker
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_HAND_LANDMARKER_HAND_TOPOLOGY_H_

@@ -16,7 +16,7 @@
 
 #include <memory>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace frame_buffer {
 
 FloatBuffer::FloatBuffer(float* data, int width, int height, int channels)
@@ -54,4 +54,4 @@ void FloatBuffer::Initialize(float* data, int width, int height, int channels) {
 }
 
 }  // namespace frame_buffer
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

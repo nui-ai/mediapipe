@@ -23,7 +23,7 @@ limitations under the License.
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/tasks/cc/components/containers/landmark.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace pose_landmarker {
@@ -40,13 +40,13 @@ struct PoseLandmarkerResult {
 };
 
 PoseLandmarkerResult ConvertToPoseLandmarkerResult(
-    std::optional<std::vector<mediapipe::Image>> segmentation_mask,
-    const std::vector<mediapipe::NormalizedLandmarkList>& pose_landmarks_proto,
-    const std::vector<mediapipe::LandmarkList>& pose_world_landmarks_proto);
+    std::optional<std::vector<mediapipe_v01013_based::Image>> segmentation_mask,
+    const std::vector<mediapipe_v01013_based::NormalizedLandmarkList>& pose_landmarks_proto,
+    const std::vector<mediapipe_v01013_based::LandmarkList>& pose_world_landmarks_proto);
 
 }  // namespace pose_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_POSE_LANDMARKER_POSE_LANDMARKER_RESULT_H_

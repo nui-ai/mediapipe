@@ -9,7 +9,7 @@
 #include "testing/base/public/gmock.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using ::testing::ElementsAre;
@@ -131,4 +131,4 @@ TEST(FilterDetectionCalculatorTest, DetectionFilterLabelMapTest) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

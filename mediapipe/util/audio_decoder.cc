@@ -54,7 +54,7 @@ ABSL_FLAG(int64_t, media_decoder_allowed_audio_gap_merge, 5,
           "value it will be reset to the value in the audio stream and "
           "counting based on samples will resume.");
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // MPEG PTS max value + 1, used to correct for PTS rollover. Unit is PTS ticks.
 const int64_t kMpegPtsEpoch = 1LL << 33;
@@ -390,7 +390,7 @@ absl::Status AudioPacketProcessor::ValidateSampleFormat() {
     case AV_SAMPLE_FMT_FLTP:
       return absl::OkStatus();
     default:
-      return mediapipe::UnimplementedErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::UnimplementedErrorBuilder(MEDIAPIPE_LOC)
              << "sample_fmt = " << avcodec_ctx_->sample_fmt;
   }
 }
@@ -553,7 +553,7 @@ absl::Status AudioPacketProcessor::AddAudioDataToBuffer(
       }
       break;
     default:
-      return mediapipe::UnimplementedErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::UnimplementedErrorBuilder(MEDIAPIPE_LOC)
              << "sample_fmt = " << avcodec_ctx_->sample_fmt;
   }
 
@@ -608,7 +608,7 @@ AudioDecoder::~AudioDecoder() {
 
 absl::Status AudioDecoder::Initialize(
     const std::string& input_file,
-    const mediapipe::AudioDecoderOptions options) {
+    const mediapipe_v01013_based::AudioDecoderOptions options) {
   if (options.audio_stream().empty()) {
     return absl::InvalidArgumentError(
         "At least one audio_stream must be defined in AudioDecoderOptions");
@@ -841,4 +841,4 @@ absl::Status AudioDecoder::Flush() {
   return tool::CombinedStatus("Error while flushing codecs: ", statuses);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

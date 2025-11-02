@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-package mediapipe.autoflip;
+package mediapipe_v01013_based.autoflip;
 
 // Focus point location (normalized w.r.t. frame_width and frame_height, i.e.
 // specified in the domain [0, 1] x [0, 1]).

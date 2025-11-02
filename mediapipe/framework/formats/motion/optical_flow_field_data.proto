@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 message OpticalFlowFieldData {
   optional int32 width = 1;

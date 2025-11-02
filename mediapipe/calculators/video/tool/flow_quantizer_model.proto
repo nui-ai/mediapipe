@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 // Message storing min value and max value for normalization in all channels.
 message QuantizerModelData {

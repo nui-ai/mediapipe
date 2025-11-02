@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 Rectangle_i MaskToRectangle(const LocationData& location_data) {
@@ -218,4 +218,4 @@ Location CreateCvMaskLocation(const cv::Mat_<T>& mask) {
 template Location CreateCvMaskLocation(const cv::Mat_<uint8_t>& mask);
 template Location CreateCvMaskLocation(const cv::Mat_<float>& mask);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

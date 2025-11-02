@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/any_proto.h"
 #include "mediapipe/framework/tool/options_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 
@@ -79,6 +79,6 @@ absl::Status DefineGraphOptions(const CalculatorGraphConfig::Node& parent_node,
                                 CalculatorGraphConfig* config);
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_OPTIONS_UTIL_H_

@@ -8,7 +8,7 @@
 #include "absl/status/statusor.h"
 #include "mediapipe/framework/formats/unique_fd.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Provides a shared ownership for a file descriptor.
 //
@@ -61,6 +61,6 @@ class SharedFd {
   std::shared_ptr<UniqueFd> fd_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_SHARED_FD_H_

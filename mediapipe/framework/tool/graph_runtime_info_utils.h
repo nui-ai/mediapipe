@@ -20,12 +20,12 @@
 #include "absl/status/statusor.h"
 #include "mediapipe/framework/graph_runtime_info.pb.h"
 
-namespace mediapipe::tool {
+namespace mediapipe_v01013_based::tool {
 
 // Returns a human readable representation of the graph runtime info.
 absl::StatusOr<std::string> GetGraphRuntimeInfoString(
     const GraphRuntimeInfo& graph_runtime_info);
 
-}  // namespace mediapipe::tool
+}  // namespace mediapipe_v01013_based::tool
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_GRAPH_RUNTIME_INFO_UTILS_H_

@@ -30,7 +30,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/model_resources.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace core {
 
@@ -103,11 +103,11 @@ class ModelResourcesCache {
 };
 
 // Global service for mediapipe task model resources cache.
-inline constexpr mediapipe::GraphService<ModelResourcesCache>
-    kModelResourcesCacheService("mediapipe::tasks::ModelResourcesCacheService");
+inline constexpr mediapipe_v01013_based::GraphService<ModelResourcesCache>
+    kModelResourcesCacheService("mediapipe_v01013_based::tasks::ModelResourcesCacheService");
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_CORE_MODEL_RESOURCES_CACHE_H_

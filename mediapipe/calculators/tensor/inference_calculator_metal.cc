@@ -48,7 +48,7 @@ T RoundUp(T n, T m) {
 
 }  // namespace
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 #if MEDIAPIPE_TFLITE_METAL_INFERENCE
@@ -128,7 +128,7 @@ absl::Status InferenceCalculatorMetalImpl::UpdateContract(
 
   RET_CHECK(!kDelegate(cc).IsConnected())
       << "Delegate configuration through side packet is not supported.";
-  const auto& options = cc->Options<mediapipe::InferenceCalculatorOptions>();
+  const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
   RET_CHECK(!options.model_path().empty() ^ kSideInModel(cc).IsConnected())
       << "Either model as side packet or model path in options is required.";
 
@@ -138,7 +138,7 @@ absl::Status InferenceCalculatorMetalImpl::UpdateContract(
 }
 
 absl::Status InferenceCalculatorMetalImpl::Open(CalculatorContext* cc) {
-  const auto& options = cc->Options<::mediapipe::InferenceCalculatorOptions>();
+  const auto& options = cc->Options<::mediapipe_v01013_based::InferenceCalculatorOptions>();
   allow_precision_loss_ = options.delegate().gpu().allow_precision_loss();
 
   gpu_helper_ = [[MPPMetalHelper alloc] initWithCalculatorContext:cc];
@@ -222,7 +222,7 @@ absl::Status InferenceCalculatorMetalImpl::InitInterpreter(
   tflite::InterpreterBuilder interpreter_builder(model, op_resolver);
   AddDelegate(cc, &interpreter_builder);
   interpreter_builder.SetNumThreads(
-      cc->Options<mediapipe::InferenceCalculatorOptions>().cpu_num_thread());
+      cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>().cpu_num_thread());
   RET_CHECK_EQ(interpreter_builder(&interpreter_), kTfLiteOk);
   RET_CHECK(interpreter_);
   MP_ASSIGN_OR_RETURN(
@@ -316,7 +316,7 @@ absl::Status InferenceCalculatorMetalImpl::CreateConverters(
                                      isFloat16:allow_precision_loss_
                                convertToPBHWC4:true];
   if (converter_to_BPHWC4_ == nil) {
-    return mediapipe::InternalError(
+    return mediapipe_v01013_based::InternalError(
         "Error initializating input buffer converter");
   }
   // Create converter for GPU output.
@@ -332,4 +332,4 @@ absl::Status InferenceCalculatorMetalImpl::CreateConverters(
 }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -40,20 +40,20 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/utils/image_utils.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace components {
 namespace processors {
 namespace {
 
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::core::ModelResources;
-using ::mediapipe::tasks::core::TaskRunner;
-using ::mediapipe::tasks::vision::DecodeImageFromFile;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::core::ModelResources;
+using ::mediapipe_v01013_based::tasks::core::TaskRunner;
+using ::mediapipe_v01013_based::tasks::vision::DecodeImageFromFile;
 using ::testing::ContainerEq;
 using ::testing::HasSubstr;
 using ::testing::TestParamInfo;
@@ -238,7 +238,7 @@ TEST_F(ConfigureTest, SucceedsGpuOriginConventional) {
 
   proto::ImagePreprocessingGraphOptions options;
   MP_EXPECT_OK(ConfigureImagePreprocessingGraph(
-      *model_resources, true, mediapipe::GpuOrigin::CONVENTIONAL, &options));
+      *model_resources, true, mediapipe_v01013_based::GpuOrigin::CONVENTIONAL, &options));
 
   EXPECT_THAT(options, EqualsProto(
                            R"pb(image_to_tensor_options {
@@ -360,4 +360,4 @@ INSTANTIATE_TEST_SUITE_P(
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

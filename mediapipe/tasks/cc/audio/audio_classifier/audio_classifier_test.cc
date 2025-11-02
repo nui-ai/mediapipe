@@ -39,14 +39,14 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/classification_result.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace audio {
 namespace audio_classifier {
 namespace {
 
 using ::absl::StatusOr;
-using ::mediapipe::file::JoinPath;
+using ::mediapipe_v01013_based::file::JoinPath;
 using ::testing::HasSubstr;
 using ::testing::Optional;
 
@@ -533,4 +533,4 @@ TEST_F(ClassifyAsyncTest, SucceedsWithNonDeterministicNumAudioSamples) {
 }  // namespace audio_classifier
 }  // namespace audio
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -38,7 +38,7 @@
 #include "tensorflow/core/framework/node_def.pb.h"
 #include "tensorflow/core/public/session_options.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tf = ::tensorflow;
 
@@ -99,8 +99,8 @@ class TensorFlowSessionFromFrozenGraphGenerator : public PacketGenerator {
   static absl::Status Generate(
       const PacketGeneratorOptions& packet_generator_options,
       const PacketSet& input_side_packets, PacketSet* output_side_packets) {
-    auto clock = std::unique_ptr<mediapipe::Clock>(
-        mediapipe::MonotonicClock::CreateSynchronizedMonotonicClock());
+    auto clock = std::unique_ptr<mediapipe_v01013_based::Clock>(
+        mediapipe_v01013_based::MonotonicClock::CreateSynchronizedMonotonicClock());
     const uint64_t start_time = absl::ToUnixMicros(clock->TimeNow());
     const TensorFlowSessionFromFrozenGraphGeneratorOptions& options =
         packet_generator_options.GetExtension(
@@ -110,7 +110,7 @@ class TensorFlowSessionFromFrozenGraphGenerator : public PacketGenerator {
 
     tf::SessionOptions session_options;
     session_options.config.CopyFrom(options.config());
-    std::vector<mediapipe::ProtoString> initialization_op_names;
+    std::vector<mediapipe_v01013_based::ProtoString> initialization_op_names;
     initialization_op_names.reserve(options.initialization_op_names_size());
     for (int i = 0; i < options.initialization_op_names_size(); ++i) {
       initialization_op_names.emplace_back(options.initialization_op_names(i));
@@ -125,9 +125,9 @@ class TensorFlowSessionFromFrozenGraphGenerator : public PacketGenerator {
       const std::string& frozen_graph =
           input_side_packets.Tag(kStringModelFilePathTag).Get<std::string>();
       RET_CHECK_OK(
-          mediapipe::file::GetContents(frozen_graph, &graph_def_serialized));
+          mediapipe_v01013_based::file::GetContents(frozen_graph, &graph_def_serialized));
     } else {
-      RET_CHECK_OK(mediapipe::file::GetContents(options.graph_proto_path(),
+      RET_CHECK_OK(mediapipe_v01013_based::file::GetContents(options.graph_proto_path(),
                                                 &graph_def_serialized));
     }
     tensorflow::GraphDef graph_def;
@@ -162,4 +162,4 @@ class TensorFlowSessionFromFrozenGraphGenerator : public PacketGenerator {
 };
 REGISTER_PACKET_GENERATOR(TensorFlowSessionFromFrozenGraphGenerator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

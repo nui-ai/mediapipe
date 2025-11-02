@@ -39,7 +39,7 @@
 #include "mediapipe/gpu/cv_texture_cache_manager.h"
 #endif  // defined(__APPLE__)
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 #if MEDIAPIPE_METAL_ENABLED
 class MetalSharedResources;
@@ -152,6 +152,6 @@ struct GpuSharedData {
   }
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_GPU_SHARED_DATA_INTERNAL_H_

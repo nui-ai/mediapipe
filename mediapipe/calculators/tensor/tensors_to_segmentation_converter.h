@@ -21,7 +21,7 @@
 #include "mediapipe/framework/formats/image.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class TensorsToSegmentationConverter {
  public:
@@ -36,6 +36,6 @@ class TensorsToSegmentationConverter {
       const Tensor& input_tensor, int output_width, int output_height) = 0;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_SEGMENTATION_CONVERTER_H_

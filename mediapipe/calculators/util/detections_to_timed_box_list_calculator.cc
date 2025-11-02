@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/util/tracking/box_tracker.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -107,4 +107,4 @@ void DetectionsToTimedBoxListCalculator::ConvertDetectionToTimedBox(
   box->set_time_msec(cc->InputTimestamp().Microseconds() / 1000);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

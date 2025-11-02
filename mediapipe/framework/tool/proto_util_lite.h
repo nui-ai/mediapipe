@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/tool/field_data.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 // TODO: Replace this class with a namespace following Google style.
@@ -116,7 +116,7 @@ class ProtoUtilLite {
                                   std::vector<std::string>* result);
 
   // Write a protobuf field value from a typed FieldData value.
-  static absl::Status WriteValue(const mediapipe::FieldData& value,
+  static absl::Status WriteValue(const mediapipe_v01013_based::FieldData& value,
                                  FieldType field_type,
                                  std::string* field_bytes);
 
@@ -124,7 +124,7 @@ class ProtoUtilLite {
   static absl::Status ReadValue(absl::string_view field_bytes,
                                 FieldType field_type,
                                 absl::string_view message_type,
-                                mediapipe::FieldData* result);
+                                mediapipe_v01013_based::FieldData* result);
 
   // Returns the protobuf type-url for a protobuf type-name.
   static std::string TypeUrl(absl::string_view type_name);
@@ -134,6 +134,6 @@ class ProtoUtilLite {
 };
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_PROTO_UTIL_LITE_H_

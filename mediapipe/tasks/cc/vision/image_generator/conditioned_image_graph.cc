@@ -42,7 +42,7 @@ limitations under the License.
 #include "mediapipe/util/image_frame_util.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace image_generator {
@@ -63,7 +63,7 @@ class DepthImagePostprocessingCalculator : public api2::Node {
       return absl::OkStatus();
     }
     Image raw_depth_image = kImageIn(cc).Get();
-    cv::Mat raw_depth_mat = mediapipe::formats::MatView(
+    cv::Mat raw_depth_mat = mediapipe_v01013_based::formats::MatView(
         raw_depth_image.GetImageFrameSharedPtr().get());
     cv::Mat depth_mat;
     cv::normalize(raw_depth_mat, depth_mat, 255, 0, cv::NORM_MINMAX);
@@ -71,7 +71,7 @@ class DepthImagePostprocessingCalculator : public api2::Node {
     cv::cvtColor(depth_mat, depth_mat, cv::COLOR_GRAY2RGB);
     // Acquires the cv::Mat data and assign to the image frame.
     ImageFrameSharedPtr depth_image_frame_ptr = std::make_shared<ImageFrame>(
-        mediapipe::ImageFormat::SRGB, depth_mat.cols, depth_mat.rows,
+        mediapipe_v01013_based::ImageFormat::SRGB, depth_mat.cols, depth_mat.rows,
         depth_mat.step, depth_mat.data,
         [depth_mat](uint8_t[]) { depth_mat.~Mat(); });
     Image depth_image(depth_image_frame_ptr);
@@ -83,7 +83,7 @@ class DepthImagePostprocessingCalculator : public api2::Node {
 // NOLINTBEGIN: Node registration doesn't work when part of calculator name is
 // moved to next line.
 // clang-format off
-MEDIAPIPE_REGISTER_NODE(::mediapipe::tasks::vision::image_generator::internal::DepthImagePostprocessingCalculator);
+MEDIAPIPE_REGISTER_NODE(::mediapipe_v01013_based::tasks::vision::image_generator::internal::DepthImagePostprocessingCalculator);
 // clang-format on
 // NOLINTEND
 
@@ -101,7 +101,7 @@ class CannyEdgeCalculator : public api2::Node {
     }
     Image input_image = kImageIn(cc).Get();
     cv::Mat input_image_mat =
-        mediapipe::formats::MatView(input_image.GetImageFrameSharedPtr().get());
+        mediapipe_v01013_based::formats::MatView(input_image.GetImageFrameSharedPtr().get());
     const auto& options = cc->Options<
         proto::ConditionedImageGraphOptions::EdgeConditionTypeOptions>();
     cv::Mat lumincance;
@@ -115,7 +115,7 @@ class CannyEdgeCalculator : public api2::Node {
     cv::cvtColor(edges_mat, edges_mat, cv::COLOR_GRAY2RGB);
     // Acquires the cv::Mat data and assign to the image frame.
     ImageFrameSharedPtr edges_image_frame_ptr = std::make_shared<ImageFrame>(
-        mediapipe::ImageFormat::SRGB, edges_mat.cols, edges_mat.rows,
+        mediapipe_v01013_based::ImageFormat::SRGB, edges_mat.cols, edges_mat.rows,
         edges_mat.step, edges_mat.data,
         [edges_mat](uint8_t[]) { edges_mat.~Mat(); });
     Image edges_image(edges_image_frame_ptr);
@@ -127,7 +127,7 @@ class CannyEdgeCalculator : public api2::Node {
 // NOLINTBEGIN: Node registration doesn't work when part of calculator name is
 // moved to next line.
 // clang-format off
-MEDIAPIPE_REGISTER_NODE(::mediapipe::tasks::vision::image_generator::internal::CannyEdgeCalculator);
+MEDIAPIPE_REGISTER_NODE(::mediapipe_v01013_based::tasks::vision::image_generator::internal::CannyEdgeCalculator);
 // clang-format on
 // NOLINTEND
 
@@ -135,10 +135,10 @@ MEDIAPIPE_REGISTER_NODE(::mediapipe::tasks::vision::image_generator::internal::C
 
 namespace {
 
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
 
 constexpr absl::string_view kImageTag = "IMAGE";
 constexpr absl::string_view kUImageTag = "UIMAGE";
@@ -156,8 +156,8 @@ enum ColorType {
   BLUE = 4,
 };
 
-mediapipe::Color GetColor(ColorType color_type) {
-  mediapipe::Color color;
+mediapipe_v01013_based::Color GetColor(ColorType color_type) {
+  mediapipe_v01013_based::Color color;
   switch (color_type) {
     case WHITE:
       color.set_b(255);
@@ -190,10 +190,10 @@ mediapipe::Color GetColor(ColorType color_type) {
 
 // Get LandmarksToRenderDataCalculatorOptions for rendering face landmarks
 // connections.
-mediapipe::LandmarksToRenderDataCalculatorOptions
+mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions
 GetFaceLandmarksRenderDataOptions(
     absl::Span<const std::array<int, 2>> connections, ColorType color_type) {
-  mediapipe::LandmarksToRenderDataCalculatorOptions render_options;
+  mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions render_options;
   render_options.set_thickness(1);
   render_options.set_visualize_landmark_depth(false);
   render_options.set_render_landmarks(false);
@@ -205,19 +205,19 @@ GetFaceLandmarksRenderDataOptions(
   return render_options;
 }
 
-Source<mediapipe::RenderData> GetFaceLandmarksRenderData(
-    Source<mediapipe::NormalizedLandmarkList> face_landmarks,
-    const mediapipe::LandmarksToRenderDataCalculatorOptions&
+Source<mediapipe_v01013_based::RenderData> GetFaceLandmarksRenderData(
+    Source<mediapipe_v01013_based::NormalizedLandmarkList> face_landmarks,
+    const mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions&
         landmarks_to_render_data_options,
     Graph& graph) {
   auto& landmarks_to_render_data =
       graph.AddNode("LandmarksToRenderDataCalculator");
   landmarks_to_render_data
-      .GetOptions<mediapipe::LandmarksToRenderDataCalculatorOptions>()
+      .GetOptions<mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions>()
       .CopyFrom(landmarks_to_render_data_options);
   face_landmarks >> landmarks_to_render_data.In(kNormLandmarksTag);
   return landmarks_to_render_data.Out(kRenderDataTag)
-      .Cast<mediapipe::RenderData>();
+      .Cast<mediapipe_v01013_based::RenderData>();
 }
 
 // Add FaceLandmarkerGraph to detect the face landmarks in the given face image,
@@ -243,16 +243,16 @@ absl::StatusOr<Source<Image>> GetFaceLandmarksImage(
   face_image >> face_landmarker_graph.In(kImageTag);
   auto face_landmarks_lists =
       face_landmarker_graph.Out(kNormLandmarksTag)
-          .Cast<std::vector<mediapipe::NormalizedLandmarkList>>();
+          .Cast<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>();
 
   // Get the single face landmarks.
   auto& get_vector_item =
       graph.AddNode("GetNormalizedLandmarkListVectorItemCalculator");
-  get_vector_item.GetOptions<mediapipe::GetVectorItemCalculatorOptions>()
+  get_vector_item.GetOptions<mediapipe_v01013_based::GetVectorItemCalculatorOptions>()
       .set_item_index(0);
   face_landmarks_lists >> get_vector_item.In(kVectorTag);
   auto single_face_landmarks =
-      get_vector_item.Out(kItemTag).Cast<mediapipe::NormalizedLandmarkList>();
+      get_vector_item.Out(kItemTag).Cast<mediapipe_v01013_based::NormalizedLandmarkList>();
 
   // Convert face landmarks to render data.
   auto face_oval = GetFaceLandmarksRenderData(
@@ -339,7 +339,7 @@ absl::StatusOr<Source<Image>> GetFaceLandmarksImage(
 
   // Create a black canvas image with same size as face image.
   auto& flat_color = graph.AddNode("FlatColorImageCalculator");
-  flat_color.GetOptions<mediapipe::FlatColorImageCalculatorOptions>()
+  flat_color.GetOptions<mediapipe_v01013_based::FlatColorImageCalculatorOptions>()
       .mutable_color()
       ->set_r(0);
   face_image >> flat_color.In(kImageTag);
@@ -450,9 +450,9 @@ class ConditionedImageGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::vision::image_generator::ConditionedImageGraph);
+    ::mediapipe_v01013_based::tasks::vision::image_generator::ConditionedImageGraph);
 
 }  // namespace image_generator
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

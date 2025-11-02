@@ -15,14 +15,14 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe.tasks.vision.hand_detector.proto;
+package mediapipe_v01013_based.tasks.vision.hand_detector.proto;
 
 import "mediapipe/framework/formats/detection.proto";
 import "mediapipe/framework/formats/rect.proto";
 
 message HandDetectorResult {
-  repeated mediapipe.Detection detections = 1;
-  repeated mediapipe.NormalizedRect hand_rects = 2;
+  repeated mediapipe_v01013_based.Detection detections = 1;
+  repeated mediapipe_v01013_based.NormalizedRect hand_rects = 2;
 }
 
 message HandDetectorResults {

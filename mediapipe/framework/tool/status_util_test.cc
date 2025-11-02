@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using testing::ContainerEq;
@@ -105,4 +105,4 @@ TEST(StatusTest, Deprecated) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

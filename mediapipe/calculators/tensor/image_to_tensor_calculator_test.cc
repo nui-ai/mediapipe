@@ -45,7 +45,7 @@
 #include "mediapipe/gpu/gl_context.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU && !MEDIAPIPE_METAL_ENABLED
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 constexpr char kTestDataDir[] =
@@ -63,7 +63,7 @@ void RunTestWithInputImagePacket(
     float range_max, std::optional<int> tensor_width,
     std::optional<int> tensor_height, bool keep_aspect,
     absl::optional<BorderMode> border_mode,
-    const mediapipe::NormalizedRect& roi, bool output_int_tensor,
+    const mediapipe_v01013_based::NormalizedRect& roi, bool output_int_tensor,
     bool use_tensor_vector_output) {
   std::string border_mode_str;
   if (border_mode) {
@@ -101,7 +101,7 @@ void RunTestWithInputImagePacket(
                                            range_min, range_max);
   }
   auto graph_config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(absl::Substitute(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(absl::Substitute(
           R"(
         input_stream: "input_image"
         input_stream: "roi"
@@ -145,7 +145,7 @@ void RunTestWithInputImagePacket(
 
   MP_ASSERT_OK(graph.AddPacketToInputStream(
       "roi",
-      MakePacket<mediapipe::NormalizedRect>(std::move(roi)).At(Timestamp(0))));
+      MakePacket<mediapipe_v01013_based::NormalizedRect>(std::move(roi)).At(Timestamp(0))));
 
   MP_ASSERT_OK(graph.WaitUntilIdle());
   ASSERT_THAT(output_packets, testing::SizeIs(1));
@@ -203,7 +203,7 @@ void RunTestWithInputImagePacket(
   MP_ASSERT_OK(graph.WaitUntilDone());
 }
 
-mediapipe::ImageFormat::Format GetImageFormat(int image_channels) {
+mediapipe_v01013_based::ImageFormat::Format GetImageFormat(int image_channels) {
   if (image_channels == 4) {
     return ImageFormat::SRGBA;
   } else if (image_channels == 3) {
@@ -221,10 +221,10 @@ Packet MakeImageFramePacket(cv::Mat input) {
 }
 
 Packet MakeImagePacket(cv::Mat input) {
-  mediapipe::Image input_image(std::make_shared<mediapipe::ImageFrame>(
+  mediapipe_v01013_based::Image input_image(std::make_shared<mediapipe_v01013_based::ImageFrame>(
       GetImageFormat(input.channels()), input.cols, input.rows, input.step,
       input.data, [](uint8_t*) {}));
-  return MakePacket<mediapipe::Image>(std::move(input_image)).At(Timestamp(0));
+  return MakePacket<mediapipe_v01013_based::Image>(std::move(input_image)).At(Timestamp(0));
 }
 
 enum class InputType { kImageFrame, kImage };
@@ -237,7 +237,7 @@ void RunTest(cv::Mat input, cv::Mat expected_result,
              std::vector<std::pair<int, int>> int_ranges,
              std::optional<int> tensor_width, std::optional<int> tensor_height,
              bool keep_aspect, absl::optional<BorderMode> border_mode,
-             const mediapipe::NormalizedRect& roi) {
+             const mediapipe_v01013_based::NormalizedRect& roi) {
   for (auto input_type : kInputTypesToTest) {
     for (auto float_range : float_ranges) {
       RunTestWithInputImagePacket(
@@ -268,7 +268,7 @@ void RunTest(cv::Mat input, cv::Mat expected_result,
 }
 
 TEST(ImageToTensorCalculatorTest, MediumSubRectKeepAspect) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -283,7 +283,7 @@ TEST(ImageToTensorCalculatorTest, MediumSubRectKeepAspect) {
 }
 
 TEST(ImageToTensorCalculatorTest, MediumSubRectKeepAspectBorderZero) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -298,7 +298,7 @@ TEST(ImageToTensorCalculatorTest, MediumSubRectKeepAspectBorderZero) {
 }
 
 TEST(ImageToTensorCalculatorTest, MediumSubRectKeepAspectWithRotation) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -314,7 +314,7 @@ TEST(ImageToTensorCalculatorTest, MediumSubRectKeepAspectWithRotation) {
 
 TEST(ImageToTensorCalculatorTest,
      MediumSubRectKeepAspectWithRotationBorderZero) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -330,7 +330,7 @@ TEST(ImageToTensorCalculatorTest,
 }
 
 TEST(ImageToTensorCalculatorTest, MediumSubRectWithRotation) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -345,7 +345,7 @@ TEST(ImageToTensorCalculatorTest, MediumSubRectWithRotation) {
 }
 
 TEST(ImageToTensorCalculatorTest, MediumSubRectWithRotationBorderZero) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -360,7 +360,7 @@ TEST(ImageToTensorCalculatorTest, MediumSubRectWithRotationBorderZero) {
 }
 
 TEST(ImageToTensorCalculatorTest, LargeSubRect) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -375,7 +375,7 @@ TEST(ImageToTensorCalculatorTest, LargeSubRect) {
 }
 
 TEST(ImageToTensorCalculatorTest, LargeSubRectBorderZero) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -390,7 +390,7 @@ TEST(ImageToTensorCalculatorTest, LargeSubRectBorderZero) {
 }
 
 TEST(ImageToTensorCalculatorTest, LargeSubRectKeepAspect) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -405,7 +405,7 @@ TEST(ImageToTensorCalculatorTest, LargeSubRectKeepAspect) {
 }
 
 TEST(ImageToTensorCalculatorTest, LargeSubRectKeepAspectBorderZero) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -420,7 +420,7 @@ TEST(ImageToTensorCalculatorTest, LargeSubRectKeepAspectBorderZero) {
 }
 
 TEST(ImageToTensorCalculatorTest, LargeSubRectKeepAspectWithRotation) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -435,7 +435,7 @@ TEST(ImageToTensorCalculatorTest, LargeSubRectKeepAspectWithRotation) {
 }
 
 TEST(ImageToTensorCalculatorTest, LargeSubRectKeepAspectWithRotationGray) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -451,7 +451,7 @@ TEST(ImageToTensorCalculatorTest, LargeSubRectKeepAspectWithRotationGray) {
 
 TEST(ImageToTensorCalculatorTest,
      LargeSubRectKeepAspectWithRotationBorderZero) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -468,7 +468,7 @@ TEST(ImageToTensorCalculatorTest,
 
 TEST(ImageToTensorCalculatorTest,
      LargeSubRectKeepAspectWithRotationBorderZeroGray) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -484,7 +484,7 @@ TEST(ImageToTensorCalculatorTest,
 }
 
 TEST(ImageToTensorCalculatorTest, NoOpExceptRange) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.0f);
@@ -499,7 +499,7 @@ TEST(ImageToTensorCalculatorTest, NoOpExceptRange) {
 }
 
 TEST(ImageToTensorCalculatorTest, NoOpExceptRangeBorderZero) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.0f);
@@ -514,7 +514,7 @@ TEST(ImageToTensorCalculatorTest, NoOpExceptRangeBorderZero) {
 }
 
 TEST(ImageToTensorCalculatorTest, NoOpExceptRangeAndUseInputImageDims) {
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.0f);
@@ -529,7 +529,7 @@ TEST(ImageToTensorCalculatorTest, NoOpExceptRangeAndUseInputImageDims) {
 
 TEST(ImageToTensorCalculatorTest, CanBeUsedWithoutGpuServiceSet) {
   auto graph_config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input_image"
         node {
           calculator: "ImageToTensorCalculator"
@@ -562,7 +562,7 @@ TEST(ImageToTensorCalculatorTest, CanBeUsedWithoutGpuServiceSet) {
 TEST(ImageToTensorCalculatorTest,
      FailsGracefullyWhenGpuServiceNeededButNotAvailable) {
   auto graph_config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input_image"
         node {
           calculator: "ImageToTensorCalculator"
@@ -601,4 +601,4 @@ TEST(ImageToTensorCalculatorTest,
 #endif  // !MEDIAPIPE_DISABLE_GPU && !MEDIAPIPE_METAL_ENABLED
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -18,12 +18,12 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-mediapipe::NormalizedLandmarkList vec_to_lms(
+mediapipe_v01013_based::NormalizedLandmarkList vec_to_lms(
     const std::vector<std::pair<float, float>>& inp) {
-  mediapipe::NormalizedLandmarkList ret;
+  mediapipe_v01013_based::NormalizedLandmarkList ret;
   for (const auto& it : inp) {
     auto new_lm = ret.add_landmark();
     new_lm->set_x(it.first);
@@ -33,7 +33,7 @@ mediapipe::NormalizedLandmarkList vec_to_lms(
 }
 
 std::vector<std::pair<float, float>> lms_to_vec(
-    const mediapipe::NormalizedLandmarkList& lst) {
+    const mediapipe_v01013_based::NormalizedLandmarkList& lst) {
   std::vector<std::pair<float, float>> ret;
   for (const auto& lm : lst.landmark()) {
     ret.push_back({lm.x(), lm.y()});
@@ -150,4 +150,4 @@ TEST(RefineLandmarksFromHeatmapTest, Border) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

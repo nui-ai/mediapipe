@@ -19,7 +19,7 @@
 #include "mediapipe/framework/calculator_options.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -29,8 +29,8 @@ constexpr char kRectTag[] = "RECT";
 constexpr char kRectsTag[] = "RECTS";
 constexpr char kImageSizeTag[] = "IMAGE_SIZE";
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::Rect;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::Rect;
 
 // Wraps around an angle in radians to within -M_PI and M_PI.
 inline float NormalizeRadians(float angle) {
@@ -160,4 +160,4 @@ absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

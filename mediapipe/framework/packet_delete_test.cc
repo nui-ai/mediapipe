@@ -30,7 +30,7 @@
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 class LiveObjectsCounter {
@@ -81,4 +81,4 @@ TEST(Packet, DeletesUnboundedArray) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

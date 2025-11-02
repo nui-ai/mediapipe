@@ -15,9 +15,9 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe.tasks.vision.image_segmenter.proto;
+package mediapipe_v01013_based.tasks.vision.image_segmenter.proto;
 
-option java_package = "com.google.mediapipe.tasks.vision.imagesegmenter.proto";
+option java_package = "com.google.mediapipe_v01013_based.tasks.vision.imagesegmenter.proto";
 option java_outer_classname = "SegmenterOptionsProto";
 
 // Shared options used by image segmentation tasks.

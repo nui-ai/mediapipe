@@ -17,7 +17,7 @@
 
 #include "absl/time/time.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // An abstract interface representing a Clock, which is an object that can
 // tell you the current time, and sleep.
@@ -63,6 +63,6 @@ class Clock {
   virtual void SleepUntil(absl::Time wakeup_time) = 0;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_CLOCK_H_

@@ -32,7 +32,7 @@
   /// This block is used to respond to mediapipeGraph:didOutputPacket:fromStream:.
   /// You can use it if you need to run a graph directly and want a MPPGraphTestBase
   /// object to act as the delegate.
-  void (^_packetOutputBlock)(MPPGraph* graph, const mediapipe::Packet& packet,
+  void (^_packetOutputBlock)(MPPGraph* graph, const mediapipe_v01013_based::Packet& packet,
                              const std::string& streamName);
 }
 
@@ -46,7 +46,7 @@
                   packetType:(MPPPacketType)inputPacketType;
 
 /// Runs a simple graph, providing a single frame to zero or more inputs. Input images are wrapped
-/// in packets each with timestamp mediapipe::Timestamp(1). Those packets are added to the
+/// in packets each with timestamp mediapipe_v01013_based::Timestamp(1). Those packets are added to the
 /// designated streams (named by the keys of withInputPixelBuffers). When a packet arrives on the
 /// output stream, the graph run is done and the output frame is returned.
 - (CVPixelBufferRef)runGraph:(MPPGraph*)graph
@@ -140,18 +140,18 @@
 /// between the
 ///        expected output and computed output.
 /// TODO: Use NSDictionary instead of std::map for sidePackets.
-- (void)testGraphConfig:(const mediapipe::CalculatorGraphConfig&)config
+- (void)testGraphConfig:(const mediapipe_v01013_based::CalculatorGraphConfig&)config
       inputStreamsAndFiles:(NSDictionary<NSString*, NSString*>*)fileInputs
-    inputStreamsAndPackets:(const std::map<std::string, mediapipe::Packet>&)packetInputs
-               sidePackets:(std::map<std::string, mediapipe::Packet>)sidePackets
-                 timestamp:(mediapipe::Timestamp)timestamp
+    inputStreamsAndPackets:(const std::map<std::string, mediapipe_v01013_based::Packet>&)packetInputs
+               sidePackets:(std::map<std::string, mediapipe_v01013_based::Packet>)sidePackets
+                 timestamp:(mediapipe_v01013_based::Timestamp)timestamp
               outputStream:(NSString*)outputStream
         expectedOutputFile:(NSString*)expectedPath
       maxAverageDifference:(float)maxAverageDifference;
 
 /// Calls the above testGraphConfig: method with a default maxAverageDifference
 /// of 1.f and timestamp of 1.
-- (void)testGraphConfig:(const mediapipe::CalculatorGraphConfig&)config
+- (void)testGraphConfig:(const mediapipe_v01013_based::CalculatorGraphConfig&)config
     inputStreamsAndFiles:(NSDictionary<NSString*, NSString*>*)inputs
             outputStream:(NSString*)outputStream
       expectedOutputFile:(NSString*)expectedPath;

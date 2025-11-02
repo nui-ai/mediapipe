@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 void AddInputPackets(int num_packets, CalculatorGraph* graph) {
@@ -124,4 +124,4 @@ TEST(Tvl1OpticalFlowCalculatorTest, TestParallelExecution) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

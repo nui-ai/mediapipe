@@ -30,15 +30,15 @@ limitations under the License.
 #include "mediapipe/framework/subgraph.h"
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/tensors_to_face_landmarks_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
 namespace {
 
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::SidePacket;
-using ::mediapipe::api2::builder::Stream;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::SidePacket;
+using ::mediapipe_v01013_based::api2::builder::Stream;
 
 constexpr char kTensorsTag[] = "TENSORS";
 constexpr char kNormLandmarksTag[] = "NORM_LANDMARKS";
@@ -189,7 +189,7 @@ Stream<NormalizedLandmarkList> ConvertTensorsToLandmarks(
   auto& tensors_to_landmarks = graph.AddNode("TensorsToLandmarksCalculator");
   auto* options =
       &tensors_to_landmarks
-           .GetOptions<mediapipe::TensorsToLandmarksCalculatorOptions>();
+           .GetOptions<mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions>();
   options->set_num_landmarks(landmarks_num);
   options->set_input_image_width(input_image_width);
   options->set_input_image_height(input_image_height);
@@ -253,10 +253,10 @@ class TensorsToFaceLandmarksGraph : public Subgraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe::tasks::vision::face_landmarker::TensorsToFaceLandmarksGraph); // NOLINT
+  ::mediapipe_v01013_based::tasks::vision::face_landmarker::TensorsToFaceLandmarksGraph); // NOLINT
 // clang-format on
 
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

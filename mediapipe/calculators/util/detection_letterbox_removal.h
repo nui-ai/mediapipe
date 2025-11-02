@@ -34,7 +34,7 @@
 #include "mediapipe/framework/formats/location.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
     namespace {
 
         // Processes detections from a letterboxed image to adjust their locations

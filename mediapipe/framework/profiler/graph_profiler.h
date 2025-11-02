@@ -34,7 +34,7 @@
 #include "mediapipe/framework/profiler/sharded_map.h"
 #include "mediapipe/framework/validated_graph_config.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class GlProfilingHelper;
 
@@ -118,11 +118,11 @@ class GraphProfiler : public std::enable_shared_from_this<ProfilingContext> {
       ABSL_LOCKS_EXCLUDED(profiler_mutex_);
 
   // Sets the profiler clock.
-  void SetClock(const std::shared_ptr<mediapipe::Clock>& clock)
+  void SetClock(const std::shared_ptr<mediapipe_v01013_based::Clock>& clock)
       ABSL_LOCKS_EXCLUDED(profiler_mutex_);
 
   // Gets the profiler clock.
-  const std::shared_ptr<mediapipe::Clock> GetClock() const
+  const std::shared_ptr<mediapipe_v01013_based::Clock> GetClock() const
       ABSL_LOCKS_EXCLUDED(profiler_mutex_);
 
   // Pauses profiling. No-op if already paused.
@@ -133,7 +133,7 @@ class GraphProfiler : public std::enable_shared_from_this<ProfilingContext> {
   // Process() and does NOT affect information for Open() and Close() methods.
   void Reset() ABSL_LOCKS_EXCLUDED(profiler_mutex_);
   // Begins profiling for a single graph run.
-  absl::Status Start(mediapipe::Executor* executor);
+  absl::Status Start(mediapipe_v01013_based::Executor* executor);
   // Ends profiling for a single graph run.
   absl::Status Stop();
 
@@ -342,7 +342,7 @@ class GraphProfiler : public std::enable_shared_from_this<ProfilingContext> {
   std::unique_ptr<GraphTracer> packet_tracer_;
 
   // The clock for time measurement, which must be a monotonic real time clock.
-  std::shared_ptr<mediapipe::Clock> clock_;
+  std::shared_ptr<mediapipe_v01013_based::Clock> clock_;
 
   // Inidicates that profiling has started and not yet stopped.
   std::atomic_bool is_running_;
@@ -475,6 +475,6 @@ class GlProfilingHelper : public GlContextProfilerStub {
 };
 #endif  // !MEDIAPIPE_DISABLE_GPU_PROFILER
 #undef MEDIAPIPE_DISABLE_GPU_PROFILER
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PROFILER_GRAPH_PROFILER_H_

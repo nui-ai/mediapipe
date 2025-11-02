@@ -30,13 +30,13 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/tokenizers/sentencepiece_tokenizer.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 namespace tokenizers {
 
-using ::mediapipe::tasks::CreateStatusWithPayload;
-using ::mediapipe::tasks::MediaPipeTasksStatus;
+using ::mediapipe_v01013_based::tasks::CreateStatusWithPayload;
+using ::mediapipe_v01013_based::tasks::MediaPipeTasksStatus;
 
 namespace {
 
@@ -142,4 +142,4 @@ absl::StatusOr<std::unique_ptr<Tokenizer>> CreateTokenizerFromProcessUnit(
 }  // namespace tokenizers
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

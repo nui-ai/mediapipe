@@ -28,7 +28,7 @@
 #include "mediapipe/objc/CFHolder.h"
 #include "mediapipe/objc/util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 CvPixelBufferPoolWrapper::CvPixelBufferPoolWrapper(
     int width, int height, GpuBufferFormat format, CFTimeInterval maxAge,
@@ -100,4 +100,4 @@ CvPixelBufferPoolWrapper::CreateBufferWithoutPool(
   return MakeCFHolderAdopting(buffer);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

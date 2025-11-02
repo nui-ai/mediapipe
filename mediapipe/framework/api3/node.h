@@ -17,7 +17,7 @@
 
 #include "absl/strings/string_view.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 // `Node` allows to define, implement and automatically register a MediaPipe
 // node. See below patterns to use `Node` depending on various use cases.
@@ -206,6 +206,6 @@ struct Node {
   }
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_NODE_H_

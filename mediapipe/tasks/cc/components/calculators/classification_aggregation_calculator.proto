@@ -15,12 +15,12 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 
 message ClassificationAggregationCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional ClassificationAggregationCalculatorOptions ext = 448612216;
   }
 

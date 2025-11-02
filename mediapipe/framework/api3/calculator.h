@@ -28,7 +28,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 // Calculator class should be used to implement a defined node as a calculator.
 //
@@ -260,7 +260,7 @@ class Calculator : public CalculatorBase,
 
   static constexpr auto kCalculatorName = NodeT::GetRegistrationName();
 
-  static absl::Status GetContract(mediapipe::CalculatorContract* cc) {
+  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc) {
     RET_CHECK_EQ(cc->GetMaxInFlight(), 1)
         << "Only single invocation in flight is allowed.";
 
@@ -293,21 +293,21 @@ class Calculator : public CalculatorBase,
     return tool::CombinedStatus("Multiple errors", statuses);
   }
 
-  absl::Status Open(mediapipe::CalculatorContext* cc) final {
+  absl::Status Open(mediapipe_v01013_based::CalculatorContext* cc) final {
     context_.emplace(*cc);
     absl::Status status = Open(*context_);
     context_->Clear();
     return status;
   }
 
-  absl::Status Process(mediapipe::CalculatorContext* cc) final {
+  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) final {
     context_->Reset(*cc);
     absl::Status status = Process(*context_);
     context_->Clear();
     return status;
   }
 
-  absl::Status Close(mediapipe::CalculatorContext* cc) final {
+  absl::Status Close(mediapipe_v01013_based::CalculatorContext* cc) final {
     context_->Reset(*cc);
     absl::Status status = Close(*context_);
     context_->Clear();
@@ -320,6 +320,6 @@ class Calculator : public CalculatorBase,
   std::optional<CalculatorContext<NodeT>> context_;
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_CALCULATOR_H_

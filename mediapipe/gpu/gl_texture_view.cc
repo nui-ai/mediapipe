@@ -1,6 +1,6 @@
 #include "mediapipe/gpu/gl_texture_view.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 void GlTextureView::Release() {
   DoneWriting();
@@ -20,4 +20,4 @@ void GlTextureView::DoneWriting() const {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

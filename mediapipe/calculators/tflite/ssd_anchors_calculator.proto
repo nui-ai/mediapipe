@@ -14,14 +14,14 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/framework/formats/object_detection/anchor.proto";
 
 // Options to generate anchors for SSD object detection models.
 message SsdAnchorsCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional SsdAnchorsCalculatorOptions ext = 247258239;
   }
   // Size of input images.

@@ -18,7 +18,7 @@
 #include "mediapipe/framework/deps/no_destructor.h"
 #include "third_party/dawn/include/webgpu/webgpu_cpp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Singleton class to register and unregister WebGPU device for native clients.
 class WebGpuDeviceRegistration {
@@ -43,6 +43,6 @@ class WebGpuDeviceRegistration {
   wgpu::Device device_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_WEBGPU_WEBGPU_DEVICE_REGISTRATION_H_

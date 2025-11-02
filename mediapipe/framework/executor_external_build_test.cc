@@ -21,37 +21,37 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/threadpool.h"
 
-// IMPORTANT: DO NOT add "namespace mediapipe" to this file.
+// IMPORTANT: DO NOT add "namespace mediapipe_v01013_based" to this file.
 // Leave this file outside the mediapipe namespace to emulate how MediaPipe
-// clients implement and use a mediapipe::Executor subclass.
+// clients implement and use a mediapipe_v01013_based::Executor subclass.
 namespace {
 
 // NOTE: If we need to update this class, that means there is a
 // backward-incompatible change in the MediaPipe API and MediaPipe clients also
-// need to update their mediapipe::Executor subclasses.
-class MyExecutor : public mediapipe::Executor {
+// need to update their mediapipe_v01013_based::Executor subclasses.
+class MyExecutor : public mediapipe_v01013_based::Executor {
  public:
   MyExecutor();
   ~MyExecutor() override;
 
-  // To verify a mediapipe::Executor subclass outside the mediapipe namespace
-  // can override any method, override every method in the mediapipe::Executor
+  // To verify a mediapipe_v01013_based::Executor subclass outside the mediapipe namespace
+  // can override any method, override every method in the mediapipe_v01013_based::Executor
   // interface.
-  void AddTask(mediapipe::TaskQueue* task_queue) override;
+  void AddTask(mediapipe_v01013_based::TaskQueue* task_queue) override;
   void Schedule(std::function<void()> task) override;
 
  private:
-  std::unique_ptr<mediapipe::ThreadPool> thread_pool_;
+  std::unique_ptr<mediapipe_v01013_based::ThreadPool> thread_pool_;
 };
 
 MyExecutor::MyExecutor() {
-  thread_pool_ = absl::make_unique<mediapipe::ThreadPool>("my_executor", 1);
+  thread_pool_ = absl::make_unique<mediapipe_v01013_based::ThreadPool>("my_executor", 1);
   thread_pool_->StartWorkers();
 }
 
 MyExecutor::~MyExecutor() { thread_pool_.reset(nullptr); }
 
-void MyExecutor::AddTask(mediapipe::TaskQueue* task_queue) {
+void MyExecutor::AddTask(mediapipe_v01013_based::TaskQueue* task_queue) {
   thread_pool_->Schedule([task_queue] { task_queue->RunNextTask(); });
 }
 
@@ -59,7 +59,7 @@ void MyExecutor::Schedule(std::function<void()> task) {
   thread_pool_->Schedule(std::move(task));
 }
 
-class NoOpTaskQueue : public mediapipe::TaskQueue {
+class NoOpTaskQueue : public mediapipe_v01013_based::TaskQueue {
  public:
   // Returns the number of times RunNextTask() was called.
   int call_count() const { return call_count_; }

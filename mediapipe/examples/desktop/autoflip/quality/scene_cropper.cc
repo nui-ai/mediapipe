@@ -26,7 +26,7 @@
 // TODO: Parameterize FOV based on camera specs.
 constexpr float kWidthFieldOfView = 60;
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 absl::Status SceneCropper::ProcessKinematicPathSolver(
@@ -168,4 +168,4 @@ absl::Status SceneCropper::CropFrames(
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

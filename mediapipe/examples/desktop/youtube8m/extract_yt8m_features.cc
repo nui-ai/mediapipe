@@ -42,15 +42,15 @@ ABSL_FLAG(std::string, output_side_packets, "",
 
 absl::Status RunMPPGraph() {
   std::string calculator_graph_config_contents;
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
       absl::GetFlag(FLAGS_calculator_graph_config_file),
       &calculator_graph_config_contents));
   ABSL_LOG(INFO) << "Get calculator graph config contents: "
                  << calculator_graph_config_contents;
-  mediapipe::CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(
+  mediapipe_v01013_based::CalculatorGraphConfig config =
+      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(
           calculator_graph_config_contents);
-  std::map<std::string, mediapipe::Packet> input_side_packets;
+  std::map<std::string, mediapipe_v01013_based::Packet> input_side_packets;
   std::vector<std::string> kv_pairs =
       absl::StrSplit(absl::GetFlag(FLAGS_input_side_packets), ',');
   for (const std::string& kv_pair : kv_pairs) {
@@ -58,53 +58,53 @@ absl::Status RunMPPGraph() {
     RET_CHECK(name_and_value.size() == 2);
     RET_CHECK(!input_side_packets.contains(name_and_value[0]));
     std::string input_side_packet_contents;
-    MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
+    MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
         name_and_value[1], &input_side_packet_contents));
     input_side_packets[name_and_value[0]] =
-        mediapipe::MakePacket<std::string>(input_side_packet_contents);
+        mediapipe_v01013_based::MakePacket<std::string>(input_side_packet_contents);
   }
 
-  mediapipe::MatrixData inc3_pca_mean_matrix_data,
+  mediapipe_v01013_based::MatrixData inc3_pca_mean_matrix_data,
       inc3_pca_projection_matrix_data, vggish_pca_mean_matrix_data,
       vggish_pca_projection_matrix_data;
-  mediapipe::Matrix inc3_pca_mean_matrix, inc3_pca_projection_matrix,
+  mediapipe_v01013_based::Matrix inc3_pca_mean_matrix, inc3_pca_projection_matrix,
       vggish_pca_mean_matrix, vggish_pca_projection_matrix;
 
   std::string content;
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
       "/tmp/mediapipe/inception3_mean_matrix_data.pb", &content));
   inc3_pca_mean_matrix_data.ParseFromString(content);
-  mediapipe::MatrixFromMatrixDataProto(inc3_pca_mean_matrix_data,
+  mediapipe_v01013_based::MatrixFromMatrixDataProto(inc3_pca_mean_matrix_data,
                                        &inc3_pca_mean_matrix);
   input_side_packets["inception3_pca_mean_matrix"] =
-      mediapipe::MakePacket<mediapipe::Matrix>(inc3_pca_mean_matrix);
+      mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::Matrix>(inc3_pca_mean_matrix);
 
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
       "/tmp/mediapipe/inception3_projection_matrix_data.pb", &content));
   inc3_pca_projection_matrix_data.ParseFromString(content);
-  mediapipe::MatrixFromMatrixDataProto(inc3_pca_projection_matrix_data,
+  mediapipe_v01013_based::MatrixFromMatrixDataProto(inc3_pca_projection_matrix_data,
                                        &inc3_pca_projection_matrix);
   input_side_packets["inception3_pca_projection_matrix"] =
-      mediapipe::MakePacket<mediapipe::Matrix>(inc3_pca_projection_matrix);
+      mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::Matrix>(inc3_pca_projection_matrix);
 
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
       "/tmp/mediapipe/vggish_mean_matrix_data.pb", &content));
   vggish_pca_mean_matrix_data.ParseFromString(content);
-  mediapipe::MatrixFromMatrixDataProto(vggish_pca_mean_matrix_data,
+  mediapipe_v01013_based::MatrixFromMatrixDataProto(vggish_pca_mean_matrix_data,
                                        &vggish_pca_mean_matrix);
   input_side_packets["vggish_pca_mean_matrix"] =
-      mediapipe::MakePacket<mediapipe::Matrix>(vggish_pca_mean_matrix);
+      mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::Matrix>(vggish_pca_mean_matrix);
 
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
       "/tmp/mediapipe/vggish_projection_matrix_data.pb", &content));
   vggish_pca_projection_matrix_data.ParseFromString(content);
-  mediapipe::MatrixFromMatrixDataProto(vggish_pca_projection_matrix_data,
+  mediapipe_v01013_based::MatrixFromMatrixDataProto(vggish_pca_projection_matrix_data,
                                        &vggish_pca_projection_matrix);
   input_side_packets["vggish_pca_projection_matrix"] =
-      mediapipe::MakePacket<mediapipe::Matrix>(vggish_pca_projection_matrix);
+      mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::Matrix>(vggish_pca_projection_matrix);
 
   ABSL_LOG(INFO) << "Initialize the calculator graph.";
-  mediapipe::CalculatorGraph graph;
+  mediapipe_v01013_based::CalculatorGraph graph;
   MP_RETURN_IF_ERROR(graph.Initialize(config, input_side_packets));
   ABSL_LOG(INFO) << "Start running the calculator graph.";
   MP_RETURN_IF_ERROR(graph.Run());
@@ -113,14 +113,14 @@ absl::Status RunMPPGraph() {
   for (const std::string& kv_pair : kv_pairs) {
     std::vector<std::string> name_and_value = absl::StrSplit(kv_pair, '=');
     RET_CHECK(name_and_value.size() == 2);
-    absl::StatusOr<mediapipe::Packet> output_packet =
+    absl::StatusOr<mediapipe_v01013_based::Packet> output_packet =
         graph.GetOutputSidePacket(name_and_value[0]);
     RET_CHECK(output_packet.ok())
         << "Packet " << name_and_value[0] << " was not available.";
     const std::string& serialized_string =
         output_packet.value().Get<std::string>();
     MP_RETURN_IF_ERROR(
-        mediapipe::file::SetContents(name_and_value[1], serialized_string));
+        mediapipe_v01013_based::file::SetContents(name_and_value[1], serialized_string));
   }
   return absl::OkStatus();
 }

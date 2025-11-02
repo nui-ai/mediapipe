@@ -22,17 +22,17 @@ limitations under the License.
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace components {
 namespace utils {
 namespace {
 
-using ::mediapipe::api2::builder::SideSource;
-using ::mediapipe::api2::builder::Source;
+using ::mediapipe_v01013_based::api2::builder::SideSource;
+using ::mediapipe_v01013_based::api2::builder::Source;
 
 TEST(DisallowGate, VerifyConfig) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Source<bool> condition = graph.In("CONDITION").Cast<bool>();
   Source<int> value1 = graph.In("VALUE_1").Cast<int>();
@@ -46,7 +46,7 @@ TEST(DisallowGate, VerifyConfig) {
 
   EXPECT_THAT(graph.GetConfig(),
               testing::EqualsProto(
-                  mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+                  mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
                     node {
                       calculator: "GateCalculator"
                       input_stream: "__stream_1"
@@ -73,7 +73,7 @@ TEST(DisallowGate, VerifyConfig) {
 }
 
 TEST(DisallowIf, VerifyConfig) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Source<int> value = graph.In("VALUE").Cast<int>();
   Source<bool> condition = graph.In("CONDITION").Cast<bool>();
@@ -83,7 +83,7 @@ TEST(DisallowIf, VerifyConfig) {
 
   EXPECT_THAT(graph.GetConfig(),
               testing::EqualsProto(
-                  mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+                  mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
                     node {
                       calculator: "GateCalculator"
                       input_stream: "__stream_1"
@@ -104,7 +104,7 @@ TEST(DisallowIf, VerifyConfig) {
 }
 
 TEST(DisallowIf, VerifyConfigWithSideCondition) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Source<int> value = graph.In("VALUE").Cast<int>();
   SideSource<bool> condition = graph.SideIn("CONDITION").Cast<bool>();
@@ -114,7 +114,7 @@ TEST(DisallowIf, VerifyConfigWithSideCondition) {
 
   EXPECT_THAT(graph.GetConfig(),
               testing::EqualsProto(
-                  mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+                  mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
                     node {
                       calculator: "GateCalculator"
                       input_stream: "__stream_0"
@@ -135,7 +135,7 @@ TEST(DisallowIf, VerifyConfigWithSideCondition) {
 }
 
 TEST(AllowGate, VerifyConfig) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Source<bool> condition = graph.In("CONDITION").Cast<bool>();
   Source<int> value1 = graph.In("VALUE_1").Cast<int>();
@@ -149,7 +149,7 @@ TEST(AllowGate, VerifyConfig) {
 
   EXPECT_THAT(graph.GetConfig(),
               testing::EqualsProto(
-                  mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+                  mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
                     node {
                       calculator: "GateCalculator"
                       input_stream: "__stream_1"
@@ -171,7 +171,7 @@ TEST(AllowGate, VerifyConfig) {
 }
 
 TEST(AllowIf, VerifyConfig) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Source<int> value = graph.In("VALUE").Cast<int>();
   Source<bool> condition = graph.In("CONDITION").Cast<bool>();
@@ -181,7 +181,7 @@ TEST(AllowIf, VerifyConfig) {
 
   EXPECT_THAT(graph.GetConfig(),
               testing::EqualsProto(
-                  mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+                  mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
                     node {
                       calculator: "GateCalculator"
                       input_stream: "__stream_1"
@@ -197,7 +197,7 @@ TEST(AllowIf, VerifyConfig) {
 }
 
 TEST(AllowIf, VerifyConfigWithSideConition) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Source<int> value = graph.In("VALUE").Cast<int>();
   SideSource<bool> condition = graph.SideIn("CONDITION").Cast<bool>();
@@ -207,7 +207,7 @@ TEST(AllowIf, VerifyConfigWithSideConition) {
 
   EXPECT_THAT(graph.GetConfig(),
               testing::EqualsProto(
-                  mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+                  mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
                     node {
                       calculator: "GateCalculator"
                       input_stream: "__stream_0"
@@ -226,4 +226,4 @@ TEST(AllowIf, VerifyConfigWithSideConition) {
 }  // namespace utils
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

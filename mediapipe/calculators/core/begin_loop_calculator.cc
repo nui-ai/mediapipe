@@ -28,10 +28,10 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/gpu/gpu_buffer.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A calculator to process std::vector<NormalizedLandmarkList>.
-typedef BeginLoopCalculator<std::vector<::mediapipe::NormalizedLandmarkList>>
+typedef BeginLoopCalculator<std::vector<::mediapipe_v01013_based::NormalizedLandmarkList>>
     BeginLoopNormalizedLandmarkListVectorCalculator;
 REGISTER_CALCULATOR(BeginLoopNormalizedLandmarkListVectorCalculator);
 
@@ -40,7 +40,7 @@ typedef BeginLoopCalculator<std::vector<int>> BeginLoopIntCalculator;
 REGISTER_CALCULATOR(BeginLoopIntCalculator);
 
 // A calculator to process std::vector<NormalizedRect>.
-class HandRectsFanOut : public BeginLoopCalculator<std::vector<::mediapipe::NormalizedRect>> {
+class HandRectsFanOut : public BeginLoopCalculator<std::vector<::mediapipe_v01013_based::NormalizedRect>> {
     absl::Status Process(CalculatorContext* cc) override {
         return BeginLoopCalculator::Process(cc);
     }
@@ -48,7 +48,7 @@ class HandRectsFanOut : public BeginLoopCalculator<std::vector<::mediapipe::Norm
 REGISTER_CALCULATOR(HandRectsFanOut);
 
 // A calculator to process std::vector<Detection>.
-typedef BeginLoopCalculator<std::vector<::mediapipe::Detection>> DetectionsFanOut;
+typedef BeginLoopCalculator<std::vector<::mediapipe_v01013_based::Detection>> DetectionsFanOut;
 REGISTER_CALCULATOR(DetectionsFanOut);
 
 // A calculator to process std::vector<Matrix>.
@@ -64,21 +64,21 @@ REGISTER_CALCULATOR(BeginLoopMatrixVectorCalculator);
 typedef BeginLoopCalculator<std::vector<uint64_t>> BeginLoopUint64tCalculator;
 REGISTER_CALCULATOR(BeginLoopUint64tCalculator);
 
-// A calculator to process std::vector<mediapipe::Tensor>.
+// A calculator to process std::vector<mediapipe_v01013_based::Tensor>.
 typedef BeginLoopCalculator<std::vector<Tensor>> BeginLoopTensorCalculator;
 REGISTER_CALCULATOR(BeginLoopTensorCalculator);
 
-// A calculator to process std::vector<mediapipe::ImageFrame>.
+// A calculator to process std::vector<mediapipe_v01013_based::ImageFrame>.
 typedef BeginLoopCalculator<std::vector<ImageFrame>>
     BeginLoopImageFrameCalculator;
 REGISTER_CALCULATOR(BeginLoopImageFrameCalculator);
 
-// A calculator to process std::vector<mediapipe::GpuBuffer>.
+// A calculator to process std::vector<mediapipe_v01013_based::GpuBuffer>.
 typedef BeginLoopCalculator<std::vector<GpuBuffer>>
     BeginLoopGpuBufferCalculator;
 REGISTER_CALCULATOR(BeginLoopGpuBufferCalculator);
 
-// A calculator to process std::vector<mediapipe::Image>.
+// A calculator to process std::vector<mediapipe_v01013_based::Image>.
 typedef BeginLoopCalculator<std::vector<Image>> BeginLoopImageCalculator;
 REGISTER_CALCULATOR(BeginLoopImageCalculator);
 
@@ -90,4 +90,4 @@ REGISTER_CALCULATOR(BeginLoopFloatCalculator);
 typedef BeginLoopCalculator<std::vector<std::string>> BeginLoopStringCalculator;
 REGISTER_CALCULATOR(BeginLoopStringCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

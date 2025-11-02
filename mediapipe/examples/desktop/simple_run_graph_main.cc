@@ -59,10 +59,10 @@ ABSL_FLAG(std::string, output_side_packets_file, "",
           "The name of the local file to output all side packets specified "
           "with --output_side_packets. ");
 
-absl::Status OutputStreamToLocalFile(mediapipe::OutputStreamPoller& poller) {
+absl::Status OutputStreamToLocalFile(mediapipe_v01013_based::OutputStreamPoller& poller) {
   std::ofstream file;
   file.open(absl::GetFlag(FLAGS_output_stream_file));
-  mediapipe::Packet packet;
+  mediapipe_v01013_based::Packet packet;
   while (poller.Next(&packet)) {
     std::string output_data;
     if (!absl::GetFlag(FLAGS_strip_timestamps)) {
@@ -75,7 +75,7 @@ absl::Status OutputStreamToLocalFile(mediapipe::OutputStreamPoller& poller) {
   return absl::OkStatus();
 }
 
-absl::Status OutputSidePacketsToLocalFile(mediapipe::CalculatorGraph& graph) {
+absl::Status OutputSidePacketsToLocalFile(mediapipe_v01013_based::CalculatorGraph& graph) {
   if (!absl::GetFlag(FLAGS_output_side_packets).empty() &&
       !absl::GetFlag(FLAGS_output_side_packets_file).empty()) {
     std::ofstream file;
@@ -100,28 +100,28 @@ absl::Status OutputSidePacketsToLocalFile(mediapipe::CalculatorGraph& graph) {
 
 absl::Status RunMPPGraph() {
   std::string calculator_graph_config_contents;
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
       absl::GetFlag(FLAGS_calculator_graph_config_file),
       &calculator_graph_config_contents));
   ABSL_LOG(INFO) << "Get calculator graph config contents: "
                  << calculator_graph_config_contents;
-  mediapipe::CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(
+  mediapipe_v01013_based::CalculatorGraphConfig config =
+      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(
           calculator_graph_config_contents);
-  std::map<std::string, mediapipe::Packet> input_side_packets;
+  std::map<std::string, mediapipe_v01013_based::Packet> input_side_packets;
   if (!absl::GetFlag(FLAGS_input_side_packets).empty()) {
     std::vector<std::string> kv_pairs =
         absl::StrSplit(absl::GetFlag(FLAGS_input_side_packets), ',');
     for (const std::string& kv_pair : kv_pairs) {
       std::vector<std::string> name_and_value = absl::StrSplit(kv_pair, '=');
       RET_CHECK(name_and_value.size() == 2);
-      RET_CHECK(!mediapipe::ContainsKey(input_side_packets, name_and_value[0]));
+      RET_CHECK(!mediapipe_v01013_based::ContainsKey(input_side_packets, name_and_value[0]));
       input_side_packets[name_and_value[0]] =
-          mediapipe::MakePacket<std::string>(name_and_value[1]);
+          mediapipe_v01013_based::MakePacket<std::string>(name_and_value[1]);
     }
   }
   ABSL_LOG(INFO) << "Initialize the calculator graph.";
-  mediapipe::CalculatorGraph graph;
+  mediapipe_v01013_based::CalculatorGraph graph;
   MP_RETURN_IF_ERROR(graph.Initialize(config, input_side_packets));
   if (!absl::GetFlag(FLAGS_output_stream).empty() &&
       !absl::GetFlag(FLAGS_output_stream_file).empty()) {

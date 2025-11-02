@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 CalculatorGraphConfig::Node GetDefaultNode() {
@@ -193,4 +193,4 @@ TEST(PacketFrequencyCalculatorTest, MultiStreamTest) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

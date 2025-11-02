@@ -37,7 +37,7 @@
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/geometry_pipeline_metadata.pb.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/mesh_3d.pb.h"
 
-namespace mediapipe::tasks::vision::face_geometry {
+namespace mediapipe_v01013_based::tasks::vision::face_geometry {
 namespace {
 
 struct PerspectiveCameraFrustum {
@@ -121,9 +121,9 @@ class ScreenToMetricSpaceConverter {
   //       To keep the logic correct, the landmark set handedness is changed any
   //       time the screen-to-metric semantic barrier is passed.
   absl::Status Convert(
-      const mediapipe::NormalizedLandmarkList& screen_landmark_list,  //
+      const mediapipe_v01013_based::NormalizedLandmarkList& screen_landmark_list,  //
       const PerspectiveCameraFrustum& pcf,                            //
-      mediapipe::LandmarkList& metric_landmark_list,                  //
+      mediapipe_v01013_based::LandmarkList& metric_landmark_list,                  //
       Eigen::Matrix4f& pose_transform_mat) const {
     RET_CHECK_EQ(screen_landmark_list.landmark_size(),
                  canonical_metric_landmarks_.cols())
@@ -259,7 +259,7 @@ class ScreenToMetricSpaceConverter {
   }
 
   static void ConvertLandmarkListToEigenMatrix(
-      const mediapipe::NormalizedLandmarkList& landmark_list,
+      const mediapipe_v01013_based::NormalizedLandmarkList& landmark_list,
       Eigen::Matrix3Xf& eigen_matrix) {
     eigen_matrix = Eigen::Matrix3Xf(3, landmark_list.landmark_size());
     for (int i = 0; i < landmark_list.landmark_size(); ++i) {
@@ -272,7 +272,7 @@ class ScreenToMetricSpaceConverter {
 
   static void ConvertEigenMatrixToLandmarkList(
       const Eigen::Matrix3Xf& eigen_matrix,
-      mediapipe::LandmarkList& landmark_list) {
+      mediapipe_v01013_based::LandmarkList& landmark_list) {
     landmark_list.Clear();
 
     for (int i = 0; i < eigen_matrix.cols(); ++i) {
@@ -309,7 +309,7 @@ class GeometryPipelineImpl : public GeometryPipeline {
         space_converter_(std::move(space_converter)) {}
 
   absl::StatusOr<std::vector<proto::FaceGeometry>> EstimateFaceGeometry(
-      const std::vector<mediapipe::NormalizedLandmarkList>&
+      const std::vector<mediapipe_v01013_based::NormalizedLandmarkList>&
           multi_face_landmarks,
       int frame_width, int frame_height) const override {
     MP_RETURN_IF_ERROR(ValidateFrameDimensions(frame_width, frame_height))
@@ -325,7 +325,7 @@ class GeometryPipelineImpl : public GeometryPipeline {
     // From this point, the meaning of "face landmarks" is clarified further as
     // "screen face landmarks". This is done do distinguish from "metric face
     // landmarks" that are derived during the face geometry estimation process.
-    for (const mediapipe::NormalizedLandmarkList& screen_face_landmarks :
+    for (const mediapipe_v01013_based::NormalizedLandmarkList& screen_face_landmarks :
          multi_face_landmarks) {
       // Having a too compact screen landmark list will result in numerical
       // instabilities, therefore such faces are filtered.
@@ -335,7 +335,7 @@ class GeometryPipelineImpl : public GeometryPipeline {
 
       // Convert the screen landmarks into the metric landmarks and get the pose
       // transformation matrix.
-      mediapipe::LandmarkList metric_face_landmarks;
+      mediapipe_v01013_based::LandmarkList metric_face_landmarks;
       Eigen::Matrix4f pose_transform_mat;
       MP_RETURN_IF_ERROR(space_converter_->Convert(screen_face_landmarks, pcf,
                                                    metric_face_landmarks,
@@ -360,7 +360,7 @@ class GeometryPipelineImpl : public GeometryPipeline {
                                         metric_face_landmarks.landmark(i).z());
       }
       // Populate the face pose transformation matrix.
-      mediapipe::MatrixDataProtoFromMatrix(
+      mediapipe_v01013_based::MatrixDataProtoFromMatrix(
           pose_transform_mat, face_geometry.mutable_pose_transform_matrix());
 
       multi_face_geometry.push_back(face_geometry);
@@ -371,7 +371,7 @@ class GeometryPipelineImpl : public GeometryPipeline {
 
  private:
   static bool IsScreenLandmarkListTooCompact(
-      const mediapipe::NormalizedLandmarkList& screen_landmarks) {
+      const mediapipe_v01013_based::NormalizedLandmarkList& screen_landmarks) {
     float mean_x = 0.f;
     float mean_y = 0.f;
     for (int i = 0; i < screen_landmarks.landmark_size(); ++i) {
@@ -468,4 +468,4 @@ absl::StatusOr<std::unique_ptr<GeometryPipeline>> CreateGeometryPipeline(
   return result;
 }
 
-}  // namespace mediapipe::tasks::vision::face_geometry
+}  // namespace mediapipe_v01013_based::tasks::vision::face_geometry

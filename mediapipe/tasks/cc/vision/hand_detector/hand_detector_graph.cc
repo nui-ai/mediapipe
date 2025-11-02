@@ -43,19 +43,19 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_detector/proto/hand_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/utils/image_tensor_specs.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace hand_detector {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::vision::hand_detector::proto::
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::vision::hand_detector::proto::
     HandDetectorGraphOptions;
 
 constexpr char kImageTag[] = "IMAGE";
@@ -73,7 +73,7 @@ struct HandDetectionOuts {
 
 void ConfigureTensorsToDetectionsCalculator(
     const HandDetectorGraphOptions& tasks_options,
-    mediapipe::TensorsToDetectionsCalculatorOptions* options) {
+    mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions* options) {
   // TODO use metadata to configure these fields.
   options->set_num_classes(1);
   options->set_num_boxes(2016);
@@ -93,19 +93,19 @@ void ConfigureTensorsToDetectionsCalculator(
 }
 
 void ConfigureNonMaxSuppressionCalculator(
-    mediapipe::NonMaxSuppressionCalculatorOptions* options) {
+    mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions* options) {
   options->set_min_suppression_threshold(0.3);
   options->set_overlap_type(
-      mediapipe::NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
+      mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
   options->set_algorithm(
-      mediapipe::NonMaxSuppressionCalculatorOptions::WEIGHTED);
+      mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions::WEIGHTED);
   // TODO "return_empty_detections" was removed from 1P graph,
   // consider setting it from metadata accordingly.
   options->set_return_empty_detections(true);
 }
 
 void ConfigureSsdAnchorsCalculator(
-    mediapipe::SsdAnchorsCalculatorOptions* options) {
+    mediapipe_v01013_based::SsdAnchorsCalculatorOptions* options) {
   // TODO config SSD anchors parameters from metadata.
   options->set_num_layers(4);
   options->set_min_scale(0.1484375);
@@ -123,7 +123,7 @@ void ConfigureSsdAnchorsCalculator(
 }
 
 void ConfigureDetectionsToRectsCalculator(
-    mediapipe::DetectionsToRectsCalculatorOptions* options) {
+    mediapipe_v01013_based::DetectionsToRectsCalculatorOptions* options) {
   // Center of wrist.
   options->set_rotation_vector_start_keypoint_index(0);
   // MCP of middle finger.
@@ -133,7 +133,7 @@ void ConfigureDetectionsToRectsCalculator(
 }
 
 void ConfigureRectTransformationCalculator(
-    mediapipe::RectTransformationCalculatorOptions* options) {
+    mediapipe_v01013_based::RectTransformationCalculatorOptions* options) {
   options->set_scale_x(2.6);
   options->set_scale_y(2.6);
   options->set_shift_y(-0.5);
@@ -237,7 +237,7 @@ class HandDetectorGraph : public core::ModelTaskGraph {
              .mutable_image_to_tensor_options();
     image_to_tensor_options.set_keep_aspect_ratio(true);
     image_to_tensor_options.set_border_mode(
-        mediapipe::ImageToTensorCalculatorOptions::BORDER_ZERO);
+        mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
     bool use_gpu =
         components::processors::DetermineImagePreprocessingGpuBackend(
             subgraph_options.base_options().acceleration());
@@ -263,7 +263,7 @@ class HandDetectorGraph : public core::ModelTaskGraph {
     // Generates a single side packet containing a vector of SSD anchors.
     auto& ssd_anchor = graph.AddNode("SsdAnchorsCalculator");
     auto& ssd_anchor_options =
-        ssd_anchor.GetOptions<mediapipe::SsdAnchorsCalculatorOptions>();
+        ssd_anchor.GetOptions<mediapipe_v01013_based::SsdAnchorsCalculatorOptions>();
     if (!has_metadata) {
       ConfigureSsdAnchorsCalculator(&ssd_anchor_options);
     }
@@ -276,7 +276,7 @@ class HandDetectorGraph : public core::ModelTaskGraph {
       ConfigureTensorsToDetectionsCalculator(
           subgraph_options,
           &tensors_to_detections
-               .GetOptions<mediapipe::TensorsToDetectionsCalculatorOptions>());
+               .GetOptions<mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions>());
     }
 
     model_output_tensors >> tensors_to_detections.In("TENSORS");
@@ -288,7 +288,7 @@ class HandDetectorGraph : public core::ModelTaskGraph {
         graph.AddNode("NonMaxSuppressionCalculator");
     ConfigureNonMaxSuppressionCalculator(
         &non_maximum_suppression
-             .GetOptions<mediapipe::NonMaxSuppressionCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions>());
     detections >> non_maximum_suppression.In("");
     auto nms_detections = non_maximum_suppression.Out("");
 
@@ -296,7 +296,7 @@ class HandDetectorGraph : public core::ModelTaskGraph {
     auto& detection_label_id_to_text =
         graph.AddNode("DetectionLabelIdToTextCalculator");
     detection_label_id_to_text
-        .GetOptions<mediapipe::DetectionLabelIdToTextCalculatorOptions>()
+        .GetOptions<mediapipe_v01013_based::DetectionLabelIdToTextCalculatorOptions>()
         .add_label("Palm");
     nms_detections >> detection_label_id_to_text.In("");
     auto detections_with_text = detection_label_id_to_text.Out("");
@@ -315,7 +315,7 @@ class HandDetectorGraph : public core::ModelTaskGraph {
     auto& detections_to_rects = graph.AddNode("DetectionsToRectsCalculator");
     ConfigureDetectionsToRectsCalculator(
         &detections_to_rects
-             .GetOptions<mediapipe::DetectionsToRectsCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::DetectionsToRectsCalculatorOptions>());
     palm_detections >> detections_to_rects.In("DETECTIONS");
     image_size >> detections_to_rects.In("IMAGE_SIZE");
     auto palm_rects =
@@ -326,7 +326,7 @@ class HandDetectorGraph : public core::ModelTaskGraph {
     auto& rect_transformation = graph.AddNode("RectTransformationCalculator");
     ConfigureRectTransformationCalculator(
         &rect_transformation
-             .GetOptions<mediapipe::RectTransformationCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::RectTransformationCalculatorOptions>());
     palm_rects >> rect_transformation.In("NORM_RECTS");
     image_size >> rect_transformation.In("IMAGE_SIZE");
     auto hand_rects = rect_transformation.Out("");
@@ -339,7 +339,7 @@ class HandDetectorGraph : public core::ModelTaskGraph {
     auto& clip_normalized_rect_vector_size =
         graph.AddNode("ClipNormalizedRectVectorSizeCalculator");
     clip_normalized_rect_vector_size
-        .GetOptions<mediapipe::ClipVectorSizeCalculatorOptions>()
+        .GetOptions<mediapipe_v01013_based::ClipVectorSizeCalculatorOptions>()
         .set_max_vec_size(subgraph_options.num_hands());
     hand_rects >> clip_normalized_rect_vector_size.In("");
     auto clipped_hand_rects =
@@ -355,9 +355,9 @@ class HandDetectorGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::vision::hand_detector::HandDetectorGraph);
+    ::mediapipe_v01013_based::tasks::vision::hand_detector::HandDetectorGraph);
 
 }  // namespace hand_detector
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

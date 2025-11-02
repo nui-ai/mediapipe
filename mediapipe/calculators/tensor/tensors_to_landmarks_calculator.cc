@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include <memory>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // A calculator for converting Tensors from regression models into landmarks.
@@ -85,7 +85,7 @@ class ExtractLandmarks : public Node {
  private:
   absl::Status LoadOptions(CalculatorContext* cc);
   std::unique_ptr<TensorsToLandmarksCore> core_;
-  ::mediapipe::TensorsToLandmarksCalculatorOptions options_;
+  ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions options_;
 };
 MEDIAPIPE_REGISTER_NODE(ExtractLandmarks);
 
@@ -124,9 +124,9 @@ absl::Status ExtractLandmarks::Process(CalculatorContext* cc) {
 
 absl::Status ExtractLandmarks::LoadOptions(CalculatorContext* cc) {
   // Get calculator options specified in the graph.
-  options_ = cc->Options<::mediapipe::TensorsToLandmarksCalculatorOptions>();
+  options_ = cc->Options<::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions>();
   // num_landmarks is not required anymore; default of core is 21.
   return absl::OkStatus();
 }
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

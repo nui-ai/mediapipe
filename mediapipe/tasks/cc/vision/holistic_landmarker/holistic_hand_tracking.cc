@@ -38,24 +38,24 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_roi_refinement_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::AlignHandToPoseInWorldCalculator;
-using ::mediapipe::api2::builder::ConvertLandmarksToDetection;
-using ::mediapipe::api2::builder::GetImageSize;
-using ::mediapipe::api2::builder::GetLoopbackData;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::IsOverThreshold;
-using ::mediapipe::api2::builder::ScaleAndShiftAndMakeSquareLong;
-using ::mediapipe::api2::builder::SplitAndCombine;
-using ::mediapipe::api2::builder::Stream;
-using ::mediapipe::tasks::components::utils::AllowIf;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::AlignHandToPoseInWorldCalculator;
+using ::mediapipe_v01013_based::api2::builder::ConvertLandmarksToDetection;
+using ::mediapipe_v01013_based::api2::builder::GetImageSize;
+using ::mediapipe_v01013_based::api2::builder::GetLoopbackData;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::IsOverThreshold;
+using ::mediapipe_v01013_based::api2::builder::ScaleAndShiftAndMakeSquareLong;
+using ::mediapipe_v01013_based::api2::builder::SplitAndCombine;
+using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::mediapipe_v01013_based::tasks::components::utils::AllowIf;
 
 struct HandLandmarksResult {
   std::optional<Stream<NormalizedLandmarkList>> landmarks;
@@ -270,4 +270,4 @@ absl::StatusOr<HolisticHandTrackingOutput> TrackHolisticHand(
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

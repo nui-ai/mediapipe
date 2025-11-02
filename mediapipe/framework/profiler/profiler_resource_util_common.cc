@@ -23,7 +23,7 @@ ABSL_FLAG(std::string, log_root_dir, "",
           "The absolute path to the logging output directory.  If specified, "
           "log_root_dir will be prepended to each specified log file path.");
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::StatusOr<std::string> GetLogDirectory() {
   if (!absl::GetFlag(FLAGS_log_root_dir).empty()) {
@@ -36,8 +36,8 @@ absl::StatusOr<std::string> PathToLogFile(const std::string& path) {
   MP_ASSIGN_OR_RETURN(std::string log_dir, GetLogDirectory());
   std::string result = file::JoinPath(log_dir, path);
   MP_RETURN_IF_ERROR(
-      mediapipe::file::RecursivelyCreateDir(file::Dirname(result)));
+      mediapipe_v01013_based::file::RecursivelyCreateDir(file::Dirname(result)));
   return result;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

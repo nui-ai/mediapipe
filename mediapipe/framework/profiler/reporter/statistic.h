@@ -4,7 +4,7 @@
 #include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/framework/calculator_profile.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace reporter {
 
 // Allows the user to push data and maintains a counter, mean, and stddev of
@@ -46,6 +46,6 @@ class Statistic {
 };
 
 }  // namespace reporter
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PROFILER_REPORTER_STATISTIC_H_

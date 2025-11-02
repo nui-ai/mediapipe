@@ -22,7 +22,7 @@
 #include "tensorflow/lite/kernels/padding.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tflite_operations {
 namespace {
 
@@ -295,4 +295,4 @@ TfLiteRegistration* RegisterTransformLandmarksV2() {
 }
 
 }  // namespace tflite_operations
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

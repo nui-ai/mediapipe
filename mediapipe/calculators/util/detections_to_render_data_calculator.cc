@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/util/color.pb.h"
 #include "mediapipe/util/render_data.pb.h"
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -384,4 +384,4 @@ void DetectionsToRenderDataCalculator::AddDetectionToRenderData(
   AddFeatureTag(detection, options, text_line_height, render_data);
   AddLocationData(detection, options, render_data);
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

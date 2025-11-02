@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 template <typename PayloadT>
 class PacketMatcher
@@ -69,7 +69,7 @@ class PacketMatcher
 
  private:
   static std::string ExpectedTypeName() {
-    return ::mediapipe::Demangle(typeid(PayloadT).name());
+    return ::mediapipe_v01013_based::Demangle(typeid(PayloadT).name());
   }
 
   const testing::Matcher<const PayloadT&> inner_matcher_;
@@ -86,6 +86,6 @@ inline testing::Matcher<const Packet<PayloadT>&> PacketEq(
                         timestamp_matcher));
 }
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_PACKET_MATCHER_H_

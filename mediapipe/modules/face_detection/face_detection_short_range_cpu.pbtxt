@@ -15,7 +15,7 @@ input_stream: "IMAGE:image"
 output_stream: "DETECTIONS:detections"
 
 graph_options: {
-  [type.googleapis.com/mediapipe.FaceDetectionOptions] {}
+  [type.googleapis.com/mediapipe_v01013_based.FaceDetectionOptions] {}
 }
 
 node {
@@ -23,7 +23,7 @@ node {
   input_stream: "IMAGE:image"
   output_stream: "DETECTIONS:detections"
   node_options: {
-    [type.googleapis.com/mediapipe.FaceDetectionOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.FaceDetectionOptions] {
       delegate { xnnpack {} }
     }
   }

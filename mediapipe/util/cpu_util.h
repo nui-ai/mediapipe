@@ -17,13 +17,13 @@
 
 #include <set>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 // Returns the number of CPU cores. Compatible with Android.
 int NumCPUCores();
 // Returns a set of inferred CPU ids of lower cores.
 std::set<int> InferLowerCoreIds();
 // Returns a set of inferred CPU ids of higher cores.
 std::set<int> InferHigherCoreIds();
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_CPU_UTIL_H_

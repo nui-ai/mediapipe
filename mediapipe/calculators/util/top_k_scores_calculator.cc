@@ -37,7 +37,7 @@
 #include "mediapipe/framework/port/file_helpers.h"
 #endif
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 constexpr char kTopKClassificationTag[] = "TOP_K_CLASSIFICATION";
 constexpr char kSummaryTag[] = "SUMMARY";
@@ -108,7 +108,7 @@ absl::Status TopKScoresCalculator::GetContract(CalculatorContract* cc) {
 }
 
 absl::Status TopKScoresCalculator::Open(CalculatorContext* cc) {
-  const auto& options = cc->Options<::mediapipe::TopKScoresCalculatorOptions>();
+  const auto& options = cc->Options<::mediapipe_v01013_based::TopKScoresCalculatorOptions>();
   RET_CHECK(options.has_top_k() || options.has_threshold())
       << "Must specify at least one of the top_k and threshold fields in "
          "TopKScoresCalculatorOptions.";
@@ -241,4 +241,4 @@ absl::Status TopKScoresCalculator::LoadLabelmap(std::string label_map_path) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

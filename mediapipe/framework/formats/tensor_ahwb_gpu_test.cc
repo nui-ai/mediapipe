@@ -19,10 +19,10 @@
 // Then the test requests the CPU view and compares the values.
 // Float32 and Float16 tests are there.
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-using mediapipe::Float16;
-using mediapipe::Tensor;
+using mediapipe_v01013_based::Float16;
+using mediapipe_v01013_based::Tensor;
 
 MATCHER_P(NearWithPrecision, precision, "") {
   return std::abs(std::get<0>(arg) - std::get<1>(arg)) < precision;
@@ -99,7 +99,7 @@ void FillGpuBuffer(GLuint name, std::size_t size,
   MP_EXPECT_OK(TFLITE_GPU_CALL_GL(glDeleteProgram, to_buffer_program));
 }
 
-class TensorAhwbGpuTest : public mediapipe::GpuTestBase {
+class TensorAhwbGpuTest : public mediapipe_v01013_based::GpuTestBase {
  public:
 };
 
@@ -293,7 +293,7 @@ TEST_F(TensorAhwbGpuTest, TestGetOpenGlBufferReadViewAhwbFromGpu) {
 }
 
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // !defined(MEDIAPIPE_NO_JNI) && (__ANDROID_API__ >= 26 ||
         // defined(__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__))

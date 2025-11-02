@@ -70,7 +70,7 @@ node {
   input_stream: "prev_hand_rects_from_landmarks"
   output_stream: "gated_prev_hand_rects_from_landmarks"
   options: {
-    [mediapipe.GateCalculatorOptions.ext] {
+    [mediapipe_v01013_based.GateCalculatorOptions.ext] {
       allow: true
     }
   }
@@ -94,7 +94,7 @@ node {
   input_stream: "DISALLOW:prev_has_enough_hands"
   output_stream: "palm_detection_image"
   options: {
-    [mediapipe.GateCalculatorOptions.ext] {
+    [mediapipe_v01013_based.GateCalculatorOptions.ext] {
       empty_packets_as_allow: true
     }
   }
@@ -166,7 +166,7 @@ node {
   input_stream: "gated_prev_hand_rects_from_landmarks"
   output_stream: "hand_rects"
   options: {
-    [mediapipe.AssociationCalculatorOptions.ext] {
+    [mediapipe_v01013_based.AssociationCalculatorOptions.ext] {
       min_similarity_threshold: 0.5
     }
   }

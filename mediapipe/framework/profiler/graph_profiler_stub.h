@@ -20,16 +20,16 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 class CalculatorProfile;
 class GraphTrace;
 class GraphProfile;
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
-namespace mediapipe {
-using mediapipe::CalculatorProfile;
-using mediapipe::GraphProfile;
-using mediapipe::GraphTrace;
+namespace mediapipe_v01013_based {
+using mediapipe_v01013_based::CalculatorProfile;
+using mediapipe_v01013_based::GraphProfile;
+using mediapipe_v01013_based::GraphTrace;
 
 class ValidatedGraphConfig;
 class Executor;
@@ -84,7 +84,7 @@ enum class PopulateGraphConfig { kNo, kFull };
 class GraphProfilerStub {
  public:
   inline void Initialize(const ValidatedGraphConfig& validated_graph_config) {}
-  inline void SetClock(const std::shared_ptr<mediapipe::Clock>& clock) {}
+  inline void SetClock(const std::shared_ptr<mediapipe_v01013_based::Clock>& clock) {}
   inline void LogEvent(const TraceEvent& event) {}
   inline absl::Status GetCalculatorProfiles(
       std::vector<CalculatorProfile>*) const {
@@ -99,7 +99,7 @@ class GraphProfilerStub {
   inline void Pause() {}
   inline void Resume() {}
   inline void Reset() {}
-  inline absl::Status Start(mediapipe::Executor* executor) {
+  inline absl::Status Start(mediapipe_v01013_based::Executor* executor) {
     return absl::OkStatus();
   }
   inline absl::Status Stop() { return absl::OkStatus(); }
@@ -107,7 +107,7 @@ class GraphProfilerStub {
   inline std::unique_ptr<GlProfilingHelper> CreateGlProfilingHelper() {
     return nullptr;
   }
-  const std::shared_ptr<mediapipe::Clock> GetClock() const { return nullptr; }
+  const std::shared_ptr<mediapipe_v01013_based::Clock> GetClock() const { return nullptr; }
 };
 
 // The API class used to access the preferred profiler, such as
@@ -138,6 +138,6 @@ class GlProfilingHelper : public GlContextProfilerStub {
   using GlContextProfilerStub::GlContextProfilerStub;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PROFILER_MEDIAPIPE_PROFILER_STUB_H_

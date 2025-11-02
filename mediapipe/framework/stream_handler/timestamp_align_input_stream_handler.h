@@ -29,7 +29,7 @@
 #include "mediapipe/framework/stream_handler/timestamp_align_input_stream_handler.pb.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // The input streams must have the same time unit but may have different time
 // origins (also called epochs). The timestamp_base_tag_index option
@@ -53,7 +53,7 @@ class TimestampAlignInputStreamHandler : public InputStreamHandler {
   TimestampAlignInputStreamHandler() = delete;
   TimestampAlignInputStreamHandler(std::shared_ptr<tool::TagMap> tag_map,
                                    CalculatorContextManager* cc_manager,
-                                   const mediapipe::MediaPipeOptions& options,
+                                   const mediapipe_v01013_based::MediaPipeOptions& options,
                                    bool calculator_run_in_parallel);
 
   void PrepareForRun(std::function<void()> headers_ready_callback,
@@ -86,6 +86,6 @@ class TimestampAlignInputStreamHandler : public InputStreamHandler {
   std::vector<TimestampDiff> timestamp_offsets_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_STREAM_HANDLER_TIMESTAMP_ALIGN_INPUT_STREAM_HANDLER_H_

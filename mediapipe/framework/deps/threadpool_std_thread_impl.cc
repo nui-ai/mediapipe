@@ -22,7 +22,7 @@
 #include "absl/strings/str_join.h"
 #include "mediapipe/framework/deps/threadpool.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class ThreadPool::WorkerThread {
  public:
@@ -146,4 +146,4 @@ std::string CreateThreadName(const std::string& prefix, int thread_id) {
 
 }  // namespace internal
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

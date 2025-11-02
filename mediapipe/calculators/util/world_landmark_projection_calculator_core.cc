@@ -8,7 +8,7 @@
 #include <functional>
 #include <glog/log_severity.h>
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 ///
 /// helper function returning a rotation function which takes a landmark and rotates it the same
@@ -43,7 +43,7 @@ namespace mediapipe::api3 {
 /// and relative lengths (as much as they are all accurate) and a rotation of the entire set of predicted
 /// landmarks is just implied by the square image passed to the model.
 ///
-std::function<void(const Landmark&, Landmark*)> CreateRotationFunction(const mediapipe::NormalizedRect* rect) {
+std::function<void(const Landmark&, Landmark*)> CreateRotationFunction(const mediapipe_v01013_based::NormalizedRect* rect) {
   const float cosa = std::cos(rect->rotation());
   const float sina = std::sin(rect->rotation());
   return [cosa, sina](const Landmark& in_landmark, Landmark* out_landmark) {
@@ -57,7 +57,7 @@ LandmarkList Process(const LandmarkList& in_landmarks, const NormalizedRect *han
 
   auto landmark_rotate = CreateRotationFunction(hand_rect);
 
-  mediapipe::LandmarkList out_landmarks;
+  mediapipe_v01013_based::LandmarkList out_landmarks;
   for (int i = 0; i < in_landmarks.landmark_size(); ++i) {
     const auto& in_landmark = in_landmarks.landmark(i);
     Landmark* out_landmark = out_landmarks.add_landmark();
@@ -69,4 +69,4 @@ LandmarkList Process(const LandmarkList& in_landmarks, const NormalizedRect *han
   return out_landmarks;
 }
 
-} // namespace mediapipe::api3
+} // namespace mediapipe_v01013_based::api3

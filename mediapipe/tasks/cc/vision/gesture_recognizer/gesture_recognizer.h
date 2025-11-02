@@ -32,7 +32,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/running_mode.h"
 #include "mediapipe/tasks/cc/vision/gesture_recognizer/gesture_recognizer_result.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace gesture_recognizer {
@@ -114,7 +114,7 @@ class GestureRecognizer : tasks::vision::core::BaseVisionTaskApi {
   // image data or streaming data. Gesture recognizer can be created with one of
   // the following three running modes:
   // 1) Image mode for recognizing gestures on single image inputs.
-  //    Users provide mediapipe::Image to the `Recognize` method, and will
+  //    Users provide mediapipe_v01013_based::Image to the `Recognize` method, and will
   //    receive the recognized hand gesture results as the return value.
   // 2) Video mode for recognizing gestures on the decoded frames of a video.
   // 3) Live stream mode for recognizing gestures on the live stream of the
@@ -197,6 +197,6 @@ class GestureRecognizer : tasks::vision::core::BaseVisionTaskApi {
 }  // namespace gesture_recognizer
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_GESTURE_RECOGNIZRER_GESTURE_RECOGNIZER_H_

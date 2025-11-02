@@ -41,7 +41,7 @@ ABSL_FLAG(std::string, proto_output, "",
     return EXIT_FAILURE;       \
   }
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::Status ReadProto(proto_ns::io::ZeroCopyInputStream* in, bool read_text,
                        const std::string& source, proto_ns::Message* result) {
@@ -90,7 +90,7 @@ absl::Status WriteFile(const std::string& proto_output, bool write_text,
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 int main(int argc, char** argv) {
   google::InitGoogleLogging(argv[0]);
@@ -109,10 +109,10 @@ int main(int argc, char** argv) {
   if (!status.ok()) {
     return EXIT_FAILURE;
   }
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   EXIT_IF_ERROR(
-      mediapipe::ReadFile(absl::GetFlag(FLAGS_proto_source), true, &config));
+      mediapipe_v01013_based::ReadFile(absl::GetFlag(FLAGS_proto_source), true, &config));
   EXIT_IF_ERROR(
-      mediapipe::WriteFile(absl::GetFlag(FLAGS_proto_output), false, config));
+      mediapipe_v01013_based::WriteFile(absl::GetFlag(FLAGS_proto_output), false, config));
   return EXIT_SUCCESS;
 }

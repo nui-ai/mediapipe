@@ -61,7 +61,7 @@ node {
   calculator: "ConstantSidePacketCalculator"
   output_side_packet: "PACKET:left_eye_flag_side_packet"
   options {
-    [mediapipe.ConstantSidePacketCalculatorOptions.ext] {
+    [mediapipe_v01013_based.ConstantSidePacketCalculatorOptions.ext] {
       packet { bool_value: false }
     }
   }
@@ -96,7 +96,7 @@ node {
   calculator: "ConstantSidePacketCalculator"
   output_side_packet: "PACKET:right_eye_flag_side_packet"
   options {
-    [mediapipe.ConstantSidePacketCalculatorOptions.ext] {
+    [mediapipe_v01013_based.ConstantSidePacketCalculatorOptions.ext] {
       packet { bool_value: true }
     }
   }

@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 constexpr char kGraphConfig[] = R"(
@@ -79,7 +79,7 @@ TEST(DetectionClassificationsMergerCalculator, SucceedsWithNoClassification) {
   // Get and validate output.
   EXPECT_THAT(output_packets, testing::SizeIs(1));
   const Detection& output_detection = output_packets[0].Get<Detection>();
-  EXPECT_THAT(output_detection, mediapipe::EqualsProto(input_detection));
+  EXPECT_THAT(output_detection, mediapipe_v01013_based::EqualsProto(input_detection));
 }
 
 // Checks that merging succeeds when the input ClassificationList includes
@@ -119,7 +119,7 @@ TEST(DetectionClassificationsMergerCalculator,
   EXPECT_THAT(output_packets, testing::SizeIs(1));
   const Detection& output_detection = output_packets[0].Get<Detection>();
   EXPECT_THAT(output_detection,
-              mediapipe::EqualsProto(ParseTextProtoOrDie<Detection>(R"pb(
+              mediapipe_v01013_based::EqualsProto(ParseTextProtoOrDie<Detection>(R"pb(
                 label: "dog"
                 label: "fox"
                 label_id: 11
@@ -172,7 +172,7 @@ TEST(DetectionClassificationsMergerCalculator,
   EXPECT_THAT(output_packets, testing::SizeIs(1));
   const Detection& output_detection = output_packets[0].Get<Detection>();
   EXPECT_THAT(output_detection,
-              mediapipe::EqualsProto(ParseTextProtoOrDie<Detection>(R"pb(
+              mediapipe_v01013_based::EqualsProto(ParseTextProtoOrDie<Detection>(R"pb(
                 label_id: 11
                 label_id: 12
                 score: 0.5
@@ -317,4 +317,4 @@ TEST(DetectionClassificationsMergerCalculator,
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

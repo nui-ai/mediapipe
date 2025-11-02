@@ -21,13 +21,13 @@
 #include "mediapipe/calculators/image/affine_transformation.h"
 #include "mediapipe/framework/formats/image_frame.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::StatusOr<
     std::unique_ptr<AffineTransformation::Runner<ImageFrame, ImageFrame>>>
 CreateAffineTransformationOpenCvRunner(
     AffineTransformation::Interpolation interpolation);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_IMAGE_AFFINE_TRANSFORMATION_RUNNER_OPENCV_H_

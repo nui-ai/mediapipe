@@ -22,7 +22,7 @@
 #include "mediapipe/util/frame_buffer/halide/gray_rotate_halide.h"
 #include "mediapipe/util/frame_buffer/yuv_buffer.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace frame_buffer {
 
 GrayBuffer::GrayBuffer(uint8_t* buffer, int width, int height)
@@ -92,4 +92,4 @@ bool GrayBuffer::FlipVertically(GrayBuffer* output) {
 }
 
 }  // namespace frame_buffer
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

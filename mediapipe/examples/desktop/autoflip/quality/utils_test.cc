@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 namespace {
 
@@ -1036,4 +1036,4 @@ TEST(UtilTest, TestAffineRetargeterFail) {
 
 }  // namespace
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

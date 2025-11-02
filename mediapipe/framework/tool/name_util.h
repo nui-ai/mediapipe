@@ -19,7 +19,7 @@
 
 #include "mediapipe/framework/calculator.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 // Get an unused InputSidePacket name which is (or starts with)
@@ -90,10 +90,10 @@ std::string CatStream(const std::pair<std::string, int>& tag_index,
                       const std::string& name);
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
-namespace mediapipe {
-using mediapipe::tool::CanonicalNodeName;
-}  // namespace mediapipe
+namespace mediapipe_v01013_based {
+using mediapipe_v01013_based::tool::CanonicalNodeName;
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_NAME_UTIL_H_

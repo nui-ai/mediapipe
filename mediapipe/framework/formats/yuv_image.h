@@ -23,7 +23,7 @@
 
 #include "libyuv/video_common.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Generic data structure for representing various 8-bit YUV image formats with
 // pixel format specification in FourCC. The class is also capable of
@@ -275,6 +275,6 @@ class YUVImage {
   bool full_range_ = false;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_YUV_IMAGE_H_

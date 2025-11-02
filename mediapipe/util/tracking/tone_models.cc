@@ -19,7 +19,7 @@
 #include "absl/log/absl_check.h"
 #include "absl/strings/str_format.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 LogDomainLUTImpl::LogDomainLUTImpl() {
   log_lut_.resize(256);
@@ -142,4 +142,4 @@ template class MixtureToneAdapter<AffineToneModelTraits>;
 template class ToneModelMethods<GainBiasModel, GainBiasModelAdapter>;
 template class ToneModelMethods<AffineToneModel, AffineToneModelAdapter>;
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

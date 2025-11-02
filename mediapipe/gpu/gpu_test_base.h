@@ -23,7 +23,7 @@
 #include "mediapipe/gpu/gl_calculator_helper.h"
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class GpuTestEnvironment {
  protected:
@@ -44,6 +44,6 @@ template <typename T>
 class GpuTestWithParamBase : public testing::TestWithParam<T>,
                              public GpuTestEnvironment {};
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_GPU_TEST_BASE_H_

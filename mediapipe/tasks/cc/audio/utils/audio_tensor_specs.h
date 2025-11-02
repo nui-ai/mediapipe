@@ -23,7 +23,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace audio {
 
@@ -62,13 +62,13 @@ absl::StatusOr<const tflite::TensorMetadata*> GetAudioTensorMetadataIfAny(
 // Note: both model and metadata extractor *must* be successfully
 // initialized before calling this function by means of (respectively):
 // - `tflite::GetModel`,
-// - `mediapipe::metadata::ModelMetadataExtractor::CreateFromModelBuffer`.
+// - `mediapipe_v01013_based::metadata::ModelMetadataExtractor::CreateFromModelBuffer`.
 absl::StatusOr<AudioTensorSpecs> BuildInputAudioTensorSpecs(
     const tflite::Tensor& audio_tensor,
     const tflite::TensorMetadata* audio_tensor_metadata);
 
 }  // namespace audio
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_AUDIO_UTILS_AUDIO_TENSOR_SPECS_H_

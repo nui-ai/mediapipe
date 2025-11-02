@@ -20,7 +20,7 @@
 
 #include "mediapipe/framework/api3/internal/graph_builder.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 // SidePacket represents graph input side packet
 // (`CalculatorGraphConfig::input_side_packet`)
@@ -68,6 +68,6 @@ class /*ABSL_ATTRIBUTE_VIEW*/ SidePacket {
   friend class SideOutput;
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_SIDE_PACKET_H_

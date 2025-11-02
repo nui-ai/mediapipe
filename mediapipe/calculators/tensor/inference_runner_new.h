@@ -9,7 +9,7 @@
 #include "mediapipe/framework/calculator_context.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Common interface to implement inference runners in MediaPipe.
 class InferenceRunner {
@@ -22,6 +22,6 @@ class InferenceRunner {
   virtual const InputOutputTensorNames& GetInputOutputTensorNames() const = 0;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_INFERENCE_RUNNER_H_

@@ -64,7 +64,7 @@
 #include "mediapipe/util/tracking/motion_models.pb.h"
 #include "mediapipe/util/tracking/region_flow.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class Homography;
 class LinearSimilarityModel;
@@ -753,6 +753,6 @@ ToModel ProjectViaFit(const FromModel& model, int frame_width, int frame_height,
   return FitModel<ToModel>(grid_features);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_MOTION_ESTIMATION_H_

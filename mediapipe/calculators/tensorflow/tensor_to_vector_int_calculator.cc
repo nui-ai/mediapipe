@@ -24,7 +24,7 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/types.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tf = ::tensorflow;
 
@@ -169,4 +169,4 @@ void TensorToVectorIntCalculator::TokenizeVector(
   vector->swap(tokens);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

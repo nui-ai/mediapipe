@@ -19,7 +19,7 @@ limitations under the License.
 #include <optional>
 #include <string>
 
-namespace mediapipe::tasks::components::containers {
+namespace mediapipe_v01013_based::tasks::components::containers {
 
 // A keypoint, defined by the coordinates (x, y), normalized
 // by the image dimensions.
@@ -34,6 +34,6 @@ struct NormalizedKeypoint {
   std::optional<float> score;
 };
 
-}  // namespace mediapipe::tasks::components::containers
+}  // namespace mediapipe_v01013_based::tasks::components::containers
 
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_CONTAINERS_KEYPOINT_H_

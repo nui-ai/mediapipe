@@ -46,16 +46,16 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/pose_landmarker/proto/pose_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/util/graph_builder_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
 namespace {
 
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Stream;
-using ::mediapipe::tasks::metadata::SetExternalFile;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::mediapipe_v01013_based::tasks::metadata::SetExternalFile;
 
 constexpr absl::string_view kHandLandmarksDetectorModelName =
     "hand_landmarks_detector.tflite";
@@ -335,7 +335,7 @@ class HolisticLandmarkerGraph : public core::ModelTaskGraph {
     // Copies the file content instead of passing the pointer of file in
     // memory if the subgraph model resource service is not available.
     bool create_copy =
-        !sc->Service(::mediapipe::tasks::core::kModelResourcesCacheService)
+        !sc->Service(::mediapipe_v01013_based::tasks::core::kModelResourcesCacheService)
              .IsAvailable();
 
     Stream<Image> image = graph.In("IMAGE").Cast<Image>();
@@ -485,7 +485,7 @@ class HolisticLandmarkerGraph : public core::ModelTaskGraph {
     if (face_requested) {
       RET_CHECK(pose_output.landmarks.has_value());
 
-      Stream<mediapipe::NormalizedLandmarkList> face_landmarks_from_pose =
+      Stream<mediapipe_v01013_based::NormalizedLandmarkList> face_landmarks_from_pose =
           api2::builder::SplitToRanges(*pose_output.landmarks, {{0, 11}},
                                        graph)[0];
 
@@ -513,9 +513,9 @@ class HolisticLandmarkerGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::vision::holistic_landmarker::HolisticLandmarkerGraph);
+    ::mediapipe_v01013_based::tasks::vision::holistic_landmarker::HolisticLandmarkerGraph);
 
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -20,7 +20,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/processors/proto/text_model_type.pb.h"
 #include "mediapipe/tasks/cc/core/model_resources.h"
 
-namespace mediapipe::tasks::text::utils {
+namespace mediapipe_v01013_based::tasks::text::utils {
 
 // Determines the ModelType for the model based on its metadata as well
 // as its input tensors' type and count. Returns an error if there is no
@@ -28,6 +28,6 @@ namespace mediapipe::tasks::text::utils {
 absl::StatusOr<components::processors::proto::TextModelType::ModelType>
 GetModelType(const core::ModelResources& model_resources);
 
-}  // namespace mediapipe::tasks::text::utils
+}  // namespace mediapipe_v01013_based::tasks::text::utils
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_UTILS_TEXT_MODEL_UTILS_H_

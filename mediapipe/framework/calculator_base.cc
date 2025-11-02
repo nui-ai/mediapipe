@@ -18,7 +18,7 @@
 
 #include <algorithm>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 CalculatorBase::CalculatorBase() {}
 
@@ -40,4 +40,4 @@ Timestamp CalculatorBase::SourceProcessOrder(
   return result;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

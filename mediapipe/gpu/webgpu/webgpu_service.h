@@ -34,7 +34,7 @@
 #include "third_party/dawn/include/webgpu/webgpu_cpp.h"
 #endif  // __EMSCRIPTEN__
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Attachments can be used to cache common resouces that are associated with
 // a device, similarly to what we have for GlContext.
@@ -117,13 +117,13 @@ class WebGpuDeviceAttachmentManager {
 
 #ifdef __EMSCRIPTEN__
 static WebGpuDeviceAttachmentManager& GetEmscriptenDeviceAttachmentManager() {
-  static mediapipe::NoDestructor<WebGpuDeviceAttachmentManager> manager(
+  static mediapipe_v01013_based::NoDestructor<WebGpuDeviceAttachmentManager> manager(
       wgpu::Device::Acquire(emscripten_webgpu_get_device()));
   return *manager;
 }
 #else
 static WebGpuDeviceAttachmentManager& GetNativeDeviceAttachmentManager() {
-  static mediapipe::NoDestructor<WebGpuDeviceAttachmentManager> manager(
+  static mediapipe_v01013_based::NoDestructor<WebGpuDeviceAttachmentManager> manager(
       wgpu::Device(WebGpuDeviceRegistration::GetInstance().GetWebGpuDevice()));
   return *manager;
 }
@@ -153,6 +153,6 @@ T& GetWebGpuDeviceCachedAttachment(
 }
 #endif  // __EMSCRIPTEN__
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_WEBGPU_WEBGPU_SERVICE_H_

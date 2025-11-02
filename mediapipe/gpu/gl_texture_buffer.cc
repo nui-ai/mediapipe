@@ -36,7 +36,7 @@
 #include "mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.h"
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 std::unique_ptr<GlTextureBuffer> GlTextureBuffer::Wrap(
     GLenum target, GLuint name, int width, int height, GpuBufferFormat format,
@@ -437,4 +437,4 @@ static auto kConverterRegistrationCvpb =
 
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

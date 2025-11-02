@@ -15,15 +15,15 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 
-option java_package = "com.google.mediapipe.calculator.proto";
+option java_package = "com.google.mediapipe_v01013_based.calculator.proto";
 option java_outer_classname = "StableDiffusionIterateCalculatorOptionsProto";
 
 message StableDiffusionIterateCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional StableDiffusionIterateCalculatorOptions ext = 510855836;
   }
 

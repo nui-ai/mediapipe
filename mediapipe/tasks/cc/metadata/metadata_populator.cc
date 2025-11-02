@@ -29,7 +29,7 @@ limitations under the License.
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace metadata {
 
@@ -37,8 +37,8 @@ namespace {
 constexpr char kMetadataBufferName[] = "TFLITE_METADATA";
 
 using ::absl::StatusCode;
-using ::mediapipe::tasks::CreateStatusWithPayload;
-using ::mediapipe::tasks::MediaPipeTasksStatus;
+using ::mediapipe_v01013_based::tasks::CreateStatusWithPayload;
+using ::mediapipe_v01013_based::tasks::MediaPipeTasksStatus;
 
 }  // namespace
 
@@ -151,4 +151,4 @@ absl::StatusOr<std::string> ModelMetadataPopulator::Populate() {
 
 }  // namespace metadata
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

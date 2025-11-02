@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 absl::Status InitializeTensorsToClassificationConfig(
@@ -155,4 +155,4 @@ std::unique_ptr<ClassificationList> ProcessTensorToClassifications(
 }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

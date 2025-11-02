@@ -36,7 +36,7 @@
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/geometry_pipeline_metadata.pb.h"
 #include "mediapipe/util/resource_util.h"
 
-namespace mediapipe::tasks::vision::face_geometry {
+namespace mediapipe_v01013_based::tasks::vision::face_geometry {
 namespace {
 
 static constexpr char kEnvironmentTag[] = "ENVIRONMENT";
@@ -46,9 +46,9 @@ static constexpr char kMultiFaceLandmarksTag[] = "MULTI_FACE_LANDMARKS";
 static constexpr char kFaceGeometryTag[] = "FACE_GEOMETRY";
 static constexpr char kFaceLandmarksTag[] = "FACE_LANDMARKS";
 
-using ::mediapipe::tasks::vision::face_geometry::proto::Environment;
-using ::mediapipe::tasks::vision::face_geometry::proto::FaceGeometry;
-using ::mediapipe::tasks::vision::face_geometry::proto::
+using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::Environment;
+using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::FaceGeometry;
+using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::
     GeometryPipelineMetadata;
 
 absl::Status SanityCheck(CalculatorContract* cc) {
@@ -131,20 +131,20 @@ class GeometryPipelineCalculator : public CalculatorBase {
     if (cc->Inputs().HasTag(kMultiFaceLandmarksTag)) {
       cc->Inputs()
           .Tag(kMultiFaceLandmarksTag)
-          .Set<std::vector<mediapipe::NormalizedLandmarkList>>();
+          .Set<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>();
       cc->Outputs().Tag(kMultiFaceGeometryTag).Set<std::vector<FaceGeometry>>();
       return absl::OkStatus();
     } else {
       cc->Inputs()
           .Tag(kFaceLandmarksTag)
-          .Set<mediapipe::NormalizedLandmarkList>();
+          .Set<mediapipe_v01013_based::NormalizedLandmarkList>();
       cc->Outputs().Tag(kFaceGeometryTag).Set<FaceGeometry>();
       return absl::OkStatus();
     }
   }
 
   absl::Status Open(CalculatorContext* cc) override {
-    cc->SetOffset(mediapipe::TimestampDiff(0));
+    cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
 
     const auto& options = cc->Options<FaceGeometryPipelineCalculatorOptions>();
 
@@ -188,7 +188,7 @@ class GeometryPipelineCalculator : public CalculatorBase {
       const auto& multi_face_landmarks =
           cc->Inputs()
               .Tag(kMultiFaceLandmarksTag)
-              .Get<std::vector<mediapipe::NormalizedLandmarkList>>();
+              .Get<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>();
 
       auto multi_face_geometry = absl::make_unique<std::vector<FaceGeometry>>();
 
@@ -202,7 +202,7 @@ class GeometryPipelineCalculator : public CalculatorBase {
 
       cc->Outputs()
           .Tag(kMultiFaceGeometryTag)
-          .AddPacket(mediapipe::Adopt<std::vector<FaceGeometry>>(
+          .AddPacket(mediapipe_v01013_based::Adopt<std::vector<FaceGeometry>>(
                          multi_face_geometry.release())
                          .At(cc->InputTimestamp()));
     } else if (cc->Inputs().HasTag(kFaceLandmarksTag)) {
@@ -213,7 +213,7 @@ class GeometryPipelineCalculator : public CalculatorBase {
       const auto& face_landmarks =
           cc->Inputs()
               .Tag(kFaceLandmarksTag)
-              .Get<mediapipe::NormalizedLandmarkList>();
+              .Get<mediapipe_v01013_based::NormalizedLandmarkList>();
 
       MP_ASSIGN_OR_RETURN(
           std::vector<FaceGeometry> multi_face_geometry,
@@ -225,7 +225,7 @@ class GeometryPipelineCalculator : public CalculatorBase {
 
       cc->Outputs()
           .Tag(kFaceGeometryTag)
-          .AddPacket(mediapipe::MakePacket<FaceGeometry>(multi_face_geometry[0])
+          .AddPacket(mediapipe_v01013_based::MakePacket<FaceGeometry>(multi_face_geometry[0])
                          .At(cc->InputTimestamp()));
     }
 
@@ -259,6 +259,6 @@ class GeometryPipelineCalculator : public CalculatorBase {
 using FaceGeometryPipelineCalculator = GeometryPipelineCalculator;
 
 REGISTER_CALCULATOR(
-    ::mediapipe::tasks::vision::face_geometry::FaceGeometryPipelineCalculator);
+    ::mediapipe_v01013_based::tasks::vision::face_geometry::FaceGeometryPipelineCalculator);
 
-}  // namespace mediapipe::tasks::vision::face_geometry
+}  // namespace mediapipe_v01013_based::tasks::vision::face_geometry

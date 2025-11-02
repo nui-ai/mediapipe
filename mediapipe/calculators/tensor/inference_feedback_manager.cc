@@ -21,7 +21,7 @@
 #include "tensorflow/lite/c/common.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -187,4 +187,4 @@ int InferenceFeedbackManager::GetNumberOfNonFeedbackInputTensors() const {
 int InferenceFeedbackManager::GetNumberOfFeedbackTensors() const {
   return feedback_tensor_indices_links_.size();
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

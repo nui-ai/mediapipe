@@ -18,13 +18,13 @@
 #include "mediapipe/framework/resources.h"
 #include "mediapipe/framework/resources_service.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-using ::mediapipe::CalculatorGraph;
-using ::mediapipe::Timestamp;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Stream;
+using ::mediapipe_v01013_based::CalculatorGraph;
+using ::mediapipe_v01013_based::Timestamp;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Stream;
 
 class TestLabelMapResources : public Resources {
  public:
@@ -56,7 +56,7 @@ TEST(DetectionLabelIdToTextCalculator, WorksForLabelMapFile) {
     // Graph body.
     auto& node = graph.AddNode("DetectionLabelIdToTextCalculator");
     auto& node_opts =
-        node.GetOptions<mediapipe::DetectionLabelIdToTextCalculatorOptions>();
+        node.GetOptions<mediapipe_v01013_based::DetectionLabelIdToTextCalculatorOptions>();
     node_opts.set_label_map_path("$LABEL_MAP_PROVIDED_BY_TEST_RESOURCES");
     input_detections.ConnectTo(node.In(0));
     Stream<std::vector<Detection>> detections_with_text_labels =
@@ -116,4 +116,4 @@ TEST(DetectionLabelIdToTextCalculator, WorksForLabelMapFile) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

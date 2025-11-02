@@ -27,7 +27,7 @@
 #include "mediapipe/framework/input_stream_handler.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // An input stream handler that delivers input packets to the Calculator
 // immediately, with no dependency between input streams.  It also invokes
@@ -72,6 +72,6 @@ class ImmediateInputStreamHandler : public InputStreamHandler {
   std::vector<Timestamp> ready_timestamps_ ABSL_GUARDED_BY(mutex_);
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_STREAM_HANDLER_IMMEDIATE_INPUT_STREAM_HANDLER_H_

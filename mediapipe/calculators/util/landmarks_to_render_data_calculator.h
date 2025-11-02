@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/util/color.pb.h"
 #include "mediapipe/util/render_data.pb.h"
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A calculator that converts Landmark proto to RenderData proto for
 // visualization. The input should be LandmarkList proto. It is also possible
@@ -61,9 +61,9 @@ class LandmarksToRenderDataCalculator : public CalculatorBase {
   absl::Status Process(CalculatorContext* cc) override;
 
  protected:
-  ::mediapipe::LandmarksToRenderDataCalculatorOptions options_;
+  ::mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions options_;
   std::vector<int> landmark_connections_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_LANDMARKS_TO_RENDER_DATA_CALCULATOR_H_

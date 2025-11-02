@@ -8,13 +8,13 @@
 #include "mediapipe/framework/port/advanced_proto_inc.h"
 #include "mediapipe/framework/tool/field_data.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 class Descriptor;
 class FieldDescriptor;
-using FieldType = mediapipe::proto_ns::internal::WireFormatLite::FieldType;
-using mediapipe::FieldData;
+using FieldType = mediapipe_v01013_based::proto_ns::internal::WireFormatLite::FieldType;
+using mediapipe_v01013_based::FieldData;
 
 // A static registry that stores descriptors for protobufs used in MediaPipe
 // calculator options. Lite-proto builds do not normally include descriptors.
@@ -84,6 +84,6 @@ class FieldDescriptor {
 };
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_OPTIONS_REGISTRY_H_

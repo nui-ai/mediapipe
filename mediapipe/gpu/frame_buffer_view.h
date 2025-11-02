@@ -19,7 +19,7 @@ limitations under the License.
 #include "mediapipe/framework/formats/frame_buffer.h"
 #include "mediapipe/gpu/gpu_buffer_storage.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace internal {
 
 template <>
@@ -32,6 +32,6 @@ class ViewProvider<FrameBuffer> {
 };
 
 }  // namespace internal
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_FRAME_BUFFER_VIEW_H_

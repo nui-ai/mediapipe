@@ -16,4 +16,4 @@
 
 #include "absl/synchronization/mutex.h"
 
-namespace mediapipe {}  // namespace mediapipe
+namespace mediapipe_v01013_based {}  // namespace mediapipe_v01013_based

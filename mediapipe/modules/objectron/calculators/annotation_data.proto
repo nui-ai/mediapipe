@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/modules/objectron/calculators/a_r_capture_metadata.proto";
 import "mediapipe/modules/objectron/calculators/object.proto";

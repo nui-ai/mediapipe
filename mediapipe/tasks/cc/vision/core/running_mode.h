@@ -18,7 +18,7 @@ limitations under the License.
 
 #include <string>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace core {
@@ -51,6 +51,6 @@ inline std::string GetRunningModeName(RunningMode mode) {
 }  // namespace core
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_CORE_RUNNING_MODE_H_

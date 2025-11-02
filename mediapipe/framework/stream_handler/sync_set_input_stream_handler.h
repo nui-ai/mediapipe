@@ -33,7 +33,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // An input stream handler which separates the inputs into sets which
 // are each independently synchronized.  For example, if 5 inputs are
@@ -50,7 +50,7 @@ class SyncSetInputStreamHandler : public InputStreamHandler {
   SyncSetInputStreamHandler(
       std::shared_ptr<tool::TagMap> tag_map,
       CalculatorContextManager* cc_manager,
-      const mediapipe::MediaPipeOptions& extendable_options,
+      const mediapipe_v01013_based::MediaPipeOptions& extendable_options,
       bool calculator_run_in_parallel)
       : InputStreamHandler(std::move(tag_map), cc_manager, extendable_options,
                            calculator_run_in_parallel) {}
@@ -92,6 +92,6 @@ class SyncSetInputStreamHandler : public InputStreamHandler {
   Timestamp ready_timestamp_ ABSL_GUARDED_BY(mutex_);
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_STREAM_HANDLER_SYNC_SET_INPUT_STREAM_HANDLER_H_

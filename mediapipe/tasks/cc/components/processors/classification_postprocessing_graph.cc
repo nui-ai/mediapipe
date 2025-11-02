@@ -47,27 +47,27 @@ limitations under the License.
 #include "mediapipe/util/label_map_util.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace components {
 namespace processors {
 
 namespace {
 
-using ::mediapipe::Tensor;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::Timestamp;
-using ::mediapipe::api2::builder::GenericNode;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::containers::proto::ClassificationResult;
-using ::mediapipe::tasks::core::ModelResources;
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::Tensor;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::Timestamp;
+using ::mediapipe_v01013_based::api2::builder::GenericNode;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
+using ::mediapipe_v01013_based::tasks::core::ModelResources;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
 using ::tflite::ProcessUnit;
 using ::tflite::TensorMetadata;
-using LabelItems = mediapipe::proto_ns::Map<int64_t, ::mediapipe::LabelMapItem>;
-using TensorsSource = mediapipe::api2::builder::Source<std::vector<Tensor>>;
+using LabelItems = mediapipe_v01013_based::proto_ns::Map<int64_t, ::mediapipe_v01013_based::LabelMapItem>;
+using TensorsSource = mediapipe_v01013_based::api2::builder::Source<std::vector<Tensor>>;
 
 constexpr float kDefaultScoreThreshold = std::numeric_limits<float>::lowest();
 
@@ -192,7 +192,7 @@ absl::StatusOr<LabelItems> GetLabelItemsIfAny(
         display_names_file,
         metadata_extractor.GetAssociatedFile(display_names_filename));
   }
-  return mediapipe::BuildLabelMapFromFiles(labels_file, display_names_file);
+  return mediapipe_v01013_based::BuildLabelMapFromFiles(labels_file, display_names_file);
 }
 
 // Gets the score threshold from metadata, if any. Returns
@@ -292,7 +292,7 @@ absl::Status ConfigureScoreCalibrationIfAny(
 
 void ConfigureClassificationAggregationCalculator(
     const ModelMetadataExtractor& metadata_extractor,
-    mediapipe::ClassificationAggregationCalculatorOptions* options) {
+    mediapipe_v01013_based::ClassificationAggregationCalculatorOptions* options) {
   auto* output_tensors_metadata = metadata_extractor.GetOutputTensorMetadata();
   if (output_tensors_metadata == nullptr) {
     return;
@@ -402,10 +402,10 @@ absl::Status ConfigureClassificationPostprocessingGraph(
 // The recommended way of using this graph is through the GraphBuilder API
 // using the 'ConfigureClassificationPostprocessingGraph()' function. See header
 // file for more details.
-class ClassificationPostprocessingGraph : public mediapipe::Subgraph {
+class ClassificationPostprocessingGraph : public mediapipe_v01013_based::Subgraph {
  public:
-  absl::StatusOr<mediapipe::CalculatorGraphConfig> GetConfig(
-      mediapipe::SubgraphContext* sc) override {
+  absl::StatusOr<mediapipe_v01013_based::CalculatorGraphConfig> GetConfig(
+      mediapipe_v01013_based::SubgraphContext* sc) override {
     Graph graph;
     MP_ASSIGN_OR_RETURN(
         auto output_streams,
@@ -424,7 +424,7 @@ class ClassificationPostprocessingGraph : public mediapipe::Subgraph {
  private:
   // Adds an on-device classification postprocessing graph into the provided
   // builder::Graph instance. The classification postprocessing graph takes
-  // tensors (std::vector<mediapipe::Tensor>) and optional timestamps
+  // tensors (std::vector<mediapipe_v01013_based::Tensor>) and optional timestamps
   // (std::vector<Timestamp>) as input and returns two output streams:
   //  - classification results aggregated by classifier head as a
   //  ClassificationResult proto, used when no timestamps are passed in
@@ -434,8 +434,8 @@ class ClassificationPostprocessingGraph : public mediapipe::Subgraph {
   //    in the graph.
   //
   // options: the on-device ClassificationPostprocessingGraphOptions.
-  // tensors_in: (std::vector<mediapipe::Tensor>>) tensors to postprocess.
-  // timestamps_in: (std::vector<mediapipe::Timestamp>) optional collection of
+  // tensors_in: (std::vector<mediapipe_v01013_based::Tensor>>) tensors to postprocess.
+  // timestamps_in: (std::vector<mediapipe_v01013_based::Timestamp>) optional collection of
   //   timestamps that should be used to aggregate classification results.
   // graph: the mediapipe builder::Graph instance to be updated.
   absl::StatusOr<ClassificationPostprocessingOutputStreams>
@@ -473,7 +473,7 @@ class ClassificationPostprocessingGraph : public mediapipe::Subgraph {
           &graph.AddNode("SplitTensorVectorCalculator");
       auto& split_tensor_vector_options =
           split_tensor_vector_node
-              ->GetOptions<mediapipe::SplitVectorCalculatorOptions>();
+              ->GetOptions<mediapipe_v01013_based::SplitVectorCalculatorOptions>();
       for (int i = 0; i < num_heads; ++i) {
         auto* range = split_tensor_vector_options.add_ranges();
         range->set_begin(i);
@@ -521,7 +521,7 @@ class ClassificationPostprocessingGraph : public mediapipe::Subgraph {
     auto& result_aggregation =
         graph.AddNode("ClassificationAggregationCalculator");
     result_aggregation
-        .GetOptions<mediapipe::ClassificationAggregationCalculatorOptions>()
+        .GetOptions<mediapipe_v01013_based::ClassificationAggregationCalculatorOptions>()
         .CopyFrom(options.classification_aggregation_options());
     for (int i = 0; i < num_heads; ++i) {
       tensors_to_classification_nodes[i]->Out(kClassificationsTag) >>
@@ -544,10 +544,10 @@ class ClassificationPostprocessingGraph : public mediapipe::Subgraph {
 // REGISTER_MEDIAPIPE_GRAPH argument has to fit on one line to work properly.
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe::tasks::components::processors::ClassificationPostprocessingGraph); // NOLINT
+  ::mediapipe_v01013_based::tasks::components::processors::ClassificationPostprocessingGraph); // NOLINT
 // clang-format on
 
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

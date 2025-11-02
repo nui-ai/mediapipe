@@ -20,7 +20,7 @@
 
 #include "absl/status/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tensors_to_segmentation_utils {
 
 // Commonly used to compute the number of blocks to launch in a kernel.
@@ -34,6 +34,6 @@ absl::StatusOr<std::tuple<int, int, int>> GetHwcFromDims(
 void GlRender();
 
 }  // namespace tensors_to_segmentation_utils
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_SEGMENTATION_UTILS_H_

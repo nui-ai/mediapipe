@@ -21,27 +21,27 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 typedef FilterCollectionCalculator<std::vector<uint64_t>>
     FilterUInt64CollectionCalculator;
 REGISTER_CALCULATOR(FilterUInt64CollectionCalculator);
 
-typedef FilterCollectionCalculator<std::vector<::mediapipe::NormalizedRect>>
+typedef FilterCollectionCalculator<std::vector<::mediapipe_v01013_based::NormalizedRect>>
     FilterNormalizedRectCollectionCalculator;
 REGISTER_CALCULATOR(FilterNormalizedRectCollectionCalculator);
 
-typedef FilterCollectionCalculator<std::vector<::mediapipe::LandmarkList>>
+typedef FilterCollectionCalculator<std::vector<::mediapipe_v01013_based::LandmarkList>>
     FilterLandmarkListCollectionCalculator;
 REGISTER_CALCULATOR(FilterLandmarkListCollectionCalculator);
 
 typedef FilterCollectionCalculator<
-    std::vector<::mediapipe::NormalizedLandmarkList>>
+    std::vector<::mediapipe_v01013_based::NormalizedLandmarkList>>
     FilterNormalizedLandmarkListCollectionCalculator;
 REGISTER_CALCULATOR(FilterNormalizedLandmarkListCollectionCalculator);
 
-typedef FilterCollectionCalculator<std::vector<::mediapipe::ClassificationList>>
+typedef FilterCollectionCalculator<std::vector<::mediapipe_v01013_based::ClassificationList>>
     FilterClassificationListCollectionCalculator;
 REGISTER_CALCULATOR(FilterClassificationListCollectionCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

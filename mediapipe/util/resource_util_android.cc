@@ -25,7 +25,7 @@
 #include "mediapipe/util/android/asset_manager_util.h"
 #include "mediapipe/util/android/file/base/helpers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 absl::StatusOr<std::string> PathToResourceAsFileInternal(
@@ -110,4 +110,4 @@ absl::StatusOr<std::string> PathToResourceAsFile(const std::string& path,
   return path;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

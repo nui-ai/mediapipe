@@ -28,7 +28,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/common.h"
 #include "mediapipe/tasks/cc/metadata/utils/zip_readonly_mem_file.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace metadata {
 
@@ -179,4 +179,4 @@ void SetExternalFile(const absl::string_view& file_content,
 
 }  // namespace metadata
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

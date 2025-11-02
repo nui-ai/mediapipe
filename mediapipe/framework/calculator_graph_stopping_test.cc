@@ -31,29 +31,29 @@
 #include "mediapipe/framework/tool/sink.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe {}
+namespace mediapipe_v01013_based {}
 
 namespace testing_ns {
-using mediapipe::CalculatorBase;
-using mediapipe::CalculatorContext;
-using mediapipe::CalculatorContract;
-using mediapipe::CalculatorGraphConfig;
-using mediapipe::GetFromUniquePtr;
-using mediapipe::InputStreamShardSet;
-using mediapipe::MakePacket;
-using mediapipe::OutputStreamShardSet;
-using mediapipe::Timestamp;
-namespace proto_ns = mediapipe::proto_ns;
+using mediapipe_v01013_based::CalculatorBase;
+using mediapipe_v01013_based::CalculatorContext;
+using mediapipe_v01013_based::CalculatorContract;
+using mediapipe_v01013_based::CalculatorGraphConfig;
+using mediapipe_v01013_based::GetFromUniquePtr;
+using mediapipe_v01013_based::InputStreamShardSet;
+using mediapipe_v01013_based::MakePacket;
+using mediapipe_v01013_based::OutputStreamShardSet;
+using mediapipe_v01013_based::Timestamp;
+namespace proto_ns = mediapipe_v01013_based::proto_ns;
 
 constexpr char kEventTag[] = "EVENT";
 constexpr char kOutTag[] = "OUT";
 
-using mediapipe::CalculatorGraph;
-using mediapipe::Packet;
+using mediapipe_v01013_based::CalculatorGraph;
+using mediapipe_v01013_based::Packet;
 
-class InfiniteSequenceCalculator : public mediapipe::CalculatorBase {
+class InfiniteSequenceCalculator : public mediapipe_v01013_based::CalculatorBase {
  public:
-  static absl::Status GetContract(mediapipe::CalculatorContract* cc) {
+  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc) {
     cc->Outputs().Tag(kOutTag).Set<int>();
     cc->Outputs().Tag(kEventTag).Set<int>();
     return absl::OkStatus();
@@ -78,7 +78,7 @@ class InfiniteSequenceCalculator : public mediapipe::CalculatorBase {
 };
 REGISTER_CALCULATOR(::testing_ns::InfiniteSequenceCalculator);
 
-class StoppingPassThroughCalculator : public mediapipe::CalculatorBase {
+class StoppingPassThroughCalculator : public mediapipe_v01013_based::CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
     for (int i = 0; i < cc->Inputs().NumEntries(""); ++i) {
@@ -99,7 +99,7 @@ class StoppingPassThroughCalculator : public mediapipe::CalculatorBase {
       }
     }
     return (++count_ <= max_count_) ? absl::OkStatus()
-                                    : mediapipe::tool::StatusStop();
+                                    : mediapipe_v01013_based::tool::StatusStop();
   }
   absl::Status Close(CalculatorContext* cc) override {
     cc->Outputs().Tag(kEventTag).AddPacket(MakePacket<int>(2).At(Timestamp(2)));

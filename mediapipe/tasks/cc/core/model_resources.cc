@@ -40,15 +40,15 @@ limitations under the License.
 #include "tensorflow/lite/model_builder.h"
 #include "tensorflow/lite/tools/verifier.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace core {
 
 using ::absl::StatusCode;
-using ::mediapipe::api2::MakePacket;
-using ::mediapipe::api2::Packet;
-using ::mediapipe::api2::PacketAdopting;
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::api2::MakePacket;
+using ::mediapipe_v01013_based::api2::Packet;
+using ::mediapipe_v01013_based::api2::PacketAdopting;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
 
 bool ModelResources::Verifier::Verify(const char* data, int length,
                                       tflite::ErrorReporter* reporter) {
@@ -162,4 +162,4 @@ absl::Status ModelResources::BuildModelFromExternalFileProto() {
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

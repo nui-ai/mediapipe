@@ -22,52 +22,52 @@ namespace {
 // Maps Image format to OpenCV Mat type.
 // See mediapipe...image_format.proto and cv...opencv2/core/hal/interface.h
 // for more details on respective formats.
-int GetMatType(const mediapipe::ImageFormat::Format format) {
+int GetMatType(const mediapipe_v01013_based::ImageFormat::Format format) {
   int type = 0;
   switch (format) {
-    case mediapipe::ImageFormat::UNKNOWN:
+    case mediapipe_v01013_based::ImageFormat::UNKNOWN:
       // Invalid; Default to uchar.
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::SRGB:
+    case mediapipe_v01013_based::ImageFormat::SRGB:
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::SRGBA:
+    case mediapipe_v01013_based::ImageFormat::SRGBA:
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::GRAY8:
+    case mediapipe_v01013_based::ImageFormat::GRAY8:
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::GRAY16:
+    case mediapipe_v01013_based::ImageFormat::GRAY16:
       type = CV_16U;
       break;
-    case mediapipe::ImageFormat::YCBCR420P:
+    case mediapipe_v01013_based::ImageFormat::YCBCR420P:
       // Invalid; Default to uchar.
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::YCBCR420P10:
+    case mediapipe_v01013_based::ImageFormat::YCBCR420P10:
       // Invalid; Default to uint16.
       type = CV_16U;
       break;
-    case mediapipe::ImageFormat::SRGB48:
+    case mediapipe_v01013_based::ImageFormat::SRGB48:
       type = CV_16U;
       break;
-    case mediapipe::ImageFormat::SRGBA64:
+    case mediapipe_v01013_based::ImageFormat::SRGBA64:
       type = CV_16U;
       break;
-    case mediapipe::ImageFormat::VEC32F1:
+    case mediapipe_v01013_based::ImageFormat::VEC32F1:
       type = CV_32F;
       break;
-    case mediapipe::ImageFormat::VEC32F2:
+    case mediapipe_v01013_based::ImageFormat::VEC32F2:
       type = CV_32FC2;
       break;
-    case mediapipe::ImageFormat::VEC32F4:
+    case mediapipe_v01013_based::ImageFormat::VEC32F4:
       type = CV_32FC4;
       break;
-    case mediapipe::ImageFormat::LAB8:
+    case mediapipe_v01013_based::ImageFormat::LAB8:
       type = CV_8U;
       break;
-    case mediapipe::ImageFormat::SBGRA:
+    case mediapipe_v01013_based::ImageFormat::SBGRA:
       type = CV_8U;
       break;
     default:
@@ -78,16 +78,16 @@ int GetMatType(const mediapipe::ImageFormat::Format format) {
   return type;
 }
 }  // namespace
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace formats {
 
-std::shared_ptr<cv::Mat> MatView(const mediapipe::Image* image) {
+std::shared_ptr<cv::Mat> MatView(const mediapipe_v01013_based::Image* image) {
   // Used to hold the lock through the Mat's lifetime.
   struct MatWithPixelLock {
     // Constructor needed because you cannot use aggregate initialization with
     // std::make_shared.
-    MatWithPixelLock(mediapipe::Image* image) : lock(image) {}
-    mediapipe::PixelWriteLock lock;
+    MatWithPixelLock(mediapipe_v01013_based::Image* image) : lock(image) {}
+    mediapipe_v01013_based::PixelWriteLock lock;
     cv::Mat mat;
   };
 
@@ -99,7 +99,7 @@ std::shared_ptr<cv::Mat> MatView(const mediapipe::Image* image) {
                           static_cast<size_t>(ImageFrame::ByteDepthForFormat(
                               image->image_format()))};
   auto owner =
-      std::make_shared<MatWithPixelLock>(const_cast<mediapipe::Image*>(image));
+      std::make_shared<MatWithPixelLock>(const_cast<mediapipe_v01013_based::Image*>(image));
   uint8_t* data_ptr = owner->lock.Pixels();
   ABSL_CHECK(data_ptr != nullptr);
   // Use Image to initialize in-place. Image still owns memory.
@@ -116,4 +116,4 @@ std::shared_ptr<cv::Mat> MatView(const mediapipe::Image* image) {
   return std::shared_ptr<cv::Mat>(owner, &owner->mat);
 }
 }  // namespace formats
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

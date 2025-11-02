@@ -29,7 +29,7 @@ node {
   }
   output_stream: "throttled_image"
   options: {
-    [mediapipe.FlowLimiterCalculatorOptions.ext] {
+    [mediapipe_v01013_based.FlowLimiterCalculatorOptions.ext] {
       max_in_flight: 1
       max_in_queue: 1
     }
@@ -41,7 +41,7 @@ node {
   input_stream: "IMAGE:throttled_image"
   output_stream: "DETECTIONS:detections"
   node_options: {
-    [type.googleapis.com/mediapipe.FaceDetectionOptions] {}
+    [type.googleapis.com/mediapipe_v01013_based.FaceDetectionOptions] {}
   }
   option_value: "OPTIONS:options"
 }

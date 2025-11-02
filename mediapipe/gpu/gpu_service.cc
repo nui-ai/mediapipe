@@ -14,9 +14,9 @@
 
 #include "mediapipe/gpu/gpu_service.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 const GraphService<GpuResources> kGpuService(
     "kGpuService", GraphServiceBase::kAllowDefaultInitialization);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

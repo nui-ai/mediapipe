@@ -30,7 +30,7 @@
 #include "mediapipe/util/tracking/measure_time.h"
 #include "mediapipe/util/tracking/tracking.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Time within which close checkpoints are removed.
 static constexpr int kSnapMs = 1000;
@@ -1062,4 +1062,4 @@ bool BoxTracker::GetTrackingData(int id, int64_t request_time_msec,
   return true;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

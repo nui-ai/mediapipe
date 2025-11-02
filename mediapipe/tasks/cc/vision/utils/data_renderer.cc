@@ -29,13 +29,13 @@ limitations under the License.
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe::tasks::vision::utils {
+namespace mediapipe_v01013_based::tasks::vision::utils {
 
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Stream;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Stream;
 
 Stream<Image> Render(Stream<Image> image,
-                     absl::Span<Stream<mediapipe::RenderData>> render_data_list,
+                     absl::Span<Stream<mediapipe_v01013_based::RenderData>> render_data_list,
                      Graph& graph) {
   auto& annotation_overlay = graph.AddNode("AnnotationOverlayCalculator");
   image >> annotation_overlay.In("UIMAGE");
@@ -45,44 +45,44 @@ Stream<Image> Render(Stream<Image> image,
   return annotation_overlay.Out("UIMAGE").Cast<Image>();
 }
 
-Stream<mediapipe::RenderData> RenderLandmarks(
-    Stream<mediapipe::NormalizedLandmarkList> landmarks,
+Stream<mediapipe_v01013_based::RenderData> RenderLandmarks(
+    Stream<mediapipe_v01013_based::NormalizedLandmarkList> landmarks,
     std::optional<api2::builder::Stream<float>> render_scale,
-    const mediapipe::LandmarksToRenderDataCalculatorOptions& renderer_options,
+    const mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions& renderer_options,
     Graph& graph) {
   auto& landmarks_render = graph.AddNode("LandmarksToRenderDataCalculator");
   landmarks_render
-      .GetOptions<mediapipe::LandmarksToRenderDataCalculatorOptions>()
+      .GetOptions<mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions>()
       .CopyFrom(renderer_options);
   landmarks >> landmarks_render.In("NORM_LANDMARKS");
   if (render_scale.has_value()) {
     *render_scale >> landmarks_render.In("RENDER_SCALE");
   }
   auto render_data = landmarks_render.Out("RENDER_DATA");
-  return render_data.Cast<mediapipe::RenderData>();
+  return render_data.Cast<mediapipe_v01013_based::RenderData>();
 }
 
 Stream<float> GetRenderScale(Stream<std::pair<int, int>> image_size,
                              Stream<NormalizedRect> roi, float multiplier,
                              Graph& graph) {
   auto& to_render_scale = graph.AddNode("RectToRenderScaleCalculator");
-  to_render_scale.GetOptions<mediapipe::RectToRenderScaleCalculatorOptions>()
+  to_render_scale.GetOptions<mediapipe_v01013_based::RectToRenderScaleCalculatorOptions>()
       .set_multiplier(multiplier);
   roi >> to_render_scale.In("NORM_RECT");
   image_size >> to_render_scale.In("IMAGE_SIZE");
   return to_render_scale.Out("RENDER_SCALE").Cast<float>();
 }
 
-Stream<mediapipe::RenderData> RenderRect(
+Stream<mediapipe_v01013_based::RenderData> RenderRect(
     Stream<NormalizedRect> rect,
-    const mediapipe::RectToRenderDataCalculatorOptions& renderer_options,
+    const mediapipe_v01013_based::RectToRenderDataCalculatorOptions& renderer_options,
     Graph& graph) {
   auto& rect_render = graph.AddNode("RectToRenderDataCalculator");
-  rect_render.GetOptions<mediapipe::RectToRenderDataCalculatorOptions>()
+  rect_render.GetOptions<mediapipe_v01013_based::RectToRenderDataCalculatorOptions>()
       .CopyFrom(renderer_options);
   rect >> rect_render.In("NORM_RECT");
   auto render_data = rect_render.Out("RENDER_DATA");
-  return render_data.Cast<mediapipe::RenderData>();
+  return render_data.Cast<mediapipe_v01013_based::RenderData>();
 }
 
-}  // namespace mediapipe::tasks::vision::utils
+}  // namespace mediapipe_v01013_based::tasks::vision::utils

@@ -33,10 +33,10 @@
 #include "mediapipe/tasks/cc/text/tokenizers/tokenizer_utils.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
 
 // Preprocesses input text into one int32 input tensor for a text model using
 // a RegexTokenizer.
@@ -95,7 +95,7 @@ class RegexPreprocessorCalculator : public Node {
 absl::Status RegexPreprocessorCalculator::UpdateContract(
     CalculatorContract* cc) {
   const auto& options =
-      cc->Options<mediapipe::RegexPreprocessorCalculatorOptions>();
+      cc->Options<mediapipe_v01013_based::RegexPreprocessorCalculatorOptions>();
   RET_CHECK(options.has_max_seq_len()) << "max_seq_len is required";
   RET_CHECK_GT(options.max_seq_len(), 0) << "max_seq_len must be positive";
   cc->UseService(kMemoryManagerService).Optional();
@@ -128,7 +128,7 @@ absl::Status RegexPreprocessorCalculator::Open(CalculatorContext* cc) {
                           regex_tokenizer_options, metadata_extractor));
 
   const auto& options =
-      cc->Options<mediapipe::RegexPreprocessorCalculatorOptions>();
+      cc->Options<mediapipe_v01013_based::RegexPreprocessorCalculatorOptions>();
   max_seq_len_ = options.max_seq_len();
   return absl::OkStatus();
 }
@@ -178,4 +178,4 @@ absl::Status RegexPreprocessorCalculator::Process(CalculatorContext* cc) {
 MEDIAPIPE_REGISTER_NODE(RegexPreprocessorCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

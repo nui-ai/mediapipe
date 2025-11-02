@@ -21,7 +21,7 @@ limitations under the License.
 
 #include "mediapipe/tasks/cc/text/language_detector/custom_ops/utils/utf/utf.h"
 
-namespace mediapipe::tasks::text::language_detector::custom_ops {
+namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops {
 
 TokenizedOutput Tokenize(const char* input_str, int len, int max_tokens,
                          bool exclude_nonalphaspace_tokens) {
@@ -93,4 +93,4 @@ void LowercaseUnicodeStr(const char* input_str, int len,
   }
 }
 
-}  // namespace mediapipe::tasks::text::language_detector::custom_ops
+}  // namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops

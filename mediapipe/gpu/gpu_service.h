@@ -22,7 +22,7 @@
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 #if MEDIAPIPE_DISABLE_GPU
 class GpuResources {
@@ -32,6 +32,6 @@ class GpuResources {
 
 ABSL_CONST_INIT extern const GraphService<GpuResources> kGpuService;
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_GPU_SERVICE_H_

@@ -9,7 +9,7 @@
 #include "mediapipe/framework/api2/port.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/resources.h"
-namespace mediapipe::api2 {
+namespace mediapipe_v01013_based::api2 {
 
 // The calculator takes resource id (e.g. file path) as input side packet or
 // calculator options and provides the corresponding resource.
@@ -46,7 +46,7 @@ namespace mediapipe::api2 {
 //   ...
 // }
 //
-class ResourceProviderCalculator : public mediapipe::api2::Node {
+class ResourceProviderCalculator : public mediapipe_v01013_based::api2::Node {
  public:
   static constexpr api2::SideInput<std::string>::Multiple kIds{"RESOURCE_ID"};
   static constexpr api2::SideOutput<Resource>::Multiple kResources{"RESOURCE"};
@@ -71,6 +71,6 @@ class ResourceProviderCalculator : public mediapipe::api2::Node {
   }
 };
 
-}  // namespace mediapipe::api2
+}  // namespace mediapipe_v01013_based::api2
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_RESOURCE_PROVIDER_CALCULATOR_H_

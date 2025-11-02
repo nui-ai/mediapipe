@@ -19,7 +19,7 @@ node: {
   input_stream: "IMAGE_GPU:input_video"
   output_stream: "IMAGE_GPU:downscaled_input_video"
   options: {
-    [mediapipe.ImageTransformationCalculatorOptions.ext] {
+    [mediapipe_v01013_based.ImageTransformationCalculatorOptions.ext] {
       output_width: 240
       output_height: 320
     }
@@ -41,7 +41,7 @@ node: {
   output_stream: "FLOW:region_flow"
 
   options: {
-    [mediapipe.MotionAnalysisCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.MotionAnalysisCalculatorOptions.ext]: {
       analysis_options {
         analysis_policy: ANALYSIS_POLICY_CAMERA_MOBILE
         flow_options {
@@ -77,7 +77,7 @@ node: {
   output_stream: "TRACKING:tracking_data"
 
   options: {
-    [mediapipe.FlowPackagerCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.FlowPackagerCalculatorOptions.ext]: {
       flow_packager_options: {
         binary_tracking_data_support: false
       }
@@ -101,7 +101,7 @@ node: {
   input_stream_handler {
     input_stream_handler: "SyncSetInputStreamHandler"
     options {
-      [mediapipe.SyncSetInputStreamHandlerOptions.ext] {
+      [mediapipe_v01013_based.SyncSetInputStreamHandlerOptions.ext] {
         sync_set {
           tag_index: "TRACKING"
           tag_index: "TRACK_TIME"
@@ -117,7 +117,7 @@ node: {
   }
 
   options: {
-    [mediapipe.BoxTrackerCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.BoxTrackerCalculatorOptions.ext]: {
       tracker_options: {
         track_step_options {
           track_object_and_camera: true
@@ -140,7 +140,7 @@ node {
   output_stream: "TRACKED_FRAME_ANNOTATION:tracked_objects"
   output_stream: "CANCEL_OBJECT_ID:cancel_object_id"
   options: {
-    [mediapipe.FrameAnnotationTrackerCalculatorOptions.ext] {
+    [mediapipe_v01013_based.FrameAnnotationTrackerCalculatorOptions.ext] {
       img_width: 240
       img_height: 320
       iou_threshold: 0.1
@@ -150,7 +150,7 @@ node {
   input_stream_handler {
     input_stream_handler: "SyncSetInputStreamHandler"
     options {
-      [mediapipe.SyncSetInputStreamHandlerOptions.ext] {
+      [mediapipe_v01013_based.SyncSetInputStreamHandlerOptions.ext] {
         sync_set {
           tag_index: "FRAME_ANNOTATION"
         }
@@ -168,7 +168,7 @@ node {
   input_stream: "FRAME_ANNOTATION:tracked_objects"
   output_stream: "LIFTED_FRAME_ANNOTATION:lifted_tracked_objects"
   options: {
-    [mediapipe.Lift2DFrameAnnotationTo3DCalculatorOptions.ext] {
+    [mediapipe_v01013_based.Lift2DFrameAnnotationTo3DCalculatorOptions.ext] {
       normalized_focal_x: 2.0975
       normalized_focal_y: 1.5731
     }

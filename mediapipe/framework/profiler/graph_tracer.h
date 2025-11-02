@@ -23,7 +23,7 @@
 #include "mediapipe/framework/profiler/trace_buffer.h"
 #include "mediapipe/framework/profiler/trace_builder.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // GraphTracer records events when packets enter and exit the nodes of
 // a calculator graph.
@@ -95,6 +95,6 @@ class GraphTracer {
   TraceBuilder trace_builder_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PROFILER_GRAPH_TRACER_H_

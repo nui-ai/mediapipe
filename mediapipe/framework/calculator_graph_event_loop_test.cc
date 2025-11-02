@@ -31,7 +31,7 @@
 #include "mediapipe/framework/tool/sink.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -574,7 +574,7 @@ TEST_F(CalculatorGraphEventLoopTest, UnthrottleSources) {
       CalculatorGraph::GraphInputStreamAddMode::ADD_IF_NOT_FULL);
   auto poller_status = graph.AddOutputStreamPoller("output_numbers");
   MP_ASSERT_OK(poller_status.status());
-  mediapipe::OutputStreamPoller& poller = poller_status.value();
+  mediapipe_v01013_based::OutputStreamPoller& poller = poller_status.value();
   poller.SetMaxQueueSize(kQueueSize);
   MP_ASSERT_OK(graph.StartRun({}));
 
@@ -583,9 +583,9 @@ TEST_F(CalculatorGraphEventLoopTest, UnthrottleSources) {
     return graph.AddPacketToInputStream(s, MakePacket<int>(i).At(Timestamp(i)));
   };
 
-  // Start capturing VLOG messages from the mediapipe::Scheduler.
+  // Start capturing VLOG messages from the mediapipe_v01013_based::Scheduler.
   TextMessageLogSink log_listener;
-  mediapipe::AddLogSink(&log_listener);
+  mediapipe_v01013_based::AddLogSink(&log_listener);
   SetVLOGLevel("scheduler", 3);
 
   // Add just enough packets to fill the output stream queue.
@@ -613,7 +613,7 @@ TEST_F(CalculatorGraphEventLoopTest, UnthrottleSources) {
 
   // Stop capturing VLOG messages.
   SetVLOGLevel("scheduler", 0);
-  mediapipe::RemoveLogSink(&log_listener);
+  mediapipe_v01013_based::RemoveLogSink(&log_listener);
 
   // Count and validate the calls to UnthrottleSources.
   int loop_count = 0;
@@ -625,4 +625,4 @@ TEST_F(CalculatorGraphEventLoopTest, UnthrottleSources) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

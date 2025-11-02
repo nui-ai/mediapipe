@@ -37,7 +37,7 @@ limitations under the License.
 #include "mediapipe/framework/executor.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 #if !MEDIAPIPE_DISABLE_GPU
 class GpuResources;
@@ -82,7 +82,7 @@ class TaskRunner {
       PacketsCallback packets_callback = nullptr,
       std::shared_ptr<Executor> default_executor = nullptr,
       std::optional<PacketMap> input_side_packets = std::nullopt,
-      std::shared_ptr<::mediapipe::GpuResources> resources = nullptr,
+      std::shared_ptr<::mediapipe_v01013_based::GpuResources> resources = nullptr,
       std::optional<ErrorFn> error_fn = std::nullopt,
       bool disable_default_service = false);
 #else
@@ -170,6 +170,6 @@ class TaskRunner {
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_CORE_TASK_RUNNER_H_

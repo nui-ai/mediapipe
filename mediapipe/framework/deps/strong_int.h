@@ -107,7 +107,7 @@
 #include "absl/log/absl_log.h"
 #include "mediapipe/framework/port/port.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace intops {
 
 // Define the validators which can be plugged-in to make StrongInt resilient to
@@ -445,6 +445,6 @@ STRONG_INT_COMPARISON_OP(>=)  // NOLINT(whitespace/operators)
 #undef STRONG_INT_COMPARISON_OP
 
 }  // namespace intops
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_STRONG_INT_H_

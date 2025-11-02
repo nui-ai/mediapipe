@@ -14,11 +14,11 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/util/tracking/tracking.proto";
 
-option java_package = "com.google.mediapipe.tracking";
+option java_package = "com.google.mediapipe_v01013_based.tracking";
 option java_outer_classname = "BoxTrackerProto";
 
 message BoxTrackerOptions {

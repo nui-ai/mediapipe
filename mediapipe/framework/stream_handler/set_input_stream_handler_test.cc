@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/threadpool.h"
 #include "mediapipe/framework/stream_handler/fixed_size_input_stream_handler.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -35,7 +35,7 @@ namespace {
 // MuxInputStreamHandler should fail when running this test.
 TEST(MuxInputStreamHandlerTest, AtomicAccessToControlAndDataStreams) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input"
         node {
           calculator: "RoundRobinDemuxCalculator"
@@ -194,7 +194,7 @@ REGISTER_CALCULATOR(FixedPassThroughCalculator);
 TEST(FixedSizeInputStreamHandlerTest, ParallelWriteAndRead) {
 #define NUM_STREAMS 4
   CalculatorGraphConfig graph_config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "in_0"
             input_stream: "in_1"
@@ -222,7 +222,7 @@ TEST(FixedSizeInputStreamHandlerTest, ParallelWriteAndRead) {
   MP_ASSERT_OK(graph.StartRun({}));
 
   {
-    mediapipe::ThreadPool pool(NUM_STREAMS);
+    mediapipe_v01013_based::ThreadPool pool(NUM_STREAMS);
     pool.StartWorkers();
 
     // Start writers.
@@ -250,4 +250,4 @@ TEST(FixedSizeInputStreamHandlerTest, ParallelWriteAndRead) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

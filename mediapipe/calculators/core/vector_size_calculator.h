@@ -21,7 +21,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // A calcutlator to return vector size.
@@ -59,6 +59,6 @@ class VectorSizeCalculator : public Node {
 };
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_VECTOR_SIZE_CALCULATOR_H_

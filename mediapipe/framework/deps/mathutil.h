@@ -26,7 +26,7 @@
 
 #include "absl/log/absl_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // ========================================================================= //
 
@@ -401,6 +401,6 @@ inline int64_t MathUtil::Round<int64_t, double>(double x) {
 
 #endif
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_MATHUTIL_H_

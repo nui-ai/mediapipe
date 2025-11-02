@@ -30,7 +30,7 @@
 #include "mediapipe/framework/resources.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 // Calculator context specialized for a specific node.
 //
@@ -39,7 +39,7 @@ namespace mediapipe::api3 {
 template <typename NodeT>
 class CalculatorContext : public NodeT::template Contract<ContextSpecializer> {
  public:
-  explicit CalculatorContext(mediapipe::CalculatorContext& generic_context) {
+  explicit CalculatorContext(mediapipe_v01013_based::CalculatorContext& generic_context) {
     holder_ = std::make_unique<internal_port::CalculatorContextHolder>();
     holder_->context = &generic_context;
     typename NodeT::template Contract<ContextSpecializer>* ptr = this;
@@ -78,12 +78,12 @@ class CalculatorContext : public NodeT::template Contract<ContextSpecializer> {
     return holder_->context->GetResources();
   }
 
-  mediapipe::CalculatorContext& GetGenericContext() {
+  mediapipe_v01013_based::CalculatorContext& GetGenericContext() {
     return *holder_->context;
   }
 
  private:
-  void Reset(mediapipe::CalculatorContext& generic_context) {
+  void Reset(mediapipe_v01013_based::CalculatorContext& generic_context) {
     if (holder_->context != nullptr) {
       ABSL_LOG(DFATAL) << "Object must be cleared before resetting.";
     }
@@ -130,8 +130,8 @@ class Input<ContextSpecializer, PayloadT>
         .template Get<PayloadT>();
   }
 
-  mediapipe::api3::Packet<PayloadT> Packet() const {
-    return mediapipe::api3::Packet<PayloadT>(
+  mediapipe_v01013_based::api3::Packet<PayloadT> Packet() const {
+    return mediapipe_v01013_based::api3::Packet<PayloadT>(
         holder_->context->Inputs().Get(Tag(), Index()).Value());
   }
 };
@@ -155,8 +155,8 @@ class SideInput<ContextSpecializer, PayloadT>
         .template Get<PayloadT>();
   }
 
-  mediapipe::api3::Packet<PayloadT> Packet() const {
-    return mediapipe::api3::Packet<PayloadT>(
+  mediapipe_v01013_based::api3::Packet<PayloadT> Packet() const {
+    return mediapipe_v01013_based::api3::Packet<PayloadT>(
         holder_->context->InputSidePackets().Get(Tag(), Index()));
   }
 };
@@ -171,7 +171,7 @@ class Output<ContextSpecializer, PayloadT>
   void Send(const PayloadT& payload) const {
     holder_->context->Outputs()
         .Get(Tag(), Index())
-        .AddPacket(mediapipe::MakePacket<PayloadT>(payload).At(
+        .AddPacket(mediapipe_v01013_based::MakePacket<PayloadT>(payload).At(
             holder_->context->InputTimestamp()));
   }
 
@@ -179,14 +179,14 @@ class Output<ContextSpecializer, PayloadT>
     holder_->context->Outputs()
         .Get(Tag(), Index())
         .AddPacket(
-            mediapipe::MakePacket<PayloadT>(std::forward<PayloadT>(payload))
+            mediapipe_v01013_based::MakePacket<PayloadT>(std::forward<PayloadT>(payload))
                 .At(holder_->context->InputTimestamp()));
   }
 
   void Send(std::unique_ptr<PayloadT> payload) const {
     holder_->context->Outputs()
         .Get(Tag(), Index())
-        .AddPacket(mediapipe::Adopt(payload.release())
+        .AddPacket(mediapipe_v01013_based::Adopt(payload.release())
                        .At(holder_->context->InputTimestamp()));
   }
 
@@ -219,13 +219,13 @@ class SideOutput<ContextSpecializer, PayloadT>
   void Set(const PayloadT& payload) const {
     holder_->context->OutputSidePackets()
         .Get(Tag(), Index())
-        .Set(mediapipe::MakePacket<PayloadT>(payload));
+        .Set(mediapipe_v01013_based::MakePacket<PayloadT>(payload));
   }
 
   void Set(PayloadT&& payload) const {
     holder_->context->OutputSidePackets()
         .Get(Tag(), Index())
-        .Set(mediapipe::MakePacket<PayloadT>(std::forward<PayloadT>(payload)));
+        .Set(mediapipe_v01013_based::MakePacket<PayloadT>(std::forward<PayloadT>(payload)));
   }
 };
 
@@ -248,6 +248,6 @@ class Options<ContextSpecializer, ProtoT> {
   internal_port::CalculatorContextHolder* holder_ = nullptr;
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_CALCULATOR_CONTEXT_H_

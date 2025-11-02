@@ -24,7 +24,7 @@
 #include "mediapipe/framework/mediapipe_options.pb.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Abstract base class for the task queue.
 // NOTE: The task queue orders the ready tasks by their priorities. This
@@ -70,8 +70,8 @@ using ExecutorRegistry =
 // Macro for registering the executor.
 #define REGISTER_EXECUTOR(name)        \
   REGISTER_FACTORY_FUNCTION_QUALIFIED( \
-      mediapipe::ExecutorRegistry, executor_registration, name, name::Create)
+      mediapipe_v01013_based::ExecutorRegistry, executor_registration, name, name::Create)
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_EXECUTOR_H_

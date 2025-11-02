@@ -19,11 +19,11 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Converts a NormalizedRect into a Rectangle_f.
 absl::StatusOr<Rectangle_f> ToRectangle(
-    const mediapipe::NormalizedRect& input) {
+    const mediapipe_v01013_based::NormalizedRect& input) {
   if (!input.has_x_center() || !input.has_y_center() || !input.has_width() ||
       !input.has_height()) {
     return absl::InvalidArgumentError("Missing dimensions in NormalizedRect.");
@@ -42,12 +42,12 @@ absl::StatusOr<Rectangle_f> ToRectangle(
 // If the new_rect overlaps with any of the rectangles in
 // existing_rects, then return true. Otherwise, return false.
 absl::StatusOr<bool> DoesRectOverlap(
-    const mediapipe::NormalizedRect& new_rect,
-    absl::Span<const mediapipe::NormalizedRect> existing_rects,
+    const mediapipe_v01013_based::NormalizedRect& new_rect,
+    absl::Span<const mediapipe_v01013_based::NormalizedRect> existing_rects,
     float min_similarity_threshold) {
   MP_ASSIGN_OR_RETURN(Rectangle_f new_rectangle, ToRectangle(new_rect));
 
-  for (const mediapipe::NormalizedRect& existing_rect : existing_rects) {
+  for (const mediapipe_v01013_based::NormalizedRect& existing_rect : existing_rects) {
     MP_ASSIGN_OR_RETURN(Rectangle_f existing_rectangle,
                         ToRectangle(existing_rect));
     if (CalculateIou(existing_rectangle, new_rectangle) >
@@ -70,4 +70,4 @@ float CalculateIou(const Rectangle_f& rect1, const Rectangle_f& rect2) {
   return normalization > 0.0f ? intersection_area / normalization : 0.0f;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

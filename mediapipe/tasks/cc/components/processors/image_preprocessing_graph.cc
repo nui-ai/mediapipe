@@ -40,20 +40,20 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/utils/image_tensor_specs.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace components {
 namespace processors {
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::Tensor;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::core::ModelResources;
-using ::mediapipe::tasks::vision::ImageTensorSpecs;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::Tensor;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::core::ModelResources;
+using ::mediapipe_v01013_based::tasks::vision::ImageTensorSpecs;
 
 constexpr char kImageTag[] = "IMAGE";
 constexpr char kNormRectTag[] = "NORM_RECT";
@@ -75,7 +75,7 @@ struct ImagePreprocessingOutputStreams {
 // Fills in the ImageToTensorCalculatorOptions based on the ImageTensorSpecs.
 absl::Status ConfigureImageToTensorCalculator(
     const ImageTensorSpecs& image_tensor_specs, GpuOrigin::Mode gpu_origin,
-    mediapipe::ImageToTensorCalculatorOptions* options) {
+    mediapipe_v01013_based::ImageToTensorCalculatorOptions* options) {
   options->set_output_tensor_width(image_tensor_specs.image_width);
   options->set_output_tensor_height(image_tensor_specs.image_height);
   if (image_tensor_specs.tensor_type == tflite::TensorType_UINT8) {
@@ -152,7 +152,7 @@ absl::Status ConfigureImagePreprocessingGraph(
 Source<Image> AddDataConverter(Source<Image> image_in, Graph& graph,
                                bool output_on_gpu) {
   auto& image_converter = graph.AddNode("ImageCloneCalculator");
-  image_converter.GetOptions<mediapipe::ImageCloneCalculatorOptions>()
+  image_converter.GetOptions<mediapipe_v01013_based::ImageCloneCalculatorOptions>()
       .set_output_on_gpu(output_on_gpu);
   image_in >> image_converter.In("");
   return image_converter[Output<Image>("")];
@@ -211,17 +211,17 @@ class ImagePreprocessingGraph : public Subgraph {
  private:
   // Adds a mediapipe image preprocessing subgraph into the provided
   // builder::Graph instance. The image preprocessing subgraph takes images
-  // (mediapipe::Image) and region of interest (mediapipe::NormalizedRect) as
+  // (mediapipe_v01013_based::Image) and region of interest (mediapipe_v01013_based::NormalizedRect) as
   // inputs and returns 5 output streams:
-  //   - the converted tensor (mediapipe::Tensor),
+  //   - the converted tensor (mediapipe_v01013_based::Tensor),
   //   - the transformation matrix (std::array<float, 16>),
   //   - the letterbox padding (std::array<float, 4>>),
   //   - the original image size (std::pair<int, int>),
   //   - the image that has pixel data stored on the target storage
-  //     (mediapipe::Image).
+  //     (mediapipe_v01013_based::Image).
   //
   // options: the mediapipe tasks ImagePreprocessingGraphOptions.
-  // image_in: (mediapipe::Image) stream to preprocess.
+  // image_in: (mediapipe_v01013_based::Image) stream to preprocess.
   // graph: the mediapipe builder::Graph instance to be updated.
   ImagePreprocessingOutputStreams BuildImagePreprocessing(
       const proto::ImagePreprocessingGraphOptions& options,
@@ -229,7 +229,7 @@ class ImagePreprocessingGraph : public Subgraph {
       Graph& graph) {
     // Convert image to tensor.
     auto& image_to_tensor = graph.AddNode("ImageToTensorCalculator");
-    image_to_tensor.GetOptions<mediapipe::ImageToTensorCalculatorOptions>()
+    image_to_tensor.GetOptions<mediapipe_v01013_based::ImageToTensorCalculatorOptions>()
         .CopyFrom(options.image_to_tensor_options());
     switch (options.backend()) {
       case proto::ImagePreprocessingGraphOptions::CPU_BACKEND: {
@@ -273,9 +273,9 @@ class ImagePreprocessingGraph : public Subgraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::components::processors::ImagePreprocessingGraph)
+    ::mediapipe_v01013_based::tasks::components::processors::ImagePreprocessingGraph)
 
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

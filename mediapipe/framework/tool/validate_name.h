@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/proto_ns.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace internal {
 inline constexpr int kMaxCollectionItemId = 10000;
 }  // namespace internal
@@ -34,7 +34,7 @@ inline constexpr int kMaxCollectionItemId = 10000;
 namespace tool {
 
 struct ABSL_DEPRECATED(
-    "Prefer using mediapipe::tool::TagMap instead, since this structure does "
+    "Prefer using mediapipe_v01013_based::tool::TagMap instead, since this structure does "
     "not "
     "consider the TAG:INDEX:name notation.") TagAndNameInfo {
   // The tag names.  If this is empty then the collection will use
@@ -49,7 +49,7 @@ struct ABSL_DEPRECATED(
 // The TAG (including colon) is optional, but the entire list must either
 // always include tags or never include tags.
 ABSL_DEPRECATED(
-    "Prefer using mediapipe::tool::TagMap instead, since this method does not "
+    "Prefer using mediapipe_v01013_based::tool::TagMap instead, since this method does not "
     "support the TAG:INDEX:name notation. You can use Create() to create the "
     "tag map, and then Names(), Mapping(), and other methods to access the "
     "tag, index and name information.")
@@ -60,7 +60,7 @@ absl::Status GetTagAndNameInfo(
 // Create the proto field names in the form TAG:name based on a
 // TagAndNameInfo.
 ABSL_DEPRECATED(
-    "Prefer using mediapipe::tool::TagMap instead, since this method does not "
+    "Prefer using mediapipe_v01013_based::tool::TagMap instead, since this method does not "
     "support the TAG:INDEX:name notation. You can use CanonicalEntries() to "
     "translate a tag map to a RepeatedPtrField of tag and names.")
 absl::Status SetFromTagAndNameInfo(
@@ -113,6 +113,6 @@ absl::Status ParseTagIndex(const std::string& tag_and_index, std::string* tag,
                            int* index);
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_VALIDATE_NAME_H_

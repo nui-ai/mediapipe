@@ -13,7 +13,7 @@
 #include "tensorflow/lite/interpreter.h"
 #include "tensorflow/lite/kernels/test_util.h"
 
-namespace mediapipe::tflite_operations {
+namespace mediapipe_v01013_based::tflite_operations {
 namespace {
 
 using ::testing::ElementsAreArray;
@@ -174,4 +174,4 @@ TEST(KmeansEmbeddingLookupTest, ThrowsErrorWhenGivenInvalidInputBatchSize) {
 }
 
 }  // namespace
-}  // namespace mediapipe::tflite_operations
+}  // namespace mediapipe_v01013_based::tflite_operations

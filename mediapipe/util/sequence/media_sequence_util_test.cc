@@ -20,7 +20,7 @@
 #include "tensorflow/core/example/example.pb.h"
 #include "tensorflow/core/example/feature.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace mediasequence {
 namespace {
 
@@ -192,7 +192,7 @@ class MediaSequenceUtilTest : public ::testing::Test {
  protected:
   void SetUp() override {
     sequence_example_ =
-        mediapipe::ParseTextProtoOrDie<tensorflow::SequenceExample>(
+        mediapipe_v01013_based::ParseTextProtoOrDie<tensorflow::SequenceExample>(
             kAsciiSequenceExample);
   }
 
@@ -1077,4 +1077,4 @@ TEST_F(MediaSequenceUtilTest, FixedPrefixVectorFloatFeatureList) {
 
 }  // namespace
 }  // namespace mediasequence
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

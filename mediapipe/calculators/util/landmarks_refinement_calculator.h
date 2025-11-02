@@ -21,7 +21,7 @@
 #include "mediapipe/framework/api3/node.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 inline constexpr absl::string_view kLandmarksRefinementNodeName =
     "LandmarksRefinementCalculator";
@@ -66,20 +66,20 @@ struct LandmarksRefinementNode : Node<kLandmarksRefinementNodeName> {
     // in the provided order. Each list should be non empty and contain the
     // same amount of landmarks as indexes in mapping. Number of lists
     // should be the same as number of refinements in options.
-    Repeated<Input<S, mediapipe::NormalizedLandmarkList>> landmarks{
+    Repeated<Input<S, mediapipe_v01013_based::NormalizedLandmarkList>> landmarks{
         "LANDMARKS"};
 
     // A NormalizedLandmarkList with refined landmarks. Number
     // of produced landmarks is equal to to the maximum index mapping number in
     // calculator options (calculator verifies that there are no gaps in the
     // mapping).
-    Output<S, mediapipe::NormalizedLandmarkList> refined_landmarks{
+    Output<S, mediapipe_v01013_based::NormalizedLandmarkList> refined_landmarks{
         "REFINED_LANDMARKS"};
 
-    Options<S, mediapipe::LandmarksRefinementCalculatorOptions> options;
+    Options<S, mediapipe_v01013_based::LandmarksRefinementCalculatorOptions> options;
   };
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_LANDMARKS_REFINEMENT_CALCULATOR_H_

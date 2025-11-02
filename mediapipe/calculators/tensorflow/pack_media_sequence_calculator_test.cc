@@ -39,11 +39,11 @@
 #include "testing/base/public/gmock.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 namespace tf = ::tensorflow;
-namespace mpms = mediapipe::mediasequence;
+namespace mpms = mediapipe_v01013_based::mediasequence;
 
 constexpr char kBboxTag[] = "BBOX";
 constexpr char kEncodedMediaStartTimestampTag[] =
@@ -886,7 +886,7 @@ TEST_F(PackMediaSequenceCalculatorTest, PacksTwoBBoxDetections) {
     detection.add_label("mask");
     detection.add_score(1.0);
     cv::Mat image(2, 3, CV_8UC1, cv::Scalar(0));
-    mediapipe::CreateCvMaskLocation<uint8_t>(image).ConvertToProto(
+    mediapipe_v01013_based::CreateCvMaskLocation<uint8_t>(image).ConvertToProto(
         detection.mutable_location_data());
     detections->push_back(detection);
 
@@ -969,7 +969,7 @@ TEST_F(PackMediaSequenceCalculatorTest, PacksBBoxWithoutImageDims) {
     detection.add_label("mask");
     detection.add_score(1.0);
     cv::Mat image(2, 3, CV_8UC1, cv::Scalar(0));
-    mediapipe::CreateCvMaskLocation<uint8_t>(image).ConvertToProto(
+    mediapipe_v01013_based::CreateCvMaskLocation<uint8_t>(image).ConvertToProto(
         detection.mutable_location_data());
     detections->push_back(detection);
 
@@ -1017,7 +1017,7 @@ TEST_F(PackMediaSequenceCalculatorTest, PacksBBoxWithImages) {
     detection.add_label("mask");
     detection.add_score(1.0);
     cv::Mat image(2, 3, CV_8UC1, cv::Scalar(0));
-    mediapipe::CreateCvMaskLocation<uint8_t>(image).ConvertToProto(
+    mediapipe_v01013_based::CreateCvMaskLocation<uint8_t>(image).ConvertToProto(
         detection.mutable_location_data());
     detections->push_back(detection);
 
@@ -1138,7 +1138,7 @@ TEST_F(PackMediaSequenceCalculatorTest, PacksTwoMaskDetections) {
     detection.add_label("mask");
     detection.add_score(1.0);
     cv::Mat image(2, 3, CV_8UC1, cv::Scalar(0));
-    mediapipe::CreateCvMaskLocation<uint8_t>(image).ConvertToProto(
+    mediapipe_v01013_based::CreateCvMaskLocation<uint8_t>(image).ConvertToProto(
         detection.mutable_location_data());
 
     detections->push_back(detection);
@@ -2022,4 +2022,4 @@ TEST_F(PackMediaSequenceCalculatorTest, SkipLargeSequence) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

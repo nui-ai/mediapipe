@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Returns the path to the directory where trace logs will be stored by default.
 // If the function is unable to find an appropriate directory, it returns an
@@ -31,6 +31,6 @@ StatusOr<std::string> GetDefaultTraceLogDirectory();
 // it can be accessed as a file.  Enclosing directories are created as needed.
 StatusOr<std::string> PathToLogFile(const std::string& path);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PROFILER_PROFILER_RESOURCE_UTIL_H_

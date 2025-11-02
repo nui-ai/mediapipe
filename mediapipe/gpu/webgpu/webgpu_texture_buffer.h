@@ -15,7 +15,7 @@
 #include "mediapipe/gpu/webgpu/webgpu_service.h"
 #include "mediapipe/gpu/webgpu/webgpu_texture_view.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class WebGpuTextureBuffer
     : public internal::GpuBufferStorageImpl<
@@ -124,6 +124,6 @@ inline const WebGpuDeviceAttachment<WebGpuTextureBufferMultiPool>
           device);
     }};
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_WEBGPU_WEBGPU_TEXTURE_BUFFER_H_

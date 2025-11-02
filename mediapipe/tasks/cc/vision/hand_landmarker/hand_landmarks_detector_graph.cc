@@ -41,22 +41,22 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/utils/image_tensor_specs.h"
 #include "mediapipe/util/label_map.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::utils::AllowIf;
-using ::mediapipe::tasks::vision::hand_landmarker::proto::
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::utils::AllowIf;
+using ::mediapipe_v01013_based::tasks::vision::hand_landmarker::proto::
     HandLandmarksDetectorGraphOptions;
-using LabelItems = mediapipe::proto_ns::Map<int64_t, ::mediapipe::LabelMapItem>;
+using LabelItems = mediapipe_v01013_based::proto_ns::Map<int64_t, ::mediapipe_v01013_based::LabelMapItem>;
 
 constexpr char kImageTag[] = "IMAGE";
 constexpr char kHandRectTag[] = "HAND_RECT";
@@ -107,7 +107,7 @@ absl::Status SanityCheckOptions(
 // representing landmarks, presence scores, handedness, and world landmarks,
 // respectively.
 void ConfigureSplitTensorVectorCalculator(
-    mediapipe::SplitVectorCalculatorOptions* options) {
+    mediapipe_v01013_based::SplitVectorCalculatorOptions* options) {
   for (int i = 0; i < kModelOutputTensorSplitNum; ++i) {
     auto* range = options->add_ranges();
     range->set_begin(i);
@@ -117,7 +117,7 @@ void ConfigureSplitTensorVectorCalculator(
 
 void ConfigureTensorsToLandmarksCalculator(
     const ImageTensorSpecs& input_image_tensor_spec, bool normalize,
-    mediapipe::TensorsToLandmarksCalculatorOptions* options) {
+    mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions* options) {
   options->set_num_landmarks(kLandmarksNum);
   if (normalize) {
     options->set_input_image_height(input_image_tensor_spec.image_height);
@@ -127,7 +127,7 @@ void ConfigureTensorsToLandmarksCalculator(
 }
 
 void ConfigureTensorsToHandednessCalculator(
-    mediapipe::TensorsToClassificationCalculatorOptions* options) {
+    mediapipe_v01013_based::TensorsToClassificationCalculatorOptions* options) {
   options->set_top_k(1);
   options->set_binary_classification(true);
   // TODO: use model Metadata to set label_items.
@@ -142,7 +142,7 @@ void ConfigureTensorsToHandednessCalculator(
 }
 
 void ConfigureHandRectTransformationCalculator(
-    mediapipe::RectTransformationCalculatorOptions* options) {
+    mediapipe_v01013_based::RectTransformationCalculatorOptions* options) {
   // TODO: make rect transformation configurable, e.g. from
   // Metadata or configuration options.
   options->set_scale_x(2.0f);
@@ -241,7 +241,7 @@ class SingleHandLandmarksDetectorGraph : public core::ModelTaskGraph {
   // HandLandmarksDetectorGraphOptions. model_resources: the ModelSources object
   // initialized from a hand landmark
   //   detection model file with model metadata.
-  // image_in: (mediapipe::Image) stream to run hand landmark detection on.
+  // image_in: (mediapipe_v01013_based::Image) stream to run hand landmark detection on.
   // rect: (NormalizedRect) stream to run on the RoI of image.
   // graph: the mediapipe graph instance to be updated.
   absl::StatusOr<SingleHandLandmarkerOutputs>
@@ -275,7 +275,7 @@ class SingleHandLandmarksDetectorGraph : public core::ModelTaskGraph {
     auto& split_tensors_vector = graph.AddNode("SplitTensorVectorCalculator");
     ConfigureSplitTensorVectorCalculator(
         &split_tensors_vector
-             .GetOptions<mediapipe::SplitVectorCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::SplitVectorCalculatorOptions>());
     inference.Out("TENSORS") >> split_tensors_vector.In("");
     auto landmark_tensors = split_tensors_vector.Out(0);
     auto hand_flag_tensors = split_tensors_vector.Out(1);
@@ -288,7 +288,7 @@ class SingleHandLandmarksDetectorGraph : public core::ModelTaskGraph {
     ConfigureTensorsToLandmarksCalculator(
         image_tensor_specs, /* normalize = */ true,
         &tensors_to_landmarks
-             .GetOptions<mediapipe::TensorsToLandmarksCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions>());
     landmark_tensors >> tensors_to_landmarks.In("TENSORS");
 
     // Decodes the landmark tensors into a list of landmarks, where the landmark
@@ -298,7 +298,7 @@ class SingleHandLandmarksDetectorGraph : public core::ModelTaskGraph {
     ConfigureTensorsToLandmarksCalculator(
         image_tensor_specs, /* normalize = */ false,
         &tensors_to_world_landmarks
-             .GetOptions<mediapipe::TensorsToLandmarksCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions>());
     world_landmark_tensors >> tensors_to_world_landmarks.In("TENSORS");
 
     // Converts the hand-flag tensor into a float that represents the confidence
@@ -311,7 +311,7 @@ class SingleHandLandmarksDetectorGraph : public core::ModelTaskGraph {
     // hand is present.
     auto& hand_presence_thresholding = graph.AddNode("ThresholdingCalculator");
     hand_presence_thresholding
-        .GetOptions<mediapipe::ThresholdingCalculatorOptions>()
+        .GetOptions<mediapipe_v01013_based::ThresholdingCalculatorOptions>()
         .set_threshold(subgraph_options.min_detection_confidence());
     hand_presence_score >> hand_presence_thresholding.In("FLOAT");
     auto hand_presence = hand_presence_thresholding[Output<bool>("FLAG")];
@@ -322,7 +322,7 @@ class SingleHandLandmarksDetectorGraph : public core::ModelTaskGraph {
         graph.AddNode("TensorsToClassificationCalculator");
     ConfigureTensorsToHandednessCalculator(
         &tensors_to_handedness.GetOptions<
-            mediapipe::TensorsToClassificationCalculatorOptions>());
+            mediapipe_v01013_based::TensorsToClassificationCalculatorOptions>());
     handedness_tensors >> tensors_to_handedness.In("TENSORS");
     auto handedness = AllowIf(
         tensors_to_handedness[Output<ClassificationList>("CLASSIFICATIONS")],
@@ -374,7 +374,7 @@ class SingleHandLandmarksDetectorGraph : public core::ModelTaskGraph {
         graph.AddNode("RectTransformationCalculator");
     ConfigureHandRectTransformationCalculator(
         &hand_rect_transformation
-             .GetOptions<mediapipe::RectTransformationCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::RectTransformationCalculatorOptions>());
     image_size >> hand_rect_transformation.In("IMAGE_SIZE");
     hand_landmarks_to_rect.Out("NORM_RECT") >>
         hand_rect_transformation.In("NORM_RECT");
@@ -395,7 +395,7 @@ class SingleHandLandmarksDetectorGraph : public core::ModelTaskGraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe::tasks::vision::hand_landmarker::SingleHandLandmarksDetectorGraph); // NOLINT
+  ::mediapipe_v01013_based::tasks::vision::hand_landmarker::SingleHandLandmarksDetectorGraph); // NOLINT
 // clang-format on
 
 // A "mediapipe.tasks.vision.hand_landmarker.MultipleHandLandmarksDetectorGraph"
@@ -564,10 +564,10 @@ class MultipleHandLandmarksDetectorGraph : public core::ModelTaskGraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe::tasks::vision::hand_landmarker::MultipleHandLandmarksDetectorGraph); // NOLINT
+  ::mediapipe_v01013_based::tasks::vision::hand_landmarker::MultipleHandLandmarksDetectorGraph); // NOLINT
 // clang-format on
 
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

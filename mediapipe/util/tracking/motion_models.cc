@@ -30,7 +30,7 @@
 // for homography mixture estimation.
 bool flags_catmull_rom_mixture_weights = false;
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 std::string ModelAdapter<TranslationModel>::ToString(
     const TranslationModel& model) {
@@ -924,4 +924,4 @@ template class ModelMethods<LinearSimilarityModel>;
 template class ModelMethods<AffineModel>;
 template class ModelMethods<Homography>;
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

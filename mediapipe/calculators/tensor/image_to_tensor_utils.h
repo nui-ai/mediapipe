@@ -31,7 +31,7 @@
 #endif  // !MEDIAPIPE_DISABLE_GPU
 #include "mediapipe/gpu/gpu_origin.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 struct RotatedRect {
   float center_x;
@@ -61,7 +61,7 @@ struct OutputTensorParams {
 
 // Generates a new ROI or converts it from normalized rect.
 RotatedRect GetRoi(int input_width, int input_height,
-                   absl::optional<mediapipe::NormalizedRect> norm_rect);
+                   absl::optional<mediapipe_v01013_based::NormalizedRect> norm_rect);
 
 // Pads ROI, so extraction happens correctly if aspect ratio is to be kept.
 // Returns letterbox padding applied.
@@ -202,26 +202,26 @@ OutputTensorParams GetOutputTensorParams(const T& options) {
 
 // Converts the BorderMode proto into struct.
 BorderMode GetBorderMode(
-    const mediapipe::ImageToTensorCalculatorOptions::BorderMode& mode);
+    const mediapipe_v01013_based::ImageToTensorCalculatorOptions::BorderMode& mode);
 
 // Gets the output tensor type.
 Tensor::ElementType GetOutputTensorType(bool uses_gpu,
                                         const OutputTensorParams& params);
 
 // Gets the number of output channels from the input Image format.
-int GetNumOutputChannels(const mediapipe::Image& image);
+int GetNumOutputChannels(const mediapipe_v01013_based::Image& image);
 
 // Converts the packet that hosts different format (Image, ImageFrame,
-// GpuBuffer) into the mediapipe::Image format.
-absl::StatusOr<std::shared_ptr<const mediapipe::Image>> GetInputImage(
-    const api2::Packet<api2::OneOf<Image, mediapipe::ImageFrame>>&
+// GpuBuffer) into the mediapipe_v01013_based::Image format.
+absl::StatusOr<std::shared_ptr<const mediapipe_v01013_based::Image>> GetInputImage(
+    const api2::Packet<api2::OneOf<Image, mediapipe_v01013_based::ImageFrame>>&
         image_packet);
 
 #if !MEDIAPIPE_DISABLE_GPU
-absl::StatusOr<std::shared_ptr<const mediapipe::Image>> GetInputImage(
-    const api2::Packet<mediapipe::GpuBuffer>& image_gpu_packet);
+absl::StatusOr<std::shared_ptr<const mediapipe_v01013_based::Image>> GetInputImage(
+    const api2::Packet<mediapipe_v01013_based::GpuBuffer>& image_gpu_packet);
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_IMAGE_TO_TENSOR_UTILS_H_

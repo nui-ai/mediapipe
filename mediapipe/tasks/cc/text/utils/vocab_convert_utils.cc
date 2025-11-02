@@ -23,7 +23,7 @@
 #include "sentencepiece/src/builder.h"  // from @com_google_sentencepiece
 #include "sentencepiece/src/sentencepiece_model.pb.h"  // from @com_google_sentencepiece
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 namespace {
@@ -41,13 +41,13 @@ using ::sentencepiece::normalizer::Builder;
 absl::StatusOr<std::pair<json, json>> LoadHFTokenizerConfigs(
     absl::string_view path) {
   std::string contents;
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
       absl::StrCat(path, "/tokenizer_config.json"), &contents));
   auto config_json = json::parse(contents, nullptr, false);
   if (config_json.is_discarded()) {
     return absl::InternalError("Failed to parse tokenizer_config.json");
   }
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
       absl::StrCat(path, "/tokenizer.json"), &contents));
   auto tokenizer_json = json::parse(contents);
   if (tokenizer_json.is_discarded()) {
@@ -112,12 +112,12 @@ absl::Status ConvertHfTokenizer(const std::string& hf_tokenizer,
   trainer_spec->set_model_type(TrainerSpec::BPE);
   trainer_spec->set_vocab_size(model_proto.pieces_size());
 
-  absl::string_view output_dir = ::mediapipe::file::Dirname(output_vocab_path);
-  if (!::mediapipe::file::IsDirectory(output_dir).ok()) {
-    MP_RETURN_IF_ERROR(::mediapipe::file::RecursivelyCreateDir(output_dir));
+  absl::string_view output_dir = ::mediapipe_v01013_based::file::Dirname(output_vocab_path);
+  if (!::mediapipe_v01013_based::file::IsDirectory(output_dir).ok()) {
+    MP_RETURN_IF_ERROR(::mediapipe_v01013_based::file::RecursivelyCreateDir(output_dir));
   }
 
-  MP_RETURN_IF_ERROR(mediapipe::file::SetContents(
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::SetContents(
       output_vocab_path, model_proto.SerializeAsString()));
 
   return absl::OkStatus();
@@ -125,4 +125,4 @@ absl::Status ConvertHfTokenizer(const std::string& hf_tokenizer,
 
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

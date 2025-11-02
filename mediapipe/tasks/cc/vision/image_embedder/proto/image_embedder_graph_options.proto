@@ -15,18 +15,18 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe.tasks.vision.image_embedder.proto;
+package mediapipe_v01013_based.tasks.vision.image_embedder.proto;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/framework/calculator_options.proto";
 import "mediapipe/tasks/cc/components/processors/proto/embedder_options.proto";
 import "mediapipe/tasks/cc/core/proto/base_options.proto";
 
-option java_package = "com.google.mediapipe.tasks.vision.imageembedder.proto";
+option java_package = "com.google.mediapipe_v01013_based.tasks.vision.imageembedder.proto";
 option java_outer_classname = "ImageEmbedderGraphOptionsProto";
 
 message ImageEmbedderGraphOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional ImageEmbedderGraphOptions ext = 476348187;
   }
   // Base options for configuring MediaPipe Tasks, such as specifying the TfLite

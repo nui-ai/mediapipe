@@ -25,7 +25,7 @@
 #include "tensorflow/core/example/example.pb.h"
 #include "tensorflow/core/example/feature.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Streams:
 const char kBBoxTag[] = "BBOX";
@@ -43,7 +43,7 @@ const char kImagesFrameRateTag[] = "IMAGE_FRAME_RATE";
 const char kAudioDecoderOptions[] = "AUDIO_DECODER_OPTIONS";
 
 namespace tf = ::tensorflow;
-namespace mpms = mediapipe::mediasequence;
+namespace mpms = mediapipe_v01013_based::mediasequence;
 
 // Source calculator to unpack side_packets and streams from tf.SequenceExamples
 //
@@ -147,7 +147,7 @@ class UnpackMediaSequenceCalculator : public CalculatorBase {
          options.has_padding_after_label()) &&
         !(cc->OutputSidePackets().HasTag(kAudioDecoderOptions) ||
           cc->OutputSidePackets().HasTag(kPacketResamplerOptions))) {
-      return ::mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return ::mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "If specifying padding, must output " << kPacketResamplerOptions
              << "or" << kAudioDecoderOptions;
     }
@@ -504,4 +504,4 @@ class UnpackMediaSequenceCalculator : public CalculatorBase {
   bool process_poststream_;
 };
 REGISTER_CALCULATOR(UnpackMediaSequenceCalculator);
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

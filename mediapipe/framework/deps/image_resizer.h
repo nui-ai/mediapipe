@@ -17,7 +17,7 @@
 
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class ImageResizer {
  public:
@@ -30,6 +30,6 @@ class ImageResizer {
   }
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_IMAGE_RESIZER_H_

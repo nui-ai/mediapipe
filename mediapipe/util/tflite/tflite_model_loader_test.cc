@@ -20,7 +20,7 @@
 
 ABSL_DECLARE_FLAG(std::string, resource_root_dir);
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 constexpr char kModelDir[] = "mediapipe/util/tflite/testdata";
@@ -86,4 +86,4 @@ TEST_F(TfLiteModelLoaderTest, LoadFromPathWithMmap) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

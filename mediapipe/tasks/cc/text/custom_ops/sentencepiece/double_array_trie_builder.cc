@@ -20,7 +20,7 @@ limitations under the License.
 
 #include "include/darts.h"
 
-namespace mediapipe::tflite_operations::sentencepiece {
+namespace mediapipe_v01013_based::tflite_operations::sentencepiece {
 
 std::vector<uint32_t> BuildTrie(const std::vector<std::string>& data) {
   std::vector<int> ids;
@@ -72,4 +72,4 @@ std::vector<uint32_t> BuildTrie(const std::vector<std::string>& data,
   return std::vector<uint32_t>(trie_data, trie_data + trie->size());
 }
 
-}  // namespace mediapipe::tflite_operations::sentencepiece
+}  // namespace mediapipe_v01013_based::tflite_operations::sentencepiece

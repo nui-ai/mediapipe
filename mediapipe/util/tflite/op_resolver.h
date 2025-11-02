@@ -17,7 +17,7 @@
 
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // This OpResolver is used for supporting "Convolution2DTransposeBias" on GPU.
 class OpResolver
@@ -26,6 +26,6 @@ class OpResolver
   OpResolver();
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_OP_RESOLVER_H_

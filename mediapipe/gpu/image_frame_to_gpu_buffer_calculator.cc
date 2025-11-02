@@ -21,7 +21,7 @@
 #include "mediapipe/objc/util.h"
 #endif
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Convert ImageFrame to GpuBuffer.
 //
@@ -85,4 +85,4 @@ absl::Status ImageFrameToGpuBufferCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

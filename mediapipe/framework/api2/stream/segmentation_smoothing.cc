@@ -4,7 +4,7 @@
 #include "mediapipe/framework/api2/builder.h"
 #include "mediapipe/framework/formats/image.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 
 Stream<Image> SmoothSegmentationMask(Stream<Image> mask,
                                      Stream<Image> previous_mask,
@@ -13,7 +13,7 @@ Stream<Image> SmoothSegmentationMask(Stream<Image> mask,
   auto& smoothing_node = graph.AddNode("SegmentationSmoothingCalculator");
   auto& smoothing_node_opts =
       smoothing_node
-          .GetOptions<mediapipe::SegmentationSmoothingCalculatorOptions>();
+          .GetOptions<mediapipe_v01013_based::SegmentationSmoothingCalculatorOptions>();
   smoothing_node_opts.set_combine_with_previous_ratio(
       combine_with_previous_ratio);
   mask.ConnectTo(smoothing_node.In("MASK"));
@@ -21,4 +21,4 @@ Stream<Image> SmoothSegmentationMask(Stream<Image> mask,
   return smoothing_node.Out("MASK_SMOOTHED").Cast<Image>();
 }
 
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder

@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace frame_buffer {
 namespace {
 
@@ -1197,4 +1197,4 @@ TEST(FrameBufferUtil, NV21ConvertYV12) {
 
 }  // namespace
 }  // namespace frame_buffer
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

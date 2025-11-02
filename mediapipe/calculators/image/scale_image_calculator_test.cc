@@ -10,18 +10,18 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using ::testing::HasSubstr;
 using ::testing::status::StatusIs;
 
-mediapipe::ImageFrame GetInputFrame(
+mediapipe_v01013_based::ImageFrame GetInputFrame(
     const int width, const int height, const int channel,
-    const mediapipe::ImageFormat::Format image_format) {
+    const mediapipe_v01013_based::ImageFormat::Format image_format) {
   const int total_size = width * height * channel;
 
-  mediapipe::ImageFrame input_frame(image_format, width, height,
+  mediapipe_v01013_based::ImageFrame input_frame(image_format, width, height,
                                     /*alignment_boundary =*/1);
   uint8_t* pixel_data = input_frame.MutablePixelData();
   for (int i = 0; i < total_size; ++i) {
@@ -31,8 +31,8 @@ mediapipe::ImageFrame GetInputFrame(
   return input_frame;
 }
 
-mediapipe::CalculatorGraphConfig::Node GetTestingGraphNode() {
-  return ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig::Node>(
+mediapipe_v01013_based::CalculatorGraphConfig::Node GetTestingGraphNode() {
+  return ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
       R"pb(
         calculator: "ScaleImageCalculator"
         input_stream: "input_frames"
@@ -51,31 +51,31 @@ mediapipe::CalculatorGraphConfig::Node GetTestingGraphNode() {
 
 TEST(ScaleImageCalculatorTest, ScaleRegualrSize) {
   auto calculator_node = GetTestingGraphNode();
-  mediapipe::CalculatorRunner runner(calculator_node);
+  mediapipe_v01013_based::CalculatorRunner runner(calculator_node);
 
   // Vertical 9:16 720P input frame
-  auto input_frame = GetInputFrame(720, 1280, 3, mediapipe::ImageFormat::SRGB);
+  auto input_frame = GetInputFrame(720, 1280, 3, mediapipe_v01013_based::ImageFormat::SRGB);
   auto input_frame_packet =
-      mediapipe::MakePacket<mediapipe::ImageFrame>(std::move(input_frame));
+      mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::ImageFrame>(std::move(input_frame));
   runner.MutableInputs()->Index(0).packets.push_back(
-      input_frame_packet.At(mediapipe::Timestamp(1)));
+      input_frame_packet.At(mediapipe_v01013_based::Timestamp(1)));
   MP_ASSERT_OK(runner.Run());
 }
 
 TEST(ScaleImageCalculatorTest, ScaleOddSize) {
   auto calculator_node = GetTestingGraphNode();
-  mediapipe::CalculatorRunner runner(calculator_node);
+  mediapipe_v01013_based::CalculatorRunner runner(calculator_node);
 
   // 1 x 512 input frame
-  auto input_frame = GetInputFrame(1, 512, 3, mediapipe::ImageFormat::SRGB);
+  auto input_frame = GetInputFrame(1, 512, 3, mediapipe_v01013_based::ImageFormat::SRGB);
   auto input_frame_packet =
-      mediapipe::MakePacket<mediapipe::ImageFrame>(std::move(input_frame));
+      mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::ImageFrame>(std::move(input_frame));
   runner.MutableInputs()->Index(0).packets.push_back(
-      input_frame_packet.At(mediapipe::Timestamp(1)));
+      input_frame_packet.At(mediapipe_v01013_based::Timestamp(1)));
   ASSERT_THAT(runner.Run(),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Image frame is empty before rescaling.")));
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

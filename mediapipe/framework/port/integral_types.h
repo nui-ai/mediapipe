@@ -40,7 +40,7 @@ typedef unsigned long uword_t;
 #define GG_LL_FORMAT_W L"ll"
 
 // Add namespace here to avoid conflict with other libraries.
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 typedef signed int char32;
 
@@ -61,6 +61,6 @@ typedef uint64 Fprint;
 static const Fprint kIllegalFprint = 0;
 static const Fprint kMaxFprint = GG_ULONGLONG(0xFFFFFFFFFFFFFFFF);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_PORT_INTEGRAL_TYPES_H_

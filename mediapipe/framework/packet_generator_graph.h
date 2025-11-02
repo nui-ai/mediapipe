@@ -30,7 +30,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/validated_graph_config.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A graph of packet generators.
 //
@@ -70,7 +70,7 @@ class PacketGeneratorGraph {
   // things in the graph or input_side_packets) will be run at this time.
   virtual absl::Status Initialize(
       const ValidatedGraphConfig* validated_graph,
-      mediapipe::Executor* executor,
+      mediapipe_v01013_based::Executor* executor,
       const std::map<std::string, Packet>& input_side_packets);
 
   // Add the input_side_packets and run any remaining generators (which
@@ -111,9 +111,9 @@ class PacketGeneratorGraph {
 
   // The executor to use for running the generators.  We do not own the
   // executor but it must outlive this object.
-  mediapipe::Executor* executor_ = nullptr;
+  mediapipe_v01013_based::Executor* executor_ = nullptr;
   // An object to own the executor if it needs to be deleted.
-  std::unique_ptr<mediapipe::Executor> executor_owner_;
+  std::unique_ptr<mediapipe_v01013_based::Executor> executor_owner_;
 
   // The base level packets available after initialization.
   std::map<std::string, Packet> base_packets_;
@@ -123,6 +123,6 @@ class PacketGeneratorGraph {
   std::vector<int> non_base_generators_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PACKET_GENERATOR_GRAPH_H_

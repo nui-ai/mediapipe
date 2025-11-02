@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"  // NOLINT
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 constexpr char kIterableTag[] = "ITERABLE";
 
@@ -155,4 +155,4 @@ TEST(TestIntCollectionHasMinSizeCalculator,
   EXPECT_FALSE(outputs[1].Get<bool>());
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

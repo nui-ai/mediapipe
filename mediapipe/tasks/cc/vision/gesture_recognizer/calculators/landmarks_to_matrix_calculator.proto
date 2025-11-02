@@ -15,13 +15,13 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 
 // Options for LandmarksToMatrixCalculator.
 message LandmarksToMatrixCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional LandmarksToMatrixCalculatorOptions ext = 473345607;
   }
 

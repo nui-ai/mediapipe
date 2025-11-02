@@ -17,7 +17,7 @@
 
 #include "tensorflow/lite/kernels/kernel_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tflite_operations {
 
 TfLiteRegistration* RegisterTransformTensorBilinearV1();
@@ -25,6 +25,6 @@ TfLiteRegistration* RegisterTransformTensorBilinearV1();
 TfLiteRegistration* RegisterTransformTensorBilinearV2();
 
 }  // namespace tflite_operations
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_OPERATIONS_TRANSFORM_TENSOR_BILINEAR_H_

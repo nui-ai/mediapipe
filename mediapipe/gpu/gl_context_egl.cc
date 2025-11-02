@@ -31,7 +31,7 @@
 
 #if HAS_EGL
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -142,12 +142,12 @@ absl::Status GlContext::CreateContextInternal(EGLContext share_context,
   EGLBoolean success =
       eglChooseConfig(display_, config_attr, &config_, 1, &num_configs);
   if (!success) {
-    return ::mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return ::mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "eglChooseConfig() returned error " << std::showbase << std::hex
            << eglGetError();
   }
   if (!num_configs) {
-    return mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "eglChooseConfig() returned no matching EGL configuration for "
            << "RGBA8888 D16 ES" << gl_version << " request. ";
   }
@@ -311,6 +311,6 @@ bool GlContext::IsCurrent() const {
   return HasContext() && (eglGetCurrentContext() == context_);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // HAS_EGL

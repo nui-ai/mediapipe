@@ -17,7 +17,7 @@
 
 #include "mediapipe/framework/port/core_proto_inc.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace protobuf {
 
 #if !defined(MEDIAPIPE_PROTO_LITE) || !defined(MEDIAPIPE_PROTO_THIRD_PARTY)
@@ -41,6 +41,6 @@ class Any {
 #endif
 
 }  // namespace protobuf
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_PORT_ANY_PROTO_H_

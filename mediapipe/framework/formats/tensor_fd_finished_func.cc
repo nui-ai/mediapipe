@@ -5,7 +5,7 @@
 #include "mediapipe/framework/formats/shared_fd.h"
 #include "mediapipe/util/sync_wait.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 inline bool IsFinished(bool wait, const SharedFd& fd) {
@@ -43,4 +43,4 @@ bool MultipleFdsFinishedFunc::operator()(bool wait) {
   return true;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

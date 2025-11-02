@@ -41,14 +41,14 @@ limitations under the License.
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe::tasks::audio::audio_embedder {
+namespace mediapipe_v01013_based::tasks::audio::audio_embedder {
 namespace {
 
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::containers::proto::EmbeddingResult;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
 
 constexpr char kAudioTag[] = "AUDIO";
 constexpr char kEmbeddingsTag[] = "EMBEDDINGS";
@@ -223,6 +223,6 @@ class AudioEmbedderGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::audio::audio_embedder::AudioEmbedderGraph);
+    ::mediapipe_v01013_based::tasks::audio::audio_embedder::AudioEmbedderGraph);
 
-}  // namespace mediapipe::tasks::audio::audio_embedder
+}  // namespace mediapipe_v01013_based::tasks::audio::audio_embedder

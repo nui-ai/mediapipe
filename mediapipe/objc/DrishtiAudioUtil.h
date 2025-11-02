@@ -24,9 +24,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Converts an audio sample buffer list into a `mediapipe::Matrix`.
+// Converts an audio sample buffer list into a `mediapipe_v01013_based::Matrix`.
 // Returns an error status on failure.
-absl::StatusOr<std::unique_ptr<mediapipe::Matrix>> MediaPipeConvertAudioBufferListToAudioMatrix(
+absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Matrix>> MediaPipeConvertAudioBufferListToAudioMatrix(
     const AudioBufferList* audioBufferList, const AudioStreamBasicDescription* streamHeader,
     CMItemCount numFrames);
 

@@ -29,7 +29,7 @@
 #include "mediapipe/calculators/tflite/ssd_anchors_calculator.pb.h"
 #include "mediapipe/framework/formats/object_detection/anchor.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -304,4 +304,4 @@ absl::Status SsdAnchorsCalculatorUtils::GenerateAnchors(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -28,7 +28,7 @@ limitations under the License.
 #include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace core {
 
@@ -79,17 +79,17 @@ static TensorType* FindTensorByName(
 
 // Adds a FlowLimiterCalculator to limit the number of packets in flight and
 // in queue.
-::mediapipe::CalculatorGraphConfig AddFlowLimiterCalculator(
+::mediapipe_v01013_based::CalculatorGraphConfig AddFlowLimiterCalculator(
     api2::builder::Graph& graph, api2::builder::GenericNode& task_subgraph,
     std::vector<std::string> input_stream_tags, std::string finished_stream_tag,
     int max_in_flight = 1, int max_in_queue = 1);
 
 // Fixs the graph config containing PreviousLoopbackCalculator where the edge
 // forming a loop needs to be tagged as back edge.
-void FixGraphBackEdges(::mediapipe::CalculatorGraphConfig& graph_config);
+void FixGraphBackEdges(::mediapipe_v01013_based::CalculatorGraphConfig& graph_config);
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_CORE_UTILS_H_

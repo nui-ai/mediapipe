@@ -42,7 +42,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/utils/image_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
@@ -50,15 +50,15 @@ namespace {
 
 using ::file::Defaults;
 using ::file::GetTextProto;
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::core::TaskRunner;
-using ::mediapipe::tasks::vision::DecodeImageFromFile;
-using ::mediapipe::tasks::vision::hand_landmarker::proto::
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::core::TaskRunner;
+using ::mediapipe_v01013_based::tasks::vision::DecodeImageFromFile;
+using ::mediapipe_v01013_based::tasks::vision::hand_landmarker::proto::
     HandLandmarksDetectorGraphOptions;
 using ::testing::ElementsAreArray;
 using ::testing::EqualsProto;
@@ -469,4 +469,4 @@ INSTANTIATE_TEST_SUITE_P(
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

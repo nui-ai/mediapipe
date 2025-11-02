@@ -24,7 +24,7 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/port/vector.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A calculator to convert face detection proto to mediapipe rect.
 // node {
@@ -179,4 +179,4 @@ bool FaceToRectCalculator::GetLandmarks(const Detection& detection, int width,
   return true;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

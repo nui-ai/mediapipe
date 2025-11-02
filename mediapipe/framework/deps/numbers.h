@@ -21,7 +21,7 @@
 #include "absl/strings/numbers.h"
 #include "absl/strings/str_cat.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 ABSL_MUST_USE_RESULT inline std::string SimpleDtoa(double d) {
   if (static_cast<double>(static_cast<int64_t>(d)) == d) {
     return absl::StrCat(static_cast<int64_t>(d));
@@ -29,6 +29,6 @@ ABSL_MUST_USE_RESULT inline std::string SimpleDtoa(double d) {
     return absl::StrCat(d);
   }
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_NUMBERS_H_

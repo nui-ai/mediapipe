@@ -16,7 +16,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // A Calculator that selects an input stream from "INPUT:0", "INPUT:1", ...,
@@ -57,4 +57,4 @@ class MuxCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(MuxCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

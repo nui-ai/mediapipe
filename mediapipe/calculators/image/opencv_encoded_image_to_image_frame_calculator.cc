@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_builder.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Takes in an encoded image string, decodes it by OpenCV, and converts to an
 // ImageFrame. Note that this calculator only supports grayscale and RGB images
@@ -39,7 +39,7 @@ class OpenCvEncodedImageToImageFrameCalculator : public CalculatorBase {
   absl::Status Process(CalculatorContext* cc) override;
 
  private:
-  mediapipe::OpenCvEncodedImageToImageFrameCalculatorOptions options_;
+  mediapipe_v01013_based::OpenCvEncodedImageToImageFrameCalculatorOptions options_;
 };
 
 absl::Status OpenCvEncodedImageToImageFrameCalculator::GetContract(
@@ -52,7 +52,7 @@ absl::Status OpenCvEncodedImageToImageFrameCalculator::GetContract(
 absl::Status OpenCvEncodedImageToImageFrameCalculator::Open(
     CalculatorContext* cc) {
   options_ =
-      cc->Options<mediapipe::OpenCvEncodedImageToImageFrameCalculatorOptions>();
+      cc->Options<mediapipe_v01013_based::OpenCvEncodedImageToImageFrameCalculatorOptions>();
   return absl::OkStatus();
 }
 
@@ -88,7 +88,7 @@ absl::Status OpenCvEncodedImageToImageFrameCalculator::Process(
       cv::cvtColor(decoded_mat, output_mat, cv::COLOR_BGR2RGBA);
       break;
     default:
-      return mediapipe::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
              << "Unsupported number of channels: " << decoded_mat.channels();
   }
   std::unique_ptr<ImageFrame> output_frame = absl::make_unique<ImageFrame>(
@@ -101,4 +101,4 @@ absl::Status OpenCvEncodedImageToImageFrameCalculator::Process(
 
 REGISTER_CALCULATOR(OpenCvEncodedImageToImageFrameCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

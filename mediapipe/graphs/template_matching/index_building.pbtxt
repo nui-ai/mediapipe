@@ -24,7 +24,7 @@ node: {
   input_stream: "IMAGE:image_frame"
   output_stream: "IMAGE:scaled_image_frame"
   node_options: {
-    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.ImageTransformationCalculatorOptions] {
       output_width: 320
       output_height: 320
       scale_mode: FILL_AND_CROP
@@ -45,7 +45,7 @@ node {
   output_stream: "LANDMARKS:landmarks"
   output_stream: "PATCHES:patches"
   node_options: {
-    [type.googleapis.com/mediapipe.FeatureDetectorCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.FeatureDetectorCalculatorOptions] {
       max_features: 400
     }
   }
@@ -62,7 +62,7 @@ node {
     input_stream_handler: "DefaultInputStreamHandler"
   }
   node_options: {
-    [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.TfLiteInferenceCalculatorOptions] {
       model_path: "mediapipe/models/knift_float_400.tflite"
     }
   }
@@ -82,7 +82,7 @@ node {
   input_stream: "DESCRIPTORS:knift_feature_floats"
 
   node_options: {
-    [type.googleapis.com/mediapipe.BoxDetectorCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.BoxDetectorCalculatorOptions] {
       detector_options {
         index_type: OPENCV_BF
         detect_every_n_frame: 1

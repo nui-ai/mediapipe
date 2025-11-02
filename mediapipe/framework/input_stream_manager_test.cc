@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 class InputStreamManagerTest : public ::testing::Test {
  protected:
@@ -925,4 +925,4 @@ TEST_F(InputStreamManagerTest, BackwardsInTimeUntimed) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

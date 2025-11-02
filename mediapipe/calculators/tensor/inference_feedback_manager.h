@@ -10,7 +10,7 @@
 #include "mediapipe/calculators/tensor/inference_io_mapper.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Feedback tensors are pairs of model output / input tensors where the
 // model output is used as model input in the next model invocation. This allows
@@ -24,7 +24,7 @@ class InferenceFeedbackManager {
   // feedback_tensor_indices_links_. The provided interpreter must outlive the
   // InferenceFeedbackManager instance.
   absl::Status Init(
-      const mediapipe::InferenceCalculatorOptions::InputOutputConfig& io_config,
+      const mediapipe_v01013_based::InferenceCalculatorOptions::InputOutputConfig& io_config,
       const InputOutputTensorNames& input_output_tensor_names_map,
       tflite::Interpreter* interpreter);
 
@@ -60,7 +60,7 @@ class InferenceFeedbackManager {
   // corresponding TfLite tensor indices.
   static absl::StatusOr<std::vector<TensorFeedbackIndicesLink>>
   ConvertSignatureTensorNamesToModelIndices(
-      const mediapipe::InferenceCalculatorOptions::InputOutputConfig& io_config,
+      const mediapipe_v01013_based::InferenceCalculatorOptions::InputOutputConfig& io_config,
       const InputOutputTensorNames& input_output_tensor_names_map);
 
   // Non-owning reference to the TfLite interpreter.
@@ -78,6 +78,6 @@ class InferenceFeedbackManager {
   // Set of feedback output model tensor indices.
   absl::flat_hash_set<int> feedback_output_indices_;
 };
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_Inference_feedback_manager_H_

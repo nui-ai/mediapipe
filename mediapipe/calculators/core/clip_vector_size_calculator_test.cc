@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"  // NOLINT
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 typedef ClipVectorSizeCalculator<int> TestClipIntVectorSizeCalculator;
 REGISTER_CALCULATOR(TestClipIntVectorSizeCalculator);
@@ -203,4 +203,4 @@ TEST(TestClipIntVectorSizeCalculatorTest, SidePacket) {
   EXPECT_EQ(expected_vector, output);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

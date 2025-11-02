@@ -21,7 +21,7 @@
 #include <iterator>
 #include <vector>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A circular buffer for lock-free event logging.
 // This class is thread-safe and writing using "push_back" is lock-free.
@@ -186,6 +186,6 @@ class CircularBuffer<T>::iterator
   size_t index_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PROFILER_CIRCULAR_BUFFER_H_

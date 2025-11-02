@@ -5,7 +5,7 @@
 #include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/framework/calculator_profile.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace reporter {
 
 // Pushes a single value into the statistics, updating mean and stddev.
@@ -43,4 +43,4 @@ double Statistic::stddev() const { return std::sqrt(variance()); }
 double Statistic::total() const { return total_impl_; }
 
 }  // namespace reporter
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -6,7 +6,7 @@
 #include "mediapipe/calculators/tensor/inference_runner.h"
 #include "mediapipe/calculators/util/detection_letterbox_removal.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 Liberated::Liberated(MemoryManager* memory_manager) {
 
@@ -17,7 +17,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   options.set_keep_aspect_ratio(true);
   options.mutable_output_tensor_float_range()->set_min(0.0f);
   options.mutable_output_tensor_float_range()->set_max(1.0f);
-  options.set_border_mode(mediapipe::ImageToTensorCalculatorOptions::BORDER_ZERO);
+  options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
   auto params = GetOutputTensorParams(options);
   int tensor_width = params.output_width.value_or(0);
   int tensor_height = params.output_height.value_or(0);
@@ -34,7 +34,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
 }
 
-  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Liberated::Process(const std::vector<mediapipe::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
+  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Liberated::Process(const std::vector<mediapipe_v01013_based::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
     // auto palm_detection_image = nullptr;
     auto count_capped_detections = absl::make_unique<std::vector<Detection>>();
 

@@ -57,9 +57,9 @@
 #include "mediapipe/framework/tool/status_util.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-using ::mediapipe::Clock;
+using ::mediapipe_v01013_based::Clock;
 namespace {
 
 const PacketType* GetPacketType(const PacketTypeSet& packet_type_set,
@@ -884,7 +884,7 @@ absl::Status CalculatorNode::ProcessNode(
         // Needs to call CloseNode().
         node_stopped = true;
       } else {
-        return mediapipe::StatusBuilder(result, MEDIAPIPE_LOC).SetPrepend()
+        return mediapipe_v01013_based::StatusBuilder(result, MEDIAPIPE_LOC).SetPrepend()
                << absl::Substitute(
                       "Calculator::Process() for node \"$0\" failed: ",
                       DebugName());
@@ -940,7 +940,7 @@ absl::Status CalculatorNode::ProcessNode(
         // streams will be processed before the graph is terminated.
         if (result.has_value() && !result->ok() &&
             result != tool::StatusStop()) {
-          return mediapipe::StatusBuilder(*result, MEDIAPIPE_LOC).SetPrepend()
+          return mediapipe_v01013_based::StatusBuilder(*result, MEDIAPIPE_LOC).SetPrepend()
                  << absl::Substitute(
                         "Calculator::Process() for node \"$0\" failed: ",
                         DebugName());
@@ -980,4 +980,4 @@ void CalculatorNode::SetQueueSizeCallbacks(
       std::move(becomes_full_callback), std::move(becomes_not_full_callback));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

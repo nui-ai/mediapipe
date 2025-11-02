@@ -31,11 +31,11 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/tensor_shape.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 class CalculatorOptions;
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tf = ::tensorflow;
 
@@ -114,7 +114,7 @@ class ObjectDetectionTensorsToDetectionsCalculator : public CalculatorBase {
           cc->Options<ObjectDetectionsTensorToDetectionsCalculatorOptions>();
       float mask_threshold = calculator_options.mask_threshold();
       if (!(mask_threshold >= 0.0 && mask_threshold <= 1.0)) {
-        return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+        return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                << "mask_threshold must be in range [0.0, 1.0]";
       }
     }
@@ -236,4 +236,4 @@ class ObjectDetectionTensorsToDetectionsCalculator : public CalculatorBase {
 
 REGISTER_CALCULATOR(ObjectDetectionTensorsToDetectionsCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

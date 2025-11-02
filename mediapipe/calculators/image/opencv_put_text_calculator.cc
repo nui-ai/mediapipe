@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_builder.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Takes in a string, draws the text string by cv::putText(), and outputs an
 // ImageFrame.
@@ -56,4 +56,4 @@ absl::Status OpenCvPutTextCalculator::Process(CalculatorContext* cc) {
 
 REGISTER_CALCULATOR(OpenCvPutTextCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

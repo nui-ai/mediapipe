@@ -30,16 +30,16 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/utils/image_utils.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_detector {
 namespace {
 
 using ::file::Defaults;
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::components::containers::NormalizedKeypoint;
-using ::mediapipe::tasks::vision::core::ImageProcessingOptions;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::components::containers::NormalizedKeypoint;
+using ::mediapipe_v01013_based::tasks::vision::core::ImageProcessingOptions;
 using ::testing::TestParamInfo;
 using ::testing::TestWithParam;
 using ::testing::Values;
@@ -57,7 +57,7 @@ constexpr char kCatImageName[] = "cat.jpg";
 constexpr float kKeypointErrorThreshold = 1e-2;
 
 FaceDetectorResult GetExpectedFaceDetectorResult(absl::string_view file_name) {
-  mediapipe::Detection detection;
+  mediapipe_v01013_based::Detection detection;
   ABSL_CHECK_OK(GetTextProto(
       file::JoinPath(::testing::SrcDir(), kTestDataDirectory, file_name),
       &detection, Defaults()))
@@ -308,4 +308,4 @@ INSTANTIATE_TEST_SUITE_P(
 }  // namespace face_detector
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

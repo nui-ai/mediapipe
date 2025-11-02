@@ -30,14 +30,14 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/image_processing_options.h"
 #include "mediapipe/tasks/cc/vision/core/running_mode.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace image_classifier {
 
 // Alias the shared ClassificationResult struct as result type.
 using ImageClassifierResult =
-    ::mediapipe::tasks::components::containers::ClassificationResult;
+    ::mediapipe_v01013_based::tasks::components::containers::ClassificationResult;
 
 // The options for configuring a Mediapipe image classifier task.
 struct ImageClassifierOptions {
@@ -127,7 +127,7 @@ class ImageClassifier : tasks::vision::core::BaseVisionTaskApi {
   // TODO: describe exact preprocessing steps once
   // YUVToImageCalculator is integrated.
   absl::StatusOr<ImageClassifierResult> Classify(
-      mediapipe::Image image,
+      mediapipe_v01013_based::Image image,
       std::optional<core::ImageProcessingOptions> image_processing_options =
           std::nullopt);
 
@@ -149,7 +149,7 @@ class ImageClassifier : tasks::vision::core::BaseVisionTaskApi {
   // provide the video frame's timestamp (in milliseconds). The input timestamps
   // must be monotonically increasing.
   absl::StatusOr<ImageClassifierResult> ClassifyForVideo(
-      mediapipe::Image image, int64_t timestamp_ms,
+      mediapipe_v01013_based::Image image, int64_t timestamp_ms,
       std::optional<core::ImageProcessingOptions> image_processing_options =
           std::nullopt);
 
@@ -180,7 +180,7 @@ class ImageClassifier : tasks::vision::core::BaseVisionTaskApi {
   //     longer be valid when the callback returns. To access the image data
   //     outside of the callback, callers need to make a copy of the image.
   //   - The input timestamp in milliseconds.
-  absl::Status ClassifyAsync(mediapipe::Image image, int64_t timestamp_ms,
+  absl::Status ClassifyAsync(mediapipe_v01013_based::Image image, int64_t timestamp_ms,
                              std::optional<core::ImageProcessingOptions>
                                  image_processing_options = std::nullopt);
 
@@ -191,6 +191,6 @@ class ImageClassifier : tasks::vision::core::BaseVisionTaskApi {
 }  // namespace image_classifier
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_IMAGE_CLASSIFIER_IMAGE_CLASSIFIER_H_

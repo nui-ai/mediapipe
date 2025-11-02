@@ -22,14 +22,14 @@
 #include "mediapipe/gpu/gl_calculator_helper.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 #if MEDIAPIPE_DISABLE_GPU
-// Just a placeholder to not have to depend on mediapipe::GpuBuffer.
+// Just a placeholder to not have to depend on mediapipe_v01013_based::GpuBuffer.
 using GpuBuffer = AnyType;
 #else
-using GpuBuffer = mediapipe::GpuBuffer;
+using GpuBuffer = mediapipe_v01013_based::GpuBuffer;
 #endif  // MEDIAPIPE_DISABLE_GPU
 
 // Clones an input image and makes sure in the output clone the pixel data are
@@ -59,19 +59,19 @@ class ImageCloneCalculator : public Node {
 
   static absl::Status UpdateContract(CalculatorContract* cc) {
 #if MEDIAPIPE_DISABLE_GPU
-    if (cc->Options<mediapipe::ImageCloneCalculatorOptions>().output_on_gpu()) {
+    if (cc->Options<mediapipe_v01013_based::ImageCloneCalculatorOptions>().output_on_gpu()) {
       return absl::UnimplementedError(
           "GPU processing is disabled in build flags");
     }
 #else
-    MP_RETURN_IF_ERROR(mediapipe::GlCalculatorHelper::UpdateContract(
+    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(
         cc, /*request_gpu_as_optional=*/true));
 #endif  // MEDIAPIPE_DISABLE_GPU
     return absl::OkStatus();
   }
 
   absl::Status Open(CalculatorContext* cc) override {
-    const auto& options = cc->Options<mediapipe::ImageCloneCalculatorOptions>();
+    const auto& options = cc->Options<mediapipe_v01013_based::ImageCloneCalculatorOptions>();
     output_on_gpu_ = options.output_on_gpu();
     return absl::OkStatus();
   }
@@ -88,13 +88,13 @@ class ImageCloneCalculator : public Node {
 #endif  // !MEDIAPIPE_DISABLE_GPU
     } else {
       // Make a copy of the input packet to co-own the input Image.
-      mediapipe::Packet* packet_copy_ptr =
-          new mediapipe::Packet(kIn(cc).packet());
+      mediapipe_v01013_based::Packet* packet_copy_ptr =
+          new mediapipe_v01013_based::Packet(kIn(cc).packet());
       // Create an output Image that (co-)owns a new ImageFrame that points to
       // the same pixel data as the input Image and also owns the packet
       // copy. As a result, the output Image indirectly co-owns the input
       // Image. This ensures a correct life span of the shared pixel data.
-      output = std::make_unique<Image>(std::make_unique<mediapipe::ImageFrame>(
+      output = std::make_unique<Image>(std::make_unique<mediapipe_v01013_based::ImageFrame>(
           input.image_format(), input.width(), input.height(), input.step(),
           const_cast<uint8_t*>(input.GetImageFrameSharedPtr()->PixelData()),
           [packet_copy_ptr](uint8_t*) { delete packet_copy_ptr; }));
@@ -119,11 +119,11 @@ class ImageCloneCalculator : public Node {
  private:
   bool output_on_gpu_;
 #if !MEDIAPIPE_DISABLE_GPU
-  mediapipe::GlCalculatorHelper gpu_helper_;
+  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
   bool gpu_initialized_ = false;
 #endif  // !MEDIAPIPE_DISABLE_GPU
 };
 MEDIAPIPE_REGISTER_NODE(ImageCloneCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -44,7 +44,7 @@ static int object_id = 0;
 inline int GetNextObjectId() { return ++object_id; }
 }  // namespace
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Convert result Tensors from deep pursuit 3d model into FrameAnnotation.
 //
@@ -84,7 +84,7 @@ class TensorsToObjectsCalculator : public CalculatorBase {
   int num_classes_ = 0;
   int num_keypoints_ = 0;
 
-  ::mediapipe::TensorsToObjectsCalculatorOptions options_;
+  ::mediapipe_v01013_based::TensorsToObjectsCalculatorOptions options_;
   std::unique_ptr<Decoder> decoder_;
   Eigen::Matrix<float, 4, 4, Eigen::RowMajor> projection_matrix_;
 };
@@ -95,7 +95,7 @@ absl::Status TensorsToObjectsCalculator::GetContract(CalculatorContract* cc) {
   RET_CHECK(!cc->Outputs().GetTags().empty());
 
   if (cc->Inputs().HasTag(kInputStreamTag)) {
-    cc->Inputs().Tag(kInputStreamTag).Set<std::vector<mediapipe::Tensor>>();
+    cc->Inputs().Tag(kInputStreamTag).Set<std::vector<mediapipe_v01013_based::Tensor>>();
   }
 
   if (cc->Outputs().HasTag(kOutputStreamTag)) {
@@ -141,7 +141,7 @@ absl::Status TensorsToObjectsCalculator::Process(CalculatorContext* cc) {
 absl::Status TensorsToObjectsCalculator::ProcessCPU(
     CalculatorContext* cc, FrameAnnotation* output_objects) {
   const auto& input_tensors =
-      cc->Inputs().Tag(kInputStreamTag).Get<std::vector<mediapipe::Tensor>>();
+      cc->Inputs().Tag(kInputStreamTag).Get<std::vector<mediapipe_v01013_based::Tensor>>();
 
   cv::Mat prediction_heatmap = ConvertTensorToCvMat(input_tensors[0]);
   cv::Mat offsetmap = ConvertTensorToCvMat(input_tensors[1]);
@@ -167,7 +167,7 @@ absl::Status TensorsToObjectsCalculator::Close(CalculatorContext* cc) {
 
 absl::Status TensorsToObjectsCalculator::LoadOptions(CalculatorContext* cc) {
   // Get calculator options specified in the graph.
-  options_ = cc->Options<::mediapipe::TensorsToObjectsCalculatorOptions>();
+  options_ = cc->Options<::mediapipe_v01013_based::TensorsToObjectsCalculatorOptions>();
 
   num_classes_ = options_.num_classes();
   num_keypoints_ = options_.num_keypoints();
@@ -209,4 +209,4 @@ void TensorsToObjectsCalculator::AssignObjectIdAndTimestamp(
   annotation->set_timestamp(timestamp_us);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

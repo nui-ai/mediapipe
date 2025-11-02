@@ -35,7 +35,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 // This calculator crops video scenes to target size, which can be of any aspect
 // ratio. The calculator supports both "landscape -> portrait", and "portrait ->
@@ -140,7 +140,7 @@ class SceneCroppingCalculator : public CalculatorBase {
 
   // Calls ProcessScene() on remaining buffered frames. Optionally outputs a
   // VideoCroppingSummary if the output stream CROPPING_SUMMARY is present.
-  absl::Status Close(mediapipe::CalculatorContext* cc) override;
+  absl::Status Close(mediapipe_v01013_based::CalculatorContext* cc) override;
 
  private:
   // Removes any static borders from the scene frames before cropping. The
@@ -151,7 +151,7 @@ class SceneCroppingCalculator : public CalculatorBase {
 
   // Sets up autoflip after first frame is received and input size is known.
   absl::Status InitializeSceneCroppingCalculator(
-      mediapipe::CalculatorContext* cc);
+      mediapipe_v01013_based::CalculatorContext* cc);
   // Initializes a FrameCropRegionComputer given input and target frame sizes.
   absl::Status InitializeFrameCropRegionComputer();
 
@@ -289,6 +289,6 @@ class SceneCroppingCalculator : public CalculatorBase {
   bool should_perform_frame_cropping_ = false;
 };
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_EXAMPLES_DESKTOP_AUTOFLIP_CALCULATORS_SCENE_CROPPING_CALCULATOR_H_

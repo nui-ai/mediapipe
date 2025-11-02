@@ -14,13 +14,13 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 import "tensorflow/core/framework/types.proto";
 
 message VectorIntToTensorCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional VectorIntToTensorCalculatorOptions ext = 275364184;
   }
   enum InputSize {

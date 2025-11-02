@@ -27,7 +27,7 @@
 #include "mediapipe/framework/api3/internal/port_base.h"
 #include "mediapipe/framework/api3/internal/specializers.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 // Node contract is:
 // - any struct template
@@ -374,6 +374,6 @@ class Optional<
   using P::P;
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_CONTRACT_H_

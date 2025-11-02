@@ -10,21 +10,21 @@
 #include "mediapipe/framework/port/file_helpers.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::StatusOr<std::unique_ptr<HandsPipelineOperator>> HandsPipelineOperator::Create(
     const std::string& graph_file_path,
     const std::vector<std::string>& output_streams) {
 
   std::string graph_content;
-  absl::Status status = mediapipe::file::GetContents(graph_file_path, &graph_content);
+  absl::Status status = mediapipe_v01013_based::file::GetContents(graph_file_path, &graph_content);
   if (!status.ok()) {
     return absl::InvalidArgumentError(
         absl::StrCat("Failed to read graph file: ", graph_file_path, " - ", status.message()));
   } else ABSL_LOG(INFO) << "Read graph file: " << graph_file_path;
 
   CalculatorGraphConfig config;
-  if (!mediapipe::ParseTextProto<CalculatorGraphConfig>(graph_content, &config)) {
+  if (!mediapipe_v01013_based::ParseTextProto<CalculatorGraphConfig>(graph_content, &config)) {
     return absl::InvalidArgumentError(
         absl::StrCat("Failed to parse graph file: ", graph_file_path));
   } else ABSL_LOG(INFO) << "Successfully parsed graph file " << graph_file_path;
@@ -112,4 +112,4 @@ absl::Status HandsPipelineOperator::finalize() {
   return graph_.WaitUntilDone();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

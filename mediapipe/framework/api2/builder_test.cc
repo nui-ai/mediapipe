@@ -19,14 +19,14 @@
 #include "mediapipe/framework/testdata/night_light_calculator.pb.h"
 #include "mediapipe/framework/testdata/sky_light_calculator.pb.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 namespace {
 
-using ::mediapipe::api2::test::Bar;
-using ::mediapipe::api2::test::FloatAdder;
-using ::mediapipe::api2::test::Foo;
-using ::mediapipe::api2::test::Foo2;
-using ::mediapipe::api2::test::FooBar1;
+using ::mediapipe_v01013_based::api2::test::Bar;
+using ::mediapipe_v01013_based::api2::test::FloatAdder;
+using ::mediapipe_v01013_based::api2::test::Foo;
+using ::mediapipe_v01013_based::api2::test::Foo2;
+using ::mediapipe_v01013_based::api2::test::FooBar1;
 
 TEST(BuilderTest, BuildGraph) {
   Graph graph;
@@ -47,7 +47,7 @@ TEST(BuilderTest, BuildGraph) {
   bar_out.SetName("out") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -108,7 +108,7 @@ TEST(BuilderTest, BuildGraphDefiningAndSettingExecutors) {
   bar2_out.SetName("out2") >> graph.Out("OUT")[1];
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_side_packet: "SIDE:side"
         input_stream: "IN:base"
         output_stream: "OUT:0:out1"
@@ -162,7 +162,7 @@ TEST(BuilderTest, BuildGraphSettingInputAndOutputStreamHandlers) {
   auto& foo = graph.AddNode("Foo");
   auto& foo_ish_opts =
       foo.SetInputStreamHandler("FixedSizeInputStreamHandler")
-          .GetOptions<mediapipe::FixedSizeInputStreamHandlerOptions>();
+          .GetOptions<mediapipe_v01013_based::FixedSizeInputStreamHandlerOptions>();
   foo_ish_opts.set_target_queue_size(2);
   foo_ish_opts.set_trigger_queue_size(3);
   foo_ish_opts.set_fixed_min_size(true);
@@ -180,7 +180,7 @@ TEST(BuilderTest, BuildGraphSettingInputAndOutputStreamHandlers) {
   bar_out.SetName("out") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -236,7 +236,7 @@ TEST(BuilderTest, BuildGraphSettingSourceLayer) {
   bar_out.SetName("out") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -285,7 +285,7 @@ TEST(BuilderTest, CanUseBackEdges) {
   detections.SetName("detections") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "PreviousLoopbackCalculator"
           input_stream: "LOOP:detections"
@@ -333,7 +333,7 @@ TEST(BuilderTest, CanUseBackEdgesWithIndex) {
   output_data.SetName("out_data") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SomeBackEdgeCalculator"
           input_stream: "DATA:0:in_data"
@@ -381,7 +381,7 @@ TEST(BuilderTest, CanUseBackEdgesWithIndexAndNoTag) {
   output_data.SetName("out_data") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SomeBackEdgeCalculator"
           input_stream: "in_data"
@@ -421,7 +421,7 @@ TEST(BuilderTest, CopyableStream) {
   side_input >> side_out;
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "A:a"
         input_stream: "B:b"
         output_stream: "OUT:b"
@@ -458,7 +458,7 @@ TEST(BuilderTest, BuildGraphWithFunctions) {
   bar_out.SetName("out") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -497,7 +497,7 @@ void BuildGraphTypedTest() {
   bar_out.SetName("out") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
           absl::Substitute(R"(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
@@ -540,7 +540,7 @@ TEST(BuilderTest, FanOut) {
   out.SetName("out") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         output_stream: "OUT:out"
         node {
@@ -576,7 +576,7 @@ TEST(BuilderTest, TypedMultiple) {
   out.SetName("out") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         output_stream: "OUT:out"
         node {
@@ -612,7 +612,7 @@ TEST(BuilderTest, TypedByPorts) {
   out.SetName("out") >> graph.Out(FooBar1::kOut);
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         output_stream: "OUT:out"
         node {
@@ -643,7 +643,7 @@ TEST(BuilderTest, PacketGenerator) {
   side_out >> graph.SideOut("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_side_packet: "IN:__side_packet_0"
         output_side_packet: "OUT:__side_packet_1"
         packet_generator {
@@ -674,7 +674,7 @@ TEST(BuilderTest, EmptyTag) {
   y.SetName("y") >> graph.Out("TWO");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "A:a"
         input_stream: "B:b"
         input_stream: "C:c"
@@ -711,7 +711,7 @@ TEST(BuilderTest, StringLikeTags) {
   c.SetName("c") >> graph.Out(kC);
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "A:a"
         input_stream: "B:b"
         output_stream: "C:c"
@@ -744,7 +744,7 @@ TEST(BuilderTest, GraphIndexes) {
   y.SetName("y") >> graph.Out(0);
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "a"
         input_stream: "c"
         input_stream: "b"
@@ -810,7 +810,7 @@ TEST(BuilderTest, AnyAndSameTypeHandledProperly) {
   same_int_output.SetName("same_int_output");
   recursive_same_int_type_output.SetName("recursive_same_int_type_output");
 
-  CalculatorGraphConfig expected = mediapipe::ParseTextProtoOrDie<
+  CalculatorGraphConfig expected = mediapipe_v01013_based::ParseTextProtoOrDie<
       CalculatorGraphConfig>(R"pb(
     node {
       calculator: "AnyAndSameTypeCalculator"
@@ -842,7 +842,7 @@ TEST(BuilderTest, AnyTypeCanBeCast) {
       graph.Out("GRAPH_ANY_OUTPUT").Cast<double>();
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "AnyAndSameTypeCalculator"
           input_stream: "INPUT:__stream_0"
@@ -863,7 +863,7 @@ TEST(BuilderTest, MultiPortIsCastToMultiPort) {
   int_input >> int_output;
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "ANY_INPUT:__stream_0"
         output_stream: "ANY_OUTPUT:__stream_0"
       )pb");
@@ -879,7 +879,7 @@ TEST(BuilderTest, MultiPortCanBeSlicedToSinglePort) {
   any_input >> any_output;
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "ANY_INPUT:__stream_0"
         output_stream: "ANY_OUTPUT:__stream_0"
       )pb");
@@ -896,7 +896,7 @@ TEST(BuilderTest, SinglePortAccessWorksThroughSlicing) {
   any_input >> any_output;
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "ANY_OUTPUT:__stream_0"
         input_stream: "INT_INPUT:__stream_1"
         output_stream: "ANY_OUTPUT:__stream_0"
@@ -958,7 +958,7 @@ TEST(GetOptionsTest, AddProto3Options) {
   SidePacket<AnyType> side = graph.SideIn("SIDE").SetName("side");
 
   auto& foo = graph.AddNode("Foo");
-  foo.GetOptions<mediapipe::SkyLightCalculatorOptions>();
+  foo.GetOptions<mediapipe_v01013_based::SkyLightCalculatorOptions>();
   base >> foo.In("BASE");
   side >> foo.SideIn("SIDE");
   Stream<AnyType> foo_out = foo.Out("OUT");
@@ -971,7 +971,7 @@ TEST(GetOptionsTest, AddProto3Options) {
   bar_out.SetName("out") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -1000,7 +1000,7 @@ TEST(GetOptionsTest, AddProto2Options) {
   SidePacket<AnyType> side = graph.SideIn("SIDE").SetName("side");
 
   auto& foo = graph.AddNode("Foo");
-  foo.GetOptions<mediapipe::NightLightCalculatorOptions>();
+  foo.GetOptions<mediapipe_v01013_based::NightLightCalculatorOptions>();
   base >> foo.In("BASE");
   side >> foo.SideIn("SIDE");
   Stream<AnyType> foo_out = foo.Out("OUT");
@@ -1012,7 +1012,7 @@ TEST(GetOptionsTest, AddProto2Options) {
   // Graph outputs.
   bar_out.SetName("out") >> graph.Out("OUT");
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -1041,8 +1041,8 @@ TEST(GetOptionsTest, AddBothProto23Options) {
   SidePacket<AnyType> side = graph.SideIn("SIDE").SetName("side");
 
   auto& foo = graph.AddNode("Foo");
-  foo.GetOptions<mediapipe::SkyLightCalculatorOptions>();
-  foo.GetOptions<mediapipe::NightLightCalculatorOptions>();
+  foo.GetOptions<mediapipe_v01013_based::SkyLightCalculatorOptions>();
+  foo.GetOptions<mediapipe_v01013_based::NightLightCalculatorOptions>();
   base >> foo.In("BASE");
   side >> foo.SideIn("SIDE");
   Stream<AnyType> foo_out = foo.Out("OUT");
@@ -1055,7 +1055,7 @@ TEST(GetOptionsTest, AddBothProto23Options) {
   bar_out.SetName("out") >> graph.Out("OUT");
 
   CalculatorGraphConfig expected =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -1105,4 +1105,4 @@ TEST(BuilderTest, CrashWithUsefulMessageIfSkippingInputSource) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder

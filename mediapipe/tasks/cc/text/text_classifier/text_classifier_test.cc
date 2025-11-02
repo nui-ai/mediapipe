@@ -35,13 +35,13 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/text_classifier/text_classifier_test_utils.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe::tasks::text::text_classifier {
+namespace mediapipe_v01013_based::tasks::text::text_classifier {
 namespace {
 
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::kMediaPipeTasksPayload;
-using ::mediapipe::tasks::components::containers::Category;
-using ::mediapipe::tasks::components::containers::Classifications;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::kMediaPipeTasksPayload;
+using ::mediapipe_v01013_based::tasks::components::containers::Category;
+using ::mediapipe_v01013_based::tasks::components::containers::Classifications;
 using ::testing::HasSubstr;
 using ::testing::Optional;
 
@@ -262,4 +262,4 @@ TEST_F(TextClassifierTest, BertLongPositive) {
   MP_ASSERT_OK(classifier->Close());
 }
 
-}  // namespace mediapipe::tasks::text::text_classifier
+}  // namespace mediapipe_v01013_based::tasks::text::text_classifier

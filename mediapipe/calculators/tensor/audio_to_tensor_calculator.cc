@@ -41,11 +41,11 @@
 #include "mediapipe/util/time_series_util.h"
 #include "pffft.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace {
 
-using Options = ::mediapipe::AudioToTensorCalculatorOptions;
+using Options = ::mediapipe_v01013_based::AudioToTensorCalculatorOptions;
 using DftTensorFormat = Options::DftTensorFormat;
 using FlushMode = Options::FlushMode;
 
@@ -119,8 +119,8 @@ bool IsValidFftSize(int size) {
 //     buffer.
 //
 // Inputs:
-//   AUDIO - mediapipe::Matrix
-//     The audio data represented as mediapipe::Matrix.
+//   AUDIO - mediapipe_v01013_based::Matrix
+//     The audio data represented as mediapipe_v01013_based::Matrix.
 //   SAMPLE_RATE - double @Optional
 //     The sample rate of the corresponding audio data in the "AUDIO" stream.
 //     If a sample rate packet is provided at Timestamp::PreStream(), the sample
@@ -269,7 +269,7 @@ absl::Status AudioToTensorCalculator::Open(CalculatorContext* cc) {
     memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();
   }
   const auto& options =
-      cc->Options<mediapipe::AudioToTensorCalculatorOptions>();
+      cc->Options<mediapipe_v01013_based::AudioToTensorCalculatorOptions>();
   num_channels_ = options.num_channels();
   num_samples_ = options.num_samples();
   if (options.has_num_overlapping_samples()) {
@@ -300,9 +300,9 @@ absl::Status AudioToTensorCalculator::Open(CalculatorContext* cc) {
         << "Must either specify the time series header of the \"AUDIO\" stream "
            "or have the \"SAMPLE_RATE\" stream connected.";
     if (!kAudioIn(cc).Header().IsEmpty()) {
-      mediapipe::TimeSeriesHeader input_header;
+      mediapipe_v01013_based::TimeSeriesHeader input_header;
       MP_RETURN_IF_ERROR(
-          mediapipe::time_series_util::FillTimeSeriesHeaderIfValid(
+          mediapipe_v01013_based::time_series_util::FillTimeSeriesHeaderIfValid(
               kAudioIn(cc).Header(), &input_header));
       if (stream_mode_) {
         MP_RETURN_IF_ERROR(SetupStreamingResampler(input_header.sample_rate()));
@@ -336,7 +336,7 @@ absl::Status AudioToTensorCalculator::Open(CalculatorContext* cc) {
 absl::Status AudioToTensorCalculator::Process(CalculatorContext* cc) {
   if (cc->InputTimestamp() == Timestamp::PreStream()) {
     double current_source_sample_rate = kAudioSampleRateIn(cc).Get();
-    if (cc->Options<mediapipe::AudioToTensorCalculatorOptions>()
+    if (cc->Options<mediapipe_v01013_based::AudioToTensorCalculatorOptions>()
             .stream_mode()) {
       return SetupStreamingResampler(current_source_sample_rate);
     } else {
@@ -395,7 +395,7 @@ absl::Status AudioToTensorCalculator::ProcessStreamingData(
     next_output_timestamp_ = initial_timestamp_;
   }
   if (source_sample_rate_ != -1 && check_inconsistent_timestamps_) {
-    mediapipe::time_series_util::LogWarningIfTimestampIsInconsistent(
+    mediapipe_v01013_based::time_series_util::LogWarningIfTimestampIsInconsistent(
         cc->InputTimestamp(), initial_timestamp_, cumulative_input_samples_,
         source_sample_rate_);
     cumulative_input_samples_ += input_buffer.cols();
@@ -608,4 +608,4 @@ absl::Status AudioToTensorCalculator::ProcessBuffer(const Matrix& buffer,
 MEDIAPIPE_REGISTER_NODE(AudioToTensorCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -7,15 +7,15 @@
 #include "mediapipe/framework/calculator_context.h"
 #include "mediapipe/framework/formats/detection.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class PassThroughOrEmptyDetectionVectorCalculatorImpl
-    : public mediapipe::api2::NodeImpl<
+    : public mediapipe_v01013_based::api2::NodeImpl<
           PassThroughOrEmptyDetectionVectorCalculator> {
  public:
   absl::Status Process(CalculatorContext* cc) override {
     if (kInputVector(cc).IsEmpty()) {
-      kOutputVector(cc).Send(std::vector<mediapipe::Detection>{});
+      kOutputVector(cc).Send(std::vector<mediapipe_v01013_based::Detection>{});
       return absl::OkStatus();
     }
     kOutputVector(cc).Send(kInputVector(cc));
@@ -24,4 +24,4 @@ class PassThroughOrEmptyDetectionVectorCalculatorImpl
 };
 MEDIAPIPE_NODE_IMPLEMENTATION(PassThroughOrEmptyDetectionVectorCalculatorImpl);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

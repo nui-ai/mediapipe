@@ -27,7 +27,7 @@ node {
   input_stream: "pose_landmarks"
   output_stream: "left_hand_landmarks_from_pose"
   options: {
-    [mediapipe.SplitVectorCalculatorOptions.ext] {
+    [mediapipe_v01013_based.SplitVectorCalculatorOptions.ext] {
       ranges: { begin: 15 end: 16 }
       ranges: { begin: 17 end: 18 }
       ranges: { begin: 19 end: 20 }
@@ -54,7 +54,7 @@ node {
   input_stream: "pose_landmarks"
   output_stream: "right_hand_landmarks_from_pose"
   options: {
-    [mediapipe.SplitVectorCalculatorOptions.ext] {
+    [mediapipe_v01013_based.SplitVectorCalculatorOptions.ext] {
       ranges: { begin: 16 end: 17 }
       ranges: { begin: 18 end: 19 }
       ranges: { begin: 20 end: 21 }

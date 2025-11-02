@@ -32,10 +32,10 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/gesture_recognizer/calculators/landmarks_to_matrix_calculator.pb.h"
 
 // TODO Update to use API2
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
-using ::mediapipe::NormalizedRect;
+using ::mediapipe_v01013_based::NormalizedRect;
 
 namespace {
 
@@ -254,4 +254,4 @@ absl::Status LandmarksToMatrixCalculator::Process(CalculatorContext* cc) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

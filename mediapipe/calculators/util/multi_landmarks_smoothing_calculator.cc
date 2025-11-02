@@ -28,16 +28,16 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::landmarks_smoothing::GetObjectScale;
-using ::mediapipe::landmarks_smoothing::LandmarksToNormalizedLandmarks;
-using ::mediapipe::landmarks_smoothing::MultiLandmarkFilters;
-using ::mediapipe::landmarks_smoothing::NormalizedLandmarksToLandmarks;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::landmarks_smoothing::GetObjectScale;
+using ::mediapipe_v01013_based::landmarks_smoothing::LandmarksToNormalizedLandmarks;
+using ::mediapipe_v01013_based::landmarks_smoothing::MultiLandmarkFilters;
+using ::mediapipe_v01013_based::landmarks_smoothing::NormalizedLandmarksToLandmarks;
 
 }  // namespace
 
@@ -111,4 +111,4 @@ class MultiLandmarksSmoothingCalculatorImpl
 MEDIAPIPE_NODE_IMPLEMENTATION(MultiLandmarksSmoothingCalculatorImpl);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

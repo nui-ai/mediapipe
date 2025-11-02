@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/logging.h"
 #include "mediapipe/framework/tool/container_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 // Returns a CalculatorGraph to run a single calculator.
@@ -132,4 +132,4 @@ TEST_F(SwitchDemuxCalculatorTest, BasicDataFlow) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

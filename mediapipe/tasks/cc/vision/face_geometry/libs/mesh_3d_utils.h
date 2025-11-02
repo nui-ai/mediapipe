@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/statusor.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/mesh_3d.pb.h"
 
-namespace mediapipe::tasks::vision::face_geometry {
+namespace mediapipe_v01013_based::tasks::vision::face_geometry {
 
 enum class VertexComponent { POSITION, TEX_COORD };
 
@@ -46,6 +46,6 @@ absl::StatusOr<uint32_t> GetVertexComponentOffset(
 absl::StatusOr<uint32_t> GetVertexComponentSize(
     proto::Mesh3d::VertexType vertex_type, VertexComponent vertex_component);
 
-}  // namespace mediapipe::tasks::vision::face_geometry
+}  // namespace mediapipe_v01013_based::tasks::vision::face_geometry
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_FACE_GEOMETRY_LIBS_MESH_3D_UTILS_H_

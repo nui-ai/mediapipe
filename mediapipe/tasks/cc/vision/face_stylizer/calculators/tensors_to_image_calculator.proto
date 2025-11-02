@@ -14,20 +14,20 @@
 
 syntax = "proto2";
 
-package mediapipe.tasks;
+package mediapipe_v01013_based.tasks;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/gpu/gpu_origin.proto";
 
 message TensorsToImageCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional TensorsToImageCalculatorOptions ext = 511831156;
   }
 
   // For CONVENTIONAL mode for OpenGL, input image starts at bottom and needs
   // to be flipped vertically as tensors are expected to start at top.
   // (DEFAULT or unset interpreted as CONVENTIONAL.)
-  optional mediapipe.GpuOrigin.Mode gpu_origin = 1;
+  optional mediapipe_v01013_based.GpuOrigin.Mode gpu_origin = 1;
 
   // Range of float values [min, max].
   // min, must be strictly less than max.

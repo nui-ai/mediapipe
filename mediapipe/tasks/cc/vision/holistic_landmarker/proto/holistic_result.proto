@@ -15,20 +15,20 @@ limitations under the License.
 
 syntax = "proto3";
 
-package mediapipe.tasks.vision.holistic_landmarker.proto;
+package mediapipe_v01013_based.tasks.vision.holistic_landmarker.proto;
 
 import "mediapipe/framework/formats/classification.proto";
 import "mediapipe/framework/formats/landmark.proto";
 
-option java_package = "com.google.mediapipe.tasks.vision.holisticlandmarker";
+option java_package = "com.google.mediapipe_v01013_based.tasks.vision.holisticlandmarker";
 option java_outer_classname = "HolisticResultProto";
 
 message HolisticResult {
-  mediapipe.NormalizedLandmarkList pose_landmarks = 1;
-  mediapipe.LandmarkList pose_world_landmarks = 7;
-  mediapipe.NormalizedLandmarkList left_hand_landmarks = 2;
-  mediapipe.NormalizedLandmarkList right_hand_landmarks = 3;
-  mediapipe.NormalizedLandmarkList face_landmarks = 4;
-  mediapipe.ClassificationList face_blendshapes = 6;
-  mediapipe.NormalizedLandmarkList auxiliary_landmarks = 5;
+  mediapipe_v01013_based.NormalizedLandmarkList pose_landmarks = 1;
+  mediapipe_v01013_based.LandmarkList pose_world_landmarks = 7;
+  mediapipe_v01013_based.NormalizedLandmarkList left_hand_landmarks = 2;
+  mediapipe_v01013_based.NormalizedLandmarkList right_hand_landmarks = 3;
+  mediapipe_v01013_based.NormalizedLandmarkList face_landmarks = 4;
+  mediapipe_v01013_based.ClassificationList face_blendshapes = 6;
+  mediapipe_v01013_based.NormalizedLandmarkList auxiliary_landmarks = 5;
 }

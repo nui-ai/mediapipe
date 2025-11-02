@@ -39,7 +39,7 @@
 #include "mediapipe/framework/port/port.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace image_frame_util {
 
@@ -50,10 +50,10 @@ void RescaleImageFrame(const ImageFrame& source_frame, const int width,
   ABSL_CHECK(destination_frame);
   ABSL_CHECK_EQ(ImageFormat::SRGB, source_frame.Format());
 
-  cv::Mat source_mat = ::mediapipe::formats::MatView(&source_frame);
+  cv::Mat source_mat = ::mediapipe_v01013_based::formats::MatView(&source_frame);
   destination_frame->Reset(source_frame.Format(), width, height,
                            alignment_boundary);
-  cv::Mat destination_mat = ::mediapipe::formats::MatView(destination_frame);
+  cv::Mat destination_mat = ::mediapipe_v01013_based::formats::MatView(destination_frame);
   image_frame_util::RescaleSrgbImage(source_mat, width, height,
                                      open_cv_interpolation_algorithm,
                                      &destination_mat);
@@ -242,17 +242,17 @@ void SrgbToMpegYCbCr(const uint8_t r, const uint8_t g, const uint8_t b,  //
   // don't care about the rounding direction for values exactly between
   // two integers.
   *y = static_cast<uint8_t>(
-      mediapipe::MathUtil::FastIntRound(16.0 +                 //
+      mediapipe_v01013_based::MathUtil::FastIntRound(16.0 +                 //
                                         65.481 * r / 255.0 +   //
                                         128.553 * g / 255.0 +  //
                                         24.966 * b / 255.0));
   *cb = static_cast<uint8_t>(
-      mediapipe::MathUtil::FastIntRound(128.0 +                //
+      mediapipe_v01013_based::MathUtil::FastIntRound(128.0 +                //
                                         -37.797 * r / 255.0 +  //
                                         -74.203 * g / 255.0 +  //
                                         112.0 * b / 255.0));
   *cr = static_cast<uint8_t>(
-      mediapipe::MathUtil::FastIntRound(128.0 +                //
+      mediapipe_v01013_based::MathUtil::FastIntRound(128.0 +                //
                                         112.0 * r / 255.0 +    //
                                         -93.786 * g / 255.0 +  //
                                         -18.214 * b / 255.0));
@@ -263,14 +263,14 @@ void MpegYCbCrToSrgb(const uint8_t y, const uint8_t cb, const uint8_t cr,  //
   // ITU-R BT.601 conversion from YCbCr to sRGB
   // Use SafeRound since many MPEG YCbCr values do not correspond directly
   // to an sRGB value.
-  *r = mediapipe::MathUtil::SafeRound<uint8_t, double>(  //
+  *r = mediapipe_v01013_based::MathUtil::SafeRound<uint8_t, double>(  //
       255.0 / 219.0 * (y - 16.0) +                       //
       255.0 / 112.0 * 0.701 * (cr - 128.0));
-  *g = mediapipe::MathUtil::SafeRound<uint8_t, double>(
+  *g = mediapipe_v01013_based::MathUtil::SafeRound<uint8_t, double>(
       255.0 / 219.0 * (y - 16.0) -                            //
       255.0 / 112.0 * 0.886 * 0.114 / 0.587 * (cb - 128.0) -  //
       255.0 / 112.0 * 0.701 * 0.299 / 0.587 * (cr - 128.0));
-  *b = mediapipe::MathUtil::SafeRound<uint8_t, double>(  //
+  *b = mediapipe_v01013_based::MathUtil::SafeRound<uint8_t, double>(  //
       255.0 / 219.0 * (y - 16.0) +                       //
       255.0 / 112.0 * 0.886 * (cb - 128.0));
 }
@@ -345,4 +345,4 @@ void LinearRgb16ToSrgb(const cv::Mat& source, cv::Mat* destination) {
 }
 
 }  // namespace image_frame_util
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

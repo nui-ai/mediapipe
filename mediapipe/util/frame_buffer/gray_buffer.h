@@ -20,7 +20,7 @@
 #include "HalideBuffer.h"
 #include "HalideRuntime.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace frame_buffer {
 
 // GrayBuffer represents a view over a grayscale (i.e. luminance,
@@ -132,6 +132,6 @@ class GrayBuffer {
 };
 
 }  // namespace frame_buffer
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_FRAME_BUFFER_GRAY_BUFFER_H_

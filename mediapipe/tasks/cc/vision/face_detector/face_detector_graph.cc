@@ -41,18 +41,18 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_detector/proto/face_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/utils/image_tensor_specs.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_detector {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::Tensor;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::vision::face_detector::proto::
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::Tensor;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::vision::face_detector::proto::
     FaceDetectorGraphOptions;
 
 namespace {
@@ -77,7 +77,7 @@ struct FaceDetectionOuts {
 };
 
 void ConfigureSsdAnchorsCalculator(
-    mediapipe::SsdAnchorsCalculatorOptions* options) {
+    mediapipe_v01013_based::SsdAnchorsCalculatorOptions* options) {
   // TODO config SSD anchors parameters from metadata.
   options->set_num_layers(4);
   options->set_min_scale(0.1484375);
@@ -97,7 +97,7 @@ void ConfigureSsdAnchorsCalculator(
 
 void ConfigureTensorsToDetectionsCalculator(
     const FaceDetectorGraphOptions& tasks_options,
-    mediapipe::TensorsToDetectionsCalculatorOptions* options) {
+    mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions* options) {
   // TODO use metadata to configure these fields.
   options->set_num_classes(1);
   options->set_num_boxes(896);
@@ -118,17 +118,17 @@ void ConfigureTensorsToDetectionsCalculator(
 
 void ConfigureNonMaxSuppressionCalculator(
     const FaceDetectorGraphOptions& tasks_options,
-    mediapipe::NonMaxSuppressionCalculatorOptions* options) {
+    mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions* options) {
   options->set_min_suppression_threshold(
       tasks_options.min_suppression_threshold());
   options->set_overlap_type(
-      mediapipe::NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
+      mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
   options->set_algorithm(
-      mediapipe::NonMaxSuppressionCalculatorOptions::WEIGHTED);
+      mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions::WEIGHTED);
 }
 
 void ConfigureDetectionsToRectsCalculator(
-    mediapipe::DetectionsToRectsCalculatorOptions* options) {
+    mediapipe_v01013_based::DetectionsToRectsCalculatorOptions* options) {
   // Left eye from the observer’s point of view.
   options->set_rotation_vector_start_keypoint_index(0);
   // Right eye from the observer’s point of view.
@@ -137,7 +137,7 @@ void ConfigureDetectionsToRectsCalculator(
 }
 
 void ConfigureRectTransformationCalculator(
-    mediapipe::RectTransformationCalculatorOptions* options) {
+    mediapipe_v01013_based::RectTransformationCalculatorOptions* options) {
   options->set_scale_x(1.5);
   options->set_scale_y(1.5);
 }
@@ -240,7 +240,7 @@ class FaceDetectorGraph : public core::ModelTaskGraph {
              .mutable_image_to_tensor_options();
     image_to_tensor_options.set_keep_aspect_ratio(true);
     image_to_tensor_options.set_border_mode(
-        mediapipe::ImageToTensorCalculatorOptions::BORDER_ZERO);
+        mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
     image_in >> preprocessing.In(kImageTag);
     norm_rect_in >> preprocessing.In(kNormRectTag);
     auto preprocessed_tensors = preprocessing.Out(kTensorsTag);
@@ -257,7 +257,7 @@ class FaceDetectorGraph : public core::ModelTaskGraph {
     // Generates a single side packet containing a vector of SSD anchors.
     auto& ssd_anchor = graph.AddNode("SsdAnchorsCalculator");
     ConfigureSsdAnchorsCalculator(
-        &ssd_anchor.GetOptions<mediapipe::SsdAnchorsCalculatorOptions>());
+        &ssd_anchor.GetOptions<mediapipe_v01013_based::SsdAnchorsCalculatorOptions>());
     auto anchors = ssd_anchor.SideOut("");
 
     // Converts output tensors to Detections.
@@ -266,7 +266,7 @@ class FaceDetectorGraph : public core::ModelTaskGraph {
     ConfigureTensorsToDetectionsCalculator(
         subgraph_options,
         &tensors_to_detections
-             .GetOptions<mediapipe::TensorsToDetectionsCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions>());
     model_output_tensors >> tensors_to_detections.In(kTensorsTag);
     anchors >> tensors_to_detections.SideIn(kAnchorsTag);
     auto detections = tensors_to_detections.Out(kDetectionsTag);
@@ -277,7 +277,7 @@ class FaceDetectorGraph : public core::ModelTaskGraph {
     ConfigureNonMaxSuppressionCalculator(
         subgraph_options,
         &non_maximum_suppression
-             .GetOptions<mediapipe::NonMaxSuppressionCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions>());
     detections >> non_maximum_suppression.In("");
     auto nms_detections = non_maximum_suppression.Out("");
 
@@ -293,7 +293,7 @@ class FaceDetectorGraph : public core::ModelTaskGraph {
       auto& clip_detection_vector_size =
           graph.AddNode("ClipDetectionVectorSizeCalculator");
       clip_detection_vector_size
-          .GetOptions<mediapipe::ClipVectorSizeCalculatorOptions>()
+          .GetOptions<mediapipe_v01013_based::ClipVectorSizeCalculatorOptions>()
           .set_max_vec_size(subgraph_options.num_faces());
       face_detections >> clip_detection_vector_size.In("");
       face_detections =
@@ -306,7 +306,7 @@ class FaceDetectorGraph : public core::ModelTaskGraph {
     auto& detections_to_rects = graph.AddNode("DetectionsToRectsCalculator");
     ConfigureDetectionsToRectsCalculator(
         &detections_to_rects
-             .GetOptions<mediapipe::DetectionsToRectsCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::DetectionsToRectsCalculatorOptions>());
     image_size >> detections_to_rects.In(kImageSizeTag);
     face_detections >> detections_to_rects.In(kDetectionsTag);
     auto face_rects = detections_to_rects.Out(kNormRectsTag)
@@ -317,7 +317,7 @@ class FaceDetectorGraph : public core::ModelTaskGraph {
     auto& rect_transformation = graph.AddNode("RectTransformationCalculator");
     ConfigureRectTransformationCalculator(
         &rect_transformation
-             .GetOptions<mediapipe::RectTransformationCalculatorOptions>());
+             .GetOptions<mediapipe_v01013_based::RectTransformationCalculatorOptions>());
     face_rects >> rect_transformation.In(kNormRectsTag);
     image_size >> rect_transformation.In(kImageSizeTag);
     auto expanded_face_rects =
@@ -342,9 +342,9 @@ class FaceDetectorGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::vision::face_detector::FaceDetectorGraph)
+    ::mediapipe_v01013_based::tasks::vision::face_detector::FaceDetectorGraph)
 
 }  // namespace face_detector
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

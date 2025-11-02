@@ -9,7 +9,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using ::testing::AllOf;
@@ -24,10 +24,10 @@ const int kDefaultValue = 0;
 
 // Utility to a create a mediapipe graph runner with the tested calculator and a
 // default value, for all the tests.
-class ValueOrDefaultRunner : public mediapipe::CalculatorRunner {
+class ValueOrDefaultRunner : public mediapipe_v01013_based::CalculatorRunner {
  public:
   ValueOrDefaultRunner()
-      : mediapipe::CalculatorRunner(R"pb(
+      : mediapipe_v01013_based::CalculatorRunner(R"pb(
           calculator: "ValueOrDefaultCalculator"
           input_stream: "IN:in"
           input_stream: "TICK:tick"
@@ -35,7 +35,7 @@ class ValueOrDefaultRunner : public mediapipe::CalculatorRunner {
           output_stream: "OUT:out"
           output_stream: "FLAG:used_default"
         )pb") {
-    MutableSidePackets()->Index(0) = mediapipe::MakePacket<int>(kDefaultValue);
+    MutableSidePackets()->Index(0) = mediapipe_v01013_based::MakePacket<int>(kDefaultValue);
   }
 
   // Utility to push inputs to the runner to the TICK stream, so we could easily
@@ -43,19 +43,19 @@ class ValueOrDefaultRunner : public mediapipe::CalculatorRunner {
   void TickAt(int64_t time) {
     // The type or value of the stream isn't relevant, we use just a bool.
     MutableInputs()->Tag("TICK").packets.push_back(
-        mediapipe::Adopt(new bool(false)).At(mediapipe::Timestamp(time)));
+        mediapipe_v01013_based::Adopt(new bool(false)).At(mediapipe_v01013_based::Timestamp(time)));
   }
 
   // Utility to push the real inputs to the runner (IN stream).
   void ProvideInput(int64_t time, int value) {
     MutableInputs()->Tag("IN").packets.push_back(
-        mediapipe::Adopt(new int(value)).At(mediapipe::Timestamp(time)));
+        mediapipe_v01013_based::Adopt(new int(value)).At(mediapipe_v01013_based::Timestamp(time)));
   }
 
   // Extracts the timestamps (as int64) of the output stream of the calculator.
   std::vector<int64_t> GetOutputTimestamps() const {
     std::vector<int64_t> timestamps;
-    for (const mediapipe::Packet& packet : Outputs().Tag("OUT").packets) {
+    for (const mediapipe_v01013_based::Packet& packet : Outputs().Tag("OUT").packets) {
       timestamps.emplace_back(packet.Timestamp().Value());
     }
     return timestamps;
@@ -64,7 +64,7 @@ class ValueOrDefaultRunner : public mediapipe::CalculatorRunner {
   // Extracts the values from the output stream of the calculator.
   std::vector<int> GetOutputValues() const {
     std::vector<int> values;
-    for (const mediapipe::Packet& packet : Outputs().Tag("OUT").packets) {
+    for (const mediapipe_v01013_based::Packet& packet : Outputs().Tag("OUT").packets) {
       values.emplace_back(packet.Get<int>());
     }
     return values;
@@ -74,7 +74,7 @@ class ValueOrDefaultRunner : public mediapipe::CalculatorRunner {
   // times without an input value (i.e. using the default value).
   std::vector<int64_t> GetFlagTimestamps() const {
     std::vector<int64_t> timestamps;
-    for (const mediapipe::Packet& packet : Outputs().Tag("FLAG").packets) {
+    for (const mediapipe_v01013_based::Packet& packet : Outputs().Tag("FLAG").packets) {
       timestamps.emplace_back(packet.Timestamp().Value());
     }
     return timestamps;
@@ -83,7 +83,7 @@ class ValueOrDefaultRunner : public mediapipe::CalculatorRunner {
   // Extracts the output from the flags stream (which should always be true).
   std::vector<bool> GetFlagValues() const {
     std::vector<bool> flags;
-    for (const mediapipe::Packet& packet : Outputs().Tag("FLAG").packets) {
+    for (const mediapipe_v01013_based::Packet& packet : Outputs().Tag("FLAG").packets) {
       flags.emplace_back(packet.Get<bool>());
     }
     return flags;
@@ -237,4 +237,4 @@ TEST(ValueOrDefaultCalculatorTest, FullTest) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 // We wrap the enum in a message to avoid namespace collisions.
 message ScaleMode {

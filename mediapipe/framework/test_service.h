@@ -18,7 +18,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/graph_service.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using TestServiceObject = std::map<std::string, int>;
 
@@ -57,6 +57,6 @@ class TestServiceCalculator : public CalculatorBase {
   int optional_bias_ = 0;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TEST_SERVICE_H_

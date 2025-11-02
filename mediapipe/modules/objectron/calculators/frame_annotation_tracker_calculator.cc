@@ -29,7 +29,7 @@ constexpr char kOutputTrackedFrameAnnotationTag[] = "TRACKED_FRAME_ANNOTATION";
 constexpr char kOutputCancelObjectIdTag[] = "CANCEL_OBJECT_ID";
 }  // namespace
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Tracks frame annotations seeded/updated by FRAME_ANNOTATION input_stream.
 // When using this calculator, make sure FRAME_ANNOTATION and TRACKED_BOXES
@@ -119,7 +119,7 @@ absl::Status FrameAnnotationTrackerCalculator::Process(CalculatorContext* cc) {
         // timestamp.
         cc->Outputs()
             .Tag(kOutputCancelObjectIdTag)
-            .AddPacket(mediapipe::MakePacket<int>(id).At(packet_timestamp++));
+            .AddPacket(mediapipe_v01013_based::MakePacket<int>(id).At(packet_timestamp++));
       }
     }
   }
@@ -131,4 +131,4 @@ absl::Status FrameAnnotationTrackerCalculator::Close(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

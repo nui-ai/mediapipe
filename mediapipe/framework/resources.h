@@ -11,7 +11,7 @@
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class Resource {
  public:
@@ -181,6 +181,6 @@ std::unique_ptr<Resources> CreateResourcesWithMapping(
     std::unique_ptr<Resources> resources,
     absl::flat_hash_map<std::string, std::string> mapping);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_RESOURCES_H_

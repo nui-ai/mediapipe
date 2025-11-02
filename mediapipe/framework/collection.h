@@ -35,7 +35,7 @@
 #include "mediapipe/framework/tool/validate_name.h"
 #include "mediapipe/framework/type_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace internal {
 
 // A class to handle errors that occur in Collection.  For most
@@ -108,7 +108,7 @@ class Collection {
   Collection& operator=(const Collection&) = delete;
   // Makes a Collection using the given TagMap (which should be shared
   // between collections).
-  // Refer to mediapipe::tool::CreateTagMap for examples of how to construct a
+  // Refer to mediapipe_v01013_based::tool::CreateTagMap for examples of how to construct a
   // collection from a vector of "TAG:<index>:name" strings, or from an integer
   // number of indexes, etc.
   explicit Collection(std::shared_ptr<tool::TagMap> tag_map);
@@ -431,7 +431,7 @@ template <typename T, CollectionStorage storage, typename ErrorHandler>
 typename Collection<T, storage, ErrorHandler>::value_type*&
 Collection<T, storage, ErrorHandler>::GetPtr(CollectionItemId id) {
   static_assert(storage == CollectionStorage::kStorePointer,
-                "mediapipe::internal::Collection<T>::GetPtr() is only "
+                "mediapipe_v01013_based::internal::Collection<T>::GetPtr() is only "
                 "available for collections that were defined with template "
                 "argument storage == CollectionStorage::kStorePointer.");
   ABSL_CHECK_LE(BeginId(), id);
@@ -443,7 +443,7 @@ template <typename T, CollectionStorage storage, typename ErrorHandler>
 const typename Collection<T, storage, ErrorHandler>::value_type*
 Collection<T, storage, ErrorHandler>::GetPtr(CollectionItemId id) const {
   static_assert(storage == CollectionStorage::kStorePointer,
-                "mediapipe::internal::Collection<T>::GetPtr() is only "
+                "mediapipe_v01013_based::internal::Collection<T>::GetPtr() is only "
                 "available for collections that were defined with template "
                 "argument storage == CollectionStorage::kStorePointer.");
   ABSL_CHECK_LE(BeginId(), id);
@@ -560,6 +560,6 @@ bool HasTagValue(const C& c, const absl::string_view tag) {
   return HasTagValue(c->Inputs(), tag);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_COLLECTION_H_

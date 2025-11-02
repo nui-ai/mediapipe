@@ -36,7 +36,7 @@
 #include "mediapipe/util/tracking/measure_time.h"
 #include "mediapipe/util/tracking/motion_models.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 bool MotionBox::print_motion_box_warnings_ = true;
 
@@ -3402,4 +3402,4 @@ void GetFeatureIndicesWithinBox(const std::vector<Vector2_f>& features,
   }
 }
 
-}  // namespace mediapipe.
+}  // namespace mediapipe_v01013_based.

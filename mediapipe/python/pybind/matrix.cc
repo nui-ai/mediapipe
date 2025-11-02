@@ -19,7 +19,7 @@
 #include "pybind11/numpy.h"
 #include "pybind11/pybind11.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace python {
 
 namespace py = pybind11;
@@ -27,11 +27,11 @@ namespace py = pybind11;
 void MatrixSubmodule(pybind11::module* module) {
   py::module m = module->def_submodule("matrix", "MediaPipe matrix module.");
 
-  py::class_<mediapipe::Matrix>(m, "Matrix")
+  py::class_<mediapipe_v01013_based::Matrix>(m, "Matrix")
       .def(py::init(
           // Pass by reference.
           [](const Eigen::Ref<const Eigen::MatrixXf>& m) { return m; }));
 }
 
 }  // namespace python
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

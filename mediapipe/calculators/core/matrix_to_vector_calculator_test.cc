@@ -26,11 +26,11 @@
 #include "mediapipe/util/time_series_test_util.h"
 #include "mediapipe/util/time_series_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 class MatrixToVectorCalculatorTest
-    : public mediapipe::TimeSeriesCalculatorTest<mediapipe::NoOptions> {
+    : public mediapipe_v01013_based::TimeSeriesCalculatorTest<mediapipe_v01013_based::NoOptions> {
  protected:
   void SetUp() override { calculator_name_ = "MatrixToVectorCalculator"; }
 
@@ -85,4 +85,4 @@ TEST_F(MatrixToVectorCalculatorTest, RegularMatrix) {
 
 }  // namespace
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 constexpr char kTopKScoresTag[] = "TOP_K_SCORES";
 constexpr char kTopKIndexesTag[] = "TOP_K_INDEXES";
@@ -157,4 +157,4 @@ TEST(TopKScoresCalculatorTest, TestBothTopKAndThreshold) {
   EXPECT_NEAR(0.3, scores[2], 1e-5);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

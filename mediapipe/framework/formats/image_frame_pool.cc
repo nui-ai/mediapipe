@@ -16,7 +16,7 @@
 
 #include "absl/synchronization/mutex.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 ImageFramePool::ImageFramePool(int width, int height,
                                ImageFormat::Format format, int keep_count)
@@ -85,4 +85,4 @@ void ImageFramePool::TrimAvailable(
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

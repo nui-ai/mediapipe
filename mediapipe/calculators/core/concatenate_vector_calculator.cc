@@ -28,7 +28,7 @@
 #include "tensorflow/lite/delegates/gpu/gl/gl_buffer.h"
 #endif  // !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Example config:
 // node {
@@ -74,15 +74,15 @@ MEDIAPIPE_REGISTER_NODE(ConcatenateTfLiteTensorVectorCalculator);
 typedef ConcatenateVectorCalculator<Tensor> ConcatenateTensorVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateTensorVectorCalculator);
 
-typedef ConcatenateVectorCalculator<::mediapipe::NormalizedLandmark>
+typedef ConcatenateVectorCalculator<::mediapipe_v01013_based::NormalizedLandmark>
     ConcatenateLandmarkVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateLandmarkVectorCalculator);
 
-typedef ConcatenateVectorCalculator<::mediapipe::LandmarkList>
+typedef ConcatenateVectorCalculator<::mediapipe_v01013_based::LandmarkList>
     ConcatenateLandmarkListVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateLandmarkListVectorCalculator);
 
-typedef ConcatenateVectorCalculator<::mediapipe::NormalizedLandmarkList>
+typedef ConcatenateVectorCalculator<::mediapipe_v01013_based::NormalizedLandmarkList>
     ConcatenateNormalizedLandmarkListVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateNormalizedLandmarkListVectorCalculator);
 
@@ -91,7 +91,7 @@ using ConcatenateLandmarListVectorCalculator =
     ConcatenateNormalizedLandmarkListVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateLandmarListVectorCalculator);
 
-typedef ConcatenateVectorCalculator<mediapipe::ClassificationList>
+typedef ConcatenateVectorCalculator<mediapipe_v01013_based::ClassificationList>
     ConcatenateClassificationListVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateClassificationListVectorCalculator);
 
@@ -101,11 +101,11 @@ typedef ConcatenateVectorCalculator<::tflite::gpu::gl::GlBuffer>
 MEDIAPIPE_REGISTER_NODE(ConcatenateGlBufferVectorCalculator);
 #endif
 
-typedef ConcatenateVectorCalculator<mediapipe::RenderData>
+typedef ConcatenateVectorCalculator<mediapipe_v01013_based::RenderData>
     ConcatenateRenderDataVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateRenderDataVectorCalculator);
 
-typedef ConcatenateVectorCalculator<mediapipe::Image>
+typedef ConcatenateVectorCalculator<mediapipe_v01013_based::Image>
     ConcatenateImageVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateImageVectorCalculator);
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

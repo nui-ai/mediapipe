@@ -36,11 +36,11 @@
 #include "mediapipe/framework/port/status_matchers.h"  // NOLINT(build/deprecated)
 #include "mediapipe/framework/resources.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::SidePacket;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::SidePacket;
 
 class SubgraphTest : public ::testing::Test {
  protected:
@@ -93,16 +93,16 @@ TEST_F(SubgraphTest, LinkedSubgraph) {
   TestGraphEnclosing("DubQuadTestSubgraph");
 }
 
-const mediapipe::GraphService<std::string> kStringTestService{
-    "mediapipe::StringTestService"};
+const mediapipe_v01013_based::GraphService<std::string> kStringTestService{
+    "mediapipe_v01013_based::StringTestService"};
 class EmitSideServiceStringTestSubgraph : public Subgraph {
  public:
   absl::StatusOr<CalculatorGraphConfig> GetConfig(
-      mediapipe::SubgraphContext* sc) override {
+      mediapipe_v01013_based::SubgraphContext* sc) override {
     auto string_service = sc->Service(kStringTestService);
     RET_CHECK(string_service.IsAvailable()) << "Service not available";
     CalculatorGraphConfig config =
-        mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(
+        mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
             absl::StrFormat(R"(
           output_side_packet: "string"
           node {
@@ -123,7 +123,7 @@ REGISTER_MEDIAPIPE_GRAPH(EmitSideServiceStringTestSubgraph);
 
 TEST(SubgraphServicesTest, CanUseGraphServiceToReceiveString) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         output_side_packet: "str"
         node {
           calculator: "EmitSideServiceStringTestSubgraph"
@@ -147,14 +147,14 @@ TEST(SubgraphServicesTest, CanUseGraphServiceToReceiveString) {
 class EmitFileStringTestSubgraph : public Subgraph {
  public:
   absl::StatusOr<CalculatorGraphConfig> GetConfig(
-      mediapipe::SubgraphContext* sc) override {
+      mediapipe_v01013_based::SubgraphContext* sc) override {
     MP_ASSIGN_OR_RETURN(
-        std::unique_ptr<mediapipe::Resource> data,
+        std::unique_ptr<mediapipe_v01013_based::Resource> data,
         sc->GetResources().Get(
             "mediapipe/framework/testdata/resource_subgraph.data"));
     Graph graph;
     auto& node = graph.AddNode("ConstantSidePacketCalculator");
-    node.GetOptions<mediapipe::ConstantSidePacketCalculatorOptions>()
+    node.GetOptions<mediapipe_v01013_based::ConstantSidePacketCalculatorOptions>()
         .add_packet()
         ->set_string_value(std::string(data->ToStringView()));
     SidePacket<std::string> side_string =
@@ -167,7 +167,7 @@ REGISTER_MEDIAPIPE_GRAPH(EmitFileStringTestSubgraph);
 
 TEST(SubgraphServicesTest, CanLoadResourcesThroughSubgraphContext) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         output_side_packet: "str"
         node {
           calculator: "EmitFileStringTestSubgraph"
@@ -188,7 +188,7 @@ TEST(SubgraphServicesTest, CanLoadResourcesThroughSubgraphContext) {
 class OptionsCheckingSubgraph : public Subgraph {
  public:
   absl::StatusOr<CalculatorGraphConfig> GetConfig(
-      mediapipe::SubgraphContext* sc) override {
+      mediapipe_v01013_based::SubgraphContext* sc) override {
     std::string subgraph_side_packet_val;
     if (sc->HasOptions<ConstantSidePacketCalculatorOptions>()) {
       subgraph_side_packet_val =
@@ -198,7 +198,7 @@ class OptionsCheckingSubgraph : public Subgraph {
     }
     Graph graph;
     auto& node = graph.AddNode("ConstantSidePacketCalculator");
-    node.GetOptions<mediapipe::ConstantSidePacketCalculatorOptions>()
+    node.GetOptions<mediapipe_v01013_based::ConstantSidePacketCalculatorOptions>()
         .add_packet()
         ->set_string_value(subgraph_side_packet_val);
     SidePacket<std::string> side_string =
@@ -211,7 +211,7 @@ REGISTER_MEDIAPIPE_GRAPH(OptionsCheckingSubgraph);
 
 TEST_F(SubgraphTest, CheckSubgraphOptionsPassedIn) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         output_side_packet: "str"
         node {
           calculator: "OptionsCheckingSubgraph"
@@ -233,4 +233,4 @@ TEST_F(SubgraphTest, CheckSubgraphOptionsPassedIn) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

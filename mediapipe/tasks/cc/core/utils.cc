@@ -26,7 +26,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/external_file_handler.h"
 #include "mediapipe/tasks/cc/core/proto/external_file.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace core {
 namespace {
@@ -66,7 +66,7 @@ CalculatorGraphConfig AddFlowLimiterCalculator(
     int max_in_flight, int max_in_queue) {
   auto& flow_limiter = graph.AddNode(kFlowLimiterCalculatorName);
   auto& options =
-      flow_limiter.GetOptions<mediapipe::FlowLimiterCalculatorOptions>();
+      flow_limiter.GetOptions<mediapipe_v01013_based::FlowLimiterCalculatorOptions>();
   options.set_max_in_flight(max_in_flight);
   options.set_max_in_queue(max_in_queue);
   for (int i = 0; i < input_stream_tags.size(); ++i) {
@@ -90,7 +90,7 @@ CalculatorGraphConfig AddFlowLimiterCalculator(
   return config;
 }
 
-void FixGraphBackEdges(::mediapipe::CalculatorGraphConfig& graph_config) {
+void FixGraphBackEdges(::mediapipe_v01013_based::CalculatorGraphConfig& graph_config) {
   // TODO remove when support is fixed.
   // As mediapipe GraphBuilder currently doesn't support configuring
   // InputStreamInfo, modifying the CalculatorGraphConfig proto directly.
@@ -105,4 +105,4 @@ void FixGraphBackEdges(::mediapipe::CalculatorGraphConfig& graph_config) {
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 // Set image_frame to a constant per-channel pix_value.
@@ -136,4 +136,4 @@ TEST(ImageFrameOpencvTest, ImageFormats) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

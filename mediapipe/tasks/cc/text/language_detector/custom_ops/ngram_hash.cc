@@ -25,7 +25,7 @@ limitations under the License.
 #include "tensorflow/lite/kernels/kernel_util.h"
 #include "tensorflow/lite/string_util.h"
 
-namespace mediapipe::tflite_operations {
+namespace mediapipe_v01013_based::tflite_operations {
 
 namespace ngram_op {
 
@@ -34,11 +34,11 @@ namespace {
 using ::flexbuffers::GetRoot;
 using ::flexbuffers::Map;
 using ::flexbuffers::TypedVector;
-using ::mediapipe::tasks::text::language_detector::custom_ops::
+using ::mediapipe_v01013_based::tasks::text::language_detector::custom_ops::
     LowercaseUnicodeStr;
-using ::mediapipe::tasks::text::language_detector::custom_ops::Tokenize;
-using ::mediapipe::tasks::text::language_detector::custom_ops::TokenizedOutput;
-using ::mediapipe::tasks::text::language_detector::custom_ops::hash::
+using ::mediapipe_v01013_based::tasks::text::language_detector::custom_ops::Tokenize;
+using ::mediapipe_v01013_based::tasks::text::language_detector::custom_ops::TokenizedOutput;
+using ::mediapipe_v01013_based::tasks::text::language_detector::custom_ops::hash::
     MurmurHash64WithSeed;
 using ::tflite::GetString;
 using ::tflite::StringRef;
@@ -261,4 +261,4 @@ TfLiteRegistration* Register_NGRAM_HASH() {
   return &r;
 }
 
-}  // namespace mediapipe::tflite_operations
+}  // namespace mediapipe_v01013_based::tflite_operations

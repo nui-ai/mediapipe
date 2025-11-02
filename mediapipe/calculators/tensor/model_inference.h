@@ -27,7 +27,7 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/calculators/tensor/tensor_span.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 class ModelInference {
@@ -42,6 +42,6 @@ class ModelInference {
 };
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_DETECTION_INFERENCE_CALCULATOR_CORE_H_

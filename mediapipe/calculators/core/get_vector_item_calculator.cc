@@ -19,23 +19,23 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 using GetLandmarkListVectorItemCalculator =
-    GetVectorItemCalculator<mediapipe::LandmarkList>;
+    GetVectorItemCalculator<mediapipe_v01013_based::LandmarkList>;
 REGISTER_CALCULATOR(GetLandmarkListVectorItemCalculator);
 
 using GetNormalizedLandmarkListVectorItemCalculator =
-    GetVectorItemCalculator<mediapipe::NormalizedLandmarkList>;
+    GetVectorItemCalculator<mediapipe_v01013_based::NormalizedLandmarkList>;
 REGISTER_CALCULATOR(GetNormalizedLandmarkListVectorItemCalculator);
 
 using GetClassificationListVectorItemCalculator =
-    GetVectorItemCalculator<mediapipe::ClassificationList>;
+    GetVectorItemCalculator<mediapipe_v01013_based::ClassificationList>;
 REGISTER_CALCULATOR(GetClassificationListVectorItemCalculator);
 
 using GetDetectionVectorItemCalculator =
-    GetVectorItemCalculator<mediapipe::Detection>;
+    GetVectorItemCalculator<mediapipe_v01013_based::Detection>;
 REGISTER_CALCULATOR(GetDetectionVectorItemCalculator);
 
 using GetNormalizedRectVectorItemCalculator =
@@ -46,4 +46,4 @@ using GetRectVectorItemCalculator = GetVectorItemCalculator<Rect>;
 REGISTER_CALCULATOR(GetRectVectorItemCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

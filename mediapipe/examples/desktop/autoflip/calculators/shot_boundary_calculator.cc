@@ -28,8 +28,8 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/timestamp.h"
 
-using mediapipe::ImageFrame;
-using mediapipe::PacketTypeSet;
+using mediapipe_v01013_based::ImageFrame;
+using mediapipe_v01013_based::PacketTypeSet;
 
 // IO labels.
 constexpr char kVideoInputTag[] = "VIDEO";
@@ -42,7 +42,7 @@ const int kHistogramBinNum[] = {kSaturationBins, kSaturationBins,
 const float kRange[] = {0, 256};
 const float* kHistogramRange[] = {kRange, kRange, kRange};
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 // This calculator computes a shot (or scene) change within a video.  It works
@@ -55,21 +55,21 @@ namespace autoflip {
 //    input_stream: "VIDEO:camera_frames"
 //    output_stream: "IS_SHOT_CHANGE:is_shot"
 //  }
-class ShotBoundaryCalculator : public mediapipe::CalculatorBase {
+class ShotBoundaryCalculator : public mediapipe_v01013_based::CalculatorBase {
  public:
   ShotBoundaryCalculator() {}
   ShotBoundaryCalculator(const ShotBoundaryCalculator&) = delete;
   ShotBoundaryCalculator& operator=(const ShotBoundaryCalculator&) = delete;
 
-  static absl::Status GetContract(mediapipe::CalculatorContract* cc);
-  absl::Status Open(mediapipe::CalculatorContext* cc) override;
-  absl::Status Process(mediapipe::CalculatorContext* cc) override;
+  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc);
+  absl::Status Open(mediapipe_v01013_based::CalculatorContext* cc) override;
+  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override;
 
  private:
   // Computes the histogram of an image.
   void ComputeHistogram(const cv::Mat& image, cv::Mat* image_histogram);
   // Transmits signal to next calculator.
-  void Transmit(mediapipe::CalculatorContext* cc, bool is_shot_change);
+  void Transmit(mediapipe_v01013_based::CalculatorContext* cc, bool is_shot_change);
   // Calculator options.
   ShotBoundaryCalculatorOptions options_;
   // Last time a shot was detected.
@@ -99,14 +99,14 @@ void ShotBoundaryCalculator::ComputeHistogram(const cv::Mat& image,
                kHistogramBinNum, kHistogramRange, true, false);
 }
 
-absl::Status ShotBoundaryCalculator::Open(mediapipe::CalculatorContext* cc) {
+absl::Status ShotBoundaryCalculator::Open(mediapipe_v01013_based::CalculatorContext* cc) {
   options_ = cc->Options<ShotBoundaryCalculatorOptions>();
   last_shot_timestamp_ = Timestamp(0);
   init_ = false;
   return absl::OkStatus();
 }
 
-void ShotBoundaryCalculator::Transmit(mediapipe::CalculatorContext* cc,
+void ShotBoundaryCalculator::Transmit(mediapipe_v01013_based::CalculatorContext* cc,
                                       bool is_shot_change) {
   if ((cc->InputTimestamp() - last_shot_timestamp_).Seconds() <
       options_.min_shot_span()) {
@@ -127,9 +127,9 @@ void ShotBoundaryCalculator::Transmit(mediapipe::CalculatorContext* cc,
   }
 }
 
-absl::Status ShotBoundaryCalculator::Process(mediapipe::CalculatorContext* cc) {
+absl::Status ShotBoundaryCalculator::Process(mediapipe_v01013_based::CalculatorContext* cc) {
   // Connect to input frame and make a mutable copy.
-  cv::Mat frame_org = mediapipe::formats::MatView(
+  cv::Mat frame_org = mediapipe_v01013_based::formats::MatView(
       &cc->Inputs().Tag(kVideoInputTag).Get<ImageFrame>());
   cv::Mat frame = frame_org.clone();
 
@@ -179,11 +179,11 @@ absl::Status ShotBoundaryCalculator::Process(mediapipe::CalculatorContext* cc) {
 }
 
 absl::Status ShotBoundaryCalculator::GetContract(
-    mediapipe::CalculatorContract* cc) {
+    mediapipe_v01013_based::CalculatorContract* cc) {
   cc->Inputs().Tag(kVideoInputTag).Set<ImageFrame>();
   cc->Outputs().Tag(kShotChangeTag).Set<bool>();
   return absl::OkStatus();
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

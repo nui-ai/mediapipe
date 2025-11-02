@@ -17,7 +17,7 @@
 #include "mediapipe/framework/port/canonical_errors.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 constexpr char kIncrementTag[] = "INCREMENT";
 constexpr char kInitialValueTag[] = "INITIAL_VALUE";
@@ -118,4 +118,4 @@ class CountingSourceCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(CountingSourceCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

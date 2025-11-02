@@ -28,7 +28,7 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 inline constexpr absl::string_view kLandmarkProjectionNodeName =
     "LandmarkProjectionCalculator";
@@ -78,7 +78,7 @@ struct LandmarkProjectionNode : Node<kLandmarkProjectionNodeName> {
     // or landmarks that should be projected using PROJECTION_MATRIX if
     // specified. (Prefer using PROJECTION_MATRIX as it eliminates need of
     // letterbox removal step.)
-    Repeated<Input<S, mediapipe::NormalizedLandmarkList>> input_landmarks{
+    Repeated<Input<S, mediapipe_v01013_based::NormalizedLandmarkList>> input_landmarks{
         "NORM_LANDMARKS"};
 
     // Represents a normalized rectangle in image coordinates and results in
@@ -105,11 +105,11 @@ struct LandmarkProjectionNode : Node<kLandmarkProjectionNodeName> {
         "PROJECTION_MATRIX"};
 
     // Landmarks with their locations adjusted according to the inputs.
-    Repeated<Output<S, mediapipe::NormalizedLandmarkList>> output_landmarks{
+    Repeated<Output<S, mediapipe_v01013_based::NormalizedLandmarkList>> output_landmarks{
         "NORM_LANDMARKS"};
 
     // Node options.
-    Options<S, mediapipe::LandmarkProjectionCalculatorOptions> options;
+    Options<S, mediapipe_v01013_based::LandmarkProjectionCalculatorOptions> options;
 
     // Extra validation for optionals and multi inputs.
     static absl::Status UpdateContract(
@@ -131,6 +131,6 @@ struct LandmarkProjectionNode : Node<kLandmarkProjectionNodeName> {
   };
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_LANDMARK_PROJECTION_CALCULATOR_H_

@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/proto_ns.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 void MatrixDataProtoFromMatrix(const Matrix& matrix, MatrixData* matrix_data) {
   const int rows = matrix.rows();
@@ -65,4 +65,4 @@ void MatrixFromTextProto(const std::string& text_proto, Matrix* matrix) {
   MatrixFromMatrixDataProto(matrix_data, matrix);
 }
 #endif  // !defined(MEDIAPIPE_MOBILE) && !defined(MEDIAPIPE_LITE)
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

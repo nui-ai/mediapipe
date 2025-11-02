@@ -15,18 +15,18 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe.tasks.vision.image_classifier.proto;
+package mediapipe_v01013_based.tasks.vision.image_classifier.proto;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/framework/calculator_options.proto";
 import "mediapipe/tasks/cc/components/processors/proto/classifier_options.proto";
 import "mediapipe/tasks/cc/core/proto/base_options.proto";
 
-option java_package = "com.google.mediapipe.tasks.vision.imageclassifier.proto";
+option java_package = "com.google.mediapipe_v01013_based.tasks.vision.imageclassifier.proto";
 option java_outer_classname = "ImageClassifierGraphOptionsProto";
 
 message ImageClassifierGraphOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional ImageClassifierGraphOptions ext = 456383383;
   }
   // Base options for configuring MediaPipe Tasks, such as specifying the TfLite

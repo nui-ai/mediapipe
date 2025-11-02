@@ -20,7 +20,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // A calculator to transform landmarks.
@@ -47,16 +47,16 @@ namespace api2 {
 //   }
 class LandmarksTransformationCalculator : public NodeIntf {
  public:
-  static constexpr Input<mediapipe::LandmarkList> kInLandmarks{"LANDMARKS"};
+  static constexpr Input<mediapipe_v01013_based::LandmarkList> kInLandmarks{"LANDMARKS"};
   static constexpr Input<
-      mediapipe::LandmarksTransformationCalculatorOptions>::Optional kInOptions{
+      mediapipe_v01013_based::LandmarksTransformationCalculatorOptions>::Optional kInOptions{
       "OPTIONS"};
-  static constexpr Output<mediapipe::LandmarkList> kOutLandmarks{"LANDMARKS"};
+  static constexpr Output<mediapipe_v01013_based::LandmarkList> kOutLandmarks{"LANDMARKS"};
   MEDIAPIPE_NODE_INTERFACE(LandmarksTransformationCalculator, kInLandmarks,
                            kInOptions, kOutLandmarks);
 };
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_LANDMARKS_TRANSFORMATION_CALCULATOR_H_

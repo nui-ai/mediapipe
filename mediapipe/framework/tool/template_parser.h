@@ -23,7 +23,7 @@
 #include "absl/base/macros.h"
 #include "mediapipe/framework/port/advanced_proto_inc.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 class TemplateParser {
@@ -158,6 +158,6 @@ class TemplateParser::ParseInfoTree {
 };
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_TEMPLATE_PARSER_H_

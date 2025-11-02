@@ -29,7 +29,7 @@ limitations under the License.
 #include "tensorflow/lite/kernels/kernel_util.h"
 #include "tensorflow/lite/model.h"
 
-namespace mediapipe::tflite_operations {
+namespace mediapipe_v01013_based::tflite_operations {
 namespace ragged::ragged_tensor_to_tensor {
 namespace {
 
@@ -688,4 +688,4 @@ TfLiteRegistration* Register_RAGGED_TENSOR_TO_TENSOR() {
   return &r;
 }
 
-}  // namespace mediapipe::tflite_operations
+}  // namespace mediapipe_v01013_based::tflite_operations

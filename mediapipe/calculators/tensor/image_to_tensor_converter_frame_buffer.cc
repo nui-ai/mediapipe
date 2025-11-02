@@ -32,7 +32,7 @@
 #include "mediapipe/gpu/frame_buffer_view.h"
 #include "mediapipe/util/frame_buffer/frame_buffer_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -51,7 +51,7 @@ class ImageToTensorFrameBufferConverter : public ImageToTensorConverter {
   explicit ImageToTensorFrameBufferConverter(Tensor::ElementType tensor_type)
       : tensor_type_(tensor_type) {}
 
-  absl::Status Convert(const mediapipe::Image& input, const RotatedRect& roi,
+  absl::Status Convert(const mediapipe_v01013_based::Image& input, const RotatedRect& roi,
                        float range_min, float range_max,
                        int tensor_buffer_offset,
                        Tensor& output_tensor) override;
@@ -81,7 +81,7 @@ class ImageToTensorFrameBufferConverter : public ImageToTensorConverter {
 };
 
 absl::Status ImageToTensorFrameBufferConverter::Convert(
-    const mediapipe::Image& input, const RotatedRect& roi, float range_min,
+    const mediapipe_v01013_based::Image& input, const RotatedRect& roi, float range_min,
     float range_max, int tensor_buffer_offset, Tensor& output_tensor) {
   // TODO: add support for non-zero tensor buffer offset.
   RET_CHECK_EQ(tensor_buffer_offset, 0)
@@ -244,4 +244,4 @@ CreateFrameBufferConverter(CalculatorContext* cc, BorderMode border_mode,
   return std::make_unique<ImageToTensorFrameBufferConverter>(tensor_type);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

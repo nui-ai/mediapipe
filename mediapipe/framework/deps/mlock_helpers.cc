@@ -15,7 +15,7 @@
 #include "absl/strings/str_cat.h"
 #include "mediapipe/framework/deps/platform_strings.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 #ifdef _WIN32
 absl::Status LockMemory(const void* base_address, size_t length) {
   BOOL status = VirtualLock(const_cast<LPVOID>(base_address), length);
@@ -53,4 +53,4 @@ absl::Status UnlockMemory(const void* base_address, size_t length) {
   return absl::OkStatus();
 }
 #endif  // _WIN32
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

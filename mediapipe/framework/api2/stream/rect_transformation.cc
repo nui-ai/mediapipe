@@ -10,13 +10,13 @@
 #include "mediapipe/framework/api2/builder.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::builder::GenericNode;
-using ::mediapipe::api2::builder::Graph;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::builder::GenericNode;
+using ::mediapipe_v01013_based::api2::builder::Graph;
 
 template <typename TransformeeT>
 Stream<TransformeeT> InternalScaleAndShift(
@@ -25,7 +25,7 @@ Stream<TransformeeT> InternalScaleAndShift(
     std::optional<float> shift_y, bool square_long, Graph& graph) {
   auto& node = graph.AddNode("RectTransformationCalculator");
   auto& node_opts =
-      node.GetOptions<mediapipe::RectTransformationCalculatorOptions>();
+      node.GetOptions<mediapipe_v01013_based::RectTransformationCalculatorOptions>();
   node_opts.set_scale_x(scale_x_factor);
   node_opts.set_scale_y(scale_y_factor);
   if (shift_x) {
@@ -105,4 +105,4 @@ Stream<NormalizedRect> ScaleAndShift(Stream<NormalizedRect> rect,
                                shift_x, shift_y, /*square_long=*/false, graph);
 }
 
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder

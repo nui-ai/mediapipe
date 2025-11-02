@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// A collection of functions operating on MediaPipe::Location that require
+// A collection of functions operating on mediapipe_v01013_based::Location that require
 // OpenCV to either convert between formats, or apply OpenCV transformations.
 
 #ifndef MEDIAPIPE_FRAMEWORK_FORMATS_LOCATION_OPENCV_H_
@@ -20,7 +20,7 @@
 #include "mediapipe/framework/formats/location.h"
 #include "mediapipe/framework/port/opencv_core_inc.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 // Creates a location of type BOUNDING_BOX from an OpenCV rectangle.
 Location CreateBBoxLocation(const cv::Rect& rect);
 
@@ -49,6 +49,6 @@ std::unique_ptr<cv::Mat> GetCvMask(const Location& location);
 //      pixels inside the rectangle being foreground pixels.
 std::unique_ptr<cv::Mat> ConvertToCvMask(const Location& location,
                                          int image_width, int image_height);
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_LOCATION_OPENCV_H_

@@ -31,15 +31,15 @@
 #if !MEDIAPIPE_DISABLE_GPU
 #include "mediapipe/gpu/gpu_buffer.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 #if MEDIAPIPE_DISABLE_GPU
-// Just a placeholder to not have to depend on mediapipe::GpuBuffer.
+// Just a placeholder to not have to depend on mediapipe_v01013_based::GpuBuffer.
 class Nothing {};
 using GpuBuffer = Nothing;
 #else
-using GpuBuffer = mediapipe::GpuBuffer;
+using GpuBuffer = mediapipe_v01013_based::GpuBuffer;
 #endif  // MEDIAPIPE_DISABLE_GPU
 
 // A calculator for converting from legacy MediaPipe datatypes into a
@@ -63,11 +63,11 @@ class ToImageCalculator : public Node {
   ~ToImageCalculator() override = default;
 
   static constexpr Input<
-      OneOf<mediapipe::Image, mediapipe::ImageFrame, GpuBuffer>>::Optional kIn{
+      OneOf<mediapipe_v01013_based::Image, mediapipe_v01013_based::ImageFrame, GpuBuffer>>::Optional kIn{
       "IMAGE"};
-  static constexpr Input<mediapipe::ImageFrame>::Optional kInCpu{"IMAGE_CPU"};
+  static constexpr Input<mediapipe_v01013_based::ImageFrame>::Optional kInCpu{"IMAGE_CPU"};
   static constexpr Input<GpuBuffer>::Optional kInGpu{"IMAGE_GPU"};
-  static constexpr Output<mediapipe::Image> kOut{"IMAGE"};
+  static constexpr Output<mediapipe_v01013_based::Image> kOut{"IMAGE"};
   MEDIAPIPE_NODE_CONTRACT(kIn, kInCpu, kInGpu, kOut);
 
   static absl::Status UpdateContract(CalculatorContract* cc);
@@ -105,8 +105,8 @@ absl::Status ToImageCalculator::Close(CalculatorContext* cc) {
 // Wrap ImageFrameSharedPtr; shallow copy.
 absl::StatusOr<Packet<Image>> FromImageFrame(Packet<ImageFrame> packet) {
   MP_ASSIGN_OR_RETURN(auto shared_ptr, packet.Share());
-  return MakePacket<Image, std::shared_ptr<mediapipe::ImageFrame>>(
-      std::const_pointer_cast<mediapipe::ImageFrame>(std::move(shared_ptr)));
+  return MakePacket<Image, std::shared_ptr<mediapipe_v01013_based::ImageFrame>>(
+      std::const_pointer_cast<mediapipe_v01013_based::ImageFrame>(std::move(shared_ptr)));
 }
 
 // Wrap texture pointer; shallow copy.
@@ -123,10 +123,10 @@ absl::StatusOr<Packet<Image>> ToImageCalculator::GetInputImage(
     CalculatorContext* cc) {
   if (kIn(cc).IsConnected()) {
     return kIn(cc).Visit(
-        [&](const mediapipe::Image&) {
+        [&](const mediapipe_v01013_based::Image&) {
           return absl::StatusOr<Packet<Image>>(kIn(cc).As<Image>());
         },
-        [&](const mediapipe::ImageFrame&) {
+        [&](const mediapipe_v01013_based::ImageFrame&) {
           return FromImageFrame(kIn(cc).As<ImageFrame>());
         },
         [&](const GpuBuffer&) {
@@ -141,4 +141,4 @@ absl::StatusOr<Packet<Image>> ToImageCalculator::GetInputImage(
 }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -18,21 +18,21 @@
 #include <string>
 
 // Temporary forward declarations for proto2 support on portable targets.
-// Use proto_ns inside namespace mediapipe instead of proto2 namespace.
+// Use proto_ns inside namespace mediapipe_v01013_based instead of proto2 namespace.
 #include "google/protobuf/message.h"
 #include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"
 #include "mediapipe/framework/port.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace proto_ns = ::google::protobuf;
 typedef ::std::string ProtoString;
-}  // namespace mediapipe.
+}  // namespace mediapipe_v01013_based.
 
 // Legacy namespace support.
-namespace mediapipe {
-namespace proto_ns = mediapipe::proto_ns;
+namespace mediapipe_v01013_based {
+namespace proto_ns = mediapipe_v01013_based::proto_ns;
 typedef ::std::string ProtoString;
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_PORT_PROTO_NS_H_

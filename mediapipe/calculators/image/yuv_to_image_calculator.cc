@@ -27,7 +27,7 @@
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/formats/yuv_image.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 namespace {
@@ -120,4 +120,4 @@ class YUVToImageCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(YUVToImageCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

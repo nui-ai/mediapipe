@@ -22,7 +22,7 @@
 #include "pybind11/stl.h"
 #include "stb_image.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace python {
 
 namespace py = pybind11;
@@ -86,11 +86,11 @@ void ImageSubmodule(pybind11::module* module) {
 
   image
       .def(
-          py::init([](mediapipe::ImageFormat::Format format,
+          py::init([](mediapipe_v01013_based::ImageFormat::Format format,
                       const py::array_t<uint8_t, py::array::c_style>& data) {
-            if (format != mediapipe::ImageFormat::GRAY8 &&
-                format != mediapipe::ImageFormat::SRGB &&
-                format != mediapipe::ImageFormat::SRGBA) {
+            if (format != mediapipe_v01013_based::ImageFormat::GRAY8 &&
+                format != mediapipe_v01013_based::ImageFormat::SRGB &&
+                format != mediapipe_v01013_based::ImageFormat::SRGBA) {
               throw RaisePyError(PyExc_RuntimeError,
                                  "uint8 image data should be one of the GRAY8, "
                                  "SRGB, and SRGBA MediaPipe image formats.");
@@ -101,11 +101,11 @@ void ImageSubmodule(pybind11::module* module) {
           R"doc(For uint8 data type, valid ImageFormat are GRAY8, SRGB, and SRGBA.)doc",
           py::arg("image_format"), py::arg("data").noconvert())
       .def(
-          py::init([](mediapipe::ImageFormat::Format format,
+          py::init([](mediapipe_v01013_based::ImageFormat::Format format,
                       const py::array_t<uint16_t, py::array::c_style>& data) {
-            if (format != mediapipe::ImageFormat::GRAY16 &&
-                format != mediapipe::ImageFormat::SRGB48 &&
-                format != mediapipe::ImageFormat::SRGBA64) {
+            if (format != mediapipe_v01013_based::ImageFormat::GRAY16 &&
+                format != mediapipe_v01013_based::ImageFormat::SRGB48 &&
+                format != mediapipe_v01013_based::ImageFormat::SRGBA64) {
               throw RaisePyError(
                   PyExc_RuntimeError,
                   "uint16 image data should be one of the GRAY16, "
@@ -117,11 +117,11 @@ void ImageSubmodule(pybind11::module* module) {
           R"doc(For uint16 data type, valid ImageFormat are GRAY16, SRGB48, and SRGBA64.)doc",
           py::arg("image_format"), py::arg("data").noconvert())
       .def(
-          py::init([](mediapipe::ImageFormat::Format format,
+          py::init([](mediapipe_v01013_based::ImageFormat::Format format,
                       const py::array_t<float, py::array::c_style>& data) {
-            if (format != mediapipe::ImageFormat::VEC32F1 &&
-                format != mediapipe::ImageFormat::VEC32F2 &&
-                format != mediapipe::ImageFormat::VEC32F4) {
+            if (format != mediapipe_v01013_based::ImageFormat::VEC32F1 &&
+                format != mediapipe_v01013_based::ImageFormat::VEC32F2 &&
+                format != mediapipe_v01013_based::ImageFormat::VEC32F4) {
               throw RaisePyError(
                   PyExc_RuntimeError,
                   "float image data should be either VEC32F1, VEC32F2, or "
@@ -321,4 +321,4 @@ Raises:
 }
 
 }  // namespace python
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

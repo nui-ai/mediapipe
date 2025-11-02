@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/util/tracking/flow_packager.proto";
@@ -24,7 +24,7 @@ message FlowPackagerCalculatorOptions {
     optional FlowPackagerCalculatorOptions ext = 271236147;
   }
 
-  optional mediapipe.FlowPackagerOptions flow_packager_options = 1;
+  optional mediapipe_v01013_based.FlowPackagerOptions flow_packager_options = 1;
 
   // Chunk size for caching files that are written to the externally specified
   // caching directory. Specified in msec.

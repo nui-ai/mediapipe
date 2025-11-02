@@ -31,11 +31,11 @@
 #include "mediapipe/tasks/cc/core/utils.h"
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-using ::mediapipe::IsOkAndHolds;
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::IsOkAndHolds;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
 using ::testing::ElementsAreArray;
 
 constexpr int kNumInputTensorsForUniversalSentenceEncoder = 3;
@@ -107,4 +107,4 @@ TEST(UniversalSentenceEncoderPreprocessorCalculatorTest, TestUSE) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using ::testing::ElementsAre;
 
@@ -114,4 +114,4 @@ TEST(TestIntVectorSizeCalculator, MultipleVectorInputs) {
                           PacketEq(2, Timestamp(3))));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

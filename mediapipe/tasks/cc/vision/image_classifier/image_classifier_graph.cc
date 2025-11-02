@@ -31,20 +31,20 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/model_task_graph.h"
 #include "mediapipe/tasks/cc/vision/image_classifier/proto/image_classifier_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace image_classifier {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::GenericNode;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::containers::proto::ClassificationResult;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::GenericNode;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
 
 constexpr float kDefaultScoreThreshold = std::numeric_limits<float>::lowest();
 
@@ -122,13 +122,13 @@ class ImageClassifierGraph : public core::ModelTaskGraph {
  private:
   // Adds a mediapipe image classification task graph into the provided
   // builder::Graph instance. The image classification task takes images
-  // (mediapipe::Image) as input and returns one classification result per input
+  // (mediapipe_v01013_based::Image) as input and returns one classification result per input
   // image.
   //
   // task_options: the mediapipe tasks ImageClassifierGraphOptions.
   // model_resources: the ModelSources object initialized from an image
   // classification model file with model metadata.
-  // image_in: (mediapipe::Image) stream to run classification on.
+  // image_in: (mediapipe_v01013_based::Image) stream to run classification on.
   // graph: the mediapipe builder::Graph instance to be updated.
   absl::StatusOr<ImageClassifierOutputStreams> BuildImageClassificationTask(
       const proto::ImageClassifierGraphOptions& task_options,
@@ -175,9 +175,9 @@ class ImageClassifierGraph : public core::ModelTaskGraph {
   }
 };
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::vision::image_classifier::ImageClassifierGraph);
+    ::mediapipe_v01013_based::tasks::vision::image_classifier::ImageClassifierGraph);
 
 }  // namespace image_classifier
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

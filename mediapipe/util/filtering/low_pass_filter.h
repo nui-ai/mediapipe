@@ -17,7 +17,7 @@
 
 #include <memory>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class LowPassFilter {
  public:
@@ -42,6 +42,6 @@ class LowPassFilter {
   bool initialized_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_FILTERING_LOW_PASS_FILTER_H_

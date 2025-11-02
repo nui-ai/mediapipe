@@ -21,7 +21,7 @@
 #include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/framework/calculator_framework.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Checks if @node has input with the specified @tag.
 bool HasInput(const CalculatorGraphConfig::Node& node, absl::string_view tag);
@@ -33,6 +33,6 @@ bool HasSideInput(const CalculatorGraphConfig::Node& node,
 // Checks if @node has output with the specified @tag.
 bool HasOutput(const CalculatorGraphConfig::Node& node, absl::string_view tag);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_GRAPH_BUILDER_UTILS_H_

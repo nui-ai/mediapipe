@@ -22,17 +22,17 @@
 #include "mediapipe/util/filtering/one_euro_filter.h"
 #include "mediapipe/util/filtering/relative_velocity_filter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace landmarks_smoothing {
 
 void NormalizedLandmarksToLandmarks(
-    const mediapipe::NormalizedLandmarkList& norm_landmarks,
+    const mediapipe_v01013_based::NormalizedLandmarkList& norm_landmarks,
     const int image_width, const int image_height,
-    mediapipe::LandmarkList& landmarks);
+    mediapipe_v01013_based::LandmarkList& landmarks);
 
 void LandmarksToNormalizedLandmarks(
-    const mediapipe::LandmarkList& landmarks, const int image_width,
-    const int image_height, mediapipe::NormalizedLandmarkList& norm_landmarks);
+    const mediapipe_v01013_based::LandmarkList& landmarks, const int image_width,
+    const int image_height, mediapipe_v01013_based::NormalizedLandmarkList& norm_landmarks);
 
 float GetObjectScale(const NormalizedRect& roi, const int image_width,
                      const int image_height);
@@ -46,14 +46,14 @@ class LandmarksFilter {
 
   virtual absl::Status Reset() { return absl::OkStatus(); }
 
-  virtual absl::Status Apply(const mediapipe::LandmarkList& in_landmarks,
+  virtual absl::Status Apply(const mediapipe_v01013_based::LandmarkList& in_landmarks,
                              const absl::Duration& timestamp,
                              const absl::optional<float> object_scale_opt,
-                             mediapipe::LandmarkList& out_landmarks) = 0;
+                             mediapipe_v01013_based::LandmarkList& out_landmarks) = 0;
 };
 
 absl::StatusOr<std::unique_ptr<LandmarksFilter>> InitializeLandmarksFilter(
-    const mediapipe::LandmarksSmoothingCalculatorOptions& options);
+    const mediapipe_v01013_based::LandmarksSmoothingCalculatorOptions& options);
 
 class MultiLandmarkFilters {
  public:
@@ -61,7 +61,7 @@ class MultiLandmarkFilters {
 
   virtual absl::StatusOr<LandmarksFilter*> GetOrCreate(
       const int64_t tracking_id,
-      const mediapipe::LandmarksSmoothingCalculatorOptions& options);
+      const mediapipe_v01013_based::LandmarksSmoothingCalculatorOptions& options);
 
   virtual void ClearUnused(const std::vector<int64_t>& tracking_ids);
 
@@ -72,6 +72,6 @@ class MultiLandmarkFilters {
 };
 
 }  // namespace landmarks_smoothing
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_LANDMARKS_SMOOTHING_CALCULATOR_UTILS_H_

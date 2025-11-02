@@ -14,4 +14,4 @@
 
 #include "mediapipe/gpu/gpu_buffer_multi_pool.h"
 
-namespace mediapipe {}  // namespace mediapipe
+namespace mediapipe_v01013_based {}  // namespace mediapipe_v01013_based

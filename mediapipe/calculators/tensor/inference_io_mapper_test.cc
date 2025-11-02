@@ -40,7 +40,7 @@
 #include "tensorflow/lite/interpreter.h"
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace {
 
@@ -62,9 +62,9 @@ constexpr char kTwoSignaturesModelPath[] =
     "mediapipe/calculators/tensor/testdata/"
     "test_two_signature_keys_model.tflite";
 
-using ::mediapipe::MakePacket;
-using ::mediapipe::Packet;
-using ::mediapipe::tool::AddVectorSink;
+using ::mediapipe_v01013_based::MakePacket;
+using ::mediapipe_v01013_based::Packet;
+using ::mediapipe_v01013_based::tool::AddVectorSink;
 using ::testing::HasSubstr;
 using ::tflite::impl::InterpreterBuilder;
 using ::tflite::ops::builtin::BuiltinOpResolverWithoutDefaultDelegates;
@@ -759,4 +759,4 @@ TEST(InferenceIoMapper, ShouldFailWhenMultipleSignaturesExist) {
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

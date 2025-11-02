@@ -24,7 +24,7 @@
 #include "mediapipe/framework/formats/classification.pb.h"
 #include "mediapipe/util/label_map.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Forward declaration
 class TensorsToClassificationCalculatorOptions;
@@ -70,6 +70,6 @@ std::unique_ptr<ClassificationList> ProcessTensorToClassifications(
     const std::unordered_map<int64_t, LabelMapItem>& label_map);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_CLASSIFICATION_CALCULATOR_CORE_H_

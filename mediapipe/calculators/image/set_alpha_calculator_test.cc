@@ -12,7 +12,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "testing/base/public/benchmark.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -153,4 +153,4 @@ static void BM_SetAlpha3ChannelImage(benchmark::State& state) {
 BENCHMARK(BM_SetAlpha3ChannelImage);
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

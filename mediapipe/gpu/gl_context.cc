@@ -60,7 +60,7 @@
 #define GL_MINOR_VERSION 0x821C
 #endif
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace internal_gl_context {
 
@@ -459,7 +459,7 @@ GlContext::~GlContext() {
 }
 
 void GlContext::SetProfilingContext(
-    std::shared_ptr<mediapipe::ProfilingContext> profiling_context) {
+    std::shared_ptr<mediapipe_v01013_based::ProfilingContext> profiling_context) {
   // Create the GlProfilingHelper if it is uninitialized.
   if (!profiling_helper_ && profiling_context) {
     profiling_helper_ = profiling_context->CreateGlProfilingHelper();
@@ -1179,4 +1179,4 @@ const GlContext::Attachment<GLuint> kUtilityFramebuffer(
               }};
     });
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

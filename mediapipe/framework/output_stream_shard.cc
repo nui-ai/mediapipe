@@ -19,7 +19,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_builder.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 OutputStreamShard::OutputStreamShard() : closed_(false) {}
 
@@ -35,7 +35,7 @@ const std::string& OutputStreamShard::Name() const {
 void OutputStreamShard::SetNextTimestampBound(Timestamp bound) {
   if (!bound.IsAllowedInStream() && bound != Timestamp::OneOverPostStream()) {
     output_stream_spec_->TriggerErrorCallback(
-        mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+        mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
         << "In stream \"" << Name()
         << "\", timestamp bound set to illegal value: " << bound.DebugString());
     return;
@@ -55,7 +55,7 @@ bool OutputStreamShard::IsClosed() const { return closed_; }
 void OutputStreamShard::SetOffset(TimestampDiff offset) {
   if (output_stream_spec_->locked_intro_data) {
     output_stream_spec_->TriggerErrorCallback(
-        mediapipe::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+        mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
         << "SetOffset must be called from Calculator::Open(). Stream: \""
         << output_stream_spec_->name << "\".");
     return;
@@ -67,7 +67,7 @@ void OutputStreamShard::SetOffset(TimestampDiff offset) {
 void OutputStreamShard::SetHeader(const Packet& header) {
   if (closed_) {
     output_stream_spec_->TriggerErrorCallback(
-        mediapipe::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+        mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
         << "SetHeader must be called before the stream is closed. Stream: \""
         << output_stream_spec_->name << "\".");
     return;
@@ -75,7 +75,7 @@ void OutputStreamShard::SetHeader(const Packet& header) {
 
   if (output_stream_spec_->locked_intro_data) {
     output_stream_spec_->TriggerErrorCallback(
-        mediapipe::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+        mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
         << "SetHeader must be called from Calculator::Open(). Stream: \""
         << output_stream_spec_->name << "\".");
     return;
@@ -97,7 +97,7 @@ const Packet& OutputStreamShard::Header() const {
 template <typename T>
 absl::Status OutputStreamShard::AddPacketInternal(T&& packet) {
   if (IsClosed()) {
-    return mediapipe::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
            << "Packet sent to closed stream \"" << Name() << "\".";
   }
 
@@ -108,7 +108,7 @@ absl::Status OutputStreamShard::AddPacketInternal(T&& packet) {
 
   const Timestamp timestamp = packet.Timestamp();
   if (!timestamp.IsAllowedInStream()) {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "In stream \"" << Name()
            << "\", timestamp not specified or set to illegal value: "
            << timestamp.DebugString();
@@ -160,4 +160,4 @@ void OutputStreamShard::Reset(Timestamp next_timestamp_bound, bool close) {
   closed_ = close;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

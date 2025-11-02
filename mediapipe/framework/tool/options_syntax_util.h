@@ -13,7 +13,7 @@
 #include "mediapipe/framework/tool/options_field_util.h"
 #include "mediapipe/framework/tool/options_registry.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 // Utility to parse the graph options syntax used in "option_value",
@@ -43,6 +43,6 @@ class OptionsSyntaxUtil {
 };
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_OPTIONS_SYNTAX_UTIL_H_

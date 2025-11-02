@@ -29,7 +29,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/graph_service.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 // This will be set on the contract UpdateContract of the implementation.
 inline constexpr GraphService<std::string> kTestStringService(
@@ -97,6 +97,6 @@ struct SharedPassThroughBNode : Node<kSharedPassThroughB> {
   using Contract = PassThrough<S>;
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_CALCULATOR_TEST_H_

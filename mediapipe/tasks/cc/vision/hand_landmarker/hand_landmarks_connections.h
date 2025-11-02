@@ -18,7 +18,7 @@ limitations under the License.
 
 #include <array>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
@@ -49,6 +49,6 @@ inline constexpr std::array<std::array<int, 2>, 21> kHandConnections{
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_HAND_LANDMARKER_HAND_LANDMARKS_CONNECTIONS_H_

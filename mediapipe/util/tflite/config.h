@@ -47,7 +47,7 @@
 #import <Metal/Metal.h>
 #endif  // MEDIAPIPE_TFLITE_METAL_INFERENCE
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 #if MEDIAPIPE_TFLITE_GL_INFERENCE
 typedef ::tflite::gpu::gl::GlBuffer GpuTensor;
@@ -58,6 +58,6 @@ struct DummyGpuTensor {};
 typedef DummyGpuTensor GpuTensor;  // Dummy define for less #ifdefs
 #endif  // MEDIAPIPE_TFLITE_GL_INFERENCE
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_CONFIG_H_

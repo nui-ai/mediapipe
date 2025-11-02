@@ -17,7 +17,7 @@
 
 #include <type_traits>
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 // Workaround for static_assert(false). Example:
 //   dependent_false<T>::value returns false.
@@ -30,6 +30,6 @@ struct dependent_false : std::false_type {};
 template <class T>
 inline constexpr auto dependent_false_v = dependent_false<T>{};
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_INTERNAL_DEPENDENT_FALSE_H_

@@ -4,10 +4,10 @@
 #include "absl/base/const_init.h"
 #include "absl/synchronization/mutex.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 ABSL_CONST_INIT absl::Mutex option_extension_lock(absl::kConstInit);
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

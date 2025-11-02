@@ -41,7 +41,7 @@ using ::tflite::NumInputs;
 using ::tflite::NumOutputs;
 using ::tflite::RuntimeShape;
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tflite_operations {
 namespace {
 
@@ -552,4 +552,4 @@ TfLiteRegistration* RegisterLandmarksToTransformMatrixV2() {
 }
 
 }  // namespace tflite_operations
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

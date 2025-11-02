@@ -49,7 +49,7 @@
 #include "absl/log/absl_log.h"
 #include "mediapipe/framework/deps/strong_int.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace intops {
 
 // A StrongInt validator class for "safe" type enforcement.  For signed types,
@@ -285,7 +285,7 @@ struct LogFatalOnError {
 };
 
 }  // namespace intops
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 // Defines the StrongInt using value_type and typedefs it to type_name, with
 // strong checking of under/overflow conditions.
@@ -293,9 +293,9 @@ struct LogFatalOnError {
 // type is created per type_name.
 #define MEDIAPIPE_DEFINE_SAFE_INT_TYPE(type_name, value_type, policy_type) \
   struct type_name##_safe_tag_ {};                                         \
-  typedef mediapipe::intops::StrongInt<                                    \
+  typedef mediapipe_v01013_based::intops::StrongInt<                                    \
       type_name##_safe_tag_, value_type,                                   \
-      mediapipe::intops::SafeIntStrongIntValidator<policy_type>>           \
+      mediapipe_v01013_based::intops::SafeIntStrongIntValidator<policy_type>>           \
       type_name;
 
 #endif  // MEDIAPIPE_DEPS_SAFE_INT_H_

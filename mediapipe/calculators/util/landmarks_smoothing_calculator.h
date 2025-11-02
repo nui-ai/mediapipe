@@ -20,7 +20,7 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // A calculator to smooth landmarks over time.
@@ -62,17 +62,17 @@ namespace api2 {
 //
 class LandmarksSmoothingCalculator : public NodeIntf {
  public:
-  static constexpr Input<mediapipe::NormalizedLandmarkList>::Optional
+  static constexpr Input<mediapipe_v01013_based::NormalizedLandmarkList>::Optional
       kInNormLandmarks{"NORM_LANDMARKS"};
-  static constexpr Input<mediapipe::LandmarkList>::Optional kInLandmarks{
+  static constexpr Input<mediapipe_v01013_based::LandmarkList>::Optional kInLandmarks{
       "LANDMARKS"};
   static constexpr Input<std::pair<int, int>>::Optional kImageSize{
       "IMAGE_SIZE"};
   static constexpr Input<OneOf<NormalizedRect, Rect>>::Optional kObjectScaleRoi{
       "OBJECT_SCALE_ROI"};
-  static constexpr Output<mediapipe::NormalizedLandmarkList>::Optional
+  static constexpr Output<mediapipe_v01013_based::NormalizedLandmarkList>::Optional
       kOutNormLandmarks{"NORM_FILTERED_LANDMARKS"};
-  static constexpr Output<mediapipe::LandmarkList>::Optional kOutLandmarks{
+  static constexpr Output<mediapipe_v01013_based::LandmarkList>::Optional kOutLandmarks{
       "FILTERED_LANDMARKS"};
   MEDIAPIPE_NODE_INTERFACE(LandmarksSmoothingCalculator, kInNormLandmarks,
                            kInLandmarks, kImageSize, kObjectScaleRoi,
@@ -101,6 +101,6 @@ class LandmarksSmoothingCalculator : public NodeIntf {
 };
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_LANDMARKS_SMOOTHING_CALCULATOR_H_

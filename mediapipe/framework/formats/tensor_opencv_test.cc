@@ -9,7 +9,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe::formats {
+namespace mediapipe_v01013_based::formats {
 namespace {
 
 using ::testing::HasSubstr;
@@ -149,4 +149,4 @@ TEST(TensorOpenCVTest, BadSliceSizeFails) {
 
 }  // namespace
 
-}  // namespace mediapipe::formats
+}  // namespace mediapipe_v01013_based::formats

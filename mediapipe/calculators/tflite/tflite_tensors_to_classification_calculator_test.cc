@@ -25,15 +25,15 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-using mediapipe::ParseTextProtoOrDie;
+using mediapipe_v01013_based::ParseTextProtoOrDie;
 using ::tflite::Interpreter;
-using Node = ::mediapipe::CalculatorGraphConfig::Node;
+using Node = ::mediapipe_v01013_based::CalculatorGraphConfig::Node;
 
 class TfLiteTensorsToClassificationCalculatorTest : public ::testing::Test {
  protected:
-  void BuildGraph(mediapipe::CalculatorRunner* runner,
+  void BuildGraph(mediapipe_v01013_based::CalculatorRunner* runner,
                   const std::vector<float>& scores) {
     interpreter_ = absl::make_unique<Interpreter>();
 
@@ -65,15 +65,15 @@ class TfLiteTensorsToClassificationCalculatorTest : public ::testing::Test {
         runner->MutableInputs()->Tag("TENSORS").packets;
 
     input_stream_packets.push_back(
-        mediapipe::Adopt(tensors.release())
-            .At(mediapipe::Timestamp(stream_timestamp++)));
+        mediapipe_v01013_based::Adopt(tensors.release())
+            .At(mediapipe_v01013_based::Timestamp(stream_timestamp++)));
   }
 
   std::unique_ptr<Interpreter> interpreter_;
 };
 
 TEST_F(TfLiteTensorsToClassificationCalculatorTest, CorrectOutput) {
-  mediapipe::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "TfLiteTensorsToClassificationCalculator"
     input_stream: "TENSORS:tensors"
     output_stream: "CLASSIFICATIONS:classifications"
@@ -103,7 +103,7 @@ TEST_F(TfLiteTensorsToClassificationCalculatorTest, CorrectOutput) {
 
 TEST_F(TfLiteTensorsToClassificationCalculatorTest,
        CorrectOutputWithLabelMapPath) {
-  mediapipe::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "TfLiteTensorsToClassificationCalculator"
     input_stream: "TENSORS:tensors"
     output_stream: "CLASSIFICATIONS:classifications"
@@ -135,7 +135,7 @@ TEST_F(TfLiteTensorsToClassificationCalculatorTest,
 
 TEST_F(TfLiteTensorsToClassificationCalculatorTest,
        CorrectOutputWithLabelMinScoreThreshold) {
-  mediapipe::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "TfLiteTensorsToClassificationCalculator"
     input_stream: "TENSORS:tensors"
     output_stream: "CLASSIFICATIONS:classifications"
@@ -162,7 +162,7 @@ TEST_F(TfLiteTensorsToClassificationCalculatorTest,
 }
 
 TEST_F(TfLiteTensorsToClassificationCalculatorTest, CorrectOutputWithTopK) {
-  mediapipe::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "TfLiteTensorsToClassificationCalculator"
     input_stream: "TENSORS:tensors"
     output_stream: "CLASSIFICATIONS:classifications"
@@ -191,4 +191,4 @@ TEST_F(TfLiteTensorsToClassificationCalculatorTest, CorrectOutputWithTopK) {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

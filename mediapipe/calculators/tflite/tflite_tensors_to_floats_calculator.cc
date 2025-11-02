@@ -16,7 +16,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 constexpr char kFloatsTag[] = "FLOATS";
 constexpr char kFloatTag[] = "FLOAT";
@@ -104,4 +104,4 @@ absl::Status TfLiteTensorsToFloatsCalculator::Process(CalculatorContext* cc) {
 
   return absl::OkStatus();
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

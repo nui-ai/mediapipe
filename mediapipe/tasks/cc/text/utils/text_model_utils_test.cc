@@ -30,14 +30,14 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/proto/external_file.pb.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe::tasks::text::utils {
+namespace mediapipe_v01013_based::tasks::text::utils {
 
 namespace {
 
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::components::processors::proto::TextModelType;
-using ::mediapipe::tasks::core::ModelResources;
-using ::mediapipe::tasks::core::proto::ExternalFile;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::components::processors::proto::TextModelType;
+using ::mediapipe_v01013_based::tasks::core::ModelResources;
+using ::mediapipe_v01013_based::tasks::core::proto::ExternalFile;
 
 constexpr absl::string_view kTestModelResourcesTag = "test_model_resources";
 
@@ -114,4 +114,4 @@ TEST_F(TextModelUtilsTest, USEModelTest) {
   ASSERT_EQ(model_type, TextModelType::USE_MODEL);
 }
 
-}  // namespace mediapipe::tasks::text::utils
+}  // namespace mediapipe_v01013_based::tasks::text::utils

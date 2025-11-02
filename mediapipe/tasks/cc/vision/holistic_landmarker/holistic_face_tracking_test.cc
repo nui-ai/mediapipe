@@ -55,21 +55,21 @@ limitations under the License.
 #include "mediapipe/util/color.pb.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
 
 namespace {
 
-using ::mediapipe::Image;
-using ::mediapipe::api2::builder::GetImageSize;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::SplitToRanges;
-using ::mediapipe::api2::builder::Stream;
-using ::mediapipe::tasks::core::ModelAssetBundleResources;
-using ::mediapipe::tasks::core::TaskRunner;
-using ::mediapipe::tasks::core::proto::ExternalFile;
+using ::mediapipe_v01013_based::Image;
+using ::mediapipe_v01013_based::api2::builder::GetImageSize;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::SplitToRanges;
+using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::mediapipe_v01013_based::tasks::core::ModelAssetBundleResources;
+using ::mediapipe_v01013_based::tasks::core::TaskRunner;
+using ::mediapipe_v01013_based::tasks::core::proto::ExternalFile;
 using ::testing::proto::Approximately;
 using ::testing::proto::Partially;
 
@@ -90,8 +90,8 @@ std::string GetFilePath(absl::string_view filename) {
   return file::JoinPath("./", kTestDataDirectory, filename);
 }
 
-mediapipe::LandmarksToRenderDataCalculatorOptions GetFaceRendererOptions() {
-  mediapipe::LandmarksToRenderDataCalculatorOptions render_options;
+mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions GetFaceRendererOptions() {
+  mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions render_options;
   for (const auto& connection :
        face_landmarker::FaceLandmarksConnections::kFaceLandmarksConnectors) {
     render_options.add_landmark_connections(connection[0]);
@@ -108,8 +108,8 @@ mediapipe::LandmarksToRenderDataCalculatorOptions GetFaceRendererOptions() {
   return render_options;
 }
 
-mediapipe::RectToRenderDataCalculatorOptions GetRectRendererOptions() {
-  mediapipe::RectToRenderDataCalculatorOptions render_options;
+mediapipe_v01013_based::RectToRenderDataCalculatorOptions GetRectRendererOptions() {
+  mediapipe_v01013_based::RectToRenderDataCalculatorOptions render_options;
   render_options.set_filled(false);
   render_options.mutable_color()->set_r(255);
   render_options.mutable_color()->set_g(0);
@@ -130,9 +130,9 @@ CreateModelAssetBundleResources(const std::string& model_asset_filename) {
 absl::StatusOr<std::unique_ptr<tasks::core::TaskRunner>> CreateTaskRunner() {
   Graph graph;
   Stream<Image> image = graph.In("IMAGE").Cast<Image>().SetName(kImageInStream);
-  Stream<mediapipe::NormalizedLandmarkList> pose_landmarks =
+  Stream<mediapipe_v01013_based::NormalizedLandmarkList> pose_landmarks =
       graph.In("POSE_LANDMARKS")
-          .Cast<mediapipe::NormalizedLandmarkList>()
+          .Cast<mediapipe_v01013_based::NormalizedLandmarkList>()
           .SetName(kPoseLandmarksInStream);
   Stream<NormalizedLandmarkList> face_landmarks_from_pose =
       SplitToRanges(pose_landmarks, {{0, 11}}, graph)[0];
@@ -164,7 +164,7 @@ absl::StatusOr<std::unique_ptr<tasks::core::TaskRunner>> CreateTaskRunner() {
   auto render_scale = utils::GetRenderScale(
       image_size, result.debug_output.roi_from_pose, 0.0001, graph);
 
-  std::vector<Stream<mediapipe::RenderData>> render_list = {
+  std::vector<Stream<mediapipe_v01013_based::RenderData>> render_list = {
       utils::RenderLandmarks(face_landmarks, render_scale,
                              GetFaceRendererOptions(), graph),
       utils::RenderRect(result.debug_output.roi_from_pose,
@@ -172,7 +172,7 @@ absl::StatusOr<std::unique_ptr<tasks::core::TaskRunner>> CreateTaskRunner() {
 
   auto rendered_image =
       utils::Render(
-          image, absl::Span<Stream<mediapipe::RenderData>>(render_list), graph)
+          image, absl::Span<Stream<mediapipe_v01013_based::RenderData>>(render_list), graph)
           .SetName(kRenderedImageOutStream);
   face_landmarks >> graph.Out("FACE_LANDMARKS");
   rendered_image >> graph.Out("RENDERED_IMAGE");
@@ -217,4 +217,4 @@ TEST_F(HolisticFaceTrackingTest, SmokeTest) {
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

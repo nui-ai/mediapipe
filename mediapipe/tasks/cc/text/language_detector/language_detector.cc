@@ -26,17 +26,17 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/task_api_factory.h"
 #include "mediapipe/tasks/cc/text/text_classifier/proto/text_classifier_graph_options.pb.h"
 
-namespace mediapipe::tasks::text::language_detector {
+namespace mediapipe_v01013_based::tasks::text::language_detector {
 
 namespace {
 
-using ::mediapipe::tasks::components::containers::Category;
-using ::mediapipe::tasks::components::containers::ClassificationResult;
-using ::mediapipe::tasks::components::containers::Classifications;
-using ::mediapipe::tasks::components::containers::ConvertToClassificationResult;
+using ::mediapipe_v01013_based::tasks::components::containers::Category;
+using ::mediapipe_v01013_based::tasks::components::containers::ClassificationResult;
+using ::mediapipe_v01013_based::tasks::components::containers::Classifications;
+using ::mediapipe_v01013_based::tasks::components::containers::ConvertToClassificationResult;
 using ClassificationResultProto =
-    ::mediapipe::tasks::components::containers::proto::ClassificationResult;
-using ::mediapipe::tasks::text::text_classifier::proto::
+    ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
+using ::mediapipe_v01013_based::tasks::text::text_classifier::proto::
     TextClassifierGraphOptions;
 
 constexpr char kTextStreamName[] = "text_in";
@@ -123,4 +123,4 @@ absl::StatusOr<LanguageDetectorResult> LanguageDetector::Detect(
       classification_result);
 }
 
-}  // namespace mediapipe::tasks::text::language_detector
+}  // namespace mediapipe_v01013_based::tasks::text::language_detector

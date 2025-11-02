@@ -15,7 +15,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::Status SyncWait(int fd, absl::Duration timeout) {
   RET_CHECK_GE(fd, 0) << "Invalid file descriptor.";
@@ -90,4 +90,4 @@ absl::StatusOr<bool> IsSignaled(const SharedFd& fd) {
   return IsSignaled(fd.Get());
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

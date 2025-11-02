@@ -6,7 +6,7 @@
 #include "mediapipe/gpu/webgpu/webgpu_service.h"
 #include "mediapipe/gpu/webgpu/webgpu_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -108,4 +108,4 @@ Tensor::WebGpuTexture2dView Tensor::GetWebGpuTexture2dWriteView(
   return {webgpu_texture2d_, std::move(lock)};
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

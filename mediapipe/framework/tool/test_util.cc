@@ -44,7 +44,7 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -149,7 +149,7 @@ std::string GetBinaryDirectory() {
   int length = readlink("/proc/self/exe", full_path, PATH_MAX + 1);
   ABSL_CHECK_GT(length, 0);
   return std::string(
-      ::mediapipe::file::Dirname(absl::string_view(full_path, length)));
+      ::mediapipe_v01013_based::file::Dirname(absl::string_view(full_path, length)));
 }
 #endif
 
@@ -321,7 +321,7 @@ absl::StatusOr<std::unique_ptr<ImageFrame>> DecodeTestImage(
 absl::StatusOr<std::unique_ptr<ImageFrame>> LoadTestImage(
     absl::string_view path, ImageFormat::Format format) {
   std::string encoded;
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(path, &encoded));
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(path, &encoded));
   return DecodeTestImage(encoded, format);
 }
 
@@ -334,7 +334,7 @@ std::unique_ptr<ImageFrame> LoadTestPng(absl::string_view path,
 // The image's name will contain the given prefix and a timestamp.
 // Returns the path to the output if successful.
 absl::StatusOr<std::string> SavePngTestOutput(
-    const mediapipe::ImageFrame& image, absl::string_view prefix) {
+    const mediapipe_v01013_based::ImageFrame& image, absl::string_view prefix) {
   absl::flat_hash_set<ImageFormat::Format> supported_formats = {
       ImageFormat::GRAY8, ImageFormat::SRGB, ImageFormat::SRGBA,
       ImageFormat::LAB8, ImageFormat::SBGRA};
@@ -409,4 +409,4 @@ std::unique_ptr<ImageFrame> GenerateLuminanceImage(
   return luminance_image;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

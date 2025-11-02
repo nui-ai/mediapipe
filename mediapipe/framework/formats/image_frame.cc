@@ -30,7 +30,7 @@
 #include "mediapipe/framework/port/aligned_malloc_and_free.h"
 #include "mediapipe/framework/port/proto_ns.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -401,4 +401,4 @@ void ImageFrame::CopyToBuffer(float* buffer, int buffer_size) const {
                          reinterpret_cast<char*>(buffer));
   }
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -18,7 +18,7 @@ limitations under the License.
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -173,4 +173,4 @@ absl::StatusOr<FrameBuffer::YuvData> FrameBuffer::GetYuvDataFromFrameBuffer(
       "The source FrameBuffer must be consisted by 1, 2, or 3 planes");
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

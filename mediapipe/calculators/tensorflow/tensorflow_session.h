@@ -19,7 +19,7 @@
 
 #include "tensorflow/core/public/session.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 struct TensorFlowSession {
   // TensorFlow session wrapper to get around the RTTI issue.
   std::unique_ptr<tensorflow::Session> session;
@@ -30,6 +30,6 @@ struct TensorFlowSession {
   std::map<std::string, std::string> tag_to_tensor_map;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TENSORFLOW_CALCULATORS_TENSORFLOW_SESSION_H_

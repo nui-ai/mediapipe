@@ -24,7 +24,7 @@ node {
   input_stream: "NORM_LANDMARKS:single_landmarks"
   output_stream: "RENDER_DATA:single_landmark_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe.LandmarksToRenderDataCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.LandmarksToRenderDataCalculatorOptions] {
       landmark_connections: [1, 2] # edge 1-2
       landmark_connections: [1, 3] # edge 1-3
       landmark_connections: [1, 5] # edge 1-5
@@ -57,7 +57,7 @@ node {
   input_stream: "NORM_RECTS:multi_rect"
   output_stream: "RENDER_DATA:multi_rect_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe.RectToRenderDataCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.RectToRenderDataCalculatorOptions] {
       filled: false
       color { r: 255 g: 0 b: 0 }
       thickness: 4.0

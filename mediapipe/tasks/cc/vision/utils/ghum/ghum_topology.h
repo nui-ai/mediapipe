@@ -21,7 +21,7 @@ body, not the way NN models predict joint rotations for it.
 
 #include <array>
 
-namespace mediapipe::tasks::vision::utils::ghum {
+namespace mediapipe_v01013_based::tasks::vision::utils::ghum {
 
 // GHUM 63 joint names in order they are produced by the PoseRig and
 // XenomorphRig pipelines.
@@ -227,6 +227,6 @@ inline constexpr std::array<std::array<float, 6>, 63>
          -0.9960976839065552, -0.9960976839065552, -0.0882575735449791},
     }};
 
-}  // namespace mediapipe::tasks::vision::utils::ghum
+}  // namespace mediapipe_v01013_based::tasks::vision::utils::ghum
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_UTILS_GHUM_GHUM_TOPOLOGY_H_

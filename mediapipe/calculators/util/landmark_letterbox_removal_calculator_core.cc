@@ -16,7 +16,7 @@
 
 #include <array>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 NormalizedLandmark AdjustLandmarkForLetterboxRemoval(
     const NormalizedLandmark& landmark,
@@ -52,4 +52,4 @@ NormalizedLandmarkList AdjustLandmarkListForLetterboxRemoval(
   return output_landmarks;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

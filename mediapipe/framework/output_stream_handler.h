@@ -38,7 +38,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Abstract base class for output stream handlers.
 class OutputStreamHandler {
@@ -217,12 +217,12 @@ using OutputStreamHandlerRegistry = GlobalFactoryRegistry<
     std::unique_ptr<OutputStreamHandler>, std::shared_ptr<tool::TagMap>,
     CalculatorContextManager*, const MediaPipeOptions&, bool>;
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 // Macro for registering the output stream handler.
 #define REGISTER_OUTPUT_STREAM_HANDLER(name)                               \
   REGISTER_FACTORY_FUNCTION_QUALIFIED(                                     \
-      mediapipe::OutputStreamHandlerRegistry, output_handler_registration, \
+      mediapipe_v01013_based::OutputStreamHandlerRegistry, output_handler_registration, \
       name,                                                                \
       std::make_unique<name, std::shared_ptr<tool::TagMap>,                \
                        CalculatorContextManager*, const MediaPipeOptions&, \

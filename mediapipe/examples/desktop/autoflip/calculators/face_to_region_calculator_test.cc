@@ -27,9 +27,9 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-using mediapipe::Detection;
+using mediapipe_v01013_based::Detection;
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 namespace {
 
@@ -320,4 +320,4 @@ TEST(FaceToRegionCalculatorTest, FaceNoVideoPass) {
 
 }  // namespace
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -15,7 +15,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 constexpr char kPresenceTag[] = "PRESENCE";
 constexpr char kPacketTag[] = "PACKET";
@@ -84,4 +84,4 @@ class PacketPresenceCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(PacketPresenceCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

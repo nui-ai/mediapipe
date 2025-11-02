@@ -32,15 +32,15 @@ limitations under the License.
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-using ::mediapipe::CalculatorContext;
-using ::mediapipe::Tensor;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Node;
-using ::mediapipe::api2::OneOf;
-using ::mediapipe::api2::Output;
+using ::mediapipe_v01013_based::CalculatorContext;
+using ::mediapipe_v01013_based::Tensor;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Node;
+using ::mediapipe_v01013_based::api2::OneOf;
+using ::mediapipe_v01013_based::api2::Output;
 
 }  // namespace
 
@@ -142,4 +142,4 @@ absl::Status VectorToTensorCalculator::UpdateContract(CalculatorContract* cc) {
 
 MEDIAPIPE_REGISTER_NODE(VectorToTensorCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

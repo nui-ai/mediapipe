@@ -19,7 +19,7 @@
 
 ABSL_DECLARE_FLAG(std::string, resource_root_dir);
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace python {
 
 namespace py = pybind11;
@@ -44,4 +44,4 @@ void ResourceUtilSubmodule(pybind11::module* module) {
 }
 
 }  // namespace python
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

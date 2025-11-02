@@ -23,23 +23,23 @@
 #include "mediapipe/framework/port/gtest.h"
 
 MEDIAPIPE_DEFINE_SAFE_INT_TYPE(SafeInt8, int8_t,
-                               mediapipe::intops::LogFatalOnError);
+                               mediapipe_v01013_based::intops::LogFatalOnError);
 MEDIAPIPE_DEFINE_SAFE_INT_TYPE(SafeUInt8, uint8_t,
-                               mediapipe::intops::LogFatalOnError);
+                               mediapipe_v01013_based::intops::LogFatalOnError);
 MEDIAPIPE_DEFINE_SAFE_INT_TYPE(SafeInt16, int16_t,
-                               mediapipe::intops::LogFatalOnError);
+                               mediapipe_v01013_based::intops::LogFatalOnError);
 MEDIAPIPE_DEFINE_SAFE_INT_TYPE(SafeUInt16, uint16_t,
-                               mediapipe::intops::LogFatalOnError);
+                               mediapipe_v01013_based::intops::LogFatalOnError);
 MEDIAPIPE_DEFINE_SAFE_INT_TYPE(SafeInt32, int32_t,
-                               mediapipe::intops::LogFatalOnError);
+                               mediapipe_v01013_based::intops::LogFatalOnError);
 MEDIAPIPE_DEFINE_SAFE_INT_TYPE(SafeInt64, int64_t,
-                               mediapipe::intops::LogFatalOnError);
+                               mediapipe_v01013_based::intops::LogFatalOnError);
 MEDIAPIPE_DEFINE_SAFE_INT_TYPE(SafeUInt32, uint32_t,
-                               mediapipe::intops::LogFatalOnError);
+                               mediapipe_v01013_based::intops::LogFatalOnError);
 MEDIAPIPE_DEFINE_SAFE_INT_TYPE(SafeUInt64, uint64_t,
-                               mediapipe::intops::LogFatalOnError);
+                               mediapipe_v01013_based::intops::LogFatalOnError);
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace intops {
 
 //
@@ -770,4 +770,4 @@ TYPED_TEST(UnsignedSafeIntTest, TestModulo) {
 }
 
 }  // namespace intops
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

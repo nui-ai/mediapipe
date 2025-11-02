@@ -29,7 +29,7 @@
 #include "tensorflow/core/framework/tensor_shape.h"
 #include "tensorflow/core/framework/types.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 const char kVectorInt[] = "VECTOR_INT";
 const char kSingleInt[] = "SINGLE_INT";
@@ -222,4 +222,4 @@ absl::Status VectorIntToTensorCalculator::Process(CalculatorContext* cc) {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

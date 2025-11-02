@@ -4,7 +4,7 @@
 #include <functional>
 #include <memory>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace internal {
 
 // Unique pointer with a type-erased destructor.
@@ -59,6 +59,6 @@ class Attachment : public AttachmentBase<Context> {
 };
 
 }  // namespace internal
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_ATTACHMENTS_H_

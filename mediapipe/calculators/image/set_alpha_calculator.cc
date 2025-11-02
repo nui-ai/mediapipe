@@ -32,7 +32,7 @@
 #include "mediapipe/gpu/shader_util.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -129,13 +129,13 @@ class SetAlphaCalculator : public CalculatorBase {
   absl::Status GlSetup(CalculatorContext* cc);
   void GlRender(CalculatorContext* cc);
 
-  mediapipe::SetAlphaCalculatorOptions options_;
+  mediapipe_v01013_based::SetAlphaCalculatorOptions options_;
   float alpha_value_ = -1.f;
 
   bool use_gpu_ = false;
   bool gpu_initialized_ = false;
 #if !MEDIAPIPE_DISABLE_GPU
-  mediapipe::GlCalculatorHelper gpu_helper_;
+  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
   GLuint program_ = 0;
 #endif  // !MEDIAPIPE_DISABLE_GPU
 };
@@ -158,7 +158,7 @@ absl::Status SetAlphaCalculator::GetContract(CalculatorContract* cc) {
   // Input image to add/edit alpha channel.
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Inputs().HasTag(kInputFrameTagGpu)) {
-    cc->Inputs().Tag(kInputFrameTagGpu).Set<mediapipe::GpuBuffer>();
+    cc->Inputs().Tag(kInputFrameTagGpu).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -169,7 +169,7 @@ absl::Status SetAlphaCalculator::GetContract(CalculatorContract* cc) {
   // Input alpha image mask (optional)
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Inputs().HasTag(kInputAlphaTagGpu)) {
-    cc->Inputs().Tag(kInputAlphaTagGpu).Set<mediapipe::GpuBuffer>();
+    cc->Inputs().Tag(kInputAlphaTagGpu).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -180,7 +180,7 @@ absl::Status SetAlphaCalculator::GetContract(CalculatorContract* cc) {
   // RGBA output image.
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Outputs().HasTag(kOutputFrameTagGpu)) {
-    cc->Outputs().Tag(kOutputFrameTagGpu).Set<mediapipe::GpuBuffer>();
+    cc->Outputs().Tag(kOutputFrameTagGpu).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -190,7 +190,7 @@ absl::Status SetAlphaCalculator::GetContract(CalculatorContract* cc) {
 
   if (use_gpu) {
 #if !MEDIAPIPE_DISABLE_GPU
-    MP_RETURN_IF_ERROR(mediapipe::GlCalculatorHelper::UpdateContract(cc));
+    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc));
 #endif  // !MEDIAPIPE_DISABLE_GPU
   }
 
@@ -200,7 +200,7 @@ absl::Status SetAlphaCalculator::GetContract(CalculatorContract* cc) {
 absl::Status SetAlphaCalculator::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
 
-  options_ = cc->Options<mediapipe::SetAlphaCalculatorOptions>();
+  options_ = cc->Options<mediapipe_v01013_based::SetAlphaCalculatorOptions>();
 
   if (cc->Inputs().HasTag(kInputFrameTagGpu) &&
       cc->Outputs().HasTag(kOutputFrameTagGpu)) {
@@ -325,9 +325,9 @@ absl::Status SetAlphaCalculator::RenderGpu(CalculatorContext* cc) {
 #if !MEDIAPIPE_DISABLE_GPU
   // Setup source texture.
   const auto& input_frame =
-      cc->Inputs().Tag(kInputFrameTagGpu).Get<mediapipe::GpuBuffer>();
-  if (!(input_frame.format() == mediapipe::GpuBufferFormat::kBGRA32 ||
-        input_frame.format() == mediapipe::GpuBufferFormat::kRGB24)) {
+      cc->Inputs().Tag(kInputFrameTagGpu).Get<mediapipe_v01013_based::GpuBuffer>();
+  if (!(input_frame.format() == mediapipe_v01013_based::GpuBufferFormat::kBGRA32 ||
+        input_frame.format() == mediapipe_v01013_based::GpuBufferFormat::kRGB24)) {
     ABSL_LOG(ERROR) << "Only RGB or RGBA input image supported";
   }
   auto input_texture = gpu_helper_.CreateSourceTexture(input_frame);
@@ -335,7 +335,7 @@ absl::Status SetAlphaCalculator::RenderGpu(CalculatorContext* cc) {
   // Setup destination texture.
   const int width = input_frame.width(), height = input_frame.height();
   auto output_texture = gpu_helper_.CreateDestinationTexture(
-      width, height, mediapipe::GpuBufferFormat::kBGRA32);
+      width, height, mediapipe_v01013_based::GpuBufferFormat::kBGRA32);
 
   const bool has_alpha_mask = cc->Inputs().HasTag(kInputAlphaTagGpu) &&
                               !cc->Inputs().Tag(kInputAlphaTagGpu).IsEmpty();
@@ -343,7 +343,7 @@ absl::Status SetAlphaCalculator::RenderGpu(CalculatorContext* cc) {
   // Setup alpha texture and Update image in GPU shader.
   if (has_alpha_mask) {
     const auto& alpha_mask =
-        cc->Inputs().Tag(kInputAlphaTagGpu).Get<mediapipe::GpuBuffer>();
+        cc->Inputs().Tag(kInputAlphaTagGpu).Get<mediapipe_v01013_based::GpuBuffer>();
     auto alpha_texture = gpu_helper_.CreateSourceTexture(alpha_mask);
     gpu_helper_.BindFramebuffer(output_texture);
     glActiveTexture(GL_TEXTURE1);
@@ -367,7 +367,7 @@ absl::Status SetAlphaCalculator::RenderGpu(CalculatorContext* cc) {
   glFlush();
 
   // Send out image as GPU packet.
-  auto output_frame = output_texture.GetFrame<mediapipe::GpuBuffer>();
+  auto output_frame = output_texture.GetFrame<mediapipe_v01013_based::GpuBuffer>();
   cc->Outputs()
       .Tag(kOutputFrameTagGpu)
       .Add(output_frame.release(), cc->InputTimestamp());
@@ -478,7 +478,7 @@ absl::Status SetAlphaCalculator::GlSetup(CalculatorContext* cc) {
   )";
 
   // Create shader program and set parameters.
-  mediapipe::GlhCreateProgram(mediapipe::kBasicVertexShader, frag_src,
+  mediapipe_v01013_based::GlhCreateProgram(mediapipe_v01013_based::kBasicVertexShader, frag_src,
                               NUM_ATTRIBUTES, (const GLchar**)&attr_name[0],
                               attr_location, &program_);
   RET_CHECK(program_) << "Problem initializing the program.";
@@ -492,4 +492,4 @@ absl::Status SetAlphaCalculator::GlSetup(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

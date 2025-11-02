@@ -33,7 +33,7 @@
 #include "mediapipe/gpu/gl_texture_buffer_pool.h"
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class CvPixelBufferPoolWrapper;
 
@@ -54,6 +54,6 @@ class GpuBufferMultiPool : public MultiPool<
   }
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_GPU_BUFFER_MULTI_POOL_H_

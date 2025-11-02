@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/tool/template_expander.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 Subgraph::Subgraph() {}
 
@@ -45,7 +45,7 @@ TemplateSubgraph::~TemplateSubgraph() {}
 absl::StatusOr<CalculatorGraphConfig> TemplateSubgraph::GetConfig(
     const Subgraph::SubgraphOptions& options) {
   TemplateDict arguments =
-      Subgraph::GetOptions<mediapipe::TemplateSubgraphOptions>(options).dict();
+      Subgraph::GetOptions<mediapipe_v01013_based::TemplateSubgraphOptions>(options).dict();
   tool::TemplateExpander expander;
   CalculatorGraphConfig config;
   MP_RETURN_IF_ERROR(expander.ExpandTemplates(arguments, templ_, &config));
@@ -106,4 +106,4 @@ absl::StatusOr<CalculatorGraphConfig> GraphRegistry::CreateByName(
   return maker.value()->GetConfig(&default_context);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

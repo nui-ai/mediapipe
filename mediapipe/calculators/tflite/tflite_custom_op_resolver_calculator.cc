@@ -34,7 +34,7 @@
 #include "mediapipe/util/tflite/op_resolver.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 constexpr char kOpResolverTag[] = "OP_RESOLVER";
@@ -92,15 +92,15 @@ class TfLiteCustomOpResolverCalculator : public CalculatorBase {
 
     std::unique_ptr<tflite::ops::builtin::BuiltinOpResolver> op_resolver;
     if (options.use_gpu()) {
-      op_resolver = absl::make_unique<mediapipe::OpResolver>();
+      op_resolver = absl::make_unique<mediapipe_v01013_based::OpResolver>();
     } else {
-      op_resolver = absl::make_unique<mediapipe::CpuOpResolver>();
+      op_resolver = absl::make_unique<mediapipe_v01013_based::CpuOpResolver>();
     }
 
     if (cc->OutputSidePackets().HasTag(kOpResolverTag)) {
       cc->OutputSidePackets()
           .Tag(kOpResolverTag)
-          .Set(mediapipe::api2::PacketAdopting<tflite::OpResolver>(
+          .Set(mediapipe_v01013_based::api2::PacketAdopting<tflite::OpResolver>(
               std::move(op_resolver)));
     } else {
       cc->OutputSidePackets().Index(0).Set(Adopt(op_resolver.release()));
@@ -114,4 +114,4 @@ class TfLiteCustomOpResolverCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(TfLiteCustomOpResolverCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -18,7 +18,7 @@ limitations under the License.
 
 #include <array>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
@@ -646,6 +646,6 @@ struct FaceLandmarksConnections {
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_FACE_LANDMARKER_FACE_LANDMARKS_CONNECTIONS_H_

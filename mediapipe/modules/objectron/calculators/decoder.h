@@ -23,7 +23,7 @@
 #include "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
 #include "mediapipe/modules/objectron/calculators/belief_decoder_config.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Decodes 3D bounding box from heatmaps and offset maps. In the future,
 // if we want to develop decoder for generic skeleton, then we need to
@@ -104,6 +104,6 @@ class Decoder {
   Eigen::Matrix<float, 8, 4, Eigen::RowMajor> epnp_alpha_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_MODULES_OBJECTRON_CALCULATORS_DECODER_H_

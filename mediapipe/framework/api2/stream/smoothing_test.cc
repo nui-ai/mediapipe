@@ -16,11 +16,11 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 namespace {
 
 TEST(Smoothing, NormLandmarks) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Stream<NormalizedLandmarkList> norm_landmarks =
       graph.In("NORM_LANDMARKS").Cast<NormalizedLandmarkList>();
@@ -35,7 +35,7 @@ TEST(Smoothing, NormLandmarks) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "LandmarksSmoothingCalculator"
           input_stream: "IMAGE_SIZE:__stream_0"
@@ -63,7 +63,7 @@ TEST(Smoothing, NormLandmarks) {
 }
 
 TEST(Smoothing, Landmarks) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Stream<LandmarkList> landmarks = graph.In("LANDMARKS").Cast<LandmarkList>();
   SmoothLandmarks(landmarks, /*scale_roi=*/std::nullopt,
@@ -73,7 +73,7 @@ TEST(Smoothing, Landmarks) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "LandmarksSmoothingCalculator"
           input_stream: "LANDMARKS:__stream_0"
@@ -97,7 +97,7 @@ TEST(Smoothing, Landmarks) {
 }
 
 TEST(Smoothing, MultiLandmarks) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Stream<std::vector<NormalizedLandmarkList>> norm_landmarks =
       graph.In("NORM_LANDMARKS").Cast<std::vector<NormalizedLandmarkList>>();
@@ -115,7 +115,7 @@ TEST(Smoothing, MultiLandmarks) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "MultiLandmarksSmoothingCalculator"
           input_stream: "IMAGE_SIZE:__stream_0"
@@ -138,7 +138,7 @@ TEST(Smoothing, MultiLandmarks) {
 }
 
 TEST(Smoothing, MultiWorldLandmarks) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Stream<std::vector<LandmarkList>> landmarks =
       graph.In("LANDMARKS").Cast<std::vector<LandmarkList>>();
@@ -152,7 +152,7 @@ TEST(Smoothing, MultiWorldLandmarks) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "MultiWorldLandmarksSmoothingCalculator"
           input_stream: "LANDMARKS:__stream_0"
@@ -171,7 +171,7 @@ TEST(Smoothing, MultiWorldLandmarks) {
 }
 
 TEST(Smoothing, NormLandmarksVisibility) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Stream<NormalizedLandmarkList> norm_landmarks =
       graph.In("NORM_LANDMARKS").Cast<NormalizedLandmarkList>();
@@ -181,7 +181,7 @@ TEST(Smoothing, NormLandmarksVisibility) {
   smoothed_norm_landmarks.SetName("smoothed_norm_landmarks");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "VisibilitySmoothingCalculator"
           input_stream: "NORM_LANDMARKS:__stream_0"
@@ -200,7 +200,7 @@ TEST(Smoothing, NormLandmarksVisibility) {
 }
 
 TEST(Smoothing, LandmarksVisibility) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Stream<LandmarkList> landmarks = graph.In("LANDMARKS").Cast<LandmarkList>();
   Stream<LandmarkList> smoothed_landmarks = SmoothLandmarksVisibility(
@@ -208,7 +208,7 @@ TEST(Smoothing, LandmarksVisibility) {
   smoothed_landmarks.SetName("smoothed_landmarks");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "VisibilitySmoothingCalculator"
           input_stream: "LANDMARKS:__stream_0"
@@ -227,4 +227,4 @@ TEST(Smoothing, LandmarksVisibility) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder

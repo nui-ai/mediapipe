@@ -48,7 +48,7 @@ node {
   input_stream: "IMAGE_SIZE:image_size"
   output_stream: "TRACKING_RECT:hand_tracking_roi"
   options: {
-    [mediapipe.RoiTrackingCalculatorOptions.ext] {
+    [mediapipe_v01013_based.RoiTrackingCalculatorOptions.ext] {
       rect_requirements: {
         rotation_degrees: 40.0
         translation: 0.2

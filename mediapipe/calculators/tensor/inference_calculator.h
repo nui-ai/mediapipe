@@ -39,7 +39,7 @@
 #include "tensorflow/lite/core/api/op_resolver.h"
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // Runs inference on the provided input Tensors and TFLite model.
@@ -154,10 +154,10 @@ class InferenceCalculator : public NodeIntf {
   static constexpr SideInput<TfLiteModelPtr>::Optional kSideInModel{"MODEL"};
   static constexpr SideInput<std::string>::Optional kSideInModelPath{"MODEL_PATH"};
   static constexpr SideInput<
-      mediapipe::InferenceCalculatorOptions::Delegate>::Optional kDelegate{
+      mediapipe_v01013_based::InferenceCalculatorOptions::Delegate>::Optional kDelegate{
       "DELEGATE"};
   static constexpr SideInput<
-      mediapipe::InferenceCalculatorOptions::InputOutputConfig>::Optional
+      mediapipe_v01013_based::InferenceCalculatorOptions::InputOutputConfig>::Optional
       kSideInIoMap{"IO_CONFIG"};
   MEDIAPIPE_NODE_CONTRACT(kInTensors, kInTensor, kSideInCustomOpResolver,
                           kSideInOpResolver, kSideInModel, kSideInModelPath,
@@ -295,19 +295,19 @@ class InferenceCalculatorNodeImpl : public NodeImpl<Intf, Impl> {
 
   // Looks up InputOutputConfig from side-packet or options. Returns an
   // empty map in case of missing configuration.
-  static mediapipe::InferenceCalculatorOptions::InputOutputConfig
+  static mediapipe_v01013_based::InferenceCalculatorOptions::InputOutputConfig
   GetInputOutputConfig(CalculatorContext* cc) {
     if (InferenceCalculator::kSideInIoMap(cc).IsConnected()) {
       return *InferenceCalculator::kSideInIoMap(cc)
-                  .As<mediapipe::InferenceCalculatorOptions::
+                  .As<mediapipe_v01013_based::InferenceCalculatorOptions::
                           InputOutputConfig>();
     }
-    const auto& options = cc->Options<mediapipe::InferenceCalculatorOptions>();
+    const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
     if (options.has_input_output_config()) {
       return options.input_output_config();
     }
     // In case of missing configuration, return empty config.
-    return mediapipe::InferenceCalculatorOptions::InputOutputConfig();
+    return mediapipe_v01013_based::InferenceCalculatorOptions::InputOutputConfig();
   }
 
 public:
@@ -315,6 +315,6 @@ public:
 };
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_INFERENCE_CALCULATOR_H_

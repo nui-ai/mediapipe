@@ -14,7 +14,7 @@
 #include "mediapipe/framework/formats/shared_fd.h"
 #include "mediapipe/gpu/gpu_buffer_storage.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Wrapper to facilitate short lived access to Android Hardware Buffer objects.
 // Intended use cases:
@@ -90,7 +90,7 @@ class ViewProvider<AhwbView> {
 
 }  // namespace internal
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_AHWB
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_AHWB_VIEW_H_

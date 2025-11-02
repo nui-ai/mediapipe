@@ -36,7 +36,7 @@
 #include "mediapipe/framework/formats/matrix.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -79,7 +79,7 @@ class LandmarksToFloatsCalculator : public CalculatorBase {
   absl::Status Open(CalculatorContext* cc) override {
     cc->SetOffset(TimestampDiff(0));
     const auto& options =
-        cc->Options<::mediapipe::LandmarksToFloatsCalculatorOptions>();
+        cc->Options<::mediapipe_v01013_based::LandmarksToFloatsCalculatorOptions>();
     num_dimensions_ = options.num_dimensions();
     // Currently number of dimensions must be within [1, 3].
     RET_CHECK_GE(num_dimensions_, 1);
@@ -136,4 +136,4 @@ class LandmarksToFloatsCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(LandmarksToFloatsCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

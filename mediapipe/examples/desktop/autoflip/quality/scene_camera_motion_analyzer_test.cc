@@ -32,7 +32,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 using ::testing::HasSubstr;
@@ -735,9 +735,9 @@ TEST(SceneCameraMotionAnalyzerTest,
 
   // Get reference scene frame results from csv file.
   const std::string scene_frame_results_file_path =
-      mediapipe::file::JoinPath("./", kCameraTrackingSceneFrameResultsFile);
+      mediapipe_v01013_based::file::JoinPath("./", kCameraTrackingSceneFrameResultsFile);
   std::string csv_file_content;
-  MP_ASSERT_OK(mediapipe::file::GetContents(scene_frame_results_file_path,
+  MP_ASSERT_OK(mediapipe_v01013_based::file::GetContents(scene_frame_results_file_path,
                                             &csv_file_content));
   std::vector<std::string> lines = absl::StrSplit(csv_file_content, '\n');
   std::vector<std::string> records;
@@ -803,4 +803,4 @@ TEST(SceneCameraMotionAnalyzerTest,
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -54,11 +54,11 @@ TfLiteRegistration* Register_MY_CUSTOM_OP() {
 }  // namespace ops
 }  // namespace tflite
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace core {
 
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
 
 namespace {
 
@@ -297,4 +297,4 @@ TEST_F(ModelResourcesTest, CreateSuccessWithCustomOpsPacket) {
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

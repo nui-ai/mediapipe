@@ -25,7 +25,7 @@
 #include "mediapipe/framework/formats/detection.pb.h"
 #include "mediapipe/framework/formats/location_data.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace {
 
@@ -327,4 +327,4 @@ class DetectionTransformationCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(DetectionTransformationCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

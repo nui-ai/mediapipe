@@ -15,12 +15,12 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-class NoOp : public mediapipe::api2::Node {
+class NoOp : public mediapipe_v01013_based::api2::Node {
  public:
-  static constexpr mediapipe::api2::Input<int>::Optional kInputNotNeeded{"NN"};
-  static constexpr mediapipe::api2::Output<int>::Optional kOutputNotNeeded{
+  static constexpr mediapipe_v01013_based::api2::Input<int>::Optional kInputNotNeeded{"NN"};
+  static constexpr mediapipe_v01013_based::api2::Output<int>::Optional kOutputNotNeeded{
       "NN"};
   MEDIAPIPE_NODE_CONTRACT(kInputNotNeeded, kOutputNotNeeded);
   absl::Status Process(CalculatorContext* cc) override {
@@ -117,8 +117,8 @@ TEST(ValidatedGraphConfigTest, InitializeSubgraphHardcoded) {
                   "AlwaysCalculatorASubgraph", "CalculatorA")));
 }
 
-const mediapipe::GraphService<std::string> kStringTestService{
-    "mediapipe::StringTestService"};
+const mediapipe_v01013_based::GraphService<std::string> kStringTestService{
+    "mediapipe_v01013_based::StringTestService"};
 
 class TestServiceSubgraph : public Subgraph {
   absl::StatusOr<CalculatorGraphConfig> GetConfig(
@@ -164,4 +164,4 @@ TEST(ValidatedGraphConfigTest, InitializeSubgraphWithServiceCalculatorB) {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

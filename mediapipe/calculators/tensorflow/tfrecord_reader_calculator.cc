@@ -27,7 +27,7 @@
 #include "tensorflow/core/platform/env.h"
 #include "tensorflow/core/platform/file_system.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 const char kTFRecordPath[] = "TFRECORD_PATH";
 const char kRecordIndex[] = "RECORD_INDEX";
@@ -122,4 +122,4 @@ absl::Status TFRecordReaderCalculator::Process(CalculatorContext* cc) {
 
 REGISTER_CALCULATOR(TFRecordReaderCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

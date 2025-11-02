@@ -19,7 +19,7 @@ limitations under the License.
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace landmarks_smoothing {
 namespace {
 
@@ -115,4 +115,4 @@ TEST(LandmarksSmoothingCalculatorUtilsTest,
 
 }  // namespace
 }  // namespace landmarks_smoothing
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -9,7 +9,7 @@
 #include "mediapipe/gpu/egl_sync.h"
 #include "mediapipe/gpu/gl_context.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -85,4 +85,4 @@ absl::StatusOr<std::unique_ptr<GlSyncPoint>> CreateEglSyncPoint(
                                              std::move(egl_sync));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

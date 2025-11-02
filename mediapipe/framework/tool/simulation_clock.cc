@@ -18,7 +18,7 @@
 #include "absl/time/time.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 SimulationClock::~SimulationClock() {
   ThreadStart();
@@ -74,4 +74,4 @@ void SimulationClock::TryAdvanceTime() {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

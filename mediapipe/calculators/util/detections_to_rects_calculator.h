@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Dynamic options passed as calculator `input_stream` that can be used for
 // calculation of rectangle or rotation for given detection. Does not include
@@ -89,13 +89,13 @@ class PalmDetectionToHandRectStage1 : public CalculatorBase {
   absl::Status Process(CalculatorContext* cc) override;
 
  protected:
-  virtual absl::Status DetectionToRect(const ::mediapipe::Detection& detection,
+  virtual absl::Status DetectionToRect(const ::mediapipe_v01013_based::Detection& detection,
                                        const DetectionSpec& detection_spec,
-                                       ::mediapipe::Rect* rect);
+                                       ::mediapipe_v01013_based::Rect* rect);
   virtual absl::Status DetectionToNormalizedRect(
-      const ::mediapipe::Detection& detection,
-      const DetectionSpec& detection_spec, ::mediapipe::NormalizedRect* rect);
-  virtual absl::Status ComputeRotation(const ::mediapipe::Detection& detection,
+      const ::mediapipe_v01013_based::Detection& detection,
+      const DetectionSpec& detection_spec, ::mediapipe_v01013_based::NormalizedRect* rect);
+  virtual absl::Status ComputeRotation(const ::mediapipe_v01013_based::Detection& detection,
                                        const DetectionSpec& detection_spec,
                                        float* rotation);
   virtual DetectionSpec GetDetectionSpec(const CalculatorContext* cc);
@@ -104,7 +104,7 @@ class PalmDetectionToHandRectStage1 : public CalculatorBase {
     return angle - 2 * M_PI * std::floor((angle - (-M_PI)) / (2 * M_PI));
   }
 
-  ::mediapipe::DetectionsToRectsCalculatorOptions options_;
+  ::mediapipe_v01013_based::DetectionsToRectsCalculatorOptions options_;
   int start_keypoint_index_;
   int end_keypoint_index_;
   float target_angle_ = 0.0f;  // In radians.
@@ -112,5 +112,5 @@ class PalmDetectionToHandRectStage1 : public CalculatorBase {
   bool output_zero_rect_for_empty_detections_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_DETECTIONS_TO_RECTS_CALCULATOR_H_

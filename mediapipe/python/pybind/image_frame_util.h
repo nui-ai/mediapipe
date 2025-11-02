@@ -31,14 +31,14 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/pytypes.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace python {
 
 namespace py = pybind11;
 
 template <typename T>
 std::unique_ptr<ImageFrame> CreateImageFrame(
-    mediapipe::ImageFormat::Format format,
+    mediapipe_v01013_based::ImageFormat::Format format,
     const py::array_t<T, py::array::c_style>& data, bool copy = true) {
   int rows = data.shape()[0];
   int cols = data.shape()[1];
@@ -226,6 +226,6 @@ inline std::vector<ImageFrame> CreateImageFrameVectorFromImageFrameList(
 }
 
 }  // namespace python
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_PYTHON_PYBIND_IMAGE_FRAME_UTIL_H_

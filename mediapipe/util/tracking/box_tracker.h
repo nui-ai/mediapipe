@@ -29,7 +29,7 @@
 #include "mediapipe/util/tracking/tracking.h"
 #include "mediapipe/util/tracking/tracking.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Describes a rectangle box at an instance of time.
 struct TimedBox {
@@ -368,6 +368,6 @@ class BoxTracker {
   std::unique_ptr<ThreadPool> tracking_workers_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_BOX_TRACKER_H_

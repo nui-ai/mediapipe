@@ -21,7 +21,7 @@
 #include "mediapipe/framework/packet.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // PacketConsumer accepts several tagged streams of packets.
 class PacketConsumer {
@@ -83,6 +83,6 @@ class PacketProcessor : public PacketConsumer,
   virtual absl::Status Shutdown() = 0;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_PACKET_PROCESSOR_H_

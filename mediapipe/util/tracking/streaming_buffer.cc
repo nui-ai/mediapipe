@@ -18,7 +18,7 @@
 #include "absl/log/absl_log.h"
 #include "absl/strings/str_cat.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 StreamingBuffer::StreamingBuffer(
     const std::vector<TaggedType>& data_configuration, int overlap)
@@ -148,4 +148,4 @@ void StreamingBuffer::DiscardData(const std::vector<std::string>& tags,
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

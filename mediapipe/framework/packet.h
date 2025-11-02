@@ -54,7 +54,7 @@
 #include "mediapipe/framework/tool/type_util.h"
 #include "mediapipe/framework/type_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class Packet;
 
@@ -867,6 +867,6 @@ inline std::shared_ptr<const HolderBase> GetHolderShared(Packet&& packet) {
 
 }  // namespace packet_internal
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PACKET_H_

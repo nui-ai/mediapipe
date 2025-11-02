@@ -33,7 +33,7 @@
 #include "mediapipe/framework/tool/options_util.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 const char kOptionsTag[] = "OPTIONS";
 const int kPatchSize = 32;
@@ -57,7 +57,7 @@ class FeatureDetectorCalculator : public CalculatorBase {
  private:
   FeatureDetectorCalculatorOptions options_;
   cv::Ptr<cv::Feature2D> feature_detector_;
-  std::unique_ptr<mediapipe::ThreadPool> pool_;
+  std::unique_ptr<mediapipe_v01013_based::ThreadPool> pool_;
 
   // Create image pyramid based on input image.
   void ComputeImagePyramid(const cv::Mat& input_image,
@@ -93,7 +93,7 @@ absl::Status FeatureDetectorCalculator::Open(CalculatorContext* cc) {
   feature_detector_ = cv::ORB::create(
       options_.max_features(), options_.scale_factor(),
       options_.pyramid_level(), kPatchSize - 1, 0, 2, cv::ORB::FAST_SCORE);
-  pool_ = absl::make_unique<mediapipe::ThreadPool>("ThreadPool", kNumThreads);
+  pool_ = absl::make_unique<mediapipe_v01013_based::ThreadPool>("ThreadPool", kNumThreads);
   pool_->StartWorkers();
   return absl::OkStatus();
 }
@@ -205,4 +205,4 @@ cv::Mat FeatureDetectorCalculator::ExtractPatch(
   return cropped_img;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

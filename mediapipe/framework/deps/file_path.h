@@ -21,7 +21,7 @@
 #include "absl/strings/string_view.h"
 
 // A set of file pathname manipulation routines.
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace file {
 namespace internal {
 
@@ -92,6 +92,6 @@ absl::string_view Basename(absl::string_view path);
 absl::string_view Extension(absl::string_view path);
 
 }  // namespace file
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_FILE_PATH_H_

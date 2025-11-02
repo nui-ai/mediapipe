@@ -15,19 +15,19 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe.tasks.components.processors.proto;
+package mediapipe_v01013_based.tasks.components.processors.proto;
 
 import "mediapipe/calculators/tensor/image_to_tensor_calculator.proto";
 import "mediapipe/framework/calculator.proto";
 
 message ImagePreprocessingGraphOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional ImagePreprocessingGraphOptions ext = 456882436;
   }
 
   // Options for the ImageToTensor calculator encapsulated by the
   // ImagePreprocessing subgraph.
-  optional mediapipe.ImageToTensorCalculatorOptions image_to_tensor_options = 1;
+  optional mediapipe_v01013_based.ImageToTensorCalculatorOptions image_to_tensor_options = 1;
 
   // The required image processing backend type. If not specified or set to
   // default, use the backend that the input image data is already on.

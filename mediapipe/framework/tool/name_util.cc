@@ -23,13 +23,13 @@
 #include "mediapipe/framework/port/map_util.h"
 #include "mediapipe/framework/tool/validate_name.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 std::string GetUnusedNodeName(const CalculatorGraphConfig& config,
                               const std::string& node_name_base) {
   std::set<std::string> node_names;
-  for (const ::mediapipe::CalculatorGraphConfig::Node& node : config.node()) {
+  for (const ::mediapipe_v01013_based::CalculatorGraphConfig::Node& node : config.node()) {
     if (!node.name().empty()) {
       node_names.insert(node.name());
     }
@@ -49,7 +49,7 @@ std::string GetUnusedSidePacketName(
     const CalculatorGraphConfig& config,
     const std::string& input_side_packet_name_base) {
   absl::flat_hash_set<std::string> input_side_packets;
-  for (const ::mediapipe::CalculatorGraphConfig::Node& node : config.node()) {
+  for (const ::mediapipe_v01013_based::CalculatorGraphConfig::Node& node : config.node()) {
     for (const auto& tag_and_name : node.input_side_packet()) {
       std::string tag;
       std::string name;
@@ -128,4 +128,4 @@ std::string CatStream(const std::pair<std::string, int>& tag_index,
 }
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

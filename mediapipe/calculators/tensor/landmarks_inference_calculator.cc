@@ -37,7 +37,7 @@
 #include "mediapipe/util/tflite/cpu_op_resolver.h"
 #include "tensorflow/lite/delegates/xnnpack/xnnpack_delegate.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 struct LandmarksInferenceCalculatorCpu : public InferenceCalculator {
@@ -84,7 +84,7 @@ absl::Status LandmarksInferenceCalculator::UpdateContract(CalculatorContract* cc
     "GetModelAsPacket successfully loaded model from path: %s. Model size: %ld bytes",
     model_path, model_packet.Get()->allocation()->bytes());
 
-  auto op_resolver = std::make_unique<mediapipe::CpuOpResolver>();
+  auto op_resolver = std::make_unique<mediapipe_v01013_based::CpuOpResolver>();
 
   auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
   xnnpack_opts.num_threads = 1;
@@ -136,4 +136,4 @@ absl::Status LandmarksInferenceCalculator::Close(CalculatorContext* cc) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe::tensors_to_segmentation_utils {
+namespace mediapipe_v01013_based::tensors_to_segmentation_utils {
 namespace {
 
 using ::testing::HasSubstr;
@@ -60,4 +60,4 @@ TEST(TensorsToSegmentationUtilsTest, GetHwcFromDimsInvalidShape) {
 }
 
 }  // namespace
-}  // namespace mediapipe::tensors_to_segmentation_utils
+}  // namespace mediapipe_v01013_based::tensors_to_segmentation_utils

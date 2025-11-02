@@ -29,7 +29,7 @@
 #include "tensorflow/lite/interpreter.h"
 #include "tensorflow/lite/model_builder.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 // Maps signature names to a list of input and output tensor names in the
 // order in which they are expected by the model.
 using InputOutputTensorNames =
@@ -56,7 +56,7 @@ class InferenceIoMapper {
   // Update the internal mapping of input and output tensors according to the
   // provided initialized tflite interpreter.
   absl::Status UpdateIoMap(
-      const mediapipe::InferenceCalculatorOptions::InputOutputConfig& io_config,
+      const mediapipe_v01013_based::InferenceCalculatorOptions::InputOutputConfig& io_config,
       const InputOutputTensorNames& input_output_tensor_names);
 
   // Reorders input tensors according to the provided mappings.
@@ -73,6 +73,6 @@ class InferenceIoMapper {
   std::vector<int> output_tensor_indices_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_INFERENCE_CALCULATOR_IO_MAP_H_

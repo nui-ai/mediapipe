@@ -24,7 +24,7 @@
 #include "mediapipe/framework/packet.h"
 #include "mediapipe/framework/port.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class InputStream {
  public:
@@ -69,6 +69,6 @@ class InputStream {
   Packet header_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_INPUT_STREAM_H_

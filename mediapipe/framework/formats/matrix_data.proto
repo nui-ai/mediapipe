@@ -19,9 +19,9 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
-option java_package = "com.google.mediapipe.formats.proto";
+option java_package = "com.google.mediapipe_v01013_based.formats.proto";
 option java_outer_classname = "MatrixDataProto";
 
 // Proto for serializing Matrix data.
@@ -38,6 +38,6 @@ message MatrixData {
   }
 
   // Order in which the data are stored. Defaults to COLUMN_MAJOR, which matches
-  // the default for mediapipe::Matrix and Eigen::Matrix*.
+  // the default for mediapipe_v01013_based::Matrix and Eigen::Matrix*.
   optional Layout layout = 4 [default = COLUMN_MAJOR];
 }

@@ -20,7 +20,7 @@ limitations under the License.
 #include <utility>
 #include <vector>
 
-namespace mediapipe::tasks::text::language_detector::custom_ops {
+namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops {
 
 struct TokenizedOutput {
   // The processed string (with necessary prefix, suffix, skipped tokens, etc.).
@@ -51,6 +51,6 @@ TokenizedOutput Tokenize(const char* input_str, int len, int max_tokens,
 void LowercaseUnicodeStr(const char* input_str, int len,
                          std::string* output_str);
 
-}  // namespace mediapipe::tasks::text::language_detector::custom_ops
+}  // namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_LANGUAGE_DETECTOR_CUSTOM_OPS_UTILS_NGRAM_HASH_OPS_UTILS_H_

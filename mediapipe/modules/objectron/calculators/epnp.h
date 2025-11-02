@@ -22,7 +22,7 @@
 #include "absl/strings/str_format.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // This function performs EPnP algorithm, lifting normalized 2D points in pixel
 // space to 3D points in camera coordinate.
@@ -57,6 +57,6 @@ absl::Status SolveEpnp(const Eigen::Matrix4f& projection_matrix,
                        const std::vector<Eigen::Vector2f>& input_points_2d,
                        std::vector<Eigen::Vector3f>* output_points_3d);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_MODULES_OBJECTRON_CALCULATORS_EPNP_H_

@@ -30,31 +30,31 @@
 #include "mediapipe/framework/packet.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 // Each calculator task is identified by node_id, input_ts, and event_type.
 // Each stream hop is identified by stream_id, packet_ts, and event_type.
 struct TaskId {
   int id;
-  mediapipe::Timestamp ts;
+  mediapipe_v01013_based::Timestamp ts;
   int event_type;
   inline bool operator==(const TaskId& other) const {
     return id == other.id && ts == other.ts && event_type == other.event_type;
   }
   inline size_t hash() const { return id + ts.Value() + (event_type << 10); }
 };
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 namespace std {
 // std::hash specialization for TaskId.
 template <>
-struct hash<mediapipe::TaskId> {
-  std::size_t operator()(const mediapipe::TaskId& task_id) const {
+struct hash<mediapipe_v01013_based::TaskId> {
+  std::size_t operator()(const mediapipe_v01013_based::TaskId& task_id) const {
     return task_id.hash();
   }
 };
 }  // namespace std
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 void BasicTraceEventTypes(TraceEventRegistry* result) {
@@ -441,4 +441,4 @@ const TraceEvent::EventType         //
     TraceEvent::GPU_CALIBRATION,    //
     TraceEvent::PACKET_QUEUED;
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

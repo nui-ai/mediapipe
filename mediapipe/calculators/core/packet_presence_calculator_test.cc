@@ -26,7 +26,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/sink.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 using ::testing::ElementsAre;
 using ::testing::Eq;
 using ::testing::Value;
@@ -82,4 +82,4 @@ TEST(PreviousLoopbackCalculator, CorrectTimestamps) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

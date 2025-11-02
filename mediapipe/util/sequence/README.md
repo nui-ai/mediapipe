@@ -206,14 +206,14 @@ SetClipStartTimestamp(1000000, &sequence);
 SetClipEndTimestamp(6000000, &sequence);
 
 // For an object tracking task with action labels:
-std::vector<mediapipe::Location> locations_on_frame_1;
+std::vector<mediapipe_v01013_based::Location> locations_on_frame_1;
 AddBBox(locations_on_frame_1, &sequence);
 AddBBoxTimestamp(3000000, &sequence);
 AddBBoxLabelIndex({4, 3}, &sequence);
 AddBBoxLabelString({"run", "jump"}, &sequence);
 AddBBoxTrackString({"id_0", "id_1"}, &sequence);
 // AddBBoxClassString({"cls_0", "cls_0"}, &sequence); // if required
-std::vector<mediapipe::Location> locations_on_frame_2;
+std::vector<mediapipe_v01013_based::Location> locations_on_frame_2;
 AddBBox(locations_on_frame_2, &sequence);
 AddBBoxTimestamp(5000000, &sequence);
 AddBBoxLabelIndex({3}, &sequence);

@@ -24,7 +24,7 @@
 
 #if HAS_NSGL
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 GlContext::StatusOrGlContext GlContext::Create(std::nullptr_t nullp,
                                                bool create_thread) {
@@ -160,6 +160,6 @@ bool GlContext::IsCurrent() const {
   return HasContext() && ([NSOpenGLContext currentContext] == context_);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // HAS_NSGL

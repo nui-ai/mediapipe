@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "tensorflow/core/framework/tensor_types.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using ::absl::StrFormat;
 
@@ -169,14 +169,14 @@ Status TensorsToDetections(const ::tensorflow::Tensor& num_detections,
           TensorToDetection(boxes_mat(i, 0), boxes_mat(i, 1), boxes_mat(i, 2),
                             boxes_mat(i, 3), score, class_id);
     } else {
-      if (!mediapipe::ContainsKey(label_map, class_id)) {
+      if (!mediapipe_v01013_based::ContainsKey(label_map, class_id)) {
         return InvalidArgumentError(StrFormat(
             "Input label_map does not contain entry for integer label: %d",
             class_id));
       }
       detection = TensorToDetection(boxes_mat(i, 0), boxes_mat(i, 1),
                                     boxes_mat(i, 2), boxes_mat(i, 3), score,
-                                    mediapipe::FindOrDie(label_map, class_id));
+                                    mediapipe_v01013_based::FindOrDie(label_map, class_id));
     }
     // Adding keypoints
     LocationData* location_data = detection.mutable_location_data();
@@ -196,7 +196,7 @@ Status TensorsToDetections(const ::tensorflow::Tensor& num_detections,
         }
       }
       LocationData mask_location_data;
-      mediapipe::CreateCvMaskLocation<float>(mask_image)
+      mediapipe_v01013_based::CreateCvMaskLocation<float>(mask_image)
           .ConvertToProto(&mask_location_data);
       location_data->MergeFrom(mask_location_data);
     }
@@ -205,4 +205,4 @@ Status TensorsToDetections(const ::tensorflow::Tensor& num_detections,
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

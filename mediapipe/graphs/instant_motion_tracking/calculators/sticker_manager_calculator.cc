@@ -20,7 +20,7 @@
 #include "mediapipe/graphs/instant_motion_tracking/calculators/sticker_buffer.pb.h"
 #include "mediapipe/graphs/instant_motion_tracking/calculators/transformations.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 constexpr char kProtoDataString[] = "PROTO";
 constexpr char kAnchorsTag[] = "ANCHORS";
@@ -83,7 +83,7 @@ class StickerManagerCalculator : public CalculatorBase {
     std::vector<UserScaling> user_scaling_data;
     std::vector<int> render_data;
 
-    ::mediapipe::StickerRoll sticker_roll;
+    ::mediapipe_v01013_based::StickerRoll sticker_roll;
     bool parse_success = sticker_roll.ParseFromString(sticker_proto_string);
 
     // Ensure parsing was a success
@@ -95,7 +95,7 @@ class StickerManagerCalculator : public CalculatorBase {
       UserRotation user_rotation;
       UserScaling user_scaling;
       // Get individual Sticker object as defined by Protobuffer
-      ::mediapipe::Sticker sticker = sticker_roll.sticker(i);
+      ::mediapipe_v01013_based::Sticker sticker = sticker_roll.sticker(i);
       // Set individual data structure ids to associate with this sticker
       initial_anchor.sticker_id = sticker.id();
       user_rotation.sticker_id = sticker.id();
@@ -147,4 +147,4 @@ class StickerManagerCalculator : public CalculatorBase {
 };
 
 REGISTER_CALCULATOR(StickerManagerCalculator);
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -5,9 +5,9 @@
 #include "mediapipe/framework/formats/detection.pb.h"
 #include "mediapipe/calculators/util/non_max_suppression_calculator.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-using Detections = std::vector<::mediapipe::Detection>;
+using Detections = std::vector<::mediapipe_v01013_based::Detection>;
 class NonMaxSuppressionCalculatorOptions;
 
 std::unique_ptr<Detections> FilterDetectionsByNonMaximumSuppression(
@@ -17,7 +17,7 @@ std::unique_ptr<Detections> FilterDetectionsByNonMaximumSuppression(
     int frame_width = 0,
     int frame_height = 0);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_NON_MAX_SUPPRESSION_CALCULATOR_H_
 

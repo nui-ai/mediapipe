@@ -19,12 +19,12 @@ limitations under the License.
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/tasks/cc/core/utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 namespace tokenizers {
 
-using ::mediapipe::tasks::core::LoadBinaryContent;
+using ::mediapipe_v01013_based::tasks::core::LoadBinaryContent;
 using ::testing::ElementsAre;
 
 namespace {
@@ -184,4 +184,4 @@ TEST(TokenizerTest, TestLVocabularySize) {
 }  // namespace tokenizers
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

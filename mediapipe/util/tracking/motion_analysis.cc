@@ -36,7 +36,7 @@
 #include "mediapipe/util/tracking/region_flow_computation.pb.h"
 #include "mediapipe/util/tracking/region_flow_visualization.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 MotionAnalysis::MotionAnalysis(const MotionAnalysisOptions& options,
                                int frame_width, int frame_height)
@@ -844,4 +844,4 @@ void MotionAnalysis::ComputeSaliency() {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

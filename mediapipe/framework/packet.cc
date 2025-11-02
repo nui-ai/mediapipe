@@ -33,7 +33,7 @@
 #include "mediapipe/framework/tool/type_util.h"
 #include "mediapipe/framework/type_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace packet_internal {
 
 HolderBase::~HolderBase() {}
@@ -106,7 +106,7 @@ std::string Packet::DebugTypeName() const {
 }
 
 std::string Packet::DebugString() const {
-  std::string result = absl::StrCat("mediapipe::Packet with timestamp: ",
+  std::string result = absl::StrCat("mediapipe_v01013_based::Packet with timestamp: ",
                                     timestamp_.DebugString());
   if (IsEmpty()) {
     absl::StrAppend(&result, " and no data");
@@ -161,21 +161,21 @@ Packet::GetVectorOfProtoMessageLitePtrs() const {
   return holder_->GetVectorOfProtoMessageLite();
 }
 
-MEDIAPIPE_REGISTER_TYPE(::mediapipe::Packet, "::mediapipe::Packet", nullptr,
+MEDIAPIPE_REGISTER_TYPE(::mediapipe_v01013_based::Packet, "::mediapipe_v01013_based::Packet", nullptr,
                         nullptr);
-MEDIAPIPE_REGISTER_TYPE(::std::vector<::mediapipe::Packet>,
-                        "::std::vector<::mediapipe::Packet>", nullptr, nullptr);
-MEDIAPIPE_REGISTER_TYPE(::mediapipe::Timestamp, "::mediapipe::Timestamp",
+MEDIAPIPE_REGISTER_TYPE(::std::vector<::mediapipe_v01013_based::Packet>,
+                        "::std::vector<::mediapipe_v01013_based::Packet>", nullptr, nullptr);
+MEDIAPIPE_REGISTER_TYPE(::mediapipe_v01013_based::Timestamp, "::mediapipe_v01013_based::Timestamp",
                         nullptr, nullptr);
-#define PACKET_PAIR_TYPE ::std::pair<::mediapipe::Packet, ::mediapipe::Packet>
+#define PACKET_PAIR_TYPE ::std::pair<::mediapipe_v01013_based::Packet, ::mediapipe_v01013_based::Packet>
 MEDIAPIPE_REGISTER_TYPE(PACKET_PAIR_TYPE,
-                        "::std::pair<::mediapipe::Packet,::mediapipe::Packet>",
+                        "::std::pair<::mediapipe_v01013_based::Packet,::mediapipe_v01013_based::Packet>",
                         nullptr, nullptr);
 #undef PACKET_PAIR_TYPE
-#define PACKET_MAP_TYPE ::std::map<std::string, ::mediapipe::Packet>
+#define PACKET_MAP_TYPE ::std::map<std::string, ::mediapipe_v01013_based::Packet>
 MEDIAPIPE_REGISTER_TYPE(PACKET_MAP_TYPE,
-                        "::std::map<std::string,::mediapipe::Packet>", nullptr,
+                        "::std::map<std::string,::mediapipe_v01013_based::Packet>", nullptr,
                         nullptr);
 #undef PACKET_MAP_TYPE
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

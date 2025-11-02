@@ -37,7 +37,7 @@
 #include "mediapipe/modules/face_geometry/protos/geometry_pipeline_metadata.pb.h"
 #include "mediapipe/modules/face_geometry/protos/mesh_3d.pb.h"
 
-namespace mediapipe::face_geometry {
+namespace mediapipe_v01013_based::face_geometry {
 namespace {
 
 struct PerspectiveCameraFrustum {
@@ -357,7 +357,7 @@ class GeometryPipelineImpl : public GeometryPipeline {
                                         metric_face_landmarks.landmark(i).z());
       }
       // Populate the face pose transformation matrix.
-      mediapipe::MatrixDataProtoFromMatrix(
+      mediapipe_v01013_based::MatrixDataProtoFromMatrix(
           pose_transform_mat, face_geometry.mutable_pose_transform_matrix());
 
       multi_face_geometry.push_back(face_geometry);
@@ -463,4 +463,4 @@ absl::StatusOr<std::unique_ptr<GeometryPipeline>> CreateGeometryPipeline(
   return result;
 }
 
-}  // namespace mediapipe::face_geometry
+}  // namespace mediapipe_v01013_based::face_geometry

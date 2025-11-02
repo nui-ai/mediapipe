@@ -40,7 +40,7 @@
 // to run this test mutiple times with time seed, if changes are made.
 ABSL_FLAG(bool, time_seed, false, "Activate to test thresholds");
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using RandomEngine = std::mt19937_64;
@@ -302,4 +302,4 @@ TEST_P(RegionFlowComputationTest, ResolutionTests) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

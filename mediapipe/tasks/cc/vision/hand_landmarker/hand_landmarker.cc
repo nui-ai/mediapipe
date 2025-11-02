@@ -38,17 +38,17 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarker_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarks_detector_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
 
 namespace {
 
-using HandLandmarkerGraphOptionsProto = ::mediapipe::tasks::vision::
+using HandLandmarkerGraphOptionsProto = ::mediapipe_v01013_based::tasks::vision::
     hand_landmarker::proto::HandLandmarkerGraphOptions;
 
-using ::mediapipe::NormalizedRect;
+using ::mediapipe_v01013_based::NormalizedRect;
 
 constexpr char kHandLandmarkerGraphTypeName[] =
     "mediapipe.tasks.vision.hand_landmarker.HandLandmarkerGraph";
@@ -181,7 +181,7 @@ absl::StatusOr<std::unique_ptr<HandLandmarker>> HandLandmarker::Create(
 }
 
 absl::StatusOr<HandLandmarkerResult> HandLandmarker::Detect(
-    mediapipe::Image image,
+    mediapipe_v01013_based::Image image,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -204,22 +204,22 @@ absl::StatusOr<HandLandmarkerResult> HandLandmarker::Detect(
   return ConvertToHandLandmarkerResult(/* handedness= */
                                        output_packets[kHandednessStreamName]
                                            .Get<std::vector<
-                                               mediapipe::
+                                               mediapipe_v01013_based::
                                                    ClassificationList>>(),
                                        /* hand_landmarks= */
                                        output_packets[kHandLandmarksStreamName]
                                            .Get<std::vector<
-                                               mediapipe::
+                                               mediapipe_v01013_based::
                                                    NormalizedLandmarkList>>(),
                                        /* hand_world_landmarks */
                                        output_packets
                                            [kHandWorldLandmarksStreamName]
                                                .Get<std::vector<
-                                                   mediapipe::LandmarkList>>());
+                                                   mediapipe_v01013_based::LandmarkList>>());
 }
 
 absl::StatusOr<HandLandmarkerResult> HandLandmarker::DetectForVideo(
-    mediapipe::Image image, int64_t timestamp_ms,
+    mediapipe_v01013_based::Image image, int64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -245,22 +245,22 @@ absl::StatusOr<HandLandmarkerResult> HandLandmarker::DetectForVideo(
   return ConvertToHandLandmarkerResult(/* handedness= */
                                        output_packets[kHandednessStreamName]
                                            .Get<std::vector<
-                                               mediapipe::
+                                               mediapipe_v01013_based::
                                                    ClassificationList>>(),
                                        /* hand_landmarks= */
                                        output_packets[kHandLandmarksStreamName]
                                            .Get<std::vector<
-                                               mediapipe::
+                                               mediapipe_v01013_based::
                                                    NormalizedLandmarkList>>(),
                                        /* hand_world_landmarks */
                                        output_packets
                                            [kHandWorldLandmarksStreamName]
                                                .Get<std::vector<
-                                                   mediapipe::LandmarkList>>());
+                                                   mediapipe_v01013_based::LandmarkList>>());
 }
 
 absl::Status HandLandmarker::DetectAsync(
-    mediapipe::Image image, int64_t timestamp_ms,
+    mediapipe_v01013_based::Image image, int64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -283,4 +283,4 @@ absl::Status HandLandmarker::DetectAsync(
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

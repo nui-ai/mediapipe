@@ -23,7 +23,7 @@ limitations under the License.
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/tasks/cc/vision/utils/landmarks_duplicates_finder.h"
 
-namespace mediapipe::api2 {
+namespace mediapipe_v01013_based::api2 {
 
 // Create a DuplicatesFinder dedicated for finding hand duplications.
 std::unique_ptr<tasks::vision::utils::DuplicatesFinder>
@@ -68,30 +68,30 @@ CreateHandDuplicatesFinder(bool start_from_the_end = false);
 // }
 class HandLandmarksDeduplicationCalculator : public Node {
  public:
-  constexpr static Input<std::vector<mediapipe::NormalizedLandmarkList>>
+  constexpr static Input<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>
       kInLandmarks{"MULTI_LANDMARKS"};
-  constexpr static Input<std::vector<mediapipe::NormalizedRect>>::Optional
+  constexpr static Input<std::vector<mediapipe_v01013_based::NormalizedRect>>::Optional
       kInRois{"MULTI_ROIS"};
-  constexpr static Input<std::vector<mediapipe::LandmarkList>>::Optional
+  constexpr static Input<std::vector<mediapipe_v01013_based::LandmarkList>>::Optional
       kInWorldLandmarks{"MULTI_WORLD_LANDMARKS"};
-  constexpr static Input<std::vector<mediapipe::ClassificationList>>::Optional
+  constexpr static Input<std::vector<mediapipe_v01013_based::ClassificationList>>::Optional
       kInClassifications{"MULTI_CLASSIFICATIONS"};
   constexpr static Input<std::pair<int, int>> kInSize{"IMAGE_SIZE"};
 
-  constexpr static Output<std::vector<mediapipe::NormalizedLandmarkList>>
+  constexpr static Output<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>
       kOutLandmarks{"MULTI_LANDMARKS"};
-  constexpr static Output<std::vector<mediapipe::NormalizedRect>>::Optional
+  constexpr static Output<std::vector<mediapipe_v01013_based::NormalizedRect>>::Optional
       kOutRois{"MULTI_ROIS"};
-  constexpr static Output<std::vector<mediapipe::LandmarkList>>::Optional
+  constexpr static Output<std::vector<mediapipe_v01013_based::LandmarkList>>::Optional
       kOutWorldLandmarks{"MULTI_WORLD_LANDMARKS"};
-  constexpr static Output<std::vector<mediapipe::ClassificationList>>::Optional
+  constexpr static Output<std::vector<mediapipe_v01013_based::ClassificationList>>::Optional
       kOutClassifications{"MULTI_CLASSIFICATIONS"};
   MEDIAPIPE_NODE_CONTRACT(kInLandmarks, kInRois, kInWorldLandmarks,
                           kInClassifications, kInSize, kOutLandmarks, kOutRois,
                           kOutWorldLandmarks, kOutClassifications);
-  absl::Status Process(mediapipe::CalculatorContext* cc) override;
+  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override;
 };
 
-}  // namespace mediapipe::api2
+}  // namespace mediapipe_v01013_based::api2
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_HAND_LANDMARKER_CALCULATORS_HAND_LANDMARKS_DEDUPLICATION_CALCULATOR_H_

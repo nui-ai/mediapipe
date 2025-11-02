@@ -37,7 +37,7 @@
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/calculators/tensor/tensors_to_detections_calculator_core.h"
-using mediapipe::api2::ConvertDetectionTensors;
+using mediapipe_v01013_based::api2::ConvertDetectionTensors;
 
 // Note: On Apple platforms MEDIAPIPE_DISABLE_GL_COMPUTE is automatically
 // defined in mediapipe/framework/port.h. Therefore,
@@ -72,9 +72,9 @@ bool CanUseGpu() {
 }
 }  // namespace
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
-  using BoxFormat = ::mediapipe::TensorsToDetectionsCalculatorOptions::BoxFormat;
+  using BoxFormat = ::mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::BoxFormat;
 
   // Converts output tensors from the palm detection model into MediaPipe Detections.
   //
@@ -118,7 +118,7 @@ namespace api2 {
     int num_coords_ = 0;
     int max_results_ = -1;
     int classes_per_detection_ = 1;
-    BoxFormat box_output_format_ = mediapipe::TensorsToDetectionsCalculatorOptions::YXHW;
+    BoxFormat box_output_format_ = mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::YXHW;
 
     bool initialized_ = false;
 
@@ -149,7 +149,7 @@ namespace api2 {
     NonMaxSuppressionCalculatorOptions nms_options_;
 
 #ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
-    mediapipe::GlCalculatorHelper gpu_helper_;
+    mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
     GLuint decode_program_;
     GLuint score_program_;
 #elif MEDIAPIPE_METAL_ENABLED
@@ -173,7 +173,7 @@ namespace api2 {
       CalculatorContract* cc) {
     if (CanUseGpu()) {
 #ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
-      MP_RETURN_IF_ERROR(mediapipe::GlCalculatorHelper::UpdateContract(
+      MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(
           cc, /*request_gpu_as_optional=*/true));
 #elif MEDIAPIPE_METAL_ENABLED
       MP_RETURN_IF_ERROR([MPPMetalHelper updateContract:cc]);
@@ -245,4 +245,4 @@ namespace api2 {
   }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

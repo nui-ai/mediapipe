@@ -38,27 +38,27 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/pose_landmarker/proto/pose_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/util/graph_builder_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace pose_landmarker {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::SidePacket;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::utils::DisallowIf;
-using ::mediapipe::tasks::core::ModelAssetBundleResources;
-using ::mediapipe::tasks::metadata::SetExternalFile;
-using ::mediapipe::tasks::vision::pose_detector::proto::
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::SidePacket;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::utils::DisallowIf;
+using ::mediapipe_v01013_based::tasks::core::ModelAssetBundleResources;
+using ::mediapipe_v01013_based::tasks::metadata::SetExternalFile;
+using ::mediapipe_v01013_based::tasks::vision::pose_detector::proto::
     PoseDetectorGraphOptions;
-using ::mediapipe::tasks::vision::pose_landmarker::proto::
+using ::mediapipe_v01013_based::tasks::vision::pose_landmarker::proto::
     PoseLandmarkerGraphOptions;
-using ::mediapipe::tasks::vision::pose_landmarker::proto::
+using ::mediapipe_v01013_based::tasks::vision::pose_landmarker::proto::
     PoseLandmarksDetectorGraphOptions;
 
 constexpr char kImageTag[] = "IMAGE";
@@ -234,7 +234,7 @@ class PoseLandmarkerGraph : public core::ModelTaskGraph {
       MP_RETURN_IF_ERROR(SetSubTaskBaseOptions(
           *model_asset_bundle_resources,
           sc->MutableOptions<PoseLandmarkerGraphOptions>(),
-          !sc->Service(::mediapipe::tasks::core::kModelResourcesCacheService)
+          !sc->Service(::mediapipe_v01013_based::tasks::core::kModelResourcesCacheService)
                .IsAvailable()));
     }
     MP_ASSIGN_OR_RETURN(
@@ -270,7 +270,7 @@ class PoseLandmarkerGraph : public core::ModelTaskGraph {
   // instance.
   //
   // tasks_options: the mediapipe tasks module PoseLandmarkerGraphOptions.
-  // image_in: (mediapipe::Image) stream to run pose landmark detection on.
+  // image_in: (mediapipe_v01013_based::Image) stream to run pose landmark detection on.
   // graph: the mediapipe graph instance to be updated.
   absl::StatusOr<PoseLandmarkerOutputs> BuildPoseLandmarkerGraph(
       PoseLandmarkerGraphOptions& tasks_options, Source<Image> image_in,
@@ -357,7 +357,7 @@ class PoseLandmarkerGraph : public core::ModelTaskGraph {
       auto expanded_pose_rects_from_pose_detector =
           pose_detector.Out(kExpandedPoseRectsTag);
       auto& pose_association = graph.AddNode("AssociationNormRectCalculator");
-      pose_association.GetOptions<mediapipe::AssociationCalculatorOptions>()
+      pose_association.GetOptions<mediapipe_v01013_based::AssociationCalculatorOptions>()
           .set_min_similarity_threshold(
               tasks_options.min_tracking_confidence());
       prev_pose_rects_from_landmarks >>
@@ -398,9 +398,9 @@ class PoseLandmarkerGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::vision::pose_landmarker::PoseLandmarkerGraph);
+    ::mediapipe_v01013_based::tasks::vision::pose_landmarker::PoseLandmarkerGraph);
 
 }  // namespace pose_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

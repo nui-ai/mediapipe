@@ -16,7 +16,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 TEST(TopologicalSorterTest, NoConnection) {
   TopologicalSorter sorter(3);
@@ -107,4 +107,4 @@ TEST(TopologicalSorterTest, Cycle) {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

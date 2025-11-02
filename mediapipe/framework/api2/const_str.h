@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // This class stores a constant string that can be inspected at compile time
@@ -38,6 +38,6 @@ class const_str {
 };
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_CONST_STR_H_

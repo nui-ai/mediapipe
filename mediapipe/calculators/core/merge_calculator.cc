@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // This calculator takes a set of input streams and combines them into a single
@@ -83,4 +83,4 @@ class MergeCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(MergeCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

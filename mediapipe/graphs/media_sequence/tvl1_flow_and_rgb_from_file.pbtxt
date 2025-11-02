@@ -26,7 +26,7 @@ node {
   output_side_packet: "DATA_PATH:input_video_path"
   output_side_packet: "RESAMPLER_OPTIONS:packet_resampler_options"
   node_options: {
-    [type.googleapis.com/mediapipe.UnpackMediaSequenceCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.UnpackMediaSequenceCalculatorOptions]: {
       base_packet_resampler_options: {
         frame_rate: 25.0
         base_timestamp: 0
@@ -56,7 +56,7 @@ node: {
   input_stream: "sampled_frames"
   output_stream: "scaled_frames"
   node_options: {
-    [type.googleapis.com/mediapipe.ScaleImageCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.ScaleImageCalculatorOptions]: {
       target_height: 256
       preserve_aspect_ratio: true
     }
@@ -72,7 +72,7 @@ node: {
   input_stream: "scaled_frames"
   output_stream: "shifted_scaled_frames"
   node_options: {
-    [type.googleapis.com/mediapipe.SequenceShiftCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.SequenceShiftCalculatorOptions]: {
       packet_offset: -1
     }
   }
@@ -103,7 +103,7 @@ node: {
   input_stream: "forward_flow"
   output_stream: "flow_frames"
   node_options: {
-    [type.googleapis.com/mediapipe.FlowToImageCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.FlowToImageCalculatorOptions]: {
       min_value: -20.0
       max_value: 20.0
     }
@@ -116,7 +116,7 @@ node {
   input_stream: "flow_frames"
   output_stream: "encoded_flow_frames"
   node_options: {
-    [type.googleapis.com/mediapipe.OpenCvImageEncoderCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.OpenCvImageEncoderCalculatorOptions]: {
       quality: 100
     }
   }
@@ -128,7 +128,7 @@ node {
   input_stream: "scaled_frames"
   output_stream: "encoded_frames"
   node_options: {
-    [type.googleapis.com/mediapipe.OpenCvImageEncoderCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.OpenCvImageEncoderCalculatorOptions]: {
       quality: 100
     }
   }

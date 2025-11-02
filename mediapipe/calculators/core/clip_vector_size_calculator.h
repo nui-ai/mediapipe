@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Clips the size of the input vector of type T to a specified max_vec_size.
 // In a graph it will be used as:
@@ -47,7 +47,7 @@ class ClipVectorSizeCalculator : public CalculatorBase {
     RET_CHECK(cc->Inputs().NumEntries() == 1);
     RET_CHECK(cc->Outputs().NumEntries() == 1);
 
-    if (cc->Options<::mediapipe::ClipVectorSizeCalculatorOptions>()
+    if (cc->Options<::mediapipe_v01013_based::ClipVectorSizeCalculatorOptions>()
             .max_vec_size() < 1) {
       return absl::InternalError(
           "max_vec_size should be greater than or equal to 1.");
@@ -65,7 +65,7 @@ class ClipVectorSizeCalculator : public CalculatorBase {
 
   absl::Status Open(CalculatorContext* cc) override {
     cc->SetOffset(TimestampDiff(0));
-    max_vec_size_ = cc->Options<::mediapipe::ClipVectorSizeCalculatorOptions>()
+    max_vec_size_ = cc->Options<::mediapipe_v01013_based::ClipVectorSizeCalculatorOptions>()
                         .max_vec_size();
     // Override `max_vec_size` if passed as side packet.
     if (cc->InputSidePackets().NumEntries() > 0 &&
@@ -142,6 +142,6 @@ class ClipVectorSizeCalculator : public CalculatorBase {
   int max_vec_size_ = 0;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_CLIP_VECTOR_SIZE_CALCULATOR_H_

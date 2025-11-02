@@ -21,7 +21,7 @@
 #include "absl/strings/str_format.h"
 #include "mediapipe/util/tracking/region_flow.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 void CameraMotionToTranslation(const CameraMotion& camera_motion,
                                TranslationModel* model) {
@@ -409,4 +409,4 @@ template CameraMotion FirstCameraMotionForLooping<std::vector<CameraMotion>>(
     const std::vector<CameraMotion>&);
 template CameraMotion FirstCameraMotionForLooping<std::deque<CameraMotion>>(
     const std::deque<CameraMotion>&);
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

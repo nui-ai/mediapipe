@@ -21,7 +21,7 @@ node {
   calculator: "ConstantSidePacketCalculator"
   output_side_packet: "PACKET:num_hands"
   node_options: {
-    [type.googleapis.com/mediapipe.ConstantSidePacketCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.ConstantSidePacketCalculatorOptions]: {
       packet { int_value: 2 }
     }
   }
@@ -60,7 +60,7 @@ node {
   input_stream: "VIDEO_PRESTREAM:input_video_header"
   input_side_packet: "OUTPUT_FILE_PATH:output_video_path"
   node_options: {
-    [type.googleapis.com/mediapipe.OpenCvVideoEncoderCalculatorOptions]: {
+    [type.googleapis.com/mediapipe_v01013_based.OpenCvVideoEncoderCalculatorOptions]: {
       codec: "avc1"
       video_format: "mp4"
     }

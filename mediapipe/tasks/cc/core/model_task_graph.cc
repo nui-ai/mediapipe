@@ -42,20 +42,20 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/proto/inference_subgraph.pb.h"
 #include "mediapipe/tasks/cc/core/proto/model_resources_calculator.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace core {
 namespace {
 
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::SideInput;
-using ::mediapipe::api2::SideOutput;
-using ::mediapipe::api2::builder::GenericNode;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::tasks::core::proto::Acceleration;
-using ::mediapipe::tasks::core::proto::InferenceSubgraphOptions;
-using ::mediapipe::tasks::core::proto::ModelResourcesCalculatorOptions;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::SideInput;
+using ::mediapipe_v01013_based::api2::SideOutput;
+using ::mediapipe_v01013_based::api2::builder::GenericNode;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::tasks::core::proto::Acceleration;
+using ::mediapipe_v01013_based::tasks::core::proto::InferenceSubgraphOptions;
+using ::mediapipe_v01013_based::tasks::core::proto::ModelResourcesCalculatorOptions;
 
 constexpr char kMetadataExtractorTag[] = "METADATA_EXTRACTOR";
 constexpr char kModelTag[] = "MODEL";
@@ -110,7 +110,7 @@ class InferenceSubgraph : public Subgraph {
         graph.SideOut(kMetadataExtractorTag);
 
     auto& inference_node = graph.AddNode("InferenceCalculator");
-    inference_node.GetOptions<mediapipe::InferenceCalculatorOptions>()
+    inference_node.GetOptions<mediapipe_v01013_based::InferenceCalculatorOptions>()
         .mutable_delegate()
         ->CopyFrom(inference_delegate);
     model_resources_node.SideOut(kModelTag) >> inference_node.SideIn(kModelTag);
@@ -122,11 +122,11 @@ class InferenceSubgraph : public Subgraph {
   }
 
  private:
-  absl::StatusOr<mediapipe::InferenceCalculatorOptions::Delegate>
+  absl::StatusOr<mediapipe_v01013_based::InferenceCalculatorOptions::Delegate>
   DecideInferenceSettings(const InferenceSubgraphOptions& options) {
     // TODO: Fills in the inference delegate options based on the
     // model, acceleration settings, and device hardware info.
-    mediapipe::InferenceCalculatorOptions::Delegate delegate;
+    mediapipe_v01013_based::InferenceCalculatorOptions::Delegate delegate;
     const Acceleration& acceleration = options.base_options().acceleration();
     switch (acceleration.delegate_case()) {
       case Acceleration::kXnnpack:
@@ -149,7 +149,7 @@ class InferenceSubgraph : public Subgraph {
   }
 };
 
-REGISTER_MEDIAPIPE_GRAPH(::mediapipe::tasks::core::InferenceSubgraph)
+REGISTER_MEDIAPIPE_GRAPH(::mediapipe_v01013_based::tasks::core::InferenceSubgraph)
 
 absl::StatusOr<CalculatorGraphConfig> ModelTaskGraph::GetConfig(
     SubgraphContext* sc) {
@@ -265,4 +265,4 @@ GenericNode& ModelTaskGraph::AddInference(
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

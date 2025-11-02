@@ -30,11 +30,11 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/util/rectangle_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
   // helper function for the below
   absl::StatusOr<Rectangle_f> GetRectangle(
-      const ::mediapipe::NormalizedRect& input) {
+      const ::mediapipe_v01013_based::NormalizedRect& input) {
     if (!input.has_x_center() || !input.has_y_center() || !input.has_width() ||
         !input.has_height()) {
       return absl::InternalError("Missing dimensions in NormalizedRect.");
@@ -101,7 +101,7 @@ namespace mediapipe {
     return result_set;
   }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_ASSOCIATION_CALCULATOR_CORE_H_
 

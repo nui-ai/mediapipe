@@ -17,7 +17,7 @@
 
 #include "Halide.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace frame_buffer {
 namespace halide {
 namespace common {
@@ -56,6 +56,6 @@ void rotate(Halide::Func input, Halide::Func result, Halide::Expr width,
 }  // namespace common
 }  // namespace halide
 }  // namespace frame_buffer
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_FRAME_BUFFER_HALIDE_COMMON_H_

@@ -61,7 +61,7 @@ constexpr char kPrevMaskGpuTag[] = "PREV_MASK_GPU";
 
 }  // namespace
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 #if !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
 using ::tflite::gpu::gl::CopyBuffer;
@@ -135,7 +135,7 @@ class TfLiteTensorsToSegmentationCalculator : public CalculatorBase {
   absl::Status ProcessCpu(CalculatorContext* cc);
   void GlRender();
 
-  ::mediapipe::TfLiteTensorsToSegmentationCalculatorOptions options_;
+  ::mediapipe_v01013_based::TfLiteTensorsToSegmentationCalculatorOptions options_;
 
   int tensor_width_ = 0;
   int tensor_height_ = 0;
@@ -143,7 +143,7 @@ class TfLiteTensorsToSegmentationCalculator : public CalculatorBase {
 
   bool use_gpu_ = false;
 #if !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
-  mediapipe::GlCalculatorHelper gpu_helper_;
+  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
   std::unique_ptr<GlProgram> mask_program_with_prev_;
   std::unique_ptr<GlProgram> mask_program_no_prev_;
   std::unique_ptr<GlBuffer> tensor_buffer_;
@@ -178,11 +178,11 @@ absl::Status TfLiteTensorsToSegmentationCalculator::GetContract(
     use_gpu |= true;
   }
   if (cc->Inputs().HasTag(kPrevMaskGpuTag)) {
-    cc->Inputs().Tag(kPrevMaskGpuTag).Set<mediapipe::GpuBuffer>();
+    cc->Inputs().Tag(kPrevMaskGpuTag).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
   if (cc->Inputs().HasTag(kSizeImageGpuTag)) {
-    cc->Inputs().Tag(kSizeImageGpuTag).Set<mediapipe::GpuBuffer>();
+    cc->Inputs().Tag(kSizeImageGpuTag).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -193,14 +193,14 @@ absl::Status TfLiteTensorsToSegmentationCalculator::GetContract(
   }
 #if !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
   if (cc->Outputs().HasTag(kMaskGpuTag)) {
-    cc->Outputs().Tag(kMaskGpuTag).Set<mediapipe::GpuBuffer>();
+    cc->Outputs().Tag(kMaskGpuTag).Set<mediapipe_v01013_based::GpuBuffer>();
     use_gpu |= true;
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
   if (use_gpu) {
 #if !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
-    MP_RETURN_IF_ERROR(mediapipe::GlCalculatorHelper::UpdateContract(cc));
+    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc));
 #endif  // !MEDIAPIPE_DISABLE_GPU
   }
   return absl::OkStatus();
@@ -385,12 +385,12 @@ absl::Status TfLiteTensorsToSegmentationCalculator::ProcessGpu(
                              !cc->Inputs().Tag(kPrevMaskGpuTag).IsEmpty();
   const auto& input_mask =
       has_prev_mask
-          ? cc->Inputs().Tag(kPrevMaskGpuTag).Get<mediapipe::GpuBuffer>()
-          : mediapipe::GpuBuffer();
+          ? cc->Inputs().Tag(kPrevMaskGpuTag).Get<mediapipe_v01013_based::GpuBuffer>()
+          : mediapipe_v01013_based::GpuBuffer();
   int output_width = tensor_width_, output_height = tensor_height_;
   if (cc->Inputs().HasTag(kSizeImageGpuTag)) {
     const auto& input_image =
-        cc->Inputs().Tag(kSizeImageGpuTag).Get<mediapipe::GpuBuffer>();
+        cc->Inputs().Tag(kSizeImageGpuTag).Get<mediapipe_v01013_based::GpuBuffer>();
     output_width = input_image.width();
     output_height = input_image.height();
   }
@@ -405,7 +405,7 @@ absl::Status TfLiteTensorsToSegmentationCalculator::ProcessGpu(
   // Get input previous mask.
   auto input_mask_texture = has_prev_mask
                                 ? gpu_helper_.CreateSourceTexture(input_mask)
-                                : mediapipe::GlTexture();
+                                : mediapipe_v01013_based::GlTexture();
 
   // Copy input tensor.
   MP_RETURN_IF_ERROR(CopyBuffer(input_tensors[0], *tensor_buffer_));
@@ -434,9 +434,9 @@ absl::Status TfLiteTensorsToSegmentationCalculator::ProcessGpu(
   }
 
   // Upsample small mask into output.
-  mediapipe::GlTexture output_texture = gpu_helper_.CreateDestinationTexture(
+  mediapipe_v01013_based::GlTexture output_texture = gpu_helper_.CreateDestinationTexture(
       output_width, output_height,
-      mediapipe::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
+      mediapipe_v01013_based::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
 
   // Run shader, upsample result.
   {
@@ -449,7 +449,7 @@ absl::Status TfLiteTensorsToSegmentationCalculator::ProcessGpu(
   }
 
   // Send out image as GPU packet.
-  auto output_image = output_texture.GetFrame<mediapipe::GpuBuffer>();
+  auto output_image = output_texture.GetFrame<mediapipe_v01013_based::GpuBuffer>();
   cc->Outputs()
       .Tag(kMaskGpuTag)
       .Add(output_image.release(), cc->InputTimestamp());
@@ -518,7 +518,7 @@ absl::Status TfLiteTensorsToSegmentationCalculator::LoadOptions(
     CalculatorContext* cc) {
   // Get calculator options specified in the graph.
   options_ =
-      cc->Options<::mediapipe::TfLiteTensorsToSegmentationCalculatorOptions>();
+      cc->Options<::mediapipe_v01013_based::TfLiteTensorsToSegmentationCalculatorOptions>();
 
   if (!options_.has_tensor_width() || !options_.has_tensor_height() ||
       !options_.has_tensor_channels())
@@ -687,8 +687,8 @@ void main() {
 )";
 
     // Program
-    mediapipe::GlhCreateProgram(
-        mediapipe::kBasicVertexShader, upsample_shader_base.c_str(),
+    mediapipe_v01013_based::GlhCreateProgram(
+        mediapipe_v01013_based::kBasicVertexShader, upsample_shader_base.c_str(),
         NUM_ATTRIBUTES, &attr_name[0], attr_location, &upsample_program_);
     RET_CHECK(upsample_program_) << "Problem initializing the program.";
 
@@ -703,4 +703,4 @@ void main() {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

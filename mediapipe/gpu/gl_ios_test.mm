@@ -102,7 +102,7 @@
       CreateCVPixelBufferFromCGImage([_sourceImage CGImage], &originalPixelBuffer);
   XCTAssert(status.ok());
 
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_frames");
   auto node = config.add_node();
   node->set_calculator("GpuBufferToImageFrameCalculator");
@@ -125,7 +125,7 @@
       CreateCVPixelBufferFromCGImage([_sourceImage CGImage], &originalPixelBuffer);
   XCTAssert(status.ok());
 
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_frames");
   auto node = config.add_node();
   node->set_calculator("GpuBufferToImageFrameCalculator");
@@ -153,7 +153,7 @@
       CreateCVPixelBufferFromCGImage([_sourceImage CGImage], &originalPixelBuffer);
   XCTAssert(status.ok());
 
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_frames");
   auto node = config.add_node();
   node->set_calculator("GpuBufferToImageFrameCalculator");
@@ -171,8 +171,8 @@
 }
 
 - (void)testDestinationSizes {
-  mediapipe::GpuSharedData gpuData;
-  mediapipe::GlCalculatorHelper helper;
+  mediapipe_v01013_based::GpuSharedData gpuData;
+  mediapipe_v01013_based::GlCalculatorHelper helper;
   helper.InitializeForTest(&gpuData);
 
   helper.RunInGlContext([&helper] {
@@ -180,7 +180,7 @@
         {200, 300}, {200, 299}, {196, 300}, {194, 300}, {193, 300},
     };
     for (const auto& width_height : sizes) {
-      mediapipe::GlTexture texture =
+      mediapipe_v01013_based::GlTexture texture =
           helper.CreateDestinationTexture(width_height.first, width_height.second);
       XCTAssertNotEqual(texture.name(), 0);
     }
@@ -199,7 +199,7 @@
       [self convertPixelBuffer:convertedPixelBuffer
                  toPixelFormat:kCVPixelFormatType_32BGRA];
 
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_frames");
   auto node = config.add_node();
   node->set_calculator("GlScalerCalculator");
@@ -228,7 +228,7 @@
   XCTAssert(status.ok());
   CVPixelBufferRef redPixelBuffer = [self redPixelBuffer:*originalPixelBuffer];
 
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_frames");
   auto node = config.add_node();
   node->set_calculator("MetalRgbWeightCalculator");
@@ -239,7 +239,7 @@
   _graph = [[MPPGraph alloc] initWithGraphConfig:config];
   [_graph addFrameOutputStream:"output_frames"
               outputPacketType:MPPPacketTypePixelBuffer];
-  [_graph setSidePacket:(mediapipe::MakePacket<float[3]>(1.0, 0.0, 0.0))
+  [_graph setSidePacket:(mediapipe_v01013_based::MakePacket<float[3]>(1.0, 0.0, 0.0))
                   named:"rgb_weights"];
 
   [self testGraph:_graph input:*originalPixelBuffer expectedOutput:redPixelBuffer];

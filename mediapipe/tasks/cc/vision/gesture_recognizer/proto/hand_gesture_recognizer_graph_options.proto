@@ -15,7 +15,7 @@ limitations under the License.
 // TODO Refactor naming and class structure of hand related Tasks.
 syntax = "proto2";
 
-package mediapipe.tasks.vision.gesture_recognizer.proto;
+package mediapipe_v01013_based.tasks.vision.gesture_recognizer.proto;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/framework/calculator_options.proto";
@@ -23,11 +23,11 @@ import "mediapipe/tasks/cc/core/proto/base_options.proto";
 import "mediapipe/tasks/cc/vision/gesture_recognizer/proto/gesture_classifier_graph_options.proto";
 import "mediapipe/tasks/cc/vision/gesture_recognizer/proto/gesture_embedder_graph_options.proto";
 
-option java_package = "com.google.mediapipe.tasks.vision.gesturerecognizer.proto";
+option java_package = "com.google.mediapipe_v01013_based.tasks.vision.gesturerecognizer.proto";
 option java_outer_classname = "HandGestureRecognizerGraphOptionsProto";
 
 message HandGestureRecognizerGraphOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional HandGestureRecognizerGraphOptions ext = 463370452;
   }
   // Base options for configuring hand gesture recognition subgraph, such as

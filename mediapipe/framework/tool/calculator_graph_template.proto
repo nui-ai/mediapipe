@@ -1,12 +1,12 @@
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/framework/calculator_options.proto";
 import "mediapipe/framework/deps/proto_descriptor.proto";
 
-option java_package = "com.google.mediapipe.proto";
+option java_package = "com.google.mediapipe_v01013_based.proto";
 option java_outer_classname = "GraphTemplateProto";
 
 // A template rule or a template rule argument expression.
@@ -25,10 +25,10 @@ message TemplateExpression {
   optional string path = 4;
 
   // The FieldDescriptor::Type of the modified field.
-  optional mediapipe.FieldDescriptorProto.Type field_type = 5;
+  optional mediapipe_v01013_based.FieldDescriptorProto.Type field_type = 5;
 
   // The FieldDescriptor::Type of each map key in the path.
-  repeated mediapipe.FieldDescriptorProto.Type key_type = 6;
+  repeated mediapipe_v01013_based.FieldDescriptorProto.Type key_type = 6;
 
   // Alternative value for the modified field, in protobuf binary format.
   optional string field_value = 7;
@@ -71,7 +71,7 @@ message TemplateDict {
 // Options for a mediapipe template subgraph consisting of
 // mediapipe template arguments.
 message TemplateSubgraphOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional TemplateSubgraphOptions ext = 172998261;
   }
 

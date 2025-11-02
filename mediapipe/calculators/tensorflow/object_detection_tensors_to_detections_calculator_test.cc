@@ -26,7 +26,7 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/tensor_testutil.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tf = ::tensorflow;
 namespace {
@@ -352,4 +352,4 @@ TEST_F(ObjectDetectionTensorsToDetectionsCalculatorTest,
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

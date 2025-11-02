@@ -24,10 +24,10 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tensors_to_segmentation_utils {
 std::string ActivationTypeToString(
-    const mediapipe::TensorsToSegmentationCalculatorOptions::Activation&
+    const mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions::Activation&
         activation);
 
 std::vector<unsigned char> ArrayFloatToUnsignedChar(
@@ -35,9 +35,9 @@ std::vector<unsigned char> ArrayFloatToUnsignedChar(
 
 std::vector<float> MakeRedAlphaMatrix(const std::vector<float>& values);
 
-mediapipe::CalculatorGraphConfig CreateGraphConfigForTest(
+mediapipe_v01013_based::CalculatorGraphConfig CreateGraphConfigForTest(
     bool test_gpu,
-    const mediapipe::TensorsToSegmentationCalculatorOptions::Activation&
+    const mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions::Activation&
         activation,
     bool use_single_tensor);
 
@@ -48,7 +48,7 @@ struct FormattingTestCase {
   std::string test_name;
   std::vector<float> inputs;
   std::vector<float> expected_outputs;
-  mediapipe::TensorsToSegmentationCalculatorOptions::Activation activation;
+  mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions::Activation activation;
   int rows = 1;
   int cols = 1;
   int rows_new = 1;
@@ -58,6 +58,6 @@ struct FormattingTestCase {
   bool use_single_tensor = false;
 };
 }  // namespace tensors_to_segmentation_utils
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_SEGMENTATION_CALCULATOR_TEST_UTILS_H_

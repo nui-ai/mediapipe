@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/subgraph.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 
@@ -81,6 +81,6 @@ CalculatorGraphConfig MakeSingleNodeGraph(
     CalculatorGraphConfig::Node subgraph_node);
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_SUBGRAPH_EXPANSION_H_

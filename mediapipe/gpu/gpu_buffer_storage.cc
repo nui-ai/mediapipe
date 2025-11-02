@@ -1,6 +1,6 @@
 #include "mediapipe/gpu/gpu_buffer_storage.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace internal {
 
 using StorageFactory = GpuBufferStorageRegistry::StorageFactory;
@@ -44,4 +44,4 @@ RegistryToken GpuBufferStorageRegistry::Register(
 }
 
 }  // namespace internal
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -19,7 +19,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using Pair = std::pair<int, int>;
@@ -100,4 +100,4 @@ TEST(ImageFrameBufferPoolStaticTest, BufferCanOutlivePool) {
 }
 
 }  // anonymous namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

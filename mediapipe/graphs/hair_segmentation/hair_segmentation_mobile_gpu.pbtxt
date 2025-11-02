@@ -40,7 +40,7 @@ node: {
   input_stream: "IMAGE_GPU:throttled_input_video"
   output_stream: "IMAGE_GPU:transformed_input_video"
   node_options: {
-    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.ImageTransformationCalculatorOptions] {
       output_width: 512
       output_height: 512
     }
@@ -82,7 +82,7 @@ node {
   input_stream: "IMAGE_GPU:mask_embedded_input_video"
   output_stream: "TENSORS_GPU:image_tensor"
   node_options: {
-    [type.googleapis.com/mediapipe.TfLiteConverterCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.TfLiteConverterCalculatorOptions] {
       zero_center: false
       max_num_channels: 4
     }
@@ -95,7 +95,7 @@ node {
   calculator: "TfLiteCustomOpResolverCalculator"
   output_side_packet: "op_resolver"
   node_options: {
-    [type.googleapis.com/mediapipe.TfLiteCustomOpResolverCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.TfLiteCustomOpResolverCalculatorOptions] {
       use_gpu: true
     }
   }
@@ -110,7 +110,7 @@ node {
   output_stream: "TENSORS_GPU:segmentation_tensor"
   input_side_packet: "CUSTOM_OP_RESOLVER:op_resolver"
   node_options: {
-    [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.TfLiteInferenceCalculatorOptions] {
       model_path: "mediapipe/models/hair_segmentation.tflite"
       use_gpu: true
     }
@@ -127,7 +127,7 @@ node {
   input_stream: "PREV_MASK_GPU:previous_hair_mask"
   output_stream: "MASK_GPU:hair_mask"
   node_options: {
-    [type.googleapis.com/mediapipe.TfLiteTensorsToSegmentationCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.TfLiteTensorsToSegmentationCalculatorOptions] {
       tensor_width: 512
       tensor_height: 512
       tensor_channels: 2
@@ -144,7 +144,7 @@ node {
   input_stream: "MASK_GPU:hair_mask"
   output_stream: "IMAGE_GPU:output_video"
   node_options: {
-    [type.googleapis.com/mediapipe.RecolorCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.RecolorCalculatorOptions] {
       color { r: 0 g: 0 b: 255 }
       mask_channel: RED
     }

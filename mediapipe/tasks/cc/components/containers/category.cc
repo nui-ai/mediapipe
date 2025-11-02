@@ -20,9 +20,9 @@ limitations under the License.
 
 #include "mediapipe/framework/formats/classification.pb.h"
 
-namespace mediapipe::tasks::components::containers {
+namespace mediapipe_v01013_based::tasks::components::containers {
 
-Category ConvertToCategory(const mediapipe::Classification& proto) {
+Category ConvertToCategory(const mediapipe_v01013_based::Classification& proto) {
   Category category;
   category.index = proto.index();
   category.score = proto.score();
@@ -35,4 +35,4 @@ Category ConvertToCategory(const mediapipe::Classification& proto) {
   return category;
 }
 
-}  // namespace mediapipe::tasks::components::containers
+}  // namespace mediapipe_v01013_based::tasks::components::containers

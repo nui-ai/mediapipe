@@ -24,7 +24,7 @@
 #include "mediapipe/framework/formats/object_detection/anchor.pb.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // generates anchors for SSD object detection model.
 // no longer used by the hands pipeline, though it may still be a dependency of it for protobuf
@@ -71,4 +71,4 @@ class SsdAnchorsCalculator : public CalculatorBase {
 
 REGISTER_CALCULATOR(SsdAnchorsCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

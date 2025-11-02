@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe::tasks::vision::face_geometry {
+namespace mediapipe_v01013_based::tasks::vision::face_geometry {
 namespace {
 
 class FloatPrecisionProcrustesSolver : public ProcrustesSolver {
@@ -261,4 +261,4 @@ std::unique_ptr<ProcrustesSolver> CreateFloatPrecisionProcrustesSolver() {
   return absl::make_unique<FloatPrecisionProcrustesSolver>();
 }
 
-}  // namespace mediapipe::tasks::vision::face_geometry
+}  // namespace mediapipe_v01013_based::tasks::vision::face_geometry

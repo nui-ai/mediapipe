@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/status_builder.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 namespace {
 
@@ -177,4 +177,4 @@ TEST(VerticalFrameRemovalCalculatorTest, OutputError) {
 
 }  // namespace
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

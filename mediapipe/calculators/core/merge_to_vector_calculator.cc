@@ -18,19 +18,19 @@ limitations under the License.
 #include "mediapipe/framework/formats/detection.pb.h"
 #include "mediapipe/framework/formats/image.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
-typedef MergeToVectorCalculator<mediapipe::Image> MergeImagesToVectorCalculator;
+typedef MergeToVectorCalculator<mediapipe_v01013_based::Image> MergeImagesToVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(MergeImagesToVectorCalculator);
 
-typedef MergeToVectorCalculator<mediapipe::GpuBuffer>
+typedef MergeToVectorCalculator<mediapipe_v01013_based::GpuBuffer>
     MergeGpuBuffersToVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(MergeGpuBuffersToVectorCalculator);
 
-typedef MergeToVectorCalculator<mediapipe::Detection>
+typedef MergeToVectorCalculator<mediapipe_v01013_based::Detection>
     MergeDetectionsToVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(MergeDetectionsToVectorCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

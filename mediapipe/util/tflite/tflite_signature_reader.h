@@ -10,7 +10,7 @@
 #include "absl/status/statusor.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 using SignatureName = std::string;
 
 // Stores input and output tensor name vectors which are ordered in
@@ -44,6 +44,6 @@ class TfLiteSignatureReader {
       const tflite::Interpreter& interpreter);
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_TFLITE_SIGNATURE_READER_H_

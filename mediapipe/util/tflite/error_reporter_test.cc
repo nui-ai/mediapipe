@@ -4,7 +4,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe::util::tflite {
+namespace mediapipe_v01013_based::util::tflite {
 namespace {
 
 TEST(ErrorReporterTest, ReportNoErrors) {
@@ -52,4 +52,4 @@ TEST(ErrorReporterTest, VeryLongErrorIsTruncated) {
 }
 
 }  // namespace
-}  // namespace mediapipe::util::tflite
+}  // namespace mediapipe_v01013_based::util::tflite

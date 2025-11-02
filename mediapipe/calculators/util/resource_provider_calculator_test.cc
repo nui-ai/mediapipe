@@ -33,12 +33,12 @@
 #include "mediapipe/framework/resources_service.h"
 #include "mediapipe/util/resources_test_util.h"
 
-namespace mediapipe::api2 {
+namespace mediapipe_v01013_based::api2 {
 namespace {
 
-using ::mediapipe::Packet;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::SidePacket;
+using ::mediapipe_v01013_based::Packet;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::SidePacket;
 
 TEST(ResourceProviderCalculatorTest, CanGetSingleResourceUsingOptions) {
   Graph graph;
@@ -139,7 +139,7 @@ TEST(ResourceProviderCalculatorTest, CanGetSingleResourceUsingSidePacket) {
 TEST(ResourceProviderCalculatorTest, CanGetMultipleResourcesUsingSidePackets) {
   constexpr int kNumResources = 3;
   absl::flat_hash_map<std::string, std::string> resources_in_memory;
-  std::map<std::string, mediapipe::Packet> resource_ids_side_packets;
+  std::map<std::string, mediapipe_v01013_based::Packet> resource_ids_side_packets;
 
   Graph graph;
 
@@ -185,4 +185,4 @@ TEST(ResourceProviderCalculatorTest, CanGetMultipleResourcesUsingSidePackets) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api2
+}  // namespace mediapipe_v01013_based::api2

@@ -29,16 +29,16 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/pose_landmarker/pose_topology.h"
 #include "mediapipe/tasks/cc/vision/utils/ghum/ghum_topology.h"
 
-namespace mediapipe::tasks::vision::utils::ghum {
+namespace mediapipe_v01013_based::tasks::vision::utils::ghum {
 
 namespace {
 
-using ::mediapipe::api2::CombineJointsCalculator;
-using ::mediapipe::api2::SetJointsVisibilityCalculator;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::SidePacket;
-using ::mediapipe::api2::builder::Stream;
-using ::mediapipe::tasks::vision::pose_landmarker::PoseLandmarkName;
+using ::mediapipe_v01013_based::api2::CombineJointsCalculator;
+using ::mediapipe_v01013_based::api2::SetJointsVisibilityCalculator;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::SidePacket;
+using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::mediapipe_v01013_based::tasks::vision::pose_landmarker::PoseLandmarkName;
 
 }  // namespace
 
@@ -181,4 +181,4 @@ std::vector<std::array<float, 6>> GetGhumRestingJointRotationsSubset(
   return res;
 }
 
-}  // namespace mediapipe::tasks::vision::utils::ghum
+}  // namespace mediapipe_v01013_based::tasks::vision::utils::ghum

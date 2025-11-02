@@ -19,7 +19,7 @@
 #include <queue>
 #include <vector>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // TopologicalSorter provides topologically sorted traversal of the nodes of a
 // directed acyclic graph (DAG) with up to INT_MAX nodes. The sorter requires
@@ -78,6 +78,6 @@ class TopologicalSorter {
   std::vector<int> indegree_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_TOPOLOGICALSORTER_H_

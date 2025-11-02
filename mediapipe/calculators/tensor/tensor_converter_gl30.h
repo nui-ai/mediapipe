@@ -26,7 +26,7 @@
 #include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/gpu/gl_calculator_helper.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Instantiates and initializes an OpenGL 3.0-enabled TensorConverterGpu
 // instance.
@@ -48,7 +48,7 @@ absl::StatusOr<std::unique_ptr<TensorConverterGpu>> CreateTensorConverterGl30(
     std::optional<std::pair<float, float>> output_range, bool include_alpha,
     bool single_channel, bool flip_vertically, int num_output_channels);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_30
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSOR_CONVERTER_GL_H_

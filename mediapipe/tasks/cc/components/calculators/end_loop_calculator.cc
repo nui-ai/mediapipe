@@ -20,11 +20,11 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/proto/classifications.pb.h"
 
 // Specialized EndLoopCalculator for Tasks specific types.
-namespace mediapipe::tasks {
+namespace mediapipe_v01013_based::tasks {
 
 typedef EndLoopCalculator<
     std::vector<components::containers::proto::ClassificationResult>>
     EndLoopClassificationResultCalculator;
-REGISTER_CALCULATOR(::mediapipe::tasks::EndLoopClassificationResultCalculator);
+REGISTER_CALCULATOR(::mediapipe_v01013_based::tasks::EndLoopClassificationResultCalculator);
 
-}  // namespace mediapipe::tasks
+}  // namespace mediapipe_v01013_based::tasks

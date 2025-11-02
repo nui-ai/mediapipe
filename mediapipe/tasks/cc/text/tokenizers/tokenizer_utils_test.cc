@@ -35,15 +35,15 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/tokenizers/sentencepiece_tokenizer.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 namespace tokenizers {
 
-using ::mediapipe::tasks::kMediaPipeTasksPayload;
-using ::mediapipe::tasks::MediaPipeTasksStatus;
-using ::mediapipe::tasks::core::LoadBinaryContent;
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::tasks::kMediaPipeTasksPayload;
+using ::mediapipe_v01013_based::tasks::MediaPipeTasksStatus;
+using ::mediapipe_v01013_based::tasks::core::LoadBinaryContent;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
 using ::testing::HasSubstr;
 
 namespace {
@@ -124,4 +124,4 @@ TEST(TokenizerUtilsTest, TestCreateFailure) {
 }  // namespace tokenizers
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

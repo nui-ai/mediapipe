@@ -7,10 +7,10 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 namespace {
 
-using ::mediapipe::Image;
+using ::mediapipe_v01013_based::Image;
 
 TEST(SegmentationSmoothing, VerifyConfig) {
   Graph graph;
@@ -40,4 +40,4 @@ TEST(SegmentationSmoothing, VerifyConfig) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder

@@ -80,7 +80,7 @@
 
 #endif  // defined(__APPLE__)
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Doing this as an inline function allows us to avoid unwanted "pointer will
 // never be null" errors on certain platforms and compilers.
@@ -89,6 +89,6 @@ inline bool SymbolAvailable(T* symbol) {
   return symbol != nullptr;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_GL_BASE_H_

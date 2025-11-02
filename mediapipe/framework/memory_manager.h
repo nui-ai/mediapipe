@@ -24,7 +24,7 @@
 #include "mediapipe/gpu/multi_pool.h"
 #endif
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Owns buffer pools to provide access to pooled buffer objects. Access is
 // managed via shared_ptrs to allow clients of buffer objects to control their
@@ -77,6 +77,6 @@ class MemoryManager {
 #endif
 };
 
-}  //  namespace mediapipe
+}  //  namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_MEMORY_MANAGER_H_

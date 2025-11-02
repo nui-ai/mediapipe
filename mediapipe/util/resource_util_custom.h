@@ -5,7 +5,7 @@
 
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 typedef std::function<absl::Status(const std::string&, std::string*)>
     ResourceProviderFn;
@@ -16,6 +16,6 @@ bool HasCustomGlobalResourceProvider();
 // Overrides the behavior of GetResourceContents.
 void SetCustomGlobalResourceProvider(ResourceProviderFn fn);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_RESOURCE_UTIL_CUSTOM_H_

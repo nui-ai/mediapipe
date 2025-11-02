@@ -18,7 +18,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // NoDestructor<T> is a wrapper around an object of type T that
 // * stores the object of type T inline inside NoDestructor<T>
@@ -110,6 +110,6 @@ class NoDestructor {
   alignas(T) char space_[sizeof(T)];
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_NO_DESTRUCTOR_H_

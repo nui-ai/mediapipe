@@ -1,7 +1,7 @@
 syntax = "proto2";
 
-// TODO: Switch to package mediapipe.
-package mediapipe;
+// TODO: Switch to package mediapipe_v01013_based.
+package mediapipe_v01013_based;
 
 // Contains the packet frequency information.
 message PacketFrequency {

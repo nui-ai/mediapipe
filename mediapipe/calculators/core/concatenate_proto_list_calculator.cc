@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // Concatenate several input packets of ListType with a repeated field of
@@ -46,7 +46,7 @@ class ConcatenateListsCalculator : public Node {
 
   absl::Status Open(CalculatorContext* cc) override {
     only_emit_if_all_present_ =
-        cc->Options<::mediapipe::ConcatenateVectorCalculatorOptions>()
+        cc->Options<::mediapipe_v01013_based::ConcatenateVectorCalculatorOptions>()
             .only_emit_if_all_present();
     return absl::OkStatus();
   }
@@ -143,7 +143,7 @@ class ConcatenateJointListCalculator
 MEDIAPIPE_REGISTER_NODE(ConcatenateJointListCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 // NOLINTNEXTLINE
 #endif  // MEDIAPIPE_CALCULATORS_CORE_CONCATENATE_PROTO_LIST_CALCULATOR_H_

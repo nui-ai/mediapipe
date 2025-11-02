@@ -30,12 +30,12 @@ limitations under the License.
 #include "tensorflow/lite/portable_type_to_tflitetype.h"
 #include "tensorflow/lite/string_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 namespace {
 
-using ::mediapipe::tasks::CreateStatusWithPayload;
+using ::mediapipe_v01013_based::tasks::CreateStatusWithPayload;
 using ::tflite::GetInput;
 using ::tflite::GetOutput;
 using ::tflite::GetString;
@@ -128,4 +128,4 @@ std::unique_ptr<tflite::MutableOpResolver> CreateCustomResolver() {
 
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

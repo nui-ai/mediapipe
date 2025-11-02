@@ -17,7 +17,7 @@
 #include "mediapipe/calculators/util/refine_landmarks_from_heatmap_calculator.pb.h"
 #include "mediapipe/framework/calculator_framework.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -75,7 +75,7 @@ class RefineLandmarksFromHeatmapCalculatorImpl
     auto hm_view = hm_tensor.GetCpuReadView();
     auto hm_raw = hm_view.buffer<float>();
     const auto& options =
-        cc->Options<mediapipe::RefineLandmarksFromHeatmapCalculatorOptions>();
+        cc->Options<mediapipe_v01013_based::RefineLandmarksFromHeatmapCalculatorOptions>();
 
     MP_ASSIGN_OR_RETURN(
         auto out_lms,
@@ -103,8 +103,8 @@ class RefineLandmarksFromHeatmapCalculatorImpl
 // from heatmap we calculate an weighted average inside the kernel. We update
 // the landmark iff heatmap is confident in it's prediction i.e. max(heatmap) in
 // kernel is at least options.min_confidence_to_refine big.
-absl::StatusOr<mediapipe::NormalizedLandmarkList> RefineLandmarksFromHeatMap(
-    const mediapipe::NormalizedLandmarkList& in_lms,
+absl::StatusOr<mediapipe_v01013_based::NormalizedLandmarkList> RefineLandmarksFromHeatMap(
+    const mediapipe_v01013_based::NormalizedLandmarkList& in_lms,
     const float* heatmap_raw_data, const std::vector<int>& heatmap_dims,
     int kernel_size, float min_confidence_to_refine, bool refine_presence,
     bool refine_visibility) {
@@ -118,7 +118,7 @@ absl::StatusOr<mediapipe::NormalizedLandmarkList> RefineLandmarksFromHeatMap(
   int hm_row_size = hm_width * hm_channels;
   int hm_pixel_size = hm_channels;
 
-  mediapipe::NormalizedLandmarkList out_lms = in_lms;
+  mediapipe_v01013_based::NormalizedLandmarkList out_lms = in_lms;
   for (int lm_index = 0; lm_index < out_lms.landmark_size(); ++lm_index) {
     int center_col = out_lms.landmark(lm_index).x() * hm_width;
     int center_row = out_lms.landmark(lm_index).y() * hm_height;
@@ -184,4 +184,4 @@ absl::StatusOr<mediapipe::NormalizedLandmarkList> RefineLandmarksFromHeatMap(
   return out_lms;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

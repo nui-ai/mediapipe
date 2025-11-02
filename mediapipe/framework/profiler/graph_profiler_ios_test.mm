@@ -32,19 +32,19 @@ static const char* kOutputStream = "counter";
 @implementation GraphProfilerTest
 
 - (void)mediapipeGraph:(MPPGraph*)graph
-     didOutputPacket:(const mediapipe::Packet&)packet
+     didOutputPacket:(const mediapipe_v01013_based::Packet&)packet
           fromStream:(const std::string&)streamName {
   XCTAssertTrue(streamName == kOutputStream);
   NSLog(@"Received counter packet.");
 }
 
 - (void)testDefaultTraceLogPathValueIsSet {
-  mediapipe::CalculatorGraphConfig graphConfig;
-  mediapipe::CalculatorGraphConfig::Node* node = graphConfig.add_node();
+  mediapipe_v01013_based::CalculatorGraphConfig graphConfig;
+  mediapipe_v01013_based::CalculatorGraphConfig::Node* node = graphConfig.add_node();
   node->set_calculator("SimpleCalculator");
   node->add_output_stream(kOutputStream);
 
-  mediapipe::ProfilerConfig* profilerConfig = graphConfig.mutable_profiler_config();
+  mediapipe_v01013_based::ProfilerConfig* profilerConfig = graphConfig.mutable_profiler_config();
   profilerConfig->set_trace_enabled(true);
   profilerConfig->set_enable_profiler(true);
   profilerConfig->set_trace_log_disabled(false);
@@ -61,7 +61,7 @@ static const char* kOutputStream = "counter";
   success = [graph waitUntilDoneWithError:&error];
   XCTAssertTrue(success, @"%@", error.localizedDescription);
 
-  absl::StatusOr<string> getTraceLogDir = mediapipe::GetDefaultTraceLogDirectory();
+  absl::StatusOr<string> getTraceLogDir = mediapipe_v01013_based::GetDefaultTraceLogDirectory();
   XCTAssertTrue(getTraceLogDir.ok(), "GetDefaultTraceLogDirectory failed.");
 
   NSString* directoryPath = [NSString stringWithCString:(*getTraceLogDir).c_str()

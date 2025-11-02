@@ -5,9 +5,9 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
-constexpr GraphService<int> kIntService("mediapipe::IntService");
+constexpr GraphService<int> kIntService("mediapipe_v01013_based::IntService");
 }  // namespace
 
 TEST(GraphServiceManager, SetGetServiceObject) {
@@ -26,7 +26,7 @@ TEST(GraphServiceManager, SetServicePacket) {
 
   MP_EXPECT_OK(service_manager.SetServicePacket(
       kIntService,
-      mediapipe::MakePacket<std::shared_ptr<int>>(std::make_shared<int>(100))));
+      mediapipe_v01013_based::MakePacket<std::shared_ptr<int>>(std::make_shared<int>(100))));
   ASSERT_NE(service_manager.GetServiceObject(kIntService), nullptr);
   EXPECT_EQ(*service_manager.GetServiceObject(kIntService), 100);
 }
@@ -48,4 +48,4 @@ TEST(GraphServiceManager, ServicePackets) {
             100);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

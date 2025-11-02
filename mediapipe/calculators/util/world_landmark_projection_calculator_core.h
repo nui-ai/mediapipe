@@ -8,15 +8,15 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
-std::function<void(const mediapipe::Landmark&, mediapipe::Landmark*)>
-CreateRotationFunction(const mediapipe::NormalizedRect* rect);
+std::function<void(const mediapipe_v01013_based::Landmark&, mediapipe_v01013_based::Landmark*)>
+CreateRotationFunction(const mediapipe_v01013_based::NormalizedRect* rect);
 
 LandmarkList Process(
-    const mediapipe::LandmarkList& in_landmarks,
+    const mediapipe_v01013_based::LandmarkList& in_landmarks,
     const NormalizedRect *hand_rect);
 
-} // namespace mediapipe::api3
+} // namespace mediapipe_v01013_based::api3
 
 #endif // MEDIAPIPE_CALCULATORS_UTIL_WORLD_LANDMARK_PROJECTION_CALCULATOR_CORE_H_

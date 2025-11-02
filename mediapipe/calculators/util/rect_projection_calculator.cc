@@ -16,14 +16,14 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
 constexpr char kNormRectTag[] = "NORM_RECT";
 constexpr char kNormReferenceRectTag[] = "NORM_REFERENCE_RECT";
 
-using ::mediapipe::NormalizedRect;
+using ::mediapipe_v01013_based::NormalizedRect;
 
 }  // namespace
 
@@ -105,4 +105,4 @@ absl::Status RectProjectionCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

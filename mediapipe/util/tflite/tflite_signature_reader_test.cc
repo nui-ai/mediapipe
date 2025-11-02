@@ -19,7 +19,7 @@
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using ::testing::HasSubstr;
@@ -141,4 +141,4 @@ TEST_F(TfLiteSignatureReaderTest, ShouldReadTensorNamesForAllSignature) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

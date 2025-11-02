@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/status_builder.h"
 #include "mediapipe/framework/tool/validate_name.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 void TagMap::InitializeNames(
@@ -63,7 +63,7 @@ absl::Status TagMap::Initialize(
       names.resize(index + 1);
     }
     if (!names[index].empty()) {
-      return mediapipe::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
              << "tag \"" << tag << "\" index " << index
              << " already had a name \"" << names[index]
              << "\" but is being reassigned a name \"" << name << "\"";
@@ -81,7 +81,7 @@ absl::Status TagMap::Initialize(
     // loop above), this means that all indexes were used exactly once.
     const std::vector<std::string>& names = tag_to_names[item.first];
     if (tag_data.count != names.size()) {
-      auto builder = mediapipe::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+      auto builder = mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
                      << "Not all indexes were assigned names.  Tag \""
                      << item.first << "\" has the following:\n";
       // Note, names.size() will always be larger than tag_data.count.
@@ -270,4 +270,4 @@ bool TagMap::SameAs(const TagMap& other) const {
 }
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

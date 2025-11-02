@@ -23,7 +23,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/category.h"
 #include "mediapipe/tasks/cc/components/containers/proto/classifications.pb.h"
 
-namespace mediapipe::tasks::components::containers {
+namespace mediapipe_v01013_based::tasks::components::containers {
 
 Classifications ConvertToClassifications(const proto::Classifications& proto) {
   Classifications classifications;
@@ -41,7 +41,7 @@ Classifications ConvertToClassifications(const proto::Classifications& proto) {
 }
 
 Classifications ConvertToClassifications(
-    const mediapipe::ClassificationList& proto, int head_index,
+    const mediapipe_v01013_based::ClassificationList& proto, int head_index,
     std::optional<std::string> head_name) {
   Classifications classifications;
   classifications.categories.reserve(proto.classification_size());
@@ -67,4 +67,4 @@ ClassificationResult ConvertToClassificationResult(
   return classification_result;
 }
 
-}  // namespace mediapipe::tasks::components::containers
+}  // namespace mediapipe_v01013_based::tasks::components::containers

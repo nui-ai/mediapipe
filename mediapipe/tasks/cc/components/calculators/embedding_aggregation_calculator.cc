@@ -22,10 +22,10 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/tasks/cc/components/containers/proto/embeddings.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
-using ::mediapipe::tasks::components::containers::proto::EmbeddingResult;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
 
 // Aggregates EmbeddingResult packets into a vector of timestamped
 // EmbeddingResult. Acts as a pass-through if no timestamp aggregation is
@@ -131,4 +131,4 @@ absl::Status EmbeddingAggregationCalculator::Process(CalculatorContext* cc) {
 MEDIAPIPE_REGISTER_NODE(EmbeddingAggregationCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

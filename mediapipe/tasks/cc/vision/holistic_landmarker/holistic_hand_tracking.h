@@ -26,7 +26,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_roi_refinement_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
@@ -43,14 +43,14 @@ struct HolisticHandTrackingRequest {
 };
 
 struct HolisticHandTrackingOutput {
-  std::optional<api2::builder::Stream<mediapipe::NormalizedLandmarkList>>
+  std::optional<api2::builder::Stream<mediapipe_v01013_based::NormalizedLandmarkList>>
       landmarks;
-  std::optional<api2::builder::Stream<mediapipe::LandmarkList>> world_landmarks;
+  std::optional<api2::builder::Stream<mediapipe_v01013_based::LandmarkList>> world_landmarks;
 
   struct DebugOutput {
-    api2::builder::Stream<mediapipe::NormalizedRect> roi_from_pose;
-    api2::builder::Stream<mediapipe::NormalizedRect> roi_from_recrop;
-    api2::builder::Stream<mediapipe::NormalizedRect> tracking_roi;
+    api2::builder::Stream<mediapipe_v01013_based::NormalizedRect> roi_from_pose;
+    api2::builder::Stream<mediapipe_v01013_based::NormalizedRect> roi_from_recrop;
+    api2::builder::Stream<mediapipe_v01013_based::NormalizedRect> tracking_roi;
   };
 
   DebugOutput debug_output;
@@ -77,18 +77,18 @@ struct HolisticHandTrackingOutput {
 // @graph - graph to update.
 absl::StatusOr<HolisticHandTrackingOutput> TrackHolisticHand(
     api2::builder::Stream<Image> image,
-    api2::builder::Stream<mediapipe::NormalizedLandmarkList> pose_landmarks,
-    api2::builder::Stream<mediapipe::LandmarkList> pose_world_landmarks,
+    api2::builder::Stream<mediapipe_v01013_based::NormalizedLandmarkList> pose_landmarks,
+    api2::builder::Stream<mediapipe_v01013_based::LandmarkList> pose_world_landmarks,
     const hand_landmarker::proto::HandLandmarksDetectorGraphOptions&
         hand_landmarks_detector_graph_options,
     const hand_landmarker::proto::HandRoiRefinementGraphOptions&
         hand_roi_refinement_graph_options,
     const PoseIndices& pose_indices, const HolisticHandTrackingRequest& request,
-    mediapipe::api2::builder::Graph& graph);
+    mediapipe_v01013_based::api2::builder::Graph& graph);
 
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_HOLISTIC_LANDMARKER_HOLISTIC_HAND_TRACKING_H_

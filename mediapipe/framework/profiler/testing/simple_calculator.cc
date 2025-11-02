@@ -16,7 +16,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class SimpleCalculator : public CalculatorBase {
  public:
@@ -47,4 +47,4 @@ class SimpleCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(SimpleCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

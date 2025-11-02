@@ -18,10 +18,10 @@ limitations under the License.
 
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe::tflite_operations {
+namespace mediapipe_v01013_based::tflite_operations {
 
 TfLiteRegistration* Register_NGRAM_HASH();
 
-}  // namespace mediapipe::tflite_operations
+}  // namespace mediapipe_v01013_based::tflite_operations
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_LANGUAGE_DETECTOR_CUSTOM_OPS_NGRAM_HASH_H_

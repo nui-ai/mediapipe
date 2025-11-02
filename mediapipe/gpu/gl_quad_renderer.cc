@@ -18,7 +18,7 @@
 #include "mediapipe/gpu/gl_simple_shaders.h"
 #include "mediapipe/gpu/shader_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, NUM_ATTRIBUTES };
 
@@ -92,7 +92,7 @@ absl::Status QuadRenderer::GlSetup(
   glEnableVertexAttribArray(ATTRIB_TEXTURE_POSITION);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo_[1]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(mediapipe::kBasicTextureVertices),
+  glBufferData(GL_ARRAY_BUFFER, sizeof(mediapipe_v01013_based::kBasicTextureVertices),
                kBasicTextureVertices, GL_STATIC_DRAW);
   glVertexAttribPointer(ATTRIB_TEXTURE_POSITION, 2, GL_FLOAT, 0, 0, nullptr);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -211,7 +211,7 @@ void QuadRenderer::UpdateVertices(FrameRotation rotation) const {
   }
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo_[0]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(mediapipe::kBasicSquareVertices),
+  glBufferData(GL_ARRAY_BUFFER, sizeof(mediapipe_v01013_based::kBasicSquareVertices),
                vertices, GL_STATIC_DRAW);
   glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, nullptr);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -224,4 +224,4 @@ absl::Status FrameRotationFromInt(FrameRotation* rotation, int degrees_ccw) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -20,7 +20,7 @@
 #include <utility>
 #include <vector>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -264,4 +264,4 @@ CreateInferenceInterpreterDelegateRunner(
       std::move(inference_feedback_manager));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

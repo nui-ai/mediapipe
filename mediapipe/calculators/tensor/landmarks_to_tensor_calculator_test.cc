@@ -26,13 +26,13 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-using ::mediapipe::ParseTextProtoOrDie;
-using Node = ::mediapipe::CalculatorGraphConfig::Node;
+using ::mediapipe_v01013_based::ParseTextProtoOrDie;
+using Node = ::mediapipe_v01013_based::CalculatorGraphConfig::Node;
 
-void RunLandmarks(mediapipe::CalculatorRunner* runner,
+void RunLandmarks(mediapipe_v01013_based::CalculatorRunner* runner,
                   const LandmarkList& landmarks) {
   runner->MutableInputs()
       ->Tag("LANDMARKS")
@@ -40,7 +40,7 @@ void RunLandmarks(mediapipe::CalculatorRunner* runner,
   MP_ASSERT_OK(runner->Run());
 }
 
-void RunNormLandmarks(mediapipe::CalculatorRunner* runner,
+void RunNormLandmarks(mediapipe_v01013_based::CalculatorRunner* runner,
                       const NormalizedLandmarkList& landmarks,
                       const std::pair<int, int> image_size) {
   runner->MutableInputs()
@@ -54,7 +54,7 @@ void RunNormLandmarks(mediapipe::CalculatorRunner* runner,
   MP_ASSERT_OK(runner->Run());
 }
 
-const Tensor& GetOutputTensor(mediapipe::CalculatorRunner* runner) {
+const Tensor& GetOutputTensor(mediapipe_v01013_based::CalculatorRunner* runner) {
   const auto& output_packets = runner->Outputs().Tag("TENSORS").packets;
   EXPECT_EQ(output_packets.size(), 1);
 
@@ -77,7 +77,7 @@ void ValidateTensor(const Tensor& tensor,
 }
 
 TEST(LandmarksToTensorCalculatorTest, AllAttributes) {
-  mediapipe::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "LandmarksToTensorCalculator"
     input_stream: "LANDMARKS:landmarks"
     output_stream: "TENSORS:tensors"
@@ -109,7 +109,7 @@ TEST(LandmarksToTensorCalculatorTest, AllAttributes) {
 }
 
 TEST(LandmarksToTensorCalculatorTest, XYZAttributes) {
-  mediapipe::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "LandmarksToTensorCalculator"
     input_stream: "LANDMARKS:landmarks"
     output_stream: "TENSORS:tensors"
@@ -137,7 +137,7 @@ TEST(LandmarksToTensorCalculatorTest, XYZAttributes) {
 }
 
 TEST(LandmarksToTensorCalculatorTest, XYZAttributes_Flatten) {
-  mediapipe::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "LandmarksToTensorCalculator"
     input_stream: "LANDMARKS:landmarks"
     output_stream: "TENSORS:tensors"
@@ -166,7 +166,7 @@ TEST(LandmarksToTensorCalculatorTest, XYZAttributes_Flatten) {
 }
 
 TEST(LandmarksToTensorCalculatorTest, NormalizedLandmarks) {
-  mediapipe::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "LandmarksToTensorCalculator"
     input_stream: "NORM_LANDMARKS:landmarks"
     input_stream: "IMAGE_SIZE:image_size"
@@ -195,4 +195,4 @@ TEST(LandmarksToTensorCalculatorTest, NormalizedLandmarks) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -34,7 +34,7 @@
   CVOpenGLESTextureCacheRef _textureCache;
 
   /// Internal renderer.
-  std::unique_ptr<mediapipe::QuadRenderer> renderer_;
+  std::unique_ptr<mediapipe_v01013_based::QuadRenderer> renderer_;
 
   /// Used to synchronize access to _nextPixelBufferToRender.
   OSSpinLock _bufferLock;
@@ -84,31 +84,31 @@
   _GTMDevAssert(err == kCVReturnSuccess,
                 @"CVOpenGLESTextureCacheCreate failed: %d", err);
 
-  renderer_ = absl::make_unique<mediapipe::QuadRenderer>();
+  renderer_ = absl::make_unique<mediapipe_v01013_based::QuadRenderer>();
   auto status = renderer_->GlSetup();
   _GTMDevAssert(status.ok(),
                 @"renderer setup failed: %@", [NSError gus_errorWithStatus:status]);
 }
 
-mediapipe::FrameScaleMode InternalScaleMode(MPPFrameScaleMode mode) {
+mediapipe_v01013_based::FrameScaleMode InternalScaleMode(MPPFrameScaleMode mode) {
   switch (mode) {
     case MPPFrameScaleModeFit:
-      return mediapipe::FrameScaleMode::kFit;
+      return mediapipe_v01013_based::FrameScaleMode::kFit;
     case MPPFrameScaleModeFillAndCrop:
-      return mediapipe::FrameScaleMode::kFillAndCrop;
+      return mediapipe_v01013_based::FrameScaleMode::kFillAndCrop;
   }
 }
 
-mediapipe::FrameRotation InternalRotationMode(MPPFrameRotation rot) {
+mediapipe_v01013_based::FrameRotation InternalRotationMode(MPPFrameRotation rot) {
   switch (rot) {
     case MPPFrameRotationNone:
-      return mediapipe::FrameRotation::kNone;
+      return mediapipe_v01013_based::FrameRotation::kNone;
     case MPPFrameRotationCw90:
-      return mediapipe::FrameRotation::k90;
+      return mediapipe_v01013_based::FrameRotation::k90;
     case MPPFrameRotationCw180:
-      return mediapipe::FrameRotation::k180;
+      return mediapipe_v01013_based::FrameRotation::k180;
     case MPPFrameRotationCw270:
-      return mediapipe::FrameRotation::k270;
+      return mediapipe_v01013_based::FrameRotation::k270;
   }
 }
 

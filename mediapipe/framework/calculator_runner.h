@@ -26,7 +26,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class CalculatorGraph;
 
@@ -125,7 +125,7 @@ class CalculatorRunner {
   const PacketSet& OutputSidePackets() { return *output_side_packets_; }
 
   // Returns a graph counter.
-  mediapipe::Counter* GetCounter(const std::string& name);
+  mediapipe_v01013_based::Counter* GetCounter(const std::string& name);
 
   // Returns all graph counters values.
   std::map<std::string, int64_t> GetCountersValues();
@@ -155,6 +155,6 @@ class CalculatorRunner {
   std::unique_ptr<CalculatorGraph> graph_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_CALCULATOR_RUNNER_H_

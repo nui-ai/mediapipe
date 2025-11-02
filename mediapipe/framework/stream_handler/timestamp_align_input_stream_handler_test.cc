@@ -20,13 +20,13 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
 TEST(TimestampAlignInputStreamHandlerTest, Initialization) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input_video"
         input_stream: "input_camera"
         node {
@@ -121,7 +121,7 @@ TEST(TimestampAlignInputStreamHandlerTest, Initialization) {
 
 TEST(TimestampAlignInputStreamHandlerTest, TickRate) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input_video"
         input_stream: "input_camera"
         node {
@@ -200,4 +200,4 @@ TEST(TimestampAlignInputStreamHandlerTest, TickRate) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

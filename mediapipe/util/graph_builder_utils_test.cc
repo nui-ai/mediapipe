@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 TEST(GraphUtils, HasInput) {
@@ -46,4 +46,4 @@ TEST(GraphUtils, HasOutput) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

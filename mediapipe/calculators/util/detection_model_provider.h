@@ -12,9 +12,9 @@
 #include "mediapipe/framework/api2/port.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/resources.h"
-namespace mediapipe::api2 {
+namespace mediapipe_v01013_based::api2 {
 
-    class DetectionModelProvider : public mediapipe::api2::Node {
+    class DetectionModelProvider : public mediapipe_v01013_based::api2::Node {
     public:
         static constexpr api2::SideInput<std::string>::Multiple kIds{"RESOURCE_ID"};
         static constexpr api2::SideOutput<Resource>::Multiple kResources{"RESOURCE"};
@@ -30,6 +30,6 @@ namespace mediapipe::api2 {
         }
     };
 
-}  // namespace mediapipe::api2
+}  // namespace mediapipe_v01013_based::api2
 
 #endif //MEDIAPIPE_DETECTION_MODEL_PROVIDER_H

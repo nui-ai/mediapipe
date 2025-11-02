@@ -46,7 +46,7 @@
 #endif  // !_WIN32
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace file {
 namespace {
 size_t RoundUp(size_t size, size_t align) {
@@ -492,4 +492,4 @@ absl::Status RecursivelyCreateDir(absl::string_view path) {
 }
 
 }  // namespace file
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -3,7 +3,7 @@
 
 #include "mediapipe/framework/api2/node.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace test {
 
@@ -82,6 +82,6 @@ struct FooBar2 : public FooBar {
 
 }  // namespace test
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_TEST_CONTRACTS_H_

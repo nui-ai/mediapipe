@@ -19,7 +19,7 @@
 
 #include "absl/status/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class AffineTransformation {
  public:
@@ -53,6 +53,6 @@ class AffineTransformation {
   };
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_IMAGE_AFFINE_TRANSFORMATION_H_

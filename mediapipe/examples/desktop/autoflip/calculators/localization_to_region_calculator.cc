@@ -24,12 +24,12 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 // This calculator converts detections from ObjectLocalizationCalculator to
 // SalientRegion protos that can be used for downstream processing.
-class LocalizationToRegionCalculator : public mediapipe::CalculatorBase {
+class LocalizationToRegionCalculator : public mediapipe_v01013_based::CalculatorBase {
  public:
   LocalizationToRegionCalculator();
   ~LocalizationToRegionCalculator() override {}
@@ -38,9 +38,9 @@ class LocalizationToRegionCalculator : public mediapipe::CalculatorBase {
   LocalizationToRegionCalculator& operator=(
       const LocalizationToRegionCalculator&) = delete;
 
-  static absl::Status GetContract(mediapipe::CalculatorContract* cc);
-  absl::Status Open(mediapipe::CalculatorContext* cc) override;
-  absl::Status Process(mediapipe::CalculatorContext* cc) override;
+  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc);
+  absl::Status Open(mediapipe_v01013_based::CalculatorContext* cc) override;
+  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override;
 
  private:
   // Calculator options.
@@ -74,7 +74,7 @@ bool MatchType(const std::string& label, SignalType* type) {
 }
 
 // Converts a detection to a SalientRegion with a given label.
-void FillSalientRegion(const mediapipe::Detection& detection,
+void FillSalientRegion(const mediapipe_v01013_based::Detection& detection,
                        const SignalType& label, SalientRegion* region) {
   const auto& location = detection.location_data().relative_bounding_box();
   region->mutable_location_normalized()->set_x(location.xmin());
@@ -88,23 +88,23 @@ void FillSalientRegion(const mediapipe::Detection& detection,
 }  // namespace
 
 absl::Status LocalizationToRegionCalculator::GetContract(
-    mediapipe::CalculatorContract* cc) {
-  cc->Inputs().Tag(kDetectionsTag).Set<std::vector<mediapipe::Detection>>();
+    mediapipe_v01013_based::CalculatorContract* cc) {
+  cc->Inputs().Tag(kDetectionsTag).Set<std::vector<mediapipe_v01013_based::Detection>>();
   cc->Outputs().Tag(kRegionsTag).Set<DetectionSet>();
   return absl::OkStatus();
 }
 
 absl::Status LocalizationToRegionCalculator::Open(
-    mediapipe::CalculatorContext* cc) {
+    mediapipe_v01013_based::CalculatorContext* cc) {
   options_ = cc->Options<LocalizationToRegionCalculatorOptions>();
 
   return absl::OkStatus();
 }
 
 absl::Status LocalizationToRegionCalculator::Process(
-    mediapipe::CalculatorContext* cc) {
+    mediapipe_v01013_based::CalculatorContext* cc) {
   const auto& annotations =
-      cc->Inputs().Tag(kDetectionsTag).Get<std::vector<mediapipe::Detection>>();
+      cc->Inputs().Tag(kDetectionsTag).Get<std::vector<mediapipe_v01013_based::Detection>>();
   auto regions = ::absl::make_unique<DetectionSet>();
   for (const auto& detection : annotations) {
     RET_CHECK_EQ(detection.label().size(), 1)
@@ -126,4 +126,4 @@ absl::Status LocalizationToRegionCalculator::Process(
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

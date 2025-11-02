@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 namespace {
 
@@ -445,4 +445,4 @@ absl::Status AffineRetarget(const cv::Size& output_size,
   return absl::OkStatus();
 }
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

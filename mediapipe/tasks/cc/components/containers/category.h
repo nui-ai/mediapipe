@@ -21,7 +21,7 @@ limitations under the License.
 
 #include "mediapipe/framework/formats/classification.pb.h"
 
-namespace mediapipe::tasks::components::containers {
+namespace mediapipe_v01013_based::tasks::components::containers {
 
 // Defines a single classification result.
 //
@@ -43,10 +43,10 @@ struct Category {
   std::optional<std::string> display_name = std::nullopt;
 };
 
-// Utility function to convert from mediapipe::Classification proto to Category
+// Utility function to convert from mediapipe_v01013_based::Classification proto to Category
 // struct.
-Category ConvertToCategory(const mediapipe::Classification& proto);
+Category ConvertToCategory(const mediapipe_v01013_based::Classification& proto);
 
-}  // namespace mediapipe::tasks::components::containers
+}  // namespace mediapipe_v01013_based::tasks::components::containers
 
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_CONTAINERS_CATEGORY_H_

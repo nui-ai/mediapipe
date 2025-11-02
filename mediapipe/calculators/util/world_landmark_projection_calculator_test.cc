@@ -30,7 +30,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/util/packet_test_util.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 namespace {
 
 struct WorldLandmarkProjectionTestCase {
@@ -62,7 +62,7 @@ TEST_P(WorldLandmarkProjectionTest, Passes) {
 
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize(std::move(config)));
-  mediapipe::Packet out_packet;
+  mediapipe_v01013_based::Packet out_packet;
   MP_ASSERT_OK(graph.ObserveOutputStream("out_landmarks", [&](const Packet& p) {
     out_packet = p;
     return absl::OkStatus();
@@ -74,7 +74,7 @@ TEST_P(WorldLandmarkProjectionTest, Passes) {
       MakePacket<LandmarkList>(GetParam().input_landmarks).At(Timestamp(0))));
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
-  EXPECT_THAT(out_packet, mediapipe::PacketContains<LandmarkList>(EqualsProto(
+  EXPECT_THAT(out_packet, mediapipe_v01013_based::PacketContains<LandmarkList>(EqualsProto(
                               GetParam().expected_output_landmarks)));
 
   MP_ASSERT_OK(graph.CloseAllInputStreams());
@@ -120,4 +120,4 @@ INSTANTIATE_TEST_SUITE_P(
            info) { return info.param.test_name; });
 
 }  // namespace
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3

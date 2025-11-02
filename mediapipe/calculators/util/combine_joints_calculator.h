@@ -19,7 +19,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/body_rig.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // A calculator to combine several joint sets into one.
@@ -53,12 +53,12 @@ namespace api2 {
 //   }
 class CombineJointsCalculator : public NodeIntf {
  public:
-  static constexpr Input<mediapipe::JointList>::Multiple kInJoints{"JOINTS"};
-  static constexpr Output<mediapipe::JointList> kOutJoints{"JOINTS"};
+  static constexpr Input<mediapipe_v01013_based::JointList>::Multiple kInJoints{"JOINTS"};
+  static constexpr Output<mediapipe_v01013_based::JointList> kOutJoints{"JOINTS"};
   MEDIAPIPE_NODE_INTERFACE(CombineJointsCalculator, kInJoints, kOutJoints);
 };
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_COMBINE_JOINTS_CALCULATOR_H_

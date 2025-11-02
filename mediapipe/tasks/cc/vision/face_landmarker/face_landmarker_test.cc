@@ -47,14 +47,14 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_landmarker/face_landmarker_result.h"
 #include "mediapipe/tasks/cc/vision/utils/image_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
 namespace {
 
 using ::file::Defaults;
-using ::mediapipe::tasks::vision::core::ImageProcessingOptions;
+using ::mediapipe_v01013_based::tasks::vision::core::ImageProcessingOptions;
 using ::testing::TestParamInfo;
 using ::testing::TestWithParam;
 using ::testing::Values;
@@ -98,7 +98,7 @@ struct FaceLandmarkerTestParams {
   FaceLandmarkerResult expected_result;
 };
 
-mediapipe::MatrixData MakePortraitExpectedFacialTransformationMatrix() {
+mediapipe_v01013_based::MatrixData MakePortraitExpectedFacialTransformationMatrix() {
   auto face_geometry = GetExpectedProto<face_geometry::proto::FaceGeometry>(
       kPortraitExpectedFaceGeometryName);
   return face_geometry.pose_transform_matrix();
@@ -419,4 +419,4 @@ INSTANTIATE_TEST_SUITE_P(
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

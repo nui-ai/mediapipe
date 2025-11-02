@@ -42,7 +42,7 @@ node {
   input_stream: "MASK:segmentation_mask"
   output_stream: "IMAGE:output_video"
   node_options: {
-    [type.googleapis.com/mediapipe.RecolorCalculatorOptions] {
+    [type.googleapis.com/mediapipe_v01013_based.RecolorCalculatorOptions] {
       color { r: 0 g: 0 b: 255 }
       mask_channel: RED
       invert_mask: true

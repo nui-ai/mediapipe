@@ -12,7 +12,7 @@
 #include "mediapipe/framework/packet.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class GraphServiceManager {
  public:
@@ -54,6 +54,6 @@ class GraphServiceManager {
   friend class CalculatorGraph;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_GRAPH_SERVICE_MANAGER_H_

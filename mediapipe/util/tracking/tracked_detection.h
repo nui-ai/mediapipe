@@ -22,7 +22,7 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/port/vector.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Class for keeping records of detected objects.
 // Each detection should be set an id to uniquely identify it.
@@ -39,7 +39,7 @@ class TrackedDetection {
   // Creates a detection with the specified bounding box normalized by image
   // dimensions.
   TrackedDetection(int unique_id, int64_t timestamp,
-                   const ::mediapipe::NormalizedRect& bounding_box)
+                   const ::mediapipe_v01013_based::NormalizedRect& bounding_box)
       : unique_id_(unique_id),
         initial_timestamp_(timestamp),
         last_updated_timestamp_(timestamp),
@@ -72,7 +72,7 @@ class TrackedDetection {
   int previous_id() const { return previous_id_; }
   void set_previous_id(int id) { previous_id_ = id; }
 
-  const ::mediapipe::NormalizedRect& bounding_box() const {
+  const ::mediapipe_v01013_based::NormalizedRect& bounding_box() const {
     return bounding_box_;
   }
   float left() const { return left_; }
@@ -80,7 +80,7 @@ class TrackedDetection {
   float top() const { return top_; }
   float bottom() const { return bottom_; }
 
-  void set_bounding_box(const ::mediapipe::NormalizedRect& bounding_box) {
+  void set_bounding_box(const ::mediapipe_v01013_based::NormalizedRect& bounding_box) {
     bounding_box_ = bounding_box;
     set_bounds();
   }
@@ -105,7 +105,7 @@ class TrackedDetection {
 
   int unique_id_;
 
-  ::mediapipe::NormalizedRect bounding_box_;
+  ::mediapipe_v01013_based::NormalizedRect bounding_box_;
   float left_ = 0.f;
   float right_ = 0.f;
   float top_ = 0.f;
@@ -124,6 +124,6 @@ class TrackedDetection {
   absl::node_hash_map<std::string, float> label_to_score_map_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_TRACKED_DETECTION_H_

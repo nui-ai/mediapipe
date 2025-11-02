@@ -39,7 +39,7 @@
 #include "mediapipe/util/tracking/tracking.h"
 #include "mediapipe/util/tracking/tracking_visualization_utilities.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 const char kOptionsTag[] = "OPTIONS";
 
@@ -1306,4 +1306,4 @@ void BoxTrackerCalculator::FastForwardStartPos(
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

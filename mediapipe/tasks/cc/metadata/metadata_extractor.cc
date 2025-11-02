@@ -33,7 +33,7 @@ limitations under the License.
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace metadata {
 
@@ -43,8 +43,8 @@ constexpr char kMetadataBufferName[] = "TFLITE_METADATA";
 using ::absl::StatusCode;
 using ::flatbuffers::Offset;
 using ::flatbuffers::Vector;
-using ::mediapipe::tasks::CreateStatusWithPayload;
-using ::mediapipe::tasks::MediaPipeTasksStatus;
+using ::mediapipe_v01013_based::tasks::CreateStatusWithPayload;
+using ::mediapipe_v01013_based::tasks::MediaPipeTasksStatus;
 using ::tflite::TensorMetadata;
 
 // Util to get item from src_vector specified by index.
@@ -339,4 +339,4 @@ int ModelMetadataExtractor::GetCustomMetadataCount() const {
 
 }  // namespace metadata
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

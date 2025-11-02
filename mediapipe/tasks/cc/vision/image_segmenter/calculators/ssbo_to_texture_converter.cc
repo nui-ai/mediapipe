@@ -8,7 +8,7 @@
 #warning "SsboToTextureConverter should be used with OpenGL ES 3.1 or above"
 #endif
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace {
 
@@ -159,4 +159,4 @@ absl::StatusOr<GLuint> SsboToTextureConverter::ConvertTensorToGlTexture(
 }
 
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -43,7 +43,7 @@ node: {
   input_stream_handler {
     input_stream_handler: "SyncSetInputStreamHandler"
     options {
-      [mediapipe.SyncSetInputStreamHandlerOptions.ext] {
+      [mediapipe_v01013_based.SyncSetInputStreamHandlerOptions.ext] {
         sync_set {
           tag_index: "TRACKING_BOXES"
         }

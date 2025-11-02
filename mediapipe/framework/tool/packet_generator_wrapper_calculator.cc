@@ -9,14 +9,14 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::Status PacketGeneratorWrapperCalculator::GetContract(
     CalculatorContract* cc) {
   const auto& options =
-      cc->Options<::mediapipe::PacketGeneratorWrapperCalculatorOptions>();
+      cc->Options<::mediapipe_v01013_based::PacketGeneratorWrapperCalculatorOptions>();
   MP_ASSIGN_OR_RETURN(auto static_access,
-                      mediapipe::internal::StaticAccessToGeneratorRegistry::
+                      mediapipe_v01013_based::internal::StaticAccessToGeneratorRegistry::
                           CreateByNameInNamespace(options.package(),
                                                   options.packet_generator()));
   MP_RETURN_IF_ERROR(static_access->FillExpectations(options.options(),
@@ -29,12 +29,12 @@ absl::Status PacketGeneratorWrapperCalculator::GetContract(
 
 absl::Status PacketGeneratorWrapperCalculator::Open(CalculatorContext* cc) {
   const auto& options =
-      cc->Options<::mediapipe::PacketGeneratorWrapperCalculatorOptions>();
+      cc->Options<::mediapipe_v01013_based::PacketGeneratorWrapperCalculatorOptions>();
   MP_ASSIGN_OR_RETURN(auto static_access,
-                      mediapipe::internal::StaticAccessToGeneratorRegistry::
+                      mediapipe_v01013_based::internal::StaticAccessToGeneratorRegistry::
                           CreateByNameInNamespace(options.package(),
                                                   options.packet_generator()));
-  mediapipe::PacketSet output_packets(cc->OutputSidePackets().TagMap());
+  mediapipe_v01013_based::PacketSet output_packets(cc->OutputSidePackets().TagMap());
   MP_RETURN_IF_ERROR(static_access->Generate(options.options(),
                                              cc->InputSidePackets(),
                                              &output_packets))
@@ -52,4 +52,4 @@ absl::Status PacketGeneratorWrapperCalculator::Process(CalculatorContext* cc) {
 
 REGISTER_CALCULATOR(PacketGeneratorWrapperCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

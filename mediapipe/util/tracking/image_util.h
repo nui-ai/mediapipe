@@ -24,7 +24,7 @@
 #include "mediapipe/util/tracking/motion_models.pb.h"
 #include "mediapipe/util/tracking/region_flow.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Returns median of the L1 color distance between img_1 and img_2.
 float FrameDifferenceMedian(const cv::Mat& img_1, const cv::Mat& img_2);
@@ -188,6 +188,6 @@ void CopyMatBorderY(cv::Mat* mat) {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_IMAGE_UTIL_H_

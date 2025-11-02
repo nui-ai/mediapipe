@@ -14,7 +14,7 @@
 
 #include "mediapipe/gpu/gl_simple_shaders.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // This macro converts everything between its parentheses to a string.
 // Using this instead of R"()" preserves C-like syntax coloring in most
@@ -175,4 +175,4 @@ const GLchar* const kYUV2TexToRGBFragmentShader = FRAGMENT_PREAMBLE _STRINGIFY(
       gl_FragColor = vec4(rgb, 1);
     });
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

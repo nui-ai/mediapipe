@@ -5,7 +5,7 @@
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace {
 
@@ -70,4 +70,4 @@ static_assert(TaggedTestContract::TaggedSideOutputs::get(kSIDE).tag_ ==
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

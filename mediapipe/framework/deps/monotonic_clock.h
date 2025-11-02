@@ -18,7 +18,7 @@
 #include "absl/time/time.h"
 #include "mediapipe/framework/deps/clock.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // MonotonicClock is an interface for a Clock that never goes backward.
 // Successive returned values from Now() are guaranteed to be monotonically
@@ -92,9 +92,9 @@ class MonotonicClockAccess {
   // Create a monotonic clock based on the given state.  Caller owns state
   // so that multiple such clocks can be created from the same state.
   static MonotonicClock* CreateMonotonicClock(State* state);
-  friend class mediapipe::MonotonicClockTest;
+  friend class mediapipe_v01013_based::MonotonicClockTest;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_MONOTONIC_CLOCK_H_

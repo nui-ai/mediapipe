@@ -26,14 +26,14 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/base_options.h"
 #include "mediapipe/tasks/cc/core/base_task_api.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 namespace text_classifier {
 
 // Alias the shared ClassificationResult struct as result type.
 using TextClassifierResult =
-    ::mediapipe::tasks::components::containers::ClassificationResult;
+    ::mediapipe_v01013_based::tasks::components::containers::ClassificationResult;
 
 // The options for configuring a MediaPipe text classifier task.
 struct TextClassifierOptions {
@@ -94,6 +94,6 @@ class TextClassifier : core::BaseTaskApi {
 }  // namespace text_classifier
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_TEXT_CLASSIFIER_TEXT_CLASSIFIER_H_

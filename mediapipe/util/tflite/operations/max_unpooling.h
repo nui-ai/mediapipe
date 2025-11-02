@@ -17,12 +17,12 @@
 
 #include "tensorflow/lite/kernels/kernel_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tflite_operations {
 
 TfLiteRegistration* RegisterMaxUnpooling2D();
 
 }  // namespace tflite_operations
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_OPERATIONS_MAX_UNPOOLING_H_

@@ -22,14 +22,14 @@
 #include "mediapipe/framework/resources_service.h"
 #include "mediapipe/framework/testdata/resource_path.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-using ::mediapipe::api2::Node;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::SideOutput;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::SidePacket;
+using ::mediapipe_v01013_based::api2::Node;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::SideOutput;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::SidePacket;
 
 constexpr absl::string_view kSubgraphResource =
     "mediapipe/framework/"
@@ -49,7 +49,7 @@ class TestResourcesCalculator : public Node {
     MP_ASSIGN_OR_RETURN(
         std::unique_ptr<Resource> resource,
         cc->GetResources().Get(
-            cc->Options<mediapipe::ResourcePathOptions>().path()));
+            cc->Options<mediapipe_v01013_based::ResourcePathOptions>().path()));
     kSideOut(cc).Set(api2::PacketAdopting(std::move(resource)));
     return absl::OkStatus();
   }
@@ -58,7 +58,7 @@ class TestResourcesCalculator : public Node {
     MP_ASSIGN_OR_RETURN(
         std::unique_ptr<Resource> resource,
         cc->GetResources().Get(
-            cc->Options<mediapipe::ResourcePathOptions>().path()));
+            cc->Options<mediapipe_v01013_based::ResourcePathOptions>().path()));
     kOut(cc).Send(std::move(resource));
     return tool::StatusStop();
   }
@@ -72,12 +72,12 @@ class TestResourcesSubgraph : public Subgraph {
     MP_ASSIGN_OR_RETURN(
         std::unique_ptr<Resource> resource,
         sc->GetResources().Get(
-            sc->Options<mediapipe::ResourcePathOptions>().path()));
+            sc->Options<mediapipe_v01013_based::ResourcePathOptions>().path()));
     Graph graph;
     auto& constants_node = graph.AddNode("ConstantSidePacketCalculator");
     auto& constants_options =
         constants_node
-            .GetOptions<mediapipe::ConstantSidePacketCalculatorOptions>();
+            .GetOptions<mediapipe_v01013_based::ConstantSidePacketCalculatorOptions>();
     constants_options.add_packet()->mutable_string_value()->append(
         resource->ToStringView());
     SidePacket<std::string> side_out =
@@ -101,12 +101,12 @@ CalculatorGraphConfig BuildGraphProducingResourceContentsPackets(
   Graph graph;
 
   auto& subgraph = graph.AddNode("TestResourcesSubgraph");
-  subgraph.GetOptions<mediapipe::ResourcePathOptions>().set_path(
+  subgraph.GetOptions<mediapipe_v01013_based::ResourcePathOptions>().set_path(
       std::string(subgraph_path));
   subgraph.SideOut("SIDE_OUT").SetName("subgraph_side_out");
 
   auto& calculator = graph.AddNode("TestResourcesCalculator");
-  calculator.GetOptions<mediapipe::ResourcePathOptions>().set_path(
+  calculator.GetOptions<mediapipe_v01013_based::ResourcePathOptions>().set_path(
       std::string(calculator_path));
   calculator.SideOut("SIDE_OUT").SetName("calculator_side_out");
   calculator.Out("OUT").SetName("calculator_out");
@@ -265,4 +265,4 @@ TEST(CalculatorGraphResourcesTest,
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

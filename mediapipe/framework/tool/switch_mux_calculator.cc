@@ -33,7 +33,7 @@
 #include "mediapipe/framework/tool/container_util.h"
 #include "mediapipe/framework/tool/switch_container.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A calculator to join several sets of input streams into one
 // output channel, consisting of corresponding output streams.
@@ -82,7 +82,7 @@ class SwitchMuxCalculator : public CalculatorBase {
  private:
   int channel_index_;
   std::set<std::string> channel_tags_;
-  mediapipe::SwitchContainerOptions options_;
+  mediapipe_v01013_based::SwitchContainerOptions options_;
   // This is used to keep around packets that we've received but not
   // relayed yet (because we may not know which channel we should yet be using).
   std::map<CollectionItemId, std::queue<Packet>> packet_queue_;
@@ -160,7 +160,7 @@ Timestamp ChannelSettledTimestamp(CalculatorContext* cc) {
 
 absl::Status SwitchMuxCalculator::Open(CalculatorContext* cc) {
   // Initialize channel_index_ and channel_history_.
-  options_ = cc->Options<mediapipe::SwitchContainerOptions>();
+  options_ = cc->Options<mediapipe_v01013_based::SwitchContainerOptions>();
   channel_index_ = tool::GetChannelIndex(*cc, channel_index_);
   channel_tags_ = ChannelTags(cc->Inputs().TagMap());
   channel_history_[Timestamp::Unstarted()] = channel_index_;
@@ -265,4 +265,4 @@ absl::Status SwitchMuxCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

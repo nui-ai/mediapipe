@@ -14,7 +14,7 @@
 #include "mediapipe/framework/tool/graph_runtime_info_utils.h"
 #include "mediapipe/framework/vlog_utils.h"
 
-namespace mediapipe::tool {
+namespace mediapipe_v01013_based::tool {
 
 constexpr absl::Duration kDefaultCaptureInterval = absl::Seconds(10);
 
@@ -24,7 +24,7 @@ GraphRuntimeInfoLogger::GraphRuntimeInfoLogger()
 GraphRuntimeInfoLogger::~GraphRuntimeInfoLogger() { Stop(); };
 
 absl::Status GraphRuntimeInfoLogger::StartInBackground(
-    const mediapipe::GraphRuntimeInfoConfig& config,
+    const mediapipe_v01013_based::GraphRuntimeInfoConfig& config,
     absl::AnyInvocable<absl::StatusOr<GraphRuntimeInfo>()>
         get_runtime_info_fn) {
   get_runtime_info_fn_ = std::move(get_runtime_info_fn);
@@ -60,4 +60,4 @@ absl::Status GraphRuntimeInfoLogger::StartInBackground(
 
 void GraphRuntimeInfoLogger::Stop() { shutdown_signal_.Notify(); }
 
-}  // namespace mediapipe::tool
+}  // namespace mediapipe_v01013_based::tool

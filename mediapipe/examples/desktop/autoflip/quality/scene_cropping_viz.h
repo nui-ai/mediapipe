@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 // Draws the detections and crop regions on the scene frame. To make
@@ -41,7 +41,7 @@ absl::Status DrawDetectionsAndCropRegions(
     const std::vector<bool>& is_key_frames,
     const std::vector<KeyFrameInfo>& key_frame_infos,
     const std::vector<KeyFrameCropResult>& key_frame_crop_results,
-    const mediapipe::ImageFormat::Format image_format,
+    const mediapipe_v01013_based::ImageFormat::Format image_format,
     std::vector<std::unique_ptr<ImageFrame>>* viz_frames);
 
 // Draws the focus point from the given FocusPointFrame and the crop window
@@ -52,7 +52,7 @@ absl::Status DrawFocusPointAndCropWindow(
     const std::vector<FocusPointFrame>& focus_point_frames,
     const float overlay_opacity, const int crop_window_width,
     const int crop_window_height,
-    const mediapipe::ImageFormat::Format image_format,
+    const mediapipe_v01013_based::ImageFormat::Format image_format,
     std::vector<std::unique_ptr<ImageFrame>>* viz_frames);
 
 // Draws the final smoothed path of the camera retargeter by darkening the
@@ -64,6 +64,6 @@ absl::Status DrawDetectionAndFramingWindow(
     std::vector<std::unique_ptr<ImageFrame>>* viz_frames);
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_EXAMPLES_DESKTOP_AUTOFLIP_QUALITY_SCENE_CROPPING_VIZ_H_

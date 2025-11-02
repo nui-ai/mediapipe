@@ -33,11 +33,11 @@ limitations under the License.
 #include "tensorflow/lite/model.h"
 #include "tensorflow/lite/string_util.h"
 
-namespace mediapipe::tflite_operations {
+namespace mediapipe_v01013_based::tflite_operations {
 namespace {
 
 using ::flexbuffers::Builder;
-using ::mediapipe::tasks::text::language_detector::custom_ops::hash::
+using ::mediapipe_v01013_based::tasks::text::language_detector::custom_ops::hash::
     MurmurHash64WithSeed;
 using ::testing::ElementsAreArray;
 using ::testing::Message;
@@ -311,4 +311,4 @@ TEST(NGramHashTest, MismatchNgramLengthsAndVocabSizes) {
 }
 
 }  // namespace
-}  // namespace mediapipe::tflite_operations
+}  // namespace mediapipe_v01013_based::tflite_operations

@@ -27,7 +27,7 @@
 #include "mediapipe/framework/memory_manager_service.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace {
 
@@ -126,4 +126,4 @@ absl::Status TensorsDequantizationCalculator::UpdateContract(
 MEDIAPIPE_REGISTER_NODE(TensorsDequantizationCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

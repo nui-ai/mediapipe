@@ -18,7 +18,7 @@
 #include <locale>
 #include <string>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 // `PlatformString` represents a native string type on the platform.
 // `Utf8ToNative`/`NativeToUtf8` convert between UTF-8 and that type.
 #if defined(_WIN32) && defined(UNICODE)
@@ -44,5 +44,5 @@ inline std::string NativeToUtf8(const PlatformString& string) { return string; }
 
 // Produces a human-readable message about the last OS error.
 std::string FormatLastError();
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 #endif  // MEDIAPIPE_DEPS_PLATFORM_STRINGS_H_

@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/gpu/gl_calculator_helper.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // This class saves some boilerplate for the common case of processing one
 // input stream of frames and outputting it as one output stream of frames,
@@ -104,6 +104,6 @@ class GlSimpleCalculator : public CalculatorBase {
   bool initialized_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_GL_SIMPLE_CALCULATOR_H_

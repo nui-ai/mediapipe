@@ -21,7 +21,7 @@
 #include "mediapipe/gpu/gl_texture_view.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // TODO Refactor common code from GpuBufferToImageFrameCalculator
 bool Image::ConvertToCpu() const {
@@ -41,9 +41,9 @@ bool Image::ConvertToGpu() const {
 #endif  // MEDIAPIPE_DISABLE_GPU
 }
 
-MEDIAPIPE_REGISTER_TYPE(mediapipe::Image, "::mediapipe::Image", nullptr,
+MEDIAPIPE_REGISTER_TYPE(mediapipe_v01013_based::Image, "::mediapipe_v01013_based::Image", nullptr,
                         nullptr);
-MEDIAPIPE_REGISTER_TYPE(std::vector<mediapipe::Image>,
-                        "::std::vector<::mediapipe::Image>", nullptr, nullptr);
+MEDIAPIPE_REGISTER_TYPE(std::vector<mediapipe_v01013_based::Image>,
+                        "::std::vector<::mediapipe_v01013_based::Image>", nullptr, nullptr);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

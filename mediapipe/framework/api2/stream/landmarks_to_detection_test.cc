@@ -8,11 +8,11 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 namespace {
 
 TEST(LandmarksToDetection, VerifyConfig) {
-  mediapipe::api2::builder::Graph graph;
+  mediapipe_v01013_based::api2::builder::Graph graph;
 
   Stream<NormalizedLandmarkList> landmarks =
       graph.In("LANDMARKS").Cast<NormalizedLandmarkList>();
@@ -21,7 +21,7 @@ TEST(LandmarksToDetection, VerifyConfig) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "LandmarksToDetectionCalculator"
           input_stream: "NORM_LANDMARKS:__stream_0"
@@ -32,4 +32,4 @@ TEST(LandmarksToDetection, VerifyConfig) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder

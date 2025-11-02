@@ -22,7 +22,7 @@
 #include "mediapipe/gpu/gl_base.h"
 #endif  // MEDIAPIPE_TENSOR_USE_AHWB
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 #ifdef MEDIAPIPE_TENSOR_USE_AHWB
 
 namespace {
@@ -401,4 +401,4 @@ void Tensor::TrackAhwbUsage(uint64_t key) const {}
 
 #endif  // MEDIAPIPE_TENSOR_USE_AHWB
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

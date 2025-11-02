@@ -28,7 +28,7 @@
 #endif  // __APPLE__
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Keep this many buffers allocated for a given frame size.
 static constexpr int kKeepCount = 2;
@@ -42,10 +42,10 @@ static constexpr int kMaxPoolCount = 20;
 
 ImageMultiPool::SimplePoolGpu ImageMultiPool::MakeSimplePoolGpu(
     IBufferSpec spec) {
-  OSType cv_format = mediapipe::CVPixelFormatForGpuBufferFormat(
+  OSType cv_format = mediapipe_v01013_based::CVPixelFormatForGpuBufferFormat(
       GpuBufferFormatForImageFormat(spec.format));
   ABSL_CHECK_NE(cv_format, -1) << "unsupported pixel format";
-  return MakeCFHolderAdopting(mediapipe::CreateCVPixelBufferPool(
+  return MakeCFHolderAdopting(mediapipe_v01013_based::CreateCVPixelBufferPool(
       spec.width, spec.height, cv_format, kKeepCount,
       0.1 /* max age in seconds */));
 }
@@ -60,11 +60,11 @@ Image ImageMultiPool::GetBufferFromSimplePool(
   //
   // TODO: verify if we can use kIOSurfaceBytesPerRow to force the
   // pool to give us contiguous data.
-  OSType cv_format = mediapipe::CVPixelFormatForGpuBufferFormat(
-      mediapipe::GpuBufferFormatForImageFormat(spec.format));
+  OSType cv_format = mediapipe_v01013_based::CVPixelFormatForGpuBufferFormat(
+      mediapipe_v01013_based::GpuBufferFormatForImageFormat(spec.format));
   ABSL_CHECK_NE(cv_format, -1) << "unsupported pixel format";
   CVPixelBufferRef buffer;
-  CVReturn err = mediapipe::CreateCVPixelBufferWithoutPool(
+  CVReturn err = mediapipe_v01013_based::CreateCVPixelBufferWithoutPool(
       spec.width, spec.height, cv_format, &buffer);
   ABSL_CHECK(!err) << "Error creating pixel buffer: " << err;
   return Image(MakeCFHolderAdopting(buffer));
@@ -73,9 +73,9 @@ Image ImageMultiPool::GetBufferFromSimplePool(
   // TODO: allow the keepCount and the allocation threshold to be set
   // by the application, and to be set independently.
   static CFDictionaryRef auxAttributes =
-      mediapipe::CreateCVPixelBufferPoolAuxiliaryAttributesForThreshold(
+      mediapipe_v01013_based::CreateCVPixelBufferPoolAuxiliaryAttributesForThreshold(
           kKeepCount);
-  CVReturn err = mediapipe::CreateCVPixelBufferWithPool(
+  CVReturn err = mediapipe_v01013_based::CreateCVPixelBufferWithPool(
       *pool, auxAttributes,
       [this]() {
         absl::MutexLock lock(&mutex_gpu_);
@@ -97,7 +97,7 @@ Image ImageMultiPool::GetBufferFromSimplePool(
 
 ImageMultiPool::SimplePoolGpu ImageMultiPool::MakeSimplePoolGpu(
     IBufferSpec spec) {
-  return mediapipe::GlTextureBufferPool::Create(
+  return mediapipe_v01013_based::GlTextureBufferPool::Create(
       spec.width, spec.height, GpuBufferFormatForImageFormat(spec.format),
       kKeepCount);
 }
@@ -199,7 +199,7 @@ ImageMultiPool::~ImageMultiPool() {
 
 #if !MEDIAPIPE_DISABLE_GPU
 #ifdef __APPLE__
-void ImageMultiPool::RegisterTextureCache(mediapipe::CVTextureCacheType cache) {
+void ImageMultiPool::RegisterTextureCache(mediapipe_v01013_based::CVTextureCacheType cache) {
   absl::MutexLock lock(&mutex_gpu_);
 
   ABSL_CHECK(std::find(texture_caches_.begin(), texture_caches_.end(), cache) ==
@@ -209,7 +209,7 @@ void ImageMultiPool::RegisterTextureCache(mediapipe::CVTextureCacheType cache) {
 }
 
 void ImageMultiPool::UnregisterTextureCache(
-    mediapipe::CVTextureCacheType cache) {
+    mediapipe_v01013_based::CVTextureCacheType cache) {
   absl::MutexLock lock(&mutex_gpu_);
 
   auto it = std::find(texture_caches_.begin(), texture_caches_.end(), cache);
@@ -220,4 +220,4 @@ void ImageMultiPool::UnregisterTextureCache(
 #endif  // defined(__APPLE__)
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -23,15 +23,15 @@
 #include "mediapipe/util/filtering/one_euro_filter.h"
 #include "mediapipe/util/filtering/relative_velocity_filter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace landmarks_smoothing {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::OneEuroFilter;
-using ::mediapipe::Rect;
-using ::mediapipe::RelativeVelocityFilter;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::OneEuroFilter;
+using ::mediapipe_v01013_based::Rect;
+using ::mediapipe_v01013_based::RelativeVelocityFilter;
 
 // Estimate object scale to use its inverse value as velocity scale for
 // RelativeVelocityFilter. If value will be too small (less than
@@ -342,7 +342,7 @@ absl::StatusOr<std::unique_ptr<LandmarksFilter>> InitializeLandmarksFilter(
 
 absl::StatusOr<LandmarksFilter*> MultiLandmarkFilters::GetOrCreate(
     const int64_t tracking_id,
-    const mediapipe::LandmarksSmoothingCalculatorOptions& options) {
+    const mediapipe_v01013_based::LandmarksSmoothingCalculatorOptions& options) {
   const auto it = filters_.find(tracking_id);
   if (it != filters_.end()) {
     return it->second.get();
@@ -373,4 +373,4 @@ void MultiLandmarkFilters::ClearUnused(
 void MultiLandmarkFilters::Clear() { filters_.clear(); }
 
 }  // namespace landmarks_smoothing
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

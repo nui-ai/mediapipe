@@ -14,7 +14,7 @@
 
 #include "mediapipe/framework/legacy_calculator_support.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 template <>
 thread_local CalculatorContext*
@@ -23,4 +23,4 @@ template <>
 thread_local CalculatorContract*
     LegacyCalculatorSupport::Scoped<CalculatorContract>::current_ = nullptr;
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

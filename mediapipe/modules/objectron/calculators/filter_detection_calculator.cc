@@ -29,7 +29,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/modules/objectron/calculators/filter_detection_calculator.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -39,7 +39,7 @@ constexpr char kLabelsTag[] = "LABELS";
 constexpr char kLabelsCsvTag[] = "LABELS_CSV";
 constexpr char kLabelMapTag[] = "LABEL_MAP";
 
-using mediapipe::RE2;
+using mediapipe_v01013_based::RE2;
 using Detections = std::vector<Detection>;
 using Strings = std::vector<std::string>;
 
@@ -274,4 +274,4 @@ bool FilterDetectionCalculator::IsValidScore(float score) {
   return true;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

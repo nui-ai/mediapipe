@@ -26,7 +26,7 @@
 #include "mediapipe/util/tflite/cpu_op_resolver.h"
 #include "tensorflow/lite/delegates/xnnpack/xnnpack_delegate.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 /// a tensorflow interpreter, which is always using the XNNPACK delegate for CPU inference.
@@ -49,7 +49,7 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
 
   // set the tflite interpreter to use the mediapipe default CPU ops resolver,
   // for any ops which are not claimed by our XNNPACK delegate, if any.
-  auto op_resolver = std::make_unique<mediapipe::CpuOpResolver>();
+  auto op_resolver = std::make_unique<mediapipe_v01013_based::CpuOpResolver>();
 
   // use the XNNPACK delegate, which will use the requested number of threads
   auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
@@ -73,7 +73,7 @@ absl::StatusOr<std::vector<Tensor>> ModelInference::Process(const TensorSpan& te
   return inference_runner_->Run(tensor_span);}
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 
 

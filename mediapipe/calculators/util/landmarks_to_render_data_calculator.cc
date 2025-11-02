@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/util/color.pb.h"
 #include "mediapipe/util/render_data.pb.h"
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -107,7 +107,7 @@ void SetColorSizeValueFromZ(float z, float z_min, float z_max,
                             float min_depth_circle_thickness,
                             float max_depth_circle_thickness) {
   const int color_value = 255 - static_cast<int>(Remap(z, z_min, z_max, 255));
-  ::mediapipe::Color color;
+  ::mediapipe_v01013_based::Color color;
   color.set_r(color_value);
   color.set_g(color_value);
   color.set_b(color_value);
@@ -405,4 +405,4 @@ absl::Status LandmarksToRenderDataCalculator::Process(CalculatorContext* cc) {
 }
 
 REGISTER_CALCULATOR(LandmarksToRenderDataCalculator);
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

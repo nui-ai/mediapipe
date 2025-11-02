@@ -29,7 +29,7 @@
 #include "mediapipe/framework/deps/no_destructor.h"
 #endif  // MEDIAPIPE_NEEDS_GL_THREAD_COLLECTOR
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 #if MEDIAPIPE_NEEDS_GL_THREAD_COLLECTOR
 
@@ -79,6 +79,6 @@ class GlThreadCollector {
 };
 #endif  // MEDIAPIPE_NEEDS_GL_THREAD_COLLECTOR
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_GL_THREAD_COLLECTOR_H_

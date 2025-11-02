@@ -19,13 +19,13 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Converts a single channel tflite tensor to a grayscale image
 cv::Mat ConvertTfliteTensorToCvMat(const TfLiteTensor& tensor);
 
 // Converts a single channel tensor to grayscale image
-cv::Mat ConvertTensorToCvMat(const mediapipe::Tensor& tensor);
-}  // namespace mediapipe
+cv::Mat ConvertTensorToCvMat(const mediapipe_v01013_based::Tensor& tensor);
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_MODULES_OBJECTRON_CALCULATORS_TENSOR_UTIL_H_

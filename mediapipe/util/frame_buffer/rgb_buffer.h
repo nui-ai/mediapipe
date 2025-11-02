@@ -23,7 +23,7 @@
 #include "mediapipe/util/frame_buffer/gray_buffer.h"
 #include "mediapipe/util/frame_buffer/yuv_buffer.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace frame_buffer {
 
 // RgbBuffer represents a view over an interleaved RGB/RGBA image.
@@ -138,6 +138,6 @@ class RgbBuffer {
 };
 
 }  // namespace frame_buffer
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_FRAME_BUFFER_RGB_BUFFER_H_

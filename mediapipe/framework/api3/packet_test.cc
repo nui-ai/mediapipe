@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 namespace {
 
 using ::testing::Eq;
@@ -53,4 +53,4 @@ TEST(PacketTest, PointToForeignWorks) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3

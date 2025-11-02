@@ -18,11 +18,11 @@ node {
   input_side_packet: "ENABLE:with_attention"
   output_side_packet: "PACKET:model_path"
   options: {
-    [mediapipe.SwitchContainerOptions.ext] {
+    [mediapipe_v01013_based.SwitchContainerOptions.ext] {
       contained_node: {
         calculator: "ConstantSidePacketCalculator"
         options: {
-          [mediapipe.ConstantSidePacketCalculatorOptions.ext]: {
+          [mediapipe_v01013_based.ConstantSidePacketCalculatorOptions.ext]: {
             packet {
               string_value: "mediapipe/modules/face_landmark/face_landmark.tflite"
             }
@@ -32,7 +32,7 @@ node {
       contained_node: {
         calculator: "ConstantSidePacketCalculator"
         options: {
-          [mediapipe.ConstantSidePacketCalculatorOptions.ext]: {
+          [mediapipe_v01013_based.ConstantSidePacketCalculatorOptions.ext]: {
             packet {
               string_value: "mediapipe/modules/face_landmark/face_landmark_with_attention.tflite"
             }

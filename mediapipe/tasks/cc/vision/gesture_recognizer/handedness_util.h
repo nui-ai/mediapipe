@@ -19,21 +19,21 @@ limitations under the License.
 #include "absl/status/statusor.h"
 #include "mediapipe/framework/formats/classification.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace gesture_recognizer {
 
-bool IsLeftHand(const mediapipe::Classification& c);
+bool IsLeftHand(const mediapipe_v01013_based::Classification& c);
 
-bool IsRightHand(const mediapipe::Classification& c);
+bool IsRightHand(const mediapipe_v01013_based::Classification& c);
 
 absl::StatusOr<float> GetRightHandScore(
-    const mediapipe::ClassificationList& classification_list);
+    const mediapipe_v01013_based::ClassificationList& classification_list);
 
 }  // namespace gesture_recognizer
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_GESTURE_RECOGNIZER_HADNDEDNESS_UTILS_H_

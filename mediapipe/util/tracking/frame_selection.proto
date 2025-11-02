@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/util/tracking/camera_motion.proto";
 import "mediapipe/util/tracking/frame_selection_solution_evaluator.proto";

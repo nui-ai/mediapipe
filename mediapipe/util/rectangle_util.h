@@ -20,21 +20,21 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/port/rectangle.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Converts a NormalizedRect into a Rectangle_f.
-absl::StatusOr<Rectangle_f> ToRectangle(const mediapipe::NormalizedRect& input);
+absl::StatusOr<Rectangle_f> ToRectangle(const mediapipe_v01013_based::NormalizedRect& input);
 
 // If the new_rect overlaps with any of the rectangles in
 // existing_rects, then return true. Otherwise, return false.
 absl::StatusOr<bool> DoesRectOverlap(
-    const mediapipe::NormalizedRect& new_rect,
-    absl::Span<const mediapipe::NormalizedRect> existing_rects,
+    const mediapipe_v01013_based::NormalizedRect& new_rect,
+    absl::Span<const mediapipe_v01013_based::NormalizedRect> existing_rects,
     float min_similarity_threshold);
 
 // Computes the Intersection over Union (IoU) between two rectangles.
 float CalculateIou(const Rectangle_f& rect1, const Rectangle_f& rect2);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_RECTANGLE_UTIL_H_

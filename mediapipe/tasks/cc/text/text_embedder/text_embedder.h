@@ -26,11 +26,11 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/base_options.h"
 #include "mediapipe/tasks/cc/core/base_task_api.h"
 
-namespace mediapipe::tasks::text::text_embedder {
+namespace mediapipe_v01013_based::tasks::text::text_embedder {
 
 // Alias the shared EmbeddingResult struct as result typo.
 using TextEmbedderResult =
-    ::mediapipe::tasks::components::containers::EmbeddingResult;
+    ::mediapipe_v01013_based::tasks::components::containers::EmbeddingResult;
 
 // Options for configuring a MediaPipe text embedder task.
 struct TextEmbedderOptions {
@@ -97,6 +97,6 @@ class TextEmbedder : core::BaseTaskApi {
       const components::containers::Embedding& v);
 };
 
-}  // namespace mediapipe::tasks::text::text_embedder
+}  // namespace mediapipe_v01013_based::tasks::text::text_embedder
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_TEXT_EMBEDDER_TEXT_EMBEDDER_H_

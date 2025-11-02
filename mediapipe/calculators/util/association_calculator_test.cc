@@ -25,17 +25,17 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
-::mediapipe::Detection DetectionWithRelativeLocationData(double xmin,
+::mediapipe_v01013_based::Detection DetectionWithRelativeLocationData(double xmin,
                                                          double ymin,
                                                          double width,
                                                          double height) {
-  ::mediapipe::Detection detection;
-  ::mediapipe::LocationData* location_data = detection.mutable_location_data();
-  location_data->set_format(::mediapipe::LocationData::RELATIVE_BOUNDING_BOX);
+  ::mediapipe_v01013_based::Detection detection;
+  ::mediapipe_v01013_based::LocationData* location_data = detection.mutable_location_data();
+  location_data->set_format(::mediapipe_v01013_based::LocationData::RELATIVE_BOUNDING_BOX);
   location_data->mutable_relative_bounding_box()->set_xmin(xmin);
   location_data->mutable_relative_bounding_box()->set_ymin(ymin);
   location_data->mutable_relative_bounding_box()->set_width(width);
@@ -92,7 +92,7 @@ class AssociationDetectionCalculatorTest : public ::testing::Test {
     det_5.set_detection_id(5);
   }
 
-  ::mediapipe::Detection det_0, det_1, det_2, det_3, det_4, det_5;
+  ::mediapipe_v01013_based::Detection det_0, det_1, det_2, det_3, det_4, det_5;
 };
 
 TEST_F(AssociationDetectionCalculatorTest, DetectionAssocTest) {
@@ -110,7 +110,7 @@ TEST_F(AssociationDetectionCalculatorTest, DetectionAssocTest) {
   )pb"));
 
   // Input Stream 0: det_0, det_1, det_2.
-  auto input_vec_0 = absl::make_unique<std::vector<::mediapipe::Detection>>();
+  auto input_vec_0 = absl::make_unique<std::vector<::mediapipe_v01013_based::Detection>>();
   input_vec_0->push_back(det_0);
   input_vec_0->push_back(det_1);
   input_vec_0->push_back(det_2);
@@ -118,14 +118,14 @@ TEST_F(AssociationDetectionCalculatorTest, DetectionAssocTest) {
       Adopt(input_vec_0.release()).At(Timestamp(1)));
 
   // Input Stream 1: det_3, det_4.
-  auto input_vec_1 = absl::make_unique<std::vector<::mediapipe::Detection>>();
+  auto input_vec_1 = absl::make_unique<std::vector<::mediapipe_v01013_based::Detection>>();
   input_vec_1->push_back(det_3);
   input_vec_1->push_back(det_4);
   runner.MutableInputs()->Index(1).packets.push_back(
       Adopt(input_vec_1.release()).At(Timestamp(1)));
 
   // Input Stream 2: det_5.
-  auto input_vec_2 = absl::make_unique<std::vector<::mediapipe::Detection>>();
+  auto input_vec_2 = absl::make_unique<std::vector<::mediapipe_v01013_based::Detection>>();
   input_vec_2->push_back(det_5);
   runner.MutableInputs()->Index(2).packets.push_back(
       Adopt(input_vec_2.release()).At(Timestamp(1)));
@@ -134,7 +134,7 @@ TEST_F(AssociationDetectionCalculatorTest, DetectionAssocTest) {
   const std::vector<Packet>& output = runner.Outputs().Index(0).packets;
   EXPECT_EQ(1, output.size());
   const auto& assoc_rects =
-      output[0].Get<std::vector<::mediapipe::Detection>>();
+      output[0].Get<std::vector<::mediapipe_v01013_based::Detection>>();
 
   // det_3 overlaps with det_0, det_1 and det_5 overlaps with det_3. Since det_5
   // is in the highest priority, we remove other rects. det_4 overlaps with
@@ -172,7 +172,7 @@ TEST_F(AssociationDetectionCalculatorTest, DetectionAssocTestWithPrev) {
   )pb"));
 
   // Input Stream 0: det_3, det_4.
-  auto input_vec_0 = absl::make_unique<std::vector<::mediapipe::Detection>>();
+  auto input_vec_0 = absl::make_unique<std::vector<::mediapipe_v01013_based::Detection>>();
   input_vec_0->push_back(det_3);
   input_vec_0->push_back(det_4);
   CollectionItemId prev_input_stream_id =
@@ -182,7 +182,7 @@ TEST_F(AssociationDetectionCalculatorTest, DetectionAssocTestWithPrev) {
       .packets.push_back(Adopt(input_vec_0.release()).At(Timestamp(1)));
 
   // Input Stream 1: det_5.
-  auto input_vec_1 = absl::make_unique<std::vector<::mediapipe::Detection>>();
+  auto input_vec_1 = absl::make_unique<std::vector<::mediapipe_v01013_based::Detection>>();
   input_vec_1->push_back(det_5);
   CollectionItemId input_stream_id = runner.MutableInputs()->GetId("", 0);
   runner.MutableInputs()
@@ -193,7 +193,7 @@ TEST_F(AssociationDetectionCalculatorTest, DetectionAssocTestWithPrev) {
   const std::vector<Packet>& output = runner.Outputs().Index(0).packets;
   EXPECT_EQ(1, output.size());
   const auto& assoc_rects =
-      output[0].Get<std::vector<::mediapipe::Detection>>();
+      output[0].Get<std::vector<::mediapipe_v01013_based::Detection>>();
 
   // det_5 overlaps with det_3 and doesn't overlap with det_4. Since det_4 is
   // in the PREV input stream, it doesn't get copied to the output, so the final
@@ -222,20 +222,20 @@ TEST_F(AssociationDetectionCalculatorTest, DetectionAssocTestReverse) {
   )pb"));
 
   // Input Stream 0: det_5.
-  auto input_vec_0 = absl::make_unique<std::vector<::mediapipe::Detection>>();
+  auto input_vec_0 = absl::make_unique<std::vector<::mediapipe_v01013_based::Detection>>();
   input_vec_0->push_back(det_5);
   runner.MutableInputs()->Index(0).packets.push_back(
       Adopt(input_vec_0.release()).At(Timestamp(1)));
 
   // Input Stream 1: det_3, det_4.
-  auto input_vec_1 = absl::make_unique<std::vector<::mediapipe::Detection>>();
+  auto input_vec_1 = absl::make_unique<std::vector<::mediapipe_v01013_based::Detection>>();
   input_vec_1->push_back(det_3);
   input_vec_1->push_back(det_4);
   runner.MutableInputs()->Index(1).packets.push_back(
       Adopt(input_vec_1.release()).At(Timestamp(1)));
 
   // Input Stream 2: det_0, det_1, det_2.
-  auto input_vec_2 = absl::make_unique<std::vector<::mediapipe::Detection>>();
+  auto input_vec_2 = absl::make_unique<std::vector<::mediapipe_v01013_based::Detection>>();
   input_vec_2->push_back(det_0);
   input_vec_2->push_back(det_1);
   input_vec_2->push_back(det_2);
@@ -246,7 +246,7 @@ TEST_F(AssociationDetectionCalculatorTest, DetectionAssocTestReverse) {
   const std::vector<Packet>& output = runner.Outputs().Index(0).packets;
   EXPECT_EQ(1, output.size());
   const auto& assoc_rects =
-      output[0].Get<std::vector<::mediapipe::Detection>>();
+      output[0].Get<std::vector<::mediapipe_v01013_based::Detection>>();
 
   // det_3 overlaps with det_5, so det_5 is removed. det_0 overlaps with det_3,
   // so det_3 is removed as det_0 is in higher priority for keeping. det_2
@@ -327,7 +327,7 @@ class AssociationNormRectCalculatorTest : public ::testing::Test {
     nr_5.set_height(0.3);
   }
 
-  ::mediapipe::NormalizedRect nr_0, nr_1, nr_2, nr_3, nr_4, nr_5;
+  ::mediapipe_v01013_based::NormalizedRect nr_0, nr_1, nr_2, nr_3, nr_4, nr_5;
 };
 
 TEST_F(AssociationNormRectCalculatorTest, NormRectAssocTest) {
@@ -346,7 +346,7 @@ TEST_F(AssociationNormRectCalculatorTest, NormRectAssocTest) {
 
   // Input Stream 0: nr_0, nr_1, nr_2.
   auto input_vec_0 =
-      absl::make_unique<std::vector<::mediapipe::NormalizedRect>>();
+      absl::make_unique<std::vector<::mediapipe_v01013_based::NormalizedRect>>();
   input_vec_0->push_back(nr_0);
   input_vec_0->push_back(nr_1);
   input_vec_0->push_back(nr_2);
@@ -355,7 +355,7 @@ TEST_F(AssociationNormRectCalculatorTest, NormRectAssocTest) {
 
   // Input Stream 1: nr_3, nr_4.
   auto input_vec_1 =
-      absl::make_unique<std::vector<::mediapipe::NormalizedRect>>();
+      absl::make_unique<std::vector<::mediapipe_v01013_based::NormalizedRect>>();
   input_vec_1->push_back(nr_3);
   input_vec_1->push_back(nr_4);
   runner.MutableInputs()->Index(1).packets.push_back(
@@ -363,7 +363,7 @@ TEST_F(AssociationNormRectCalculatorTest, NormRectAssocTest) {
 
   // Input Stream 2: nr_5.
   auto input_vec_2 =
-      absl::make_unique<std::vector<::mediapipe::NormalizedRect>>();
+      absl::make_unique<std::vector<::mediapipe_v01013_based::NormalizedRect>>();
   input_vec_2->push_back(nr_5);
   runner.MutableInputs()->Index(2).packets.push_back(
       Adopt(input_vec_2.release()).At(Timestamp(1)));
@@ -372,7 +372,7 @@ TEST_F(AssociationNormRectCalculatorTest, NormRectAssocTest) {
   const std::vector<Packet>& output = runner.Outputs().Index(0).packets;
   EXPECT_EQ(1, output.size());
   const auto& assoc_rects =
-      output[0].Get<std::vector<::mediapipe::NormalizedRect>>();
+      output[0].Get<std::vector<::mediapipe_v01013_based::NormalizedRect>>();
 
   // nr_3 overlaps with nr_0, nr_1 and nr_5 overlaps with nr_3. Since nr_5 is
   // in the highest priority, we remove other rects.
@@ -400,14 +400,14 @@ TEST_F(AssociationNormRectCalculatorTest, NormRectAssocTestReverse) {
 
   // Input Stream 0: nr_5.
   auto input_vec_0 =
-      absl::make_unique<std::vector<::mediapipe::NormalizedRect>>();
+      absl::make_unique<std::vector<::mediapipe_v01013_based::NormalizedRect>>();
   input_vec_0->push_back(nr_5);
   runner.MutableInputs()->Index(0).packets.push_back(
       Adopt(input_vec_0.release()).At(Timestamp(1)));
 
   // Input Stream 1: nr_3, nr_4.
   auto input_vec_1 =
-      absl::make_unique<std::vector<::mediapipe::NormalizedRect>>();
+      absl::make_unique<std::vector<::mediapipe_v01013_based::NormalizedRect>>();
   input_vec_1->push_back(nr_3);
   input_vec_1->push_back(nr_4);
   runner.MutableInputs()->Index(1).packets.push_back(
@@ -415,7 +415,7 @@ TEST_F(AssociationNormRectCalculatorTest, NormRectAssocTestReverse) {
 
   // Input Stream 2: nr_0, nr_1, nr_2.
   auto input_vec_2 =
-      absl::make_unique<std::vector<::mediapipe::NormalizedRect>>();
+      absl::make_unique<std::vector<::mediapipe_v01013_based::NormalizedRect>>();
   input_vec_2->push_back(nr_0);
   input_vec_2->push_back(nr_1);
   input_vec_2->push_back(nr_2);
@@ -426,7 +426,7 @@ TEST_F(AssociationNormRectCalculatorTest, NormRectAssocTestReverse) {
   const std::vector<Packet>& output = runner.Outputs().Index(0).packets;
   EXPECT_EQ(1, output.size());
   const auto& assoc_rects =
-      output[0].Get<std::vector<::mediapipe::NormalizedRect>>();
+      output[0].Get<std::vector<::mediapipe_v01013_based::NormalizedRect>>();
 
   // nr_3 overlaps with nr_5, so nr_5 is removed. nr_0 overlaps with nr_3, so
   // nr_3 is removed as nr_0 is in higher priority for keeping. nr_2 overlaps
@@ -453,7 +453,7 @@ TEST_F(AssociationNormRectCalculatorTest, NormRectAssocSingleInputStream) {
 
   // Input Stream : nr_3, nr_5.
   auto input_vec =
-      absl::make_unique<std::vector<::mediapipe::NormalizedRect>>();
+      absl::make_unique<std::vector<::mediapipe_v01013_based::NormalizedRect>>();
   input_vec->push_back(nr_3);
   input_vec->push_back(nr_5);
   runner.MutableInputs()->Index(0).packets.push_back(
@@ -463,7 +463,7 @@ TEST_F(AssociationNormRectCalculatorTest, NormRectAssocSingleInputStream) {
   const std::vector<Packet>& output = runner.Outputs().Index(0).packets;
   EXPECT_EQ(1, output.size());
   const auto& assoc_rects =
-      output[0].Get<std::vector<::mediapipe::NormalizedRect>>();
+      output[0].Get<std::vector<::mediapipe_v01013_based::NormalizedRect>>();
 
   // nr_5 overlaps with nr_3. Since nr_5 is after nr_3 in the same input stream
   // we remove nr_3 and keep nr_5.
@@ -472,4 +472,4 @@ TEST_F(AssociationNormRectCalculatorTest, NormRectAssocSingleInputStream) {
   EXPECT_THAT(assoc_rects[0], EqualsProto(nr_5));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

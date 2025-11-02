@@ -44,10 +44,10 @@ void CopyBufferToFloatVector(const SInt16* samples, CMItemCount size, OutputVect
 };
 
 template <typename SampleDataType>
-std::unique_ptr<mediapipe::Matrix> MakeMatrix(const AudioBuffer* buffers, CMItemCount channels,
+std::unique_ptr<mediapipe_v01013_based::Matrix> MakeMatrix(const AudioBuffer* buffers, CMItemCount channels,
                                             CMItemCount frames, bool interleaved) {
   // Create the matrix and fill it accordingly. Its dimensions are `channels x frames`.
-  auto matrix = std::make_unique<mediapipe::Matrix>(channels, frames);
+  auto matrix = std::make_unique<mediapipe_v01013_based::Matrix>(channels, frames);
   // Split the cases of interleaved and non-interleaved samples (see
   // https://developer.apple.com/documentation/coremedia/1489723-cmsamplebuffercreate#discussion)
   // - however, the resulting operations coincide when `channels == 1`.
@@ -71,7 +71,7 @@ std::unique_ptr<mediapipe::Matrix> MakeMatrix(const AudioBuffer* buffers, CMItem
 }
 }  // namespace
 
-absl::StatusOr<std::unique_ptr<mediapipe::Matrix>> MediaPipeConvertAudioBufferListToAudioMatrix(
+absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Matrix>> MediaPipeConvertAudioBufferListToAudioMatrix(
     const AudioBufferList* audioBufferList, const AudioStreamBasicDescription* streamHeader,
     CMItemCount numFrames) {
   // Sort out the channel count and whether the data is interleaved.

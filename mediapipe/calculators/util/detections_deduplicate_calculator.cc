@@ -27,7 +27,7 @@ limitations under the License.
 #include "mediapipe/framework/formats/detection.pb.h"
 #include "mediapipe/framework/formats/location_data.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace {
 
@@ -67,12 +67,12 @@ class DetectionsDeduplicateCalculator : public Node {
 
   MEDIAPIPE_NODE_CONTRACT(kIn, kOut);
 
-  absl::Status Open(mediapipe::CalculatorContext* cc) {
-    cc->SetOffset(::mediapipe::TimestampDiff(0));
+  absl::Status Open(mediapipe_v01013_based::CalculatorContext* cc) {
+    cc->SetOffset(::mediapipe_v01013_based::TimestampDiff(0));
     return absl::OkStatus();
   }
 
-  absl::Status Process(mediapipe::CalculatorContext* cc) {
+  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) {
     const std::vector<Detection>& raw_detections = kIn(cc).Get();
     // Hash map to store the bbox to the index of the detection in the
     // deduplicated detection vector.
@@ -114,4 +114,4 @@ class DetectionsDeduplicateCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(DetectionsDeduplicateCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

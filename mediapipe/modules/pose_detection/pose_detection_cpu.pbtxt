@@ -45,7 +45,7 @@ node: {
   output_stream: "TENSORS:input_tensors"
   output_stream: "LETTERBOX_PADDING:letterbox_padding"
   options: {
-    [mediapipe.ImageToTensorCalculatorOptions.ext] {
+    [mediapipe_v01013_based.ImageToTensorCalculatorOptions.ext] {
       output_tensor_width: 224
       output_tensor_height: 224
       keep_aspect_ratio: true
@@ -70,7 +70,7 @@ node {
   input_stream: "TENSORS:input_tensors"
   output_stream: "TENSORS:detection_tensors"
   options: {
-    [mediapipe.InferenceCalculatorOptions.ext] {
+    [mediapipe_v01013_based.InferenceCalculatorOptions.ext] {
       model_path: "mediapipe/modules/pose_detection/pose_detection.tflite"
       delegate {
         xnnpack {}
@@ -85,7 +85,7 @@ node {
   calculator: "SsdAnchorsCalculator"
   output_side_packet: "anchors"
   options: {
-    [mediapipe.SsdAnchorsCalculatorOptions.ext] {
+    [mediapipe_v01013_based.SsdAnchorsCalculatorOptions.ext] {
       num_layers: 5
       min_scale: 0.1484375
       max_scale: 0.75
@@ -113,7 +113,7 @@ node {
   input_side_packet: "ANCHORS:anchors"
   output_stream: "DETECTIONS:unfiltered_detections"
   options: {
-    [mediapipe.TensorsToDetectionsCalculatorOptions.ext] {
+    [mediapipe_v01013_based.TensorsToDetectionsCalculatorOptions.ext] {
       num_classes: 1
       num_boxes: 2254
       num_coords: 12
@@ -139,7 +139,7 @@ node {
   input_stream: "unfiltered_detections"
   output_stream: "filtered_detections"
   options: {
-    [mediapipe.NonMaxSuppressionCalculatorOptions.ext] {
+    [mediapipe_v01013_based.NonMaxSuppressionCalculatorOptions.ext] {
       min_suppression_threshold: 0.3
       overlap_type: INTERSECTION_OVER_UNION
       algorithm: WEIGHTED

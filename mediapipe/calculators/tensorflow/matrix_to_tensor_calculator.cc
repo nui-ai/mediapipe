@@ -24,7 +24,7 @@
 #include "tensorflow/core/framework/tensor_shape.h"
 #include "tensorflow/core/framework/types.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 absl::Status FillTimeSeriesHeaderIfValid(const Packet& header_packet,
@@ -153,4 +153,4 @@ absl::Status MatrixToTensorCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

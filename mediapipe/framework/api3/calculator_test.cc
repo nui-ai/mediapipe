@@ -36,7 +36,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/options_map.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 inline constexpr GraphService<int> kTestIntService(
     "kTestIntService", GraphServiceBase::kDisallowDefaultInitialization);
@@ -104,22 +104,22 @@ TEST(CalculatorTest, CanReadWritePortsAndUseServices) {
   MP_ASSERT_OK(graph.Initialize(std::move(config)));
   MP_ASSERT_OK(graph.SetServiceObject(
       kTestStringService, std::make_shared<std::string>("test_service")));
-  mediapipe::Packet out;
+  mediapipe_v01013_based::Packet out;
   MP_ASSERT_OK(
-      graph.ObserveOutputStream("out", [&out](const mediapipe::Packet& p) {
+      graph.ObserveOutputStream("out", [&out](const mediapipe_v01013_based::Packet& p) {
         out = p;
         return absl::OkStatus();
       }));
 
   // Starting and sending inputs.
   MP_ASSERT_OK(graph.StartRun(
-      {{"side_in", mediapipe::MakePacket<std::string>("side")}}));
+      {{"side_in", mediapipe_v01013_based::MakePacket<std::string>("side")}}));
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe::MakePacket<int>(42).At(Timestamp(0))));
+      "in", mediapipe_v01013_based::MakePacket<int>(42).At(Timestamp(0))));
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
   // Verifying outputs.
-  MP_ASSERT_OK_AND_ASSIGN(mediapipe::Packet side_out,
+  MP_ASSERT_OK_AND_ASSIGN(mediapipe_v01013_based::Packet side_out,
                           graph.GetOutputSidePacket("side_out"));
   ASSERT_FALSE(side_out.IsEmpty());
   EXPECT_EQ(side_out.Get<std::string>(), "side");
@@ -254,33 +254,33 @@ TEST(CalculatorTest, CanUseSharedContract) {
       kTestStringService, std::make_shared<std::string>("test_service")));
   MP_ASSERT_OK(
       graph.SetServiceObject(kTestIntService, std::make_shared<int>(42)));
-  mediapipe::Packet out_a;
+  mediapipe_v01013_based::Packet out_a;
   MP_ASSERT_OK(
-      graph.ObserveOutputStream("out_a", [&out_a](const mediapipe::Packet& p) {
+      graph.ObserveOutputStream("out_a", [&out_a](const mediapipe_v01013_based::Packet& p) {
         out_a = p;
         return absl::OkStatus();
       }));
-  mediapipe::Packet out_b;
+  mediapipe_v01013_based::Packet out_b;
   MP_ASSERT_OK(
-      graph.ObserveOutputStream("out_b", [&out_b](const mediapipe::Packet& p) {
+      graph.ObserveOutputStream("out_b", [&out_b](const mediapipe_v01013_based::Packet& p) {
         out_b = p;
         return absl::OkStatus();
       }));
 
   // Starting and sending inputs.
   MP_ASSERT_OK(graph.StartRun(
-      {{"side_in", mediapipe::MakePacket<std::string>("side")}}));
+      {{"side_in", mediapipe_v01013_based::MakePacket<std::string>("side")}}));
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe::MakePacket<int>(42).At(Timestamp(0))));
+      "in", mediapipe_v01013_based::MakePacket<int>(42).At(Timestamp(0))));
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
   // Verifying outputs.
-  MP_ASSERT_OK_AND_ASSIGN(mediapipe::Packet side_out_a,
+  MP_ASSERT_OK_AND_ASSIGN(mediapipe_v01013_based::Packet side_out_a,
                           graph.GetOutputSidePacket("side_out_a"));
   ASSERT_FALSE(side_out_a.IsEmpty());
   EXPECT_EQ(side_out_a.Get<std::string>(), "side");
 
-  MP_ASSERT_OK_AND_ASSIGN(mediapipe::Packet side_out_b,
+  MP_ASSERT_OK_AND_ASSIGN(mediapipe_v01013_based::Packet side_out_b,
                           graph.GetOutputSidePacket("side_out_b"));
   ASSERT_FALSE(side_out_a.IsEmpty());
   EXPECT_EQ(side_out_a.Get<std::string>(), "side");
@@ -328,10 +328,10 @@ TEST(CalculatorTest, TimestampOffsetZeroIsTheDefault) {
 
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize(std::move(config)));
-  std::vector<mediapipe::Packet> output_packets;
+  std::vector<mediapipe_v01013_based::Packet> output_packets;
   MP_ASSERT_OK(graph.ObserveOutputStream(
       "out",
-      [&output_packets](const mediapipe::Packet& p) {
+      [&output_packets](const mediapipe_v01013_based::Packet& p) {
         output_packets.push_back(p);
         return absl::OkStatus();
       },
@@ -340,11 +340,11 @@ TEST(CalculatorTest, TimestampOffsetZeroIsTheDefault) {
 
   // Send inputs.
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe::MakePacket<int>(42).At(Timestamp(0))));
+      "in", mediapipe_v01013_based::MakePacket<int>(42).At(Timestamp(0))));
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe::MakePacket<int>(43).At(Timestamp(1))));
+      "in", mediapipe_v01013_based::MakePacket<int>(43).At(Timestamp(1))));
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
   // Verify outputs.
@@ -398,10 +398,10 @@ TEST(CalculatorTest, DefaultTimestampOffsetCanBeUnset) {
 
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize(std::move(config)));
-  std::vector<mediapipe::Packet> output_packets;
+  std::vector<mediapipe_v01013_based::Packet> output_packets;
   MP_ASSERT_OK(graph.ObserveOutputStream(
       "out",
-      [&output_packets](const mediapipe::Packet& p) {
+      [&output_packets](const mediapipe_v01013_based::Packet& p) {
         output_packets.push_back(p);
         return absl::OkStatus();
       },
@@ -410,11 +410,11 @@ TEST(CalculatorTest, DefaultTimestampOffsetCanBeUnset) {
 
   // Send inputs.
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe::MakePacket<int>(42).At(Timestamp(0))));
+      "in", mediapipe_v01013_based::MakePacket<int>(42).At(Timestamp(0))));
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe::MakePacket<int>(43).At(Timestamp(1))));
+      "in", mediapipe_v01013_based::MakePacket<int>(43).At(Timestamp(1))));
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
   // Verify outputs.
@@ -455,7 +455,7 @@ TEST(CalculatorTest, CanRunGeneratorCalculator) {
   MP_ASSERT_OK(graph.Run());
 
   // Verifying outputs.
-  MP_ASSERT_OK_AND_ASSIGN(mediapipe::Packet value,
+  MP_ASSERT_OK_AND_ASSIGN(mediapipe_v01013_based::Packet value,
                           graph.GetOutputSidePacket("value"));
   ASSERT_FALSE(value.IsEmpty());
   EXPECT_EQ(value.Get<int>(), 42);
@@ -517,4 +517,4 @@ TEST(CalculatorTest, FailsOnMaxInFlightConfigForSimultaneousRuns) {
                        testing::HasSubstr("single invocation")));
 }
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3

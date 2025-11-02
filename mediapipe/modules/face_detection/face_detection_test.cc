@@ -38,20 +38,20 @@
 #include "mediapipe/gpu/gpu_test_base.h"
 #endif  // !defined(__APPLE__) && !__ANDROID__
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
-using mediapipe::FaceDetectionOptions;
+using mediapipe_v01013_based::FaceDetectionOptions;
 
 // Ensure protobuf registration.
 void RegisterProtobufTypes() {
-  MakePacket<mediapipe::InferenceCalculatorOptions::Delegate>();
-  MakePacket<mediapipe::FaceDetectionOptions>();
-  MakePacket<mediapipe::InferenceCalculatorOptions>();
+  MakePacket<mediapipe_v01013_based::InferenceCalculatorOptions::Delegate>();
+  MakePacket<mediapipe_v01013_based::FaceDetectionOptions>();
+  MakePacket<mediapipe_v01013_based::InferenceCalculatorOptions>();
 
-  MakePacket<mediapipe::ImageToTensorCalculatorOptions>();
-  MakePacket<mediapipe::SsdAnchorsCalculatorOptions>();
-  MakePacket<mediapipe::TensorsToDetectionsCalculatorOptions>();
-  MakePacket<mediapipe::NonMaxSuppressionCalculatorOptions>();
+  MakePacket<mediapipe_v01013_based::ImageToTensorCalculatorOptions>();
+  MakePacket<mediapipe_v01013_based::SsdAnchorsCalculatorOptions>();
+  MakePacket<mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions>();
+  MakePacket<mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions>();
 }
 
 // Returns a Packet with an ImageFrame showing a face.
@@ -113,14 +113,14 @@ FaceDetectionOptions GetCpuOptions() {
 // Returns the FaceDetectionOptions needed to enable GPU processing.
 FaceDetectionOptions GetGpuOptions() {
   FaceDetectionOptions result;
-  result.set_gpu_origin(mediapipe::GpuOrigin_Mode::GpuOrigin_Mode_TOP_LEFT);
+  result.set_gpu_origin(mediapipe_v01013_based::GpuOrigin_Mode::GpuOrigin_Mode_TOP_LEFT);
   result.mutable_delegate()->mutable_gpu()->set_use_advanced_gpu_api(true);
   return result;
 }
 
 // Returns an example region of interest rectangle.
-mediapipe::NormalizedRect GetTestRoi() {
-  mediapipe::NormalizedRect result;
+mediapipe_v01013_based::NormalizedRect GetTestRoi() {
+  mediapipe_v01013_based::NormalizedRect result;
   result.set_x_center(0.5);
   result.set_y_center(0.5);
   result.set_width(0.8);
@@ -153,12 +153,12 @@ TEST_F(FaceDetectionTest, ExpandFaceDetectionShortRangeCpu) {
   MP_ASSERT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   ASSERT_EQ(output.size(), 1);
-  EXPECT_EQ(output.front().Get<std::vector<mediapipe::Detection>>().size(), 1);
+  EXPECT_EQ(output.front().Get<std::vector<mediapipe_v01013_based::Detection>>().size(), 1);
 }
 
 TEST_F(FaceDetectionTest, ExpandFaceDetection) {
   CalculatorGraphConfig config = GetFaceDetectionGraph();
-  mediapipe::FaceDetectionOptions face_options =
+  mediapipe_v01013_based::FaceDetectionOptions face_options =
       GetFaceDetectionShortRangeOptions();
   face_options.MergeFrom(GetCpuOptions());
   config.clear_graph_options();
@@ -179,13 +179,13 @@ TEST_F(FaceDetectionTest, ExpandFaceDetection) {
   MP_ASSERT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   ASSERT_EQ(output.size(), 1);
-  EXPECT_EQ(output.front().Get<std::vector<mediapipe::Detection>>().size(), 1);
+  EXPECT_EQ(output.front().Get<std::vector<mediapipe_v01013_based::Detection>>().size(), 1);
 }
 
 TEST_F(FaceDetectionTest, FaceDetectionShortRangeApi) {
   CalculatorGraphConfig config = GetFaceDetectionGraph();
   config.clear_graph_options();
-  mediapipe::FaceDetectionOptions face_options =
+  mediapipe_v01013_based::FaceDetectionOptions face_options =
       GetFaceDetectionShortRangeOptions();
   Subgraph::SubgraphOptions graph_options;
   face_options.MergeFrom(GetCpuOptions());
@@ -207,13 +207,13 @@ TEST_F(FaceDetectionTest, FaceDetectionShortRangeApi) {
   MP_ASSERT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   ASSERT_EQ(output.size(), 1);
-  EXPECT_EQ(output.front().Get<std::vector<mediapipe::Detection>>().size(), 1);
+  EXPECT_EQ(output.front().Get<std::vector<mediapipe_v01013_based::Detection>>().size(), 1);
 }
 
 TEST_F(FaceDetectionTest, FaceDetectionWrapperApi) {
   CalculatorGraphConfig config = GetFaceDetectionGraph();
   config.clear_graph_options();
-  mediapipe::FaceDetectionOptions face_options =
+  mediapipe_v01013_based::FaceDetectionOptions face_options =
       GetFaceDetectionShortRangeOptions();
   face_options.MergeFrom(GetCpuOptions());
   Subgraph::SubgraphOptions graph_options;
@@ -235,13 +235,13 @@ TEST_F(FaceDetectionTest, FaceDetectionWrapperApi) {
   MP_ASSERT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   ASSERT_EQ(output.size(), 1);
-  EXPECT_EQ(output.front().Get<std::vector<mediapipe::Detection>>().size(), 1);
+  EXPECT_EQ(output.front().Get<std::vector<mediapipe_v01013_based::Detection>>().size(), 1);
 }
 
 TEST_F(FaceDetectionTest, FaceDetectionFullRangeApi) {
   CalculatorGraphConfig config = GetFaceDetectionGraph();
   config.clear_graph_options();
-  mediapipe::FaceDetectionOptions face_options =
+  mediapipe_v01013_based::FaceDetectionOptions face_options =
       GetFaceDetectionFullRangeOptions();
   Subgraph::SubgraphOptions graph_options;
   face_options.MergeFrom(GetCpuOptions());
@@ -263,13 +263,13 @@ TEST_F(FaceDetectionTest, FaceDetectionFullRangeApi) {
   MP_ASSERT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   ASSERT_EQ(output.size(), 1);
-  EXPECT_EQ(output.front().Get<std::vector<mediapipe::Detection>>().size(), 1);
+  EXPECT_EQ(output.front().Get<std::vector<mediapipe_v01013_based::Detection>>().size(), 1);
 }
 
 TEST_F(FaceDetectionTest, FaceDetectionShortRangeByRoiCpu) {
   CalculatorGraphConfig config = GetFaceDetectionWithRoiGraph();
   config.clear_graph_options();
-  mediapipe::FaceDetectionOptions face_options =
+  mediapipe_v01013_based::FaceDetectionOptions face_options =
       GetFaceDetectionShortRangeOptions();
   face_options.MergeFrom(GetCpuOptions());
   Subgraph::SubgraphOptions graph_options;
@@ -289,28 +289,28 @@ TEST_F(FaceDetectionTest, FaceDetectionShortRangeByRoiCpu) {
   MP_ASSERT_OK(
       graph.AddPacketToInputStream("image", frame1.At(Timestamp(20000))));
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "roi", MakePacket<mediapipe::NormalizedRect>(GetTestRoi())
+      "roi", MakePacket<mediapipe_v01013_based::NormalizedRect>(GetTestRoi())
                  .At(Timestamp(20000))));
   MP_ASSERT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   ASSERT_EQ(output.size(), 1);
-  EXPECT_EQ(output.front().Get<std::vector<mediapipe::Detection>>().size(), 1);
+  EXPECT_EQ(output.front().Get<std::vector<mediapipe_v01013_based::Detection>>().size(), 1);
 }
 
 // These GpuBuffer tests are disabled on mobile for now.
 #if !defined(__APPLE__) && !__ANDROID__
 
-class FaceDetectionGpuTest : public mediapipe::GpuTestBase {
+class FaceDetectionGpuTest : public mediapipe_v01013_based::GpuTestBase {
  protected:
   void SetUp() override {}
   void TearDown() override {}
 
   // Returns a Packet with a GpuBuffer from an ImageFrame.
   Packet GpuBuffer(Packet image_frame) {
-    std::unique_ptr<mediapipe::GpuBuffer> gpu_buffer;
+    std::unique_ptr<mediapipe_v01013_based::GpuBuffer> gpu_buffer;
     helper_.RunInGlContext([this, &image_frame, &gpu_buffer] {
       auto src = helper_.CreateSourceTexture(image_frame.Get<ImageFrame>());
-      gpu_buffer = src.GetFrame<mediapipe::GpuBuffer>();
+      gpu_buffer = src.GetFrame<mediapipe_v01013_based::GpuBuffer>();
     });
     return Adopt(gpu_buffer.release());
   }
@@ -319,7 +319,7 @@ class FaceDetectionGpuTest : public mediapipe::GpuTestBase {
 TEST_F(FaceDetectionGpuTest, FaceDetectionFullRangeGpu) {
   CalculatorGraphConfig config = GetFaceDetectionGraph();
   config.clear_graph_options();
-  mediapipe::FaceDetectionOptions face_options =
+  mediapipe_v01013_based::FaceDetectionOptions face_options =
       GetFaceDetectionFullRangeOptions();
   face_options.MergeFrom(GetGpuOptions());
 
@@ -331,7 +331,7 @@ TEST_F(FaceDetectionGpuTest, FaceDetectionFullRangeGpu) {
   MP_ASSERT_OK(graph.Initialize({config}, {}, {}, GetFaceDetectionGraphType(),
                                 &graph_options));
 
-  MP_ASSERT_OK(mediapipe::SetExternalGlContextForGraph(
+  MP_ASSERT_OK(mediapipe_v01013_based::SetExternalGlContextForGraph(
       &graph, helper_.GetGlContext().native_context()));
   std::vector<Packet> output;
   MP_ASSERT_OK(graph.ObserveOutputStream("detections", [&](const Packet& p) {
@@ -344,13 +344,13 @@ TEST_F(FaceDetectionGpuTest, FaceDetectionFullRangeGpu) {
   MP_ASSERT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   ASSERT_EQ(output.size(), 1);
-  EXPECT_EQ(output.front().Get<std::vector<mediapipe::Detection>>().size(), 1);
+  EXPECT_EQ(output.front().Get<std::vector<mediapipe_v01013_based::Detection>>().size(), 1);
 }
 
 TEST_F(FaceDetectionGpuTest, FaceDetectionShortRangeGpu) {
   CalculatorGraphConfig config = GetFaceDetectionGraph();
   config.clear_graph_options();
-  mediapipe::FaceDetectionOptions face_options =
+  mediapipe_v01013_based::FaceDetectionOptions face_options =
       GetFaceDetectionShortRangeOptions();
   face_options.MergeFrom(GetGpuOptions());
 
@@ -362,7 +362,7 @@ TEST_F(FaceDetectionGpuTest, FaceDetectionShortRangeGpu) {
   MP_ASSERT_OK(graph.Initialize({config}, {}, {}, GetFaceDetectionGraphType(),
                                 &graph_options));
 
-  MP_ASSERT_OK(mediapipe::SetExternalGlContextForGraph(
+  MP_ASSERT_OK(mediapipe_v01013_based::SetExternalGlContextForGraph(
       &graph, helper_.GetGlContext().native_context()));
   std::vector<Packet> output;
   MP_ASSERT_OK(graph.ObserveOutputStream("detections", [&](const Packet& p) {
@@ -375,10 +375,10 @@ TEST_F(FaceDetectionGpuTest, FaceDetectionShortRangeGpu) {
   MP_ASSERT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   ASSERT_EQ(output.size(), 1);
-  EXPECT_EQ(output.front().Get<std::vector<mediapipe::Detection>>().size(), 1);
+  EXPECT_EQ(output.front().Get<std::vector<mediapipe_v01013_based::Detection>>().size(), 1);
 }
 
 #endif  // #if !defined(__APPLE__) && !__ANDROID__
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

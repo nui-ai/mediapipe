@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 template <typename S>
 struct Foo {
@@ -181,4 +181,4 @@ TEST(ContractValidatorTest, TerminatesOnInvalidContract) {
                testing::HasSubstr("is invalid"));
 }
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3

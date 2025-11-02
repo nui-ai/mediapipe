@@ -41,13 +41,13 @@
 #include "mediapipe/gpu/gpu_origin_utils.h"
 #include "mediapipe/gpu/shader_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, NUM_ATTRIBUTES };
 
-using ::mediapipe::tensors_to_segmentation_utils::GetHwcFromDims;
-using ::mediapipe::tensors_to_segmentation_utils::GlRender;
+using ::mediapipe_v01013_based::tensors_to_segmentation_utils::GetHwcFromDims;
+using ::mediapipe_v01013_based::tensors_to_segmentation_utils::GlRender;
 
 class TensorsToSegmentationGlTextureConverter
     : public TensorsToSegmentationConverter {
@@ -60,7 +60,7 @@ class TensorsToSegmentationGlTextureConverter
                                                  int output_height) override;
 
  private:
-  mediapipe::GlCalculatorHelper gpu_helper_;
+  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
   // TODO: Refactor upsample program out of the conversion.
   GLuint upsample_program_;
   bool gpu_initialized_ = false;
@@ -89,7 +89,7 @@ absl::Status TensorsToSegmentationGlTextureConverter::Init(
     // Currently uses 4 channels for output, and sets R+A channels as mask
     // value.
     const std::string shader_header = absl::StrCat(
-        std::string(mediapipe::kMediaPipeFragmentShaderPreamble), R"(
+        std::string(mediapipe_v01013_based::kMediaPipeFragmentShaderPreamble), R"(
 DEFAULT_PRECISION(mediump, float)
 )");
     /* Shader defines will be inserted here. */
@@ -139,7 +139,7 @@ void main() {
 })";
 
     // Shader defines.
-    using Options = ::mediapipe::TensorsToSegmentationCalculatorOptions;
+    using Options = ::mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions;
     const std::string output_layer_index =
         "\n#define OUTPUT_LAYER_INDEX int(" +
         std::to_string(options.output_layer_index()) + ")";
@@ -175,16 +175,16 @@ void main() {
     };
 
     // Main shader program & parameters
-    mediapipe::GlhCreateProgram(
-        mediapipe::kBasicVertexShader, shader_src_no_previous.c_str(),
+    mediapipe_v01013_based::GlhCreateProgram(
+        mediapipe_v01013_based::kBasicVertexShader, shader_src_no_previous.c_str(),
         NUM_ATTRIBUTES, &attr_name[0], attr_location, &mask_program_20_);
     RET_CHECK(mask_program_20_) << "Problem initializing the program.";
     glUseProgram(mask_program_20_);
     glUniform1i(glGetUniformLocation(mask_program_20_, "input_texture"), 1);
 
     // Simple pass-through program, used for hardware upsampling.
-    mediapipe::GlhCreateProgram(
-        mediapipe::kBasicVertexShader, mediapipe::kBasicTexturedFragmentShader,
+    mediapipe_v01013_based::GlhCreateProgram(
+        mediapipe_v01013_based::kBasicVertexShader, mediapipe_v01013_based::kBasicTexturedFragmentShader,
         NUM_ATTRIBUTES, &attr_name[0], attr_location, &upsample_program_);
     RET_CHECK(upsample_program_) << "Problem initializing the program.";
     glUseProgram(upsample_program_);
@@ -215,13 +215,13 @@ TensorsToSegmentationGlTextureConverter::Convert(const Tensor& input_tensor,
         auto [tensor_height, tensor_width, tensor_channels] = hwc;
 
         // Create initial working mask texture.
-        mediapipe::GlTexture small_mask_texture;
+        mediapipe_v01013_based::GlTexture small_mask_texture;
 
         // Run shader, process mask tensor.
         {
           small_mask_texture = gpu_helper_.CreateDestinationTexture(
               tensor_width, tensor_height,
-              mediapipe::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
+              mediapipe_v01013_based::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
 
           // Go through CPU if not already texture 2D (no direct conversion
           // yet). Tensor::GetOpenGlTexture2dReadView() doesn't automatically
@@ -242,10 +242,10 @@ TensorsToSegmentationGlTextureConverter::Convert(const Tensor& input_tensor,
         }
 
         // Upsample small mask into output.
-        mediapipe::GlTexture output_texture =
+        mediapipe_v01013_based::GlTexture output_texture =
             gpu_helper_.CreateDestinationTexture(
                 output_width, output_height,
-                mediapipe::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
+                mediapipe_v01013_based::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
 
         // Run shader, upsample result.
         {
@@ -274,12 +274,12 @@ TensorsToSegmentationGlTextureConverter::Convert(const Tensor& input_tensor,
 absl::StatusOr<std::unique_ptr<TensorsToSegmentationConverter>>
 CreateGlTextureConverter(
     CalculatorContext* cc,
-    const mediapipe::TensorsToSegmentationCalculatorOptions& options) {
+    const mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions& options) {
   auto converter = std::make_unique<TensorsToSegmentationGlTextureConverter>();
   MP_RETURN_IF_ERROR(converter->Init(cc, options));
   return converter;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // !MEDIAPIPE_DISABLE_GPU

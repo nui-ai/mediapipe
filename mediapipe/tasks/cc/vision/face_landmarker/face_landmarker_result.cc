@@ -24,16 +24,16 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/classification_result.h"
 #include "mediapipe/tasks/cc/components/containers/landmark.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
 
 FaceLandmarkerResult ConvertToFaceLandmarkerResult(
-    std::vector<mediapipe::NormalizedLandmarkList> face_landmarks_proto,
-    std::optional<std::vector<mediapipe::ClassificationList>>
+    std::vector<mediapipe_v01013_based::NormalizedLandmarkList> face_landmarks_proto,
+    std::optional<std::vector<mediapipe_v01013_based::ClassificationList>>
         face_blendshapes_proto,
-    std::optional<std::vector<mediapipe::MatrixData>>
+    std::optional<std::vector<mediapipe_v01013_based::MatrixData>>
         facial_transformation_matrixes_proto) {
   FaceLandmarkerResult result;
   result.face_landmarks.resize(face_landmarks_proto.size());
@@ -47,7 +47,7 @@ FaceLandmarkerResult ConvertToFaceLandmarkerResult(
     std::transform(
         face_blendshapes_proto->begin(), face_blendshapes_proto->end(),
         result.face_blendshapes->begin(),
-        [](const mediapipe::ClassificationList& classification_list) {
+        [](const mediapipe_v01013_based::ClassificationList& classification_list) {
           return components::containers::ConvertToClassifications(
               classification_list);
         });
@@ -58,8 +58,8 @@ FaceLandmarkerResult ConvertToFaceLandmarkerResult(
     std::transform(facial_transformation_matrixes_proto->begin(),
                    facial_transformation_matrixes_proto->end(),
                    result.facial_transformation_matrixes->begin(),
-                   [](const mediapipe::MatrixData& matrix_proto) {
-                     mediapipe::Matrix matrix;
+                   [](const mediapipe_v01013_based::MatrixData& matrix_proto) {
+                     mediapipe_v01013_based::Matrix matrix;
                      MatrixFromMatrixDataProto(matrix_proto, &matrix);
                      return matrix;
                    });
@@ -70,4 +70,4 @@ FaceLandmarkerResult ConvertToFaceLandmarkerResult(
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

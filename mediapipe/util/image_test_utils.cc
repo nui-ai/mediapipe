@@ -17,7 +17,7 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #include "mediapipe/gpu/gpu_buffer_format.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -68,7 +68,7 @@ cv::Mat GetGray(const std::string& path) {
   return gray;
 }
 
-mediapipe::ImageFormat::Format GetImageFormat(int image_channels) {
+mediapipe_v01013_based::ImageFormat::Format GetImageFormat(int image_channels) {
   if (image_channels == 4) {
     return ImageFormat::SRGBA;
   } else if (image_channels == 3) {
@@ -88,10 +88,10 @@ Packet MakeImageFramePacket(cv::Mat input, int timestamp) {
 }
 
 Packet MakeImagePacket(cv::Mat input, int timestamp) {
-  mediapipe::Image input_image(std::make_shared<mediapipe::ImageFrame>(
+  mediapipe_v01013_based::Image input_image(std::make_shared<mediapipe_v01013_based::ImageFrame>(
       GetImageFormat(input.channels()), input.cols, input.rows, input.step,
       input.data, [input](uint8_t*) mutable { input.release(); }));
-  return MakePacket<mediapipe::Image>(std::move(input_image))
+  return MakePacket<mediapipe_v01013_based::Image>(std::move(input_image))
       .At(Timestamp(timestamp));
 }
 
@@ -149,4 +149,4 @@ GpuBuffer CreateTestRgb8GpuBuffer(int width, int height) {
   return buffer;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

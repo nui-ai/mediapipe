@@ -21,7 +21,7 @@
 #include "mediapipe/framework/formats/location_data.pb.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -86,7 +86,7 @@ class LandmarksToDetectionCalculator : public CalculatorBase {
   absl::Status Process(CalculatorContext* cc) override;
 
  private:
-  ::mediapipe::LandmarksToDetectionCalculatorOptions options_;
+  ::mediapipe_v01013_based::LandmarksToDetectionCalculatorOptions options_;
 };
 REGISTER_CALCULATOR(LandmarksToDetectionCalculator);
 
@@ -104,7 +104,7 @@ absl::Status LandmarksToDetectionCalculator::GetContract(
 absl::Status LandmarksToDetectionCalculator::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
 
-  options_ = cc->Options<::mediapipe::LandmarksToDetectionCalculatorOptions>();
+  options_ = cc->Options<::mediapipe_v01013_based::LandmarksToDetectionCalculatorOptions>();
   return absl::OkStatus();
 }
 
@@ -135,4 +135,4 @@ absl::Status LandmarksToDetectionCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

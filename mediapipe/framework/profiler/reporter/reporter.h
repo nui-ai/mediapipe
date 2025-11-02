@@ -11,7 +11,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/profiler/reporter/statistic.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace reporter {
 
 struct GraphData {
@@ -101,7 +101,7 @@ class Reporter {
   Reporter();
 
   // Adds the contents of a given profile.
-  void Accumulate(const mediapipe::GraphProfile& profile);
+  void Accumulate(const mediapipe_v01013_based::GraphProfile& profile);
 
   // Accepts names of of columns or wildcard patterns (* or ?) to
   // select which statistics columns will be included in a generated
@@ -125,6 +125,6 @@ class Reporter {
 };
 
 }  // namespace reporter
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PROFILER_REPORTER_REPORTER_H_

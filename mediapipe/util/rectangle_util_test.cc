@@ -17,10 +17,10 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-using ::mediapipe::NormalizedRect;
+using ::mediapipe_v01013_based::NormalizedRect;
 using ::testing::FloatNear;
 
 class RectangleUtilTest : public testing::Test {
@@ -75,7 +75,7 @@ class RectangleUtilTest : public testing::Test {
     nr_5.set_width(0.2);
     nr_5.set_height(0.3);
   }
-  mediapipe::NormalizedRect nr_0, nr_1, nr_2, nr_3, nr_4, nr_5;
+  mediapipe_v01013_based::NormalizedRect nr_0, nr_1, nr_2, nr_3, nr_4, nr_5;
 };
 
 TEST_F(RectangleUtilTest, OverlappingWithListLargeThreshold) {
@@ -163,7 +163,7 @@ TEST_F(RectangleUtilTest, NormRectToRectangleSuccess) {
 }
 
 TEST_F(RectangleUtilTest, NormRectToRectangleFail) {
-  mediapipe::NormalizedRect invalid_nr;
+  mediapipe_v01013_based::NormalizedRect invalid_nr;
   invalid_nr.set_x_center(0.2);
   EXPECT_THAT(ToRectangle(invalid_nr), testing::Not(IsOk()));
 
@@ -178,4 +178,4 @@ TEST_F(RectangleUtilTest, NormRectToRectangleFail) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

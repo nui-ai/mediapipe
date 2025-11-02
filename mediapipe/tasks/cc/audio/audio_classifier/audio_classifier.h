@@ -29,14 +29,14 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/processors/classifier_options.h"
 #include "mediapipe/tasks/cc/core/base_options.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace audio {
 namespace audio_classifier {
 
 // Alias the shared ClassificationResult struct as result type.
 using AudioClassifierResult =
-    ::mediapipe::tasks::components::containers::ClassificationResult;
+    ::mediapipe_v01013_based::tasks::components::containers::ClassificationResult;
 
 // The options for configuring a mediapipe audio classifier task.
 struct AudioClassifierOptions {
@@ -147,7 +147,7 @@ class AudioClassifier : tasks::audio::core::BaseAudioTaskApi {
   // TODO: Use `sample_rate` in AudioClassifierOptions by default
   // and makes `audio_sample_rate` optional.
   absl::StatusOr<std::vector<AudioClassifierResult>> Classify(
-      mediapipe::Matrix audio_clip, double audio_sample_rate);
+      mediapipe_v01013_based::Matrix audio_clip, double audio_sample_rate);
 
   // Sends audio data (a block in a continuous audio stream) to perform audio
   // classification. Only use this method when the AudioClassifier is created
@@ -165,7 +165,7 @@ class AudioClassifier : tasks::audio::core::BaseAudioTaskApi {
   // in a single inference. When this occurs, the input audio block is split
   // into multiple chunks. For this reason, the callback may be called multiple
   // times (once per chunk) for each call to this function.
-  absl::Status ClassifyAsync(mediapipe::Matrix audio_block,
+  absl::Status ClassifyAsync(mediapipe_v01013_based::Matrix audio_block,
                              double audio_sample_rate, int64_t timestamp_ms);
 
   // Shuts down the AudioClassifier when all works are done.
@@ -175,6 +175,6 @@ class AudioClassifier : tasks::audio::core::BaseAudioTaskApi {
 }  // namespace audio_classifier
 }  // namespace audio
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_AUDIO_AUDIO_CLASSIFIER_AUDIO_CLASSIFIER_H_

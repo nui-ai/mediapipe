@@ -23,10 +23,10 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 std::string GetGoldenFilePath(const std::string& filename) {
-  return mediapipe::file::JoinPath(
+  return mediapipe_v01013_based::file::JoinPath(
       "./", "mediapipe/calculators/tflite/testdata/" + filename);
 }
 
@@ -94,7 +94,7 @@ TEST(SsdAnchorCalculatorTest, FaceDetectionConfig) {
   const auto& anchors =
       runner.OutputSidePackets().Index(0).Get<std::vector<Anchor>>();
   std::string anchors_string;
-  MP_EXPECT_OK(mediapipe::file::GetContents(
+  MP_EXPECT_OK(mediapipe_v01013_based::file::GetContents(
       GetGoldenFilePath("anchor_golden_file_0.txt"), &anchors_string));
 
   std::vector<Anchor> anchors_golden;
@@ -137,7 +137,7 @@ TEST(SsdAnchorCalculatorTest, MobileSSDConfig) {
       runner.OutputSidePackets().Index(0).Get<std::vector<Anchor>>();
 
   std::string anchors_string;
-  MP_EXPECT_OK(mediapipe::file::GetContents(
+  MP_EXPECT_OK(mediapipe_v01013_based::file::GetContents(
       GetGoldenFilePath("anchor_golden_file_1.txt"), &anchors_string));
 
   std::vector<Anchor> anchors_golden;
@@ -173,7 +173,7 @@ TEST(SsdAnchorCalculatorTest, RetinaNetSSDConfig) {
       runner.OutputSidePackets().Index(0).Get<std::vector<Anchor>>();
 
   std::string anchors_string;
-  MP_EXPECT_OK(mediapipe::file::GetContents(
+  MP_EXPECT_OK(mediapipe_v01013_based::file::GetContents(
       GetGoldenFilePath("anchor_golden_file_2.txt"), &anchors_string));
 
   std::vector<Anchor> anchors_golden;
@@ -182,4 +182,4 @@ TEST(SsdAnchorCalculatorTest, RetinaNetSSDConfig) {
   CompareAnchors(anchors, anchors_golden);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

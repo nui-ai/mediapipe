@@ -26,7 +26,7 @@
 #include "pybind11/gil.h"
 #include "pybind11/pybind11.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace python {
 
 namespace py = pybind11;
@@ -101,9 +101,9 @@ inline std::string TimestampValueString(const Timestamp& timestamp) {
 }
 
 // Reads a CalculatorGraphConfig from a file. If failed, raises a PyError.
-inline ::mediapipe::CalculatorGraphConfig ReadCalculatorGraphConfigFromFile(
+inline ::mediapipe_v01013_based::CalculatorGraphConfig ReadCalculatorGraphConfigFromFile(
     const std::string& file_name) {
-  ::mediapipe::CalculatorGraphConfig graph_config_proto;
+  ::mediapipe_v01013_based::CalculatorGraphConfig graph_config_proto;
   auto status = file::Exists(file_name);
   if (!status.ok()) {
     throw RaisePyError(PyExc_FileNotFoundError, status.message().data());
@@ -121,6 +121,6 @@ inline ::mediapipe::CalculatorGraphConfig ReadCalculatorGraphConfigFromFile(
 }
 
 }  // namespace python
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_PYTHON_PYBIND_UTIL_H_

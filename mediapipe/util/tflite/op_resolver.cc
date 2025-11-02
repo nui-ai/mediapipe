@@ -19,7 +19,7 @@
 #include "tensorflow/lite/c/c_api.h"
 #include "tensorflow/lite/c/c_api_opaque.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 constexpr char kMaxPoolingWithArgmax2DOpName[] = "MaxPoolingWithArgmax2D";
@@ -96,4 +96,4 @@ OpResolver::OpResolver() {
             kConvolution2DTransposeBiasOpVersion);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

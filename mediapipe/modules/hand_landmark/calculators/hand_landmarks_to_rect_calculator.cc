@@ -20,9 +20,9 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/modules/hand_landmark/calculators/hand_landmarks_to_rect_calculator_core.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-using ::mediapipe::NormalizedRect;
+using ::mediapipe_v01013_based::NormalizedRect;
 
 namespace {
 
@@ -91,4 +91,4 @@ class HandRectFromLandmarksStage : public CalculatorBase {
 };
 REGISTER_CALCULATOR(HandRectFromLandmarksStage);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

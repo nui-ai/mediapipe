@@ -10,7 +10,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/gpu/gl_base.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -94,6 +94,6 @@ bool AhwbGpuReleaser::AhwbGpuResources::IsSignalled() {
   return true;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TENSOR_USE_AHWB

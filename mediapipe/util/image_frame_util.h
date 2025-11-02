@@ -24,12 +24,12 @@
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 class ImageFrame;
 class YUVImage;
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace image_frame_util {
 // Rescale an SRGB ImageFrame.  destination_frame will be Reset() by
 // this function (i.e. it will be deleted and reallocated if it already
@@ -89,6 +89,6 @@ void SrgbToLinearRgb16(const cv::Mat& source, cv::Mat* destination);
 void LinearRgb16ToSrgb(const cv::Mat& source, cv::Mat* destination);
 
 }  // namespace image_frame_util
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_IMAGE_FRAME_UTIL_H_

@@ -26,7 +26,7 @@
 
 typedef struct AHardwareBuffer AHardwareBuffer;
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 struct HardwareBufferSpec {
   // Buffer pixel formats. See NDK's hardware_buffer.h for descriptions.
@@ -176,6 +176,6 @@ class HardwareBuffer {
   bool is_locked_ = false;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_AHWB_BUFFER_H_

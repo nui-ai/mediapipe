@@ -29,7 +29,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/image_segmenter/image_segmenter_result.h"
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace image_segmenter {
@@ -126,7 +126,7 @@ class ImageSegmenter : tasks::vision::core::BaseVisionTaskApi {
   // region-of-interest using the 'region_of_interest' field is NOT supported
   // and will result in an invalid argument error being returned.
   absl::StatusOr<ImageSegmenterResult> Segment(
-      mediapipe::Image image,
+      mediapipe_v01013_based::Image image,
       std::optional<core::ImageProcessingOptions> image_processing_options =
           std::nullopt);
 
@@ -136,7 +136,7 @@ class ImageSegmenter : tasks::vision::core::BaseVisionTaskApi {
   //
   // The image can be of any size with format RGB or RGBA.
   absl::StatusOr<ImageSegmenterResult> Segment(
-      mediapipe::Image image, SegmentationOptions segmentation_options);
+      mediapipe_v01013_based::Image image, SegmentationOptions segmentation_options);
 
   // Performs image segmentation on the provided video frame.
   // Only use this method when the ImageSegmenter is created with the video
@@ -154,7 +154,7 @@ class ImageSegmenter : tasks::vision::core::BaseVisionTaskApi {
   // a region-of-interest using the 'region_of_interest' field is NOT supported
   // and will result in an invalid argument error being returned.
   absl::StatusOr<ImageSegmenterResult> SegmentForVideo(
-      mediapipe::Image image, int64_t timestamp_ms,
+      mediapipe_v01013_based::Image image, int64_t timestamp_ms,
       std::optional<core::ImageProcessingOptions> image_processing_options =
           std::nullopt);
 
@@ -166,7 +166,7 @@ class ImageSegmenter : tasks::vision::core::BaseVisionTaskApi {
   // provide the video frame's timestamp (in milliseconds). The input timestamps
   // must be monotonically increasing.
   absl::StatusOr<ImageSegmenterResult> SegmentForVideo(
-      mediapipe::Image image, int64_t timestamp_ms,
+      mediapipe_v01013_based::Image image, int64_t timestamp_ms,
       SegmentationOptions segmentation_options);
 
   // Sends live image data to perform image segmentation, and the results will
@@ -194,7 +194,7 @@ class ImageSegmenter : tasks::vision::core::BaseVisionTaskApi {
   //     no longer be valid when the callback returns. To access the image data
   //     outside of the callback, callers need to make a copy of the image.
   //   - The input timestamp in milliseconds.
-  absl::Status SegmentAsync(mediapipe::Image image, int64_t timestamp_ms,
+  absl::Status SegmentAsync(mediapipe_v01013_based::Image image, int64_t timestamp_ms,
                             std::optional<core::ImageProcessingOptions>
                                 image_processing_options = std::nullopt);
 
@@ -215,7 +215,7 @@ class ImageSegmenter : tasks::vision::core::BaseVisionTaskApi {
   //     no longer be valid when the callback returns. To access the image data
   //     outside of the callback, callers need to make a copy of the image.
   //   - The input timestamp in milliseconds.
-  absl::Status SegmentAsync(mediapipe::Image image, int64_t timestamp_ms,
+  absl::Status SegmentAsync(mediapipe_v01013_based::Image image, int64_t timestamp_ms,
                             SegmentationOptions segmentation_options);
 
   // Shuts down the ImageSegmenter when all works are done.
@@ -247,6 +247,6 @@ class ImageSegmenter : tasks::vision::core::BaseVisionTaskApi {
 }  // namespace image_segmenter
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_IMAGE_SEGMENTER_IMAGE_SEGMENTER_H_

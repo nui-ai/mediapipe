@@ -36,13 +36,13 @@ limitations under the License.
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace audio {
 namespace {
 
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
 using ::testing::Optional;
 using ::tflite::EnumNameTensorType;
 
@@ -114,4 +114,4 @@ TEST_F(AudioTensorSpecsTest, BuildInputAudioTensorSpecsWorks) {
 }  // namespace
 }  // namespace audio
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

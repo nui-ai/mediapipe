@@ -18,7 +18,7 @@ limitations under the License.
 #include "pybind11/pybind11.h"
 #include "tensorflow/lite/c/common.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace metadata {
 
@@ -54,4 +54,4 @@ PYBIND11_MODULE(_pywrap_metadata_version, m) {
 
 }  // namespace metadata
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -14,13 +14,13 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 import "tensorflow/core/protobuf/config.proto";
 
 message TensorFlowSessionFromFrozenGraphCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional TensorFlowSessionFromFrozenGraphCalculatorOptions ext = 266997877;
   }
 
@@ -42,7 +42,7 @@ message TensorFlowSessionFromFrozenGraphCalculatorOptions {
   //   calculator: "TensorFlowSessionFromFrozenGraphCalculator"
   //   output_side_packet: "SESSION:session"
   //   options {
-  //     [mediapipe.TensorFlowSessionFromFrozenGraphCalculatorOptions.ext]: {
+  //     [mediapipe_v01013_based.TensorFlowSessionFromFrozenGraphCalculatorOptions.ext]: {
   //       graph_proto_path: "[PATH]"
   //       tag_to_tensor_names {
   //         key: "JPG_STRING"

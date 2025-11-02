@@ -63,13 +63,13 @@
 #endif  // MEDIAPIPE_METAL_ENABLED
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace {
 
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Node;
-using ::mediapipe::api2::Output;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Node;
+using ::mediapipe_v01013_based::api2::Output;
 
 #if MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
 using ::tflite::gpu::gl::GlProgram;
@@ -97,10 +97,10 @@ bool CanUseGpu() {
 // Converts a MediaPipe tensor to a MediaPipe Image.
 //
 // Input streams:
-//   TENSORS - std::vector<mediapipe::Tensor> that only contains one element.
+//   TENSORS - std::vector<mediapipe_v01013_based::Tensor> that only contains one element.
 //
 // Output streams:
-//   OUTPUT - mediapipe::Image.
+//   OUTPUT - mediapipe_v01013_based::Image.
 class TensorsToImageCalculator : public Node {
  public:
   static constexpr Input<std::vector<Tensor>>::Optional kInputTensors{
@@ -149,12 +149,12 @@ class TensorsToImageCalculator : public Node {
   const tflite::gpu::uint3 workgroup_size_ = {8, 8, 1};
 #else
   GLuint program_ = 0;
-  std::unique_ptr<mediapipe::QuadRenderer> gl_renderer_;
+  std::unique_ptr<mediapipe_v01013_based::QuadRenderer> gl_renderer_;
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
 #endif  // MEDIAPIPE_METAL_ENABLED
 #endif  // !MEDIAPIPE_DISABLE_GPU
 };
-MEDIAPIPE_REGISTER_NODE(::mediapipe::tasks::TensorsToImageCalculator);
+MEDIAPIPE_REGISTER_NODE(::mediapipe_v01013_based::tasks::TensorsToImageCalculator);
 
 absl::Status TensorsToImageCalculator::UpdateContract(CalculatorContract* cc) {
   RET_CHECK(kInputTensors(cc).IsConnected() ^ kInputTensor(cc).IsConnected())
@@ -245,14 +245,14 @@ absl::Status TensorsToImageCalculator::CpuProcess(CalculatorContext* cc) {
   const int tensor_in_channels = input_tensor.shape().dims[3];
   RET_CHECK(tensor_in_channels == 3 || tensor_in_channels == 1);
 
-  auto format = mediapipe::ImageFormat::SRGB;
+  auto format = mediapipe_v01013_based::ImageFormat::SRGB;
   if (tensor_in_channels == 1) {
-    format = mediapipe::ImageFormat::GRAY8;
+    format = mediapipe_v01013_based::ImageFormat::GRAY8;
   }
 
   auto output_frame =
       std::make_shared<ImageFrame>(format, tensor_in_width, tensor_in_height);
-  cv::Mat output_matview = mediapipe::formats::MatView(output_frame.get());
+  cv::Mat output_matview = mediapipe_v01013_based::formats::MatView(output_frame.get());
 
   constexpr float kOutputImageRangeMin = 0.0f;
   constexpr float kOutputImageRangeMax = 255.0f;
@@ -319,10 +319,10 @@ absl::Status TensorsToImageCalculator::MetalProcess(CalculatorContext* cc) {
   [compute_encoder setComputePipelineState:to_buffer_program_];
 
   auto input_view =
-      mediapipe::MtlBufferView::GetReadView(input_tensor, command_buffer);
+      mediapipe_v01013_based::MtlBufferView::GetReadView(input_tensor, command_buffer);
   [compute_encoder setBuffer:input_view.buffer() offset:0 atIndex:0];
 
-  mediapipe::GpuBuffer output =
+  mediapipe_v01013_based::GpuBuffer output =
       [gpu_helper_ mediapipeGpuBufferWithWidth:tensor_width
                                         height:tensor_height];
   id<MTLTexture> dst_texture = [gpu_helper_ metalTextureWithGpuBuffer:output];
@@ -376,7 +376,7 @@ absl::Status TensorsToImageCalculator::MetalSetup(CalculatorContext* cc) {
   RET_CHECK(to_buffer_program_ != nil) << "Couldn't create pipeline state " <<
       [[error localizedDescription] UTF8String];
 
-  return mediapipe::OkStatus();
+  return mediapipe_v01013_based::OkStatus();
 }
 
 #endif  // MEDIAPIPE_METAL_ENABLED
@@ -386,7 +386,7 @@ absl::Status TensorsToImageCalculator::GlSetup(CalculatorContext* cc) {
   std::string maybe_flip_y_define;
 #if !defined(__APPLE__)
   const auto& options = cc->Options<TensorsToImageCalculatorOptions>();
-  if (options.gpu_origin() != mediapipe::GpuOrigin::TOP_LEFT) {
+  if (options.gpu_origin() != mediapipe_v01013_based::GpuOrigin::TOP_LEFT) {
     maybe_flip_y_define = R"(
       #define FLIP_Y_COORD
     )";
@@ -468,14 +468,14 @@ absl::Status TensorsToImageCalculator::GlSetup(CalculatorContext* cc) {
   )";
 
   const std::string src =
-      absl::StrCat(mediapipe::kMediaPipeFragmentShaderPreamble,
+      absl::StrCat(mediapipe_v01013_based::kMediaPipeFragmentShaderPreamble,
                    kFragColorOutputDeclaration, maybe_flip_y_define, kBody);
-  gl_renderer_ = std::make_unique<mediapipe::QuadRenderer>();
+  gl_renderer_ = std::make_unique<mediapipe_v01013_based::QuadRenderer>();
   MP_RETURN_IF_ERROR(gl_renderer_->GlSetup(src.c_str(), {"tensor"}));
 
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
 
-  return mediapipe::OkStatus();
+  return mediapipe_v01013_based::OkStatus();
 }
 
 absl::Status TensorsToImageCalculator::GlProcess(CalculatorContext* cc) {
@@ -521,16 +521,16 @@ absl::Status TensorsToImageCalculator::GlProcess(CalculatorContext* cc) {
 
     MP_RETURN_IF_ERROR(gl_compute_program_->Dispatch(workgroups));
 
-    auto texture_buffer = mediapipe::GlTextureBuffer::Wrap(
+    auto texture_buffer = mediapipe_v01013_based::GlTextureBuffer::Wrap(
         out_texture->target(), out_texture->id(), tensor_width, tensor_height,
-        mediapipe::GpuBufferFormat::kBGRA32,
+        mediapipe_v01013_based::GpuBufferFormat::kBGRA32,
         [ptr = out_texture.release()](
-            std::shared_ptr<mediapipe::GlSyncPoint> sync_token) mutable {
+            std::shared_ptr<mediapipe_v01013_based::GlSyncPoint> sync_token) mutable {
           delete ptr;
         });
 
     auto output =
-        std::make_unique<mediapipe::GpuBuffer>(std::move(texture_buffer));
+        std::make_unique<mediapipe_v01013_based::GpuBuffer>(std::move(texture_buffer));
     kOutputImage(cc).Send(Image(*output));
 
 #else
@@ -548,8 +548,8 @@ absl::Status TensorsToImageCalculator::GlProcess(CalculatorContext* cc) {
 
     MP_RETURN_IF_ERROR(gl_renderer_->GlRender(
         tensor_width, tensor_height, output_texture.width(),
-        output_texture.height(), mediapipe::FrameScaleMode::kStretch,
-        mediapipe::FrameRotation::kNone,
+        output_texture.height(), mediapipe_v01013_based::FrameScaleMode::kStretch,
+        mediapipe_v01013_based::FrameRotation::kNone,
         /*flip_horizontal=*/false, /*flip_vertical=*/false,
         /*flip_texture=*/false));
 
@@ -561,11 +561,11 @@ absl::Status TensorsToImageCalculator::GlProcess(CalculatorContext* cc) {
 
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
 
-    return mediapipe::OkStatus();
+    return mediapipe_v01013_based::OkStatus();
   });
 }
 
 #endif  // !MEDIAPIPE_DISABLE_GPU && !MEDIAPIPE_METAL_ENABLED
 
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

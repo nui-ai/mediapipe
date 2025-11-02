@@ -32,7 +32,7 @@
 
 using RandomEngine = std::mt19937_64;
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -325,4 +325,4 @@ TEST(SyncSetInputStreamHandlerTest, OrdinaryOperation) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -32,7 +32,7 @@
 #include "tensorflow/lite/delegates/gpu/gl/gl_buffer.h"
 #endif  // !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Example config:
 // node {
@@ -55,15 +55,15 @@ REGISTER_CALCULATOR(SplitTfLiteTensorVectorCalculator);
 typedef SplitVectorCalculator<Tensor, true> SplitInferenceOutputTopics;
 REGISTER_CALCULATOR(SplitInferenceOutputTopics);
 
-typedef SplitVectorCalculator<mediapipe::NormalizedLandmark, false>
+typedef SplitVectorCalculator<mediapipe_v01013_based::NormalizedLandmark, false>
     SplitLandmarkVectorCalculator;
 REGISTER_CALCULATOR(SplitLandmarkVectorCalculator);
 
-typedef SplitVectorCalculator<mediapipe::NormalizedLandmarkList, false>
+typedef SplitVectorCalculator<mediapipe_v01013_based::NormalizedLandmarkList, false>
     SplitNormalizedLandmarkListVectorCalculator;
 REGISTER_CALCULATOR(SplitNormalizedLandmarkListVectorCalculator);
 
-typedef SplitVectorCalculator<mediapipe::NormalizedRect, false>
+typedef SplitVectorCalculator<mediapipe_v01013_based::NormalizedRect, false>
     SplitNormalizedRectVectorCalculator;
 REGISTER_CALCULATOR(SplitNormalizedRectVectorCalculator);
 
@@ -76,11 +76,11 @@ typedef SplitVectorCalculator<::tflite::gpu::gl::GlBuffer, true>
 REGISTER_CALCULATOR(MovableSplitGlBufferVectorCalculator);
 #endif
 
-typedef SplitVectorCalculator<mediapipe::Detection, false>
+typedef SplitVectorCalculator<mediapipe_v01013_based::Detection, false>
     SplitDetectionVectorCalculator;
 REGISTER_CALCULATOR(SplitDetectionVectorCalculator);
 
-typedef SplitVectorCalculator<mediapipe::ClassificationList, false>
+typedef SplitVectorCalculator<mediapipe_v01013_based::ClassificationList, false>
     SplitClassificationListVectorCalculator;
 REGISTER_CALCULATOR(SplitClassificationListVectorCalculator);
 
@@ -90,11 +90,11 @@ REGISTER_CALCULATOR(SplitUint64tVectorCalculator);
 typedef SplitVectorCalculator<float, false> SplitFloatVectorCalculator;
 REGISTER_CALCULATOR(SplitFloatVectorCalculator);
 
-typedef SplitVectorCalculator<mediapipe::Image, false>
+typedef SplitVectorCalculator<mediapipe_v01013_based::Image, false>
     SplitImageVectorCalculator;
 REGISTER_CALCULATOR(SplitImageVectorCalculator);
 
-typedef SplitVectorCalculator<mediapipe::ImageFrame, true>
+typedef SplitVectorCalculator<mediapipe_v01013_based::ImageFrame, true>
     MovableSplitImageFrameVectorCalculator;
 REGISTER_CALCULATOR(MovableSplitImageFrameVectorCalculator);
 
@@ -102,4 +102,4 @@ typedef SplitVectorCalculator<std::array<float, 16>, false>
     SplitAffineMatrixVectorCalculator;
 REGISTER_CALCULATOR(SplitAffineMatrixVectorCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -35,17 +35,17 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/text_embedder/proto/text_embedder_graph_options.pb.h"
 #include "mediapipe/tasks/cc/text/utils/text_model_utils.h"
 
-namespace mediapipe::tasks::text::text_embedder {
+namespace mediapipe_v01013_based::tasks::text::text_embedder {
 namespace {
 
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::containers::proto::EmbeddingResult;
-using ::mediapipe::tasks::components::processors::proto::TextModelType;
-using ::mediapipe::tasks::core::ModelResources;
-using ::mediapipe::tasks::text::utils::GetModelType;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
+using ::mediapipe_v01013_based::tasks::components::processors::proto::TextModelType;
+using ::mediapipe_v01013_based::tasks::core::ModelResources;
+using ::mediapipe_v01013_based::tasks::text::utils::GetModelType;
 
 constexpr char kEmbeddingsTag[] = "EMBEDDINGS";
 constexpr char kTextTag[] = "TEXT";
@@ -162,6 +162,6 @@ class TextEmbedderGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::text::text_embedder::TextEmbedderGraph);
+    ::mediapipe_v01013_based::tasks::text::text_embedder::TextEmbedderGraph);
 
-}  // namespace mediapipe::tasks::text::text_embedder
+}  // namespace mediapipe_v01013_based::tasks::text::text_embedder

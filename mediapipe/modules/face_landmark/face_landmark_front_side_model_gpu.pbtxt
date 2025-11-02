@@ -68,7 +68,7 @@ node {
   input_stream: "DISALLOW:prev_has_enough_faces"
   output_stream: "gated_image"
   options: {
-    [mediapipe.GateCalculatorOptions.ext] {
+    [mediapipe_v01013_based.GateCalculatorOptions.ext] {
       empty_packets_as_allow: true
     }
   }
@@ -140,7 +140,7 @@ node {
   input_stream: "prev_face_rects_from_landmarks"
   output_stream: "face_rects"
   options: {
-    [mediapipe.AssociationCalculatorOptions.ext] {
+    [mediapipe_v01013_based.AssociationCalculatorOptions.ext] {
       min_similarity_threshold: 0.5
     }
   }

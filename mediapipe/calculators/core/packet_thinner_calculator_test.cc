@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 constexpr char kPeriodTag[] = "PERIOD";
@@ -357,4 +357,4 @@ TEST(PacketThinnerCalculatorTest, FrameRateTest5) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

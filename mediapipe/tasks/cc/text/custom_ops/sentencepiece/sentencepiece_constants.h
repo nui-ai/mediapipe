@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef MEDIAPIPE_TASKS_CC_TEXT_CUSTOM_OPS_SENTENCEPIECE_SENTENCEPIECE_CONSTANTS_H_
 #define MEDIAPIPE_TASKS_CC_TEXT_CUSTOM_OPS_SENTENCEPIECE_SENTENCEPIECE_CONSTANTS_H_
 
-namespace mediapipe::tflite_operations::sentencepiece {
+namespace mediapipe_v01013_based::tflite_operations::sentencepiece {
 
 // The constant is copied from
 // https://github.com/google/sentencepiece/blob/master/src/unigram_model.cc
@@ -33,6 +33,6 @@ inline constexpr char kSpaceSymbol[] = "\xe2\x96\x81";
 // developer. We can easily figure out that <unk> is emitted.
 inline constexpr char kDefaultUnknownSymbol[] = " \xE2\x81\x87 ";
 
-}  // namespace mediapipe::tflite_operations::sentencepiece
+}  // namespace mediapipe_v01013_based::tflite_operations::sentencepiece
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_CUSTOM_OPS_SENTENCEPIECE_SENTENCEPIECE_CONSTANTS_H_

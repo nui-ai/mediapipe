@@ -53,29 +53,29 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/util/graph_builder_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::SidePacket;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::utils::DisallowIf;
-using ::mediapipe::tasks::core::ModelAssetBundleResources;
-using ::mediapipe::tasks::metadata::SetExternalFile;
-using ::mediapipe::tasks::vision::face_detector::proto::
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::SidePacket;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::utils::DisallowIf;
+using ::mediapipe_v01013_based::tasks::core::ModelAssetBundleResources;
+using ::mediapipe_v01013_based::tasks::metadata::SetExternalFile;
+using ::mediapipe_v01013_based::tasks::vision::face_detector::proto::
     FaceDetectorGraphOptions;
-using ::mediapipe::tasks::vision::face_geometry::proto::Environment;
-using ::mediapipe::tasks::vision::face_geometry::proto::FaceGeometry;
-using ::mediapipe::tasks::vision::face_landmarker::proto::
+using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::Environment;
+using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::FaceGeometry;
+using ::mediapipe_v01013_based::tasks::vision::face_landmarker::proto::
     FaceLandmarkerGraphOptions;
-using ::mediapipe::tasks::vision::face_landmarker::proto::
+using ::mediapipe_v01013_based::tasks::vision::face_landmarker::proto::
     FaceLandmarksDetectorGraphOptions;
 
 constexpr char kImageTag[] = "IMAGE";
@@ -332,7 +332,7 @@ class FaceLandmarkerGraph : public core::ModelTaskGraph {
       MP_RETURN_IF_ERROR(SetSubTaskBaseOptions(
           *model_asset_bundle_resources,
           sc->MutableOptions<FaceLandmarkerGraphOptions>(),
-          !sc->Service(::mediapipe::tasks::core::kModelResourcesCacheService)
+          !sc->Service(::mediapipe_v01013_based::tasks::core::kModelResourcesCacheService)
                .IsAvailable()));
       if (output_geometry) {
         // Set the face geometry metadata file for
@@ -403,7 +403,7 @@ class FaceLandmarkerGraph : public core::ModelTaskGraph {
   // instance.
   //
   // tasks_options: the mediapipe tasks module FaceLandmarkerGraphOptions.
-  // image_in: (mediapipe::Image) stream to run face landmark detection on.
+  // image_in: (mediapipe_v01013_based::Image) stream to run face landmark detection on.
   // graph: the mediapipe graph instance to be updated.
   absl::StatusOr<FaceLandmarkerOutputs> BuildFaceLandmarkerGraph(
       FaceLandmarkerGraphOptions& tasks_options, Source<Image> image_in,
@@ -488,7 +488,7 @@ class FaceLandmarkerGraph : public core::ModelTaskGraph {
       auto expanded_face_rects_from_face_detector =
           face_detector.Out(kExpandedFaceRectsTag);
       auto& face_association = graph.AddNode("AssociationNormRectCalculator");
-      face_association.GetOptions<mediapipe::AssociationCalculatorOptions>()
+      face_association.GetOptions<mediapipe_v01013_based::AssociationCalculatorOptions>()
           .set_min_similarity_threshold(
               tasks_options.min_tracking_confidence());
       prev_face_rects_from_landmarks >>
@@ -561,9 +561,9 @@ class FaceLandmarkerGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::vision::face_landmarker::FaceLandmarkerGraph);
+    ::mediapipe_v01013_based::tasks::vision::face_landmarker::FaceLandmarkerGraph);
 
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

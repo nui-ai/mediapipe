@@ -17,7 +17,7 @@
 #include "absl/log/absl_log.h"
 #include "absl/memory/memory.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 LowPassFilter::LowPassFilter(float alpha) : initialized_{false} {
   SetAlpha(alpha);
@@ -55,4 +55,4 @@ void LowPassFilter::SetAlpha(float alpha) {
   alpha_ = alpha;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

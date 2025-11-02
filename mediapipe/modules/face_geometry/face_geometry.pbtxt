@@ -41,7 +41,7 @@ node {
   input_stream: "MULTI_FACE_LANDMARKS:multi_face_landmarks"
   output_stream: "MULTI_FACE_GEOMETRY:multi_face_geometry"
   options: {
-    [mediapipe.FaceGeometryPipelineCalculatorOptions.ext] {
+    [mediapipe_v01013_based.FaceGeometryPipelineCalculatorOptions.ext] {
       metadata_path: "mediapipe/modules/face_geometry/data/geometry_pipeline_metadata.binarypb"
     }
   }

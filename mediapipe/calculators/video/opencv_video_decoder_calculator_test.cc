@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -52,7 +52,7 @@ TEST(OpenCvVideoDecoderCalculatorTest, TestMp4Avc720pVideo) {
                    .Tag(kVideoPrestreamTag)
                    .packets[0]
                    .ValidateAsType<VideoHeader>());
-  const mediapipe::VideoHeader& header =
+  const mediapipe_v01013_based::VideoHeader& header =
       runner.Outputs().Tag(kVideoPrestreamTag).packets[0].Get<VideoHeader>();
   EXPECT_EQ(ImageFormat::SRGB, header.format);
   EXPECT_EQ(1280, header.width);
@@ -95,7 +95,7 @@ TEST(OpenCvVideoDecoderCalculatorTest, TestFlvH264Video) {
                    .Tag(kVideoPrestreamTag)
                    .packets[0]
                    .ValidateAsType<VideoHeader>());
-  const mediapipe::VideoHeader& header =
+  const mediapipe_v01013_based::VideoHeader& header =
       runner.Outputs().Tag(kVideoPrestreamTag).packets[0].Get<VideoHeader>();
   EXPECT_EQ(ImageFormat::SRGB, header.format);
   EXPECT_EQ(640, header.width);
@@ -138,7 +138,7 @@ TEST(OpenCvVideoDecoderCalculatorTest, TestMkvVp8Video) {
                    .Tag(kVideoPrestreamTag)
                    .packets[0]
                    .ValidateAsType<VideoHeader>());
-  const mediapipe::VideoHeader& header =
+  const mediapipe_v01013_based::VideoHeader& header =
       runner.Outputs().Tag(kVideoPrestreamTag).packets[0].Get<VideoHeader>();
   EXPECT_EQ(ImageFormat::SRGB, header.format);
   EXPECT_EQ(640, header.width);
@@ -164,4 +164,4 @@ TEST(OpenCvVideoDecoderCalculatorTest, TestMkvVp8Video) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A calculator that gates elements of an input collection based on
 // corresponding boolean values of the "CONDITION" vector. If there is no input
@@ -103,6 +103,6 @@ class FilterCollectionCalculator : public CalculatorBase {
   }
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_FILTER_VECTOR_CALCULATOR_H_

@@ -41,15 +41,15 @@ ABSL_FLAG(std::string, output_side_packets, "",
 
 absl::Status RunMPPGraph() {
   std::string calculator_graph_config_contents;
-  MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
       absl::GetFlag(FLAGS_calculator_graph_config_file),
       &calculator_graph_config_contents));
   ABSL_LOG(INFO) << "Get calculator graph config contents: "
                  << calculator_graph_config_contents;
-  mediapipe::CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(
+  mediapipe_v01013_based::CalculatorGraphConfig config =
+      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(
           calculator_graph_config_contents);
-  std::map<std::string, mediapipe::Packet> input_side_packets;
+  std::map<std::string, mediapipe_v01013_based::Packet> input_side_packets;
   std::vector<std::string> kv_pairs =
       absl::StrSplit(absl::GetFlag(FLAGS_input_side_packets), ',');
   for (const std::string& kv_pair : kv_pairs) {
@@ -57,13 +57,13 @@ absl::Status RunMPPGraph() {
     RET_CHECK(name_and_value.size() == 2);
     RET_CHECK(!input_side_packets.contains(name_and_value[0]));
     std::string input_side_packet_contents;
-    MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
+    MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
         name_and_value[1], &input_side_packet_contents));
     input_side_packets[name_and_value[0]] =
-        mediapipe::MakePacket<std::string>(input_side_packet_contents);
+        mediapipe_v01013_based::MakePacket<std::string>(input_side_packet_contents);
   }
   ABSL_LOG(INFO) << "Initialize the calculator graph.";
-  mediapipe::CalculatorGraph graph;
+  mediapipe_v01013_based::CalculatorGraph graph;
   MP_RETURN_IF_ERROR(graph.Initialize(config, input_side_packets));
   ABSL_LOG(INFO) << "Start running the calculator graph.";
   MP_RETURN_IF_ERROR(graph.Run());
@@ -72,14 +72,14 @@ absl::Status RunMPPGraph() {
   for (const std::string& kv_pair : kv_pairs) {
     std::vector<std::string> name_and_value = absl::StrSplit(kv_pair, '=');
     RET_CHECK(name_and_value.size() == 2);
-    absl::StatusOr<mediapipe::Packet> output_packet =
+    absl::StatusOr<mediapipe_v01013_based::Packet> output_packet =
         graph.GetOutputSidePacket(name_and_value[0]);
     RET_CHECK(output_packet.ok())
         << "Packet " << name_and_value[0] << " was not available.";
     const std::string& serialized_string =
         output_packet.value().Get<std::string>();
     MP_RETURN_IF_ERROR(
-        mediapipe::file::SetContents(name_and_value[1], serialized_string));
+        mediapipe_v01013_based::file::SetContents(name_and_value[1], serialized_string));
   }
   return absl::OkStatus();
 }

@@ -21,11 +21,11 @@
 #include "mediapipe/framework/tool/proto_util_lite.h"
 #include "mediapipe/framework/tool/type_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 namespace options_field_util {
 
-using ::mediapipe::proto_ns::internal::WireFormatLite;
+using ::mediapipe_v01013_based::proto_ns::internal::WireFormatLite;
 using FieldType = WireFormatLite::FieldType;
 
 // Utility functions for OptionsFieldUtil.
@@ -191,7 +191,7 @@ StatusOr<int> FindExtensionIndex(const FieldData& message_data,
 bool HasField(const FieldPath& field_path, const FieldData& message_data) {
   auto value = GetField(message_data, field_path);
   return value.ok() &&
-         value->value_case() != mediapipe::FieldData::VALUE_NOT_SET;
+         value->value_case() != mediapipe_v01013_based::FieldData::VALUE_NOT_SET;
 }
 
 // Returns the extension field containing the specified extension-type.
@@ -215,7 +215,7 @@ const FieldDescriptor* FindExtensionField(const FieldData& message_data,
 // Sets a protobuf in a repeated protobuf::Any field.
 void SetOptionsMessage(
     const FieldData& node_options,
-    proto_ns::RepeatedPtrField<mediapipe::protobuf::Any>* result) {
+    proto_ns::RepeatedPtrField<mediapipe_v01013_based::protobuf::Any>* result) {
   protobuf::Any* options_any = nullptr;
   for (auto& any : *result) {
     if (any.type_url() == node_options.message_value().type_url()) {
@@ -603,4 +603,4 @@ std::string ParseTypeUrl(absl::string_view type_url) {
 
 }  // namespace options_field_util
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/logging.h"
 #include "mediapipe/framework/port/proto_ns.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 template <typename T>
 bool ParseTextProto(const std::string& input, T* proto) {
@@ -34,6 +34,6 @@ T ParseTextProtoOrDie(const std::string& input) {
   return result;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_PORT_PARSE_TEXT_PROTO_H_

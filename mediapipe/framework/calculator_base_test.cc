@@ -33,7 +33,7 @@
 #include "mediapipe/framework/tool/status_util.h"
 #include "mediapipe/framework/tool/tag_map_helper.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace test_ns {
 
@@ -65,7 +65,7 @@ class DeadEndCalculator : public CalculatorBase {
     }
   }
 };
-REGISTER_CALCULATOR(::mediapipe::test_ns::DeadEndCalculator);
+REGISTER_CALCULATOR(::mediapipe_v01013_based::test_ns::DeadEndCalculator);
 
 namespace whitelisted_ns {
 
@@ -93,7 +93,7 @@ class EndCalculator : public CalculatorBase {
     return absl::OkStatus();
   }
 };
-REGISTER_CALCULATOR(::mediapipe::EndCalculator);
+REGISTER_CALCULATOR(::mediapipe_v01013_based::EndCalculator);
 
 namespace {
 
@@ -139,7 +139,7 @@ TEST(CalculatorTest, SourceProcessOrder) {
 }
 
 // Tests registration of a calculator within a namespace.
-// DeadEndCalculator is registered in namespace "mediapipe::test_ns".
+// DeadEndCalculator is registered in namespace "mediapipe_v01013_based::test_ns".
 TEST(CalculatorTest, CreateByName) {
   MP_EXPECT_OK(CalculatorBaseRegistry::CreateByNameInNamespace(  //
       "", "mediapipe.test_ns.DeadEndCalculator"));
@@ -177,15 +177,15 @@ TEST(CalculatorTest, CreateByNameWhitelisted) {
   // Reset the registration namespace whitelist.
   *const_cast<absl::flat_hash_set<std::string>*>(
       &NamespaceAllowlist::TopNamespaces()) = absl::flat_hash_set<std::string>{
-      "mediapipe::test_ns::whitelisted_ns",
+      "mediapipe_v01013_based::test_ns::whitelisted_ns",
       "mediapipe",
   };
 
   // Register a whitelisted calculator.
   CalculatorBaseRegistry::Register(
-      "::mediapipe::test_ns::whitelisted_ns::DeadCalculator",
+      "::mediapipe_v01013_based::test_ns::whitelisted_ns::DeadCalculator",
       absl::make_unique<internal::CalculatorBaseFactoryFor<
-          mediapipe::test_ns::whitelisted_ns::DeadCalculator>>);
+          mediapipe_v01013_based::test_ns::whitelisted_ns::DeadCalculator>>);
 
   // A whitelisted calculator can be found in its own namespace.
   MP_EXPECT_OK(CalculatorBaseRegistry::CreateByNameInNamespace(  //
@@ -209,4 +209,4 @@ TEST(CalculatorTest, CreateByNameWhitelisted) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

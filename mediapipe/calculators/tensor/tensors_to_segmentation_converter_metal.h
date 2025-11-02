@@ -22,12 +22,12 @@
 #include "mediapipe/calculators/tensor/tensors_to_segmentation_converter.h"
 #include "mediapipe/framework/calculator_context.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 // Creates Metal tensors-to-segmentation converter.
 absl::StatusOr<std::unique_ptr<TensorsToSegmentationConverter>>
 CreateMetalConverter(
     CalculatorContext* cc,
-    const mediapipe::TensorsToSegmentationCalculatorOptions& options);
-}  // namespace mediapipe
+    const mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions& options);
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_SEGMENTATION_CONVERTER_METAL_H_

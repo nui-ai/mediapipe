@@ -22,7 +22,7 @@
 #include "mediapipe/gpu/gl_base.h"
 #include "mediapipe/gpu/gpu_buffer_storage.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class GlContext;
 
@@ -110,6 +110,6 @@ class ViewProvider<GlTextureView> {
 };
 
 }  // namespace internal
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_GL_TEXTURE_VIEW_H_

@@ -8,7 +8,7 @@ This directory defines new APIs for MediaPipe:
 
 The new APIs interoperate fully with the existing framework code, and we are
 adopting them in our calculators. We are still making improvements, and the
-placement of this code under the `mediapipe::api2` namespace is not final.
+placement of this code under the `mediapipe_v01013_based::api2` namespace is not final.
 
 Developers are welcome to try out these APIs as early adopters, but there may be
 breaking changes.

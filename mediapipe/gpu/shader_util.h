@@ -20,7 +20,7 @@
 
 #include "mediapipe/gpu/gl_base.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // TODO: Remove the C-style helpers.
 // Compiles a GLSL shader, logs errors, returns the compile status
@@ -53,6 +53,6 @@ bool CompileShader(GLenum shader_type, const std::string& shader_source,
 bool CreateShaderProgram(
     GLuint vertex_shader, GLuint fragment_shader,
     const std::unordered_map<GLuint, std::string>& attributes, GLuint* program);
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_SHADER_UTIL_H_

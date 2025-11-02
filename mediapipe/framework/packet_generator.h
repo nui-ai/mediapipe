@@ -28,7 +28,7 @@
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Pure virtual base class for packet generators.  These classes take any
 // number of input side packet packets and produce some number of external
@@ -118,10 +118,10 @@ constexpr bool PacketGeneratorHasGenerate(...) {
 template <typename PacketGeneratorSubclass>
 class StaticAccessToGeneratorTyped : public StaticAccessToGenerator {
  public:
-  static_assert(std::is_base_of<mediapipe::PacketGenerator,
+  static_assert(std::is_base_of<mediapipe_v01013_based::PacketGenerator,
                                 PacketGeneratorSubclass>::value,
                 "Classes registered with REGISTER_PACKET_GENERATOR must be "
-                "subclasses of mediapipe::PacketGenerator.");
+                "subclasses of mediapipe_v01013_based::PacketGenerator.");
   static_assert(
       PacketGeneratorHasFillExpectations<PacketGeneratorSubclass>(nullptr),
       "FillExpectations() must be defined with the correct signature in "
@@ -152,11 +152,11 @@ class StaticAccessToGeneratorTyped : public StaticAccessToGenerator {
 // the StaticAccessToGeneratorTyped class.
 #define REGISTER_PACKET_GENERATOR(name)                     \
   REGISTER_FACTORY_FUNCTION_QUALIFIED(                      \
-      mediapipe::internal::StaticAccessToGeneratorRegistry, \
+      mediapipe_v01013_based::internal::StaticAccessToGeneratorRegistry, \
       generator_registration, name,                         \
       std::make_unique<                                     \
-          mediapipe::internal::StaticAccessToGeneratorTyped<name>>)
+          mediapipe_v01013_based::internal::StaticAccessToGeneratorTyped<name>>)
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PACKET_GENERATOR_H_

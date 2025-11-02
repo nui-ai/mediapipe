@@ -15,7 +15,7 @@
 
 ABSL_DECLARE_FLAG(std::string, resource_root_dir);
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 TEST(Resources, CanCreateStringResource) {
@@ -168,4 +168,4 @@ TEST(Resource, StringResourceCanBeConsumed) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

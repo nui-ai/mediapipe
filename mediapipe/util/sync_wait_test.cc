@@ -21,7 +21,7 @@
 #include <sys/timerfd.h>
 #endif  // MEDIAPIPE_OSX
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 struct TestTimer {
@@ -139,4 +139,4 @@ void BM_SyncWaitZeroTimeout(benchmark::State& state) {
 BENCHMARK(BM_SyncWaitZeroTimeout);
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

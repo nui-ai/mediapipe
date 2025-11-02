@@ -17,7 +17,7 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/formats/classification.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class HandsPipelineOperator {
  public:
@@ -41,6 +41,6 @@ class HandsPipelineOperator {
   std::map<std::string, OutputStreamPoller> pollers_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_EXAMPLES_DESKTOP_HANDS_PIPELINE_OPERATOR_H_

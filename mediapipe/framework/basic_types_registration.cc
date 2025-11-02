@@ -6,12 +6,12 @@
 
 #define MEDIAPIPE_REGISTER_GENERIC_TYPE(type)                              \
   MEDIAPIPE_REGISTER_TYPE(                                                 \
-      mediapipe::type_map_internal::ReflectType<void(type*)>::Type, #type, \
+      mediapipe_v01013_based::type_map_internal::ReflectType<void(type*)>::Type, #type, \
       nullptr, nullptr)
 
 #define MEDIAPIPE_REGISTER_GENERIC_TYPE_WITH_NAME(type, name)             \
   MEDIAPIPE_REGISTER_TYPE(                                                \
-      mediapipe::type_map_internal::ReflectType<void(type*)>::Type, name, \
+      mediapipe_v01013_based::type_map_internal::ReflectType<void(type*)>::Type, name, \
       nullptr, nullptr)
 
 // Note: we cannot define a type which type hash id is already in the map.

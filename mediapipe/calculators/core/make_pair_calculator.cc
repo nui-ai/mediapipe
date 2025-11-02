@@ -19,7 +19,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // Given two input streams (A, B), output a single stream containing a pair<A,
@@ -35,8 +35,8 @@ namespace api2 {
 class MakePairCalculator : public Node {
  public:
   static constexpr Input<AnyType>::Multiple kIn{""};
-  // Note that currently api2::Packet is a different type from mediapipe::Packet
-  static constexpr Output<std::pair<mediapipe::Packet, mediapipe::Packet>>
+  // Note that currently api2::Packet is a different type from mediapipe_v01013_based::Packet
+  static constexpr Output<std::pair<mediapipe_v01013_based::Packet, mediapipe_v01013_based::Packet>>
       kPair{""};
 
   MEDIAPIPE_NODE_CONTRACT(kIn, kPair);
@@ -55,4 +55,4 @@ class MakePairCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(MakePairCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

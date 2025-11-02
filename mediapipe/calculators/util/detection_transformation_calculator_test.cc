@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 constexpr char kDetectionTag[] = "DETECTION";
@@ -320,4 +320,4 @@ TEST(DetectionsTransformationCalculatorTest, ConvertSingleDetection) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 
@@ -23,7 +23,7 @@ import "mediapipe/framework/calculator.proto";
 // dimensions of size 1.
 // The fields 'squeeze_all_single_dims' and 'dim' are mutually exclusive.
 message TensorSqueezeDimensionsCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional TensorSqueezeDimensionsCalculatorOptions ext = 115619805;
   }
   // Remove all dimensions with size 1.

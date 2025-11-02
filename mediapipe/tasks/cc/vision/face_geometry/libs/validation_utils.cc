@@ -26,7 +26,7 @@
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/geometry_pipeline_metadata.pb.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/mesh_3d.pb.h"
 
-namespace mediapipe::tasks::vision::face_geometry {
+namespace mediapipe_v01013_based::tasks::vision::face_geometry {
 
 absl::Status ValidatePerspectiveCamera(
     const proto::PerspectiveCamera& perspective_camera) {
@@ -82,7 +82,7 @@ absl::Status ValidateFaceGeometry(const proto::FaceGeometry& face_geometry) {
   static constexpr char kInvalid4x4MatrixMessage[] =
       "Pose transformation matrix must be a 4x4 matrix!";
 
-  const mediapipe::MatrixData& pose_transform_matrix =
+  const mediapipe_v01013_based::MatrixData& pose_transform_matrix =
       face_geometry.pose_transform_matrix();
   RET_CHECK_EQ(pose_transform_matrix.rows(), 4) << kInvalid4x4MatrixMessage;
   RET_CHECK_EQ(pose_transform_matrix.rows(), 4) << kInvalid4x4MatrixMessage;
@@ -124,4 +124,4 @@ absl::Status ValidateFrameDimensions(int frame_width, int frame_height) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe::tasks::vision::face_geometry
+}  // namespace mediapipe_v01013_based::tasks::vision::face_geometry

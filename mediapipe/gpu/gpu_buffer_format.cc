@@ -22,7 +22,7 @@
 #include "mediapipe/gpu/gl_base.h"
 #endif
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 #ifndef GL_RGBA16F
 #define GL_RGBA16F 34842
@@ -79,7 +79,7 @@ const GlTextureInfo& GlTextureInfoForGpuBufferFormat(GpuBufferFormat format,
                                                      GlVersion gl_version) {
   // TODO: check/add more cases using info from
   // CVPixelFormatDescriptionCreateWithPixelFormatType.
-  static const mediapipe::NoDestructor<
+  static const mediapipe_v01013_based::NoDestructor<
       absl::flat_hash_map<GpuBufferFormat, std::vector<GlTextureInfo>>>
       gles3_format_info{{
           {GpuBufferFormat::kRGBA32,
@@ -285,4 +285,4 @@ GpuBufferFormat GpuBufferFormatForImageFormat(ImageFormat::Format format) {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

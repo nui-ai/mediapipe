@@ -41,7 +41,7 @@
 #include "mediapipe/framework/packet_type.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class CalculatorGraph;
 class Packet;
@@ -230,6 +230,6 @@ class MediaPipeInternalSidePacketToPacketStreamCalculator
 };
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_SINK_H_

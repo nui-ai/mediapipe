@@ -24,10 +24,10 @@
 #include "mediapipe/util/packet_test_util.h"
 #include "mediapipe/util/time_series_test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class MakePairCalculatorTest
-    : public mediapipe::TimeSeriesCalculatorTest<mediapipe::NoOptions> {
+    : public mediapipe_v01013_based::TimeSeriesCalculatorTest<mediapipe_v01013_based::NoOptions> {
  protected:
   void SetUp() override {
     calculator_name_ = "MakePairCalculator";
@@ -49,22 +49,22 @@ TEST_F(MakePairCalculatorTest, ProducesExpectedPairs) {
   EXPECT_THAT(
       output().packets,
       ::testing::ElementsAre(
-          mediapipe::PacketContainsTimestampAndPayload<
+          mediapipe_v01013_based::PacketContainsTimestampAndPayload<
               std::pair<Packet, Packet>>(
               Timestamp(1),
               ::testing::Pair(
-                  mediapipe::PacketContainsTimestampAndPayload<std::string>(
+                  mediapipe_v01013_based::PacketContainsTimestampAndPayload<std::string>(
                       Timestamp(1), std::string("first packet")),
-                  mediapipe::PacketContainsTimestampAndPayload<int>(
+                  mediapipe_v01013_based::PacketContainsTimestampAndPayload<int>(
                       Timestamp(1), 10))),
-          mediapipe::PacketContainsTimestampAndPayload<
+          mediapipe_v01013_based::PacketContainsTimestampAndPayload<
               std::pair<Packet, Packet>>(
               Timestamp(5),
               ::testing::Pair(
-                  mediapipe::PacketContainsTimestampAndPayload<std::string>(
+                  mediapipe_v01013_based::PacketContainsTimestampAndPayload<std::string>(
                       Timestamp(5), std::string("second packet")),
-                  mediapipe::PacketContainsTimestampAndPayload<int>(
+                  mediapipe_v01013_based::PacketContainsTimestampAndPayload<int>(
                       Timestamp(5), 20)))));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

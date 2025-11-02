@@ -7,7 +7,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 TEST(TfLiteCustomOpResolverCalculatorTest, FindResamplerOp) {
   CalculatorGraphConfig graph_config =
@@ -31,4 +31,4 @@ TEST(TfLiteCustomOpResolverCalculatorTest, FindResamplerOp) {
   EXPECT_THAT(resolver.FindOp("Resampler", /*version=*/1), testing::NotNull());
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

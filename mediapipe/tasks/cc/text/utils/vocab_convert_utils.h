@@ -8,7 +8,7 @@
 #include "absl/container/node_hash_map.h"
 #include "absl/status/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 
@@ -23,6 +23,6 @@ absl::Status ConvertHfTokenizer(const std::string& hf_tokenizer,
 
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_UTILS_VOCAB_CONVERT_UTILS_H_

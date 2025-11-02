@@ -28,7 +28,7 @@
 #include "mediapipe/framework/port/point2.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 constexpr char kProjectionMatrixTag[] = "PROJECTION_MATRIX";
@@ -110,7 +110,7 @@ TEST(DetectionProjectionCalculatorTest, ProjectionFullRoiNoOp) {
   kp->set_x(0.25f);
   kp->set_y(0.25f);
 
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.0f);
@@ -156,7 +156,7 @@ TEST(DetectionProjectionCalculatorTest, ProjectionFullRoi90Rotation) {
   kp->set_x(0.25f);
   kp->set_y(0.25f);
 
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.0f);
@@ -202,7 +202,7 @@ TEST(DetectionProjectionCalculatorTest, ProjectionSmallerRoi) {
   kp->set_x(0.5f);
   kp->set_y(0.5f);
 
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(0.75f);
   roi.set_y_center(0.75f);
   roi.set_width(0.5f);
@@ -274,7 +274,7 @@ TEST(DetectionProjectionCalculatorTest, ProjectionSmallerRoi30Rotation) {
   constexpr float kExpectedPoint3X = 94.15f / kImageWidth;
   constexpr float kExpectedPoint3Y = 84.51f / kImageHeight;
 
-  mediapipe::NormalizedRect roi;
+  mediapipe_v01013_based::NormalizedRect roi;
   roi.set_x_center(kRectXCenter / kImageWidth);
   roi.set_y_center(kRectYCenter / kImageHeight);
   roi.set_width(kRectWidth / kImageWidth);
@@ -309,4 +309,4 @@ TEST(DetectionProjectionCalculatorTest, ProjectionSmallerRoi30Rotation) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

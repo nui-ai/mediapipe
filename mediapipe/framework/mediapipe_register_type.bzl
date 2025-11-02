@@ -28,9 +28,9 @@ Example usage:
         base_name = "foo"
         include_headers = ["mediapipe/framework/formats/foo.proto.h""],
         types = [
-            "::mediapipe::Foo",
-            "::mediapipe::FooList",
-            "::std::vector<::mediapipe::Foo>",
+            "::mediapipe_v01013_based::Foo",
+            "::mediapipe_v01013_based::FooList",
+            "::std::vector<::mediapipe_v01013_based::Foo>",
         ],
         deps = [":foo_cc_proto"],
     )
@@ -38,7 +38,7 @@ Example usage:
 Args
   base_name: The base name of the target
              (name + "_registration" will be created).
-  types: A list of C++ classes to register using MEDIAPIPE_REGISTER_TYPE.
+  types: A list of C++ classes to register using mediapipe_v01013_based_REGISTER_TYPE.
   deps: A list of cc deps.
   include_headers: A list of header files that must be included.
 """

@@ -43,7 +43,7 @@
 #include "mediapipe/framework/stream_handler.pb.h"
 #include "mediapipe/framework/tool/type_util.h"
 
-namespace mediapipe::api3::builder {
+namespace mediapipe_v01013_based::api3::builder {
 
 template <typename T>
 T& GetWithAutoGrow(std::vector<std::unique_ptr<T>>* vecp, size_t index) {
@@ -162,9 +162,9 @@ class /*ABSL_ATTRIBUTE_VIEW*/ Multi {
 };
 
 template <typename OptionsT>
-OptionsT& GetOptions(std::optional<mediapipe::MediaPipeOptions>& options) {
+OptionsT& GetOptions(std::optional<mediapipe_v01013_based::MediaPipeOptions>& options) {
   if (!options.has_value()) {
-    options = mediapipe::MediaPipeOptions();
+    options = mediapipe_v01013_based::MediaPipeOptions();
   }
   return *options->MutableExtension(OptionsT::ext);
 }
@@ -173,7 +173,7 @@ class Executor {
  public:
   template <typename OptionsT>
   OptionsT& GetOptions() {
-    return ::mediapipe::api3::builder::GetOptions<OptionsT>(options_);
+    return ::mediapipe_v01013_based::api3::builder::GetOptions<OptionsT>(options_);
   }
 
  private:
@@ -182,7 +182,7 @@ class Executor {
   std::string type_;
   std::string name_;
 
-  std::optional<mediapipe::MediaPipeOptions> options_;
+  std::optional<mediapipe_v01013_based::MediaPipeOptions> options_;
 
   friend class GraphBuilder;
 };
@@ -193,14 +193,14 @@ class InputStreamHandler {
  public:
   template <typename OptionsT>
   OptionsT& GetOptions() {
-    return ::mediapipe::api3::builder::GetOptions<OptionsT>(options_);
+    return ::mediapipe_v01013_based::api3::builder::GetOptions<OptionsT>(options_);
   }
 
  protected:
   explicit InputStreamHandler() = default;
 
   std::string type_;
-  std::optional<mediapipe::MediaPipeOptions> options_;
+  std::optional<mediapipe_v01013_based::MediaPipeOptions> options_;
 
   friend class NodeBuilder;
   friend class GraphBuilder;
@@ -210,14 +210,14 @@ class OutputStreamHandler {
  public:
   template <typename OptionsT>
   OptionsT& GetOptions() {
-    return ::mediapipe::api3::builder::GetOptions<OptionsT>(options_);
+    return ::mediapipe_v01013_based::api3::builder::GetOptions<OptionsT>(options_);
   }
 
  protected:
   explicit OutputStreamHandler() = default;
 
   std::string type_;
-  std::optional<mediapipe::MediaPipeOptions> options_;
+  std::optional<mediapipe_v01013_based::MediaPipeOptions> options_;
 
   friend class NodeBuilder;
   friend class GraphBuilder;
@@ -416,7 +416,7 @@ class PacketGeneratorBuilder {
   std::string type_;
   TagIndexMap<SideDestination> in_sides_;
   TagIndexMap<SideSource> out_sides_;
-  mediapipe::PacketGeneratorOptions options_;
+  mediapipe_v01013_based::PacketGeneratorOptions options_;
   // ideally we'd just check if any extensions are set on options_
   bool options_used_ = false;
   friend class GraphBuilder;
@@ -751,6 +751,6 @@ class GraphBuilder {
   NodeBuilder graph_boundary_{"__GRAPH__"};
 };
 
-}  // namespace mediapipe::api3::builder
+}  // namespace mediapipe_v01013_based::api3::builder
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_INTERNAL_GRAPH_BUILDER_H_

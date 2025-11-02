@@ -24,10 +24,10 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using DistanceEstimationMode =
-    mediapipe::RelativeVelocityFilter::DistanceEstimationMode;
+    mediapipe_v01013_based::RelativeVelocityFilter::DistanceEstimationMode;
 
 absl::Duration DurationFromNanos(int64_t nanos) {
   return absl::FromChrono(std::chrono::nanoseconds{nanos});
@@ -292,4 +292,4 @@ TEST(RelativeVelocityFilterTest, TestOtherFilterModeIsTranslationInvariant) {
   TestTranslationInvariance(DistanceEstimationMode::kForceCurrentScale);
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -32,19 +32,19 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/proto/model_resources_calculator.pb.h"
 #include "mediapipe/tasks/cc/text/text_classifier/proto/text_classifier_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 namespace text_classifier {
 
 namespace {
 
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::containers::proto::ClassificationResult;
-using ::mediapipe::tasks::core::ModelResources;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
+using ::mediapipe_v01013_based::tasks::core::ModelResources;
 
 constexpr char kClassificationsTag[] = "CLASSIFICATIONS";
 constexpr char kTextTag[] = "TEXT";
@@ -151,9 +151,9 @@ class TextClassifierGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::text::text_classifier::TextClassifierGraph);
+    ::mediapipe_v01013_based::tasks::text::text_classifier::TextClassifierGraph);
 
 }  // namespace text_classifier
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

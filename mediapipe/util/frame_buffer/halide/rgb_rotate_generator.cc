@@ -17,7 +17,7 @@
 
 namespace {
 
-using ::mediapipe::frame_buffer::halide::common::rotate;
+using ::mediapipe_v01013_based::frame_buffer::halide::common::rotate;
 
 class RgbRotate : public Halide::Generator<RgbRotate> {
  public:

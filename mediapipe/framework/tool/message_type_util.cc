@@ -19,7 +19,7 @@ ABSL_FLAG(std::string, root_type_name_output_path, "",
 ABSL_FLAG(std::string, root_type_macro_output_path, "",
           "Where to write the output root message type macro. ");
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using proto_ns::DescriptorProto;
 using proto_ns::FileDescriptorProto;
@@ -133,8 +133,8 @@ class DescriptorReader {
                                    const FileDescriptorSet& files) {
     FileDescriptorProto file = FindTopFile(files);
     DescriptorProto descriptor = FindTopDescriptor(file);
-    std::string type_name = mediapipe::DescriptorReader::FindTopTypeName(files);
-    mediapipe::DescriptorReader::WriteFile(
+    std::string type_name = mediapipe_v01013_based::DescriptorReader::FindTopTypeName(files);
+    mediapipe_v01013_based::DescriptorReader::WriteFile(
         absl::GetFlag(FLAGS_root_type_name_output_path), type_name);
   }
 
@@ -152,19 +152,19 @@ class DescriptorReader {
   }
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 int main(int argc, char** argv) {
   google::InitGoogleLogging(argv[0]);
   absl::ParseCommandLine(argc, argv);
-  auto files = mediapipe::DescriptorReader::ReadFileDescriptorSet(
+  auto files = mediapipe_v01013_based::DescriptorReader::ReadFileDescriptorSet(
       absl::GetFlag(FLAGS_input_path));
   if (!absl::GetFlag(FLAGS_root_type_name_output_path).empty()) {
-    mediapipe::DescriptorReader::WriteMessageTypeName(
+    mediapipe_v01013_based::DescriptorReader::WriteMessageTypeName(
         absl::GetFlag(FLAGS_root_type_name_output_path), files);
   }
   if (!absl::GetFlag(FLAGS_root_type_macro_output_path).empty()) {
-    mediapipe::DescriptorReader::WriteMessageTypeMacro(
+    mediapipe_v01013_based::DescriptorReader::WriteMessageTypeMacro(
         absl::GetFlag(FLAGS_root_type_macro_output_path), files);
   }
   return EXIT_SUCCESS;

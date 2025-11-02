@@ -23,7 +23,7 @@
 #include "mediapipe/util/tracking/motion_models.h"
 #include "mediapipe/util/tracking/region_flow.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Helper functions to extract specific models from CameraMotion.
 // Returned is always the requested model. In case, model is not present (i.e.
@@ -333,6 +333,6 @@ inline MixtureHomography CameraMotionToModel(
   return model;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_CAMERA_MOTION_H_

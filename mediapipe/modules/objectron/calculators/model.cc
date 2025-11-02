@@ -17,7 +17,7 @@
 #include "absl/log/absl_check.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 void Model::SetTransformation(const Eigen::Matrix4f& transform) {
   transformation_ = transform;
@@ -99,4 +99,4 @@ void Model::Serialize(Object* obj) {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

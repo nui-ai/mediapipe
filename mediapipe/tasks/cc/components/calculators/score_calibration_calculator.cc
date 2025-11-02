@@ -28,13 +28,13 @@
 #include "mediapipe/tasks/cc/common.h"
 #include "mediapipe/tasks/cc/components/calculators/score_calibration_calculator.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 using ::absl::StatusCode;
-using ::mediapipe::tasks::CreateStatusWithPayload;
-using ::mediapipe::tasks::MediaPipeTasksStatus;
-using ::mediapipe::tasks::ScoreCalibrationCalculatorOptions;
+using ::mediapipe_v01013_based::tasks::CreateStatusWithPayload;
+using ::mediapipe_v01013_based::tasks::MediaPipeTasksStatus;
+using ::mediapipe_v01013_based::tasks::ScoreCalibrationCalculatorOptions;
 
 namespace {
 // Used to prevent log(<=0.0) in ClampedLog() calls.
@@ -256,4 +256,4 @@ absl::StatusOr<float> ScoreCalibrationCalculator::SafeComputeCalibratedScore(
 MEDIAPIPE_REGISTER_NODE(ScoreCalibrationCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

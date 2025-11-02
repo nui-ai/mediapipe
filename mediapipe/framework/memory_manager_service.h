@@ -17,12 +17,12 @@
 #include "mediapipe/framework/graph_service.h"
 #include "mediapipe/framework/memory_manager.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Graph service to request pooled buffer objects.
 inline constexpr GraphService<MemoryManager> kMemoryManagerService(
     "MemoryManagerService", GraphServiceBase::kDisallowDefaultInitialization);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_MEMORY_MANAGER_SERVICE_H_

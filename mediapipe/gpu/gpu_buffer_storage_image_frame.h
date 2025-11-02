@@ -25,7 +25,7 @@ limitations under the License.
 #include "mediapipe/gpu/gpu_buffer_storage.h"
 #include "mediapipe/gpu/image_frame_view.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Implements support for ImageFrame as a backing storage of GpuBuffer.
 class GpuBufferStorageImageFrame
@@ -63,6 +63,6 @@ class GpuBufferStorageImageFrame
   std::shared_ptr<ImageFrame> image_frame_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_GPU_BUFFER_STORAGE_IMAGE_FRAME_H_

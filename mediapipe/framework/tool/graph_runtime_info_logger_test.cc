@@ -21,11 +21,11 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe::tool {
+namespace mediapipe_v01013_based::tool {
 namespace {
 
 TEST(GraphRuntimeInfoLoggerTest, ShouldCaptureRuntimeInfo) {
-  mediapipe::GraphRuntimeInfoConfig config;
+  mediapipe_v01013_based::GraphRuntimeInfoConfig config;
   config.set_enable_graph_runtime_info(true);
 
   absl::Notification callback_called;
@@ -39,4 +39,4 @@ TEST(GraphRuntimeInfoLoggerTest, ShouldCaptureRuntimeInfo) {
 }
 
 }  // namespace
-}  // namespace mediapipe::tool
+}  // namespace mediapipe_v01013_based::tool

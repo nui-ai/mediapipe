@@ -25,7 +25,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // InOrderOutputStreamHandler supports both sequential and parallel processing
 // of input packets, and will deliver the output packets in increasing timestamp
@@ -50,6 +50,6 @@ class InOrderOutputStreamHandler : public OutputStreamHandler {
                         Timestamp* context_timestamp)
       ABSL_EXCLUSIVE_LOCKS_REQUIRED(timestamp_mutex_);
 };
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_STREAM_HANDLER_IN_ORDER_OUTPUT_STREAM_HANDLER_H_

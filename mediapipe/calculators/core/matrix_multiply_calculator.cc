@@ -18,7 +18,7 @@
 #include "mediapipe/framework/formats/matrix.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 // Perform a (left) matrix multiply.  Meaning (output = A * input)
 // where A is the matrix which is provided as an input side packet.
@@ -48,4 +48,4 @@ absl::Status MatrixMultiplyCalculator::Process(CalculatorContext* cc) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

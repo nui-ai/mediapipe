@@ -33,7 +33,7 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Reads optical flow fields defined in
 // mediapipe/framework/formats/motion/optical_flow_field.h,
@@ -96,7 +96,7 @@ absl::Status FlowToImageCalculator::Process(CalculatorContext* cc) {
   const cv::Mat_<cv::Point2f>& flow = input.flow_data();
   std::unique_ptr<ImageFrame> output(
       new ImageFrame(ImageFormat::SRGB, input.width(), input.height()));
-  cv::Mat image = ::mediapipe::formats::MatView(output.get());
+  cv::Mat image = ::mediapipe_v01013_based::formats::MatView(output.get());
 
   for (int j = 0; j != input.height(); ++j) {
     for (int i = 0; i != input.width(); ++i) {
@@ -111,4 +111,4 @@ absl::Status FlowToImageCalculator::Process(CalculatorContext* cc) {
 
 REGISTER_CALCULATOR(FlowToImageCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

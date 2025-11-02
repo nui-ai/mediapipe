@@ -23,7 +23,7 @@
 #include "absl/log/absl_check.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Maintains a cache for resources of type `Value`, where the type of the
 // resource (e.g., image dimension for an image pool) is described bye the `Key`
@@ -180,6 +180,6 @@ class ResourceCache {
   int total_request_count_ = 0;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_RESOURCE_CACHE_H_

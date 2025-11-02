@@ -28,9 +28,9 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/calculators/hand_association_calculator.pb.h"
 #include "mediapipe/util/rectangle_util.h"
 
-namespace mediapipe::api2 {
+namespace mediapipe_v01013_based::api2 {
 
-using ::mediapipe::NormalizedRect;
+using ::mediapipe_v01013_based::NormalizedRect;
 
 // Input:
 //  BASE_RECTS - Vector of NormalizedRect.
@@ -142,7 +142,7 @@ class HandAssociationCalculator : public CalculatorBase {
       for (auto rect : input_stream.Get<std::vector<NormalizedRect>>()) {
         MP_ASSIGN_OR_RETURN(
             bool is_overlapping,
-            mediapipe::DoesRectOverlap(rect, result,
+            mediapipe_v01013_based::DoesRectOverlap(rect, result,
                                        options_.min_similarity_threshold()));
         if (!is_overlapping) {
           if (!rect.has_rect_id()) {
@@ -169,4 +169,4 @@ class HandAssociationCalculator : public CalculatorBase {
 
 MEDIAPIPE_REGISTER_NODE(HandAssociationCalculator);
 
-}  // namespace mediapipe::api2
+}  // namespace mediapipe_v01013_based::api2

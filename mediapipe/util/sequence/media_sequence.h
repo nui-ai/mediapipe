@@ -170,7 +170,7 @@
 #include "tensorflow/core/example/example.pb.h"
 #include "tensorflow/core/example/feature.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace mediasequence {
 
 // ***********************    METADATA    *************************************
@@ -322,15 +322,15 @@ const char kRegionEmbeddingConfidenceKey[] = "region/embedding/confidence";
 const char kUnmodifiedRegionTimestampKey[] = "region/unmodified_timestamp";
 
 // Functions:
-// These functions get and set bounding boxes as MediaPipe::Location to avoid
+// These functions get and set bounding boxes as mediapipe_v01013_based::Location to avoid
 // needing to get and set each box coordinate separately.
 int GetBBoxSize(const std::string& prefix,
                 const tensorflow::SequenceExample& sequence);
-std::vector<::mediapipe::Location> GetBBoxAt(
+std::vector<::mediapipe_v01013_based::Location> GetBBoxAt(
     const std::string& prefix, const tensorflow::SequenceExample& sequence,
     int index);
 void AddBBox(const std::string& prefix,
-             const std::vector<::mediapipe::Location>& bboxes,
+             const std::vector<::mediapipe_v01013_based::Location>& bboxes,
              tensorflow::SequenceExample* sequence);
 void ClearBBox(const std::string& prefix,
                tensorflow::SequenceExample* sequence);
@@ -365,12 +365,12 @@ void Clear3dPoint(const std::string& prefix,
                          Size)(const tensorflow::SequenceExample& sequence) {  \
     return GetBBoxSize(prefix, sequence);                                      \
   }                                                                            \
-  inline std::vector<::mediapipe::Location> CONCAT_STR3(Get, identifier, At)(  \
+  inline std::vector<::mediapipe_v01013_based::Location> CONCAT_STR3(Get, identifier, At)(  \
       const tensorflow::SequenceExample& sequence, int index) {                \
     return GetBBoxAt(prefix, sequence, index);                                 \
   }                                                                            \
   inline void CONCAT_STR2(Add, identifier)(                                    \
-      const std::vector<::mediapipe::Location>& bboxes,                        \
+      const std::vector<::mediapipe_v01013_based::Location>& bboxes,                        \
       tensorflow::SequenceExample* sequence) {                                 \
     return AddBBox(prefix, bboxes, sequence);                                  \
   }                                                                            \
@@ -708,12 +708,12 @@ const char kFeatureConfidenceKey[] = "feature/confidence";
 
 // Functions:
 
-// Returns/sets a MediaPipe::Matrix for the stream with that prefix.
-std::unique_ptr<mediapipe::Matrix> GetAudioFromFeatureAt(
+// Returns/sets a mediapipe_v01013_based::Matrix for the stream with that prefix.
+std::unique_ptr<mediapipe_v01013_based::Matrix> GetAudioFromFeatureAt(
     const std::string& prefix, const tensorflow::SequenceExample& sequence,
     int index);
 void AddAudioAsFeature(const std::string& prefix,
-                       const mediapipe::Matrix& audio,
+                       const mediapipe_v01013_based::Matrix& audio,
                        tensorflow::SequenceExample* sequence);
 
 PREFIXED_VECTOR_INT64_CONTEXT_FEATURE(FeatureDimensions, kFeatureDimensionsKey);
@@ -753,6 +753,6 @@ absl::Status ReconcileMetadata(bool reconcile_bbox_annotations,
                                bool reconcile_region_annotations,
                                tensorflow::SequenceExample* sequence);
 }  // namespace mediasequence
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TENSORFLOW_SEQUENCE_MEDIA_SEQUENCE_H_

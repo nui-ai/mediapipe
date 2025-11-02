@@ -23,7 +23,7 @@
 #include "absl/log/absl_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 void PiecewiseLinearFunction::AddPoint(double x, double y) {
@@ -67,4 +67,4 @@ double PiecewiseLinearFunction::Evaluate(double const input) const {
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

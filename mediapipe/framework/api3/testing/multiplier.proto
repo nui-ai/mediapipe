@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 message MultiplierOptions {
   int32 multiplier = 1;

@@ -18,7 +18,7 @@
 namespace {
 
 using ::Halide::BoundaryConditions::repeat_edge;
-using ::mediapipe::frame_buffer::halide::common::resize_bilinear_int;
+using ::mediapipe_v01013_based::frame_buffer::halide::common::resize_bilinear_int;
 
 class GrayResize : public Halide::Generator<GrayResize> {
  public:

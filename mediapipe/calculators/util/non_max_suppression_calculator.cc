@@ -29,7 +29,7 @@
 #include "mediapipe/framework/port/rectangle.h"
 #include "mediapipe/calculators/util/non_max_suppression_calculator.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 typedef std::vector<Detection> Detections;
 typedef std::vector<std::pair<int, float>> IndexedScores;
@@ -371,4 +371,4 @@ std::unique_ptr<Detections> FilterDetectionsByNonMaximumSuppression(
   return retained_detections;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

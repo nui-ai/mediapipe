@@ -25,7 +25,7 @@
 
 static const char* kExpectedError = "Expected error.";
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class GrayscaleCalculator : public Calculator {
  public:
@@ -41,7 +41,7 @@ class GrayscaleCalculator : public Calculator {
     int w = input.Width();
     int h = input.Height();
 
-    auto output = absl::make_unique<mediapipe::ImageFrame>(ImageFormat::GRAY8, w, h);
+    auto output = absl::make_unique<mediapipe_v01013_based::ImageFrame>(ImageFormat::GRAY8, w, h);
 
     vImage_Buffer src = vImageForImageFrame(input);
     vImage_Buffer dst = vImageForImageFrame(*output);
@@ -92,7 +92,7 @@ class ErrorCalculator : public Calculator {
 };
 REGISTER_CALCULATOR(ErrorCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 @interface MPPGraphTests : MPPGraphTestBase{
   UIImage* _sourceImage;
@@ -113,7 +113,7 @@ REGISTER_CALCULATOR(ErrorCalculator);
 }
 
 - (void)testPassThrough {
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_frames");
   auto node = config.add_node();
   node->set_calculator("PassThroughCalculator");
@@ -146,7 +146,7 @@ REGISTER_CALCULATOR(ErrorCalculator);
 }
 
 - (void)testMultipleOutputs {
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_frames");
   auto passThroughNode = config.add_node();
   passThroughNode->set_calculator("PassThroughCalculator");
@@ -190,7 +190,7 @@ REGISTER_CALCULATOR(ErrorCalculator);
   // image into the graph and make sure it comes out unscathed.
   UIImage* grayImage = [self grayImage:_sourceImage];
 
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_frames");
   auto node = config.add_node();
   node->set_calculator("GrayscaleCalculator");
@@ -211,7 +211,7 @@ REGISTER_CALCULATOR(ErrorCalculator);
 }
 
 - (void)testGraphError {
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_frames");
   auto node = config.add_node();
   node->set_calculator("ErrorCalculator");
@@ -246,7 +246,7 @@ REGISTER_CALCULATOR(ErrorCalculator);
 }
 
 - (void)testSetStreamHeader {
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_frames");
   auto node = config.add_node();
   node->set_calculator("VideoHeaderCalculator");
@@ -257,7 +257,7 @@ REGISTER_CALCULATOR(ErrorCalculator);
   [_graph addFrameOutputStream:"output_frames" outputPacketType:MPPPacketTypeImageFrame];
 
   // We're no longer using video headers, let's just use an int as the header.
-  auto header_packet = mediapipe::MakePacket<int>(0xDEADBEEF);
+  auto header_packet = mediapipe_v01013_based::MakePacket<int>(0xDEADBEEF);
   [_graph setHeaderPacket:header_packet forStream:"input_frames"];
 
   // Verify that Open() on calculator succeeded.
@@ -275,7 +275,7 @@ REGISTER_CALCULATOR(ErrorCalculator);
 }
 
 - (void)testGraphIsDeallocated {
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_frames");
   auto node = config.add_node();
   node->set_calculator("PassThroughCalculator");
@@ -294,7 +294,7 @@ REGISTER_CALCULATOR(ErrorCalculator);
 }
 
 - (void)testRawPacketOutput {
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   config.add_input_stream("input_ints");
   auto node = config.add_node();
   node->set_calculator("PassThroughCalculator");
@@ -309,7 +309,7 @@ REGISTER_CALCULATOR(ErrorCalculator);
 
   WEAKIFY(self);
   XCTestExpectation* outputReceived = [self expectationWithDescription:@"output received"];
-  _packetOutputBlock = ^(MPPGraph* outputGraph, const mediapipe::Packet& packet,
+  _packetOutputBlock = ^(MPPGraph* outputGraph, const mediapipe_v01013_based::Packet& packet,
                          const std::string& outputStreamName) {
     STRONGIFY(self);
     XCTAssertEqualObjects(outputGraph, _graph);
@@ -319,7 +319,7 @@ REGISTER_CALCULATOR(ErrorCalculator);
   };
 
   XCTAssert([_graph startWithError:nil]);
-  XCTAssert([_graph sendPacket:mediapipe::MakePacket<int>(kTestValue).At(mediapipe::Timestamp(1))
+  XCTAssert([_graph sendPacket:mediapipe_v01013_based::MakePacket<int>(kTestValue).At(mediapipe_v01013_based::Timestamp(1))
                     intoStream:"input_ints"
                          error:nil]);
   XCTAssert([_graph closeInputStream:"input_ints" error:nil]);
@@ -337,11 +337,11 @@ REGISTER_CALCULATOR(ErrorCalculator);
   absl::Status status = CreateCVPixelBufferFromCGImage(_sourceImage.CGImage, &pixelBufferIn);
   XCTAssert(status.ok());
 
-  mediapipe::CalculatorGraphConfig config;
+  mediapipe_v01013_based::CalculatorGraphConfig config;
   _graph = [[MPPGraph alloc] initWithGraphConfig:config];
 
-  mediapipe::Packet packet = [_graph imagePacketWithPixelBuffer:*pixelBufferIn];
-  CVPixelBufferRef pixelBufferOut = packet.Get<mediapipe::Image>().GetCVPixelBufferRef();
+  mediapipe_v01013_based::Packet packet = [_graph imagePacketWithPixelBuffer:*pixelBufferIn];
+  CVPixelBufferRef pixelBufferOut = packet.Get<mediapipe_v01013_based::Image>().GetCVPixelBufferRef();
 
   XCTAssertTrue([self pixelBuffer:*pixelBufferIn
                         isCloseTo:pixelBufferOut

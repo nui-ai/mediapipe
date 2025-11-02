@@ -14,7 +14,7 @@
 
 #include "mediapipe/framework/collection_item_id.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 std::ostream& operator<<(std::ostream& os, CollectionItemId arg) {
   return os << arg.value();
@@ -24,4 +24,4 @@ CollectionItemId operator+(int lhs, CollectionItemId rhs) { return rhs + lhs; }
 CollectionItemId operator-(int lhs, CollectionItemId rhs) { return -rhs + lhs; }
 CollectionItemId operator*(int lhs, CollectionItemId rhs) { return rhs * lhs; }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

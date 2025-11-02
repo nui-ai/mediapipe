@@ -25,12 +25,12 @@ limitations under the License.
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe::tasks::text::utils {
+namespace mediapipe_v01013_based::tasks::text::utils {
 namespace {
 
-using ::mediapipe::tasks::components::processors::proto::TextModelType;
-using ::mediapipe::tasks::core::ModelResources;
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::tasks::components::processors::proto::TextModelType;
+using ::mediapipe_v01013_based::tasks::core::ModelResources;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
 
 constexpr int kNumInputTensorsForBert = 3;
 constexpr int kNumInputTensorsForRegex = 1;
@@ -123,4 +123,4 @@ absl::StatusOr<TextModelType::ModelType> GetModelType(
   return GetIntTensorModelType(model_resources, model_graph.inputs()->size());
 }
 
-}  // namespace mediapipe::tasks::text::utils
+}  // namespace mediapipe_v01013_based::tasks::text::utils

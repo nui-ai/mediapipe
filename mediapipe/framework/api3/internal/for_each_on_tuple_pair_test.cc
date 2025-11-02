@@ -19,7 +19,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 namespace {
 
 TEST(ForEachOnTuplePairTest, WorksForTwoTuplesSameSize) {
@@ -33,4 +33,4 @@ TEST(ForEachOnTuplePairTest, WorksForTwoTuplesSameSize) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3

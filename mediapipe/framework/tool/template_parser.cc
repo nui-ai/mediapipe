@@ -54,20 +54,20 @@
 #include "mediapipe/framework/tool/calculator_graph_template.pb.h"
 #include "mediapipe/framework/tool/proto_util_lite.h"
 
-using mediapipe::proto_ns::Descriptor;
-using mediapipe::proto_ns::DynamicMessageFactory;
-using mediapipe::proto_ns::EnumDescriptor;
-using mediapipe::proto_ns::EnumValueDescriptor;
-using mediapipe::proto_ns::FieldDescriptor;
-using mediapipe::proto_ns::Message;
-using mediapipe::proto_ns::OneofDescriptor;
-using mediapipe::proto_ns::Reflection;
-using mediapipe::proto_ns::TextFormat;
-using ProtoPath = mediapipe::tool::ProtoUtilLite::ProtoPath;
-using FieldType = mediapipe::tool::ProtoUtilLite::FieldType;
-using FieldValue = mediapipe::tool::ProtoUtilLite::FieldValue;
+using mediapipe_v01013_based::proto_ns::Descriptor;
+using mediapipe_v01013_based::proto_ns::DynamicMessageFactory;
+using mediapipe_v01013_based::proto_ns::EnumDescriptor;
+using mediapipe_v01013_based::proto_ns::EnumValueDescriptor;
+using mediapipe_v01013_based::proto_ns::FieldDescriptor;
+using mediapipe_v01013_based::proto_ns::Message;
+using mediapipe_v01013_based::proto_ns::OneofDescriptor;
+using mediapipe_v01013_based::proto_ns::Reflection;
+using mediapipe_v01013_based::proto_ns::TextFormat;
+using ProtoPath = mediapipe_v01013_based::tool::ProtoUtilLite::ProtoPath;
+using FieldType = mediapipe_v01013_based::tool::ProtoUtilLite::FieldType;
+using FieldValue = mediapipe_v01013_based::tool::ProtoUtilLite::FieldValue;
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 
@@ -213,7 +213,7 @@ TextFormat::ParseLocation TemplateParser::ParseInfoTree::GetLocation(
   }
 
   const std::vector<TextFormat::ParseLocation>* locations =
-      mediapipe::FindOrNull(locations_, field);
+      mediapipe_v01013_based::FindOrNull(locations_, field);
   if (locations == NULL || index >= locations->size()) {
     return TextFormat::ParseLocation();
   }
@@ -229,7 +229,7 @@ TemplateParser::ParseInfoTree* TemplateParser::ParseInfoTree::GetTreeForNested(
   }
 
   const std::vector<std::unique_ptr<TemplateParser::ParseInfoTree>>* trees =
-      mediapipe::FindOrNull(nested_, field);
+      mediapipe_v01013_based::FindOrNull(nested_, field);
   if (trees == NULL || index >= trees->size()) {
     return NULL;
   }
@@ -1613,7 +1613,7 @@ const Message* GetNestedMessage(const Message& message,
 // Protobuf map-entry order is intentionally not preserved.
 absl::Status KeyProtoMapEntries(Message* source, MessageMap* stowed_messages) {
   // Copy the rules from the source CalculatorGraphTemplate.
-  mediapipe::CalculatorGraphTemplate rules;
+  mediapipe_v01013_based::CalculatorGraphTemplate rules;
   rules.ParsePartialFromString(source->SerializePartialAsString());
   // Only the "source" Message knows all extension types.
   Message* config_0 = source->GetReflection()->MutableMessage(
@@ -1911,11 +1911,11 @@ class TemplateParser::Parser::MediaPipeParserImpl
       }
       rule->set_path(path);
       rule->set_field_type(
-          static_cast<mediapipe::FieldDescriptorProto::Type>(field.type()));
+          static_cast<mediapipe_v01013_based::FieldDescriptorProto::Type>(field.type()));
     }
   }
 
-  mediapipe::CalculatorGraphTemplate template_rules_;
+  mediapipe_v01013_based::CalculatorGraphTemplate template_rules_;
   std::map<std::string, std::unique_ptr<Message>> stowed_messages_;
 };
 
@@ -2013,4 +2013,4 @@ bool TemplateParser::Parser::ParseFieldValueFromString(
 }
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

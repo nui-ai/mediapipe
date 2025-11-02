@@ -41,7 +41,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif  // defined(__APPLE__)
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 constexpr int kTensorWidth = 8;
@@ -254,7 +254,7 @@ TEST(InferenceCalculatorTest, SmokeTestTfliteWithTensorAlignment) {
 }
 
 void BM_InitializeCalculator(benchmark::State& state) {
-  mediapipe::InferenceCalculatorOptions::Delegate delegate;
+  mediapipe_v01013_based::InferenceCalculatorOptions::Delegate delegate;
   delegate.mutable_tflite();
   RunBenchmarkCalculatorInitialization(state, delegate);
 }
@@ -262,4 +262,4 @@ void BM_InitializeCalculator(benchmark::State& state) {
 BENCHMARK(BM_InitializeCalculator);
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

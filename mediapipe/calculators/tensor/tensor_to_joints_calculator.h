@@ -22,7 +22,7 @@
 #include "mediapipe/framework/formats/body_rig.pb.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // A calculator to convert Tensors to JointList.
@@ -53,12 +53,12 @@ namespace api2 {
 //   }
 class TensorToJointsCalculator : public NodeIntf {
  public:
-  static constexpr Input<mediapipe::Tensor> kInTensor{"TENSOR"};
-  static constexpr Output<mediapipe::JointList> kOutJoints{"JOINTS"};
+  static constexpr Input<mediapipe_v01013_based::Tensor> kInTensor{"TENSOR"};
+  static constexpr Output<mediapipe_v01013_based::JointList> kOutJoints{"JOINTS"};
   MEDIAPIPE_NODE_INTERFACE(TensorToJointsCalculator, kInTensor, kOutJoints);
 };
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSOR_TO_JOINTS_CALCULATOR_H_

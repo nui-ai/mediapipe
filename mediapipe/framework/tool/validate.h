@@ -20,7 +20,7 @@
 #include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 
@@ -32,6 +32,6 @@ namespace tool {
 absl::Status ValidateInput(const InputCollection& input);
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_VALIDATE_H_

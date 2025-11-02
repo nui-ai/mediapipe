@@ -10,7 +10,7 @@
 #include <utility>
 #include "absl/types/optional.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class Rect;
 class NormalizedRect;
@@ -32,6 +32,6 @@ void ComputeRectsFromDetections(
     std::vector<NormalizedRect>* norm_rects,
     std::vector<Rect>* rects);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_DETECTIONS_TO_RECTS_CALCULATOR_CORE_H_

@@ -20,7 +20,7 @@ limitations under the License.
 
 #include "tensorflow/lite/mutable_op_resolver.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 
@@ -30,6 +30,6 @@ std::unique_ptr<tflite::MutableOpResolver> CreateCustomResolver();
 
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_TEXT_CLASSIFIER_TEXT_CLASSIFIER_TEST_UTILS_H_

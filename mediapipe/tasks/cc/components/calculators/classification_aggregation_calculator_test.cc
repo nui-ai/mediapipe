@@ -35,15 +35,15 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/proto/classifications.pb.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-using ::mediapipe::ParseTextProtoOrDie;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::components::containers::proto::ClassificationResult;
+using ::mediapipe_v01013_based::ParseTextProtoOrDie;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
 using ::testing::Pointwise;
 
 constexpr char kClassificationInput0Tag[] = "CLASSIFICATIONS_0";
@@ -73,9 +73,9 @@ class ClassificationAggregationCalculatorTest : public tflite::testing::Test {
     Graph graph;
     auto& calculator = graph.AddNode("ClassificationAggregationCalculator");
     calculator
-        .GetOptions<mediapipe::ClassificationAggregationCalculatorOptions>() =
+        .GetOptions<mediapipe_v01013_based::ClassificationAggregationCalculatorOptions>() =
         ParseTextProtoOrDie<
-            mediapipe::ClassificationAggregationCalculatorOptions>(
+            mediapipe_v01013_based::ClassificationAggregationCalculatorOptions>(
             R"pb(head_names: "foo" head_names: "bar")pb");
     graph[Input<ClassificationList>(kClassificationInput0Tag)].SetName(
         kClassificationInput0Name) >>
@@ -210,4 +210,4 @@ TEST_F(ClassificationAggregationCalculatorTest, SucceedsWithAggregation) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

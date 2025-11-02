@@ -15,7 +15,7 @@ node {
   input_stream: "TENSORS:tensors"
   output_stream: "NORM_LANDMARKS:landmarks"
   options: {
-    [mediapipe.TensorsToLandmarksCalculatorOptions.ext] {
+    [mediapipe_v01013_based.TensorsToLandmarksCalculatorOptions.ext] {
       num_landmarks: 468
       input_image_width: 192
       input_image_height: 192

@@ -16,7 +16,7 @@
 
 #include "absl/log/absl_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 void InputStreamShard::AddPacket(Packet&& value, bool is_done) {
   // A packet can be added if the shard is still active or the packet being
@@ -26,4 +26,4 @@ void InputStreamShard::AddPacket(Packet&& value, bool is_done) {
   is_done_ = is_done;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

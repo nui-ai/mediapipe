@@ -8,9 +8,9 @@ import "mediapipe/framework/packet_generator.proto";
 import "mediapipe/framework/testdata/zoo_mutator.proto";
 
 // Configuration of a ZooMutator is stored as an extension of
-// mediapipe.PacketGeneratorOptions.
+// mediapipe_v01013_based.PacketGeneratorOptions.
 message ZooMutationCalculatorOptions {
-  extend mediapipe.PacketGeneratorOptions {
+  extend mediapipe_v01013_based.PacketGeneratorOptions {
     optional ZooMutationCalculatorOptions ext = 235240278;
   }
   optional ZooMutatorConfig zoo_mutator_config = 1;

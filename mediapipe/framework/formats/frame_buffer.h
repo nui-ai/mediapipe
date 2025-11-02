@@ -22,7 +22,7 @@ limitations under the License.
 #include "absl/log/absl_check.h"
 #include "absl/status/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A `FrameBuffer` provides a view into the provided backing buffer (e.g. camera
 // frame or still image) with buffer format information. FrameBuffer doesn't
@@ -177,6 +177,6 @@ class FrameBuffer {
   Format format_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_FRAME_BUFFER_H_

@@ -24,7 +24,7 @@
 #include "mediapipe/framework/resources.h"
 #include "mediapipe/util/resource_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -83,7 +83,7 @@ class LocalFileContentsCalculator : public CalculatorBase {
   absl::Status Open(CalculatorContext* cc) override {
     CollectionItemId input_id = cc->InputSidePackets().BeginId(kFilePathTag);
     CollectionItemId output_id = cc->OutputSidePackets().BeginId(kContentsTag);
-    auto options = cc->Options<mediapipe::LocalFileContentsCalculatorOptions>();
+    auto options = cc->Options<mediapipe_v01013_based::LocalFileContentsCalculatorOptions>();
 
     // Number of inputs and outputs is the same according to the contract.
     for (; input_id != cc->InputSidePackets().EndId(kFilePathTag);
@@ -111,4 +111,4 @@ class LocalFileContentsCalculator : public CalculatorBase {
 
 REGISTER_CALCULATOR(LocalFileContentsCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

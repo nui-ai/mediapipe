@@ -14,14 +14,14 @@
 
 syntax = "proto2";
 
-package mediapipe.autoflip;
+package mediapipe_v01013_based.autoflip;
 
 import "mediapipe/examples/desktop/autoflip/quality/cropping.proto";
 import "mediapipe/framework/calculator.proto";
 
 // Options for the SceneCroppingCalculator.
 message SceneCroppingCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional SceneCroppingCalculatorOptions ext = 284806831;
   }
 

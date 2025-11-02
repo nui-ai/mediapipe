@@ -10,7 +10,7 @@ num_threads: 4
 node: {
   calculator: "MotionAnalysisCalculator"
   options: {
-    [mediapipe.MotionAnalysisCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.MotionAnalysisCalculatorOptions.ext]: {
       analysis_options: {
         analysis_policy: ANALYSIS_POLICY_CAMERA_MOBILE
 
@@ -59,7 +59,7 @@ node: {
   input_stream: "CAMERA:camera_motion"
   output_stream: "TRACKING:tracking_data"
   options: {
-    [mediapipe.FlowPackagerCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.FlowPackagerCalculatorOptions.ext]: {
       flow_packager_options: {
         binary_tracking_data_support: false
       }
@@ -83,7 +83,7 @@ node: {
   input_stream_handler: {
     input_stream_handler: "SyncSetInputStreamHandler"
     options: {
-      [mediapipe.SyncSetInputStreamHandlerOptions.ext]: {
+      [mediapipe_v01013_based.SyncSetInputStreamHandlerOptions.ext]: {
         sync_set: {
           tag_index: "TRACKING"
           tag_index: "TRACK_TIME"
@@ -105,7 +105,7 @@ node: {
   }
 
   options: {
-    [mediapipe.BoxTrackerCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.BoxTrackerCalculatorOptions.ext]: {
       tracker_options: {
         track_step_options: {
           track_object_and_camera: true

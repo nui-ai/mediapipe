@@ -49,7 +49,7 @@
 #include "mediapipe/framework/tool/validate_name.h"
 #include "mediapipe/framework/vlog_utils.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Create a debug string name for a set of edge.  An edge can be either
 // a stream or a side packet.
@@ -100,7 +100,7 @@ std::string DebugName(const CalculatorGraphConfig& config,
                       NodeTypeInfo::NodeType node_type, int node_index) {
   switch (node_type) {
     case NodeTypeInfo::NodeType::CALCULATOR:
-      return mediapipe::DebugName(config.node(node_index));
+      return mediapipe_v01013_based::DebugName(config.node(node_index));
     case NodeTypeInfo::NodeType::PACKET_GENERATOR:
       return DebugName(config.packet_generator(node_index));
     case NodeTypeInfo::NodeType::GRAPH_INPUT_STREAM:
@@ -184,14 +184,14 @@ absl::Status NodeTypeInfo::Initialize(
           tool::ParseTagIndex(input_stream_info.tag_index(), &tag, &index));
       CollectionItemId id = contract_.Inputs().GetId(tag, index);
       if (!id.IsValid()) {
-        return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+        return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                << "Input stream with tag_index \""
                << input_stream_info.tag_index()
                << "\" requested in InputStreamInfo but is not an input stream "
                   "of the calculator.";
       }
       if (id_used[id.value()]) {
-        return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+        return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                << "Input stream with tag_index \""
                << input_stream_info.tag_index()
                << "\" has more than one InputStreamInfo.";
@@ -205,7 +205,7 @@ absl::Status NodeTypeInfo::Initialize(
   RET_CHECK_EQ(&node.options(), &contract_.Options());
 #if !defined(MEDIAPIPE_PROTO_LITE)
   std::set<absl::string_view> type_urls;
-  for (const mediapipe::protobuf::Any& options : node.node_options()) {
+  for (const mediapipe_v01013_based::protobuf::Any& options : node.node_options()) {
     RET_CHECK(type_urls.insert(options.type_url()).second)
         << "Options type: '" << options.type_url()
         << "' specified more than once for a single calculator node config.";
@@ -227,19 +227,19 @@ absl::Status NodeTypeInfo::Initialize(
   absl::Status status = ValidatePacketTypeSet(contract_.Inputs());
   if (!status.ok()) {
     statuses.push_back(
-        mediapipe::StatusBuilder(std::move(status), MEDIAPIPE_LOC).SetPrepend()
+        mediapipe_v01013_based::StatusBuilder(std::move(status), MEDIAPIPE_LOC).SetPrepend()
         << "For input streams ");
   }
   status = ValidatePacketTypeSet(contract_.Outputs());
   if (!status.ok()) {
     statuses.push_back(
-        mediapipe::StatusBuilder(std::move(status), MEDIAPIPE_LOC).SetPrepend()
+        mediapipe_v01013_based::StatusBuilder(std::move(status), MEDIAPIPE_LOC).SetPrepend()
         << "For output streams ");
   }
   status = ValidatePacketTypeSet(contract_.InputSidePackets());
   if (!status.ok()) {
     statuses.push_back(
-        mediapipe::StatusBuilder(std::move(status), MEDIAPIPE_LOC).SetPrepend()
+        mediapipe_v01013_based::StatusBuilder(std::move(status), MEDIAPIPE_LOC).SetPrepend()
         << "For input side packets ");
   }
   if (!statuses.empty()) {
@@ -582,18 +582,18 @@ absl::Status ValidatedGraphConfig::AddOutputSidePacketsForNode(
     edge_info.name = name;
     edge_info.packet_type = &node_type_info->OutputSidePacketTypes().Get(id);
 
-    if (!mediapipe::InsertIfNotPresent(&side_packet_to_producer_, name,
+    if (!mediapipe_v01013_based::InsertIfNotPresent(&side_packet_to_producer_, name,
                                        output_side_packets_.size() - 1)) {
-      return mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
              << "Output Side Packet \"" << name << "\" defined twice.";
     }
-    if (mediapipe::ContainsKey(required_side_packets_, name)) {
+    if (mediapipe_v01013_based::ContainsKey(required_side_packets_, name)) {
       if (need_sorting_ptr) {
         *need_sorting_ptr = true;
         // Don't return early, we still need to gather information about
         // every side packet in order to sort.
       } else {
-        return mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+        return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
                << "Side packet \"" << name
                << "\" was produced after it was used.";
       }
@@ -657,9 +657,9 @@ absl::Status ValidatedGraphConfig::AddOutputStream(NodeTypeInfo::NodeRef node,
   edge_info.name = name;
   edge_info.packet_type = packet_type;
 
-  if (!mediapipe::InsertIfNotPresent(&stream_to_producer_, name,
+  if (!mediapipe_v01013_based::InsertIfNotPresent(&stream_to_producer_, name,
                                      output_streams_.size() - 1)) {
-    return mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "Output Stream \"" << name << "\" defined twice.";
   }
   return absl::OkStatus();
@@ -721,7 +721,7 @@ absl::Status ValidatedGraphConfig::AddInputStreamsForNode(
         // Continue to process the nodes so we gather enough information
         // for the sort operation.
       } else {
-        return mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+        return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
                << "Input Stream \"" << name << "\" for node with sorted index "
                << node_index << " name "
                << node_type_info->Contract().GetNodeName()
@@ -862,7 +862,7 @@ absl::Status ValidatedGraphConfig::TopologicalSortNodes() {
                                ? tool::CanonicalNodeName(Config(), n.index)
                                : DebugName(Config(), n.type, n.index));
     };
-    return mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "Generator side packet cycle or calculator stream cycle detected "
               "in graph: ["
            << absl::StrJoin(cycle_indexes, ", ", node_name_formatter) << "]";
@@ -969,7 +969,7 @@ absl::Status ValidatedGraphConfig::ValidateStreamTypes() {
           "\"$2\" but the connected output stream will contain packets of type "
           "\"$3\"",
           stream.name,
-          mediapipe::DebugName(config_.node(stream.parent_node.index)),
+          mediapipe_v01013_based::DebugName(config_.node(stream.parent_node.index)),
           stream.packet_type->DebugTypeName(),
           output_streams_[stream.upstream].packet_type->DebugTypeName()));
     }
@@ -981,7 +981,7 @@ absl::Status ValidatedGraphConfig::ValidateExecutors() {
   absl::flat_hash_set<ProtoString> declared_names;
   for (const ExecutorConfig& executor_config : config_.executor()) {
     if (IsReservedExecutorName(executor_config.name())) {
-      return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "\"" << executor_config.name()
              << "\" is a reserved executor name.";
     }
@@ -990,7 +990,7 @@ absl::Status ValidatedGraphConfig::ValidateExecutors() {
         return absl::InvalidArgumentError(
             "ExecutorConfig for the default executor is duplicate.");
       } else {
-        return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+        return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                << "ExecutorConfig for \"" << executor_config.name()
                << "\" is duplicate.";
       }
@@ -1004,12 +1004,12 @@ absl::Status ValidatedGraphConfig::ValidateExecutors() {
     if (IsReservedExecutorName(executor_name)) {
       // TODO: We may want to allow this. For example, we may want to run
       // a non-GPU calculator on the GPU thread for efficiency reasons.
-      return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "\"" << executor_name << "\" is a reserved executor name.";
     }
     // The executor must be declared in an ExecutorConfig.
     if (!declared_names.contains(executor_name)) {
-      return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "The executor \"" << executor_name
              << "\" is not declared in an ExecutorConfig.";
     }
@@ -1036,7 +1036,7 @@ absl::Status ValidatedGraphConfig::ValidateRequiredSidePackets(
         // Side packets that are optional and not provided are ignored.
         continue;
       }
-      statuses.push_back(mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      statuses.push_back(mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                          << "Side packet \"" << required_item.first
                          << "\" is required but was not provided.");
       continue;
@@ -1046,7 +1046,7 @@ absl::Status ValidatedGraphConfig::ValidateRequiredSidePackets(
           input_side_packets_[index].packet_type->Validate(iter->second);
       if (!status.ok()) {
         statuses.push_back(
-            mediapipe::StatusBuilder(std::move(status), MEDIAPIPE_LOC)
+            mediapipe_v01013_based::StatusBuilder(std::move(status), MEDIAPIPE_LOC)
                 .SetPrepend()
             << "Side packet \"" << required_item.first
             << "\" failed validation: ");
@@ -1074,7 +1074,7 @@ absl::Status ValidatedGraphConfig::ValidateRequiredSidePacketTypes(
         // Side packets that are optional and not provided are ignored.
         continue;
       }
-      statuses.push_back(mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      statuses.push_back(mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                          << "Side packet \"" << required_item.first
                          << "\" is required but was not provided.");
       continue;
@@ -1082,7 +1082,7 @@ absl::Status ValidatedGraphConfig::ValidateRequiredSidePacketTypes(
     for (int index : required_item.second) {
       if (!input_side_packets_[index].packet_type->IsConsistentWith(
               iter->second)) {
-        return mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+        return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
                << "Side packet \"" << required_item.first
                << "\" has incorrect type.";
       }
@@ -1169,10 +1169,10 @@ absl::StatusOr<std::string> ValidatedGraphConfig::RegisteredSidePacketTypeName(
   }
 
   if (!defined) {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "Side packet \"" << name << "\" is not defined in the config.";
   }
-  return mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+  return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
          << "Unable to find the type for side packet \"" << name
          << "\".  It may be set to AnyType or something else that isn't "
             "determinable, or the type may be defined but not registered.";
@@ -1182,7 +1182,7 @@ absl::StatusOr<std::string> ValidatedGraphConfig::RegisteredStreamTypeName(
     const std::string& name) {
   auto iter = stream_to_producer_.find(name);
   if (iter == stream_to_producer_.end()) {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "Stream \"" << name << "\" is not defined in the config.";
   }
   int output_edge_index = iter->second;
@@ -1206,10 +1206,10 @@ absl::StatusOr<std::string> ValidatedGraphConfig::RegisteredStreamTypeName(
       }
     }
   }
-  return mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+  return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
          << "Unable to find the type for stream \"" << name
          << "\".  It may be set to AnyType or something else that isn't "
             "determinable, or the type may be defined but not registered.";
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

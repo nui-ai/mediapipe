@@ -1,7 +1,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 constexpr char kInputValueTag[] = "IN";
@@ -29,14 +29,14 @@ constexpr char kIndicationTag[] = "FLAG";
 // instead of a side-packet, so it will enable using standard calculators
 // instead of creating a new packet-generators. It will also allow a dynamic
 // default value.
-class ValueOrDefaultCalculator : public mediapipe::CalculatorBase {
+class ValueOrDefaultCalculator : public mediapipe_v01013_based::CalculatorBase {
  public:
   ValueOrDefaultCalculator() {}
 
   ValueOrDefaultCalculator(const ValueOrDefaultCalculator&) = delete;
   ValueOrDefaultCalculator& operator=(const ValueOrDefaultCalculator&) = delete;
 
-  static mediapipe::Status GetContract(mediapipe::CalculatorContract* cc) {
+  static mediapipe_v01013_based::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc) {
     cc->Inputs().Tag(kInputValueTag).SetAny();
     cc->Inputs().Tag(kTickerTag).SetAny();
     cc->Outputs().Tag(kOutputTag).SetSameAs(&cc->Inputs().Tag(kInputValueTag));
@@ -44,24 +44,24 @@ class ValueOrDefaultCalculator : public mediapipe::CalculatorBase {
     cc->InputSidePackets().Index(0).SetSameAs(
         &cc->Inputs().Tag(kInputValueTag));
 
-    return mediapipe::OkStatus();
+    return mediapipe_v01013_based::OkStatus();
   }
 
-  mediapipe::Status Open(mediapipe::CalculatorContext* cc) override {
+  mediapipe_v01013_based::Status Open(mediapipe_v01013_based::CalculatorContext* cc) override {
     if (!cc->Inputs().Tag(kInputValueTag).Header().IsEmpty()) {
       cc->Outputs()
           .Tag(kOutputTag)
           .SetHeader(cc->Inputs().Tag(kInputValueTag).Header());
     }
     default_ = cc->InputSidePackets().Index(0);
-    cc->SetOffset(mediapipe::TimestampDiff(0));
-    return mediapipe::OkStatus();
+    cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
+    return mediapipe_v01013_based::OkStatus();
   }
 
-  mediapipe::Status Process(mediapipe::CalculatorContext* cc) override {
+  mediapipe_v01013_based::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override {
     // Output according to the TICK signal.
     if (cc->Inputs().Tag(kTickerTag).IsEmpty()) {
-      return mediapipe::OkStatus();
+      return mediapipe_v01013_based::OkStatus();
     }
     if (!cc->Inputs().Tag(kInputValueTag).IsEmpty()) {
       // Output the input as is:
@@ -77,14 +77,14 @@ class ValueOrDefaultCalculator : public mediapipe::CalculatorBase {
           .Tag(kIndicationTag)
           .Add(new bool(true), cc->InputTimestamp());
     }
-    return mediapipe::OkStatus();
+    return mediapipe_v01013_based::OkStatus();
   }
 
  private:
   // The default value to replicate every time there is no new value.
-  mediapipe::Packet default_;
+  mediapipe_v01013_based::Packet default_;
 };
 
 REGISTER_CALCULATOR(ValueOrDefaultCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

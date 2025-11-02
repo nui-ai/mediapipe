@@ -9,7 +9,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/gpu/multi_pool.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using ::testing::Each;
@@ -357,4 +357,4 @@ TEST(TensorAhwbTest, ShouldForwardFinishFdToAHardwareBufferReadView) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

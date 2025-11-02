@@ -29,7 +29,7 @@
 #include "mediapipe/framework/formats/hardware_buffer.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 HardwareBuffer::HardwareBuffer(HardwareBuffer&& other) {
   spec_ = std::exchange(other.spec_, {});
@@ -192,7 +192,7 @@ void HardwareBuffer::Reset() {
   }
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // (!defined(MEDIAPIPE_NO_JNI) ||
         // defined(MEDIAPIPE_ANDROID_LINK_NATIVE_WINDOW)) && (__ANDROID_API__>=

@@ -13,7 +13,7 @@ node: {
   input_stream: "IMAGE:input_video"
   output_stream: "IMAGE:transformed_input_video"
   options: {
-    [mediapipe.ImageTransformationCalculatorOptions.ext] {
+    [mediapipe_v01013_based.ImageTransformationCalculatorOptions.ext] {
       output_width: 320
       output_height: 320
     }
@@ -36,7 +36,7 @@ node {
   input_stream: "TENSORS:image_tensor"
   output_stream: "TENSORS:detection_tensors"
   options: {
-    [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
+    [mediapipe_v01013_based.TfLiteInferenceCalculatorOptions.ext] {
       model_path: "mediapipe/models/ssdlite_object_detection.tflite"
     }
   }
@@ -48,7 +48,7 @@ node {
   calculator: "SsdAnchorsCalculator"
   output_side_packet: "anchors"
   options: {
-    [mediapipe.SsdAnchorsCalculatorOptions.ext] {
+    [mediapipe_v01013_based.SsdAnchorsCalculatorOptions.ext] {
       num_layers: 6
       min_scale: 0.2
       max_scale: 0.95
@@ -81,7 +81,7 @@ node {
   input_side_packet: "ANCHORS:anchors"
   output_stream: "DETECTIONS:detections"
   options: {
-    [mediapipe.TfLiteTensorsToDetectionsCalculatorOptions.ext] {
+    [mediapipe_v01013_based.TfLiteTensorsToDetectionsCalculatorOptions.ext] {
       num_classes: 91
       num_boxes: 2034
       num_coords: 4
@@ -103,7 +103,7 @@ node {
   input_stream: "detections"
   output_stream: "filtered_detections"
   options: {
-    [mediapipe.NonMaxSuppressionCalculatorOptions.ext] {
+    [mediapipe_v01013_based.NonMaxSuppressionCalculatorOptions.ext] {
       min_suppression_threshold: 0.4
       max_num_detections: 5
       overlap_type: INTERSECTION_OVER_UNION
@@ -119,7 +119,7 @@ node {
   input_stream: "filtered_detections"
   output_stream: "output_detections"
   options: {
-    [mediapipe.DetectionLabelIdToTextCalculatorOptions.ext] {
+    [mediapipe_v01013_based.DetectionLabelIdToTextCalculatorOptions.ext] {
       label_map_path: "mediapipe/models/ssdlite_object_detection_labelmap.txt"
     }
   }

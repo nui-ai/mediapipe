@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 enum class ValueType { kString, kInt, kFloat };
 
@@ -137,7 +137,7 @@ INSTANTIATE_TEST_SUITE_P(
 
 TEST(DefaultSidePacketCalculatorTest, NoDefaultValueFails) {
   CalculatorGraphConfig graph_config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "DefaultSidePacketCalculator"
           input_side_packet: "OPTIONAL_VALUE:segmentation_mask_optional"
@@ -151,4 +151,4 @@ TEST(DefaultSidePacketCalculatorTest, NoDefaultValueFails) {
               testing::HasSubstr("Default value must be provided"));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

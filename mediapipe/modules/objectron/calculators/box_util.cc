@@ -22,9 +22,9 @@
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/util/tracking/box_tracker.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 void ComputeBoundingRect(const std::vector<cv::Point2f>& points,
-                         mediapipe::TimedBoxProto* box) {
+                         mediapipe_v01013_based::TimedBoxProto* box) {
   ABSL_CHECK(box != nullptr);
   float top = 1.0f;
   float bottom = 0.0f;
@@ -151,4 +151,4 @@ cv::Point2f MapPoint(const TimedBoxProto& src_box, const TimedBoxProto& dst_box,
   return dst_point;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

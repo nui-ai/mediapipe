@@ -8,7 +8,7 @@
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace internal {
 namespace {
@@ -144,4 +144,4 @@ TEST(TupleFind, Flatten) {
 }  // namespace
 }  // namespace internal
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

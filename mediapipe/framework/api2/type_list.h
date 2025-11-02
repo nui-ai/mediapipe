@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace types {
 
@@ -131,6 +131,6 @@ auto enumerate(List<Args...> a)
 
 }  // namespace types
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_TYPE_LIST_H_

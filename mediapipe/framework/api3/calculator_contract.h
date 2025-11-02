@@ -29,7 +29,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/graph_service.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 // Calculator contract specialized for a specific node.
 //
@@ -48,7 +48,7 @@ class CalculatorContract
     : public NodeT::template Contract<ContractSpecializer> {
  public:
   explicit CalculatorContract(
-      mediapipe::CalculatorContract& generic_contract,
+      mediapipe_v01013_based::CalculatorContract& generic_contract,
       absl::AnyInvocable<void(absl::Status)> store_status)
       : generic_contract_(generic_contract) {
     using BaseContractT =
@@ -88,7 +88,7 @@ class CalculatorContract
   // - `CalculatorGraph` requires client to set corresponding service object and
   //   otherwise fails, unless request is made optional
   //   (`GraphServiceRequest::Optional()`).
-  mediapipe::CalculatorContract::GraphServiceRequest& UseService(
+  mediapipe_v01013_based::CalculatorContract::GraphServiceRequest& UseService(
       const GraphServiceBase& service) {
     return generic_contract_.UseService(service);
   }
@@ -149,12 +149,12 @@ class CalculatorContract
     return generic_contract_.GetTimestampOffset();
   }
 
-  mediapipe::CalculatorContract& GetGenericContract() {
+  mediapipe_v01013_based::CalculatorContract& GetGenericContract() {
     return generic_contract_;
   }
 
  private:
-  mediapipe::CalculatorContract& generic_contract_;
+  mediapipe_v01013_based::CalculatorContract& generic_contract_;
 };
 
 // +----------------------------------------------------------------------+
@@ -211,9 +211,9 @@ class Options<ContractSpecializer, ProtoT> {
   friend void internal_port::SetCalculatorContract(V& v, CC& contract);
 
   // Not owned, set by the framework.
-  mediapipe::CalculatorContract* contract_ = nullptr;
+  mediapipe_v01013_based::CalculatorContract* contract_ = nullptr;
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_CALCULATOR_CONTRACT_H_

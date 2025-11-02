@@ -22,16 +22,16 @@
 #include "mediapipe/framework/port/proto_ns.h"
 #include "mediapipe/util/label_map.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Builds a label map from labels and (optional) display names file contents,
 // both expected to contain one label per line.
 // Returns an error e.g. if there's a mismatch between the number of labels and
 // display names.
-absl::StatusOr<mediapipe::proto_ns::Map<int64_t, mediapipe::LabelMapItem>>
+absl::StatusOr<mediapipe_v01013_based::proto_ns::Map<int64_t, mediapipe_v01013_based::LabelMapItem>>
 BuildLabelMapFromFiles(absl::string_view labels_file_contents,
                        absl::string_view display_names_file_contents);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_LABEL_MAP_UTIL_H_

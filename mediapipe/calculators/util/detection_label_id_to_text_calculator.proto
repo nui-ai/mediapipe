@@ -14,13 +14,13 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/util/label_map.proto";
 
 message DetectionLabelIdToTextCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional DetectionLabelIdToTextCalculatorOptions ext = 251889072;
   }
 

@@ -17,7 +17,7 @@
 #include "absl/status/status.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 namespace {
 
 struct ContractType {};
@@ -36,4 +36,4 @@ TEST(HasUpdateContractTest, CanIdentifyUpdateContract) {
 }
 
 }  // namespace
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3

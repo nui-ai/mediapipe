@@ -23,7 +23,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe::api2 {
+namespace mediapipe_v01013_based::api2 {
 
 namespace {}  // namespace
 
@@ -32,7 +32,7 @@ class AlignHandToPoseInWorldCalculatorImpl
  public:
   absl::Status Open(CalculatorContext* cc) override {
     const auto& options =
-        cc->Options<mediapipe::AlignHandToPoseInWorldCalculatorOptions>();
+        cc->Options<mediapipe_v01013_based::AlignHandToPoseInWorldCalculatorOptions>();
     hand_wrist_idx_ = options.hand_wrist_idx();
     pose_wrist_idx_ = options.pose_wrist_idx();
     return absl::OkStatus();
@@ -77,4 +77,4 @@ class AlignHandToPoseInWorldCalculatorImpl
 };
 MEDIAPIPE_NODE_IMPLEMENTATION(AlignHandToPoseInWorldCalculatorImpl);
 
-}  // namespace mediapipe::api2
+}  // namespace mediapipe_v01013_based::api2

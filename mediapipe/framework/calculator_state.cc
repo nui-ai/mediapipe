@@ -26,7 +26,7 @@
 #include "mediapipe/framework/resources.h"
 #include "mediapipe/framework/resources_service.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 CalculatorState::CalculatorState(
     const std::string& node_name, int node_id,
@@ -79,4 +79,4 @@ CounterFactory* CalculatorState::GetCounterFactory() {
   return counter_factory_;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

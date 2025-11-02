@@ -24,7 +24,7 @@ limitations under the License.
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 // In iteration mode, output the image guidance tensors at the current timestamp
@@ -63,4 +63,4 @@ class DiffusionPluginsOutputCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(DiffusionPluginsOutputCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

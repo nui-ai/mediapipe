@@ -25,7 +25,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Creates Metal image-to-tensor converter.
 // NOTE: [MPPMetalHelper updateContract:...] invocation must precede
@@ -33,7 +33,7 @@ namespace mediapipe {
 absl::StatusOr<std::unique_ptr<ImageToTensorConverter>> CreateMetalConverter(
     CalculatorContext* cc, BorderMode border_mode);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_METAL_ENABLED
 

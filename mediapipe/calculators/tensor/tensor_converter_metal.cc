@@ -37,7 +37,7 @@
 #import "mediapipe/gpu/MPPMetalHelper.h"
 #include "mediapipe/gpu/gpu_buffer.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -162,6 +162,6 @@ absl::StatusOr<std::unique_ptr<TensorConverterGpu>> CreateTensorConverterMetal(
   return converter;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_METAL_ENABLED

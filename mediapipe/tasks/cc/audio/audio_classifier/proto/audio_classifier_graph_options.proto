@@ -15,18 +15,18 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe.tasks.audio.audio_classifier.proto;
+package mediapipe_v01013_based.tasks.audio.audio_classifier.proto;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/framework/calculator_options.proto";
 import "mediapipe/tasks/cc/components/processors/proto/classifier_options.proto";
 import "mediapipe/tasks/cc/core/proto/base_options.proto";
 
-option java_package = "com.google.mediapipe.tasks.audio.audioclassifier.proto";
+option java_package = "com.google.mediapipe_v01013_based.tasks.audio.audioclassifier.proto";
 option java_outer_classname = "AudioClassifierGraphOptionsProto";
 
 message AudioClassifierGraphOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional AudioClassifierGraphOptions ext = 451755788;
   }
   // Base options for configuring MediaPipe Tasks, such as specifying the TfLite

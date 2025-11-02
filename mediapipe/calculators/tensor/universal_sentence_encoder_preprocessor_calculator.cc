@@ -31,11 +31,11 @@
 #include "mediapipe/tasks/cc/core/utils.h"
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
-using ::mediapipe::tasks::core::FindTensorIndexByMetadataName;
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::tasks::core::FindTensorIndexByMetadataName;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
 
 constexpr absl::string_view kQueryTextMetadataName = "inp_text";
 constexpr absl::string_view kResponseContextMetadataName = "res_context";
@@ -182,4 +182,4 @@ absl::Status UniversalSentenceEncoderPreprocessorCalculator::UpdateContract(
 MEDIAPIPE_REGISTER_NODE(UniversalSentenceEncoderPreprocessorCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

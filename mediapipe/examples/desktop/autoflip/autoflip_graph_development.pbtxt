@@ -18,7 +18,7 @@ node {
   input_stream: "VIDEO_HEADER:video_header"
   output_stream: "FRAMES:video_frames_scaled"
   options: {
-    [mediapipe.ScaleImageCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.ScaleImageCalculatorOptions.ext]: {
       preserve_aspect_ratio: true
       output_format: SRGB
       target_width: 480
@@ -33,7 +33,7 @@ node {
   input_stream: "video_frames_scaled"
   output_stream: "video_frames_scaled_downsampled"
   options: {
-    [mediapipe.PacketThinnerCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.PacketThinnerCalculatorOptions.ext]: {
       thinner_type: ASYNC
       period: 200000
     }
@@ -53,7 +53,7 @@ node {
   input_stream: "VIDEO:video_frames_scaled"
   output_stream: "IS_SHOT_CHANGE:shot_change"
   options {
-    [mediapipe.autoflip.ShotBoundaryCalculatorOptions.ext] {
+    [mediapipe_v01013_based.autoflip.ShotBoundaryCalculatorOptions.ext] {
       min_shot_span: 0.2
       min_motion: 0.3
       window_size: 15
@@ -87,7 +87,7 @@ node {
   input_stream: "DETECTIONS:object_detections"
   output_stream: "REGIONS:object_regions"
   options {
-    [mediapipe.autoflip.LocalizationToRegionCalculatorOptions.ext] {
+    [mediapipe_v01013_based.autoflip.LocalizationToRegionCalculatorOptions.ext] {
       output_all_signals: true
     }
   }
@@ -101,7 +101,7 @@ node {
   input_stream: "object_regions"
   output_stream: "salient_regions"
   options {
-    [mediapipe.autoflip.SignalFusingCalculatorOptions.ext] {
+    [mediapipe_v01013_based.autoflip.SignalFusingCalculatorOptions.ext] {
       signal_settings {
         type { standard: FACE_CORE_LANDMARKS }
         min_score: 0.85
@@ -161,7 +161,7 @@ node {
   output_stream: "KEY_FRAME_CROP_REGION_VIZ_FRAMES:key_frame_crop_viz_frames"
   output_stream: "SALIENT_POINT_FRAME_VIZ_FRAMES:salient_point_viz_frames"
   options: {
-    [mediapipe.autoflip.SceneCroppingCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.autoflip.SceneCroppingCalculatorOptions.ext]: {
       max_scene_size: 600
       key_frame_crop_options: {
         score_aggregation_type: CONSTANT
@@ -196,7 +196,7 @@ node {
   input_side_packet: "OUTPUT_FILE_PATH:output_video_path"
   input_side_packet: "AUDIO_FILE_PATH:audio_path"
   options: {
-    [mediapipe.OpenCvVideoEncoderCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.OpenCvVideoEncoderCalculatorOptions.ext]: {
       codec: "avc1"
       video_format: "mp4"
     }
@@ -220,7 +220,7 @@ node {
   input_stream: "VIDEO_PRESTREAM:key_frame_crop_viz_frames_header"
   input_side_packet: "OUTPUT_FILE_PATH:key_frame_crop_viz_frames_path"
   options: {
-    [mediapipe.OpenCvVideoEncoderCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.OpenCvVideoEncoderCalculatorOptions.ext]: {
       codec: "avc1"
       video_format: "mp4"
     }
@@ -244,7 +244,7 @@ node {
   input_stream: "VIDEO_PRESTREAM:salient_point_viz_frames_header"
   input_side_packet: "OUTPUT_FILE_PATH:salient_point_viz_frames_path"
   options: {
-    [mediapipe.OpenCvVideoEncoderCalculatorOptions.ext]: {
+    [mediapipe_v01013_based.OpenCvVideoEncoderCalculatorOptions.ext]: {
       codec: "avc1"
       video_format: "mp4"
     }

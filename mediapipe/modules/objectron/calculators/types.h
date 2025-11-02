@@ -19,7 +19,7 @@
 
 #include "Eigen/Geometry"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using Eigen::Map;
 using Eigen::Vector2f;
@@ -51,6 +51,6 @@ struct SuperPoint {
   bool rendered;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_MODULES_OBJECTRON_CALCULATORS_TYPES_H_

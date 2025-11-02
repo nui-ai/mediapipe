@@ -18,7 +18,7 @@
 #include "mediapipe/framework/thread_pool_executor.h"
 #include "mediapipe/framework/tool/simulation_clock.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Simulation clock multithreaded executor. This is intended to be used with
 // graphs that are using SimulationClock class to emulate various parts of the
@@ -41,6 +41,6 @@ class SimulationClockExecutor : public Executor {
   ThreadPoolExecutor executor_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_SIMULATION_CLOCK_EXECUTOR_H_

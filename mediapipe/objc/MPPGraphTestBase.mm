@@ -83,8 +83,8 @@ static void EnsureOutputDirFor(NSString *outputFile) {
 - (CVPixelBufferRef)runGraph:(MPPGraph*)graph
        withInputPixelBuffers:
            (const std::unordered_map<std::string, CFHolder<CVPixelBufferRef>>&)inputBuffers
-                inputPackets:(const std::map<std::string, mediapipe::Packet>&)inputPackets
-                   timestamp:(mediapipe::Timestamp)timestamp
+                inputPackets:(const std::map<std::string, mediapipe_v01013_based::Packet>&)inputPackets
+                   timestamp:(mediapipe_v01013_based::Timestamp)timestamp
                 outputStream:(const std::string&)outputStream
                   packetType:(MPPPacketType)inputPacketType {
   __block CVPixelBufferRef output;
@@ -145,7 +145,7 @@ static void EnsureOutputDirFor(NSString *outputFile) {
   return [self runGraph:graph
       withInputPixelBuffers:{{"input_frames", MakeCFHolder(inputBuffer)}}
                inputPackets:{}
-                  timestamp:mediapipe::Timestamp(1)
+                  timestamp:mediapipe_v01013_based::Timestamp(1)
                outputStream:"output_frames"
                  packetType:inputPacketType];
 }
@@ -158,7 +158,7 @@ static void EnsureOutputDirFor(NSString *outputFile) {
   return [self runGraph:graph
                withInputPixelBuffers:inputBuffers
            inputPackets:{}
-              timestamp:mediapipe::Timestamp(1)
+              timestamp:mediapipe_v01013_based::Timestamp(1)
            outputStream:output
              packetType:inputPacketType];
 }
@@ -172,7 +172,7 @@ static void EnsureOutputDirFor(NSString *outputFile) {
 }
 
 - (void)mediapipeGraph:(MPPGraph*)graph
-     didOutputPacket:(const mediapipe::Packet&)packet
+     didOutputPacket:(const mediapipe_v01013_based::Packet&)packet
           fromStream:(const std::string&)streamName {
   _packetOutputBlock(graph, packet, streamName);
 }
@@ -402,7 +402,7 @@ static void EnsureOutputDirFor(NSString *outputFile) {
   CFRelease(outputBuffer);
 }
 
-- (void)testGraphConfig:(const mediapipe::CalculatorGraphConfig&)config
+- (void)testGraphConfig:(const mediapipe_v01013_based::CalculatorGraphConfig&)config
     inputStreamsAndFiles:(NSDictionary<NSString*, NSString*>*)inputs
             outputStream:(NSString*)outputStream
       expectedOutputFile:(NSString*)expectedPath {
@@ -410,17 +410,17 @@ static void EnsureOutputDirFor(NSString *outputFile) {
       inputStreamsAndFiles:inputs
     inputStreamsAndPackets:{}
                sidePackets:{}
-                 timestamp:mediapipe::Timestamp(1)
+                 timestamp:mediapipe_v01013_based::Timestamp(1)
               outputStream:outputStream
         expectedOutputFile:expectedPath
       maxAverageDifference:1.f];
 }
 
-- (void)testGraphConfig:(const mediapipe::CalculatorGraphConfig&)config
+- (void)testGraphConfig:(const mediapipe_v01013_based::CalculatorGraphConfig&)config
       inputStreamsAndFiles:(NSDictionary<NSString*, NSString*>*)fileInputs
-    inputStreamsAndPackets:(const std::map<std::string, mediapipe::Packet>&)packetInputs
-               sidePackets:(std::map<std::string, mediapipe::Packet>)sidePackets
-                 timestamp:(mediapipe::Timestamp)timestamp
+    inputStreamsAndPackets:(const std::map<std::string, mediapipe_v01013_based::Packet>&)packetInputs
+               sidePackets:(std::map<std::string, mediapipe_v01013_based::Packet>)sidePackets
+                 timestamp:(mediapipe_v01013_based::Timestamp)timestamp
               outputStream:(NSString*)outputStream
         expectedOutputFile:(NSString*)expectedPath
       maxAverageDifference:(float)maxAverageDifference {

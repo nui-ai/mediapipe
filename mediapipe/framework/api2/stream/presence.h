@@ -3,7 +3,7 @@
 
 #include "mediapipe/framework/api2/builder.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 
 // Updates @graph to emit a stream containing `bool` packets, where each packet
 // indicates whether @stream has a packet with corresponding timestamp or not.
@@ -14,6 +14,6 @@ Stream<bool> IsPresent(Stream<T> stream, Graph& graph) {
   return presence_node.Out("PRESENCE").Cast<bool>();
 }
 
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_STREAM_PRESENCE_H_

@@ -26,13 +26,13 @@
 #include "mediapipe/calculators/tensor/tensors_to_segmentation_converter.h"
 #include "mediapipe/framework/calculator_context.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 // Creates OpenGL texture tensors-to-segmentation converter.
 absl::StatusOr<std::unique_ptr<TensorsToSegmentationConverter>>
 CreateGlTextureConverter(
     CalculatorContext* cc,
-    const mediapipe::TensorsToSegmentationCalculatorOptions& options);
-}  // namespace mediapipe
+    const mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions& options);
+}  // namespace mediapipe_v01013_based
 
 #endif  // !MEDIAPIPE_DISABLE_GPU
 

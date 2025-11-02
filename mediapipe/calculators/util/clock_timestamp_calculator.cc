@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 // Tag name for clock side packet.
 constexpr char kClockTag[] = "CLOCK";
@@ -59,7 +59,7 @@ class ClockTimestampCalculator : public CalculatorBase {
 
  private:
   // Clock object.
-  std::shared_ptr<::mediapipe::Clock> clock_;
+  std::shared_ptr<::mediapipe_v01013_based::Clock> clock_;
 };
 REGISTER_CALCULATOR(ClockTimestampCalculator);
 
@@ -74,7 +74,7 @@ absl::Status ClockTimestampCalculator::GetContract(CalculatorContract* cc) {
   if (cc->InputSidePackets().HasTag(kClockTag)) {
     cc->InputSidePackets()
         .Tag(kClockTag)
-        .Set<std::shared_ptr<::mediapipe::Clock>>();
+        .Set<std::shared_ptr<::mediapipe_v01013_based::Clock>>();
   }
 
   return absl::OkStatus();
@@ -88,10 +88,10 @@ absl::Status ClockTimestampCalculator::Open(CalculatorContext* cc) {
   if (cc->InputSidePackets().HasTag(kClockTag)) {
     clock_ = cc->InputSidePackets()
                  .Tag(kClockTag)
-                 .Get<std::shared_ptr<::mediapipe::Clock>>();
+                 .Get<std::shared_ptr<::mediapipe_v01013_based::Clock>>();
   } else {
     clock_.reset(
-        ::mediapipe::MonotonicClock::CreateSynchronizedMonotonicClock());
+        ::mediapipe_v01013_based::MonotonicClock::CreateSynchronizedMonotonicClock());
   }
 
   return absl::OkStatus();
@@ -104,4 +104,4 @@ absl::Status ClockTimestampCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

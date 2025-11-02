@@ -19,7 +19,7 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "mediapipe/util/tracking/box_tracker.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 TEST(BoxUtilTest, TestComputeBoundingRect) {
@@ -120,4 +120,4 @@ TEST(BoxUtilTest, TestMapPoint) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

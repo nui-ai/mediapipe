@@ -51,26 +51,26 @@ limitations under the License.
 #include "mediapipe/util/label_map_util.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace image_segmenter {
 
 namespace {
 
-using ::mediapipe::Image;
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::MultiSource;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::metadata::ModelMetadataExtractor;
-using ::mediapipe::tasks::vision::image_segmenter::proto::
+using ::mediapipe_v01013_based::Image;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::MultiSource;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
+using ::mediapipe_v01013_based::tasks::vision::image_segmenter::proto::
     ImageSegmenterGraphOptions;
-using ::mediapipe::tasks::vision::image_segmenter::proto::SegmenterOptions;
+using ::mediapipe_v01013_based::tasks::vision::image_segmenter::proto::SegmenterOptions;
 using ::tflite::TensorMetadata;
-using LabelItems = mediapipe::proto_ns::Map<int64_t, ::mediapipe::LabelMapItem>;
+using LabelItems = mediapipe_v01013_based::proto_ns::Map<int64_t, ::mediapipe_v01013_based::LabelMapItem>;
 
 constexpr char kSegmentationTag[] = "SEGMENTATION";
 constexpr char kGroupedSegmentationTag[] = "GROUPED_SEGMENTATION";
@@ -170,7 +170,7 @@ absl::StatusOr<LabelItems> GetLabelItemsIfAny(
         display_names_file,
         metadata_extractor.GetAssociatedFile(display_names_filename));
   }
-  return mediapipe::BuildLabelMapFromFiles(labels_file, display_names_file);
+  return mediapipe_v01013_based::BuildLabelMapFromFiles(labels_file, display_names_file);
 }
 
 absl::Status ConfigureTensorsToSegmentationCalculator(
@@ -238,7 +238,7 @@ absl::Status ConfigureTensorsToSegmentationCalculator(
 // Configure the ImageTransformationCalculator according to the input tensor.
 void ConfigureImageTransformationCalculator(
     const tflite::Tensor& tflite_input_tensor,
-    mediapipe::ImageTransformationCalculatorOptions& options) {
+    mediapipe_v01013_based::ImageTransformationCalculatorOptions& options) {
   options.set_output_height(tflite_input_tensor.shape()->data()[1]);
   options.set_output_width(tflite_input_tensor.shape()->data()[2]);
 }
@@ -246,7 +246,7 @@ void ConfigureImageTransformationCalculator(
 // Configure the TensorConverterCalculator to convert the image to tensor.
 void ConfigureTensorConverterCalculator(
     const ImageTensorSpecs& image_tensor_specs,
-    mediapipe::TensorConverterCalculatorOptions& options) {
+    mediapipe_v01013_based::TensorConverterCalculatorOptions& options) {
   float mean = image_tensor_specs.normalization_options->mean_values[0];
   float std = image_tensor_specs.normalization_options->std_values[0];
   options.set_max_num_channels(4);
@@ -296,7 +296,7 @@ absl::StatusOr<ImageAndTensorsOnDevice> ConvertImageToTensors(
 
     // Upload image to GPU if requested to use gpu.
     auto& image_clone = graph.AddNode("ImageCloneCalculator");
-    image_clone.GetOptions<mediapipe::ImageCloneCalculatorOptions>()
+    image_clone.GetOptions<mediapipe_v01013_based::ImageCloneCalculatorOptions>()
         .set_output_on_gpu(use_gpu);
     image_in >> image_clone.In("");
     Source<Image> image_on_device = image_clone.Out("").Cast<Image>();
@@ -309,7 +309,7 @@ absl::StatusOr<ImageAndTensorsOnDevice> ConvertImageToTensors(
 
     if (is_hair_segmentation) {
       auto& set_alpha = graph.AddNode("SetAlphaCalculator");
-      set_alpha.GetOptions<mediapipe::SetAlphaCalculatorOptions>()
+      set_alpha.GetOptions<mediapipe_v01013_based::SetAlphaCalculatorOptions>()
           .set_alpha_value(0);
       image_cpu_or_gpu >> set_alpha.In(use_gpu ? kImageGpuTag : kImageTag);
       image_cpu_or_gpu = set_alpha.Out(use_gpu ? kImageGpuTag : kImageTag);
@@ -320,7 +320,7 @@ absl::StatusOr<ImageAndTensorsOnDevice> ConvertImageToTensors(
     ConfigureImageTransformationCalculator(
         *tflite_input_tensor,
         image_transformation
-            .GetOptions<mediapipe::ImageTransformationCalculatorOptions>());
+            .GetOptions<mediapipe_v01013_based::ImageTransformationCalculatorOptions>());
     const absl::string_view image_or_image_gpu_tag =
         use_gpu ? kImageGpuTag : kImageTag;
     image_cpu_or_gpu >> image_transformation.In(image_or_image_gpu_tag);
@@ -333,7 +333,7 @@ absl::StatusOr<ImageAndTensorsOnDevice> ConvertImageToTensors(
     ConfigureTensorConverterCalculator(
         image_tensor_specs,
         tensor_converter
-            .GetOptions<mediapipe::TensorConverterCalculatorOptions>());
+            .GetOptions<mediapipe_v01013_based::TensorConverterCalculatorOptions>());
 
     transformed_image >> tensor_converter.In(image_or_image_gpu_tag);
     auto tensors =
@@ -367,14 +367,14 @@ absl::StatusOr<ImageAndTensorsOnDevice> ConvertImageToTensors(
 //     output size of the input image is used.
 //
 // Outputs:
-//   CONFIDENCE_MASK - mediapipe::Image @Multiple
+//   CONFIDENCE_MASK - mediapipe_v01013_based::Image @Multiple
 //     Confidence masks for individual category. Confidence mask of single
 //     category can be accessed by index based output stream.
-//   CONFIDENCE_MASKS - std::vector<mediapipe::Image> @Optional
+//   CONFIDENCE_MASKS - std::vector<mediapipe_v01013_based::Image> @Optional
 //     The output confidence masks grouped in a vector.
-//   CATEGORY_MASK - mediapipe::Image @Optional
+//   CATEGORY_MASK - mediapipe_v01013_based::Image @Optional
 //     Optional Category mask.
-//   IMAGE - mediapipe::Image
+//   IMAGE - mediapipe_v01013_based::Image
 //     The image that image segmenter runs on.
 //
 // Example:
@@ -399,8 +399,8 @@ absl::StatusOr<ImageAndTensorsOnDevice> ConvertImageToTensors(
 // }
 class ImageSegmenterGraph : public core::ModelTaskGraph {
  public:
-  absl::StatusOr<mediapipe::CalculatorGraphConfig> GetConfig(
-      mediapipe::SubgraphContext* sc) override {
+  absl::StatusOr<mediapipe_v01013_based::CalculatorGraphConfig> GetConfig(
+      mediapipe_v01013_based::SubgraphContext* sc) override {
     MP_ASSIGN_OR_RETURN(const auto* model_resources,
                         CreateModelResources<ImageSegmenterGraphOptions>(sc));
     Graph graph;
@@ -458,7 +458,7 @@ class ImageSegmenterGraph : public core::ModelTaskGraph {
   }
 
  private:
-  absl::Status SanityCheck(mediapipe::SubgraphContext* sc) {
+  absl::Status SanityCheck(mediapipe_v01013_based::SubgraphContext* sc) {
     const auto& node = sc->OriginalNode();
     output_confidence_masks_ = HasOutput(node, kConfidenceMaskTag) ||
                                HasOutput(node, kConfidenceMasksTag);
@@ -473,12 +473,12 @@ class ImageSegmenterGraph : public core::ModelTaskGraph {
 
   // Adds a mediapipe image segmentation task pipeline graph into the provided
   // builder::Graph instance. The segmentation pipeline takes images
-  // (mediapipe::Image) as the input and returns segmented image mask as output.
+  // (mediapipe_v01013_based::Image) as the input and returns segmented image mask as output.
   //
   // task_options: the mediapipe tasks ImageSegmenterGraphOptions proto.
   // model_resources: the ModelSources object initialized from a segmentation
   // model file with model metadata.
-  // image_in: (mediapipe::Image) stream to run segmentation on.
+  // image_in: (mediapipe_v01013_based::Image) stream to run segmentation on.
   // graph: the mediapipe builder::Graph instance to be updated.
   absl::StatusOr<ImageSegmenterOutputs> BuildSegmentationTask(
       const ImageSegmenterGraphOptions& task_options,
@@ -608,9 +608,9 @@ class ImageSegmenterGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe::tasks::vision::image_segmenter::ImageSegmenterGraph);
+    ::mediapipe_v01013_based::tasks::vision::image_segmenter::ImageSegmenterGraph);
 
 }  // namespace image_segmenter
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

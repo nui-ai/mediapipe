@@ -17,12 +17,12 @@
 
 #include "pybind11/pybind11.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace python {
 
 void CalculatorGraphSubmodule(pybind11::module* module);
 
 }  // namespace python
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_PYTHON_PYBIND_CALCULATOR_GRAPH_H_

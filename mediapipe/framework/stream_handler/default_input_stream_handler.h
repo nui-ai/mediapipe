@@ -22,7 +22,7 @@
 #include "mediapipe/framework/input_stream_handler.h"
 #include "mediapipe/framework/stream_handler/default_input_stream_handler.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Implementation of the "default" input stream handler that is applied on a
 // given CalculatorGraph when no input stream handler is explicitly specified.
@@ -56,6 +56,6 @@ class DefaultInputStreamHandler : public InputStreamHandler {
   SyncSet sync_set_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_STREAM_HANDLER_DEFAULT_INPUT_STREAM_HANDLER_H_

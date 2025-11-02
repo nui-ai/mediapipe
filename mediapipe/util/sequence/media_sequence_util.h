@@ -99,7 +99,7 @@
 #include "tensorflow/core/example/example.pb.h"
 #include "tensorflow/core/example/feature.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace mediasequence {
 
 // Returns true if the key is in the sequence's context.
@@ -1184,6 +1184,6 @@ void AddBytesContainer(const std::string& key, const TContainer& bytes_list,
   FIXED_PREFIX_VECTOR_FLOAT_FEATURE_LIST(name, key, "");
 
 }  // namespace mediasequence
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TENSORFLOW_SEQUENCE_MEDIA_SEQUENCE_UTIL_H_

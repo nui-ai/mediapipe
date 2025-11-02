@@ -14,9 +14,9 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
-option java_package = "com.google.mediapipe.formats.proto";
+option java_package = "com.google.mediapipe_v01013_based.formats.proto";
 option java_outer_classname = "RectProto";
 
 // A rectangle with rotation in image coordinates.

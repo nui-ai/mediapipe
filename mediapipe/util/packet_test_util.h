@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace internal {
 
@@ -74,7 +74,7 @@ class PacketMatcher : public testing::MatcherInterface<const Packet&> {
 
  private:
   static std::string ExpectedTypeName() {
-    return ::mediapipe::Demangle(typeid(PayloadType).name());
+    return ::mediapipe_v01013_based::Demangle(typeid(PayloadType).name());
   }
 
   const testing::Matcher<const PayloadType&> inner_matcher_;
@@ -171,11 +171,11 @@ std::vector<testing::Matcher<Packet>> PacketMatchers(
   return result;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
-namespace mediapipe {
-using mediapipe::PacketContains;
-using mediapipe::PacketContainsTimestampAndPayload;
-}  // namespace mediapipe
+namespace mediapipe_v01013_based {
+using mediapipe_v01013_based::PacketContains;
+using mediapipe_v01013_based::PacketContainsTimestampAndPayload;
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_PACKET_TEST_UTIL_H_

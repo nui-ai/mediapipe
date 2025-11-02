@@ -3,7 +3,7 @@
 #include "mediapipe/modules/hand_landmark/calculators/hand_landmarks_to_rect_calculator_core.h"
 #include <vector>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 constexpr int kNumLandmarks = 21;
 
 // Partial landmark indices for legacy behavior.
@@ -117,4 +117,4 @@ absl::Status NormalizedLandmarkListToRect(
   return absl::OkStatus();
 }
 
-} // namespace mediapipe
+} // namespace mediapipe_v01013_based

@@ -14,13 +14,13 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/packet_generator.proto";
 import "tensorflow/core/protobuf/config.proto";
 
 message TensorFlowSessionFromFrozenGraphGeneratorOptions {
-  extend mediapipe.PacketGeneratorOptions {
+  extend mediapipe_v01013_based.PacketGeneratorOptions {
     optional TensorFlowSessionFromFrozenGraphGeneratorOptions ext = 160666123;
   }
 
@@ -42,7 +42,7 @@ message TensorFlowSessionFromFrozenGraphGeneratorOptions {
   //   packet_generator: "TensorFlowSessionFromFrozenGraphGenerator"
   //   output_side_packet: "SESSION:session"
   //   options {
-  //     [mediapipe.TensorFlowSessionFromFrozenGraphGeneratorOptions.ext]: {
+  //     [mediapipe_v01013_based.TensorFlowSessionFromFrozenGraphGeneratorOptions.ext]: {
   //       graph_proto_path: "[PATH]"
   //       tag_to_tensor_names {
   //         key: "JPG_STRING"

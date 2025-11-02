@@ -14,14 +14,14 @@
 
 syntax = "proto2";
 
-package mediapipe.autoflip;
+package mediapipe_v01013_based.autoflip;
 
 import "mediapipe/examples/desktop/autoflip/autoflip_messages.proto";
 import "mediapipe/framework/calculator.proto";
 
 // Next tag: 3
 message SignalFusingCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional SignalFusingCalculatorOptions ext = 280092372;
   }
   // Setting related to each type of signal this calculator could process.

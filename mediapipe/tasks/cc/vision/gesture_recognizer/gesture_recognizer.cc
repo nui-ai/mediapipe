@@ -47,17 +47,17 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarker_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarks_detector_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace gesture_recognizer {
 
 namespace {
 
-using GestureRecognizerGraphOptionsProto = ::mediapipe::tasks::vision::
+using GestureRecognizerGraphOptionsProto = ::mediapipe_v01013_based::tasks::vision::
     gesture_recognizer::proto::GestureRecognizerGraphOptions;
 
-using ::mediapipe::NormalizedRect;
+using ::mediapipe_v01013_based::NormalizedRect;
 
 constexpr char kHandGestureSubgraphTypeName[] =
     "mediapipe.tasks.vision.gesture_recognizer.GestureRecognizerGraph";
@@ -216,7 +216,7 @@ absl::StatusOr<std::unique_ptr<GestureRecognizer>> GestureRecognizer::Create(
 }
 
 absl::StatusOr<GestureRecognizerResult> GestureRecognizer::Recognize(
-    mediapipe::Image image,
+    mediapipe_v01013_based::Image image,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -241,18 +241,18 @@ absl::StatusOr<GestureRecognizerResult> GestureRecognizer::Recognize(
                             .Get<std::vector<ClassificationList>>()},
        /* handedness= */
        {output_packets[kHandednessStreamName]
-            .Get<std::vector<mediapipe::ClassificationList>>()},
+            .Get<std::vector<mediapipe_v01013_based::ClassificationList>>()},
        /* hand_landmarks= */
        {output_packets[kHandLandmarksStreamName]
-            .Get<std::vector<mediapipe::NormalizedLandmarkList>>()},
+            .Get<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>()},
        /* hand_world_landmarks */
        {output_packets[kHandWorldLandmarksStreamName]
-            .Get<std::vector<mediapipe::LandmarkList>>()}},
+            .Get<std::vector<mediapipe_v01013_based::LandmarkList>>()}},
   };
 }
 
 absl::StatusOr<GestureRecognizerResult> GestureRecognizer::RecognizeForVideo(
-    mediapipe::Image image, int64_t timestamp_ms,
+    mediapipe_v01013_based::Image image, int64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -280,18 +280,18 @@ absl::StatusOr<GestureRecognizerResult> GestureRecognizer::RecognizeForVideo(
                             .Get<std::vector<ClassificationList>>()},
        /* handedness= */
        {output_packets[kHandednessStreamName]
-            .Get<std::vector<mediapipe::ClassificationList>>()},
+            .Get<std::vector<mediapipe_v01013_based::ClassificationList>>()},
        /* hand_landmarks= */
        {output_packets[kHandLandmarksStreamName]
-            .Get<std::vector<mediapipe::NormalizedLandmarkList>>()},
+            .Get<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>()},
        /* hand_world_landmarks */
        {output_packets[kHandWorldLandmarksStreamName]
-            .Get<std::vector<mediapipe::LandmarkList>>()}},
+            .Get<std::vector<mediapipe_v01013_based::LandmarkList>>()}},
   };
 }
 
 absl::Status GestureRecognizer::RecognizeAsync(
-    mediapipe::Image image, int64_t timestamp_ms,
+    mediapipe_v01013_based::Image image, int64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -314,4 +314,4 @@ absl::Status GestureRecognizer::RecognizeAsync(
 }  // namespace gesture_recognizer
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

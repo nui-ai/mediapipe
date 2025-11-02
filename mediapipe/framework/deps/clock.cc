@@ -17,7 +17,7 @@
 #include "absl/log/absl_log.h"
 #include "absl/time/clock.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -52,4 +52,4 @@ Clock* Clock::RealClock() {
   return rtclock;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

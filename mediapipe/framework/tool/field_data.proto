@@ -18,7 +18,7 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 // `MessageData`, like protobuf.Any, contains an arbitrary serialized protbuf
 // along with a URL that describes the type of the serialized message.

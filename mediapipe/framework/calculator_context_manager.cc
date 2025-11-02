@@ -21,7 +21,7 @@
 #include "absl/synchronization/mutex.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 void CalculatorContextManager::Initialize(
     CalculatorState* calculator_state,
@@ -71,7 +71,7 @@ CalculatorContext* CalculatorContextManager::PrepareCalculatorContext(
     return GetDefaultCalculatorContext();
   }
   absl::MutexLock lock(&contexts_mutex_);
-  ABSL_CHECK(!mediapipe::ContainsKey(active_contexts_, input_timestamp))
+  ABSL_CHECK(!mediapipe_v01013_based::ContainsKey(active_contexts_, input_timestamp))
       << "Multiple invocations with the same timestamps are not allowed with "
          "parallel execution, input_timestamp = "
       << input_timestamp;
@@ -108,4 +108,4 @@ bool CalculatorContextManager::HasActiveContexts() {
   return !active_contexts_.empty();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

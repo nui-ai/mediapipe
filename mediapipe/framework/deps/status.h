@@ -25,7 +25,7 @@
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using Status ABSL_DEPRECATED("Use absl::Status directly") = absl::Status;
 using StatusCode ABSL_DEPRECATED("Use absl::StatusCode directly") =
@@ -43,7 +43,7 @@ inline std::string* MediaPipeCheckOpHelper(absl::Status v, const char* msg) {
 }
 
 #define MEDIAPIPE_DO_CHECK_OK(val, level)                             \
-  while (auto _result = mediapipe::MediaPipeCheckOpHelper(val, #val)) \
+  while (auto _result = mediapipe_v01013_based::MediaPipeCheckOpHelper(val, #val)) \
   ABSL_LOG(level) << *(_result)
 
 #define MEDIAPIPE_CHECK_OK(val) MEDIAPIPE_DO_CHECK_OK(val, FATAL)
@@ -60,6 +60,6 @@ inline std::string* MediaPipeCheckOpHelper(absl::Status v, const char* msg) {
 #define QCHECK_OK MEDIAPIPE_QCHECK_OK
 #define DCHECK_OK MEDIAPIPE_DCHECK_OK
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_DEPS_STATUS_H_

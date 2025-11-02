@@ -25,7 +25,7 @@ limitations under the License.
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
@@ -33,21 +33,21 @@ namespace face_landmarker {
 class FaceLandmarkerResultTest : public ::testing::Test {};
 
 TEST(FaceLandmarkerResultTest, Succeeds) {
-  mediapipe::NormalizedLandmarkList face_landmarks_proto;
-  mediapipe::NormalizedLandmark& normalized_landmark_proto =
+  mediapipe_v01013_based::NormalizedLandmarkList face_landmarks_proto;
+  mediapipe_v01013_based::NormalizedLandmark& normalized_landmark_proto =
       *face_landmarks_proto.add_landmark();
   normalized_landmark_proto.set_x(0.1);
   normalized_landmark_proto.set_y(0.2);
   normalized_landmark_proto.set_z(0.3);
 
-  mediapipe::ClassificationList face_blendshapes_proto;
-  mediapipe::Classification& classification_proto =
+  mediapipe_v01013_based::ClassificationList face_blendshapes_proto;
+  mediapipe_v01013_based::Classification& classification_proto =
       *face_blendshapes_proto.add_classification();
   classification_proto.set_index(1);
   classification_proto.set_score(0.9075446);
   classification_proto.set_label("browDownLeft");
 
-  mediapipe::MatrixData matrix_proto;
+  mediapipe_v01013_based::MatrixData matrix_proto;
   matrix_proto.set_rows(3);
   matrix_proto.set_cols(3);
   for (int i = 0; i < matrix_proto.rows() * matrix_proto.cols(); i++) {
@@ -83,4 +83,4 @@ TEST(FaceLandmarkerResultTest, Succeeds) {
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

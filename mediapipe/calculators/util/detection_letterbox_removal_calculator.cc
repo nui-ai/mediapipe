@@ -35,7 +35,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/calculators/util/detection_letterbox_removal.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -112,4 +112,4 @@ class UnletterboxCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(UnletterboxCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -27,7 +27,7 @@ node {
   input_stream: "IMAGE_SIZE:image_size"
   output_stream: "roi"
   options: {
-    [mediapipe.RectTransformationCalculatorOptions.ext] {
+    [mediapipe_v01013_based.RectTransformationCalculatorOptions.ext] {
       scale_x: 2.0
       scale_y: 2.0
       shift_y: -0.1

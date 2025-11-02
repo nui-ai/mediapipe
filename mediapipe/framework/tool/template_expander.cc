@@ -31,12 +31,12 @@
 #include "mediapipe/framework/tool/calculator_graph_template.pb.h"
 #include "mediapipe/framework/tool/proto_util_lite.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 
-using mediapipe::proto_ns::MessageLite;
-using mediapipe::tool::ProtoUtilLite;
+using mediapipe_v01013_based::proto_ns::MessageLite;
+using mediapipe_v01013_based::tool::ProtoUtilLite;
 using WireFormatLite = ProtoUtilLite::WireFormatLite;
 using FieldValue = ProtoUtilLite::FieldValue;
 using FieldType = ProtoUtilLite::FieldType;
@@ -647,7 +647,7 @@ class TemplateExpanderImpl {
         result->push_back(dict_bytes);
       } else if (args[i].has_num() || args[i].has_str()) {
         std::string text_value = args[i].has_num()
-                                     ? mediapipe::SimpleDtoa(args[i].num())
+                                     ? mediapipe_v01013_based::SimpleDtoa(args[i].num())
                                      : args[i].str();
         std::vector<FieldValue> r;
         MP_RETURN_IF_ERROR(
@@ -667,7 +667,7 @@ class TemplateExpanderImpl {
 
  private:
   // The list of template rules.
-  mediapipe::CalculatorGraphTemplate template_rules_;
+  mediapipe_v01013_based::CalculatorGraphTemplate template_rules_;
 
   // The template variable environment.
   TemplateDict environment_;
@@ -697,4 +697,4 @@ absl::Status TemplateExpander::ExpandTemplates(
 }
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

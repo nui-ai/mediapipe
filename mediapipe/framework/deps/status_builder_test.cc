@@ -16,7 +16,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 TEST(StatusBuilder, OkStatusLvalue) {
   StatusBuilder builder(absl::OkStatus(), MEDIAPIPE_LOC);
@@ -147,4 +147,4 @@ TEST(StatusBuilder, SetCodeRvalue) {
   EXPECT_EQ(status.message(), "original message");
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

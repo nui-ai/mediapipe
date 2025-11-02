@@ -29,13 +29,13 @@
 #include "mediapipe/tasks/cc/components/containers/proto/embeddings.pb.h"
 #include "mediapipe/tasks/cc/components/processors/proto/embedder_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 
 namespace {
 
-using ::mediapipe::tasks::components::containers::proto::Embedding;
-using ::mediapipe::tasks::components::containers::proto::EmbeddingResult;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::Embedding;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
 
 // Computes the inverse L2 norm of the provided array of values. Returns 1.0 in
 // case all values are 0.
@@ -84,7 +84,7 @@ class TensorsToEmbeddingsCalculator : public Node {
 };
 
 absl::Status TensorsToEmbeddingsCalculator::Open(CalculatorContext* cc) {
-  auto options = cc->Options<mediapipe::TensorsToEmbeddingsCalculatorOptions>();
+  auto options = cc->Options<mediapipe_v01013_based::TensorsToEmbeddingsCalculatorOptions>();
   l2_normalize_ = options.embedder_options().l2_normalize();
   quantize_ = options.embedder_options().quantize();
   if (!options.head_names().empty()) {
@@ -163,4 +163,4 @@ void TensorsToEmbeddingsCalculator::FillQuantizedEmbedding(
 MEDIAPIPE_REGISTER_NODE(TensorsToEmbeddingsCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

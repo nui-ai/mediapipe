@@ -4,7 +4,7 @@
 #include "absl/strings/str_cat.h"
 #include "mediapipe/gpu/egl_base.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::Status GetEglError() {
   EGLint error = eglGetError();
@@ -69,4 +69,4 @@ absl::Status GetEglError() {
   return absl::UnknownError(absl::StrCat("EGL error: ", error));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 absl::Status PrintHelloWorld() {
   // Configures a simple graph, which concatenates 2 PassThroughCalculators.
@@ -52,17 +52,17 @@ absl::Status PrintHelloWorld() {
   }
   // Close the input stream "in".
   MP_RETURN_IF_ERROR(graph.CloseInputStream("in"));
-  mediapipe::Packet packet;
+  mediapipe_v01013_based::Packet packet;
   // Get the output packets string.
   while (poller.Next(&packet)) {
     ABSL_LOG(INFO) << packet.Get<std::string>();
   }
   return graph.WaitUntilDone();
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 int main(int argc, char** argv) {
   google::InitGoogleLogging(argv[0]);
-  ABSL_CHECK(mediapipe::PrintHelloWorld().ok());
+  ABSL_CHECK(mediapipe_v01013_based::PrintHelloWorld().ok());
   return 0;
 }

@@ -54,13 +54,13 @@
 #include "mediapipe/framework/deps/safe_int.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A safe int checks each arithmetic operation to make sure it will not
 // have underflow/overflow etc.  This type is used internally by Timestamp
 // and TimestampDiff.
 MEDIAPIPE_DEFINE_SAFE_INT_TYPE(TimestampBaseType, int64_t,
-                               mediapipe::intops::LogFatalOnError)
+                               mediapipe_v01013_based::intops::LogFatalOnError)
 
 class TimestampDiff;
 
@@ -357,6 +357,6 @@ inline Timestamp Timestamp::Done() {
   return CreateNoErrorChecking(std::numeric_limits<int64_t>::max());
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TIMESTAMP_H_

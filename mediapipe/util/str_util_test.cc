@@ -24,7 +24,7 @@ TEST_P(ForEachLineTest, ForEachLineWorks) {
   const std::vector<std::string>& expected_lines = GetParam().expected_lines;
 
   std::vector<absl::string_view> lines;
-  mediapipe::ForEachLine(
+  mediapipe_v01013_based::ForEachLine(
       text, [&lines](absl::string_view line) { lines.push_back(line); });
 
   EXPECT_THAT(lines, ElementsAreArray(expected_lines));

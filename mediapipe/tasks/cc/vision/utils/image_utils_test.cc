@@ -26,10 +26,10 @@ limitations under the License.
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe::tasks::vision::utils {
+namespace mediapipe_v01013_based::tasks::vision::utils {
 namespace {
 
-using ::mediapipe::Tensor;
+using ::mediapipe_v01013_based::Tensor;
 
 TEST(ImageUtilsTest, FailedImageFromBuffer) {
   constexpr int width = 1;
@@ -76,4 +76,4 @@ INSTANTIATE_TEST_SUITE_P(ImageUtilsTests, ImageUtilsParamTest,
                          testing::Values(ImageFormat::SRGB, ImageFormat::SRGBA,
                                          ImageFormat::SBGRA));
 }  // namespace
-}  // namespace mediapipe::tasks::vision::utils
+}  // namespace mediapipe_v01013_based::tasks::vision::utils

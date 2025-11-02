@@ -37,7 +37,7 @@
 #include "EGL/eglext.h"
 #endif  // __ANDROID__
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace api2 {
 namespace {
 #ifdef EGL_ANDROID_presentation_time
@@ -72,11 +72,11 @@ enum { kAttribVertex, kAttribTexturePosition, kNumberOfAttributes };
 class GlSurfaceSinkCalculator : public Node {
  public:
   static constexpr Input<
-      OneOf<mediapipe::Image, mediapipe::GpuBuffer>>::Optional kInVideo{
+      OneOf<mediapipe_v01013_based::Image, mediapipe_v01013_based::GpuBuffer>>::Optional kInVideo{
       "VIDEO"};
   static constexpr Input<
-      OneOf<mediapipe::Image, mediapipe::GpuBuffer>>::Optional kIn{""};
-  static constexpr SideInput<std::unique_ptr<mediapipe::EglSurfaceHolder>>
+      OneOf<mediapipe_v01013_based::Image, mediapipe_v01013_based::GpuBuffer>>::Optional kIn{""};
+  static constexpr SideInput<std::unique_ptr<mediapipe_v01013_based::EglSurfaceHolder>>
       kSurface{"SURFACE"};
 
   MEDIAPIPE_NODE_INTERFACE(GlSurfaceSinkCalculator, kInVideo, kIn, kSurface);
@@ -89,12 +89,12 @@ class GlSurfaceSinkCalculator : public Node {
   absl::Status Process(CalculatorContext* cc) final;
 
  private:
-  mediapipe::GlCalculatorHelper helper_;
-  mediapipe::EglSurfaceHolder* surface_holder_;
+  mediapipe_v01013_based::GlCalculatorHelper helper_;
+  mediapipe_v01013_based::EglSurfaceHolder* surface_holder_;
   bool initialized_ = false;
-  std::unique_ptr<mediapipe::QuadRenderer> renderer_;
-  mediapipe::FrameScaleMode scale_mode_ =
-      mediapipe::FrameScaleMode::kFillAndCrop;
+  std::unique_ptr<mediapipe_v01013_based::QuadRenderer> renderer_;
+  mediapipe_v01013_based::FrameScaleMode scale_mode_ =
+      mediapipe_v01013_based::FrameScaleMode::kFillAndCrop;
 };
 MEDIAPIPE_REGISTER_NODE(GlSurfaceSinkCalculator);
 
@@ -105,16 +105,16 @@ absl::Status GlSurfaceSinkCalculator::UpdateContract(CalculatorContract* cc) {
 
   // Currently we pass GL context information and other stuff as external
   // inputs, which are handled by the helper.
-  return mediapipe::GlCalculatorHelper::UpdateContract(cc);
+  return mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc);
 }
 
 absl::Status GlSurfaceSinkCalculator::Open(CalculatorContext* cc) {
   surface_holder_ = kSurface(cc).Get().get();
 
   scale_mode_ = FrameScaleModeFromProto(
-      cc->Options<mediapipe::GlSurfaceSinkCalculatorOptions>()
+      cc->Options<mediapipe_v01013_based::GlSurfaceSinkCalculatorOptions>()
           .frame_scale_mode(),
-      mediapipe::FrameScaleMode::kFillAndCrop);
+      mediapipe_v01013_based::FrameScaleMode::kFillAndCrop);
 
   // Let the helper access the GL context information.
   return helper_.Open(cc);
@@ -129,20 +129,20 @@ absl::Status GlSurfaceSinkCalculator::Process(CalculatorContext* cc) {
       return absl::OkStatus();
     }
 
-    mediapipe::Packet packet;
+    mediapipe_v01013_based::Packet packet;
     if (kInVideo(cc).IsConnected())
       packet = kInVideo(cc).packet();
     else
       packet = kIn(cc).packet();
 
-    mediapipe::GpuBuffer input;
-    if (packet.ValidateAsType<mediapipe::GpuBuffer>().ok())
-      input = packet.Get<mediapipe::GpuBuffer>();
-    if (packet.ValidateAsType<mediapipe::Image>().ok())
-      input = packet.Get<mediapipe::Image>().GetGpuBuffer();
+    mediapipe_v01013_based::GpuBuffer input;
+    if (packet.ValidateAsType<mediapipe_v01013_based::GpuBuffer>().ok())
+      input = packet.Get<mediapipe_v01013_based::GpuBuffer>();
+    if (packet.ValidateAsType<mediapipe_v01013_based::Image>().ok())
+      input = packet.Get<mediapipe_v01013_based::Image>().GetGpuBuffer();
 
     if (!initialized_) {
-      renderer_ = std::make_unique<mediapipe::QuadRenderer>();
+      renderer_ = std::make_unique<mediapipe_v01013_based::QuadRenderer>();
       MP_RETURN_IF_ERROR(renderer_->GlSetup());
       initialized_ = true;
     }
@@ -175,7 +175,7 @@ absl::Status GlSurfaceSinkCalculator::Process(CalculatorContext* cc) {
 
     MP_RETURN_IF_ERROR(
         renderer_->GlRender(src.width(), src.height(), dst_width, dst_height,
-                            scale_mode_, mediapipe::FrameRotation::kNone,
+                            scale_mode_, mediapipe_v01013_based::FrameRotation::kNone,
                             /*flip_horizontal=*/false, /*flip_vertical=*/false,
                             /*flip_texture=*/surface_holder_->flip_y));
 
@@ -205,7 +205,7 @@ absl::Status GlSurfaceSinkCalculator::Process(CalculatorContext* cc) {
 GlSurfaceSinkCalculator::~GlSurfaceSinkCalculator() {
   if (renderer_) {
     // TODO: use move capture when we have C++14 or better.
-    mediapipe::QuadRenderer* renderer = renderer_.release();
+    mediapipe_v01013_based::QuadRenderer* renderer = renderer_.release();
     helper_.RunInGlContext([renderer] {
       renderer->GlTeardown();
       delete renderer;
@@ -214,6 +214,6 @@ GlSurfaceSinkCalculator::~GlSurfaceSinkCalculator() {
 }
 
 }  // namespace api2
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // HAS_EGL

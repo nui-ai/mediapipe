@@ -123,7 +123,7 @@ std::unique_ptr<tflite::Interpreter> BuildEdgeTpuInterpreter(
 //  * Header
 //  * Core
 //  * Aux
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 #if MEDIAPIPE_TFLITE_GL_INFERENCE
 using ::tflite::gpu::gl::CopyBuffer;
@@ -159,7 +159,7 @@ int GetXnnpackDefaultNumThreads() {
 // Returns user provided value if specified. Otherwise, tries to choose optimal
 // number of threads depending on the device.
 int GetXnnpackNumThreads(
-    const mediapipe::TfLiteInferenceCalculatorOptions& opts) {
+    const mediapipe_v01013_based::TfLiteInferenceCalculatorOptions& opts) {
   static constexpr int kDefaultNumThreads = -1;
   if (opts.has_delegate() && opts.delegate().has_xnnpack() &&
       opts.delegate().xnnpack().num_threads() != kDefaultNumThreads) {
@@ -279,7 +279,7 @@ class TfLiteInferenceCalculator : public CalculatorBase {
   std::unique_ptr<tflite::Interpreter> interpreter_;
 
 #if MEDIAPIPE_TFLITE_GL_INFERENCE
-  mediapipe::GlCalculatorHelper gpu_helper_;
+  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
   std::vector<std::unique_ptr<GPUData>> gpu_data_in_;
   std::vector<std::unique_ptr<GPUData>> gpu_data_out_;
   std::unique_ptr<tflite::gpu::TFLiteGPURunner> tflite_gpu_runner_;
@@ -302,9 +302,9 @@ class TfLiteInferenceCalculator : public CalculatorBase {
 
   bool use_advanced_gpu_api_ = false;
   bool allow_precision_loss_ = false;
-  mediapipe::TfLiteInferenceCalculatorOptions::Delegate::Gpu::Api
+  mediapipe_v01013_based::TfLiteInferenceCalculatorOptions::Delegate::Gpu::Api
       tflite_gpu_runner_api_;
-  mediapipe::TfLiteInferenceCalculatorOptions::Delegate::Gpu::InferenceUsage
+  mediapipe_v01013_based::TfLiteInferenceCalculatorOptions::Delegate::Gpu::InferenceUsage
       tflite_gpu_runner_usage_;
 
   bool use_kernel_caching_ = false;
@@ -323,7 +323,7 @@ template <class CC>
 bool ShouldUseGpu(CC* cc) {
 #if MEDIAPIPE_TFLITE_GPU_SUPPORTED
   const auto& options =
-      cc->template Options<::mediapipe::TfLiteInferenceCalculatorOptions>();
+      cc->template Options<::mediapipe_v01013_based::TfLiteInferenceCalculatorOptions>();
   return options.use_gpu() ||
          (options.has_delegate() && options.delegate().has_gpu()) ||
          cc->Inputs().HasTag(kTensorsGpuTag) ||
@@ -341,7 +341,7 @@ absl::Status TfLiteInferenceCalculator::GetContract(CalculatorContract* cc) {
             cc->Outputs().HasTag(kTensorsGpuTag));
 
   const auto& options =
-      cc->Options<::mediapipe::TfLiteInferenceCalculatorOptions>();
+      cc->Options<::mediapipe_v01013_based::TfLiteInferenceCalculatorOptions>();
   RET_CHECK(!options.model_path().empty() ^
             cc->InputSidePackets().HasTag(kModelTag))
       << "Either model as side packet or model path in options is required.";
@@ -367,7 +367,7 @@ absl::Status TfLiteInferenceCalculator::GetContract(CalculatorContract* cc) {
 
   if (ShouldUseGpu(cc)) {
 #if MEDIAPIPE_TFLITE_GL_INFERENCE
-    MP_RETURN_IF_ERROR(mediapipe::GlCalculatorHelper::UpdateContract(cc));
+    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc));
 #elif MEDIAPIPE_TFLITE_METAL_INFERENCE
     MP_RETURN_IF_ERROR([MPPMetalHelper updateContract:cc]);
 #endif
@@ -383,7 +383,7 @@ absl::Status TfLiteInferenceCalculator::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
 
   const auto& options =
-      cc->Options<::mediapipe::TfLiteInferenceCalculatorOptions>();
+      cc->Options<::mediapipe_v01013_based::TfLiteInferenceCalculatorOptions>();
 
   gpu_inference_ = ShouldUseGpu(cc);
   gpu_input_ = cc->Inputs().HasTag(kTensorsGpuTag);
@@ -403,7 +403,7 @@ absl::Status TfLiteInferenceCalculator::Open(CalculatorContext* cc) {
   if (use_kernel_caching_) {
 #if MEDIAPIPE_TFLITE_GL_INFERENCE && defined(MEDIAPIPE_ANDROID)
     cached_kernel_filename_ = options.delegate().gpu().cached_kernel_path() +
-                              mediapipe::File::Basename(options.model_path()) +
+                              mediapipe_v01013_based::File::Basename(options.model_path()) +
                               ".ker";
 #endif  // MEDIAPIPE_TFLITE_GL_INFERENCE && MEDIAPIPE_ANDROID
   }
@@ -493,7 +493,7 @@ absl::Status TfLiteInferenceCalculator::WriteKernelsToFile() {
                         tflite_gpu_runner_->GetSerializedBinaryCache());
     std::string cache_str(kernel_cache.begin(), kernel_cache.end());
     MP_RETURN_IF_ERROR(
-        mediapipe::file::SetContents(cached_kernel_filename_, cache_str));
+        mediapipe_v01013_based::file::SetContents(cached_kernel_filename_, cache_str));
   }
 #endif  // MEDIAPIPE_TFLITE_GL_INFERENCE && MEDIAPIPE_ANDROID
   return absl::OkStatus();
@@ -718,10 +718,10 @@ absl::Status TfLiteInferenceCalculator::ReadKernelsFromFile() {
 #if MEDIAPIPE_TFLITE_GL_INFERENCE && defined(MEDIAPIPE_ANDROID)
   if (use_kernel_caching_) {
     // Load pre-compiled kernel file.
-    if (mediapipe::File::Exists(cached_kernel_filename_)) {
+    if (mediapipe_v01013_based::File::Exists(cached_kernel_filename_)) {
       std::string cache_str;
       MP_RETURN_IF_ERROR(
-          mediapipe::file::GetContents(cached_kernel_filename_, &cache_str));
+          mediapipe_v01013_based::file::GetContents(cached_kernel_filename_, &cache_str));
       std::vector<uint8_t> cache_vec(cache_str.begin(), cache_str.end());
       tflite_gpu_runner_->SetSerializedBinaryCache(std::move(cache_vec));
     }
@@ -755,17 +755,17 @@ absl::Status TfLiteInferenceCalculator::InitTFLiteGPURunner(
   options.priority2 = tflite::gpu::InferencePriority::AUTO;
   options.priority3 = tflite::gpu::InferencePriority::AUTO;
   switch (tflite_gpu_runner_usage_) {
-    case mediapipe::TfLiteInferenceCalculatorOptions::Delegate::Gpu::
+    case mediapipe_v01013_based::TfLiteInferenceCalculatorOptions::Delegate::Gpu::
         FAST_SINGLE_ANSWER: {
       options.usage = tflite::gpu::InferenceUsage::FAST_SINGLE_ANSWER;
       break;
     }
-    case mediapipe::TfLiteInferenceCalculatorOptions::Delegate::Gpu::
+    case mediapipe_v01013_based::TfLiteInferenceCalculatorOptions::Delegate::Gpu::
         SUSTAINED_SPEED: {
       options.usage = tflite::gpu::InferenceUsage::SUSTAINED_SPEED;
       break;
     }
-    case mediapipe::TfLiteInferenceCalculatorOptions::Delegate::Gpu::
+    case mediapipe_v01013_based::TfLiteInferenceCalculatorOptions::Delegate::Gpu::
         UNSPECIFIED: {
       return absl::InternalError("inference usage need to be specified.");
     }
@@ -773,15 +773,15 @@ absl::Status TfLiteInferenceCalculator::InitTFLiteGPURunner(
 
   tflite_gpu_runner_ = std::make_unique<tflite::gpu::TFLiteGPURunner>(options);
   switch (tflite_gpu_runner_api_) {
-    case mediapipe::TfLiteInferenceCalculatorOptions::Delegate::Gpu::OPENGL: {
+    case mediapipe_v01013_based::TfLiteInferenceCalculatorOptions::Delegate::Gpu::OPENGL: {
       tflite_gpu_runner_->ForceOpenGL();
       break;
     }
-    case mediapipe::TfLiteInferenceCalculatorOptions::Delegate::Gpu::OPENCL: {
+    case mediapipe_v01013_based::TfLiteInferenceCalculatorOptions::Delegate::Gpu::OPENCL: {
       tflite_gpu_runner_->ForceOpenCL();
       break;
     }
-    case mediapipe::TfLiteInferenceCalculatorOptions::Delegate::Gpu::ANY: {
+    case mediapipe_v01013_based::TfLiteInferenceCalculatorOptions::Delegate::Gpu::ANY: {
       // Do not need to force any specific API.
       break;
     }
@@ -872,7 +872,7 @@ absl::Status TfLiteInferenceCalculator::LoadModel(CalculatorContext* cc) {
   interpreter_->SetNumThreads(1);
 #else
   interpreter_->SetNumThreads(
-      cc->Options<mediapipe::TfLiteInferenceCalculatorOptions>()
+      cc->Options<mediapipe_v01013_based::TfLiteInferenceCalculatorOptions>()
           .cpu_num_thread());
 #endif  // __EMSCRIPTEN__
 
@@ -892,7 +892,7 @@ absl::Status TfLiteInferenceCalculator::LoadModel(CalculatorContext* cc) {
 absl::StatusOr<Packet> TfLiteInferenceCalculator::GetModelAsPacket(
     const CalculatorContext& cc) {
   const auto& options =
-      cc.Options<mediapipe::TfLiteInferenceCalculatorOptions>();
+      cc.Options<mediapipe_v01013_based::TfLiteInferenceCalculatorOptions>();
   if (!options.model_path().empty()) {
     return TfLiteModelLoader::LoadFromPath(
         cc.GetResources(), options.model_path(), options.try_mmap_model());
@@ -906,7 +906,7 @@ absl::StatusOr<Packet> TfLiteInferenceCalculator::GetModelAsPacket(
 
 absl::Status TfLiteInferenceCalculator::LoadDelegate(CalculatorContext* cc) {
   const auto& calculator_opts =
-      cc->Options<mediapipe::TfLiteInferenceCalculatorOptions>();
+      cc->Options<mediapipe_v01013_based::TfLiteInferenceCalculatorOptions>();
   if (calculator_opts.has_delegate() &&
       calculator_opts.delegate().has_tflite()) {
     // Default tflite inference requeqsted - no need to modify graph.
@@ -1161,4 +1161,4 @@ absl::Status TfLiteInferenceCalculator::LoadDelegate(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -5,7 +5,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -74,4 +74,4 @@ TEST(HardwareBufferTest, ShouldCompleteAndEraseUsages) {
 
 }  // namespace
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

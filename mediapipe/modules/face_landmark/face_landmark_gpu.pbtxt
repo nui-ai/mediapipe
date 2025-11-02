@@ -49,7 +49,7 @@ node: {
   input_stream: "NORM_RECT:roi"
   output_stream: "TENSORS:input_tensors"
   options: {
-    [mediapipe.ImageToTensorCalculatorOptions.ext] {
+    [mediapipe_v01013_based.ImageToTensorCalculatorOptions.ext] {
       output_tensor_width: 192
       output_tensor_height: 192
       output_tensor_float_range {
@@ -85,7 +85,7 @@ node {
   input_side_packet: "OP_RESOLVER:op_resolver"
   output_stream: "TENSORS:output_tensors"
   options: {
-    [mediapipe.InferenceCalculatorOptions.ext] {
+    [mediapipe_v01013_based.InferenceCalculatorOptions.ext] {
       # Do not remove. Used for generation of XNNPACK/NNAPI graphs.
     }
   }
@@ -99,11 +99,11 @@ node {
   output_stream: "landmark_tensors"
   output_stream: "face_flag_tensor"
   options {
-    [mediapipe.SwitchContainerOptions.ext] {
+    [mediapipe_v01013_based.SwitchContainerOptions.ext] {
       contained_node: {
         calculator: "SplitTensorVectorCalculator"
         options: {
-          [mediapipe.SplitVectorCalculatorOptions.ext] {
+          [mediapipe_v01013_based.SplitVectorCalculatorOptions.ext] {
             ranges: { begin: 0 end: 1 }
             ranges: { begin: 1 end: 2 }
           }
@@ -112,7 +112,7 @@ node {
       contained_node: {
         calculator: "SplitTensorVectorCalculator"
         options: {
-          [mediapipe.SplitVectorCalculatorOptions.ext] {
+          [mediapipe_v01013_based.SplitVectorCalculatorOptions.ext] {
             ranges: { begin: 0 end: 6 }
             ranges: { begin: 6 end: 7 }
           }
@@ -129,7 +129,7 @@ node {
   input_stream: "TENSORS:face_flag_tensor"
   output_stream: "FLOAT:face_presence_score"
   options: {
-    [mediapipe.TensorsToFloatsCalculatorOptions.ext] {
+    [mediapipe_v01013_based.TensorsToFloatsCalculatorOptions.ext] {
       activation: SIGMOID
     }
   }
@@ -142,7 +142,7 @@ node {
   input_stream: "FLOAT:face_presence_score"
   output_stream: "FLAG:face_presence"
   options: {
-    [mediapipe.ThresholdingCalculatorOptions.ext] {
+    [mediapipe_v01013_based.ThresholdingCalculatorOptions.ext] {
       threshold: 0.5
     }
   }
@@ -164,7 +164,7 @@ node {
   input_stream: "TENSORS:ensured_landmark_tensors"
   output_stream: "LANDMARKS:landmarks"
   options: {
-    [mediapipe.SwitchContainerOptions.ext] {
+    [mediapipe_v01013_based.SwitchContainerOptions.ext] {
       contained_node: {
         calculator: "TensorsToFaceLandmarks"
       }

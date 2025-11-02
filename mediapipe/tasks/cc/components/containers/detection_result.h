@@ -25,7 +25,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/keypoint.h"
 #include "mediapipe/tasks/cc/components/containers/rect.h"
 
-namespace mediapipe::tasks::components::containers {
+namespace mediapipe_v01013_based::tasks::components::containers {
 
 // Detection for a single bounding box.
 struct Detection {
@@ -48,12 +48,12 @@ struct DetectionResult {
 };
 
 // Utility function to convert from Detection proto to Detection struct.
-Detection ConvertToDetection(const mediapipe::Detection& detection_proto);
+Detection ConvertToDetection(const mediapipe_v01013_based::Detection& detection_proto);
 
 // Utility function to convert from list of Detection proto to DetectionResult
 // struct.
 DetectionResult ConvertToDetectionResult(
-    std::vector<mediapipe::Detection> detections_proto);
+    std::vector<mediapipe_v01013_based::Detection> detections_proto);
 
-}  // namespace mediapipe::tasks::components::containers
+}  // namespace mediapipe_v01013_based::tasks::components::containers
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_CONTAINERS_DETECTION_RESULT_H_

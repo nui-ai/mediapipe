@@ -26,17 +26,17 @@
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
 #endif  // MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace python {
 
 namespace py = pybind11;
 
 namespace {
-using ::mediapipe::python::RaisePyErrorIfNotOk;
-using ::mediapipe::tasks::core::PacketMap;
-using ::mediapipe::tasks::core::PacketsCallback;
-using ::mediapipe::tasks::core::TaskRunner;
+using ::mediapipe_v01013_based::python::RaisePyErrorIfNotOk;
+using ::mediapipe_v01013_based::tasks::core::PacketMap;
+using ::mediapipe_v01013_based::tasks::core::PacketsCallback;
+using ::mediapipe_v01013_based::tasks::core::TaskRunner;
 }  // namespace
 
 // A mutex to guard the python callback function. Only one python callback can
@@ -80,7 +80,7 @@ mode) or not (synchronous mode).)doc");
         }
 
 #if !MEDIAPIPE_DISABLE_GPU
-        auto gpu_resources_ = mediapipe::GpuResources::Create();
+        auto gpu_resources_ = mediapipe_v01013_based::GpuResources::Create();
         if (!gpu_resources_.ok()) {
           ABSL_LOG(INFO) << "GPU suport is not available: "
                          << gpu_resources_.status();
@@ -234,4 +234,4 @@ Raises:
 
 }  // namespace python
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

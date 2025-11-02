@@ -4,7 +4,7 @@
 
 #include "absl/strings/str_split.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace metadata {
 namespace {
@@ -45,4 +45,4 @@ int CompareVersions(absl::string_view version_a, absl::string_view version_b) {
 
 }  // namespace metadata
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -29,7 +29,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_builder.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 
 constexpr char kRegionsTag[] = "REGIONS";
@@ -59,9 +59,9 @@ class FaceToRegionCalculator : public CalculatorBase {
   FaceToRegionCalculator(const FaceToRegionCalculator&) = delete;
   FaceToRegionCalculator& operator=(const FaceToRegionCalculator&) = delete;
 
-  static absl::Status GetContract(mediapipe::CalculatorContract* cc);
-  absl::Status Open(mediapipe::CalculatorContext* cc) override;
-  absl::Status Process(mediapipe::CalculatorContext* cc) override;
+  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc);
+  absl::Status Open(mediapipe_v01013_based::CalculatorContext* cc) override;
+  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override;
 
  private:
   double NormalizeX(const int pixel);
@@ -83,16 +83,16 @@ REGISTER_CALCULATOR(FaceToRegionCalculator);
 FaceToRegionCalculator::FaceToRegionCalculator() {}
 
 absl::Status FaceToRegionCalculator::GetContract(
-    mediapipe::CalculatorContract* cc) {
+    mediapipe_v01013_based::CalculatorContract* cc) {
   if (cc->Inputs().HasTag(kVideoTag)) {
     cc->Inputs().Tag(kVideoTag).Set<ImageFrame>();
   }
-  cc->Inputs().Tag(kFacesTag).Set<std::vector<mediapipe::Detection>>();
+  cc->Inputs().Tag(kFacesTag).Set<std::vector<mediapipe_v01013_based::Detection>>();
   cc->Outputs().Tag(kRegionsTag).Set<DetectionSet>();
   return absl::OkStatus();
 }
 
-absl::Status FaceToRegionCalculator::Open(mediapipe::CalculatorContext* cc) {
+absl::Status FaceToRegionCalculator::Open(mediapipe_v01013_based::CalculatorContext* cc) {
   options_ = cc->Options<FaceToRegionCalculatorOptions>();
   if (!cc->Inputs().HasTag(kVideoTag)) {
     RET_CHECK(!options_.use_visual_scorer())
@@ -149,16 +149,16 @@ void FaceToRegionCalculator::ExtendSalientRegionWithPoint(
   }
 }
 
-absl::Status FaceToRegionCalculator::Process(mediapipe::CalculatorContext* cc) {
+absl::Status FaceToRegionCalculator::Process(mediapipe_v01013_based::CalculatorContext* cc) {
   if (cc->Inputs().HasTag(kVideoTag) &&
       cc->Inputs().Tag(kVideoTag).Value().IsEmpty()) {
-    return mediapipe::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "No VIDEO input at time " << cc->InputTimestamp().Seconds();
   }
 
   cv::Mat frame;
   if (cc->Inputs().HasTag(kVideoTag)) {
-    frame = mediapipe::formats::MatView(
+    frame = mediapipe_v01013_based::formats::MatView(
         &cc->Inputs().Tag(kVideoTag).Get<ImageFrame>());
     frame_width_ = frame.cols;
     frame_height_ = frame.rows;
@@ -167,11 +167,11 @@ absl::Status FaceToRegionCalculator::Process(mediapipe::CalculatorContext* cc) {
   auto region_set = ::absl::make_unique<DetectionSet>();
   if (!cc->Inputs().Tag(kFacesTag).Value().IsEmpty()) {
     const auto& input_faces =
-        cc->Inputs().Tag(kFacesTag).Get<std::vector<mediapipe::Detection>>();
+        cc->Inputs().Tag(kFacesTag).Get<std::vector<mediapipe_v01013_based::Detection>>();
 
     for (const auto& input_face : input_faces) {
       RET_CHECK(input_face.location_data().format() ==
-                mediapipe::LocationData::RELATIVE_BOUNDING_BOX)
+                mediapipe_v01013_based::LocationData::RELATIVE_BOUNDING_BOX)
           << "Face detection input is lacking required relative_bounding_box()";
       // 6 landmarks should be provided, ordered as:
       // Left eye, Right eye, Nose tip, Mouth center, Left ear tragion, Right
@@ -288,4 +288,4 @@ absl::Status FaceToRegionCalculator::Process(mediapipe::CalculatorContext* cc) {
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

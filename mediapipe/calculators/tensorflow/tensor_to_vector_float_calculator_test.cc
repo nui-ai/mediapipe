@@ -24,7 +24,7 @@
 #include "tensorflow/core/framework/types.pb.h"
 #include "tensorflow/core/platform/bfloat16.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -214,4 +214,4 @@ TEST_F(TensorToVectorFloatCalculatorTest, AcceptsUnalignedTensors) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -22,7 +22,7 @@
 #include "mediapipe/framework/packet_set.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 // Equivalent functions for PacketGenerators.
@@ -40,6 +40,6 @@ absl::Status RunGenerateAndValidateTypes(
     const std::string& package = "mediapipe");
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_VALIDATE_TYPE_H_

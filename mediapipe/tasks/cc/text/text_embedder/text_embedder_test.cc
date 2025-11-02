@@ -31,7 +31,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/embedding_result.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe::tasks::text::text_embedder {
+namespace mediapipe_v01013_based::tasks::text::text_embedder {
 namespace {
 
 constexpr char kTestDataDirectory[] = "/mediapipe/tasks/testdata/text/";
@@ -50,7 +50,7 @@ constexpr float kEpsilon = 1e-4;
 // Tolerance for cosine similarity evaluation.
 constexpr double kSimilarityTolerancy = 2e-2;
 
-using ::mediapipe::file::JoinPath;
+using ::mediapipe_v01013_based::file::JoinPath;
 using ::testing::HasSubstr;
 using ::testing::Optional;
 
@@ -245,4 +245,4 @@ TEST_F(EmbedderTest, SucceedsWithUSEAndDifferentThemes) {
 }
 
 }  // namespace
-}  // namespace mediapipe::tasks::text::text_embedder
+}  // namespace mediapipe_v01013_based::tasks::text::text_embedder

@@ -7,7 +7,7 @@
 #include "mediapipe/framework/api2/builder.h"
 #include "mediapipe/framework/api2/port.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 
 // Returns a pair of two values:
 // - A stream with loopback data. Such stream, for each new packet in @tick
@@ -37,7 +37,7 @@ namespace mediapipe::api2::builder {
 // ```
 template <class DataT, class TickT>
 std::pair<Stream<DataT>, std::function<void(Stream<DataT>)>> GetLoopbackData(
-    Stream<TickT> tick, mediapipe::api2::builder::Graph& graph) {
+    Stream<TickT> tick, mediapipe_v01013_based::api2::builder::Graph& graph) {
   auto& prev = graph.AddNode("PreviousLoopbackCalculator");
   tick.ConnectTo(prev.In("MAIN"));
   return {prev.Out("PREV_LOOP").template Cast<DataT>(),
@@ -50,6 +50,6 @@ std::pair<Stream<DataT>, std::function<void(Stream<DataT>)>> GetLoopbackData(
           }};
 }
 
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_STREAM_LOOPBACK_H_

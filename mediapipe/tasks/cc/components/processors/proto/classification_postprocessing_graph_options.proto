@@ -15,7 +15,7 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe.tasks.components.processors.proto;
+package mediapipe_v01013_based.tasks.components.processors.proto;
 
 import "mediapipe/calculators/tensor/tensors_to_classification_calculator.proto";
 import "mediapipe/framework/calculator.proto";
@@ -23,7 +23,7 @@ import "mediapipe/tasks/cc/components/calculators/classification_aggregation_cal
 import "mediapipe/tasks/cc/components/calculators/score_calibration_calculator.proto";
 
 message ClassificationPostprocessingGraphOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional ClassificationPostprocessingGraphOptions ext = 460416950;
   }
 
@@ -33,12 +33,12 @@ message ClassificationPostprocessingGraphOptions {
 
   // Options for the TensorsToClassification calculators (one per classification
   // head) encapsulated by the ClassificationPostprocessing subgraph.
-  repeated mediapipe.TensorsToClassificationCalculatorOptions
+  repeated mediapipe_v01013_based.TensorsToClassificationCalculatorOptions
       tensors_to_classifications_options = 1;
 
   // Options for the ClassificationAggregationCalculator encapsulated by the
   // ClassificationPostprocessing subgraph.
-  optional mediapipe.ClassificationAggregationCalculatorOptions
+  optional mediapipe_v01013_based.ClassificationAggregationCalculatorOptions
       classification_aggregation_options = 2;
 
   // Whether output tensors are quantized (kTfLiteUint8) or not (kFloat32).

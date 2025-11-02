@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
   class ImageFrame;
 
   // Deterimines if an input iterable collection has a minimum size, specified
@@ -48,7 +48,7 @@ class CollectionHasMinSizeCalculator : public CalculatorBase {
     RET_CHECK(cc->Inputs().HasTag("ITERABLE"));
 
     RET_CHECK_GE(
-        cc->Options<::mediapipe::CollectionHasMinSizeCalculatorOptions>()
+        cc->Options<::mediapipe_v01013_based::CollectionHasMinSizeCalculatorOptions>()
             .min_size(),
         0);
 
@@ -66,7 +66,7 @@ class CollectionHasMinSizeCalculator : public CalculatorBase {
   absl::Status Open(CalculatorContext* cc) override {
     cc->SetOffset(TimestampDiff(0));
     min_size_ =
-        cc->Options<::mediapipe::CollectionHasMinSizeCalculatorOptions>()
+        cc->Options<::mediapipe_v01013_based::CollectionHasMinSizeCalculatorOptions>()
             .min_size();
     // Override `min_size` if passed as side packet.
     return absl::OkStatus();
@@ -103,6 +103,6 @@ class CollectionHasMinSizeCalculator : public CalculatorBase {
   int min_size_ = 0;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_COLLECTION_HAS_MIN_SIZE_CALCULATOR_H_

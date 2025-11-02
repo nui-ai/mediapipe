@@ -43,17 +43,17 @@ limitations under the License.
 #include "tensorflow/lite/mutable_op_resolver.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace image_classifier {
 namespace {
 
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::components::containers::Category;
-using ::mediapipe::tasks::components::containers::Classifications;
-using ::mediapipe::tasks::components::containers::RectF;
-using ::mediapipe::tasks::vision::core::ImageProcessingOptions;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::components::containers::Category;
+using ::mediapipe_v01013_based::tasks::components::containers::Classifications;
+using ::mediapipe_v01013_based::tasks::components::containers::RectF;
+using ::mediapipe_v01013_based::tasks::vision::core::ImageProcessingOptions;
 using ::testing::HasSubstr;
 using ::testing::Optional;
 
@@ -865,4 +865,4 @@ TEST_F(LiveStreamModeTest, SucceedsWithRegionOfInterest) {
 }  // namespace image_classifier
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

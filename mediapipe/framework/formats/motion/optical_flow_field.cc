@@ -82,7 +82,7 @@ cv::Mat MakeVisualizationHsv(const cv::Mat_<float>& angles,
 
 }  // namespace
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 OpticalFlowField::OpticalFlowField(const cv::Mat_<cv::Point2f>& flow) {
   flow.copyTo(flow_data_);
@@ -308,4 +308,4 @@ Location OpticalFlowField::FindMotionInconsistentPixels(
   }
   return CreateCvMaskLocation<uint8_t>(occluded);
 }
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

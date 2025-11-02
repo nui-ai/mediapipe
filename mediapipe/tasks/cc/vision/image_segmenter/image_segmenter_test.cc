@@ -44,16 +44,16 @@ limitations under the License.
 #include "tensorflow/lite/mutable_op_resolver.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace image_segmenter {
 namespace {
 
-using ::mediapipe::Image;
-using ::mediapipe::file::JoinPath;
-using ::mediapipe::tasks::components::containers::RectF;
-using ::mediapipe::tasks::vision::core::ImageProcessingOptions;
+using ::mediapipe_v01013_based::Image;
+using ::mediapipe_v01013_based::file::JoinPath;
+using ::mediapipe_v01013_based::tasks::components::containers::RectF;
+using ::mediapipe_v01013_based::tasks::vision::core::ImageProcessingOptions;
 using ::testing::HasSubstr;
 using ::testing::Optional;
 
@@ -99,10 +99,10 @@ cv::Mat PostProcessResultMask(const cv::Mat& mask) {
 Image GetSRGBImage(const std::string& image_path) {
   cv::Mat image_mat = cv::imread(image_path);
   cv::cvtColor(image_mat, image_mat, cv::COLOR_BGR2RGB);
-  mediapipe::ImageFrame image_frame(
-      mediapipe::ImageFormat::SRGB, image_mat.cols, image_mat.rows,
+  mediapipe_v01013_based::ImageFrame image_frame(
+      mediapipe_v01013_based::ImageFormat::SRGB, image_mat.cols, image_mat.rows,
       image_mat.step, image_mat.data, [image_mat](uint8_t[]) {});
-  Image image(std::make_shared<mediapipe::ImageFrame>(std::move(image_frame)));
+  Image image(std::make_shared<mediapipe_v01013_based::ImageFrame>(std::move(image_frame)));
   return image;
 }
 
@@ -113,10 +113,10 @@ Image GetSRGBAImage(const std::string& image_path) {
   cv::split(image_mat, channels);
   channels[3].setTo(0);
   cv::merge(channels.data(), 4, image_mat);
-  mediapipe::ImageFrame image_frame(
-      mediapipe::ImageFormat::SRGBA, image_mat.cols, image_mat.rows,
+  mediapipe_v01013_based::ImageFrame image_frame(
+      mediapipe_v01013_based::ImageFormat::SRGBA, image_mat.cols, image_mat.rows,
       image_mat.step, image_mat.data, [image_mat](uint8_t[]) {});
-  Image image(std::make_shared<mediapipe::ImageFrame>(std::move(image_frame)));
+  Image image(std::make_shared<mediapipe_v01013_based::ImageFrame>(std::move(image_frame)));
   return image;
 }
 
@@ -286,7 +286,7 @@ TEST_F(ImageModeTest, SucceedsWithCategoryMask) {
   MP_ASSERT_OK_AND_ASSIGN(auto result, segmenter->Segment(image));
   EXPECT_TRUE(result.category_mask.has_value());
 
-  cv::Mat actual_mask = mediapipe::formats::MatView(
+  cv::Mat actual_mask = mediapipe_v01013_based::formats::MatView(
       result.category_mask->GetImageFrameSharedPtr().get());
 
   cv::Mat expected_mask = cv::imread(
@@ -316,7 +316,7 @@ TEST_F(ImageModeTest, SucceedsWithConfidenceMask) {
   expected_mask.convertTo(expected_mask_float, CV_32FC1, 1 / 255.f);
 
   // Cat category index 8.
-  cv::Mat cat_mask = mediapipe::formats::MatView(
+  cv::Mat cat_mask = mediapipe_v01013_based::formats::MatView(
       result.confidence_masks->at(8).GetImageFrameSharedPtr().get());
   EXPECT_THAT(cat_mask,
               SimilarToFloatMask(expected_mask_float, kGoldenMaskSimilarity));
@@ -347,7 +347,7 @@ TEST_F(ImageModeTest, DISABLED_SucceedsWithRotation) {
   expected_mask.convertTo(expected_mask_float, CV_32FC1, 1 / 255.f);
 
   // Cat category index 8.
-  cv::Mat cat_mask = mediapipe::formats::MatView(
+  cv::Mat cat_mask = mediapipe_v01013_based::formats::MatView(
       result.confidence_masks->at(8).GetImageFrameSharedPtr().get());
   EXPECT_THAT(cat_mask,
               SimilarToFloatMask(expected_mask_float, kGoldenMaskSimilarity));
@@ -396,7 +396,7 @@ TEST_F(ImageModeTest, SucceedsSelfie128x128Segmentation) {
   expected_mask.convertTo(expected_mask_float, CV_32FC1, 1 / 255.f);
 
   // Selfie category index 1.
-  cv::Mat selfie_mask = mediapipe::formats::MatView(
+  cv::Mat selfie_mask = mediapipe_v01013_based::formats::MatView(
       result.confidence_masks->at(1).GetImageFrameSharedPtr().get());
   EXPECT_THAT(selfie_mask,
               SimilarToFloatMask(expected_mask_float, kGoldenMaskSimilarity));
@@ -420,7 +420,7 @@ TEST_F(ImageModeTest, SucceedsSelfie144x256Segmentations) {
   cv::Mat expected_mask_float;
   expected_mask.convertTo(expected_mask_float, CV_32FC1, 1 / 255.f);
 
-  cv::Mat selfie_mask = mediapipe::formats::MatView(
+  cv::Mat selfie_mask = mediapipe_v01013_based::formats::MatView(
       result.confidence_masks->at(0).GetImageFrameSharedPtr().get());
   EXPECT_THAT(selfie_mask,
               SimilarToFloatMask(expected_mask_float, kGoldenMaskSimilarity));
@@ -468,7 +468,7 @@ TEST_F(ImageModeTest, SucceedsPortraitSelfieSegmentationConfidenceMask) {
   cv::Mat expected_mask_float;
   expected_mask.convertTo(expected_mask_float, CV_32FC1, 1 / 255.f);
 
-  cv::Mat selfie_mask = mediapipe::formats::MatView(
+  cv::Mat selfie_mask = mediapipe_v01013_based::formats::MatView(
       result.confidence_masks->at(0).GetImageFrameSharedPtr().get());
   EXPECT_THAT(selfie_mask,
               SimilarToFloatMask(expected_mask_float, kGoldenMaskSimilarity));
@@ -490,7 +490,7 @@ TEST_F(ImageModeTest, SucceedsPortraitSelfieSegmentationCategoryMask) {
   MP_EXPECT_OK(
       SavePngTestOutput(*result.category_mask->GetImageFrameSharedPtr(),
                         "portrait_selfie_segmentation_expected_category_mask"));
-  cv::Mat selfie_mask = mediapipe::formats::MatView(
+  cv::Mat selfie_mask = mediapipe_v01013_based::formats::MatView(
       result.category_mask->GetImageFrameSharedPtr().get());
   cv::Mat expected_mask = cv::imread(
       JoinPath("./", kTestDataDirectory,
@@ -516,7 +516,7 @@ TEST_F(ImageModeTest, SucceedsPortraitSelfieSegmentationLandscapeCategoryMask) {
   MP_EXPECT_OK(SavePngTestOutput(
       *result.category_mask->GetImageFrameSharedPtr(),
       "portrait_selfie_segmentation_landscape_expected_category_mask"));
-  cv::Mat selfie_mask = mediapipe::formats::MatView(
+  cv::Mat selfie_mask = mediapipe_v01013_based::formats::MatView(
       result.category_mask->GetImageFrameSharedPtr().get());
   cv::Mat expected_mask = cv::imread(
       JoinPath(
@@ -538,7 +538,7 @@ TEST_F(ImageModeTest, SucceedsHairSegmentation) {
   MP_ASSERT_OK_AND_ASSIGN(auto result, segmenter->Segment(image));
   EXPECT_EQ(result.confidence_masks->size(), 2);
 
-  cv::Mat hair_mask = mediapipe::formats::MatView(
+  cv::Mat hair_mask = mediapipe_v01013_based::formats::MatView(
       result.confidence_masks->at(1).GetImageFrameSharedPtr().get());
   MP_ASSERT_OK(segmenter->Close());
   cv::Mat expected_mask = cv::imread(
@@ -601,7 +601,7 @@ TEST_F(VideoModeTest, Succeeds) {
   for (int i = 0; i < iterations; ++i) {
     MP_ASSERT_OK_AND_ASSIGN(auto result, segmenter->SegmentForVideo(image, i));
     EXPECT_TRUE(result.category_mask.has_value());
-    cv::Mat actual_mask = mediapipe::formats::MatView(
+    cv::Mat actual_mask = mediapipe_v01013_based::formats::MatView(
         result.category_mask->GetImageFrameSharedPtr().get());
     EXPECT_THAT(actual_mask,
                 SimilarToUint8Mask(expected_mask, kGoldenMaskSimilarity,
@@ -706,7 +706,7 @@ TEST_F(LiveStreamModeTest, Succeeds) {
       JoinPath("./", kTestDataDirectory, "segmentation_golden_rotation0.png"),
       cv::IMREAD_GRAYSCALE);
   for (const auto& category_mask : segmented_masks_results) {
-    cv::Mat actual_mask = mediapipe::formats::MatView(
+    cv::Mat actual_mask = mediapipe_v01013_based::formats::MatView(
         category_mask.GetImageFrameSharedPtr().get());
     EXPECT_THAT(actual_mask,
                 SimilarToUint8Mask(expected_mask, kGoldenMaskSimilarity,
@@ -727,4 +727,4 @@ TEST_F(LiveStreamModeTest, Succeeds) {
 }  // namespace image_segmenter
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

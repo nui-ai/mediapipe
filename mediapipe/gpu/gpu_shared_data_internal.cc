@@ -40,7 +40,7 @@
 #include "mediapipe/gpu/metal_shared_resources.h"
 #endif  // MEDIAPIPE_METAL_ENABLED
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -89,7 +89,7 @@ class GlContextExecutor : public Executor {
 };
 
 static const std::string& SharedContextKey() {
-  static const mediapipe::NoDestructor<std::string> kSharedContextKey("");
+  static const mediapipe_v01013_based::NoDestructor<std::string> kSharedContextKey("");
   return *kSharedContextKey;
 }
 
@@ -211,7 +211,7 @@ absl::Status GpuResources::PrepareGpuNode(CalculatorNode* node) {
                           (node_type == "GlSurfaceSinkCalculator");
 
   const auto& options =
-      node->GetCalculatorState().Options<mediapipe::GlContextOptions>();
+      node->GetCalculatorState().Options<mediapipe_v01013_based::GlContextOptions>();
   if (options.has_gl_context_name() && !options.gl_context_name().empty()) {
     context_key = absl::StrCat("user:", options.gl_context_name());
   } else if (gets_own_context) {
@@ -308,4 +308,4 @@ static auto kGlTextureBufferPoolRegistration = [] {
 }();
 #endif  // !MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

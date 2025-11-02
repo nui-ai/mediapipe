@@ -19,7 +19,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 TEST(PlatformStrings, ThereAndBack) {
@@ -29,4 +29,4 @@ TEST(PlatformStrings, ThereAndBack) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

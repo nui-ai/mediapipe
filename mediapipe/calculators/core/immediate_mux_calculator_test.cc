@@ -41,7 +41,7 @@
 // packets are handled when they arrive in various orders.
 using testing::ElementsAre;
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -60,7 +60,7 @@ class AtomicSemaphore {
   std::atomic<int64_t> supply_;
 };
 
-// A mediapipe::Executor that signals the start and finish of each task.
+// A mediapipe_v01013_based::Executor that signals the start and finish of each task.
 // Provides 4 worker threads.
 class CountingExecutor : public Executor {
  public:
@@ -85,7 +85,7 @@ class CountingExecutor : public Executor {
   std::function<void()> finish_callback_;
 };
 
-// Returns a new mediapipe::Executor with 4 worker threads.
+// Returns a new mediapipe_v01013_based::Executor with 4 worker threads.
 std::shared_ptr<Executor> MakeExecutor(std::function<void()> start_callback,
                                        std::function<void()> finish_callback) {
   return std::make_shared<CountingExecutor>(start_callback, finish_callback);
@@ -489,4 +489,4 @@ TEST_F(ImmediateMuxCalculatorTest, Demux) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -23,7 +23,7 @@
 
 @end
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class MetalSharedResources {
  public:
@@ -35,6 +35,6 @@ class MetalSharedResources {
   MPPMetalSharedResources* resources_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_GPU_METAL_SHARED_RESOURCES_H_

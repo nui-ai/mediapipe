@@ -15,19 +15,19 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe.tasks.components.processors.proto;
+package mediapipe_v01013_based.tasks.components.processors.proto;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/tasks/cc/components/calculators/tensors_to_embeddings_calculator.proto";
 
 message EmbeddingPostprocessingGraphOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional EmbeddingPostprocessingGraphOptions ext = 476346926;
   }
 
   // Options for the TensorsToEmbeddings calculator encapsulated by the
   // EmbeddingPostprocessingGraph.
-  optional mediapipe.TensorsToEmbeddingsCalculatorOptions
+  optional mediapipe_v01013_based.TensorsToEmbeddingsCalculatorOptions
       tensors_to_embeddings_options = 1;
 
   // Whether output tensors are quantized (kTfLiteUint8) or not (kFloat32).

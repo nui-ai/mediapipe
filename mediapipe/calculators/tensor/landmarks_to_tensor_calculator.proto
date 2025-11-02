@@ -16,12 +16,12 @@
 
 syntax = "proto2";
 
-package mediapipe;
+package mediapipe_v01013_based;
 
 import "mediapipe/framework/calculator.proto";
 
 message LandmarksToTensorCalculatorOptions {
-  extend mediapipe.CalculatorOptions {
+  extend mediapipe_v01013_based.CalculatorOptions {
     optional LandmarksToTensorCalculatorOptions ext = 394810235;
   }
 

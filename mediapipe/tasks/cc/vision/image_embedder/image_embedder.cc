@@ -36,7 +36,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/vision_task_api_factory.h"
 #include "mediapipe/tasks/cc/vision/image_embedder/proto/image_embedder_graph_options.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace image_embedder {
@@ -55,11 +55,11 @@ constexpr char kGraphTypeName[] =
     "mediapipe.tasks.vision.image_embedder.ImageEmbedderGraph";
 constexpr int kMicroSecondsPerMilliSecond = 1000;
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::tasks::components::containers::ConvertToEmbeddingResult;
-using ::mediapipe::tasks::components::containers::proto::EmbeddingResult;
-using ::mediapipe::tasks::core::PacketMap;
-using ::mediapipe::tasks::vision::image_embedder::proto::
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::tasks::components::containers::ConvertToEmbeddingResult;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
+using ::mediapipe_v01013_based::tasks::core::PacketMap;
+using ::mediapipe_v01013_based::tasks::vision::image_embedder::proto::
     ImageEmbedderGraphOptions;
 
 // Creates a MediaPipe graph config that contains a single node of type
@@ -218,4 +218,4 @@ absl::StatusOr<double> ImageEmbedder::CosineSimilarity(
 }  // namespace image_embedder
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

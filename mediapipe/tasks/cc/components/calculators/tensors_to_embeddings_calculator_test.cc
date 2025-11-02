@@ -26,12 +26,12 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/tasks/cc/components/containers/proto/embeddings.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
-using ::mediapipe::tasks::components::containers::proto::EmbeddingResult;
+using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
 using ::testing::HasSubstr;
-using Node = ::mediapipe::CalculatorGraphConfig::Node;
+using Node = ::mediapipe_v01013_based::CalculatorGraphConfig::Node;
 
 // Builds the graph and feeds inputs.
 void BuildGraph(CalculatorRunner* runner,
@@ -273,4 +273,4 @@ TEST(TensorsToEmbeddingsCalculatorTest,
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

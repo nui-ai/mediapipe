@@ -29,7 +29,7 @@
 #include "tensorflow/lite/model_builder.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 TEST(TfLiteModelCalculatorTest, SmokeTest) {
   // Prepare single calculator graph and wait for packets.
@@ -110,7 +110,7 @@ void VerifySubgraphs(const tflite::Model& actual_model) {
 
 TEST(TfLiteModelCalculatorTest, ModelSpanToUniqueModel) {
   std::string model_content;
-  MP_ASSERT_OK(mediapipe::file::GetContents(
+  MP_ASSERT_OK(mediapipe_v01013_based::file::GetContents(
       "mediapipe/calculators/tflite/testdata/add.bin", &model_content));
 
   // Prepare single calculator graph and wait for packets.
@@ -127,7 +127,7 @@ TEST(TfLiteModelCalculatorTest, ModelSpanToUniqueModel) {
   CalculatorGraph graph(graph_config);
   MP_ASSERT_OK(graph.StartRun(
       {{"model_span",
-        mediapipe::MakePacket<absl::Span<const uint8_t>>(
+        mediapipe_v01013_based::MakePacket<absl::Span<const uint8_t>>(
             reinterpret_cast<const uint8_t*>(model_content.data()),
             model_content.size())}}));
   MP_ASSERT_OK(graph.WaitUntilIdle());
@@ -143,7 +143,7 @@ TEST(TfLiteModelCalculatorTest, ModelSpanToUniqueModel) {
 
 TEST(TfLiteModelCalculatorTest, ModelSpanToSharedModel) {
   std::string model_content;
-  MP_ASSERT_OK(mediapipe::file::GetContents(
+  MP_ASSERT_OK(mediapipe_v01013_based::file::GetContents(
       "mediapipe/calculators/tflite/testdata/add.bin", &model_content));
 
   // Prepare single calculator graph and wait for packets.
@@ -160,7 +160,7 @@ TEST(TfLiteModelCalculatorTest, ModelSpanToSharedModel) {
   CalculatorGraph graph(graph_config);
   MP_ASSERT_OK(graph.StartRun(
       {{"model_span",
-        mediapipe::MakePacket<absl::Span<const uint8_t>>(
+        mediapipe_v01013_based::MakePacket<absl::Span<const uint8_t>>(
             reinterpret_cast<const uint8_t*>(model_content.data()),
             model_content.size())}}));
   MP_ASSERT_OK(graph.WaitUntilIdle());
@@ -174,7 +174,7 @@ TEST(TfLiteModelCalculatorTest, ModelSpanToSharedModel) {
 
 TEST(TfLiteModelCalculatorTest, ModelReasourceInputWorks) {
   std::string model_content;
-  MP_ASSERT_OK(mediapipe::file::GetContents(
+  MP_ASSERT_OK(mediapipe_v01013_based::file::GetContents(
       "mediapipe/calculators/tflite/testdata/add.bin", &model_content));
 
   // Prepare single calculator graph and wait for packets.
@@ -191,7 +191,7 @@ TEST(TfLiteModelCalculatorTest, ModelReasourceInputWorks) {
   CalculatorGraph graph(graph_config);
   MP_ASSERT_OK(graph.StartRun(
       {{"model_resource",
-        mediapipe::Adopt(
+        mediapipe_v01013_based::Adopt(
             MakeNoCleanupResource(model_content.data(), model_content.size())
                 .release())}}));
   MP_ASSERT_OK(graph.WaitUntilIdle());
@@ -205,4 +205,4 @@ TEST(TfLiteModelCalculatorTest, ModelReasourceInputWorks) {
   VerifySubgraphs(*model->GetModel());
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -45,7 +45,7 @@
 #include "tensorflow/lite/c/c_api_types.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using Interpreter = ::tflite::Interpreter;
 using InterpreterBuilder = ::tflite::InterpreterBuilder;
@@ -101,9 +101,9 @@ absl::StatusOr<std::unique_ptr<InferenceRunner>>
 CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
     api2::Packet<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
-    const mediapipe::InferenceCalculatorOptions::InputOutputConfig* input_output_config = nullptr,
+    const mediapipe_v01013_based::InferenceCalculatorOptions::InputOutputConfig* input_output_config = nullptr,
     int interpreter_num_threads = -1);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_INFERENCE_INTERPRETER_DELEGATE_RUNNER_H_

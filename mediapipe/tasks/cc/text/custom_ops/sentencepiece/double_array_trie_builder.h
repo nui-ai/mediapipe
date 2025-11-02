@@ -20,7 +20,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-namespace mediapipe::tflite_operations::sentencepiece {
+namespace mediapipe_v01013_based::tflite_operations::sentencepiece {
 
 std::vector<uint32_t> BuildTrie(const std::vector<std::string>& data,
                                 const std::vector<int>& ids);
@@ -28,6 +28,6 @@ std::vector<uint32_t> BuildTrie(const std::vector<std::string>& data,
 // A variant where ids are indexes in data.
 std::vector<uint32_t> BuildTrie(const std::vector<std::string>& data);
 
-}  // namespace mediapipe::tflite_operations::sentencepiece
+}  // namespace mediapipe_v01013_based::tflite_operations::sentencepiece
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_CUSTOM_OPS_SENTENCEPIECE_DOUBLE_ARRAY_TRIE_BUILDER_H_

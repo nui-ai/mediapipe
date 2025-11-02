@@ -35,7 +35,7 @@
 #include "mediapipe/framework/resources.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A CalculatorContext provides information about the graph it is running
 // inside of through a number of accessor functions: Inputs(), Outputs(),
@@ -208,6 +208,6 @@ class CalculatorContext {
   friend class CalculatorContextManager;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_CALCULATOR_CONTEXT_H_

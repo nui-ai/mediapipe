@@ -22,7 +22,7 @@
 #define ENABLE_MEDIAPIPE_GPU_BUFFER_THRESHOLD_CHECK 1
 #endif  // defined(ENABLE_MEDIAPIPE_GPU_BUFFER_THRESHOLD_CHECK)
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 CVPixelBufferPoolRef CreateCVPixelBufferPool(int width, int height,
                                              OSType pixelFormat, int keepCount,
@@ -135,4 +135,4 @@ CVReturn CreateCVPixelBufferWithPool(CVPixelBufferPoolRef pool,
   return err;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

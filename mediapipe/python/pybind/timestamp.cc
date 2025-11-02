@@ -19,7 +19,7 @@
 #include "mediapipe/python/pybind/util.h"
 #include "pybind11/pybind11.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace python {
 
 namespace py = pybind11;
@@ -141,4 +141,4 @@ void TimestampSubmodule(pybind11::module* module) {
 }
 
 }  // namespace python
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

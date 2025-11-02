@@ -20,7 +20,7 @@ limitations under the License.
 #include "absl/strings/str_cat.h"
 #include "absl/strings/string_view.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 
 absl::Status CreateStatusWithPayload(
@@ -44,4 +44,4 @@ absl::Status AddPayload(absl::Status status, absl::string_view message,
 }
 
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

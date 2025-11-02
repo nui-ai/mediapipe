@@ -7,7 +7,7 @@
 #include "mediapipe/framework/formats/shared_fd.h"
 #include "mediapipe/framework/formats/unique_fd.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // `fd` - represents a sync
 // `timeout` - wait timeout, pass `absl::InfiniteDuration()` to wait until
@@ -33,6 +33,6 @@ absl::StatusOr<bool> IsSignaled(const UniqueFd& fd);
 // Checks if sync represented by `fd` is signaled.
 absl::StatusOr<bool> IsSignaled(const SharedFd& fd);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_SYNC_WAIT_H_

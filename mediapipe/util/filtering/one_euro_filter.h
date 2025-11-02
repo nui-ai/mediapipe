@@ -7,7 +7,7 @@
 #include "absl/time/time.h"
 #include "mediapipe/util/filtering/low_pass_filter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class OneEuroFilter {
  public:
@@ -36,6 +36,6 @@ class OneEuroFilter {
   int64_t last_time_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_FILTERING_ONE_EURO_FILTER_H_

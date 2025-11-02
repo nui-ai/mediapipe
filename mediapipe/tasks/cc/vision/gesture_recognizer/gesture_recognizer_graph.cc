@@ -41,25 +41,25 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace gesture_recognizer {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
-using ::mediapipe::tasks::core::ModelAssetBundleResources;
-using ::mediapipe::tasks::metadata::SetExternalFile;
-using ::mediapipe::tasks::vision::gesture_recognizer::proto::
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
+using ::mediapipe_v01013_based::tasks::core::ModelAssetBundleResources;
+using ::mediapipe_v01013_based::tasks::metadata::SetExternalFile;
+using ::mediapipe_v01013_based::tasks::vision::gesture_recognizer::proto::
     GestureRecognizerGraphOptions;
-using ::mediapipe::tasks::vision::gesture_recognizer::proto::
+using ::mediapipe_v01013_based::tasks::vision::gesture_recognizer::proto::
     HandGestureRecognizerGraphOptions;
-using ::mediapipe::tasks::vision::hand_landmarker::proto::
+using ::mediapipe_v01013_based::tasks::vision::hand_landmarker::proto::
     HandLandmarkerGraphOptions;
 
 constexpr char kImageTag[] = "IMAGE";
@@ -165,7 +165,7 @@ absl::Status SetSubTaskBaseOptions(const ModelAssetBundleResources& resources,
 //     next frame.
 //   HANDEDNESS - std::vector<ClassificationList>
 //     Classification of handedness.
-//   IMAGE - mediapipe::Image
+//   IMAGE - mediapipe_v01013_based::Image
 //     The image that gesture recognizer runs on and has the pixel data stored
 //     on the target storage (CPU vs GPU).
 // All returned coordinates are in the unrotated and uncropped input image
@@ -218,7 +218,7 @@ class GestureRecognizerGraph : public core::ModelTaskGraph {
       MP_RETURN_IF_ERROR(SetSubTaskBaseOptions(
           *model_asset_bundle_resources,
           sc->MutableOptions<GestureRecognizerGraphOptions>(),
-          !sc->Service(::mediapipe::tasks::core::kModelResourcesCacheService)
+          !sc->Service(::mediapipe_v01013_based::tasks::core::kModelResourcesCacheService)
                .IsAvailable()));
     }
     MP_ASSIGN_OR_RETURN(
@@ -315,10 +315,10 @@ class GestureRecognizerGraph : public core::ModelTaskGraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe::tasks::vision::gesture_recognizer::GestureRecognizerGraph);  // NOLINT
+  ::mediapipe_v01013_based::tasks::vision::gesture_recognizer::GestureRecognizerGraph);  // NOLINT
 // clang-format on
 
 }  // namespace gesture_recognizer
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -9,7 +9,7 @@
 #include "mediapipe/framework/api2/port.h"
 #include "mediapipe/framework/formats/detection.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Calculator to pass through input vector of detections if packet is not empty,
 // otherwise - outputing a new empty vector. So, instead of empty packet you get
@@ -23,25 +23,25 @@ namespace mediapipe {
 //   output_stream: "VECTOR:output_detections"
 // }
 class PassThroughOrEmptyDetectionVectorCalculator
-    : public mediapipe::api2::NodeIntf {
+    : public mediapipe_v01013_based::api2::NodeIntf {
  public:
-  static constexpr mediapipe::api2::Input<std::vector<mediapipe::Detection>>
+  static constexpr mediapipe_v01013_based::api2::Input<std::vector<mediapipe_v01013_based::Detection>>
       kInputVector{"VECTOR"};
-  static constexpr mediapipe::api2::Input<mediapipe::api2::AnyType> kTick{
+  static constexpr mediapipe_v01013_based::api2::Input<mediapipe_v01013_based::api2::AnyType> kTick{
       "TICK"};
-  static constexpr mediapipe::api2::Output<std::vector<mediapipe::Detection>>
+  static constexpr mediapipe_v01013_based::api2::Output<std::vector<mediapipe_v01013_based::Detection>>
       kOutputVector{"VECTOR"};
 
   MEDIAPIPE_NODE_INTERFACE(
-      ::mediapipe::PassThroughOrEmptyDetectionVectorCalculator, kInputVector,
+      ::mediapipe_v01013_based::PassThroughOrEmptyDetectionVectorCalculator, kInputVector,
       kTick, kOutputVector);
 };
 
 template <typename TickT>
-api2::builder::Stream<std::vector<mediapipe::Detection>>
+api2::builder::Stream<std::vector<mediapipe_v01013_based::Detection>>
 PassThroughOrEmptyDetectionVector(
-    api2::builder::Stream<std::vector<mediapipe::Detection>> detections,
-    api2::builder::Stream<TickT> tick, mediapipe::api2::builder::Graph& graph) {
+    api2::builder::Stream<std::vector<mediapipe_v01013_based::Detection>> detections,
+    api2::builder::Stream<TickT> tick, mediapipe_v01013_based::api2::builder::Graph& graph) {
   auto& node =
       graph.AddNode("mediapipe.PassThroughOrEmptyDetectionVectorCalculator");
   detections.ConnectTo(
@@ -50,6 +50,6 @@ PassThroughOrEmptyDetectionVector(
   return node[PassThroughOrEmptyDetectionVectorCalculator::kOutputVector];
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_CALCULATORS_UTILS_PASS_THROUGH_OR_EMPTY_DETECTION_VECTOR_CALCULATOR_H_

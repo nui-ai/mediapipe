@@ -31,7 +31,7 @@
 #include "mediapipe/framework/tool/tag_map.h"
 #include "mediapipe/framework/tool/tag_map_helper.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -42,14 +42,14 @@ constexpr char kRectTag[] = "RECT";
 constexpr char kHeightTag[] = "HEIGHT";
 constexpr char kWidthTag[] = "WIDTH";
 
-std::unique_ptr<mediapipe::ImageFrame> GetInputFrame(int width, int height,
+std::unique_ptr<mediapipe_v01013_based::ImageFrame> GetInputFrame(int width, int height,
                                                      int channel) {
   const int total_size = width * height * channel;
 
-  auto image_format = channel == 4 ? mediapipe::ImageFormat::SRGBA
-                                   : mediapipe::ImageFormat::SRGB;
+  auto image_format = channel == 4 ? mediapipe_v01013_based::ImageFormat::SRGBA
+                                   : mediapipe_v01013_based::ImageFormat::SRGB;
 
-  auto input_frame = std::make_unique<mediapipe::ImageFrame>(
+  auto input_frame = std::make_unique<mediapipe_v01013_based::ImageFrame>(
       image_format, width, height, /*alignment_boundary =*/1);
   for (int i = 0; i < total_size; ++i) {
     input_frame->MutablePixelData()[i] = i % 256;
@@ -61,7 +61,7 @@ std::unique_ptr<mediapipe::ImageFrame> GetInputFrame(int width, int height,
 // Test identity function, where cropping size is same as input size
 TEST(ImageCroppingCalculatorTest, IdentityFunctionCropWithOriginalSize) {
   auto calculator_node =
-      ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig::Node>(
+      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
           absl::Substitute(
               R"pb(
                 calculator: "ImageCroppingCalculator"
@@ -75,21 +75,21 @@ TEST(ImageCroppingCalculatorTest, IdentityFunctionCropWithOriginalSize) {
                 }
               )pb",
               input_width, input_height));
-  mediapipe::CalculatorRunner runner(calculator_node);
+  mediapipe_v01013_based::CalculatorRunner runner(calculator_node);
 
   // Input frame.
   const auto input_frame = GetInputFrame(input_width, input_height, 3);
   auto input_frame_packet =
-      mediapipe::MakePacket<mediapipe::ImageFrame>(std::move(*input_frame));
+      mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::ImageFrame>(std::move(*input_frame));
   runner.MutableInputs()->Tag("IMAGE").packets.push_back(
-      input_frame_packet.At(mediapipe::Timestamp(1)));
+      input_frame_packet.At(mediapipe_v01013_based::Timestamp(1)));
 
   MP_ASSERT_OK(runner.Run());
 
   const auto& outputs = runner.Outputs();
   EXPECT_EQ(outputs.NumEntries(), 1);
   const auto& output_image =
-      outputs.Tag("IMAGE").packets[0].Get<mediapipe::ImageFrame>();
+      outputs.Tag("IMAGE").packets[0].Get<mediapipe_v01013_based::ImageFrame>();
 
   const auto expected_output = GetInputFrame(input_width, input_height, 3);
   cv::Mat output_mat = formats::MatView(&output_image);
@@ -107,7 +107,7 @@ TEST(ImageCroppingCalculatorTest, IdentityFunctionCropWithOddSize) {
   const int input_height = 99;
 
   auto calculator_node =
-      ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig::Node>(
+      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
           absl::Substitute(
               R"pb(
                 calculator: "ImageCroppingCalculator"
@@ -121,21 +121,21 @@ TEST(ImageCroppingCalculatorTest, IdentityFunctionCropWithOddSize) {
                 }
               )pb",
               input_width, input_height));
-  mediapipe::CalculatorRunner runner(calculator_node);
+  mediapipe_v01013_based::CalculatorRunner runner(calculator_node);
 
   // Input frame.
   const auto input_frame = GetInputFrame(input_width, input_height, 3);
   auto input_frame_packet =
-      mediapipe::MakePacket<mediapipe::ImageFrame>(std::move(*input_frame));
+      mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::ImageFrame>(std::move(*input_frame));
   runner.MutableInputs()->Tag("IMAGE").packets.push_back(
-      input_frame_packet.At(mediapipe::Timestamp(1)));
+      input_frame_packet.At(mediapipe_v01013_based::Timestamp(1)));
 
   MP_ASSERT_OK(runner.Run());
 
   const auto& outputs = runner.Outputs();
   EXPECT_EQ(outputs.NumEntries(), 1);
   const auto& output_image =
-      outputs.Tag("IMAGE").packets[0].Get<mediapipe::ImageFrame>();
+      outputs.Tag("IMAGE").packets[0].Get<mediapipe_v01013_based::ImageFrame>();
 
   const auto expected_output = GetInputFrame(input_width, input_height, 3);
   cv::Mat output_mat = formats::MatView(&output_image);
@@ -146,8 +146,8 @@ TEST(ImageCroppingCalculatorTest, IdentityFunctionCropWithOddSize) {
 
 // Test identity function on GPU, where cropping size is same as input size.
 TEST(ImageCroppingCalculatorTest, IdentityFunctionCropWithOriginalSizeGPU) {
-  mediapipe::CalculatorGraphConfig config =
-      ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(absl::Substitute(
+  mediapipe_v01013_based::CalculatorGraphConfig config =
+      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(absl::Substitute(
           R"pb(
             input_stream: "input_frames"
             node {
@@ -183,11 +183,11 @@ TEST(ImageCroppingCalculatorTest, IdentityFunctionCropWithOriginalSizeGPU) {
   // Input frame.
   const auto input_frame = GetInputFrame(input_width, input_height, 4);
   auto input_frame_packet =
-      mediapipe::MakePacket<mediapipe::ImageFrame>(std::move(*input_frame));
+      mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::ImageFrame>(std::move(*input_frame));
 
   MP_ASSERT_OK(graph.StartRun({}));
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "input_frames", input_frame_packet.At(mediapipe::Timestamp(1))));
+      "input_frames", input_frame_packet.At(mediapipe_v01013_based::Timestamp(1))));
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
   // Get and process results.
@@ -204,7 +204,7 @@ TEST(ImageCroppingCalculatorTest, IdentityFunctionCropWithOriginalSizeGPU) {
 // Test normal case, where norm_width and norm_height in options are set.
 TEST(ImageCroppingCalculatorTest, GetCroppingDimensionsNormal) {
   auto calculator_node =
-      ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig::Node>(
+      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
           R"pb(
             calculator: "ImageCroppingCalculator"
             input_stream: "IMAGE_GPU:input_frames"
@@ -243,7 +243,7 @@ TEST(ImageCroppingCalculatorTest, GetCroppingDimensionsNormal) {
 // width and height should take precedence.
 TEST(ImageCroppingCalculatorTest, RedundantSpecInOptions) {
   auto calculator_node =
-      ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig::Node>(
+      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
           R"pb(
             calculator: "ImageCroppingCalculator"
             input_stream: "IMAGE_GPU:input_frames"
@@ -284,7 +284,7 @@ TEST(ImageCroppingCalculatorTest, RedundantSpecInOptions) {
 // WIDTH HEIGHT from input stream should take precedence.
 TEST(ImageCroppingCalculatorTest, RedundantSpectWithInputStream) {
   auto calculator_node =
-      ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig::Node>(
+      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
           R"pb(
             calculator: "ImageCroppingCalculator"
             input_stream: "IMAGE_GPU:input_frames"
@@ -334,7 +334,7 @@ TEST(ImageCroppingCalculatorTest, RedundantSpectWithInputStream) {
 // RECT from input stream should take precedence.
 TEST(ImageCroppingCalculatorTest, RedundantSpecWithInputStream) {
   auto calculator_node =
-      ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig::Node>(
+      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
           R"pb(
             calculator: "ImageCroppingCalculator"
             input_stream: "IMAGE_GPU:input_frames"
@@ -381,4 +381,4 @@ TEST(ImageCroppingCalculatorTest, RedundantSpecWithInputStream) {
 }  // TEST
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -27,7 +27,7 @@
 #include "mediapipe/framework/memory_manager.h"
 #import "mediapipe/gpu/MPPMetalHelper.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Instantiates and initializes an Metal-based TensorConverterGpu instance.
 // @gpu_helper helper to manage the Metal context.
@@ -45,7 +45,7 @@ absl::StatusOr<std::unique_ptr<TensorConverterGpu>> CreateTensorConverterMetal(
     std::optional<std::pair<float, float>> output_range, bool include_alpha,
     bool single_channel, bool flip_vertically, int num_output_channels);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_METAL_ENABLED
 

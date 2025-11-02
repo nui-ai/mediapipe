@@ -17,7 +17,7 @@
 #include "mediapipe/calculators/core/concatenate_vector_calculator.h"
 #include "mediapipe/framework/formats/detection.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Example config:
 //
@@ -28,8 +28,8 @@ namespace mediapipe {
 //   output_stream: "concatenated_detection_vector"
 // }
 //
-typedef ConcatenateVectorCalculator<::mediapipe::Detection>
+typedef ConcatenateVectorCalculator<::mediapipe_v01013_based::Detection>
     ConcatenateDetectionVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateDetectionVectorCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

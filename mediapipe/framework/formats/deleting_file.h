@@ -19,7 +19,7 @@
 
 #include <string>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // A DeletingFile conveys the path to a file and takes care of cleanup
 // (generally deletion of a file if it is a local temporary).
@@ -50,6 +50,6 @@ class DeletingFile {
   bool delete_on_destruction_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_DELETING_FILE_H_

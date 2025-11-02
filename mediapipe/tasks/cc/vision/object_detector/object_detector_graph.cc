@@ -35,21 +35,21 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/object_detector/proto/object_detector_options.pb.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 
 namespace {
 
-using ::mediapipe::NormalizedRect;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::builder::Graph;
-using ::mediapipe::api2::builder::Source;
+using ::mediapipe_v01013_based::NormalizedRect;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::mediapipe_v01013_based::api2::builder::Source;
 using ObjectDetectorOptionsProto =
     object_detector::proto::ObjectDetectorOptions;
 using TensorsSource =
-    mediapipe::api2::builder::Source<std::vector<mediapipe::Tensor>>;
+    mediapipe_v01013_based::api2::builder::Source<std::vector<mediapipe_v01013_based::Tensor>>;
 
 constexpr char kDetectionsTag[] = "DETECTIONS";
 constexpr char kImageSizeTag[] = "IMAGE_SIZE";
@@ -101,7 +101,7 @@ absl::Status SanityCheckOptions(const ObjectDetectorOptionsProto& options) {
 // Outputs:
 //   DETECTIONS - std::vector<Detection>
 //     Detected objects with bounding box in pixel units.
-//   IMAGE - mediapipe::Image
+//   IMAGE - mediapipe_v01013_based::Image
 //     The image that object detection runs on.
 // All returned coordinates are in the unrotated and uncropped input image
 // coordinates system.
@@ -149,15 +149,15 @@ class ObjectDetectorGraph : public core::ModelTaskGraph {
  private:
   // Adds a mediapipe object detection task graph into the provided
   // builder::Graph instance. The object detection task takes images
-  // (mediapipe::Image) as the input and returns two output streams:
+  // (mediapipe_v01013_based::Image) as the input and returns two output streams:
   //   - the detection results (std::vector<Detection>),
   //   - the processed image that has pixel data stored on the target storage
-  //     (mediapipe::Image).
+  //     (mediapipe_v01013_based::Image).
   //
   // task_options: the mediapipe tasks ObjectDetectorOptions proto.
   // model_resources: the ModelSources object initialized from an object
   // detection model file with model metadata.
-  // image_in: (mediapipe::Image) stream to run object detection on.
+  // image_in: (mediapipe_v01013_based::Image) stream to run object detection on.
   // graph: the mediapipe builder::Graph instance to be updated.
   absl::StatusOr<ObjectDetectionOutputStreams> BuildObjectDetectionTask(
       const ObjectDetectorOptionsProto& task_options,
@@ -262,8 +262,8 @@ class ObjectDetectorGraph : public core::ModelTaskGraph {
   }
 };
 
-REGISTER_MEDIAPIPE_GRAPH(::mediapipe::tasks::vision::ObjectDetectorGraph);
+REGISTER_MEDIAPIPE_GRAPH(::mediapipe_v01013_based::tasks::vision::ObjectDetectorGraph);
 
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

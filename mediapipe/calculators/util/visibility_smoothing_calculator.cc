@@ -22,7 +22,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/util/filtering/low_pass_filter.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -31,7 +31,7 @@ constexpr char kLandmarksTag[] = "LANDMARKS";
 constexpr char kNormalizedFilteredLandmarksTag[] = "NORM_FILTERED_LANDMARKS";
 constexpr char kFilteredLandmarksTag[] = "FILTERED_LANDMARKS";
 
-using mediapipe::LowPassFilter;
+using mediapipe_v01013_based::LowPassFilter;
 
 // Abstract class for various visibility filters.
 class VisibilityFilter {
@@ -240,4 +240,4 @@ absl::Status VisibilitySmoothingCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

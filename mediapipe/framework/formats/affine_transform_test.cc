@@ -8,7 +8,7 @@
 #include "testing/base/public/gmock.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 TEST(AffineTransformTest, TraslationTest) {
   AffineTransform transform;
@@ -91,4 +91,4 @@ TEST(AffineTransformTest, TransformTest) {
   EXPECT_THAT(true, AffineTransform::Equal(transform1, transform2, 0.000001));
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

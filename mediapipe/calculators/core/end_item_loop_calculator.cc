@@ -24,15 +24,15 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
-using ::mediapipe::api2::AnyType;
-using ::mediapipe::api2::Input;
-using ::mediapipe::api2::Node;
-using ::mediapipe::api2::Output;
-using ::mediapipe::api2::PacketBase;
-using ::mediapipe::api2::SameType;
-using ::mediapipe::api2::TimestampChange;
+using ::mediapipe_v01013_based::api2::AnyType;
+using ::mediapipe_v01013_based::api2::Input;
+using ::mediapipe_v01013_based::api2::Node;
+using ::mediapipe_v01013_based::api2::Output;
+using ::mediapipe_v01013_based::api2::PacketBase;
+using ::mediapipe_v01013_based::api2::SameType;
+using ::mediapipe_v01013_based::api2::TimestampChange;
 
 // Calculator for completing the processing of items loops inside a MediaPipe
 // graph. The EndLoopCalculator collects all input packets from ITEM
@@ -85,4 +85,4 @@ class EndItemLoopCalculator : public Node {
 
 MEDIAPIPE_REGISTER_NODE(EndItemLoopCalculator);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -46,7 +46,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
   inline float RectTransformationCalculatorCore::NormalizeRadians(float angle) {
     return angle - 2 * M_PI * std::floor((angle - (-M_PI)) / (2 * M_PI));

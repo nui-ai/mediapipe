@@ -27,15 +27,15 @@ limitations under the License.
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
 constexpr char kHandednessTag[] = "HANDEDNESS";
 constexpr char kHandednessMatrixTag[] = "HANDEDNESS_MATRIX";
 
-mediapipe::ClassificationList ClassificationForHandedness(float handedness) {
-  mediapipe::ClassificationList result;
+mediapipe_v01013_based::ClassificationList ClassificationForHandedness(float handedness) {
+  mediapipe_v01013_based::ClassificationList result;
   auto* h = result.add_classification();
   if (handedness < 0.5f) {
     h->set_label("Left");
@@ -66,7 +66,7 @@ TEST_P(HandednessToMatrixCalculatorTest, OutputsCorrectResult) {
       )pb");
   CalculatorRunner runner(node_config);
 
-  auto input_handedness = std::make_unique<mediapipe::ClassificationList>();
+  auto input_handedness = std::make_unique<mediapipe_v01013_based::ClassificationList>();
   *input_handedness = ClassificationForHandedness(test_case.handedness);
   runner.MutableInputs()
       ->Tag(kHandednessTag)
@@ -93,4 +93,4 @@ INSTANTIATE_TEST_CASE_P(
 
 }  // namespace
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

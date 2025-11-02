@@ -31,13 +31,13 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-using mediapipe::CalculatorGraphConfig;
-using mediapipe::CalculatorRunner;
-using mediapipe::ImageFormat;
-using mediapipe::ImageFrame;
-using mediapipe::PacketTypeSet;
+using mediapipe_v01013_based::CalculatorGraphConfig;
+using mediapipe_v01013_based::CalculatorRunner;
+using mediapipe_v01013_based::ImageFormat;
+using mediapipe_v01013_based::ImageFrame;
+using mediapipe_v01013_based::PacketTypeSet;
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace autoflip {
 namespace {
 
@@ -63,7 +63,7 @@ void AddFrames(const int number_of_frames,
   for (int i = 0; i < number_of_frames; i++) {
     auto input_frame = ::absl::make_unique<ImageFrame>(
         ImageFormat::SRGB, kTestFrameWidth, kTestFrameHeight);
-    cv::Mat input_mat = mediapipe::formats::MatView(input_frame.get());
+    cv::Mat input_mat = mediapipe_v01013_based::formats::MatView(input_frame.get());
     input_mat.setTo(cv::Scalar(0, 0, 0));
     cv::Mat sub_image =
         image(cv::Rect(i, i, kTestFrameWidth, kTestFrameHeight));
@@ -164,4 +164,4 @@ TEST(ShotBoundaryCalculatorTest, ShotChangeSingleOnOnChange) {
 
 }  // namespace
 }  // namespace autoflip
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

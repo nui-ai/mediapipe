@@ -12,7 +12,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe::api2::builder {
+namespace mediapipe_v01013_based::api2::builder {
 
 struct OneEuroFilterConfig {
   float min_cutoff;
@@ -32,8 +32,8 @@ struct OneEuroFilterConfig {
 //
 // NOTE: one-euro filter is exposed only. Other filter options can be exposed
 //   on demand.
-Stream<mediapipe::NormalizedLandmarkList> SmoothLandmarks(
-    Stream<mediapipe::NormalizedLandmarkList> landmarks,
+Stream<mediapipe_v01013_based::NormalizedLandmarkList> SmoothLandmarks(
+    Stream<mediapipe_v01013_based::NormalizedLandmarkList> landmarks,
     Stream<std::pair<int, int>> image_size,
     std::optional<Stream<NormalizedRect>> scale_roi,
     const OneEuroFilterConfig& config, Graph& graph);
@@ -49,8 +49,8 @@ Stream<mediapipe::NormalizedLandmarkList> SmoothLandmarks(
 //
 // NOTE: one-euro filter is exposed only. Other filter options can be exposed
 //   on demand.
-Stream<mediapipe::LandmarkList> SmoothLandmarks(
-    Stream<mediapipe::LandmarkList> landmarks,
+Stream<mediapipe_v01013_based::LandmarkList> SmoothLandmarks(
+    Stream<mediapipe_v01013_based::LandmarkList> landmarks,
     std::optional<Stream<NormalizedRect>> scale_roi,
     const OneEuroFilterConfig& config, Graph& graph);
 
@@ -67,12 +67,12 @@ Stream<mediapipe::LandmarkList> SmoothLandmarks(
 //
 // NOTE: one-euro filter is exposed only. Other filter options can be exposed
 //   on demand.
-Stream<std::vector<mediapipe::NormalizedLandmarkList>> SmoothMultiLandmarks(
-    Stream<std::vector<mediapipe::NormalizedLandmarkList>> landmarks,
+Stream<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>> SmoothMultiLandmarks(
+    Stream<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>> landmarks,
     Stream<std::vector<int64_t>> tracking_ids,
     Stream<std::pair<int, int>> image_size,
     std::optional<Stream<std::vector<NormalizedRect>>> scale_roi,
-    const mediapipe::LandmarksSmoothingCalculatorOptions& config, Graph& graph);
+    const mediapipe_v01013_based::LandmarksSmoothingCalculatorOptions& config, Graph& graph);
 
 // Updates graph to smooth absolute landmarks and returns resulting stream.
 //
@@ -86,11 +86,11 @@ Stream<std::vector<mediapipe::NormalizedLandmarkList>> SmoothMultiLandmarks(
 //
 // NOTE: one-euro filter is exposed only. Other filter options can be exposed
 //   on demand.
-Stream<std::vector<mediapipe::LandmarkList>> SmoothMultiWorldLandmarks(
-    Stream<std::vector<mediapipe::LandmarkList>> landmarks,
+Stream<std::vector<mediapipe_v01013_based::LandmarkList>> SmoothMultiWorldLandmarks(
+    Stream<std::vector<mediapipe_v01013_based::LandmarkList>> landmarks,
     Stream<std::vector<int64_t>> tracking_ids,
-    std::optional<Stream<std::vector<mediapipe::Rect>>> scale_roi,
-    const mediapipe::LandmarksSmoothingCalculatorOptions& config, Graph& graph);
+    std::optional<Stream<std::vector<mediapipe_v01013_based::Rect>>> scale_roi,
+    const mediapipe_v01013_based::LandmarksSmoothingCalculatorOptions& config, Graph& graph);
 
 // Updates graph to smooth visibility of landmarks.
 //
@@ -99,8 +99,8 @@ Stream<std::vector<mediapipe::LandmarkList>> SmoothMultiWorldLandmarks(
 // @graph - graph to update.
 //
 // Returns: normalized landmarks containing smoothed visibility.
-Stream<mediapipe::NormalizedLandmarkList> SmoothLandmarksVisibility(
-    Stream<mediapipe::NormalizedLandmarkList> landmarks,
+Stream<mediapipe_v01013_based::NormalizedLandmarkList> SmoothLandmarksVisibility(
+    Stream<mediapipe_v01013_based::NormalizedLandmarkList> landmarks,
     float low_pass_filter_alpha, Graph& graph);
 
 // Updates graph to smooth visibility of landmarks.
@@ -110,10 +110,10 @@ Stream<mediapipe::NormalizedLandmarkList> SmoothLandmarksVisibility(
 // @graph - graph to update.
 //
 // Returns: absolute landmarks containing smoothed visibility.
-Stream<mediapipe::LandmarkList> SmoothLandmarksVisibility(
-    Stream<mediapipe::LandmarkList> landmarks, float low_pass_filter_alpha,
-    mediapipe::api2::builder::Graph& graph);
+Stream<mediapipe_v01013_based::LandmarkList> SmoothLandmarksVisibility(
+    Stream<mediapipe_v01013_based::LandmarkList> landmarks, float low_pass_filter_alpha,
+    mediapipe_v01013_based::api2::builder::Graph& graph);
 
-}  // namespace mediapipe::api2::builder
+}  // namespace mediapipe_v01013_based::api2::builder
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_STREAM_SMOOTHING_H_

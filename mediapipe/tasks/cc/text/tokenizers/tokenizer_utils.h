@@ -24,7 +24,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/tokenizers/tokenizer.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace text {
 namespace tokenizers {
@@ -42,6 +42,6 @@ absl::StatusOr<std::unique_ptr<Tokenizer>> CreateTokenizerFromProcessUnit(
 }  // namespace tokenizers
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_TOKENIZERS_TOKENIZER_UTILS_H_

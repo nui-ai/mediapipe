@@ -17,7 +17,7 @@
 
 #include "tensorflow/lite/kernels/kernel_util.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tflite_operations {
 
 TfLiteRegistration* RegisterLandmarksToTransformMatrixV1();
@@ -25,6 +25,6 @@ TfLiteRegistration* RegisterLandmarksToTransformMatrixV1();
 TfLiteRegistration* RegisterLandmarksToTransformMatrixV2();
 
 }  // namespace tflite_operations
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_OPERATIONS_LANDMARKS_TO_TRANSFORM_MATRIX_H_

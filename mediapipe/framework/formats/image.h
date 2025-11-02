@@ -42,7 +42,7 @@
 
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 using ImageFrameSharedPtr = std::shared_ptr<ImageFrame>;
 
@@ -88,14 +88,14 @@ class Image {
 #if !MEDIAPIPE_DISABLE_GPU
 #if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
   explicit Image(CFHolder<CVPixelBufferRef> pixel_buffer)
-      : Image(mediapipe::GpuBuffer(std::move(pixel_buffer))) {}
+      : Image(mediapipe_v01013_based::GpuBuffer(std::move(pixel_buffer))) {}
   explicit Image(CVPixelBufferRef pixel_buffer)
-      : Image(mediapipe::GpuBuffer(pixel_buffer)) {}
+      : Image(mediapipe_v01013_based::GpuBuffer(pixel_buffer)) {}
 #else
-  explicit Image(mediapipe::GlTextureBufferSharedPtr texture_buffer)
-      : Image(mediapipe::GpuBuffer(std::move(texture_buffer))) {}
+  explicit Image(mediapipe_v01013_based::GlTextureBufferSharedPtr texture_buffer)
+      : Image(mediapipe_v01013_based::GpuBuffer(std::move(texture_buffer))) {}
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
-  explicit Image(mediapipe::GpuBuffer gpu_buffer) {
+  explicit Image(mediapipe_v01013_based::GpuBuffer gpu_buffer) {
     use_gpu_ = true;
     gpu_buffer_ = gpu_buffer;
   }
@@ -104,12 +104,12 @@ class Image {
 #if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
   CVPixelBufferRef GetCVPixelBufferRef() const {
     if (use_gpu_ == false) ConvertToGpu();
-    return mediapipe::GetCVPixelBufferRef(gpu_buffer_);
+    return mediapipe_v01013_based::GetCVPixelBufferRef(gpu_buffer_);
   }
 #else
-  mediapipe::GlTextureBufferSharedPtr GetGlTextureBufferSharedPtr() const {
+  mediapipe_v01013_based::GlTextureBufferSharedPtr GetGlTextureBufferSharedPtr() const {
     if (use_gpu_ == false) ConvertToGpu();
-    return gpu_buffer_.internal_storage<mediapipe::GlTextureBuffer>();
+    return gpu_buffer_.internal_storage<mediapipe_v01013_based::GlTextureBuffer>();
   }
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -117,7 +117,7 @@ class Image {
   // Provides access to the underlying GpuBuffer storage.
   // Automatically uploads from CPU to GPU if needed and requested through the
   // `upload_to_gpu` argument.
-  const mediapipe::GpuBuffer GetGpuBuffer(bool upload_to_gpu = true) const {
+  const mediapipe_v01013_based::GpuBuffer GetGpuBuffer(bool upload_to_gpu = true) const {
     if (!use_gpu_ && upload_to_gpu) ConvertToGpu();
     return gpu_buffer_;
   }
@@ -129,7 +129,7 @@ class Image {
   int step() const;  // Row size in bytes.
   bool UsesGpu() const { return use_gpu_; }
   ImageFormat::Format image_format() const;
-  mediapipe::GpuBufferFormat format() const;
+  mediapipe_v01013_based::GpuBufferFormat format() const;
 
   // Converts to true iff valid.
   explicit operator bool() const { return operator!=(nullptr); }
@@ -156,7 +156,7 @@ class Image {
   bool ConvertToGpu() const;
 
  private:
-  mutable mediapipe::GpuBuffer gpu_buffer_;
+  mutable mediapipe_v01013_based::GpuBuffer gpu_buffer_;
   mutable bool use_gpu_ = false;
 };
 
@@ -165,10 +165,10 @@ inline int Image::width() const { return gpu_buffer_.width(); }
 inline int Image::height() const { return gpu_buffer_.height(); }
 
 inline ImageFormat::Format Image::image_format() const {
-  return mediapipe::ImageFormatForGpuBufferFormat(gpu_buffer_.format());
+  return mediapipe_v01013_based::ImageFormatForGpuBufferFormat(gpu_buffer_.format());
 }
 
-inline mediapipe::GpuBufferFormat Image::format() const {
+inline mediapipe_v01013_based::GpuBufferFormat Image::format() const {
   return gpu_buffer_.format();
 }
 
@@ -267,6 +267,6 @@ class PixelWriteLock {
   std::shared_ptr<ImageFrame> frame_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_IMAGE_H_

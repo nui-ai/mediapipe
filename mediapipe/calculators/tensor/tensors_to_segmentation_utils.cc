@@ -31,7 +31,7 @@ namespace {
 enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, NUM_ATTRIBUTES };
 }  // namespace
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tensors_to_segmentation_utils {
 
 int NumGroups(int size, int group_size) {
@@ -111,4 +111,4 @@ void GlRender() {
 }
 
 }  // namespace tensors_to_segmentation_utils
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -19,7 +19,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/web/jspi_check.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -336,4 +336,4 @@ absl::Status GetTexture2dData(const wgpu::Device& device,
 
 #endif  // __EMSCRIPTEN__
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

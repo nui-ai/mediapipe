@@ -18,15 +18,15 @@
 #include "mediapipe/calculators/tensor/image_to_tensor_converter_frame_buffer.h"
 #endif
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 absl::Status InitConverterIfNecessary(
-    const mediapipe::Image& image,
-    const mediapipe::ImageToTensorCalculatorOptions& options,
-    const mediapipe::OutputTensorParams& params,
-    std::unique_ptr<mediapipe::ImageToTensorConverter>& gpu_converter,
-    std::unique_ptr<mediapipe::ImageToTensorConverter>& cpu_converter) {
+    const mediapipe_v01013_based::Image& image,
+    const mediapipe_v01013_based::ImageToTensorCalculatorOptions& options,
+    const mediapipe_v01013_based::OutputTensorParams& params,
+    std::unique_ptr<mediapipe_v01013_based::ImageToTensorConverter>& gpu_converter,
+    std::unique_ptr<mediapipe_v01013_based::ImageToTensorConverter>& cpu_converter) {
   if (image.UsesGpu()) {
     if (!params.is_float_output) {
       return absl::UnimplementedError(
@@ -62,13 +62,13 @@ absl::Status InitConverterIfNecessary(
 namespace api2 {
 
 ImageToTensorCalculatorCore::ImageToTensorCalculatorCore(
-    const mediapipe::ImageToTensorCalculatorOptions& options,
+    const mediapipe_v01013_based::ImageToTensorCalculatorOptions& options,
     int tensor_width,
     int tensor_height,
-    const mediapipe::OutputTensorParams& params,
-    std::unique_ptr<mediapipe::ImageToTensorConverter>& gpu_converter,
-    std::unique_ptr<mediapipe::ImageToTensorConverter>& cpu_converter,
-    mediapipe::MemoryManager* memory_manager)
+    const mediapipe_v01013_based::OutputTensorParams& params,
+    std::unique_ptr<mediapipe_v01013_based::ImageToTensorConverter>& gpu_converter,
+    std::unique_ptr<mediapipe_v01013_based::ImageToTensorConverter>& cpu_converter,
+    mediapipe_v01013_based::MemoryManager* memory_manager)
     : options_(options),
       tensor_width_(tensor_width),
       tensor_height_(tensor_height),
@@ -78,18 +78,18 @@ ImageToTensorCalculatorCore::ImageToTensorCalculatorCore(
       memory_manager_(memory_manager) {}
 
 absl::Status ImageToTensorCalculatorCore::Process(
-    const mediapipe::Image& image,
-    absl::optional<mediapipe::NormalizedRect> norm_rect,
+    const mediapipe_v01013_based::Image& image,
+    absl::optional<mediapipe_v01013_based::NormalizedRect> norm_rect,
     ImageToTensorCoreResult* result) {
 
-  mediapipe::RotatedRect roi = mediapipe::GetRoi(image.width(), image.height(), norm_rect);
-  MP_ASSIGN_OR_RETURN(auto padding, mediapipe::PadRoi(tensor_width_, tensor_height_, options_.keep_aspect_ratio(), &roi));
+  mediapipe_v01013_based::RotatedRect roi = mediapipe_v01013_based::GetRoi(image.width(), image.height(), norm_rect);
+  MP_ASSIGN_OR_RETURN(auto padding, mediapipe_v01013_based::PadRoi(tensor_width_, tensor_height_, options_.keep_aspect_ratio(), &roi));
   result->padding = padding;
-  mediapipe::GetRotatedSubRectToRectTransformMatrix(
+  mediapipe_v01013_based::GetRotatedSubRectToRectTransformMatrix(
       roi, image.width(), image.height(), /*flip_horizontally=*/false, &result->matrix);
   MP_RETURN_IF_ERROR(InitConverterIfNecessary(image, options_, params_, gpu_converter_, cpu_converter_));
-  mediapipe::Tensor::ElementType output_tensor_type = mediapipe::GetOutputTensorType(image.UsesGpu(), params_);
-  mediapipe::Tensor tensor(output_tensor_type, {1, tensor_height_, tensor_width_, mediapipe::GetNumOutputChannels(image)}, memory_manager_);
+  mediapipe_v01013_based::Tensor::ElementType output_tensor_type = mediapipe_v01013_based::GetOutputTensorType(image.UsesGpu(), params_);
+  mediapipe_v01013_based::Tensor tensor(output_tensor_type, {1, tensor_height_, tensor_width_, mediapipe_v01013_based::GetNumOutputChannels(image)}, memory_manager_);
 
   MP_RETURN_IF_ERROR((image.UsesGpu() ? gpu_converter_.get() : cpu_converter_.get())->Convert(
       image, roi, params_.range_min, params_.range_max, 0, tensor));
@@ -102,4 +102,4 @@ absl::Status ImageToTensorCalculatorCore::Process(
 }
 
 } // namespace api2
-} // namespace mediapipe
+} // namespace mediapipe_v01013_based

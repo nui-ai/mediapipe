@@ -9,7 +9,7 @@
 #include "google/protobuf/io/zero_copy_stream_impl.h"
 #include "google/protobuf/util/delimited_message_util.h"
 
-using mediapipe::PipelineOutputData;
+using mediapipe_v01013_based::PipelineOutputData;
 using google::protobuf::util::MessageDifferencer;
 
 // Reads a stream of PipelineOutputData messages from a file.

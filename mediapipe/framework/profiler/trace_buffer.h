@@ -24,7 +24,7 @@
 #include "mediapipe/framework/profiler/circular_buffer.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Packet trace log event.
 struct TraceEvent {
@@ -168,6 +168,6 @@ struct EventTypeHash {
 using TraceEventRegistry =
     std::unordered_map<TraceEvent::EventType, TraceEventType, EventTypeHash>;
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_PROFILER_TRACE_BUFFER_H_

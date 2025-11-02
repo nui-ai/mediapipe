@@ -28,7 +28,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/sink.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 
 using ::testing::ElementsAre;
@@ -451,4 +451,4 @@ INSTANTIATE_TEST_SUITE_P(PacketClonerCalculator, PacketClonerCalculatorTest,
                          testing::ValuesIn({Params{.use_tick_tag = false},
                                             Params{.use_tick_tag = true}}));
 }  // anonymous namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

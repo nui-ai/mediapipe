@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/source_location.h"
 #include "mediapipe/framework/port/status_builder.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace {
 void SetColorChannel(int channel, uint8_t value, cv::Mat* mat) {
   ABSL_CHECK(mat->depth() == CV_8U);
@@ -209,8 +209,8 @@ absl::Status ColorConvertCalculator::Process(CalculatorContext* cc) {
                             cv::COLOR_BGR2RGB, cc);
   }
 
-  return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+  return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
          << "Unsupported image format conversion.";
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

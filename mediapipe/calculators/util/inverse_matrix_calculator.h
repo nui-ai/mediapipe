@@ -21,7 +21,7 @@
 #include "mediapipe/framework/api3/contract.h"
 #include "mediapipe/framework/api3/node.h"
 
-namespace mediapipe::api3 {
+namespace mediapipe_v01013_based::api3 {
 
 inline constexpr absl::string_view kInverseMatrixNodeName =
     "InverseMatrixCalculator";
@@ -44,6 +44,6 @@ struct InverseMatrixNode : Node<kInverseMatrixNodeName> {
   };
 };
 
-}  // namespace mediapipe::api3
+}  // namespace mediapipe_v01013_based::api3
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_INVERSE_MATRIX_CALCULATOR_H_

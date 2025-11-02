@@ -33,7 +33,7 @@
 #include "mediapipe/util/tracking/motion_models.pb.h"
 #include "mediapipe/util/tracking/region_flow.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 FlowPackager::FlowPackager(const FlowPackagerOptions& options)
     : options_(options) {
@@ -1022,4 +1022,4 @@ bool FlowPackager::CompatibleForEncodeWithoutDuplication(
   return true;
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

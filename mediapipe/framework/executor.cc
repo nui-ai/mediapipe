@@ -14,10 +14,10 @@
 
 #include "mediapipe/framework/executor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 TaskQueue::~TaskQueue() {}
 
 Executor::~Executor() {}
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

@@ -39,7 +39,7 @@
 #include "mediapipe/framework/tool/name_util.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace tool {
 
@@ -154,16 +154,16 @@ absl::Status FindCorrespondingStreams(
   for (const auto& it : dst_map->Mapping()) {
     const std::string& tag = it.first;
     const TagMap::TagData* src_tag_data =
-        mediapipe::FindOrNull(src_map->Mapping(), tag);
+        mediapipe_v01013_based::FindOrNull(src_map->Mapping(), tag);
     if (!src_tag_data) {
-      return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Tag \"" << tag << "\" does not exist in the subgraph config.";
     }
     const TagMap::TagData& dst_tag_data = it.second;
     CollectionItemId src_id = src_tag_data->id;
     CollectionItemId dst_id = dst_tag_data.id;
     if (dst_tag_data.count > src_tag_data->count) {
-      return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Tag \"" << tag << "\" has " << dst_tag_data.count
              << " indexes in the subgraph node but has only "
              << src_tag_data->count << " indexes in the subgraph config.";
@@ -190,7 +190,7 @@ absl::Status ValidateSubgraphFields(
   if (subgraph_node.source_layer() || subgraph_node.buffer_size_hint() ||
       subgraph_node.has_output_stream_handler() ||
       subgraph_node.input_stream_info_size() != 0) {
-    return mediapipe::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "Subgraph \"" << subgraph_node.name()
            << "\" has a field that is only applicable to calculators.";
   }
@@ -238,7 +238,7 @@ absl::Status ConnectSubgraphStreams(
   std::map<std::string, std::string>* name_map;
   auto replace_names = [&name_map](absl::string_view s) {
     std::string original(s);
-    std::string* replacement = mediapipe::FindOrNull(*name_map, original);
+    std::string* replacement = mediapipe_v01013_based::FindOrNull(*name_map, original);
     return replacement ? *replacement : original;
   };
   for (auto& node : *subgraph_config->mutable_node()) {
@@ -281,7 +281,7 @@ absl::Status ExpandSubgraphs(CalculatorGraphConfig* config,
       graph_registry ? graph_registry : &GraphRegistry::global_graph_registry;
   RET_CHECK(config);
 
-  MP_RETURN_IF_ERROR(mediapipe::tool::DefineGraphOptions(
+  MP_RETURN_IF_ERROR(mediapipe_v01013_based::tool::DefineGraphOptions(
       graph_options ? *graph_options : CalculatorGraphConfig::Node(), config));
   auto* nodes = config->mutable_node();
   while (1) {
@@ -303,7 +303,7 @@ absl::Status ExpandSubgraphs(CalculatorGraphConfig* config,
           auto subgraph,
           graph_registry->CreateByName(config->package(), node.calculator(),
                                        &subgraph_context));
-      MP_RETURN_IF_ERROR(mediapipe::tool::DefineGraphOptions(node, &subgraph));
+      MP_RETURN_IF_ERROR(mediapipe_v01013_based::tool::DefineGraphOptions(node, &subgraph));
       MP_RETURN_IF_ERROR(PrefixNames(node_name, &subgraph));
       MP_RETURN_IF_ERROR(ConnectSubgraphStreams(node, &subgraph));
       subgraphs.push_back(subgraph);
@@ -346,4 +346,4 @@ CalculatorGraphConfig MakeSingleNodeGraph(CalculatorGraphConfig::Node node) {
 }
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

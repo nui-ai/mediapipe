@@ -22,7 +22,7 @@ limitations under the License.
 #include "absl/status/status.h"
 #include "mediapipe/tasks/cc/core/proto/external_file.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace metadata {
 
@@ -45,6 +45,6 @@ void SetExternalFile(const absl::string_view& file_content,
 
 }  // namespace metadata
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_METADATA_UTILS_ZIP_UTILS_H_

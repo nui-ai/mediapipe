@@ -10,7 +10,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {}  // namespace
 
@@ -57,9 +57,9 @@ class AlignmentPointsRectsCalculator : public PalmDetectionToHandRectStage1 {
 
  private:
   absl::Status DetectionToNormalizedRect(
-      const ::mediapipe::Detection& detection,
+      const ::mediapipe_v01013_based::Detection& detection,
       const DetectionSpec& detection_spec,
-      ::mediapipe::NormalizedRect* rect) override;
+      ::mediapipe_v01013_based::NormalizedRect* rect) override;
 };
 REGISTER_CALCULATOR(AlignmentPointsRectsCalculator);
 
@@ -99,4 +99,4 @@ absl::Status AlignmentPointsRectsCalculator::DetectionToNormalizedRect(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

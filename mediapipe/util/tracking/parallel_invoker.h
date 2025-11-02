@@ -100,7 +100,7 @@ extern int flags_parallel_invoker_max_threads;
 // Note flag: Parallel processing only activated if
 // PARALLEL_INVOKER_ACTIVE is defined.
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // Partitions the range [begin, end) into equal blocks of size grain_size each
 // (except last one, might be less than grain_size).
@@ -506,6 +506,6 @@ void ParallelFor2D(size_t start_row, size_t end_row, size_t start_col,
 #endif  // PARALLEL_INVOKER_ACTIVE
 }
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_PARALLEL_INVOKER_H_

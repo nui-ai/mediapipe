@@ -28,7 +28,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/test_service.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -50,7 +50,7 @@ class GraphServiceTest : public ::testing::Test {
  protected:
   void SetUp() override {
     CalculatorGraphConfig config =
-        mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+        mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
           input_stream: "in"
           node {
             calculator: "TestServiceCalculator"
@@ -100,7 +100,7 @@ TEST_F(GraphServiceTest, UseInCalculator) {
 
 TEST_F(GraphServiceTest, Contract) {
   const CalculatorGraphConfig::Node node =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         calculator: "TestServiceCalculator"
         input_stream: "in"
         output_stream: "out"
@@ -188,7 +188,7 @@ REGISTER_CALCULATOR(FailOnUnavailableOptionalServiceCalculator);
 TEST(AllowDefaultInitializationGraphServiceTest,
      ServiceIsAvailableWithOptionalUse) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node { calculator: 'FailOnUnavailableOptionalServiceCalculator' }
       )pb");
 
@@ -218,7 +218,7 @@ REGISTER_CALCULATOR(FailOnUnavailableServiceCalculator);
 // - Service object is created by default.
 TEST(AllowDefaultInitializationGraphServiceTest, ServiceIsAvailable) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node { calculator: 'FailOnUnavailableServiceCalculator' }
       )pb");
 
@@ -259,7 +259,7 @@ REGISTER_CALCULATOR(
 // - Service object is not created by default.
 TEST(DisallowDefaultInitializationGraphServiceTest,
      ServiceIsUnavailableWithOptionalUse) {
-  CalculatorGraphConfig config = mediapipe::ParseTextProtoOrDie<
+  CalculatorGraphConfig config = mediapipe_v01013_based::ParseTextProtoOrDie<
       CalculatorGraphConfig>(R"pb(
     node {
       calculator: 'FailOnUnavailableOptionalDisallowDefaultInitServiceCalculator'
@@ -292,7 +292,7 @@ REGISTER_CALCULATOR(UseDisallowDefaultInitServiceCalculator);
 TEST(DisallowDefaultInitializationGraphServiceTest,
      StartRunFailsMissingService) {
   CalculatorGraphConfig config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node { calculator: 'UseDisallowDefaultInitServiceCalculator' }
       )pb");
 
@@ -318,4 +318,4 @@ TEST(ServiceBindingTest, IsAvailableReturnsFalsOnNullServiceObject) {
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

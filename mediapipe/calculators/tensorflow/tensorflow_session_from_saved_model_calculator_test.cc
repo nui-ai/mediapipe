@@ -32,7 +32,7 @@
 #include "tensorflow/core/framework/device_attributes.pb.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -146,7 +146,7 @@ TEST_F(TensorFlowSessionFromSavedModelCalculatorTest,
 TEST_F(TensorFlowSessionFromSavedModelCalculatorTest,
        ProducesPacketUsableByTensorFlowInferenceCalculator) {
   CalculatorGraphConfig graph_config =
-      mediapipe::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
           absl::Substitute(R"(
       node {
         calculator: "TensorFlowInferenceCalculator"
@@ -246,4 +246,4 @@ TEST_F(TensorFlowSessionFromSavedModelCalculatorTest,
 }
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

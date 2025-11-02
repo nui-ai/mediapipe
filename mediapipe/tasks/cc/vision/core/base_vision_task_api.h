@@ -36,7 +36,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/running_mode.h"
 #include "mediapipe/tasks/cc/vision/utils/image_tensor_specs.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tasks {
 namespace vision {
 namespace core {
@@ -63,9 +63,9 @@ class BaseVisionTaskApi : public tasks::core::BaseTaskApi {
               absl::StrCat(
                   "The graph has more than one ImageToTensorCalculator.")));
         }
-        mediapipe::ImageToTensorCalculatorOptions options =
+        mediapipe_v01013_based::ImageToTensorCalculatorOptions options =
             node.options().GetExtension(
-                mediapipe::ImageToTensorCalculatorOptions::ext);
+                mediapipe_v01013_based::ImageToTensorCalculatorOptions::ext);
         image_tensor_specs.image_width = options.output_tensor_width();
         image_tensor_specs.image_height = options.output_tensor_height();
         image_tensor_specs.color_space =
@@ -137,10 +137,10 @@ class BaseVisionTaskApi : public tasks::core::BaseTaskApi {
   // returns a default NormalizedRect covering the whole image with rotation set
   // to 0. If 'roi_allowed' is false, an error will be returned if the input
   // ImageProcessingOptions has its 'region_or_interest' field set.
-  static absl::StatusOr<mediapipe::NormalizedRect> ConvertToNormalizedRect(
+  static absl::StatusOr<mediapipe_v01013_based::NormalizedRect> ConvertToNormalizedRect(
       std::optional<ImageProcessingOptions> options,
-      const mediapipe::Image& image, bool roi_allowed = true) {
-    mediapipe::NormalizedRect normalized_rect;
+      const mediapipe_v01013_based::Image& image, bool roi_allowed = true) {
+    mediapipe_v01013_based::NormalizedRect normalized_rect;
     normalized_rect.set_rotation(0);
     normalized_rect.set_x_center(0.5);
     normalized_rect.set_y_center(0.5);
@@ -209,6 +209,6 @@ class BaseVisionTaskApi : public tasks::core::BaseTaskApi {
 }  // namespace core
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_CORE_BASE_VISION_TASK_API_H_

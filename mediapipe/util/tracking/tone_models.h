@@ -30,7 +30,7 @@
 #include "mediapipe/framework/port/vector.h"
 #include "mediapipe/util/tracking/tone_models.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 // Abstract Adapter for tone models.
 template <class Model>
 class ToneModelAdapter {
@@ -624,6 +624,6 @@ void ToneModelMethods<Model, Adapter>::MapImageIndependent(
 //                         MixtureAffineToneModelAdapter>
 //    MixtureAffineToneModelMethods;
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_TONE_MODELS_H_

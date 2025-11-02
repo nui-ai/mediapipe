@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 namespace {
 
@@ -84,4 +84,4 @@ INSTANTIATE_TEST_SUITE_P(
     });
 
 }  // namespace
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based

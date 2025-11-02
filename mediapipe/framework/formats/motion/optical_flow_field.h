@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "tensorflow/core/framework/tensor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 class OpticalFlowField {
  public:
@@ -124,6 +124,6 @@ class OpticalFlowField {
   cv::Mat_<cv::Point2f> flow_data_;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_MOTION_OPTICAL_FLOW_FIELD_H_

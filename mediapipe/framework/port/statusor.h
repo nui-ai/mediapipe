@@ -17,12 +17,12 @@
 
 #include "absl/status/statusor.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 template <typename T>
 using StatusOr ABSL_DEPRECATED("Use absl::StatusOr directly") =
     absl::StatusOr<T>;
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_PORT_STATUSOR_H_

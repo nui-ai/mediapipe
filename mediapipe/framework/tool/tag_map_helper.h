@@ -19,7 +19,7 @@
 #include "mediapipe/framework/port/statusor.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 namespace tool {
 
 // Create a TagMap using a vector of TAG:<index>:name.
@@ -34,6 +34,6 @@ absl::StatusOr<std::shared_ptr<TagMap>> CreateTagMapFromTags(
     const std::vector<std::string>& tags);
 
 }  // namespace tool
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_TAG_MAP_HELPER_H_

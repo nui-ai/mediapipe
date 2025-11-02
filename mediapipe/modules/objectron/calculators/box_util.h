@@ -18,12 +18,12 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "mediapipe/util/tracking/box_tracker.pb.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // This function fills the geometry of the TimedBoxProto. Id, timestamp etc.
 // need to be set outside this function.
 void ComputeBoundingRect(const std::vector<cv::Point2f>& points,
-                         mediapipe::TimedBoxProto* box);
+                         mediapipe_v01013_based::TimedBoxProto* box);
 
 // This function computes the intersection over union between two boxes.
 float ComputeBoxIoU(const TimedBoxProto& box1, const TimedBoxProto& box2);
@@ -45,6 +45,6 @@ cv::Mat PerspectiveTransformBetweenBoxes(const TimedBoxProto& src_box,
 cv::Point2f MapPoint(const TimedBoxProto& src_box, const TimedBoxProto& dst_box,
                      const cv::Point2f& src_point, float width, float height);
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_MODULES_OBJECTRON_CALCULATORS_BOX_UTIL_H_

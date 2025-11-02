@@ -28,7 +28,7 @@
 #include "mediapipe/framework/packet_type.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe {
+namespace mediapipe_v01013_based {
 
 // An OutputStreamManager will add packets to InputStreamManager through
 // InputStreamHandler as they are output.  A CalculatorNode prepares the input
@@ -231,6 +231,6 @@ class InputStreamManager {
   bool last_reported_stream_full_ = false;
 };
 
-}  // namespace mediapipe
+}  // namespace mediapipe_v01013_based
 
 #endif  // MEDIAPIPE_FRAMEWORK_INPUT_STREAM_MANAGER_H_
