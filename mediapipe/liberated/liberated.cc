@@ -61,13 +61,19 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       ABSL_LOG(INFO) << "palm detection inference completed";
 
       // extract and first step filter the detection inference output
-      std::unique_ptr<std::vector<Detection>> filtered_detections;
-      MP_ASSIGN_OR_RETURN(filtered_detections, inference_filter_stage1_->Process(*inference));
+      std::unique_ptr<std::vector<Detection>> filtered_detections_letterboxed;
+      MP_ASSIGN_OR_RETURN(filtered_detections_letterboxed, inference_filter_stage1_->Process(*inference));
       ABSL_LOG(INFO) << "detection inference conversion to tensors completed";
 
-      std::unique_ptr<std::vector<Detection>> detections = UnLetterBox(*filtered_detections, letterbox_padding_);
+      std::unique_ptr<std::vector<Detection>> filtered_detections = UnLetterBox(*filtered_detections_letterboxed, letterbox_padding_);
       ABSL_LOG(INFO) << "detection letterbox removal completed";
 
+      auto output = absl::make_unique<std::vector<Detection>>();
+      if (filtered_detections->size() > max_hands_to_track) {
+        for (int i = 0; i < max_hands_to_track; ++i) {
+          output->push_back(filtered_detections->at(i));
+        }
+      }
 
 
     }
