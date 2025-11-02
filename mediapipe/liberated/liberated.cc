@@ -4,6 +4,7 @@
 #include "mediapipe/calculators/tensor/inference_calculator_utils.h"
 #include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
 #include "mediapipe/calculators/tensor/inference_runner.h"
+#include "mediapipe/calculators/util/detection_letterbox_removal.h"
 
 namespace mediapipe {
 
@@ -29,7 +30,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   palm_detection_inference_ = std::make_unique<api2::ModelInference>(model_path);
 
   // initialize for detection inference conversion to tensors
-  inference_filter_stage_1 = std::make_unique<api2::ConvertDetectionTensors>();
+  inference_filter_stage1_ = std::make_unique<api2::ConvertDetectionTensors>();
 
 }
 
@@ -50,6 +51,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       api2::ImageToTensorCoreResult image_as_tensor;
       absl::optional<NormalizedRect> norm_rect = absl::nullopt;
       MP_RETURN_IF_ERROR(image_to_tensor_core_->Process(*image, norm_rect, &image_as_tensor));
+      auto letterbox_padding_ = image_as_tensor.padding;
       TensorSpan image_as_tensor_span;
       image_as_tensor_span = MakeTensorSpan(image_as_tensor.tensors);
 
@@ -60,9 +62,14 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
       // extract and first step filter the detection inference output
       std::unique_ptr<std::vector<Detection>> filtered_detections;
-      MP_ASSIGN_OR_RETURN(filtered_detections, inference_filter_stage_1->Process(*inference));
-
+      MP_ASSIGN_OR_RETURN(filtered_detections, inference_filter_stage1_->Process(*inference));
       ABSL_LOG(INFO) << "detection inference conversion to tensors completed";
+
+      std::unique_ptr<std::vector<Detection>> detections = UnLetterBox(*filtered_detections, letterbox_padding_);
+      ABSL_LOG(INFO) << "detection letterbox removal completed";
+
+
+
     }
 
     return absl::OkStatus();

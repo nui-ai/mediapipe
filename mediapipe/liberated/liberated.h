@@ -28,7 +28,7 @@ class Liberated {
   std::unique_ptr<ImageToTensorConverter> gpu_converter_;
   std::unique_ptr<ImageToTensorConverter> cpu_converter_;
   std::unique_ptr<api2::ModelInference> palm_detection_inference_;
-  std::unique_ptr<api2::ConvertDetectionTensors> inference_filter_stage_1;
+  std::unique_ptr<api2::ConvertDetectionTensors> inference_filter_stage1_;
 };
 
 }

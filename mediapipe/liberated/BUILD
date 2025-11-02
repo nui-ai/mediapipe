@@ -36,6 +36,7 @@ cc_library(
         "//mediapipe/calculators/tensor:inference_runner_new",
         "//mediapipe/calculators/tensor:model_inference",
         "//mediapipe/calculators/tensor:tensors_to_detections_calculator_core",
+        "//mediapipe/calculators/util:detection_letterbox_removal",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:memory_manager",
         "//mediapipe/framework:memory_manager_service",

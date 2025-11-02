@@ -939,8 +939,8 @@ cc_test(
 )
 
 cc_library(
-    name = "detection_letterbox_removal_calculator",
-    srcs = ["detection_letterbox_removal_calculator.cc"],
+    name = "detection_letterbox_removal",
+    srcs = ["detection_letterbox_removal.h"],
     deps = [
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/formats:detection_cc_proto",
@@ -948,6 +948,13 @@ cc_library(
         "//mediapipe/framework/port:ret_check",
         "//mediapipe/framework/port:status",
     ],
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "detection_letterbox_removal_calculator",
+    srcs = ["detection_letterbox_removal_calculator.cc"],
+    deps = [":detection_letterbox_removal"],
     alwayslink = 1,
 )
 
