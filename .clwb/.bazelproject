@@ -10,11 +10,13 @@ directories:
   .
   -rust   # should be ignored by bazel. may avoid bazel or the bazel IDE plugin invalidating build outputs on cargo operations.
   -.venv  # should be ignored by bazel. may possibly avoid bazel or the bazel IDE plugin invalidating build outputs on pip uninstall which was previously observed.
-  -.run
   -.idea
   -.clwb
   -.git
   -.github
+  # the following ignore is a double-edged sword: it shouldn't be treated as a source directory, changing run configs shouldn't trigger a build,
+  # and at the same time the run configurations won't be availble in Clion if this directory is marked to be ignored here:
+  # -.run
 
 targets:
   # we use the below to include all targets under the directories defined above rather than listing them individually here,
