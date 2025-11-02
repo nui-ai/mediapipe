@@ -83,6 +83,12 @@ Liberated::Liberated(MemoryManager* memory_manager) {
           count_capped_detections->push_back(filtered_detections->at(i));
         }
       }
+    ABSL_LOG(INFO) << "naive detections capping completed";
+
+    // first = image.Width();
+    // second = image.Height();
+
+
     }
 
     return count_capped_detections;
