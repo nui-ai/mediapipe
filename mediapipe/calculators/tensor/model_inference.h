@@ -35,7 +35,7 @@ class ModelInference {
   ModelInference(const std::string& model_path, int32_t XNNPackDelegate_threads=-1);
   ~ModelInference() = default;
 
-  absl::StatusOr<std::vector<Tensor>> Process(const TensorSpan& tensor_span);
+  absl::StatusOr<std::vector<Tensor>> Process(const TensorSpan& tensor_span) const;
 
  private:
   std::unique_ptr<InferenceRunner> inference_runner_;

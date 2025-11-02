@@ -60,7 +60,7 @@ class ResourceProviderCalculator : public mediapipe::api2::Node {
   // @param mlock If true and use_mmap is true, locks the memory to prevent swapping
   // @return A Resource containing the loaded model data or an error status
   static absl::StatusOr<std::unique_ptr<Resource>> LoadModelFromPath(
-      const std::string& file_path, bool use_mmap = true, bool mlock = false);
+      const std::string& file_path, bool use_mmap = false, bool mlock = false);
 
   static absl::Status UpdateContract(CalculatorContext* cc);
 

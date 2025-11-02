@@ -418,7 +418,7 @@ config_setting(
 
 # detection inference calculator core
 cc_library(
-    name = "inference_calculator_core",
+    name = "model_inference",
     srcs = ["model_inference.cc"],
     hdrs = ["model_inference.h"],
     deps = [
@@ -434,12 +434,8 @@ cc_library(
 # dedicated detection inference calculator
 cc_library(
     name = "detection_inference_calculator",
-    srcs = [
-        "detection_inference_calculator.cc",
-    ],
-    deps = [
-        ":inference_calculator_core",
-    ],
+    srcs = ["detection_inference_calculator.cc"],
+    deps = [":model_inference"],
     alwayslink = 1,
 )
 
@@ -448,7 +444,7 @@ cc_library(
     name = "landmarks_inference_calculator",
     srcs = ["landmarks_inference_calculator.cc"],
     deps = [
-        ":inference_calculator_core",
+        ":model_inference",
         #        ":inference_interpreter_delegate_runner_new",
         #        "//mediapipe/calculators/tensor:inference_calculator",
         #        "//mediapipe/framework:calculator_framework",
@@ -803,6 +799,7 @@ cc_library_with_tflite(
         "@org_tensorflow//tensorflow/lite:util",
         "@org_tensorflow//tensorflow/lite/core/api:op_resolver",
     ],
+    alwayslink = 1,
 )
 
 cc_library_with_tflite(
@@ -836,6 +833,7 @@ cc_library_with_tflite(
         "@org_tensorflow//tensorflow/lite:util",
         "@org_tensorflow//tensorflow/lite/core/api:op_resolver",
     ],
+    alwayslink = 1,
 )
 
 cc_test(

@@ -1,4 +1,9 @@
 #include "mediapipe/liberated/liberated.h"
+#include "mediapipe/calculators/tensor/model_inference.h"
+#include "mediapipe/calculators/tensor/inference_calculator.h"
+#include "mediapipe/calculators/tensor/inference_calculator_utils.h"
+#include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
+#include "mediapipe/calculators/tensor/inference_runner.h"
 
 namespace mediapipe {
 
@@ -18,6 +23,10 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   image_to_tensor_core_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
       options, tensor_width, tensor_height, params,
       gpu_converter_, cpu_converter_, memory_manager);
+
+  // initialize for palm detection inference
+  const std::string& model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
+  palm_detection_inference_ = std::make_unique<api2::ModelInference>(model_path);
 }
 
   absl::Status Liberated::Process(const std::vector<mediapipe::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
@@ -33,12 +42,21 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
       ABSL_LOG(INFO) << "palm detection will be triggered for the current frame as the number of previous frame's detections from landmarks is smaller than the set maximum number of hands to track";
 
-      api2::ImageToTensorCoreResult core_result;
+      // image to tensor input format for the palm detection model
+      api2::ImageToTensorCoreResult image_as_tensor;
       absl::optional<NormalizedRect> norm_rect = absl::nullopt;
-      return image_to_tensor_core_->Process(*image, norm_rect, &core_result);
+      MP_RETURN_IF_ERROR(image_to_tensor_core_->Process(*image, norm_rect, &image_as_tensor));
+      TensorSpan tensor_span;
+      tensor_span = MakeTensorSpan(image_as_tensor.tensors);
+
+      // palm detection inference
+      absl::StatusOr<std::vector<Tensor>> inference;
+      MP_ASSIGN_OR_RETURN(inference, palm_detection_inference_->Process(tensor_span));
+      ABSL_LOG(INFO) << "palm detection inference completed";
 
 
-
+      return absl::OkStatus();
+      // extract and first step filter the detection inference output
 
     }
 }

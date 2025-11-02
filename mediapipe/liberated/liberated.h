@@ -4,6 +4,8 @@
 #include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_utils.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_calculator_core.h"
+#include "mediapipe/calculators/tensor/model_inference.h"
+#include "mediapipe/calculators/tensor/tensors_to_detections_calculator_core.h"
 
 namespace mediapipe {
 
@@ -25,6 +27,8 @@ class Liberated {
   std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
   std::unique_ptr<ImageToTensorConverter> gpu_converter_;
   std::unique_ptr<ImageToTensorConverter> cpu_converter_;
+  std::unique_ptr<api2::ModelInference> palm_detection_inference_;
+  std::unique_ptr<api2::ConvertDetectionTensors> core_;
 };
 
 }

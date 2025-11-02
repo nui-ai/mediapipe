@@ -69,9 +69,8 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
   inference_runner_ = std::move(runner_construction_status.value());
 }
 
-absl::StatusOr<std::vector<Tensor>> ModelInference::Process(const TensorSpan& tensor_span) {
-  return inference_runner_->Run(tensor_span);
-}
+absl::StatusOr<std::vector<Tensor>> ModelInference::Process(const TensorSpan& tensor_span) const {
+  return inference_runner_->Run(tensor_span);}
 
 }  // namespace api2
 }  // namespace mediapipe
