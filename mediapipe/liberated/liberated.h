@@ -21,7 +21,7 @@ class Liberated {
   Liberated(Liberated&&) = default;
   Liberated& operator=(Liberated&&) = default;
 
-  absl::Status Process(const std::vector<mediapipe::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const mediapipe::Image> image, uint32_t max_hands_to_track) const;
+  [[nodiscard]] absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Process(const std::vector<mediapipe::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const mediapipe::Image> image, uint32_t max_hands_to_track) const;
 
  private:
   std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;

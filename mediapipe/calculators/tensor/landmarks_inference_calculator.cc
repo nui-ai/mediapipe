@@ -71,17 +71,54 @@ absl::Status LandmarksInferenceCalculator::UpdateContract(CalculatorContract* cc
   return absl::OkStatus();
 }
 
-/// Open method no longer really uses its CalculatorContext argument.
-absl::Status LandmarksInferenceCalculator::Open(CalculatorContext* cc) {
+  absl::Status LandmarksInferenceCalculator::Open(CalculatorContext* cc) {
 
   const std::string& model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
-  try {
-    core_ = std::make_unique<ModelInference>(model_path);
-  } catch (const std::exception& e) {
-    return absl::InternalError(e.what());
-  }
-  return absl::OkStatus();
+
+  // make the model file loadable using the mediapipe resource loading system,
+  // which may (or may not) prove useful to reuse rather than just loading on our own.
+  auto default_resources = CreateDefaultResources();
+  MP_ASSIGN_OR_RETURN(auto model_packet, TfLiteModelLoader::LoadFromPath(*default_resources, model_path, false));
+  ABSL_CHECK(!model_packet.IsEmpty());
+  ABSL_LOG(INFO) << absl::StrFormat(
+    "GetModelAsPacket successfully loaded model from path: %s. Model size: %ld bytes",
+    model_path, model_packet.Get()->allocation()->bytes());
+
+  auto op_resolver = std::make_unique<mediapipe::CpuOpResolver>();
+
+  auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
+  xnnpack_opts.num_threads = 1;
+  auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts),&TfLiteXNNPackDelegateDelete);
+
+  tflite::InterpreterBuilder interpreter_builder(*model_packet.Get(), *op_resolver);
+  interpreter_builder.AddDelegate(delegate.get());
+  interpreter_builder.SetNumThreads(-1);
+
+  auto options = InferenceCalculatorOptions();
+
+  MP_ASSIGN_OR_RETURN(inference_runner_, CreateInferenceInterpreterDelegateRunner(
+    model_packet,
+    PacketAdopting<tflite::OpResolver>(std::move(op_resolver)),
+    std::move(delegate),
+    &options.input_output_config(),
+    false));
+
+  // Update IoMapper with input/output tensor names from the TfLite model.
+  io_mapper_ = std::make_unique<InferenceIoMapper>();
+  return io_mapper_->UpdateIoMap(options.input_output_config(), inference_runner_->GetInputOutputTensorNames());
 }
+
+/// Open method no longer really uses its CalculatorContext argument.
+// absl::Status LandmarksInferenceCalculator::Open(CalculatorContext* cc) {
+//
+//   const std::string& model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
+//   try {
+//     core_ = std::make_unique<ModelInference>(model_path);
+//   } catch (const std::exception& e) {
+//     return absl::InternalError(e.what());
+//   }
+//   return absl::OkStatus();
+// }
 
 /// does not really use its CalculatorContext argument in the cascade of called functions
 /// (only one of the chain of functions called from it merely used it only for performance tracing before)

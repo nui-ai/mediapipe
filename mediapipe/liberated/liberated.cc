@@ -34,8 +34,9 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
 }
 
-  absl::Status Liberated::Process(const std::vector<mediapipe::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
-    auto palm_detection_image = nullptr;
+  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Liberated::Process(const std::vector<mediapipe::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
+    // auto palm_detection_image = nullptr;
+    auto count_capped_detections = absl::make_unique<std::vector<Detection>>();
 
     if (prev_hand_rects_from_landmarks.size() == max_hands_to_track) {
       ABSL_LOG(INFO) << "the number of hands detected from the previous frame's landmarks (" << prev_hand_rects_from_landmarks.size() << ") is equal to the globally set maximum number of hands to track " << max_hands_to_track;
@@ -68,17 +69,23 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       std::unique_ptr<std::vector<Detection>> filtered_detections = UnLetterBox(*filtered_detections_letterboxed, letterbox_padding_);
       ABSL_LOG(INFO) << "detection letterbox removal completed";
 
-      auto output = absl::make_unique<std::vector<Detection>>();
+      // extremely naively fit the number of detections to be no larger than the maximum hands being tracked constant;
+      // this was part of the original pipeline (as a ClipVectorSizeCalculator subclass calculator).
+      // this is mostly a weak stop-gap element unless they have been ordered in some semantic way by the previous
+      // above stages, and otherwise would be thrown out as part of harmonizing the overall handling of the potential
+      // and expected multiplicity of detection (and their landmarks) which are inherent to SSD and to our overall.
       if (filtered_detections->size() > max_hands_to_track) {
         for (int i = 0; i < max_hands_to_track; ++i) {
-          output->push_back(filtered_detections->at(i));
+          count_capped_detections->push_back(filtered_detections->at(i));
+        }
+      } else {
+        for (int i = 0; i < filtered_detections->size(); ++i) {
+          count_capped_detections->push_back(filtered_detections->at(i));
         }
       }
-
-
     }
 
-    return absl::OkStatus();
+    return count_capped_detections;
 }
 
 }

@@ -42,6 +42,7 @@ namespace mediapipe {
         std::unique_ptr<std::vector<Detection>> UnLetterBox(
             const std::vector<Detection>& input_detections,
             const std::array<float, 4>& letterbox_padding) {
+
             const float left = letterbox_padding[0];
             const float top = letterbox_padding[1];
             const float left_and_right = letterbox_padding[0] + letterbox_padding[2];
@@ -51,36 +52,26 @@ namespace mediapipe {
             for (const auto& detection : input_detections) {
                 Detection new_detection;
                 new_detection.CopyFrom(detection);
-                LocationData::RelativeBoundingBox* relative_bbox =
-                    new_detection.mutable_location_data()
-                        ->mutable_relative_bounding_box();
+                LocationData::RelativeBoundingBox* relative_bbox = new_detection.mutable_location_data()->mutable_relative_bounding_box();
 
                 relative_bbox->set_xmin(
-                    (detection.location_data().relative_bounding_box().xmin() - left) /
-                    (1.0f - left_and_right));
+                    (detection.location_data().relative_bounding_box().xmin() - left) / (1.0f - left_and_right));
                 relative_bbox->set_ymin(
-                    (detection.location_data().relative_bounding_box().ymin() - top) /
-                    (1.0f - top_and_bottom));
+                    (detection.location_data().relative_bounding_box().ymin() - top) / (1.0f - top_and_bottom));
                 // The size of the bounding box will change as well.
                 relative_bbox->set_width(
-                    detection.location_data().relative_bounding_box().width() /
-                    (1.0f - left_and_right));
+                    detection.location_data().relative_bounding_box().width() / (1.0f - left_and_right));
                 relative_bbox->set_height(
-                    detection.location_data().relative_bounding_box().height() /
-                    (1.0f - top_and_bottom));
+                    detection.location_data().relative_bounding_box().height() / (1.0f - top_and_bottom));
 
                 // Adjust keypoints as well.
-                for (int i = 0;
-                     i < new_detection.mutable_location_data()->relative_keypoints_size();
-                     ++i) {
-                    auto* keypoint =
-                        new_detection.mutable_location_data()->mutable_relative_keypoints(
-                            i);
+                for (int i = 0; i < new_detection.mutable_location_data()->relative_keypoints_size(); ++i) {
+                    auto* keypoint = new_detection.mutable_location_data()->mutable_relative_keypoints(i);
                     const float new_x = (keypoint->x() - left) / (1.0f - left_and_right);
                     const float new_y = (keypoint->y() - top) / (1.0f - top_and_bottom);
                     keypoint->set_x(new_x);
                     keypoint->set_y(new_y);
-                     }
+                }
 
                 output_detections->emplace_back(new_detection);
             }

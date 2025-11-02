@@ -38,9 +38,10 @@ namespace mediapipe {
         cc->Inputs().Tag("ITERABLE").Set<std::vector<NormalizedRect>>();
 
         cc->Outputs().Index(0).Set<bool>(); // Unnamed boolean output at index 0 (legacy behavior expected by graph).
-        cc->Outputs().Tag("TENSORS").Set<std::vector<Tensor>>();
-        cc->Outputs().Tag("LETTERBOX_PADDING").Set<std::array<float, 4>>();
+        // cc->Outputs().Tag("TENSORS").Set<std::vector<Tensor>>();
+        // cc->Outputs().Tag("LETTERBOX_PADDING").Set<std::array<float, 4>>();
         // cc->Outputs().Tag("ITERABLE").Set<NormalizedRect>();
+        cc->Outputs().Tag("DETECTIONS").Set<std::vector<Detection>>();
         return absl::OkStatus();
       }
 
@@ -68,8 +69,20 @@ namespace mediapipe {
           const auto& rects = cc->Inputs().Tag("ITERABLE").Get<std::vector<NormalizedRect>>();
         }
 
-        return liberated_->Process(GetSharedState().prev_hand_rects_from_landmarks, image, max_hands_to_track);
+        std::unique_ptr<std::vector<Detection>> partial_result;
+        auto resultOrStatus = liberated_->Process(GetSharedState().prev_hand_rects_from_landmarks, image, max_hands_to_track);
+        if (resultOrStatus.ok()) {
+          auto output_detections = std::move(resultOrStatus.value());
+          cc->Outputs()
+            .Tag("DETECTIONS")
+            .Add(output_detections.release(), cc->InputTimestamp());
+          return absl::OkStatus();
+        }
+        else {
+          return resultOrStatus.status();
+        }
       }
     };
+
   REGISTER_CALCULATOR(HeadCalculator);
 }
