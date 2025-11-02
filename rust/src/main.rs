@@ -138,7 +138,7 @@ fn main() -> anyhow::Result<()> {
     println!("Video/camera input successfully opened");
 
     // Check the reference output file
-    let reference_proto_path = "../output_data_v0.10.13.pb";
+    let reference_proto_path = "../output_data_two_hands_num_hands_3_v0.10.13.pb";
     if !std::path::Path::new(reference_proto_path).is_file() {
         eprintln!("Error: the reference output data file '{}' not found or is not a regular file.", reference_proto_path);
         std::process::exit(1);

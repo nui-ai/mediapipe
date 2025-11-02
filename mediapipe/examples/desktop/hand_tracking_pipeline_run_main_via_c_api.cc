@@ -43,7 +43,7 @@
 
 constexpr char kInputStream[] = "image";
 constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";
-constexpr char kReferenceProtoFilename[] = "output_data_v0.10.13.pb";
+constexpr char kReferenceProtoFilename[] = "output_data_two_hands_num_hands_3_v0.10.13.pb";
 
 ABSL_FLAG(std::string, graph_file, "", "Name of pipeline pbtxt file.");
 ABSL_FLAG(std::string, input_video_path, "", "Full path of video to load. If not provided, will attempt to use webcam input (not tested).");
