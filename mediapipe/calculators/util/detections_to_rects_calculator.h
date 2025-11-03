@@ -15,6 +15,7 @@
 #define MEDIAPIPE_CALCULATORS_UTIL_DETECTIONS_TO_RECTS_CALCULATOR_H_
 
 #include <cmath>
+#include <memory>
 
 #include "absl/types/optional.h"
 #include "mediapipe/calculators/util/detections_to_rects_calculator.pb.h"
@@ -25,6 +26,7 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
+#include "mediapipe/calculators/util/detections_to_rects_calculator_core.h"
 
 namespace mediapipe_v01013_based {
 
@@ -88,28 +90,17 @@ class PalmDetectionToHandRectStage1 : public CalculatorBase {
   absl::Status Open(CalculatorContext* cc) override;
   absl::Status Process(CalculatorContext* cc) override;
 
- protected:
-  virtual absl::Status DetectionToRect(const ::mediapipe_v01013_based::Detection& detection,
-                                       const DetectionSpec& detection_spec,
-                                       ::mediapipe_v01013_based::Rect* rect);
-  virtual absl::Status DetectionToNormalizedRect(
+ private:
+  absl::Status DetectionToRect(const ::mediapipe_v01013_based::Detection& detection,
+                               const DetectionSpec& detection_spec,
+                               ::mediapipe_v01013_based::Rect* rect);
+  absl::Status DetectionToNormalizedRect(
       const ::mediapipe_v01013_based::Detection& detection,
       const DetectionSpec& detection_spec, ::mediapipe_v01013_based::NormalizedRect* rect);
-  virtual absl::Status ComputeRotation(const ::mediapipe_v01013_based::Detection& detection,
-                                       const DetectionSpec& detection_spec,
-                                       float* rotation);
-  virtual DetectionSpec GetDetectionSpec(const CalculatorContext* cc);
+  DetectionSpec GetDetectionSpec(const CalculatorContext* cc);
 
-  static inline float NormalizeRadians(float angle) {
-    return angle - 2 * M_PI * std::floor((angle - (-M_PI)) / (2 * M_PI));
-  }
-
-  ::mediapipe_v01013_based::DetectionsToRectsCalculatorOptions options_;
-  int start_keypoint_index_;
-  int end_keypoint_index_;
-  float target_angle_ = 0.0f;  // In radians.
-  bool rotate_;
-  bool output_zero_rect_for_empty_detections_;
+  // Core helper encapsulating rect computation logic and options.
+  std::unique_ptr<DetectionsToRectsCore> core_;
 };
 
 }  // namespace mediapipe_v01013_based

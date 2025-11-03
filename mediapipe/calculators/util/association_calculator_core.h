@@ -21,11 +21,8 @@
 
 #include "absl/log/absl_check.h"
 #include "absl/memory/memory.h"
-#include "mediapipe/calculators/util/association_calculator.pb.h"
 #include "mediapipe/framework/calculator_context.h"
 #include "mediapipe/framework/calculator_framework.h"
-#include "mediapipe/framework/collection_item_id.h"
-#include "mediapipe/framework/port/canonical_errors.h"
 #include "mediapipe/framework/port/rectangle.h"
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/util/rectangle_util.h"
@@ -33,7 +30,7 @@
 namespace mediapipe_v01013_based {
 
   // helper function for the below
-  absl::StatusOr<Rectangle_f> GetRectangle(
+  static inline absl::StatusOr<Rectangle_f> GetRectangle(
       const ::mediapipe_v01013_based::NormalizedRect& input) {
     if (!input.has_x_center() || !input.has_y_center() || !input.has_width() ||
         !input.has_height()) {
@@ -48,7 +45,7 @@ namespace mediapipe_v01013_based {
   // helper function for the below
   template <typename T>
   absl::Status AddElementToListWhileSuppressing(const T& element, std::list<T>* current, float min_similarity_threshold) {
-    MP_ASSIGN_OR_RETURN(auto new_element, GetRectangle(element));
+    MP_ASSIGN_OR_RETURN(auto new_element, ::mediapipe_v01013_based::GetRectangle(element));
     for (auto uit = current->begin(); uit != current->end();) {
       MP_ASSIGN_OR_RETURN(auto collection_element, GetRectangle(*uit));
       if (CalculateIou(new_element, collection_element) > min_similarity_threshold) {
@@ -62,16 +59,20 @@ namespace mediapipe_v01013_based {
     return absl::OkStatus();
   }
 
-  /// smashes together palm detections from the current frame's explicit palm detection inference
-  /// and those derived from the previous frame's landmarks inference, filtering out any partially overlapping ones
-  /// (by its overlap threshold) by a greedy ordering where the last wins. in our case, the last stream is
+  /// smashes together the given set of palm detection rectangles from the current frame's explicit palm detection inference and
+  /// the given set of detection rectangles derived from the previous frame's landmarks inference, filtering out any partially
+  /// overlapping ones (by its overlap threshold) by a greedy ordering where the last wins. in our case, the last stream is
   /// (not-intuitively) that of the *previous frame's landmarks-derived palm detections*.
   ///
-  /// the homomorphic effect of filtering the same within each of the two sets is more of an artefact,
-  /// as it should be a separate step, or they should all be pooled before filtering at all,
-  /// so that in-set filtering feature of this function is only kept as a baseline.
+  /// and when there are no detections at all, it should just pass forward no detections.
   ///
-  /// (when there are no detections at all, it should just pass forward no detections).
+  /// the homomorphic effect of filtering the same within each of the two sets could be seen as more of an artefact,
+  /// as it should be a separate step, or they should all be pooled before filtering at all, unless it somehow
+  /// makes for a super-optimal baseline as is.
+  ///
+  /// filtering is an epic in our pipeline which when reworked would consume the current baseline step as well
+  /// as all other ones when being redesigned for specific sets of desiderata, for now we just keep the legacy
+  /// behaviors at all the arbitrarily disparate filtering steps of the pipeline the current one included.
   template <typename T>
   absl::StatusOr<std::list<T>> FilterMerge(
       const std::vector<T>& explicit_palm_detections,

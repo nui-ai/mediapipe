@@ -5,6 +5,7 @@
 #include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
 #include "mediapipe/calculators/tensor/inference_runner.h"
 #include "mediapipe/calculators/util/detection_letterbox_removal.h"
+#include "mediapipe/calculators/util/association_calculator_core.h"
 
 namespace mediapipe_v01013_based {
 
@@ -85,10 +86,16 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       }
     ABSL_LOG(INFO) << "naive detections capping completed";
 
+
+
+
+
     // first = image.Width();
     // second = image.Height();
 
-
+    // std::list<T> result_set;
+    // MP_ASSIGN_OR_RETURN(result_set,
+    //   mediapipe_v01013_based::FilterMerge(hand_rects_from_palm_detection, prev_hand_rects_from_landmarks)));
     }
 
     return count_capped_detections;

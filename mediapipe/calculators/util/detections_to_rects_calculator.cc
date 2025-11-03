@@ -77,57 +77,22 @@ void RectFromBox(B box, R* rect) {
 }  // namespace
 
 absl::Status PalmDetectionToHandRectStage1::DetectionToRect(
-    const Detection& detection, const DetectionSpec& detection_spec,
+    const Detection& detection, const DetectionSpec& /*detection_spec*/,
     Rect* rect) {
   const LocationData location_data = detection.location_data();
-  switch (options_.conversion_mode()) {
-    case mediapipe_v01013_based::DetectionsToRectsCalculatorOptions_ConversionMode_DEFAULT:
-    case mediapipe_v01013_based::
-        DetectionsToRectsCalculatorOptions_ConversionMode_USE_BOUNDING_BOX: {
-      RET_CHECK(location_data.format() == LocationData::BOUNDING_BOX)
-          << "Only Detection with formats of BOUNDING_BOX can be converted to "
-             "Rect";
-      RectFromBox(location_data.bounding_box(), rect);
-      break;
-    }
-    case mediapipe_v01013_based::
-        DetectionsToRectsCalculatorOptions_ConversionMode_USE_KEYPOINTS: {
-      RET_CHECK(detection_spec.image_size.has_value())
-          << "Rect with absolute coordinates calculation requires image size.";
-      const int width = detection_spec.image_size->first;
-      const int height = detection_spec.image_size->second;
-      NormalizedRect norm_rect;
-      MP_RETURN_IF_ERROR(NormRectFromKeyPoints(location_data, &norm_rect));
-      rect->set_x_center(std::round(norm_rect.x_center() * width));
-      rect->set_y_center(std::round(norm_rect.y_center() * height));
-      rect->set_width(std::round(norm_rect.width() * width));
-      rect->set_height(std::round(norm_rect.height() * height));
-      break;
-    }
-  }
+  RET_CHECK(location_data.format() == LocationData::BOUNDING_BOX)
+      << "Only Detection with formats of BOUNDING_BOX can be converted to Rect";
+  RectFromBox(location_data.bounding_box(), rect);
   return absl::OkStatus();
 }
 
 absl::Status PalmDetectionToHandRectStage1::DetectionToNormalizedRect(
-    const Detection& detection, const DetectionSpec& detection_spec,
+    const Detection& detection, const DetectionSpec& /*detection_spec*/,
     NormalizedRect* rect) {
   const LocationData location_data = detection.location_data();
-  switch (options_.conversion_mode()) {
-    case mediapipe_v01013_based::DetectionsToRectsCalculatorOptions_ConversionMode_DEFAULT:
-    case mediapipe_v01013_based::
-        DetectionsToRectsCalculatorOptions_ConversionMode_USE_BOUNDING_BOX: {
-      RET_CHECK(location_data.format() == LocationData::RELATIVE_BOUNDING_BOX)
-          << "Only Detection with formats of RELATIVE_BOUNDING_BOX can be "
-             "converted to NormalizedRect";
-      RectFromBox(location_data.relative_bounding_box(), rect);
-      break;
-    }
-    case mediapipe_v01013_based::
-        DetectionsToRectsCalculatorOptions_ConversionMode_USE_KEYPOINTS: {
-      MP_RETURN_IF_ERROR(NormRectFromKeyPoints(location_data, rect));
-      break;
-    }
-  }
+  RET_CHECK(location_data.format() == LocationData::RELATIVE_BOUNDING_BOX)
+      << "Only Detection with formats of RELATIVE_BOUNDING_BOX can be converted to NormalizedRect";
+  RectFromBox(location_data.relative_bounding_box(), rect);
   return absl::OkStatus();
 }
 
@@ -173,17 +138,8 @@ absl::Status PalmDetectionToHandRectStage1::GetContract(CalculatorContract* cc) 
 absl::Status PalmDetectionToHandRectStage1::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
 
-  options_ = DetectionsToRectsCalculatorOptions();
-  options_.set_rotation_vector_start_keypoint_index(0);  // Center of wrist.
-  options_.set_rotation_vector_end_keypoint_index(2);  // MCP of middle finger.
-  options_.set_rotation_vector_target_angle_degrees(90);
-
-  DetectionsToRectsCoreConfig config = SetDetectionsToRectsConfig(options_);
-  start_keypoint_index_ = config.start_keypoint_index;
-  end_keypoint_index_ = config.end_keypoint_index;
-  target_angle_ = config.target_angle;
-  rotate_ = config.rotate;
-  output_zero_rect_for_empty_detections_ = config.output_zero_rect_for_empty_detections;
+  auto target_angle_rad = static_cast<float>(M_PI * 90.0 / 180.0);
+  core_ = std::make_unique<DetectionsToRectsCore>(target_angle_rad);
   return absl::OkStatus();
 }
 
@@ -196,7 +152,7 @@ absl::Status PalmDetectionToHandRectStage1::Process(CalculatorContext* cc) {
       cc->Inputs().Tag(kDetectionsTag).IsEmpty()) {
     return absl::OkStatus();
   }
-  if (rotate_ && !HasTagValue(cc, kImageSizeTag)) {
+  if (core_ && core_->NeedsImageSize() && !HasTagValue(cc, kImageSizeTag)) {
     return absl::OkStatus();
   }
   std::vector<Detection> detections;
@@ -206,7 +162,7 @@ absl::Status PalmDetectionToHandRectStage1::Process(CalculatorContext* cc) {
   if (cc->Inputs().HasTag(kDetectionsTag)) {
     detections = cc->Inputs().Tag(kDetectionsTag).Get<std::vector<Detection>>();
     if (detections.empty()) {
-      if (output_zero_rect_for_empty_detections_) {
+      if (core_ && core_->OutputZeroForEmptyDetections()) {
         if (cc->Outputs().HasTag(kRectTag)) {
           cc->Outputs().Tag(kRectTag).AddPacket(
               MakePacket<Rect>().At(cc->InputTimestamp()));
@@ -229,15 +185,11 @@ absl::Status PalmDetectionToHandRectStage1::Process(CalculatorContext* cc) {
   }
   const DetectionSpec detection_spec = GetDetectionSpec(cc);
   absl::optional<std::pair<int, int>> image_size = detection_spec.image_size;
-  DetectionsToRectsCoreConfig config;
-  config.start_keypoint_index = start_keypoint_index_;
-  config.end_keypoint_index = end_keypoint_index_;
-  config.target_angle = target_angle_;
-  config.rotate = rotate_;
-  config.output_zero_rect_for_empty_detections = output_zero_rect_for_empty_detections_;
   std::vector<Rect> rects;
   std::vector<NormalizedRect> norm_rects;
-  ComputeRectsFromDetections(detections, config, image_size, &norm_rects, &rects);
+
+  core_->ComputeRectsFromDetections(detections, image_size, &norm_rects, &rects);
+
   if (cc->Outputs().HasTag(kRectTag) && !rects.empty()) {
     cc->Outputs().Tag(kRectTag).AddPacket(MakePacket<Rect>(rects[0]).At(cc->InputTimestamp()));
   }
@@ -252,27 +204,6 @@ absl::Status PalmDetectionToHandRectStage1::Process(CalculatorContext* cc) {
     auto output_rects = absl::make_unique<std::vector<NormalizedRect>>(norm_rects);
     cc->Outputs().Tag(kNormRectsTag).Add(output_rects.release(), cc->InputTimestamp());
   }
-
-  return absl::OkStatus();
-}
-
-absl::Status PalmDetectionToHandRectStage1::ComputeRotation(
-    const Detection& detection, const DetectionSpec& detection_spec,
-    float* rotation) {
-  const auto& location_data = detection.location_data();
-  const auto& image_size = detection_spec.image_size;
-  RET_CHECK(image_size) << "Image size is required to calculate rotation";
-
-  const float x0 = location_data.relative_keypoints(start_keypoint_index_).x() *
-                   image_size->first;
-  const float y0 = location_data.relative_keypoints(start_keypoint_index_).y() *
-                   image_size->second;
-  const float x1 = location_data.relative_keypoints(end_keypoint_index_).x() *
-                   image_size->first;
-  const float y1 = location_data.relative_keypoints(end_keypoint_index_).y() *
-                   image_size->second;
-
-  *rotation = NormalizeRadians(target_angle_ - std::atan2(-(y1 - y0), x1 - x0));
 
   return absl::OkStatus();
 }
