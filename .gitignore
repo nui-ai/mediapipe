@@ -66,3 +66,5 @@ rust/.idea/
 rust/.DS_Store
 # Uncomment the next line if you do NOT want to track Cargo.lock
 rust/Cargo.lock
+# rust source files generated during the build from protobuf definitions
+rust/src/proto/
