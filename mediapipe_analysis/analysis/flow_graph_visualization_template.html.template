@@ -65,6 +65,61 @@ let stickyFocusNode = null;  // NEW: Track sticky focused node
 let shiftHeld = false;
 let ctrlHeld = false; // NEW: track Ctrl state uniformly with Shift
 
+// --- Simulation auto-stop configuration ---
+const SIM_STOP_AFTER_SECONDS = 7; // Stop the force simulation after this many seconds from each (re)start
+let simStopTimer = null;          // Timer handle for the scheduled stop
+let simRunId = 0;                 // Monotonically increasing token to distinguish runs; increments on every (re)start.
+// We count simulation starts (via simRunId) so that any previously scheduled timers from an older run
+// cannot stop a newer run. In scheduleSimulationStop() we capture the current runId and only stop the
+// simulation if the timer's runId still matches simRunId, effectively cancelling stale timers.
+let simulationStopped = false;    // Whether the current run has been stopped
+
+function stopSimulation() {{
+  if (!simulation) return;
+  try {{ simulation.stop(); }} catch (e) {{}}
+  simulationStopped = true;
+  if (simStopTimer) {{ clearTimeout(simStopTimer); simStopTimer = null; }}
+}}
+
+function scheduleSimulationStop() {{
+  if (simStopTimer) {{ clearTimeout(simStopTimer); simStopTimer = null; }}
+  const runId = simRunId;
+  const ms = SIM_STOP_AFTER_SECONDS * 1000;
+  simStopTimer = setTimeout(() => {{
+    // Only stop if this timer belongs to the current run and it wasn't already stopped
+    if (runId === simRunId && simulation && !simulationStopped) {{
+      stopSimulation();
+    }}
+  }}, ms);
+}}
+
+function markSimulationStarted() {{
+  simulationStopped = false;
+  simRunId += 1; // new run token
+  scheduleSimulationStop();
+}}
+
+function installSimulationAutoStopHooks() {{
+  if (!simulation) return;
+  // This monkey-patches d3's simulation.restart() so that ANY time the simulation warms up again
+  // (initial start, dragging, programmatic restarts, alphaTarget nudges that call .restart(), etc.)
+  // we treat that as the start of a NEW run. That lets us re-arm the 7s auto-stop window each time.
+  //
+  // We must also avoid patching multiple times (e.g., on window resize re-render), so we set a flag.
+  if (!simulation.__autoStopPatched) {{
+    const origRestart = simulation.restart;
+    simulation.restart = function() {{
+      // Call the original restart, then mark the run as (re)started so the timer is re-scheduled.
+      const res = origRestart.apply(this, arguments);
+      markSimulationStarted();
+      return res;
+    }};
+    // Mark as patched so we don't wrap again.
+    simulation.__autoStopPatched = true;
+  }}
+}}
+// --- End Simulation auto-stop configuration ---
+
 let hoverBoxNode = null; // id of node currently showing hover box
 let hoverBoxEl = null; // cached element reference
 let hoverGroupEl = null; // the SVG group element for hovered node
@@ -506,6 +561,10 @@ function renderGraph() {{
       .alphaTarget(0.3)
       .alphaDecay(alphaDecay);
 
+  // Install auto-stop hooks and schedule a stop for this fresh run
+  installSimulationAutoStopHooks();
+  markSimulationStarted();
+
   link = svg.append('g')
       .selectAll('line')
       .data(links)
@@ -874,6 +933,15 @@ document.addEventListener('keydown', function(event) {{
   if (event.key === 'd' || event.key === 'D') {{
     if (event.target.id !== 'nodeSearchBox') {{ // Don't trigger when typing in search box
       window.open(window.location.href, '_blank');
+      event.preventDefault();
+    }}
+    return;
+  }}
+
+  // NEW: 's' key stops the force simulation (unless typing in the search box)
+  if (event.key === 's' || event.key === 'S') {{
+    if (event.target.id !== 'nodeSearchBox') {{
+      stopSimulation();
       event.preventDefault();
     }}
     return;
