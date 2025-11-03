@@ -50,7 +50,8 @@ static absl::Status DetectionToNormalizedRect(const Detection& detection, Normal
 }
 
 
-DetectionsToRectsCore::DetectionsToRectsCore(float target_angle_radians, bool output_zero_rect_for_empty_detections) {
+/// from a raw axes parallel detection rect of the SSD model, orients a rect based on keypoints of the palm detection!
+DetectionsToOrientedRects::DetectionsToOrientedRects(float target_angle_radians, bool output_zero_rect_for_empty_detections) {
 
   const int start_keypoint_index = 0;  // Center of wrist.
   const int end_keypoint_index = 2;    // MCP of middle finger.
@@ -83,15 +84,15 @@ DetectionsToRectsCore::DetectionsToRectsCore(float target_angle_radians, bool ou
   config_.output_zero_rect_for_empty_detections = options_.output_zero_rect_for_empty_detections();
 }
 
-bool DetectionsToRectsCore::NeedsImageSize() const {
+bool DetectionsToOrientedRects::NeedsImageSize() const {
   return config_.rotate;
 }
 
-bool DetectionsToRectsCore::OutputZeroForEmptyDetections() const {
+bool DetectionsToOrientedRects::OutputZeroForEmptyDetections() const {
   return config_.output_zero_rect_for_empty_detections;
 }
 
-absl::Status DetectionsToRectsCore::ComputeRectsFromDetections(
+absl::Status DetectionsToOrientedRects::OrientedRectsFromDetections(
     const std::vector<Detection>& detections,
     const absl::optional<std::pair<int, int>>& image_size,
     std::vector<NormalizedRect>* norm_rects,

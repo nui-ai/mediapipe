@@ -1,29 +1,22 @@
 #include "mediapipe/liberated/liberated.h"
-#include "mediapipe/calculators/tensor/model_inference.h"
-#include "mediapipe/calculators/tensor/inference_calculator.h"
-#include "mediapipe/calculators/tensor/inference_calculator_utils.h"
-#include "mediapipe/calculators/tensor/inference_interpreter_delegate_runner_new.h"
-#include "mediapipe/calculators/tensor/inference_runner.h"
-#include "mediapipe/calculators/util/detection_letterbox_removal.h"
-#include "mediapipe/calculators/util/association_calculator_core.h"
 
 namespace mediapipe_v01013_based {
 
 Liberated::Liberated(MemoryManager* memory_manager) {
 
   // initialize for image to tensors conversions
-  auto options = ImageToTensorCalculatorOptions();
-  options.set_output_tensor_width(192);
-  options.set_output_tensor_height(192);
-  options.set_keep_aspect_ratio(true);
-  options.mutable_output_tensor_float_range()->set_min(0.0f);
-  options.mutable_output_tensor_float_range()->set_max(1.0f);
-  options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
-  auto params = GetOutputTensorParams(options);
+  auto image_to_tensor_options = ImageToTensorCalculatorOptions();
+  image_to_tensor_options.set_output_tensor_width(192);
+  image_to_tensor_options.set_output_tensor_height(192);
+  image_to_tensor_options.set_keep_aspect_ratio(true);
+  image_to_tensor_options.mutable_output_tensor_float_range()->set_min(0.0f);
+  image_to_tensor_options.mutable_output_tensor_float_range()->set_max(1.0f);
+  image_to_tensor_options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
+  auto params = GetOutputTensorParams(image_to_tensor_options);
   int tensor_width = params.output_width.value_or(0);
   int tensor_height = params.output_height.value_or(0);
   image_to_tensor_core_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
-      options, tensor_width, tensor_height, params,
+      image_to_tensor_options, tensor_width, tensor_height, params,
       gpu_converter_, cpu_converter_, memory_manager);
 
   // initialize for palm detection inference
@@ -33,19 +26,34 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   // initialize for detection inference conversion to tensors
   inference_filter_stage1_ = std::make_unique<api2::ConvertDetectionTensors>();
 
+  // initialize for orienting the raw (axes parallel) palm rect detected by SSD, to the palm's rough shape by detection keypoints of the palm detection itself.
+  auto target_angle_rad = static_cast<float>(M_PI * 90.0 / 180.0);
+  palm_detection_to_oriented_palm_rect_ = std::make_unique<DetectionsToOrientedRects>(target_angle_rad);
+
+  // initialize for expanding from aligned palm rects to aligned hand (palm + fingers) rects
+  auto oriented_palm_rect_to_hand_rect_expander_options = RectTransformationCalculatorOptions();
+  oriented_palm_rect_to_hand_rect_expander_options.set_scale_x(2.6f);
+  oriented_palm_rect_to_hand_rect_expander_options.set_scale_y(2.6f);
+  oriented_palm_rect_to_hand_rect_expander_options.set_shift_y(-0.5);
+  oriented_palm_rect_to_hand_rect_expander_options.set_square_long(true);
+  // ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
+  oriented_palm_rect_to_hand_rect_expander_ = std::make_unique<PalmRectToHandRect>(oriented_palm_rect_to_hand_rect_expander_options);
 }
 
-  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Liberated::Process(const std::vector<mediapipe_v01013_based::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
+  absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Liberated::Process(const std::vector<mediapipe_v01013_based::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
     // auto palm_detection_image = nullptr;
     auto count_capped_detections = absl::make_unique<std::vector<Detection>>();
+    auto merged_hand_rectangles = absl::make_unique<std::list<NormalizedRect>>();
 
     if (prev_hand_rects_from_landmarks.size() == max_hands_to_track) {
       ABSL_LOG(INFO) << "the number of hands detected from the previous frame's landmarks (" << prev_hand_rects_from_landmarks.size() << ") is equal to the globally set maximum number of hands to track " << max_hands_to_track;
       ABSL_LOG(INFO) << "skipping palm detection";
     } else if (prev_hand_rects_from_landmarks.size() > max_hands_to_track) {
       ABSL_LOG(INFO) << "the number of hands detected from the previous frame's landmarks (" << prev_hand_rects_from_landmarks.size() << ") is larger than the globally set maximum number of hands to track " << max_hands_to_track;
-      ABSL_LOG(INFO) << "skipping palm detection as";
-    } else if (prev_hand_rects_from_landmarks.size() < max_hands_to_track) {
+      ABSL_LOG(INFO) << "skipping palm detection as"; }
+
+    // start the palm detection -> expanded oriented hand region for landmark inference path of computation
+    else if (prev_hand_rects_from_landmarks.size() < max_hands_to_track) {
 
       ABSL_LOG(INFO) << "palm detection will be triggered for the current frame as the number of previous frame's detections from landmarks is smaller than the set maximum number of hands to track";
 
@@ -84,21 +92,36 @@ Liberated::Liberated(MemoryManager* memory_manager) {
           count_capped_detections->push_back(filtered_detections->at(i));
         }
       }
-    ABSL_LOG(INFO) << "naive detections capping completed";
+      ABSL_LOG(INFO) << "naive detections capping completed";
 
+      // orient the palm detections all inside the orienter function
+      std::vector<NormalizedRect> oriented_palm_norm_rects;
+      std::vector<Rect> oriented_palm_rects; // unused output argument required by the below function in its current legacy form
+      auto image_size = std::make_pair(image->width(), image->height());
+      MP_RETURN_IF_ERROR(palm_detection_to_oriented_palm_rect_->OrientedRectsFromDetections(*count_capped_detections, image_size, &oriented_palm_norm_rects, &oriented_palm_rects));
 
+      // unlike the former step, we loop each rect here not in the inside expander call
+      auto hand_rects = absl::make_unique<std::vector<NormalizedRect>>(oriented_palm_rects.size());
+      for (int i = 0; i < oriented_palm_rects.size(); ++i) {
+        // copy the rect
+        hand_rects->at(i) = oriented_palm_norm_rects[i];
+        // expand the rect
+        auto it = hand_rects->begin() + i;
+        oriented_palm_rect_to_hand_rect_expander_->ExpandNormalizedRect(&(*it), image->width(), image->height());
+      }
 
-
-
-    // first = image.Width();
-    // second = image.Height();
+      // merge (filter) the set of hand rects derived directly from palm detection inference, with the set of hand rects derived from the previous frame's landmarks inference.
+      // both of these two sets can have elements, or just be empty.
+      // std::list<NormalizedRect> merged_hand_rectangles;
+      MP_ASSIGN_OR_RETURN(*merged_hand_rectangles, mediapipe_v01013_based::FilterMerge(oriented_palm_norm_rects, prev_hand_rects_from_landmarks, 0.5));
 
     // std::list<T> result_set;
     // MP_ASSIGN_OR_RETURN(result_set,
     //   mediapipe_v01013_based::FilterMerge(hand_rects_from_palm_detection, prev_hand_rects_from_landmarks)));
     }
 
-    return count_capped_detections;
+  auto merged_hand_rectangles_vector = absl::make_unique<std::vector<NormalizedRect>>(merged_hand_rectangles->begin(), merged_hand_rectangles->end());
+  return merged_hand_rectangles_vector;
 }
 
 }

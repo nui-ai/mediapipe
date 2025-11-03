@@ -100,7 +100,7 @@ class PalmDetectionToHandRectStage1 : public CalculatorBase {
   DetectionSpec GetDetectionSpec(const CalculatorContext* cc);
 
   // Core helper encapsulating rect computation logic and options.
-  std::unique_ptr<DetectionsToRectsCore> core_;
+  std::unique_ptr<DetectionsToOrientedRects> core_;
 };
 
 }  // namespace mediapipe_v01013_based

@@ -38,6 +38,8 @@ cc_library(
         "//mediapipe/calculators/tensor:tensors_to_detections_calculator_core",
         "//mediapipe/calculators/util:association_calculator_core",
         "//mediapipe/calculators/util:detection_letterbox_removal",
+        "//mediapipe/calculators/util:detections_to_rects_calculator_core",
+        "//mediapipe/calculators/util:rect_transformation_calculator_core",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:memory_manager",
         "//mediapipe/framework:memory_manager_service",

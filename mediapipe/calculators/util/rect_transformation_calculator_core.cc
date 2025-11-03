@@ -48,14 +48,14 @@
 
 namespace mediapipe_v01013_based {
 
-  inline float RectTransformationCalculatorCore::NormalizeRadians(float angle) {
+  inline float PalmRectToHandRect::NormalizeRadians(float angle) {
     return angle - 2 * M_PI * std::floor((angle - (-M_PI)) / (2 * M_PI));
   }
 
-  RectTransformationCalculatorCore::RectTransformationCalculatorCore(RectTransformationCalculatorOptions &options)
+  PalmRectToHandRect::PalmRectToHandRect(RectTransformationCalculatorOptions &options)
     : options_(options) {}
 
-  float RectTransformationCalculatorCore::ComputeNewRotation(float rotation) const {
+  float PalmRectToHandRect::ComputeNewRotation(float rotation) const {
     if (options_.has_rotation()) {
       rotation += options_.rotation();
     } else if (options_.has_rotation_degrees()) {
@@ -64,18 +64,13 @@ namespace mediapipe_v01013_based {
     return NormalizeRadians(rotation);
   }
 
-  /// works over a navie rectangle representation which is always parallel to the screen axes (has no rotation).
-  ///
-  /// transforms the given rect by this object's fixed scaling and shifting constants provided on its initialization.
-  /// obviously beyond fixed scaling ratios (which can be more easily motivated) any fixed shift ratios only optimize
-  /// for a certain direction of motion at the expense of other directions of motion. unless you thought that the
-  /// pipeline is coutering those shifts by dynamic properties elsewhere, which are nowhere to be found.
-  /// e.g. if it built the rects in such a way that they are always biased in a certain direction.
-  ///
+  /// expands and shifts the rectangle that contains the palm so that it's likely to cover the entire hand.
   /// the scaling is applied such that either the (in our case) the shorter axis of the rectangle
   /// is enlarged to be equal to the longer axis of the rectangle, before applying the scaling ―
   /// thus making it more square, as much as the scaling factors for width and height are equal.
-  void RectTransformationCalculatorCore::TransformRect(Rect* rect) const {
+  /// (the input argument is modified in place as an input-output argument,
+  ///  unlike most mediapipe functions we use in this pipeline).
+  void PalmRectToHandRect::Expand(Rect* rect) const {
     float width = rect->width();
     float height = rect->height();
     float rotation = rect->rotation();
@@ -111,13 +106,12 @@ namespace mediapipe_v01013_based {
     rect->set_height(height * options_.scale_y());
   }
 
-  /// works over a rotated rectangle representation which is normalized to the aspect ratio (the NormalizedRect dataclass)
-  ///
-  /// transforms the given rect by this object's fixed scaling and shifting constants provided on its initialization.
-  /// obviously beyond fixed scaling ratios (which can be more easily motivated) any fixed shift ratios only optimize
-  /// for a certain direction of motion at the expense of other directions of motion. unless you thought that the
-  /// pipeline is coutering those shifts by dynamic properties elsewhere, which are nowhere to be found.
-  /// e.g. if it built the rects in such a way that they are always biased in a certain direction.
+  /// expands and shifts the rectangle that contains the palm so that it's likely to cover the entire hand.
+  /// the scaling is applied such that either the (in our case) the shorter axis of the rectangle
+  /// is enlarged to be equal to the longer axis of the rectangle, before applying the scaling ―
+  /// thus making it more square, as much as the scaling factors for width and height are equal.
+  /// (the input argument is modified in place as an input-output argument,
+  ///  unlike most mediapipe functions we use in this pipeline).
   ///
   /// steps:
   /// - moves the rectangle's center coords by the constant shift ratios (complying with the rectangle's rotation)
@@ -125,7 +119,7 @@ namespace mediapipe_v01013_based {
   ///   which has its originally shorter axis length extend to the length of its longer axis.
   /// - scale the squared rectangle of the previous step over its both axes, according to the
   ///   constant scaling parameters.
-  void RectTransformationCalculatorCore::TransformNormalizedRect(NormalizedRect* rect, int image_width, int image_height) const {
+  void PalmRectToHandRect::ExpandNormalizedRect(NormalizedRect* rect, const int image_width, const int image_height) const {
     float width = rect->width();
     float height = rect->height();
     float rotation = rect->rotation();

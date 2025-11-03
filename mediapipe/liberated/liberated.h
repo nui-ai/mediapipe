@@ -1,15 +1,22 @@
 #ifndef MEDIAPIPE_LIBERATED_H
 #define MEDIAPIPE_LIBERATED_H
+
 #include <memory>
 #include "mediapipe/framework/memory_manager.h"
-#include "mediapipe/calculators/tensor/image_to_tensor_utils.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_calculator_core.h"
 #include "mediapipe/calculators/tensor/model_inference.h"
 #include "mediapipe/calculators/tensor/tensors_to_detections_calculator_core.h"
+#include "mediapipe/calculators/util/detections_to_rects_calculator_core.h"
+#include "mediapipe/calculators/tensor/inference_runner.h"
+#include "mediapipe/calculators/util/association_calculator_core.h"
+#include "mediapipe/calculators/util/detection_letterbox_removal.h"
+#include "mediapipe/calculators/util/rect_transformation_calculator_core.h"
+
 
 namespace mediapipe_v01013_based {
+ class DetectionsToOrientedRects;
 
-class Liberated {
+ class Liberated {
  public:
 
   explicit Liberated(MemoryManager* memory_manager);
@@ -21,7 +28,7 @@ class Liberated {
   Liberated(Liberated&&) = default;
   Liberated& operator=(Liberated&&) = default;
 
-  [[nodiscard]] absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Process(const std::vector<mediapipe_v01013_based::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const mediapipe_v01013_based::Image> image, uint32_t max_hands_to_track) const;
+  [[nodiscard]] absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Process(const std::vector<mediapipe_v01013_based::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const mediapipe_v01013_based::Image> image, uint32_t max_hands_to_track) const;
 
  private:
   std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
@@ -29,6 +36,8 @@ class Liberated {
   std::unique_ptr<ImageToTensorConverter> cpu_converter_;
   std::unique_ptr<api2::ModelInference> palm_detection_inference_;
   std::unique_ptr<api2::ConvertDetectionTensors> inference_filter_stage1_;
+  std::unique_ptr<DetectionsToOrientedRects> palm_detection_to_oriented_palm_rect_;
+  std::unique_ptr<PalmRectToHandRect> oriented_palm_rect_to_hand_rect_expander_;
 };
 
 }

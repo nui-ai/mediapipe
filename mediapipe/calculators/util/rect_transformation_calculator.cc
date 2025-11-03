@@ -62,7 +62,7 @@ class RectTransformationCalculator : public CalculatorBase {
 
  private:
   RectTransformationCalculatorOptions options_;
-  std::unique_ptr<RectTransformationCalculatorCore> core_;
+  std::unique_ptr<PalmRectToHandRect> core_;
 };
 
 class PalmDetectionToHandRectStage2 : public RectTransformationCalculator {};  // used as part of detection handling
@@ -109,7 +109,7 @@ absl::Status RectTransformationCalculator::Open(CalculatorContext* cc) {
 
   ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
 
-  core_ = std::make_unique<RectTransformationCalculatorCore>(options_);
+  core_ = std::make_unique<PalmRectToHandRect>(options_);
 
   return absl::OkStatus();
 }
@@ -117,7 +117,7 @@ absl::Status RectTransformationCalculator::Open(CalculatorContext* cc) {
 absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
   if (cc->Inputs().HasTag(kRectTag) && !cc->Inputs().Tag(kRectTag).IsEmpty()) {
     auto rect = cc->Inputs().Tag(kRectTag).Get<Rect>();
-    core_->TransformRect(&rect);
+    core_->Expand(&rect);
     cc->Outputs().Index(0).AddPacket(
         MakePacket<Rect>(rect).At(cc->InputTimestamp()));
   }
@@ -128,7 +128,7 @@ absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
     for (int i = 0; i < rects.size(); ++i) {
       output_rects->at(i) = rects[i];
       auto it = output_rects->begin() + i;
-      core_->TransformRect(&(*it));
+      core_->Expand(&(*it));
     }
     cc->Outputs().Index(0).Add(output_rects.release(), cc->InputTimestamp());
   }
@@ -137,7 +137,7 @@ absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
     auto rect = cc->Inputs().Tag(kNormRectTag).Get<NormalizedRect>();
     const auto& image_size =
         cc->Inputs().Tag(kImageSizeTag).Get<std::pair<int, int>>();
-    core_->TransformNormalizedRect(&rect, image_size.first, image_size.second);
+    core_->ExpandNormalizedRect(&rect, image_size.first, image_size.second);
     cc->Outputs().Index(0).AddPacket(
         MakePacket<NormalizedRect>(rect).At(cc->InputTimestamp()));
   }
@@ -152,7 +152,7 @@ absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
     for (int i = 0; i < rects.size(); ++i) {
       output_rects->at(i) = rects[i];
       auto it = output_rects->begin() + i;
-      core_->TransformNormalizedRect(&(*it), image_size.first, image_size.second);
+      core_->ExpandNormalizedRect(&(*it), image_size.first, image_size.second);
     }
     cc->Outputs().Index(0).Add(output_rects.release(), cc->InputTimestamp());
   }

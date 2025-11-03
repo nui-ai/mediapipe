@@ -26,10 +26,10 @@ struct DetectionsToRectsCoreConfig {
   bool output_zero_rect_for_empty_detections;
 };
 
-class DetectionsToRectsCore {
+class DetectionsToOrientedRects {
  public:
 
-  explicit DetectionsToRectsCore(
+  explicit DetectionsToOrientedRects(
     float target_angle_radians,
     bool output_zero_rect_for_empty_detections=false);
 
@@ -37,7 +37,7 @@ class DetectionsToRectsCore {
 
   bool OutputZeroForEmptyDetections() const;
 
-  absl::Status ComputeRectsFromDetections(
+  absl::Status OrientedRectsFromDetections(
       const std::vector<Detection>& detections,
       const absl::optional<std::pair<int, int>>& image_size,
       std::vector<NormalizedRect>* norm_rects,

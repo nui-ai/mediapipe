@@ -139,7 +139,7 @@ absl::Status PalmDetectionToHandRectStage1::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
 
   auto target_angle_rad = static_cast<float>(M_PI * 90.0 / 180.0);
-  core_ = std::make_unique<DetectionsToRectsCore>(target_angle_rad);
+  core_ = std::make_unique<DetectionsToOrientedRects>(target_angle_rad);
   return absl::OkStatus();
 }
 
@@ -152,9 +152,7 @@ absl::Status PalmDetectionToHandRectStage1::Process(CalculatorContext* cc) {
       cc->Inputs().Tag(kDetectionsTag).IsEmpty()) {
     return absl::OkStatus();
   }
-  if (core_ && core_->NeedsImageSize() && !HasTagValue(cc, kImageSizeTag)) {
-    return absl::OkStatus();
-  }
+
   std::vector<Detection> detections;
   if (cc->Inputs().HasTag(kDetectionTag)) {
     detections.push_back(cc->Inputs().Tag(kDetectionTag).Get<Detection>());
@@ -162,33 +160,15 @@ absl::Status PalmDetectionToHandRectStage1::Process(CalculatorContext* cc) {
   if (cc->Inputs().HasTag(kDetectionsTag)) {
     detections = cc->Inputs().Tag(kDetectionsTag).Get<std::vector<Detection>>();
     if (detections.empty()) {
-      if (core_ && core_->OutputZeroForEmptyDetections()) {
-        if (cc->Outputs().HasTag(kRectTag)) {
-          cc->Outputs().Tag(kRectTag).AddPacket(
-              MakePacket<Rect>().At(cc->InputTimestamp()));
-        }
-        if (cc->Outputs().HasTag(kNormRectTag)) {
-          cc->Outputs()
-              .Tag(kNormRectTag)
-              .AddPacket(MakePacket<NormalizedRect>().At(cc->InputTimestamp()));
-        }
-        if (cc->Outputs().HasTag(kNormRectsTag)) {
-          auto rect_vector = absl::make_unique<std::vector<NormalizedRect>>();
-          rect_vector->emplace_back(NormalizedRect());
-          cc->Outputs()
-              .Tag(kNormRectsTag)
-              .Add(rect_vector.release(), cc->InputTimestamp());
-        }
-      }
       return absl::OkStatus();
     }
   }
   const DetectionSpec detection_spec = GetDetectionSpec(cc);
   absl::optional<std::pair<int, int>> image_size = detection_spec.image_size;
+
   std::vector<Rect> rects;
   std::vector<NormalizedRect> norm_rects;
-
-  core_->ComputeRectsFromDetections(detections, image_size, &norm_rects, &rects);
+  core_->OrientedRectsFromDetections(detections, image_size, &norm_rects, &rects);
 
   if (cc->Outputs().HasTag(kRectTag) && !rects.empty()) {
     cc->Outputs().Tag(kRectTag).AddPacket(MakePacket<Rect>(rects[0]).At(cc->InputTimestamp()));

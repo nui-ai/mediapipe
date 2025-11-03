@@ -4,13 +4,13 @@
 
 namespace mediapipe_v01013_based {
 
-class RectTransformationCalculatorCore {
+class PalmRectToHandRect {
 
 public:
 
-  explicit RectTransformationCalculatorCore(RectTransformationCalculatorOptions &options);
-  void TransformRect(Rect *rect) const;
-  void TransformNormalizedRect(NormalizedRect *rect, int image_width, int image_height) const;
+  explicit PalmRectToHandRect(RectTransformationCalculatorOptions &options);
+  void Expand(Rect *rect) const;
+  void ExpandNormalizedRect(NormalizedRect *rect, int image_width, int image_height) const;
 
  private:
   static float NormalizeRadians(float angle);
