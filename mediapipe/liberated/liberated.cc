@@ -43,6 +43,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Liberated::Process(const std::vector<mediapipe_v01013_based::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
     // auto palm_detection_image = nullptr;
     auto count_capped_detections = absl::make_unique<std::vector<Detection>>();
+    auto hand_rects_from_detections = absl::make_unique<std::vector<NormalizedRect>>();
     auto merged_hand_rectangles = absl::make_unique<std::list<NormalizedRect>>();
 
     if (prev_hand_rects_from_landmarks.size() == max_hands_to_track) {
@@ -53,7 +54,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       ABSL_LOG(INFO) << "skipping palm detection as"; }
 
     // start the palm detection -> expanded oriented hand region for landmark inference path of computation
-    else if (prev_hand_rects_from_landmarks.size() < max_hands_to_track) {
+    if (prev_hand_rects_from_landmarks.size() < max_hands_to_track) {
 
       ABSL_LOG(INFO) << "palm detection will be triggered for the current frame as the number of previous frame's detections from landmarks is smaller than the set maximum number of hands to track";
 
@@ -100,24 +101,23 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       auto image_size = std::make_pair(image->width(), image->height());
       MP_RETURN_IF_ERROR(palm_detection_to_oriented_palm_rect_->OrientedRectsFromDetections(*count_capped_detections, image_size, &oriented_palm_norm_rects, &oriented_palm_rects));
 
-      // unlike the former step, we loop each rect here not in the inside expander call
-      auto hand_rects = absl::make_unique<std::vector<NormalizedRect>>(oriented_palm_rects.size());
+      // unlike the former step, we loop each rect here not in the inside expander fn but by looping the inside expander fn
+      hand_rects_from_detections = absl::make_unique<std::vector<NormalizedRect>>(oriented_palm_rects.size());
       for (int i = 0; i < oriented_palm_rects.size(); ++i) {
         // copy the rect
-        hand_rects->at(i) = oriented_palm_norm_rects[i];
+        hand_rects_from_detections->at(i) = oriented_palm_norm_rects[i];
         // expand the rect
-        auto it = hand_rects->begin() + i;
+        auto it = hand_rects_from_detections->begin() + i;
         oriented_palm_rect_to_hand_rect_expander_->ExpandNormalizedRect(&(*it), image->width(), image->height());
       }
 
       // merge (filter) the set of hand rects derived directly from palm detection inference, with the set of hand rects derived from the previous frame's landmarks inference.
       // both of these two sets can have elements, or just be empty.
       // std::list<NormalizedRect> merged_hand_rectangles;
-      MP_ASSIGN_OR_RETURN(*merged_hand_rectangles, mediapipe_v01013_based::FilterMerge(oriented_palm_norm_rects, prev_hand_rects_from_landmarks, 0.5));
+      MP_ASSIGN_OR_RETURN(*merged_hand_rectangles, mediapipe_v01013_based::FilterMerge(*hand_rects_from_detections, prev_hand_rects_from_landmarks, 0.5));
 
-    // std::list<T> result_set;
-    // MP_ASSIGN_OR_RETURN(result_set,
-    //   mediapipe_v01013_based::FilterMerge(hand_rects_from_palm_detection, prev_hand_rects_from_landmarks)));
+    } else {
+      // MP_ASSIGN_OR_RETURN(*merged_hand_rectangles, mediapipe_v01013_based::FilterMerge(oriented_palm_norm_rects, prev_hand_rects_from_landmarks, 0.5));
     }
 
   auto merged_hand_rectangles_vector = absl::make_unique<std::vector<NormalizedRect>>(merged_hand_rectangles->begin(), merged_hand_rectangles->end());

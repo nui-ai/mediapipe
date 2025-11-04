@@ -20,7 +20,7 @@ namespace mediapipe_v01013_based {
         static void IncrementCounter();
         static void ResetCounter();
 
-        const uint32_t NUM_HANDS = 2;
+        const uint32_t NUM_HANDS = 3;
         const bool USE_PREV_LANDMARKS = true;
 
         // image being input to the pipeline

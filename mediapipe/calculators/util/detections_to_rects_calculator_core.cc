@@ -15,7 +15,7 @@ static float NormalizeRadians(float angle) {
   return angle - 2 * M_PI * std::floor((angle - (-M_PI)) / (2 * M_PI));
 }
 
-/// helper function
+/// helper function for getting the rotation of the palm from a subset of 7 key points which each palm detection has beyond just being a rectangle detection
 static absl::Status ComputeRotation(const Detection& detection, const DetectionsToRectsCoreConfig& config, const absl::optional<std::pair<int, int>>& image_size, float* rotation) {
   const auto& location_data = detection.location_data();
   RET_CHECK(image_size) << "Image size is required to calculate rotation";
@@ -27,7 +27,7 @@ static absl::Status ComputeRotation(const Detection& detection, const Detections
   return absl::OkStatus();
 }
 
-/// helper function
+/// helper function to transform the detection object to a rect object
 static absl::Status DetectionToRect(const Detection& detection, Rect* rect) {
   const auto& location_data = detection.location_data();
   RET_CHECK(location_data.format() == LocationData::RELATIVE_BOUNDING_BOX);
@@ -38,7 +38,7 @@ static absl::Status DetectionToRect(const Detection& detection, Rect* rect) {
   return absl::OkStatus();
 }
 
-/// helper function
+/// helper function to transform the detection object to a normalized rect object
 static absl::Status DetectionToNormalizedRect(const Detection& detection, NormalizedRect* rect) {
   const auto& location_data = detection.location_data();
   RET_CHECK(location_data.format() == LocationData::RELATIVE_BOUNDING_BOX);

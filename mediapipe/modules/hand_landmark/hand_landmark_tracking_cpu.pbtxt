@@ -11,14 +11,17 @@ output_stream: "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
 # the pipeline defined num_hands which it expects to track.
 node {
   calculator: "HeadCalculator"
+
   input_stream: "IMAGE:image"
   input_stream: "ITERABLE:prev_hand_rects_from_landmarks"
+
+# output_stream: "TENSORS:detection_input_tensor"
+# output_stream: "LETTERBOX_PADDING:detection_letterbox_padding"
+# output_stream: "DETECTIONS:palm_detections"
+# output_stream: "ITERABLE:hand_rects_from_palm_detections"
+
   output_stream: "prev_has_enough_hands"
-#  output_stream: "TENSORS:detection_input_tensor"
-#  output_stream: "LETTERBOX_PADDING:detection_letterbox_padding"
-#  output_stream: "DETECTIONS:palm_detections"
   output_stream: "hand_rects"
-#  output_stream: "ITERABLE:hand_rects_from_palm_detections"
 }
 
 # Drops the incoming image from reaching palm detection, if enough hands have already been identified
