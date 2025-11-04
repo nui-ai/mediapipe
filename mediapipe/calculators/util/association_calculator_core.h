@@ -30,7 +30,7 @@
 namespace mediapipe_v01013_based {
 
   // helper function for the below
-  static inline absl::StatusOr<Rectangle_f> GetRectangle(
+  static inline absl::StatusOr<Rectangle_f> RectangleFromNormalizedRect(
       const ::mediapipe_v01013_based::NormalizedRect& input) {
     if (!input.has_x_center() || !input.has_y_center() || !input.has_width() ||
         !input.has_height()) {
@@ -42,61 +42,84 @@ namespace mediapipe_v01013_based {
     return Rectangle_f(xmin, ymin, input.width(), input.height());
   }
 
-  // helper function for the below
-  template <typename T>
-  absl::Status AddElementToListWhileSuppressing(const T& element, std::list<T>* current, float min_similarity_threshold) {
-    MP_ASSIGN_OR_RETURN(auto new_element, ::mediapipe_v01013_based::GetRectangle(element));
-    for (auto uit = current->begin(); uit != current->end();) {
-      MP_ASSIGN_OR_RETURN(auto collection_element, GetRectangle(*uit));
-      if (CalculateIou(new_element, collection_element) > min_similarity_threshold) {
+    /// adds the new NormalizedRect to the collection of NormalizedRect, while discarding any of the collection's existing
+    /// instances which have overlap with it above the given IoU threshold; so the new element squeezes out any one or more
+    /// existing instances which have overlap with it above the given IoU threshold.
+    inline absl::Status AddWhileDiscardingByIoU(const NormalizedRect& new_normalized_rect, std::list<NormalizedRect>* normalized_rects, float iou_similarity_threshold) {
+
+    // check IoU of the new rect with the each rect of the list, transforming them from NormalizedRect to Rect for the IoU checking
+    MP_ASSIGN_OR_RETURN(Rectangle_f new_rect, ::mediapipe_v01013_based::RectangleFromNormalizedRect(new_normalized_rect));
+    for (auto uit = normalized_rects->begin(); uit != normalized_rects->end();) {
+      MP_ASSIGN_OR_RETURN(Rectangle_f rect, RectangleFromNormalizedRect(*uit));
+
+      // remove existing IoU threshold overlapping rectangle if threshold overlapping with the one being added
+      if (CalculateIou(new_rect, rect) > iou_similarity_threshold) {
         ABSL_LOG(INFO) << "filtering by association is pushing out an overlapping element.";
-        uit = current->erase(uit);
+        uit = normalized_rects->erase(uit);
       } else {
         ++uit;
       }
     }
-    current->push_back(element);
+    normalized_rects->push_back(new_normalized_rect);
     return absl::OkStatus();
   }
 
-  /// smashes together the given set of palm detection rectangles from the current frame's explicit palm detection inference and
-  /// the given set of detection rectangles derived from the previous frame's landmarks inference, filtering out any partially
-  /// overlapping ones (by its overlap threshold) by a greedy ordering where the last wins. in our case, the last stream is
-  /// (not-intuitively) that of the *previous frame's landmarks-derived palm detections*.
+  /// naively smashes together the given set of palm detection rectangles from the current frame's explicit palm detection inference
+  /// and the given set of detection rectangles derived from the previous frame's landmarks inference, filtering out any partially
+  /// overlapping ones (by its overlap threshold) by a greedy ordering where the last being added wins (over those having IoU
+  /// threshold overlap with it).
   ///
   /// and when there are no detections at all, it should just pass forward no detections.
   ///
-  /// the homomorphic effect of filtering the same within each of the two sets could be seen as more of an artefact,
-  /// as it should be a separate step, or they should all be pooled before filtering at all, unless it somehow
-  /// makes for a super-optimal baseline as is.
+  /// notice the isomorphic effect of filtering each set and both sets by the same greedy win order,
+  /// with preference given to the rectangles from the previous frame's landmarks inference set over
+  /// those from the palm detection phase, is arguably only a baseline taken from the original pipeline,
+  ///
+  /// by letting the rectangles from the last frame's landmarks inference win over those from the current frame's palm detection step
+  /// in any case of IoU threshold overlap ― it may helps with tracking stability in some cases and degrade it in other ones ―
+  /// so it's not a good idea to change this outside of a complete uber-overhaul of hand tracking, as small and specific
+  /// scenario wins may just come at the expense of worsening the overall.
   ///
   /// filtering is an epic in our pipeline which when reworked would consume the current baseline step as well
   /// as all other ones when being redesigned for specific sets of desiderata, for now we just keep the legacy
-  /// behaviors at all the arbitrarily disparate filtering steps of the pipeline the current one included.
+  /// behaviors at all the arbitrarily disparate filtering steps of the pipeline.
+  ///
+  /// note that for tracking *hand identity* with multiple hands, we will want to know or score which new
+  /// rectangle (and hand pose from landmarks in it) corresponds to which one in the previous frame,
+  /// rather than trust that circumstantially they will reach here by the same order,
+  /// a guarantee that's only weekly effected by the SSD anchors
+  /// and certainly not reliably if hands move liberally across the scene.
+  /// this kind of identity mapping is currently abscnet,
+  /// other than by that circumstantial effect.
+  ///
+  /// some considerations apply to one hand tracking and not in a generalized way to multi-hand tracking:
+  /// with a single hand the current de-facto filtering algorithm may have an effect of avoiding noisy
+  /// palm detections from hijacking the tracking of an already tracked hand. (which may not directly
+  /// generalize to a helpful statement for the case of two real hands being tracked)
   template <typename T>
-  absl::StatusOr<std::list<T>> FilterMerge(
-      const std::vector<T>& explicit_palm_detections,
-      const std::vector<T>& landmarks_derived_palm_detections,
+  absl::StatusOr<std::list<T>> IouFilterMerge(
+      const std::vector<T>& rects_from_palm_detection,
+      const std::vector<T>& rects_from_landmarks_inference,
       float min_similarity_threshold = 0.5) {
 
-    std::list<T> result_set;
+    std::list<T> result_set;  // the final set of hand rectangles passing forward
 
-    // this step only filters partially overlapping hand detections in case the pipeline flow leading to the
-    // the current node/code only filtered partially overlapping detections more loosely than the current
-    // function's overlap threshold.
-    if (!explicit_palm_detections.empty()) {
-      result_set.push_back(explicit_palm_detections[0]);
-      for (size_t j = 1; j < explicit_palm_detections.size(); ++j) {
-        MP_RETURN_IF_ERROR(AddElementToListWhileSuppressing(explicit_palm_detections[j], &result_set, min_similarity_threshold));
+    // this step places the hand rectangles derived from explicit palm detections into the result set ―
+    // while filtering them by IoU thershold in a naive order where the later element always "wins".
+    if (!rects_from_palm_detection.empty()) {
+      result_set.push_back(rects_from_palm_detection[0]);
+      for (size_t j = 1; j < rects_from_palm_detection.size(); ++j) {
+        MP_RETURN_IF_ERROR(AddWhileDiscardingByIoU(rects_from_palm_detection[j], &result_set, min_similarity_threshold));
       }
     }
 
-    // this step filters partially overlapping hand detections between the landmarks derived detections and the
-    // explicitly detected palm detections if any, or, just partially overlapping ones within the set of landmarks
-    // derived detections if they've not been as strictly filtered by overlapping before reaching this node.
-    if (!landmarks_derived_palm_detections.empty()) {
-      for (size_t vi = 0; vi < landmarks_derived_palm_detections.size(); ++vi) {
-        MP_RETURN_IF_ERROR(AddElementToListWhileSuppressing(landmarks_derived_palm_detections[vi], &result_set, min_similarity_threshold));
+    // this step places the hand rectangles derived from landmarks inference into the result set ―
+    // while filtering them by IoU threshold by the same naive order ―
+    // each rectangle from landmarks inference wins over any ones already in the result set admitted from the explicit palm detections set,
+    // if they have IoU threshold overlap ... and each such element also wins over any previous one from its own set if they have IoU threshold overlap.
+    if (!rects_from_landmarks_inference.empty()) {
+      for (size_t vi = 0; vi < rects_from_landmarks_inference.size(); ++vi) {
+        MP_RETURN_IF_ERROR(AddWhileDiscardingByIoU(rects_from_landmarks_inference[vi], &result_set, min_similarity_threshold));
       }
     }
     return result_set;

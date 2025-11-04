@@ -96,7 +96,7 @@ public:
 
     std::list<T> result_set;
     MP_ASSIGN_OR_RETURN(result_set,
-      mediapipe_v01013_based::FilterMerge(hand_rects_from_palm_detection, prev_hand_rects_from_landmarks, options_.min_similarity_threshold()));
+      mediapipe_v01013_based::IouFilterMerge(hand_rects_from_palm_detection, prev_hand_rects_from_landmarks, options_.min_similarity_threshold()));
 
     auto output = absl::make_unique<std::vector<T>>();
     for (auto it = result_set.begin(); it != result_set.end(); ++it) {

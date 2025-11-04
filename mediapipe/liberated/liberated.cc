@@ -40,18 +40,21 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   oriented_palm_rect_to_hand_rect_expander_ = std::make_unique<PalmRectToHandRect>(oriented_palm_rect_to_hand_rect_expander_options);
 }
 
-  absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Liberated::Process(const std::vector<mediapipe_v01013_based::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
+  absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Liberated::Process(const std::vector<NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
     // auto palm_detection_image = nullptr;
     auto count_capped_detections = absl::make_unique<std::vector<Detection>>();
     auto hand_rects_from_detections = absl::make_unique<std::vector<NormalizedRect>>();
-    auto merged_hand_rectangles = absl::make_unique<std::list<NormalizedRect>>();
+    auto merged_hand_rectangles_list = absl::make_unique<std::list<NormalizedRect>>();
+    auto merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>();
 
     if (prev_hand_rects_from_landmarks.size() == max_hands_to_track) {
       ABSL_LOG(INFO) << "the number of hands detected from the previous frame's landmarks (" << prev_hand_rects_from_landmarks.size() << ") is equal to the globally set maximum number of hands to track " << max_hands_to_track;
       ABSL_LOG(INFO) << "skipping palm detection";
-    } else if (prev_hand_rects_from_landmarks.size() > max_hands_to_track) {
-      ABSL_LOG(INFO) << "the number of hands detected from the previous frame's landmarks (" << prev_hand_rects_from_landmarks.size() << ") is larger than the globally set maximum number of hands to track " << max_hands_to_track;
-      ABSL_LOG(INFO) << "skipping palm detection as"; }
+    } else if (prev_hand_rects_from_landmarks.size() > max_hands_to_track) { // this does happen, arising in the de-facto chains of calculation mirroring the original pipeline
+      ABSL_LOG(INFO) << "the number of hands rectangles from the previous frame's landmarks (" << prev_hand_rects_from_landmarks.size() << ") is larger than the globally set maximum number of hands to track " << max_hands_to_track;
+      ABSL_LOG(INFO) << "skipping palm detection";
+      // return absl::InternalError("the number of hands rectangels from the previous frame's landmarks is larger than the globally set maximum number of hands to track, which is currently unexpected");
+    }
 
     // start the palm detection -> expanded oriented hand region for landmark inference path of computation
     if (prev_hand_rects_from_landmarks.size() < max_hands_to_track) {
@@ -110,18 +113,14 @@ Liberated::Liberated(MemoryManager* memory_manager) {
         auto it = hand_rects_from_detections->begin() + i;
         oriented_palm_rect_to_hand_rect_expander_->ExpandNormalizedRect(&(*it), image->width(), image->height());
       }
-
-      // merge (filter) the set of hand rects derived directly from palm detection inference, with the set of hand rects derived from the previous frame's landmarks inference.
-      // both of these two sets can have elements, or just be empty.
-      // std::list<NormalizedRect> merged_hand_rectangles;
-      MP_ASSIGN_OR_RETURN(*merged_hand_rectangles, mediapipe_v01013_based::FilterMerge(*hand_rects_from_detections, prev_hand_rects_from_landmarks, 0.5));
-
-    } else {
-      // MP_ASSIGN_OR_RETURN(*merged_hand_rectangles, mediapipe_v01013_based::FilterMerge(oriented_palm_norm_rects, prev_hand_rects_from_landmarks, 0.5));
     }
 
-  auto merged_hand_rectangles_vector = absl::make_unique<std::vector<NormalizedRect>>(merged_hand_rectangles->begin(), merged_hand_rectangles->end());
-  return merged_hand_rectangles_vector;
+    // merges with IoU threshold based filtering, the set of hand rects derived directly from palm detection inference, with the set of hand rects derived from the previous frame's landmarks inference,
+    // both of which input sets to this merge may be empty or not. if both are empty, an empty set should be the result.
+    MP_ASSIGN_OR_RETURN(*merged_hand_rectangles_list, mediapipe_v01013_based::IouFilterMerge(*hand_rects_from_detections, prev_hand_rects_from_landmarks, 0.5));
+    merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>(merged_hand_rectangles_list->begin(), merged_hand_rectangles_list->end());  // convert from list to vector
+
+  return merged_hand_rectangles;
 }
 
 }
