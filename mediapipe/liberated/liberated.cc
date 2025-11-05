@@ -38,6 +38,22 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   oriented_palm_rect_to_hand_rect_expander_options.set_square_long(true);
   // ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
   oriented_palm_rect_to_hand_rect_expander_ = std::make_unique<PalmRectToHandRect>(oriented_palm_rect_to_hand_rect_expander_options);
+
+  // initialize for sub-image extraction from the full image for inference
+  // if (cc->Service(kMemoryManagerService).IsAvailable()) {
+  //   memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();
+  // }
+  auto sub_image_extraction_options = ImageToTensorCalculatorOptions();
+  sub_image_extraction_options.set_output_tensor_width(224);
+  sub_image_extraction_options.set_output_tensor_height(224);
+  sub_image_extraction_options.set_keep_aspect_ratio(true);
+  sub_image_extraction_options.mutable_output_tensor_float_range()->set_min(0.0f);
+  sub_image_extraction_options.mutable_output_tensor_float_range()->set_max(1.0f);
+  sub_image_extraction_options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_UNSPECIFIED);
+  auto params_ = GetOutputTensorParams(sub_image_extraction_options);
+  sub_image_for_inference_extractor_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
+      sub_image_extraction_options, tensor_width, tensor_height, params_,
+      gpu_converter_, cpu_converter_, memory_manager);
 }
 
   absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Liberated::Process(const std::vector<NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
@@ -98,13 +114,13 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       }
       ABSL_LOG(INFO) << "naive detections capping completed";
 
-      // orient the palm detections all inside the orienter function
+      // orient the palm detections all by one function call which takes all of them
       std::vector<NormalizedRect> oriented_palm_norm_rects;
       std::vector<Rect> oriented_palm_rects; // unused output argument required by the below function in its current legacy form
       auto image_size = std::make_pair(image->width(), image->height());
       MP_RETURN_IF_ERROR(palm_detection_to_oriented_palm_rect_->OrientedRectsFromDetections(*count_capped_detections, image_size, &oriented_palm_norm_rects, &oriented_palm_rects));
 
-      // unlike the former step, we loop each rect here not in the inside expander fn but by looping the inside expander fn
+      // technically speaking unlike the former step, we loop each rect here not in the inside expander fn but by looping the inside expander fn
       hand_rects_from_detections = absl::make_unique<std::vector<NormalizedRect>>(oriented_palm_rects.size());
       for (int i = 0; i < oriented_palm_rects.size(); ++i) {
         // copy the rect
@@ -119,6 +135,13 @@ Liberated::Liberated(MemoryManager* memory_manager) {
     // both of which input sets to this merge may be empty or not. if both are empty, an empty set should be the result.
     MP_ASSIGN_OR_RETURN(*merged_hand_rectangles_list, mediapipe_v01013_based::IouFilterMerge(*hand_rects_from_detections, prev_hand_rects_from_landmarks, 0.5));
     merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>(merged_hand_rectangles_list->begin(), merged_hand_rectangles_list->end());  // convert from list to vector
+
+    // start looping or fanning out in place of the original pipeline's fanning out of the hand rects for landmarks inference,
+    // which have been accomplished above.
+    for (auto norm_rect : *merged_hand_rectangles) {
+      api2::ImageToTensorCoreResult core_result;
+      MP_RETURN_IF_ERROR(sub_image_for_inference_extractor_->Process(*image, norm_rect, &core_result));
+    }
 
   return merged_hand_rectangles;
 }
