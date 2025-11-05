@@ -40,32 +40,17 @@ class InferenceOutputTensorSplitting {
   InferenceOutputTensorSplitting() = default;
 
   // Construct and initialize internal state from options.
-  explicit InferenceOutputTensorSplitting(
-      const ::mediapipe_v01013_based::SplitVectorCalculatorOptions& options) {
-    // Initialize derived configuration from options (no CalculatorContext).
-    element_only_ = options.element_only();
-    combine_outputs_ = options.combine_outputs();
-
+  explicit InferenceOutputTensorSplitting(const ::mediapipe_v01013_based::SplitVectorCalculatorOptions& options) {
+    // initialize with same option values as the original pipeline.
+    // kind of overdoing it in reusing original pipeline code for a class only splitting four things.
     max_range_end_ = -1;
     total_elements_ = 0;
-    ranges_.reserve(options.ranges_size());
-    for (const auto& range : options.ranges()) {
-      ranges_.push_back({range.begin(), range.end()});
-      max_range_end_ = std::max(max_range_end_, range.end());
-      total_elements_ += range.end() - range.begin();
-    }
-  }
-
-  // Run for copyable elements path. Input is const reference; outputs are
-  // produced according to the configured options.
-  absl::Status Run(
-      const std::vector<T>& input,
-      std::vector<std::unique_ptr<std::vector<T>>>* output_vectors,
-      std::vector<T>* output_elements,
-      std::unique_ptr<std::vector<T>>* combined_output) const {
-    return ::mediapipe_v01013_based::ProcessCopyableElements<T>(
-        input, ranges_, max_range_end_, total_elements_, element_only_,
-        combine_outputs_, output_vectors, output_elements, combined_output);
+    ranges_.push_back({0, 1});
+    ranges_.push_back({1, 2});
+    ranges_.push_back({2, 3});
+    ranges_.push_back({3, 4});
+    max_range_end_ = 4;
+    total_elements_ = 4;
   }
 
   // Run for movable elements path. Input is consumed/moved from.

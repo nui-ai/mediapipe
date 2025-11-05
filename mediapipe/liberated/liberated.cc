@@ -60,7 +60,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   landmarks_inference_ = std::make_unique<api2::ModelInference>(landmarks_infernce_model_path);
 
   // initialize for splitting the output tensors of the landmarks inference output by topic
-  landmarks_inference_splitter_ = InferenceOutputTensorSplitting<TfLiteTensor, false>();
+  landmarks_inference_splitter_ = std::make_unique<InferenceOutputTensorSplitting<Tensor, false>>(SplitVectorCalculatorOptions());
 }
 
   absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Liberated::Process(const std::vector<NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
@@ -152,7 +152,24 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       MP_RETURN_IF_ERROR(sub_image_for_landmarks_inference_extractor_->Process(*image, norm_rect, &sub_image_extraction_struct));
       MP_ASSIGN_OR_RETURN(std::vector<Tensor> output_tensors, landmarks_inference_->Process(MakeTensorSpan(sub_image_extraction_struct.tensors)));
 
+      // get a unique pointer to output_tensors that can be passed to a function expecting std::unique_ptr<std::vector<T>>*
+      auto output_tensors_ptr = std::make_unique<std::vector<Tensor>>(std::move(output_tensors));
+
+      // split the result of the landmarks inference into topics (this can be much distilled to discard the over-generalized Run method entirely and just assign the inference outputs directly)
+      std::vector<Tensor> output_elements;  // output argument not consumed by our code (an over generalization feature of the original pipeline)
+      std::unique_ptr<std::vector<Tensor>> combined_output;  // output argument not consumed by our code (an over generalization feature of the original pipeline)
+      std::vector<std::unique_ptr<std::vector<Tensor>>> output_vectors;
+      MP_RETURN_IF_ERROR(landmarks_inference_splitter_->Run(&output_tensors_ptr, &output_vectors, &output_elements, &combined_output));
+      std::unique_ptr<std::vector<Tensor>> landmarks = std::move(output_vectors[0]);
+      std::unique_ptr<std::vector<Tensor>> hand_presence = std::move(output_vectors[1]);
+      std::unique_ptr<std::vector<Tensor>> hand_handedness = std::move(output_vectors[2]);
+      std::unique_ptr<std::vector<Tensor>> world_landmarks = std::move(output_vectors[3]);
+
+      // extract hand presence score from the landmarks inference output
+      auto result = tensors_to_floats_calculator_core::Process(*hand_presence, TensorsToFloatsCalculatorOptions());
     }
+
+
 
   return merged_hand_rectangles;
 }

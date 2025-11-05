@@ -122,50 +122,7 @@ class SplitVectorCalculator : public CalculatorBase {
 
   absl::Status Process(CalculatorContext* cc) override {
     if (cc->Inputs().Index(0).IsEmpty()) return absl::OkStatus();
-
-    if (move_elements) {
-      return ProcessMovableElements<T>(cc);
-    } else {
-      return ProcessCopyableElements<T>(cc);
-    }
-  }
-
-  template <typename U, IsCopyable<U> = true>
-  absl::Status ProcessCopyableElements(CalculatorContext* cc) {
-    const auto& input = cc->Inputs().Index(0).Get<std::vector<U>>();
-
-    std::vector<std::unique_ptr<std::vector<T>>> output_vectors;
-    std::vector<T> output_elements;
-    std::unique_ptr<std::vector<T>> combined_output;
-
-    // Delegate to the splitting helper (no CalculatorContext inside).
-    auto status = splitter_.Run(
-        input, &output_vectors, &output_elements, &combined_output);
-
-    if (!status.ok()) return status;
-
-    // Handle output based on configuration
-    if (splitter_.combine_outputs()) {
-      cc->Outputs().Index(0).Add(combined_output.release(), cc->InputTimestamp());
-    } else {
-      if (splitter_.element_only()) {
-        for (int i = 0; i < splitter_.range_count(); ++i) {
-          cc->Outputs().Index(i).AddPacket(
-              MakePacket<U>(output_elements[i]).At(cc->InputTimestamp()));
-        }
-      } else {
-        for (int i = 0; i < splitter_.range_count(); ++i) {
-          cc->Outputs().Index(i).Add(output_vectors[i].release(), cc->InputTimestamp());
-        }
-      }
-    }
-
-    return absl::OkStatus();
-  }
-
-  template <typename U, IsNotCopyable<U> = true>
-  absl::Status ProcessCopyableElements(CalculatorContext* cc) {
-    return absl::InternalError("Cannot copy non-copyable elements.");
+    return ProcessMovableElements<T>(cc);
   }
 
   template <typename U, IsMovable<U> = true>
@@ -181,26 +138,11 @@ class SplitVectorCalculator : public CalculatorBase {
     std::unique_ptr<std::vector<T>> combined_output;
 
     // Delegate to the splitting helper (no CalculatorContext inside).
-    auto status = splitter_.Run(
-        &input_vector, &output_vectors, &output_elements, &combined_output);
-
+    auto status = splitter_.Run(&input_vector, &output_vectors, &output_elements, &combined_output);
     if (!status.ok()) return status;
 
-    // Handle output based on configuration
-    if (splitter_.combine_outputs()) {
-      cc->Outputs().Index(0).Add(combined_output.release(), cc->InputTimestamp());
-    } else {
-      if (splitter_.element_only()) {
-        for (int i = 0; i < splitter_.range_count(); ++i) {
-          cc->Outputs().Index(i).AddPacket(
-              MakePacket<U>(std::move(output_elements[i]))
-                  .At(cc->InputTimestamp()));
-        }
-      } else {
-        for (int i = 0; i < splitter_.range_count(); ++i) {
-          cc->Outputs().Index(i).Add(output_vectors[i].release(), cc->InputTimestamp());
-        }
-      }
+    for (int i = 0; i < splitter_.range_count(); ++i) {
+      cc->Outputs().Index(i).Add(output_vectors[i].release(), cc->InputTimestamp());
     }
 
     return absl::OkStatus();

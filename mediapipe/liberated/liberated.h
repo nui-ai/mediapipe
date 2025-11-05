@@ -13,6 +13,7 @@
 #include "mediapipe/calculators/util/detection_letterbox_removal.h"
 #include "mediapipe/calculators/util/rect_transformation_calculator_core.h"
 #include "mediapipe/calculators/core/inference_output_tensor_splitting.h"
+#include "mediapipe/calculators/tensor/tensors_to_floats_calculator_core.h"
 
 
 namespace mediapipe_v01013_based {
@@ -42,7 +43,7 @@ namespace mediapipe_v01013_based {
   std::unique_ptr<PalmRectToHandRect> oriented_palm_rect_to_hand_rect_expander_;
   std::unique_ptr<api2::ImageToTensorCalculatorCore> sub_image_for_landmarks_inference_extractor_;
   std::unique_ptr<api2::ModelInference> landmarks_inference_;
-  InferenceOutputTensorSplitting<TfLiteTensor, false> landmarks_inference_splitter_;
+  std::unique_ptr<InferenceOutputTensorSplitting<Tensor, false>> landmarks_inference_splitter_;
  };
 
 }
