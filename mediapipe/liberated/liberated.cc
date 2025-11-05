@@ -58,6 +58,9 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   // initialize for landmarks inference
   const std::string& landmarks_infernce_model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
   landmarks_inference_ = std::make_unique<api2::ModelInference>(landmarks_infernce_model_path);
+
+  // initialize for splitting the output tensors of the landmarks inference output by topic
+  landmarks_inference_splitter_ = InferenceOutputTensorSplitting<TfLiteTensor, false>();
 }
 
   absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Liberated::Process(const std::vector<NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
