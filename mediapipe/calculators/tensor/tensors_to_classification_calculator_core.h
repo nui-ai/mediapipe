@@ -66,8 +66,7 @@ void SetClassificationLabel(const LabelMapItem& label_map_item,
 std::unique_ptr<ClassificationList> ProcessTensorToClassifications(
     const float* raw_scores,
     int num_classes,
-    const TensorsToClassificationConfig& config,
-    const std::unordered_map<int64_t, LabelMapItem>& label_map);
+    const TensorsToClassificationConfig& config);
 
 }  // namespace api2
 }  // namespace mediapipe_v01013_based

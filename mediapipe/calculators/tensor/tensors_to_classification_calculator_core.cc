@@ -28,45 +28,11 @@ absl::Status InitializeTensorsToClassificationConfig(
     const TensorsToClassificationCalculatorOptions& options,
     const std::unordered_map<int64_t, LabelMapItem>& external_label_map,
     TensorsToClassificationConfig* config) {
-  config->top_k = options.top_k();
-  config->sort_by_descending_score = options.sort_by_descending_score();
-
-  if (options.has_label_map()) {
-    for (int i = 0; i < options.label_map().entries_size(); ++i) {
-      const auto& entry = options.label_map().entries(i);
-      RET_CHECK(config->local_label_map.find(entry.id()) == config->local_label_map.end())
-          << "Duplicate id found: " << entry.id();
-      LabelMapItem item;
-      item.set_name(entry.label());
-      config->local_label_map[entry.id()] = std::move(item);
-    }
-    config->label_map_loaded = true;
-  } else if (!external_label_map.empty() || !options.label_items().empty()) {
-    config->label_map_loaded = true;
-  }
-
-  if (options.has_min_score_threshold()) {
-    config->min_score_threshold = options.min_score_threshold();
-  }
-  config->is_binary_classification = options.binary_classification();
-
-  if (config->is_binary_classification) {
-    RET_CHECK(options.allow_classes().empty() &&
-              options.ignore_classes().empty());
-  }
-
-  if (!options.allow_classes().empty()) {
-    RET_CHECK(options.ignore_classes().empty());
-    config->class_index_set.is_allowlist = true;
-    for (int i = 0; i < options.allow_classes_size(); ++i) {
-      config->class_index_set.values.insert(options.allow_classes(i));
-    }
-  } else {
-    config->class_index_set.is_allowlist = false;
-    for (int i = 0; i < options.ignore_classes_size(); ++i) {
-      config->class_index_set.values.insert(options.ignore_classes(i));
-    }
-  }
+  config->top_k = 1;
+  config->sort_by_descending_score = false;
+  config->label_map_loaded = true;
+  config->is_binary_classification = true;
+  config->class_index_set.is_allowlist = false;
 
   return absl::OkStatus();
 }
@@ -94,39 +60,18 @@ void SetClassificationLabel(const LabelMapItem& label_map_item,
 std::unique_ptr<ClassificationList> ProcessTensorToClassifications(
     const float* raw_scores,
     int num_classes,
-    const TensorsToClassificationConfig& config,
-    const std::unordered_map<int64_t, LabelMapItem>& label_map) {
+    const TensorsToClassificationConfig& config) {
   auto classification_list = std::make_unique<ClassificationList>();
 
-  if (config.is_binary_classification) {
-    Classification* class_first = classification_list->add_classification();
-    Classification* class_second = classification_list->add_classification();
-    class_first->set_index(0);
-    class_second->set_index(1);
-    class_first->set_score(raw_scores[0]);
-    class_second->set_score(1. - raw_scores[0]);
+  Classification* class_first = classification_list->add_classification();
+  Classification* class_second = classification_list->add_classification();
+  class_first->set_index(0);
+  class_second->set_index(1);
+  class_first->set_score(raw_scores[0]);
+  class_second->set_score(1. - raw_scores[0]);
 
-    if (config.label_map_loaded) {
-      SetClassificationLabel(label_map.at(0), class_first);
-      SetClassificationLabel(label_map.at(1), class_second);
-    }
-  } else {
-    for (int i = 0; i < num_classes; ++i) {
-      if (!IsClassIndexAllowed(config, i)) {
-        continue;
-      }
-      if (raw_scores[i] < config.min_score_threshold) {
-        continue;
-      }
-      Classification* classification =
-          classification_list->add_classification();
-      classification->set_index(i);
-      classification->set_score(raw_scores[i]);
-      if (config.label_map_loaded) {
-        SetClassificationLabel(label_map.at(i), classification);
-      }
-    }
-  }
+  class_first->set_label("Left");
+  class_second->set_label("Right");
 
   auto raw_classification_list = classification_list->mutable_classification();
   if (config.top_k > 0) {

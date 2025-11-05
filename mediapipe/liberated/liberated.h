@@ -14,7 +14,9 @@
 #include "mediapipe/calculators/util/rect_transformation_calculator_core.h"
 #include "mediapipe/calculators/core/inference_output_tensor_splitting.h"
 #include "mediapipe/calculators/tensor/tensors_to_floats_calculator_core.h"
-
+#include "mediapipe/calculators/tensor/tensors_to_classification_calculator_core.h"
+#include "mediapipe/framework/formats/tensor.h"
+#include "mediapipe/framework/formats/classification.pb.h"
 
 namespace mediapipe_v01013_based {
  class DetectionsToOrientedRects;
@@ -44,6 +46,7 @@ namespace mediapipe_v01013_based {
   std::unique_ptr<api2::ImageToTensorCalculatorCore> sub_image_for_landmarks_inference_extractor_;
   std::unique_ptr<api2::ModelInference> landmarks_inference_;
   std::unique_ptr<InferenceOutputTensorSplitting<Tensor, false>> landmarks_inference_splitter_;
+  api2::TensorsToClassificationConfig handedness_classification_config_;
  };
 
 }

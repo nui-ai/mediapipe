@@ -1,4 +1,5 @@
 #include "mediapipe/liberated/liberated.h"
+#include "mediapipe/calculators/tensor/tensors_to_classification_calculator.pb.h"
 
 namespace mediapipe_v01013_based {
 
@@ -61,6 +62,14 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
   // initialize for splitting the output tensors of the landmarks inference output by topic
   landmarks_inference_splitter_ = std::make_unique<InferenceOutputTensorSplitting<Tensor, false>>(SplitVectorCalculatorOptions());
+
+  // initialize for extracting the handedness information from a landmarks inference output
+  handedness_classification_config_ = api2::TensorsToClassificationConfig();
+  handedness_classification_config_.is_binary_classification = true;
+  handedness_classification_config_.label_map_loaded = true;
+  handedness_classification_config_.class_index_set.is_allowlist = false;
+  handedness_classification_config_.top_k = 1;
+  handedness_classification_config_.sort_by_descending_score = false;
 }
 
   absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Liberated::Process(const std::vector<NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
@@ -165,8 +174,18 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       std::unique_ptr<std::vector<Tensor>> hand_handedness = std::move(output_vectors[2]);
       std::unique_ptr<std::vector<Tensor>> world_landmarks = std::move(output_vectors[3]);
 
-      // extract hand presence score from the landmarks inference output
+      // extract the hand presence score from the landmarks inference output
       auto result = tensors_to_floats_calculator_core::Process(*hand_presence, TensorsToFloatsCalculatorOptions());
+
+      // extract the hand handedness classification information from the landmarks inference output
+      auto raw_score = hand_handedness->at(0).GetCpuReadView().buffer<float>();
+      std::unique_ptr<ClassificationList> handedness_classification = ProcessTensorToClassifications(raw_score, 2, handedness_classification_config_);
+
+      // // extracted handedness classification information from the landmarks inference output
+      // auto classification_list = api2::ProcessTensorToClassifications(
+      //     raw_scores, num_classes, config_, GetLabelMap(cc));
+
+      // handedness_classification_config_
     }
 
 

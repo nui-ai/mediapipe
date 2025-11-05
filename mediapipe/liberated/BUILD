@@ -36,6 +36,8 @@ cc_library(
         "//mediapipe/calculators/tensor:inference_calculator",  # clean to be its own dependencies not the calculator itself.
         "//mediapipe/calculators/tensor:inference_runner_new",
         "//mediapipe/calculators/tensor:model_inference",
+        "//mediapipe/calculators/tensor:tensors_to_classification_calculator_cc_proto",
+        "//mediapipe/calculators/tensor:tensors_to_classification_calculator_core",
         "//mediapipe/calculators/tensor:tensors_to_detections_calculator_core",
         "//mediapipe/calculators/tensor:tensors_to_floats_calculator_core",
         "//mediapipe/calculators/util:association_calculator_core",
@@ -46,6 +48,7 @@ cc_library(
         "//mediapipe/framework:memory_manager",
         "//mediapipe/framework:memory_manager_service",
         "//mediapipe/framework/api2:port",
+        "//mediapipe/framework/formats:classification_cc_proto",
         "//mediapipe/framework/formats:image",
         "//mediapipe/framework/formats:image_frame",
         "//mediapipe/framework/formats:rect_cc_proto",

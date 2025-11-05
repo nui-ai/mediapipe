@@ -108,12 +108,12 @@ absl::Status ExtractHandednessClassification::Process(CalculatorContext* cc) {
   if (config_.label_map_loaded) {
     RET_CHECK_EQ(num_classes, GetLabelMap(cc).size());
   }
-  auto view = input_tensors[0].GetCpuReadView();
+
+  const Tensor::CpuView view = input_tensors[0].GetCpuReadView();
   auto raw_scores = view.buffer<float>();
 
   // Use core function to process tensor to classifications
-  auto classification_list = ProcessTensorToClassifications(
-      raw_scores, num_classes, config_, GetLabelMap(cc));
+  auto classification_list = ProcessTensorToClassifications(raw_scores, num_classes, config_);
 
   kOutClassificationList(cc).Send(std::move(classification_list));
   return absl::OkStatus();
