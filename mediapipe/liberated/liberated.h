@@ -39,6 +39,7 @@ namespace mediapipe_v01013_based {
   std::unique_ptr<DetectionsToOrientedRects> palm_detection_to_oriented_palm_rect_;
   std::unique_ptr<PalmRectToHandRect> oriented_palm_rect_to_hand_rect_expander_;
   std::unique_ptr<api2::ImageToTensorCalculatorCore> sub_image_for_inference_extractor_;
+  std::unique_ptr<api2::ModelInference> landmarks_inference_;
  };
 
 }

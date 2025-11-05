@@ -4,7 +4,7 @@ namespace mediapipe_v01013_based {
 
 Liberated::Liberated(MemoryManager* memory_manager) {
 
-  // initialize for image to tensors conversions
+  // initialize for image to tensors conversions (to be reduced into much less surface)
   auto image_to_tensor_options = ImageToTensorCalculatorOptions();
   image_to_tensor_options.set_output_tensor_width(192);
   image_to_tensor_options.set_output_tensor_height(192);
@@ -13,15 +13,15 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   image_to_tensor_options.mutable_output_tensor_float_range()->set_max(1.0f);
   image_to_tensor_options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
   auto params = GetOutputTensorParams(image_to_tensor_options);
-  int tensor_width = params.output_width.value_or(0);
-  int tensor_height = params.output_height.value_or(0);
+  int input_tensor_width = params.output_width.value_or(0);
+  int input_tensor_height = params.output_height.value_or(0);
   image_to_tensor_core_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
-      image_to_tensor_options, tensor_width, tensor_height, params,
+      image_to_tensor_options, input_tensor_width, input_tensor_height, params,
       gpu_converter_, cpu_converter_, memory_manager);
 
   // initialize for palm detection inference
-  const std::string& model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
-  palm_detection_inference_ = std::make_unique<api2::ModelInference>(model_path);
+  const std::string& palm_detection_model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
+  palm_detection_inference_ = std::make_unique<api2::ModelInference>(palm_detection_model_path);
 
   // initialize for detection inference conversion to tensors
   inference_filter_stage1_ = std::make_unique<api2::ConvertDetectionTensors>();
@@ -39,10 +39,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   // ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
   oriented_palm_rect_to_hand_rect_expander_ = std::make_unique<PalmRectToHandRect>(oriented_palm_rect_to_hand_rect_expander_options);
 
-  // initialize for sub-image extraction from the full image for inference
-  // if (cc->Service(kMemoryManagerService).IsAvailable()) {
-  //   memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();
-  // }
+  // initialize for extracting the sub-image implied by the hand rectangles (to be reduced into much less surface)
   auto sub_image_extraction_options = ImageToTensorCalculatorOptions();
   sub_image_extraction_options.set_output_tensor_width(224);
   sub_image_extraction_options.set_output_tensor_height(224);
@@ -51,9 +48,15 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   sub_image_extraction_options.mutable_output_tensor_float_range()->set_max(1.0f);
   sub_image_extraction_options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_UNSPECIFIED);
   auto params_ = GetOutputTensorParams(sub_image_extraction_options);
+  auto sub_image_extraction_input_tensor_width = params_.output_width.value_or(0);
+  auto sub_image_extraction_input_tensor_height = params_.output_height.value_or(0);
   sub_image_for_inference_extractor_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
-      sub_image_extraction_options, tensor_width, tensor_height, params_,
+      sub_image_extraction_options, sub_image_extraction_input_tensor_width, sub_image_extraction_input_tensor_height, params_,
       gpu_converter_, cpu_converter_, memory_manager);
+
+  // initialize for landmarks inference
+  const std::string& landmarks_infernce_model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
+  landmarks_inference_ = std::make_unique<api2::ModelInference>(landmarks_infernce_model_path);
 }
 
   absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Liberated::Process(const std::vector<NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
@@ -139,8 +142,11 @@ Liberated::Liberated(MemoryManager* memory_manager) {
     // start looping or fanning out in place of the original pipeline's fanning out of the hand rects for landmarks inference,
     // which have been accomplished above.
     for (auto norm_rect : *merged_hand_rectangles) {
-      api2::ImageToTensorCoreResult core_result;
-      MP_RETURN_IF_ERROR(sub_image_for_inference_extractor_->Process(*image, norm_rect, &core_result));
+      // extract the sub-image implied by the established hand rectangles, for landmarks inference
+      api2::ImageToTensorCoreResult sub_image_extraction_struct;
+      MP_RETURN_IF_ERROR(sub_image_for_inference_extractor_->Process(*image, norm_rect, &sub_image_extraction_struct));
+      MP_ASSIGN_OR_RETURN(std::vector<Tensor> output_tensors, landmarks_inference_->Process(MakeTensorSpan(sub_image_extraction_struct.tensors)));
+
     }
 
   return merged_hand_rectangles;
