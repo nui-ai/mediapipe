@@ -176,21 +176,21 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       std::unique_ptr<std::vector<Tensor>> combined_output;  // output argument not consumed by our code (an over generalization feature of the original pipeline)
       std::vector<std::unique_ptr<std::vector<Tensor>>> output_vectors;
       MP_RETURN_IF_ERROR(landmarks_inference_splitter_->Run(&output_tensors_ptr, &output_vectors, &output_elements, &combined_output));
-      std::unique_ptr<std::vector<Tensor>> landmarks = std::move(output_vectors[0]);
-      std::unique_ptr<std::vector<Tensor>> hand_presence = std::move(output_vectors[1]);
-      std::unique_ptr<std::vector<Tensor>> hand_handedness = std::move(output_vectors[2]);
-      std::unique_ptr<std::vector<Tensor>> world_landmarks = std::move(output_vectors[3]);
+      std::unique_ptr<std::vector<Tensor>> inference_output_landmarks = std::move(output_vectors[0]);
+      std::unique_ptr<std::vector<Tensor>> inference_output_hand_presence = std::move(output_vectors[1]);
+      std::unique_ptr<std::vector<Tensor>> inference_output_hand_handedness = std::move(output_vectors[2]);
+      std::unique_ptr<std::vector<Tensor>> inference_output_world_landmarks = std::move(output_vectors[3]);
 
       // extract the hand presence score from the landmarks inference output
-      auto result = tensors_to_floats_calculator_core::Process(*hand_presence, TensorsToFloatsCalculatorOptions());
+      auto result = tensors_to_floats_calculator_core::Process(*inference_output_hand_presence, TensorsToFloatsCalculatorOptions());
 
       // extract the hand handedness classification information from the landmarks inference output
-      auto raw_score = hand_handedness->at(0).GetCpuReadView().buffer<float>();
-      std::unique_ptr<ClassificationList> handedness_classification = ProcessTensorToClassifications(raw_score, 2, handedness_classification_config_);
+      auto inferred_handedness_score = inference_output_hand_handedness->at(0).GetCpuReadView().buffer<float>();
+      std::unique_ptr<ClassificationList> inferred_handedness_classification_object = ProcessTensorToClassifications(inferred_handedness_score, 2, handedness_classification_config_);
 
       // extract the viewport landmarks from the landmarks inference output
-      NormalizedLandmarkList output_norm_landmarks;
-      MP_RETURN_IF_ERROR(landmarks_extractor_->TensorsToLandmarks(*landmarks, &output_norm_landmarks));
+      NormalizedLandmarkList inferred_landmarks;
+      MP_RETURN_IF_ERROR(landmarks_extractor_->TensorsToLandmarks(*inference_output_landmarks, &inferred_landmarks));
     }
 
 
