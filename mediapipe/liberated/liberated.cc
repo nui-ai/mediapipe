@@ -1,5 +1,4 @@
 #include "mediapipe/liberated/liberated.h"
-#include "mediapipe/calculators/tensor/tensors_to_classification_calculator.pb.h"
 
 namespace mediapipe_v01013_based {
 
@@ -70,6 +69,14 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   handedness_classification_config_.class_index_set.is_allowlist = false;
   handedness_classification_config_.top_k = 1;
   handedness_classification_config_.sort_by_descending_score = false;
+
+  // initialize for extracting the viewport landmarks from the landmarks inference output
+  auto landmarks_extraction_options = TensorsToLandmarksCalculatorOptions();
+  landmarks_extractor_ = std::make_unique<api2::TensorsToLandmarksCore>(
+    224, 224,
+    landmarks_extraction_options.visibility_activation(), landmarks_extraction_options.presence_activation(),
+    0,21);
+
 }
 
   absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Liberated::Process(const std::vector<NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
@@ -181,11 +188,9 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       auto raw_score = hand_handedness->at(0).GetCpuReadView().buffer<float>();
       std::unique_ptr<ClassificationList> handedness_classification = ProcessTensorToClassifications(raw_score, 2, handedness_classification_config_);
 
-      // // extracted handedness classification information from the landmarks inference output
-      // auto classification_list = api2::ProcessTensorToClassifications(
-      //     raw_scores, num_classes, config_, GetLabelMap(cc));
-
-      // handedness_classification_config_
+      // extract the viewport landmarks from the landmarks inference output
+      NormalizedLandmarkList output_norm_landmarks;
+      MP_RETURN_IF_ERROR(landmarks_extractor_->TensorsToLandmarks(*landmarks, &output_norm_landmarks));
     }
 
 
