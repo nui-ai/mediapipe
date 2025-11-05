@@ -20,7 +20,7 @@
 #include <vector>
 
 #include "mediapipe/calculators/core/split_vector_calculator.pb.h"
-#include "mediapipe/calculators/core/split_vector_calculator_core.h"
+#include "mediapipe/calculators/core/inference_output_tensor_splitting.h"
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/canonical_errors.h"
 #include "mediapipe/framework/port/ret_check.h"
@@ -72,13 +72,13 @@ class SplitVectorCalculator : public CalculatorBase {
     if (!std::is_copy_constructible<T>::value || move_elements) {
       // Ranges of elements shouldn't overlap when the vector contains
       // non-copyable elements.
-      RET_CHECK_OK(CheckRangesDontOverlap(options));
+      RET_CHECK_OK((InferenceOutputTensorSplitting<T, move_elements>::CheckRangesDontOverlap(options)));
     }
 
     if (options.combine_outputs()) {
       RET_CHECK_EQ(cc->Outputs().NumEntries(), 1);
       cc->Outputs().Index(0).Set<std::vector<T>>();
-      RET_CHECK_OK(CheckRangesDontOverlap(options));
+      RET_CHECK_OK((InferenceOutputTensorSplitting<T, move_elements>::CheckRangesDontOverlap(options)));
     } else {
       if (cc->Outputs().NumEntries() != options.ranges_size()) {
         return absl::InvalidArgumentError(
@@ -115,10 +115,9 @@ class SplitVectorCalculator : public CalculatorBase {
     const auto& options =
         cc->Options<::mediapipe_v01013_based::SplitVectorCalculatorOptions>();
 
-    // Use extracted function to initialize calculator state
-    return InitializeSplitVectorCalculator<T>(
-        options, &ranges_, &max_range_end_, &total_elements_,
-        &element_only_, &combine_outputs_);
+    // Construct the splitting helper with options (no CalculatorContext dependency)
+    splitter_ = InferenceOutputTensorSplitting<T, move_elements>(options);
+    return absl::OkStatus();
   }
 
   absl::Status Process(CalculatorContext* cc) override {
@@ -139,25 +138,23 @@ class SplitVectorCalculator : public CalculatorBase {
     std::vector<T> output_elements;
     std::unique_ptr<std::vector<T>> combined_output;
 
-    // Use extracted function to process the input
-    auto status = ::mediapipe_v01013_based::ProcessCopyableElements<T>(
-        input, ranges_, max_range_end_, total_elements_,
-        element_only_, combine_outputs_,
-        &output_vectors, &output_elements, &combined_output);
+    // Delegate to the splitting helper (no CalculatorContext inside).
+    auto status = splitter_.Run(
+        input, &output_vectors, &output_elements, &combined_output);
 
     if (!status.ok()) return status;
 
     // Handle output based on configuration
-    if (combine_outputs_) {
+    if (splitter_.combine_outputs()) {
       cc->Outputs().Index(0).Add(combined_output.release(), cc->InputTimestamp());
     } else {
-      if (element_only_) {
-        for (int i = 0; i < ranges_.size(); ++i) {
+      if (splitter_.element_only()) {
+        for (int i = 0; i < splitter_.range_count(); ++i) {
           cc->Outputs().Index(i).AddPacket(
               MakePacket<U>(output_elements[i]).At(cc->InputTimestamp()));
         }
       } else {
-        for (int i = 0; i < ranges_.size(); ++i) {
+        for (int i = 0; i < splitter_.range_count(); ++i) {
           cc->Outputs().Index(i).Add(output_vectors[i].release(), cc->InputTimestamp());
         }
       }
@@ -183,26 +180,24 @@ class SplitVectorCalculator : public CalculatorBase {
     std::vector<T> output_elements;
     std::unique_ptr<std::vector<T>> combined_output;
 
-    // Use extracted function to process the input
-    auto status = ::mediapipe_v01013_based::ProcessMovableElements<T>(
-        &input_vector, ranges_, max_range_end_, total_elements_,
-        element_only_, combine_outputs_,
-        &output_vectors, &output_elements, &combined_output);
+    // Delegate to the splitting helper (no CalculatorContext inside).
+    auto status = splitter_.Run(
+        &input_vector, &output_vectors, &output_elements, &combined_output);
 
     if (!status.ok()) return status;
 
     // Handle output based on configuration
-    if (combine_outputs_) {
+    if (splitter_.combine_outputs()) {
       cc->Outputs().Index(0).Add(combined_output.release(), cc->InputTimestamp());
     } else {
-      if (element_only_) {
-        for (int i = 0; i < ranges_.size(); ++i) {
+      if (splitter_.element_only()) {
+        for (int i = 0; i < splitter_.range_count(); ++i) {
           cc->Outputs().Index(i).AddPacket(
               MakePacket<U>(std::move(output_elements[i]))
                   .At(cc->InputTimestamp()));
         }
       } else {
-        for (int i = 0; i < ranges_.size(); ++i) {
+        for (int i = 0; i < splitter_.range_count(); ++i) {
           cc->Outputs().Index(i).Add(output_vectors[i].release(), cc->InputTimestamp());
         }
       }
@@ -217,11 +212,7 @@ class SplitVectorCalculator : public CalculatorBase {
   }
 
  private:
-  std::vector<std::pair<int32_t, int32_t>> ranges_;
-  int32_t max_range_end_ = -1;
-  int32_t total_elements_ = 0;
-  bool element_only_ = false;
-  bool combine_outputs_ = false;
+  InferenceOutputTensorSplitting<T, move_elements> splitter_;
 };
 
 }  // namespace mediapipe_v01013_based

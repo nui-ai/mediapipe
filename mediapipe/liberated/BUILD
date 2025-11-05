@@ -29,6 +29,7 @@ cc_library(
     srcs = ["liberated.cc"],
     hdrs = ["liberated.h"],
     deps = [
+        "//mediapipe/calculators/core:split_vector_calculator_core",
         "//mediapipe/calculators/tensor:detection_inference_calculator",
         "//mediapipe/calculators/tensor:image_to_tensor_calculator_core",
         "//mediapipe/calculators/tensor:image_to_tensor_utils",

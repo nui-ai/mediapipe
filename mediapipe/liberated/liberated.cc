@@ -26,7 +26,8 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   // initialize for detection inference conversion to tensors
   inference_filter_stage1_ = std::make_unique<api2::ConvertDetectionTensors>();
 
-  // initialize for orienting the raw (axes parallel) palm rect detected by SSD, to the palm's rough shape by detection keypoints of the palm detection itself.
+  // initialize for orienting the raw (axes parallel) palm rect detected by SSD, to the palm's rough shape by detection keypoints
+  // included in the output of the palm detection inference itself (https://chatgpt.com/s/t_690b528ae748819181a48117cb417908).
   auto target_angle_rad = static_cast<float>(M_PI * 90.0 / 180.0);
   palm_detection_to_oriented_palm_rect_ = std::make_unique<DetectionsToOrientedRects>(target_angle_rad);
 
@@ -50,7 +51,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   auto params_ = GetOutputTensorParams(sub_image_extraction_options);
   auto sub_image_extraction_input_tensor_width = params_.output_width.value_or(0);
   auto sub_image_extraction_input_tensor_height = params_.output_height.value_or(0);
-  sub_image_for_inference_extractor_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
+  sub_image_for_landmarks_inference_extractor_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
       sub_image_extraction_options, sub_image_extraction_input_tensor_width, sub_image_extraction_input_tensor_height, params_,
       gpu_converter_, cpu_converter_, memory_manager);
 
@@ -142,9 +143,10 @@ Liberated::Liberated(MemoryManager* memory_manager) {
     // start looping or fanning out in place of the original pipeline's fanning out of the hand rects for landmarks inference,
     // which have been accomplished above.
     for (auto norm_rect : *merged_hand_rectangles) {
-      // extract the sub-image implied by the established hand rectangles, for landmarks inference
+      // extract the sub-image implied by the established hand rectangles, for landmarks inference.
+      // this sub-image will currently be 224x224 pixels.
       api2::ImageToTensorCoreResult sub_image_extraction_struct;
-      MP_RETURN_IF_ERROR(sub_image_for_inference_extractor_->Process(*image, norm_rect, &sub_image_extraction_struct));
+      MP_RETURN_IF_ERROR(sub_image_for_landmarks_inference_extractor_->Process(*image, norm_rect, &sub_image_extraction_struct));
       MP_ASSIGN_OR_RETURN(std::vector<Tensor> output_tensors, landmarks_inference_->Process(MakeTensorSpan(sub_image_extraction_struct.tensors)));
 
     }

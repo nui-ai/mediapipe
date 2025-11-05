@@ -51,7 +51,7 @@ absl::Status InitializeSplitVectorCalculator(
 }
 
 // Check that ranges don't overlap (used when elements can't be copied or when using combine_outputs)
-absl::Status CheckRangesDontOverlap(
+inline absl::Status CheckRangesDontOverlap(
     const ::mediapipe_v01013_based::SplitVectorCalculatorOptions& options) {
   for (int i = 0; i < options.ranges_size() - 1; ++i) {
     for (int j = i + 1; j < options.ranges_size(); ++j) {

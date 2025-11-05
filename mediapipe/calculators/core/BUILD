@@ -975,11 +975,47 @@ cc_test(
 
 cc_library(
     name = "split_vector_calculator",
+    srcs = ["split_vector_calculator.cc"],
+    hdrs = ["split_vector_calculator.h"],
+    copts = select({
+        "//mediapipe:apple": [
+            "-x objective-c++",
+            "-fobjc-arc",  # enable reference-counting
+        ],
+        "//conditions:default": [],
+    }),
+    deps = [
+        ":split_vector_calculator_cc_proto",
+        ":split_vector_calculator_core",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/formats:classification_cc_proto",
+        "//mediapipe/framework/formats:detection_cc_proto",
+        "//mediapipe/framework/formats:image",
+        "//mediapipe/framework/formats:image_frame",
+        "//mediapipe/framework/formats:landmark_cc_proto",
+        "//mediapipe/framework/formats:matrix",
+        "//mediapipe/framework/formats:rect_cc_proto",
+        "//mediapipe/framework/formats:tensor",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+        "//mediapipe/util:resource_util",
+        "@org_tensorflow//tensorflow/lite:framework",
+        "@org_tensorflow//tensorflow/lite/kernels:builtin_ops",
+    ] + select({
+        ":apple_or_disable_gpu": [],
+        "//conditions:default": [
+            "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_buffer",
+        ],
+    }),
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "split_vector_calculator_core",
     srcs = [
-        "split_vector_calculator.cc",
+        "inference_output_tensor_splitting.h",
         "split_vector_calculator_core.h",
     ],
-    hdrs = ["split_vector_calculator.h"],
     copts = select({
         "//mediapipe:apple": [
             "-x objective-c++",
