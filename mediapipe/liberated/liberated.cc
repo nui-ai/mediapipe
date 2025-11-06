@@ -197,6 +197,13 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
       // extract the hand presence score from the landmarks inference output
       auto result = tensors_to_floats_calculator_core::HandPresenceExtract(*inference_output_hand_presence, TensorsToFloatsCalculatorOptions());
+      ABSL_ASSERT(result.num_values == 1);
+      float hand_presence_in_landmarks_inference = result.output_floats->at(0);
+
+      if (hand_presence_in_landmarks_inference < hand_presence_in_landmarks_inference_threshold_) {
+        ABSL_LOG(INFO) << "a rectangle for hand landmarks inference failed in presence validation by a presence post-hoc score of " << hand_presence_in_landmarks_inference;
+        continue;
+      }
 
       // extract the hand handedness classification object (object holding handedness value and its confidence) from the landmarks inference output
       auto inferred_handedness_score = inference_output_hand_handedness->at(0).GetCpuReadView().buffer<float>();

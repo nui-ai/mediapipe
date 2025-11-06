@@ -44,6 +44,7 @@ namespace mediapipe_v01013_based {
   [[nodiscard]] absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Process(const std::vector<mediapipe_v01013_based::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const mediapipe_v01013_based::Image> image, uint32_t max_hands_to_track) const;
 
  private:
+  float hand_presence_in_landmarks_inference_threshold_ = 0.5f;
   std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
   std::unique_ptr<ImageToTensorConverter> gpu_converter_;
   std::unique_ptr<ImageToTensorConverter> cpu_converter_;
