@@ -75,7 +75,8 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   landmarks_extractor_ = std::make_unique<api2::TensorsToLandmarksCore>(
     224, 224,
     landmarks_extraction_options.visibility_activation(), landmarks_extraction_options.presence_activation(),
-    0,21);
+    0.4,
+    21);
 
   // initialize for expanding a hand rectangle derived from inferred hand landmarks, to a rectangle to be used for landmarks inference on the next frame
   auto expand_rect_for_next_frame_options = RectTransformationCalculatorOptions();
@@ -87,31 +88,43 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   expand_rect_for_next_frame_options.set_square_long(true);
   expand_rect_for_next_frame_ = std::make_unique<RectTransformation>(expand_rect_for_next_frame_options);
 
-  // ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
-  //
-  // core_ = std::make_unique<PalmRectToHandRect>(options_);
+  // on the very first video frame there are no hand rectangles derived from the previous frame
+  hand_rect_from_previous_frame_ = std::vector<NormalizedRect>();
 
+  // ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
 
 }
 
-  absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Liberated::Process(const std::vector<NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const Image> image, uint32_t max_hands_to_track) const {
-    // auto palm_detection_image = nullptr;
+  absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::Process(
+    std::shared_ptr<const Image> image,
+    uint32_t max_hands_to_track) {
+
+    // initiate the result structure for the current image as empty vectors for all of its fields
+    auto result = std::make_unique<ImageHandTrackingAndInferenceResult>(
+    ImageHandTrackingAndInferenceResult{
+        std::make_unique<std::vector<NormalizedLandmarkList>>(),
+        std::make_unique<std::vector<LandmarkList>>(),
+        std::make_unique<std::vector<ClassificationList>>()
+    });
+
+  // auto palm_detection_image = nullptr;
+
     auto count_capped_detections = absl::make_unique<std::vector<Detection>>();
     auto hand_rects_from_detections = absl::make_unique<std::vector<NormalizedRect>>();
     auto merged_hand_rectangles_list = absl::make_unique<std::list<NormalizedRect>>();
     auto merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>();
 
-    if (prev_hand_rects_from_landmarks.size() == max_hands_to_track) {
-      ABSL_LOG(INFO) << "the number of hands detected from the previous frame's landmarks (" << prev_hand_rects_from_landmarks.size() << ") is equal to the globally set maximum number of hands to track " << max_hands_to_track;
+    if (hand_rect_from_previous_frame_.size() == max_hands_to_track) {
+      ABSL_LOG(INFO) << "the number of hands detected from the previous frame's landmarks (" << hand_rect_from_previous_frame_.size() << ") is equal to the globally set maximum number of hands to track " << max_hands_to_track;
       ABSL_LOG(INFO) << "skipping palm detection";
-    } else if (prev_hand_rects_from_landmarks.size() > max_hands_to_track) { // this does happen, arising in the de-facto chains of calculation mirroring the original pipeline
-      ABSL_LOG(INFO) << "the number of hands rectangles from the previous frame's landmarks (" << prev_hand_rects_from_landmarks.size() << ") is larger than the globally set maximum number of hands to track " << max_hands_to_track;
+    } else if (hand_rect_from_previous_frame_.size() > max_hands_to_track) { // this does happen, arising in the de-facto chains of calculation mirroring the original pipeline
+      ABSL_LOG(INFO) << "the number of hands rectangles from the previous frame's landmarks (" << hand_rect_from_previous_frame_.size() << ") is larger than the globally set maximum number of hands to track " << max_hands_to_track;
       ABSL_LOG(INFO) << "skipping palm detection";
       // return absl::InternalError("the number of hands rectangels from the previous frame's landmarks is larger than the globally set maximum number of hands to track, which is currently unexpected");
     }
 
     // start the palm detection -> expanded oriented hand region for landmark inference path of computation
-    if (prev_hand_rects_from_landmarks.size() < max_hands_to_track) {
+    if (hand_rect_from_previous_frame_.size() < max_hands_to_track) {
 
       ABSL_LOG(INFO) << "palm detection will be triggered for the current frame as the number of previous frame's detections from landmarks is smaller than the set maximum number of hands to track";
 
@@ -171,8 +184,9 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
     // merges with IoU threshold based filtering, the set of hand rects derived directly from palm detection inference, with the set of hand rects derived from the previous frame's landmarks inference,
     // both of which input sets to this merge may be empty or not. if both are empty, an empty set should be the result.
-    MP_ASSIGN_OR_RETURN(*merged_hand_rectangles_list, mediapipe_v01013_based::IouFilterMerge(*hand_rects_from_detections, prev_hand_rects_from_landmarks, 0.5));
+    MP_ASSIGN_OR_RETURN(*merged_hand_rectangles_list, mediapipe_v01013_based::IouFilterMerge(*hand_rects_from_detections, hand_rect_from_previous_frame_, 0.5));
     merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>(merged_hand_rectangles_list->begin(), merged_hand_rectangles_list->end());  // convert from list to vector
+    hand_rect_from_previous_frame_ = std::vector<NormalizedRect>();  // reset before we start building them from scratch from the current frame ...
 
     // start looping or fanning out in place of the original pipeline's fanning out of the hand rects for landmarks inference, which have been accomplished above.
     for (auto rectangle_for_landmarks_inference : *merged_hand_rectangles) {
@@ -196,9 +210,9 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       std::unique_ptr<std::vector<Tensor>> inference_output_object_landmarks = std::move(output_vectors[3]);
 
       // extract the hand presence score from the landmarks inference output
-      auto result = tensors_to_floats_calculator_core::HandPresenceExtract(*inference_output_hand_presence, TensorsToFloatsCalculatorOptions());
-      ABSL_ASSERT(result.num_values == 1);
-      float hand_presence_in_landmarks_inference = result.output_floats->at(0);
+      auto hand_presence_raw = tensors_to_floats_calculator_core::HandPresenceExtract(*inference_output_hand_presence, TensorsToFloatsCalculatorOptions());
+      ABSL_ASSERT(hand_presence_raw.num_values == 1);
+      float hand_presence_in_landmarks_inference = hand_presence_raw.output_floats->at(0);
 
       // gate naively by the hand presence detection which is part of the landmarks inference.
       // the palm detection phase v.s. this phase:
@@ -221,7 +235,11 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       //
       // at the same time it feels a little brittle in e.g. not being more explicitly stateful across frames, in:
       //   - not taking exploit of kinematics (which hinges on anatomy here)
-      //   - not being more stateful in perhaps other ways
+      //   - not being more explicitly stateful in perhaps other ways
+      //   - not explicitly harmonizing the various bounding rectangle filtering stages
+      //
+      // well, as we know, good baselines are hard to beat without very disciplined effort;
+      // further, what isn't explicitly harmonized may still be near optimal.
       if (hand_presence_in_landmarks_inference < hand_presence_in_landmarks_inference_threshold_) {
         ABSL_LOG(INFO) << "a rectangle for hand landmarks inference failed in presence validation by a presence post-hoc score of " << hand_presence_in_landmarks_inference;
         continue;
@@ -286,9 +304,25 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       // so we can assume this expansion was finely tuned by the original mediapipe team, who knows the sensitivity of the landmarks inference model
       // to the pixel sizes of hands showing in its 224x224 input, which depends (we can't know how much) on the same sizes in its training data.
       expand_rect_for_next_frame_->ExpandNormalizedRect(hand_rect_for_next_frame.get(), image->width(), image->height());
+
+      // accumulate into vectors of results that we return to the caller -> like the original pipeline, like so:
+      // each result type is a vector and all those result vectors are implicitly indexed by the hand to which they apply.
+      // you may notice that this indexing does not in any way preserve "hand identity" since the implementation makes
+      // no effort to associate hands detected, across frames! this shortcoming should be part of the tracking redo!
+      // the implicit indexing *is* however technically consistent for the current detections:
+      // each index across the result vectors corresponds to the same detected hand,
+      // or at least arises from the implicit indexing of the model's inference outputs,
+      // which are assumed to have that trait.
+      result->viewport_landmarkss->push_back(final_viewport_landmarks);
+      result->object_landmarkss->push_back(final_object_landmarks);
+      result->handedness_classifications->push_back(*inferred_handedness_classification_object);
+
+      hand_rect_from_previous_frame_.push_back(*hand_rect_for_next_frame);
     }
 
-  return merged_hand_rectangles;
+  return result;
+
+  // return merged_hand_rectangles;
 }
 
 }

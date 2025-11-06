@@ -27,7 +27,13 @@
 #include "mediapipe/modules/hand_landmark/calculators/hand_landmarks_to_rect_calculator_core.h"
 
 namespace mediapipe_v01013_based {
- class DetectionsToOrientedRects;
+ class DetectionsToOrientedRects;  // forward declaration hack that will ultimately be unnecessary
+
+ struct ImageHandTrackingAndInferenceResult {
+  std::unique_ptr<std::vector<NormalizedLandmarkList>> viewport_landmarkss;
+  std::unique_ptr<std::vector<LandmarkList>> object_landmarkss;
+  std::unique_ptr<std::vector<ClassificationList>> handedness_classifications;
+ };
 
  class Liberated {
  public:
@@ -41,10 +47,18 @@ namespace mediapipe_v01013_based {
   Liberated(Liberated&&) = default;
   Liberated& operator=(Liberated&&) = default;
 
-  [[nodiscard]] absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> Process(const std::vector<mediapipe_v01013_based::NormalizedRect> &prev_hand_rects_from_landmarks, std::shared_ptr<const mediapipe_v01013_based::Image> image, uint32_t max_hands_to_track) const;
+  [[nodiscard]] absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Process(std::shared_ptr<const mediapipe_v01013_based::Image> image, uint32_t max_hands_to_track);
 
  private:
+
+  // meta-parameters should ultimately go here.
+  // values we pass to below implementations which must mirror how
+  // neural network models have been trained should not really be
+  // moved here as they cannot be fiddled.
   float hand_presence_in_landmarks_inference_threshold_ = 0.5f;
+
+  // step implementations, some of which need initialization and hence an object,
+  // and some don't and are just free functions.
   std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
   std::unique_ptr<ImageToTensorConverter> gpu_converter_;
   std::unique_ptr<ImageToTensorConverter> cpu_converter_;
@@ -58,6 +72,11 @@ namespace mediapipe_v01013_based {
   api2::TensorsToClassificationConfig handedness_classification_config_;
   std::unique_ptr<api2::TensorsToLandmarksCore> landmarks_extractor_;
   std::unique_ptr<RectTransformation> expand_rect_for_next_frame_;
+
+  // state which replaces the former passing of information by
+  // a framework loopback to the pipeline's head
+  std::vector<NormalizedRect> hand_rect_from_previous_frame_;
+
  };
 
 }

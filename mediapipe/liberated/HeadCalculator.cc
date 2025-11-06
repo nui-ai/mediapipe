@@ -33,12 +33,14 @@ namespace mediapipe_v01013_based {
       static absl::Status GetContract(CalculatorContract* cc) {
 
         RET_CHECK(cc->Inputs().HasTag("IMAGE"));
-        RET_CHECK(cc->Inputs().HasTag("ITERABLE"));
         cc->Inputs().Tag("IMAGE").Set<ImageFrame>();
-        cc->Inputs().Tag("ITERABLE").Set<std::vector<NormalizedRect>>();
 
-        cc->Outputs().Index(0).Set<bool>(); // untagged output stream 0
-        cc->Outputs().Index(1).Set<std::vector<NormalizedRect>>(); // untagged output stream 1
+        // cc->Outputs().Index(0).Set<bool>(); // untagged output stream 0
+        cc->Outputs().Tag("LANDMARKS").Set<std::vector<NormalizedLandmarkList>>();
+        cc->Outputs().Tag("WORLD_LANDMARKS").Set<std::vector<LandmarkList>>();
+        cc->Outputs().Tag("HANDEDNESS").Set<std::vector<ClassificationList>>();
+
+        // cc->Outputs().Index(1).Set<std::vector<NormalizedRect>>(); // untagged output stream 1
         // cc->Outputs().Tag("TENSORS").Set<std::vector<Tensor>>();
         // cc->Outputs().Tag("LETTERBOX_PADDING").Set<std::array<float, 4>>();
         // cc->Outputs().Tag("ITERABLE").Set<NormalizedRect>();
@@ -65,15 +67,17 @@ namespace mediapipe_v01013_based {
         MP_ASSIGN_OR_RETURN(image, GetInputImage(kIn(cc)));
         GetSharedState().image = image;
 
-        bool iterable_is_empty = cc->Inputs().Tag("ITERABLE").IsEmpty();
-        if (!iterable_is_empty) {
-          const auto& rects = cc->Inputs().Tag("ITERABLE").Get<std::vector<NormalizedRect>>();
-        }
+        // bool iterable_is_empty = cc->Inputs().Tag("ITERABLE").IsEmpty();
+        // if (!iterable_is_empty) {
+        //   const auto& rects = cc->Inputs().Tag("ITERABLE").Get<std::vector<NormalizedRect>>();
+        // }
 
-        absl::StatusOr<std::unique_ptr<std::vector<NormalizedRect>>> resultOrStatus = liberated_->Process(GetSharedState().prev_hand_rects_from_landmarks, image, max_hands_to_track);
+        absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> resultOrStatus = liberated_->Process(image, max_hands_to_track);
         if (resultOrStatus.ok()) {
-          std::unique_ptr<std::vector<NormalizedRect>> output = std::move(resultOrStatus.value());
-          cc->Outputs().Index(1).Add(output.release(), cc->InputTimestamp());
+          cc->Outputs().Tag("LANDMARKS").Add(resultOrStatus.value()->viewport_landmarkss.release(), cc->InputTimestamp());
+          cc->Outputs().Tag("WORLD_LANDMARKS").Add(resultOrStatus.value()->object_landmarkss.release(), cc->InputTimestamp());
+          cc->Outputs().Tag("HANDEDNESS").Add(resultOrStatus.value()->handedness_classifications.release(), cc->InputTimestamp());
+          // cc->Outputs().Index(1).Add(resultOrStatus.value().get(), cc->InputTimestamp());
           return absl::OkStatus();
         }
         else {
