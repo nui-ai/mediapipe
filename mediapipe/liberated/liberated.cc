@@ -35,7 +35,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   auto oriented_palm_rect_to_hand_rect_expander_options = RectTransformationCalculatorOptions();
   oriented_palm_rect_to_hand_rect_expander_options.set_scale_x(2.6f);
   oriented_palm_rect_to_hand_rect_expander_options.set_scale_y(2.6f);
-  oriented_palm_rect_to_hand_rect_expander_options.set_shift_y(-0.5);
+  oriented_palm_rect_to_hand_rect_expander_options.set_shift_y(-0.5f);
   oriented_palm_rect_to_hand_rect_expander_options.set_square_long(true);
   // ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
   oriented_palm_rect_to_hand_rect_expander_ = std::make_unique<RectTransformation>(oriented_palm_rect_to_hand_rect_expander_options);
@@ -81,9 +81,9 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   auto expand_rect_for_next_frame_options = RectTransformationCalculatorOptions();
   ABSL_ASSERT(!(expand_rect_for_next_frame_options.has_rotation() && expand_rect_for_next_frame_options.has_rotation_degrees()));
   ABSL_ASSERT(!(expand_rect_for_next_frame_options.has_square_long() && expand_rect_for_next_frame_options.has_square_short()));
-  expand_rect_for_next_frame_options.set_scale_x(2.0);
-  expand_rect_for_next_frame_options.set_scale_y(2.0);
-  expand_rect_for_next_frame_options.set_shift_y(-0.1);
+  expand_rect_for_next_frame_options.set_scale_x(2.0f);
+  expand_rect_for_next_frame_options.set_scale_y(2.0f);
+  expand_rect_for_next_frame_options.set_shift_y(-0.1f);
   expand_rect_for_next_frame_options.set_square_long(true);
   expand_rect_for_next_frame_ = std::make_unique<RectTransformation>(expand_rect_for_next_frame_options);
 
@@ -219,7 +219,9 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       // the current flow is a good (great) baseline of notably relatively few moving parts;
       // furthermore it's expansion ratios transitioning between the bouding rectangles may have been finely optimized.
       //
-      // at the same time it feels a little brittle in e.g. being totally stateless across frames.
+      // at the same time it feels a little brittle in e.g. not being more explicitly stateful across frames, in:
+      //   - not taking exploit of kinematics (which hinges on anatomy here)
+      //   - not being more stateful in perhaps other ways
       if (hand_presence_in_landmarks_inference < hand_presence_in_landmarks_inference_threshold_) {
         ABSL_LOG(INFO) << "a rectangle for hand landmarks inference failed in presence validation by a presence post-hoc score of " << hand_presence_in_landmarks_inference;
         continue;
