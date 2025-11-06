@@ -200,6 +200,26 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       ABSL_ASSERT(result.num_values == 1);
       float hand_presence_in_landmarks_inference = result.output_floats->at(0);
 
+      // gate naively by the hand presence detection which is part of the landmarks inference.
+      // the palm detection phase v.s. this phase:
+      //
+      //   • palm detection seeks to detect a palm, it's currently hard to tell how much seeing fingers helps with that ―
+      //     a tentative intuition might be that a lot, yet we don't really know how it was trained other than picking inside
+      //     sneaky papers of detection models leading to mediapipe's palm detection model, and we don't a-priori know for now.
+      //   • presence detection as part of the landmarks inference model assumes to see an entire hand sans allowing occlusions,
+      //     we haven't assessed how accurate it thus far is in any way.
+      //
+      // currently, the latter is by the cascade from palm detection fed by the former's input and a naive tuned expansion of it.
+      // elaborated flows and feedback loops can be envisioned which stage this differently and not necessarily in a linear
+      // forward-in-time way only ― which can only be addressed as overall tracking improvement research under firm desiderata ―
+      // first step would be to quantify and qualify fail cases into categories in a very intelligent manner ―
+      // one that gives immediate rise to an evaluation metric which tracks flows between error categories
+      // and the soft nature of the presence scoring which the current model yields.
+      //
+      // the current flow is a good (great) baseline of notably relatively few moving parts;
+      // furthermore it's expansion ratios transitioning between the bouding rectangles may have been finely optimized.
+      //
+      // at the same time it feels a little brittle in e.g. being totally stateless across frames.
       if (hand_presence_in_landmarks_inference < hand_presence_in_landmarks_inference_threshold_) {
         ABSL_LOG(INFO) << "a rectangle for hand landmarks inference failed in presence validation by a presence post-hoc score of " << hand_presence_in_landmarks_inference;
         continue;
