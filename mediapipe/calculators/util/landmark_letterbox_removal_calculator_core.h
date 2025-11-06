@@ -29,7 +29,7 @@ NormalizedLandmark AdjustLandmarkForLetterboxRemoval(
 
 // Adjusts all landmarks in a NormalizedLandmarkList based on letterbox padding.
 // Returns a new NormalizedLandmarkList with adjusted coordinates.
-NormalizedLandmarkList AdjustLandmarkListForLetterboxRemoval(
+NormalizedLandmarkList AdjustLandmarkListToLetterboxRemoval(
     const NormalizedLandmarkList& input_landmarks,
     const std::array<float, 4>& letterbox_padding);
 

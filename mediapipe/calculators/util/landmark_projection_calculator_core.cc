@@ -66,7 +66,7 @@ std::function<void(const NormalizedLandmark&, NormalizedLandmark*)> CreateProjec
     };
 }
 
-void ProcessLandmarkList(
+void ToViewportCoordinates(
     const NormalizedLandmarkList& input_landmarks,
     const NormalizedRect* input_rect,
     NormalizedLandmarkList* output_landmarks) {

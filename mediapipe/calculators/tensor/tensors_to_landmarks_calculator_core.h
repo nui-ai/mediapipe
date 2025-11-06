@@ -32,7 +32,7 @@ class TensorsToLandmarksCore {
                                   float normalize_z,
                                   int num_landmarks = 21);
 
-  absl::Status TensorsToLandmarks(
+  absl::Status OutputTensorsToLandmarks(
       const std::vector<Tensor>& input_tensors,
       NormalizedLandmarkList* output_norm_landmarks = nullptr);
 

@@ -52,7 +52,7 @@ TensorsToLandmarksCore::TensorsToLandmarksCore(
       presence_activation_(presence_activation),
       normalize_z_(normalize_z) {}
 
-absl::Status TensorsToLandmarksCore::TensorsToLandmarks(
+absl::Status TensorsToLandmarksCore::OutputTensorsToLandmarks(
     const std::vector<Tensor>& input_tensors,
     NormalizedLandmarkList* output_norm_landmarks) {
 

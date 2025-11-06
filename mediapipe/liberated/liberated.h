@@ -22,6 +22,8 @@
 #include "mediapipe/calculators/tensor/tensors_to_landmarks_calculator_core.h"
 #include "mediapipe/calculators/util/landmark_letterbox_removal_calculator_core.h"
 #include "mediapipe/calculators/util/landmark_projection_calculator_core.h"
+#include "mediapipe/calculators/tensor/tensors_to_world_landmarks_calculator_core.h"
+#include "mediapipe/calculators/util/world_landmark_projection_calculator_core.h"
 
 namespace mediapipe_v01013_based {
  class DetectionsToOrientedRects;

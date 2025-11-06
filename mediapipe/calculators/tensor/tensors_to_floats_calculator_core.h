@@ -39,7 +39,7 @@ struct ProcessingResult {
 absl::Status Open(const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions& options);
 
 // Process function that handles the tensor processing
-ProcessingResult Process(
+ProcessingResult HandPresenceExtract(
     const std::vector<Tensor>& input_tensors,
     const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions& options);
 

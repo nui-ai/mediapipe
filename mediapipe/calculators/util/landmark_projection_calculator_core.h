@@ -32,7 +32,7 @@ namespace mediapipe_v01013_based {
 std::function<void(const NormalizedLandmark&, NormalizedLandmark*)> CreateProjectionFunction(const NormalizedRect* input_rect);
 
 // Processes a landmark list using the inputs to build a projection function.
-void ProcessLandmarkList(
+void ToViewportCoordinates(
     const NormalizedLandmarkList& input_landmarks,
     const NormalizedRect* input_rect,
     NormalizedLandmarkList* output_landmarks);

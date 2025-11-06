@@ -163,9 +163,9 @@ Liberated::Liberated(MemoryManager* memory_manager) {
     for (auto rectangle_for_landmarks_inference : *merged_hand_rectangles) {
       // extract the sub-image implied by the established hand rectangles, for landmarks inference.
       // this sub-image will currently be 224x224 pixels.
-      api2::ImageToTensorCoreResult sub_image_extraction_struct;
-      MP_RETURN_IF_ERROR(sub_image_for_landmarks_inference_extractor_->Process(*image, rectangle_for_landmarks_inference, &sub_image_extraction_struct));
-      MP_ASSIGN_OR_RETURN(std::vector<Tensor> output_tensors, landmarks_inference_->Process(MakeTensorSpan(sub_image_extraction_struct.tensors)));
+      api2::ImageToTensorCoreResult extracted_sub_image_struct;
+      MP_RETURN_IF_ERROR(sub_image_for_landmarks_inference_extractor_->Process(*image, rectangle_for_landmarks_inference, &extracted_sub_image_struct));
+      MP_ASSIGN_OR_RETURN(std::vector<Tensor> output_tensors, landmarks_inference_->Process(MakeTensorSpan(extracted_sub_image_struct.tensors)));
 
       // get a unique pointer to output_tensors that can be passed to a function expecting std::unique_ptr<std::vector<T>>*
       auto output_tensors_ptr = std::make_unique<std::vector<Tensor>>(std::move(output_tensors));
@@ -181,38 +181,50 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       std::unique_ptr<std::vector<Tensor>> inference_output_object_landmarks = std::move(output_vectors[3]);
 
       // extract the hand presence score from the landmarks inference output
-      auto result = tensors_to_floats_calculator_core::Process(*inference_output_hand_presence, TensorsToFloatsCalculatorOptions());
+      auto result = tensors_to_floats_calculator_core::HandPresenceExtract(*inference_output_hand_presence, TensorsToFloatsCalculatorOptions());
 
       // extract the hand handedness classification object (object holding handedness value and its confidence) from the landmarks inference output
       auto inferred_handedness_score = inference_output_hand_handedness->at(0).GetCpuReadView().buffer<float>();
-      std::unique_ptr<ClassificationList> inferred_handedness_classification_object = ProcessTensorToClassifications(inferred_handedness_score, 2, handedness_classification_config_);
+      std::unique_ptr<ClassificationList> inferred_handedness_classification_object = HandednessClassificationExtract(inferred_handedness_score, 2, handedness_classification_config_);
 
       // extract the viewport landmarks from the landmarks inference output
       NormalizedLandmarkList inferred_landmarks;
-      MP_RETURN_IF_ERROR(landmarks_extractor_->TensorsToLandmarks(*inference_output_viewport_landmarks, &inferred_landmarks));
+      MP_RETURN_IF_ERROR(landmarks_extractor_->OutputTensorsToLandmarks(*inference_output_viewport_landmarks, &inferred_landmarks));
 
-      // unletterbox (aspect ratio scale back) their inference coordinates (from the letterboxing effected by the sub-image extraction for landmarks inference)
+      // unletterbox (aspect ratio scale back) the viewport landmarks inference coordinates (from the letterboxing effected by the sub-image extraction for landmarks inference)
       // notworthy, there is typically no letterboxing taking place (all letterboxing values are zero) as we pass a square of pixels of aspect ratio 1:1 to begin with,
       // in which case there is no need to neither scale nor letterbox our sub-image being passed for landmarks inference by the square assuming inference model.
-      // every so often the ensuing padding values are infenitesimal but not zero, which is likely just a unnecessary computational artefact ―
       // you only need to letterbox if you pass in something that's not square at either the pixel dimensions or the rectangle dimensions ―
       // which we don't do ― unless we pass non-square rectangles when palm detections are near the viewport edges to be tested.
-      if (std::any_of(sub_image_extraction_struct.padding.begin(), sub_image_extraction_struct.padding.end(),
+
+      // every so often the ensuing padding values are infenitesimal but not zero, which is likely just an unnecessary computational artefact ―
+      // probably due to the cutting out of the hand rectangle which is a non-axes-parallel rectangle, in the sub-image extraction phase.
+      if (std::any_of(extracted_sub_image_struct.padding.begin(), extracted_sub_image_struct.padding.end(),
                       [](float v) { return v > 0.0001f; })) {
         ABSL_LOG(INFO) << "non-zero letterbox padding detected: "
-                       << "left " << sub_image_extraction_struct.padding[0]
-                       << ", top " << sub_image_extraction_struct.padding[1]
-                       << ", right " << sub_image_extraction_struct.padding[2]
-                       << ", bottom " << sub_image_extraction_struct.padding[3];
-                      }
-      NormalizedLandmarkList inferred_landmarks_unletterboxed = AdjustLandmarkListForLetterboxRemoval(inferred_landmarks, sub_image_extraction_struct.padding);
+                       << "left " << extracted_sub_image_struct.padding[0]
+                       << ", top " << extracted_sub_image_struct.padding[1]
+                       << ", right " << extracted_sub_image_struct.padding[2]
+                       << ", bottom " << extracted_sub_image_struct.padding[3]; }
 
-      // translate the (possibly unletterboxed) inference coordinates to their viewport coordinates.
+      // apply the (mostly dummy) unletterboxing to the coordinates of the viewport landmarks.
+      // lets anyway keep this for now, to avoid accumulating infinitesimal drift and apply the infinitesimal unletterboxing till we cleaned up
+      // the letterboxing not to accumulate computationl drift, or analyzed the computational effect of it. it's just another fn call while
+      // the time in this module is vastly dominated by the inference steps.
+      NormalizedLandmarkList inferred_landmarks_unletterboxed = AdjustLandmarkListToLetterboxRemoval(inferred_landmarks, extracted_sub_image_struct.padding);
+
+      // translate and rotate the (possibly unletterboxed) coordinates of the viewport landmarks to their viewport coordinates.
+      // rotation is applied counter to the rotation applied when passing the sub-image for landmarks inference to landmarks inference.
       NormalizedLandmarkList final_viewport_landmarks;
-      ProcessLandmarkList(inferred_landmarks_unletterboxed, &rectangle_for_landmarks_inference, &final_viewport_landmarks);
+      ToViewportCoordinates(inferred_landmarks_unletterboxed, &rectangle_for_landmarks_inference, &final_viewport_landmarks);
+
+      // extract the object landmarks from the landmarks inference output
+      auto inferred_object_landmarks = LandmarkList();
+      MP_RETURN_IF_ERROR(api2::OutputTensorsToWorldLandmarks(*inference_output_object_landmarks, &inferred_object_landmarks));
+
+      // rotate the coordinates of the object landmarks counter to the rotation applied when passing the sub-image for landmarks inference to landmarks inference
+      LandmarkList out_landmarks = api3::RotateWorldLandmarks(inferred_object_landmarks, &rectangle_for_landmarks_inference);
     }
-
-
 
   return merged_hand_rectangles;
 }

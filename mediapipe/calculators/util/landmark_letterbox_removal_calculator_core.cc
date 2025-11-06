@@ -33,7 +33,7 @@ NormalizedLandmark AdjustLandmarkForLetterboxRemoval(
   return new_landmark;
 }
 
-NormalizedLandmarkList AdjustLandmarkListForLetterboxRemoval(
+NormalizedLandmarkList AdjustLandmarkListToLetterboxRemoval(
     const NormalizedLandmarkList& input_landmarks,
     const std::array<float, 4>& letterbox_padding) {
   const float left = letterbox_padding[0];

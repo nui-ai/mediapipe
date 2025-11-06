@@ -42,11 +42,9 @@ class WorldLandmarkProjectionNodeImpl
     const auto& in_landmarks = cc.input_landmarks.GetOrDie();
 
     const NormalizedRect* in_rect = nullptr;
-    if (cc.input_rect) {
-      in_rect = &cc.input_rect.GetOrDie();
-    }
+    in_rect = &cc.input_rect.GetOrDie();
 
-    LandmarkList out_landmarks = mediapipe_v01013_based::api3::Process(in_landmarks, in_rect);
+    LandmarkList out_landmarks = mediapipe_v01013_based::api3::RotateWorldLandmarks(in_landmarks, in_rect);
 
     cc.output_landmarks.Send(std::move(out_landmarks));
     return absl::OkStatus();

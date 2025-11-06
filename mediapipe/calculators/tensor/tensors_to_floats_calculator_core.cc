@@ -28,7 +28,7 @@ absl::Status Open(const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptio
   return absl::OkStatus();
 }
 
-ProcessingResult Process(
+ProcessingResult HandPresenceExtract(
     const std::vector<Tensor>& input_tensors,
     const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions& options) {
 

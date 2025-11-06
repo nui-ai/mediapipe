@@ -23,13 +23,15 @@
 namespace mediapipe_v01013_based {
 namespace api2 {
 
+absl::Status OutputTensorsToWorldLandmarks(const std::vector<Tensor>& input_tensors, LandmarkList* output_landmarks);
+
 class TensorsToWorldLandmarksCore {
  public:
   explicit TensorsToWorldLandmarksCore(::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
                                        ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
                                        int num_landmarks = 21);
 
-  absl::Status TensorsToWorldLandmarks(
+  absl::Status Process(
       const std::vector<Tensor>& input_tensors,
       LandmarkList* output_landmarks);
 

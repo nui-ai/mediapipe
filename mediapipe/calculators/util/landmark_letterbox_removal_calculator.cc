@@ -112,7 +112,7 @@ class UnletterboxLandmarksPrediction : public CalculatorBase {
       }
 
       const NormalizedLandmarkList& input_landmarks = input_packet.Get<NormalizedLandmarkList>();
-      NormalizedLandmarkList output_landmarks = AdjustLandmarkListForLetterboxRemoval(input_landmarks, letterbox_padding);
+      NormalizedLandmarkList output_landmarks = AdjustLandmarkListToLetterboxRemoval(input_landmarks, letterbox_padding);
 
       cc->Outputs().Get(output_id).AddPacket(
           MakePacket<NormalizedLandmarkList>(output_landmarks)

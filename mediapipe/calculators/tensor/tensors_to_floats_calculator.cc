@@ -77,7 +77,7 @@ absl::Status ExtractHandPresence::Open(CalculatorContext* cc) {
 absl::Status ExtractHandPresence::Process(CalculatorContext* cc) {
   const auto& input_tensors = *kInTensors(cc);
 
-  auto result = tensors_to_floats_calculator_core::Process(input_tensors, options_);
+  auto result = tensors_to_floats_calculator_core::HandPresenceExtract(input_tensors, options_);
 
   if (!result.status.ok()) {
     return result.status;

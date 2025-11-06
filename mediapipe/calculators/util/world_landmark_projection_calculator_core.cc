@@ -53,7 +53,7 @@ std::function<void(const Landmark&, Landmark*)> CreateRotationFunction(const med
 }
 
 /// applies the given rectangle's rotation, to each landmark, that's all
-LandmarkList Process(const LandmarkList& in_landmarks, const NormalizedRect *hand_rect) {
+LandmarkList RotateWorldLandmarks(const LandmarkList& in_landmarks, const NormalizedRect *hand_rect) {
 
   auto landmark_rotate = CreateRotationFunction(hand_rect);
 

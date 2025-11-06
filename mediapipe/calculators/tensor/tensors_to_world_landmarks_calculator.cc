@@ -109,7 +109,7 @@ absl::Status ExtractWorldLandmarks::Process(CalculatorContext* cc) {
   NormalizedLandmarkList* norm_landmarks_ptr =
       kOutNormalizedLandmarkList(cc).IsConnected() ? &output_norm_landmarks : nullptr;
 
-  MP_RETURN_IF_ERROR(core_->TensorsToWorldLandmarks(input_tensors, &output_landmarks));
+  MP_RETURN_IF_ERROR(core_->Process(input_tensors, &output_landmarks));
 
   // Output normalized landmarks if required.
   if (kOutNormalizedLandmarkList(cc).IsConnected()) {

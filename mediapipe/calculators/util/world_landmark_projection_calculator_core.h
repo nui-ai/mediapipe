@@ -13,7 +13,7 @@ namespace mediapipe_v01013_based::api3 {
 std::function<void(const mediapipe_v01013_based::Landmark&, mediapipe_v01013_based::Landmark*)>
 CreateRotationFunction(const mediapipe_v01013_based::NormalizedRect* rect);
 
-LandmarkList Process(
+LandmarkList RotateWorldLandmarks(
     const mediapipe_v01013_based::LandmarkList& in_landmarks,
     const NormalizedRect *hand_rect);
 
