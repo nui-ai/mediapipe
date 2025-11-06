@@ -61,6 +61,7 @@ cc_library(
         "//mediapipe/framework/formats:rect_cc_proto",
         "//mediapipe/framework/formats:tensor",
         "//mediapipe/framework/port:status",
+        "//mediapipe/modules/hand_landmark/calculators:hand_landmarks_to_rect_calculator_core",
         "@com_google_absl//absl/log:absl_log",
     ],
     alwayslink = 1,

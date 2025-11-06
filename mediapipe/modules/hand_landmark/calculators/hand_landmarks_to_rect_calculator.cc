@@ -78,7 +78,7 @@ class HandRectFromLandmarksStage : public CalculatorBase {
     
     auto output_rect = absl::make_unique<NormalizedRect>();
     MP_RETURN_IF_ERROR(
-        MakeHandRect(input_landmarks, image_size, output_rect.get()));
+        AdjustHandRectByInferredLanmdarks(input_landmarks, image_size, output_rect.get()));
 
     cc->Outputs()
         .Tag(kNormRectTag)

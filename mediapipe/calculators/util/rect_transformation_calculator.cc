@@ -62,11 +62,11 @@ class RectTransformationCalculator : public CalculatorBase {
 
  private:
   RectTransformationCalculatorOptions options_;
-  std::unique_ptr<PalmRectToHandRect> core_;
+  std::unique_ptr<RectTransformation> core_;
 };
 
 class PalmDetectionToHandRectStage2 : public RectTransformationCalculator {};  // used as part of detection handling
-class DeriveAnticipatoryHandRect : public RectTransformationCalculator {}; // used outside detection handling
+class DeriveAnticipatoryHandRect : public RectTransformationCalculator {}; // used for expanding a landmarks derived hand rectangle for one to be used for the next frame
 REGISTER_CALCULATOR(PalmDetectionToHandRectStage2);
 REGISTER_CALCULATOR(DeriveAnticipatoryHandRect);
 
@@ -109,7 +109,7 @@ absl::Status RectTransformationCalculator::Open(CalculatorContext* cc) {
 
   ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
 
-  core_ = std::make_unique<PalmRectToHandRect>(options_);
+  core_ = std::make_unique<RectTransformation>(options_);
 
   return absl::OkStatus();
 }

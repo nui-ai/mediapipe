@@ -24,6 +24,7 @@
 #include "mediapipe/calculators/util/landmark_projection_calculator_core.h"
 #include "mediapipe/calculators/tensor/tensors_to_world_landmarks_calculator_core.h"
 #include "mediapipe/calculators/util/world_landmark_projection_calculator_core.h"
+#include "mediapipe/modules/hand_landmark/calculators/hand_landmarks_to_rect_calculator_core.h"
 
 namespace mediapipe_v01013_based {
  class DetectionsToOrientedRects;
@@ -49,12 +50,13 @@ namespace mediapipe_v01013_based {
   std::unique_ptr<api2::ModelInference> palm_detection_inference_;
   std::unique_ptr<api2::ConvertDetectionTensors> inference_filter_stage1_;
   std::unique_ptr<DetectionsToOrientedRects> palm_detection_to_oriented_palm_rect_;
-  std::unique_ptr<PalmRectToHandRect> oriented_palm_rect_to_hand_rect_expander_;
+  std::unique_ptr<RectTransformation> oriented_palm_rect_to_hand_rect_expander_;
   std::unique_ptr<api2::ImageToTensorCalculatorCore> sub_image_for_landmarks_inference_extractor_;
   std::unique_ptr<api2::ModelInference> landmarks_inference_;
   std::unique_ptr<InferenceOutputTensorSplitting<Tensor, false>> landmarks_inference_splitter_;
   api2::TensorsToClassificationConfig handedness_classification_config_;
   std::unique_ptr<api2::TensorsToLandmarksCore> landmarks_extractor_;
+  std::unique_ptr<RectTransformation> expand_rect_for_next_frame_;
  };
 
 }

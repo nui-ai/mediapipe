@@ -48,14 +48,14 @@
 
 namespace mediapipe_v01013_based {
 
-  inline float PalmRectToHandRect::NormalizeRadians(float angle) {
+  inline float RectTransformation::NormalizeRadians(float angle) {
     return angle - 2 * M_PI * std::floor((angle - (-M_PI)) / (2 * M_PI));
   }
 
-  PalmRectToHandRect::PalmRectToHandRect(RectTransformationCalculatorOptions &options)
+  RectTransformation::RectTransformation(RectTransformationCalculatorOptions &options)
     : options_(options) {}
 
-  float PalmRectToHandRect::ComputeNewRotation(float rotation) const {
+  float RectTransformation::ComputeNewRotation(float rotation) const {
     if (options_.has_rotation()) {
       rotation += options_.rotation();
     } else if (options_.has_rotation_degrees()) {
@@ -70,7 +70,7 @@ namespace mediapipe_v01013_based {
   /// thus making it more square, as much as the scaling factors for width and height are equal.
   /// (the input argument is modified in place as an input-output argument,
   ///  unlike most mediapipe functions we use in this pipeline).
-  void PalmRectToHandRect::Expand(Rect* rect) const {
+  void RectTransformation::Expand(Rect* rect) const {
     float width = rect->width();
     float height = rect->height();
     float rotation = rect->rotation();
@@ -119,7 +119,9 @@ namespace mediapipe_v01013_based {
   ///   which has its originally shorter axis length extend to the length of its longer axis.
   /// - scale the squared rectangle of the previous step over its both axes, according to the
   ///   constant scaling parameters.
-  void PalmRectToHandRect::ExpandNormalizedRect(NormalizedRect* rect, const int image_width, const int image_height) const {
+  ///
+  /// the above modifications are applied to the input rectangle in-place (it's an input-output argument)
+  void RectTransformation::ExpandNormalizedRect(NormalizedRect* rect, const int image_width, const int image_height) const {
     float width = rect->width();
     float height = rect->height();
     float rotation = rect->rotation();

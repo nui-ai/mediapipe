@@ -4,11 +4,11 @@
 
 namespace mediapipe_v01013_based {
 
-class PalmRectToHandRect {
+class RectTransformation {
 
 public:
 
-  explicit PalmRectToHandRect(RectTransformationCalculatorOptions &options);
+  explicit RectTransformation(RectTransformationCalculatorOptions &options);
   void Expand(Rect *rect) const;
   void ExpandNormalizedRect(NormalizedRect *rect, int image_width, int image_height) const;
 

@@ -38,7 +38,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   oriented_palm_rect_to_hand_rect_expander_options.set_shift_y(-0.5);
   oriented_palm_rect_to_hand_rect_expander_options.set_square_long(true);
   // ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
-  oriented_palm_rect_to_hand_rect_expander_ = std::make_unique<PalmRectToHandRect>(oriented_palm_rect_to_hand_rect_expander_options);
+  oriented_palm_rect_to_hand_rect_expander_ = std::make_unique<RectTransformation>(oriented_palm_rect_to_hand_rect_expander_options);
 
   // initialize for extracting the sub-image implied by the hand rectangles (to be reduced into much less surface)
   auto sub_image_extraction_options = ImageToTensorCalculatorOptions();
@@ -76,6 +76,21 @@ Liberated::Liberated(MemoryManager* memory_manager) {
     224, 224,
     landmarks_extraction_options.visibility_activation(), landmarks_extraction_options.presence_activation(),
     0,21);
+
+  // initialize for expanding a hand rectangle derived from inferred hand landmarks, to a rectangle to be used for landmarks inference on the next frame
+  auto expand_rect_for_next_frame_options = RectTransformationCalculatorOptions();
+  ABSL_ASSERT(!(expand_rect_for_next_frame_options.has_rotation() && expand_rect_for_next_frame_options.has_rotation_degrees()));
+  ABSL_ASSERT(!(expand_rect_for_next_frame_options.has_square_long() && expand_rect_for_next_frame_options.has_square_short()));
+  expand_rect_for_next_frame_options.set_scale_x(2.0);
+  expand_rect_for_next_frame_options.set_scale_y(2.0);
+  expand_rect_for_next_frame_options.set_shift_y(-0.1);
+  expand_rect_for_next_frame_options.set_square_long(true);
+  expand_rect_for_next_frame_ = std::make_unique<RectTransformation>(expand_rect_for_next_frame_options);
+
+  // ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
+  //
+  // core_ = std::make_unique<PalmRectToHandRect>(options_);
+
 
 }
 
@@ -223,7 +238,25 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       MP_RETURN_IF_ERROR(api2::OutputTensorsToWorldLandmarks(*inference_output_object_landmarks, &inferred_object_landmarks));
 
       // rotate the coordinates of the object landmarks counter to the rotation applied when passing the sub-image for landmarks inference to landmarks inference
-      LandmarkList out_landmarks = api3::RotateWorldLandmarks(inferred_object_landmarks, &rectangle_for_landmarks_inference);
+      LandmarkList final_object_landmarks = api3::RotateWorldLandmarks(inferred_object_landmarks, &rectangle_for_landmarks_inference);
+
+      // get a rectangle more evenly encapsulating the hand according to (derived from) the final landmarks we got for the hand contained in it.
+      // the previous rectangle we had was an oriented expansion of the an SSD detection rectangle, oriented by its 7 included palm key points.
+      // but now that we have landmarks inference of 21 hand landmarks, we will use that information instead, as the basis for a rectangle more
+      // properly hugging around the hand. this is the same as in the original pipeline's implementation.
+      // we can probably improve on this as part of a larger "better tracking" epic.
+      auto hand_rect_for_next_frame = std::make_unique<NormalizedRect>();
+      MP_RETURN_IF_ERROR(AdjustHandRectByInferredLanmdarks(final_viewport_landmarks, std::make_pair(image->width(), image->height()), hand_rect_for_next_frame.get()));
+
+      // expand the latter obtained rectangle for use as a candidate rectangle to apply landmarks inference to in the next frame,
+      // as if assuming that if we got the landmarks pretty much accurately inferred, then assuming the next frame is close in time to the current one,
+      // (relative to hand motion speed and naively agnostic of distance from the camera and more), then by enlarging that said rectangle by an amount
+      // we'd capture the same hand again within that rectangle on the next camera frame.
+      // of course, the contours and amount of expansion here are only a baseline tradeoff between being too small to miss some of the hand on the next
+      // frame and between being too large to allow more noise pixels and have the hand smaller than trained for by the landmarks inference model ―
+      // so we can assume this expansion was finely tuned by the original mediapipe team, who knows the sensitivity of the landmarks inference model
+      // to the pixel sizes of hands showing in its 224x224 input, which depends (we can't know how much) on the same sizes in its training data.
+      expand_rect_for_next_frame_->ExpandNormalizedRect(hand_rect_for_next_frame.get(), image->width(), image->height());
     }
 
   return merged_hand_rectangles;
