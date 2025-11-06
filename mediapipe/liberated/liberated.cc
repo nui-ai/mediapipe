@@ -28,7 +28,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
   // initialize for orienting the raw (axes parallel) palm rect detected by SSD, to the palm's rough shape by detection keypoints
   // included in the output of the palm detection inference itself (https://chatgpt.com/s/t_690b528ae748819181a48117cb417908).
-  auto target_angle_rad = static_cast<float>(M_PI * 90.0 / 180.0);
+  auto target_angle_rad = static_cast<float>(M_PI * 0.5);
   palm_detection_to_oriented_palm_rect_ = std::make_unique<DetectionsToOrientedRects>(target_angle_rad);
 
   // initialize for expanding from aligned palm rects to aligned hand (palm + fingers) rects
