@@ -36,8 +36,8 @@ namespace mediapipe_v01013_based {
         !input.has_height()) {
       return absl::InternalError("Missing dimensions in NormalizedRect.");
         }
-    const float xmin = input.x_center() - input.width() / 2.0;
-    const float ymin = input.y_center() - input.height() / 2.0;
+    const float xmin = input.x_center() - input.width() / 2.0f;
+    const float ymin = input.y_center() - input.height() / 2.0f;
     // TODO: Support rotation for rectangle.
     return Rectangle_f(xmin, ymin, input.width(), input.height());
   }
@@ -47,6 +47,8 @@ namespace mediapipe_v01013_based {
     /// existing instances which have overlap with it above the given IoU threshold.
     inline absl::Status AddWhileDiscardingByIoU(const NormalizedRect& new_normalized_rect, std::list<NormalizedRect>* normalized_rects, float iou_similarity_threshold) {
 
+    ABSL_LOG(INFO) << "filter-merging is adding rectangle:\n" << new_normalized_rect.DebugString();
+
     // check IoU of the new rect with the each rect of the list, transforming them from NormalizedRect to Rect for the IoU checking
     MP_ASSIGN_OR_RETURN(Rectangle_f new_rect, ::mediapipe_v01013_based::RectangleFromNormalizedRect(new_normalized_rect));
     for (auto uit = normalized_rects->begin(); uit != normalized_rects->end();) {
@@ -55,7 +57,7 @@ namespace mediapipe_v01013_based {
       // remove existing IoU threshold overlapping rectangle if threshold overlapping with the one being added
       const float iou = CalculateIou(new_rect, rect);
       if (iou > iou_similarity_threshold) {
-        ABSL_LOG(INFO) << "filtering by association is pushing out an overlapping element of IoU " << iou;
+        ABSL_LOG(INFO) << "filter-merging is pushing out a rectangle:\n" << uit->DebugString();
         uit = normalized_rects->erase(uit);
       } else {
         ++uit;
@@ -107,9 +109,9 @@ namespace mediapipe_v01013_based {
 
     // this step places the hand rectangles derived from explicit palm detections into the result set ―
     // while filtering them by IoU thershold in a naive order where the later element always "wins".
+    ABSL_LOG(INFO) << "filter-merging the set of hand rectangles derived from palm detections againts itself, by IoU";
     if (!rects_from_palm_detection.empty()) {
-      result_set.push_back(rects_from_palm_detection[0]);
-      for (size_t j = 1; j < rects_from_palm_detection.size(); ++j) {
+      for (size_t j = 0; j < rects_from_palm_detection.size(); ++j) {
         MP_RETURN_IF_ERROR(AddWhileDiscardingByIoU(rects_from_palm_detection[j], &result_set, min_similarity_threshold));
       }
     }
@@ -118,6 +120,7 @@ namespace mediapipe_v01013_based {
     // while filtering them by IoU threshold by the same naive order ―
     // each rectangle from landmarks inference wins over any ones already in the result set admitted from the explicit palm detections set,
     // if they have IoU threshold overlap ... and each such element also wins over any previous one from its own set if they have IoU threshold overlap.
+    ABSL_LOG(INFO) << "filter-merging the set of hand rectangles derived from landmarks inference into the result set, by IoU";
     if (!rects_from_landmarks_inference.empty()) {
       for (size_t vi = 0; vi < rects_from_landmarks_inference.size(); ++vi) {
         MP_RETURN_IF_ERROR(AddWhileDiscardingByIoU(rects_from_landmarks_inference[vi], &result_set, min_similarity_threshold));
