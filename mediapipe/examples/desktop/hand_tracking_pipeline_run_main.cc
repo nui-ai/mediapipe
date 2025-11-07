@@ -65,7 +65,7 @@ bool get_project_root_dir(const std::string &filename, std::string &value1) {
 // Returns the full path by prefixing with PROJECT_ROOT_DIR if set and path is not absolute.
 std::string GetProjectRootedPath(const std::string& filename) {
   if (filename.empty()) {
-    throw std::invalid_argument("filename cannot be empty");
+    throw std::invalid_argument("no file name provided");
   }
   if (std::filesystem::path(filename).is_absolute()) {
     return filename;
@@ -108,18 +108,20 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013
         out.push_back(msg);
         ++msg_count;
     }
-    ABSL_LOG(INFO) << "Successfully loaded " << msg_count << " reference records from " << filename;
     return true;
 }
 
 absl::Status RunPipelineWithDiffing() {
-  // Load reference data
+  // Load reference data if a path to a reference data file has been provided as a program argument
+  bool diffing = false;
   std::vector<mediapipe_v01013_based::PipelineOutputData> reference_data;
-  if (!ReadReferenceData(GetProjectRootedPath(absl::GetFlag(FLAGS_reference_data_path)), reference_data)) {
-    ABSL_LOG(WARNING) << "failed to load reference data from " << GetProjectRootedPath(absl::GetFlag(FLAGS_reference_data_path))
-                     << ". will proceed without real-time comparison.";
+  if (absl::GetFlag(FLAGS_reference_data_path).empty()) {
+    ABSL_LOG(WARNING) << "no reference data file path provided";
   } else {
-    ABSL_LOG(INFO) << "loaded " << reference_data.size() << " records from the reference data file.";
+    auto reference_data_path = GetProjectRootedPath(absl::GetFlag(FLAGS_reference_data_path));
+    if (!ReadReferenceData(reference_data_path, reference_data)) { return absl::AbortedError(std::string("failed to load reference data from the given path ") + GetProjectRootedPath(absl::GetFlag(FLAGS_reference_data_path))); }
+    ABSL_LOG(INFO) << reference_data.size() << " records loaded from the reference data file " << reference_data_path;
+    diffing = true;
   }
 
   // set of expected pipeline output streams
@@ -152,7 +154,7 @@ absl::Status RunPipelineWithDiffing() {
   // Initialize output protobuf file (overwrite if exists)
   std::ofstream output_proto_file(GetProjectRootedPath(kOutputProtoFilename), std::ios::binary | std::ios::trunc);
   if (!output_proto_file.is_open()) {
-    return absl::InternalError(std::string("failed to open ") + GetProjectRootedPath(kOutputProtoFilename) + " for writing");
+    return absl::InternalError(std::string("failed to open the given output data path ") + GetProjectRootedPath(kOutputProtoFilename) + " for writing");
   }
 
   // process all input frames
@@ -181,8 +183,8 @@ absl::Status RunPipelineWithDiffing() {
     // write the current frame output to file
     google::protobuf::util::SerializeDelimitedToOstream(stream_data_msg, &output_proto_file);
 
-    // Compare with reference data if available
-    if (!reference_data.empty()) {
+    // Compare with reference data if provided
+    if (diffing) {
       if (i < reference_data.size()) {
         google::protobuf::util::MessageDifferencer differ;
         std::string diff;
@@ -259,7 +261,7 @@ int main(int argc, char** argv) {
 
   absl::Status run_status = RunPipelineWithDiffing();
   if (!run_status.ok()) {
-    ABSL_LOG(INFO) << "failed to run the mediapipe graph due to the following issue: " << run_status.message();
+    ABSL_LOG(INFO) << "aborted due to the following reason: " << run_status.message();
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
