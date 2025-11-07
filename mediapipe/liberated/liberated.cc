@@ -28,7 +28,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
   // initialize for orienting the raw (axes parallel) palm rect detected by SSD, to the palm's rough shape by detection keypoints
   // included in the output of the palm detection inference itself (https://chatgpt.com/s/t_690b528ae748819181a48117cb417908).
-  auto target_angle_rad = static_cast<float>(M_PI * 0.5);
+  auto target_angle_rad = static_cast<float>(M_PI * 90.0 / 180.0);
   palm_detection_to_oriented_palm_rect_ = std::make_unique<DetectionsToOrientedRects>(target_angle_rad);
 
   // initialize for expanding from aligned palm rects to aligned hand (palm + fingers) rects
@@ -75,7 +75,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   landmarks_extractor_ = std::make_unique<api2::TensorsToLandmarksCore>(
     224, 224,
     landmarks_extraction_options.visibility_activation(), landmarks_extraction_options.presence_activation(),
-    0.4,
+    0.4f,
     21);
 
   // initialize for expanding a hand rectangle derived from inferred hand landmarks, to a rectangle to be used for landmarks inference on the next frame
@@ -186,7 +186,9 @@ Liberated::Liberated(MemoryManager* memory_manager) {
     // both of which input sets to this merge may be empty or not. if both are empty, an empty set should be the result.
     MP_ASSIGN_OR_RETURN(*merged_hand_rectangles_list, mediapipe_v01013_based::IouFilterMerge(*hand_rects_from_detections, hand_rect_from_previous_frame_, 0.5));
     merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>(merged_hand_rectangles_list->begin(), merged_hand_rectangles_list->end());  // convert from list to vector
-    hand_rect_from_previous_frame_ = std::vector<NormalizedRect>();  // reset before we start building them from scratch from the current frame ...
+
+    // reset the list of rectangles passed from the previous frame's pass, before we start building one from scratch for the next frame ...
+    hand_rect_from_previous_frame_ = std::vector<NormalizedRect>();
 
     // start looping or fanning out in place of the original pipeline's fanning out of the hand rects for landmarks inference, which have been accomplished above.
     for (auto rectangle_for_landmarks_inference : *merged_hand_rectangles) {
@@ -243,6 +245,8 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       if (hand_presence_in_landmarks_inference < hand_presence_in_landmarks_inference_threshold_) {
         ABSL_LOG(INFO) << "a rectangle for hand landmarks inference failed in presence validation by a presence post-hoc score of " << hand_presence_in_landmarks_inference;
         continue;
+      } else {
+        ABSL_LOG(INFO) << "presence validation value is " << hand_presence_in_landmarks_inference;
       }
 
       // extract the hand handedness classification object (object holding handedness value and its confidence) from the landmarks inference output
