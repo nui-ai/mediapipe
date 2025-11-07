@@ -40,7 +40,6 @@
 
 constexpr char kInputStream[] = "image";
 constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";
-constexpr char kReferenceProtoFilename[] = "output_data_v0.10.13.pb";
 
 ABSL_FLAG(std::string, graph_file, "",
           "name of pipeline pbtxt file.");
@@ -114,10 +113,10 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013
 }
 
 absl::Status RunPipelineWithDiffing() {
-  // Load reference data from output_data_v0.10.13.pb
+  // Load reference data
   std::vector<mediapipe_v01013_based::PipelineOutputData> reference_data;
   if (!ReadReferenceData(GetProjectRootedPath(absl::GetFlag(FLAGS_reference_data_path)), reference_data)) {
-    ABSL_LOG(WARNING) << "failed to load reference data from " << GetProjectRootedPath(kReferenceProtoFilename)
+    ABSL_LOG(WARNING) << "failed to load reference data from " << GetProjectRootedPath(absl::GetFlag(FLAGS_reference_data_path))
                      << ". will proceed without real-time comparison.";
   } else {
     ABSL_LOG(INFO) << "loaded " << reference_data.size() << " records from the reference data file.";
@@ -193,7 +192,7 @@ absl::Status RunPipelineWithDiffing() {
           ABSL_LOG(ERROR) << "Pipeline output at frame " << i << " is different than the reference output:\n" << diff;
           ABSL_LOG(ERROR) << "terminating early due to difference in output at frame " << i;
           break; // Early termination due to difference
-        } else { ABSL_LOG(INFO) << "pipeline output for frame " << i << " is identical to its reference output read from " << kReferenceProtoFilename; }
+        } else { ABSL_LOG(INFO) << "pipeline output for frame " << i << " is identical to its reference output read from the reference data file"; }
       } else { ABSL_LOG(WARNING) << "reference output file doesn't have data for frame " << i << " (it has only " << reference_data.size() << " records)"; }
     }
   }
