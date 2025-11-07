@@ -53,8 +53,9 @@ namespace mediapipe_v01013_based {
       MP_ASSIGN_OR_RETURN(Rectangle_f rect, RectangleFromNormalizedRect(*uit));
 
       // remove existing IoU threshold overlapping rectangle if threshold overlapping with the one being added
-      if (CalculateIou(new_rect, rect) > iou_similarity_threshold) {
-        ABSL_LOG(INFO) << "filtering by association is pushing out an overlapping element.";
+      const float iou = CalculateIou(new_rect, rect);
+      if (iou > iou_similarity_threshold) {
+        ABSL_LOG(INFO) << "filtering by association is pushing out an overlapping element of IoU " << iou;
         uit = normalized_rects->erase(uit);
       } else {
         ++uit;
