@@ -27,8 +27,8 @@ class TensorsToLandmarksCore {
  public:
   explicit TensorsToLandmarksCore(int input_image_width,
                                   int input_image_height,
-                                  ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
-                                  ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
+                                  TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
+                                  TensorsToLandmarksCalculatorOptions::Activation presence_activation,
                                   float normalize_z,
                                   int num_landmarks = 21);
 

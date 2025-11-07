@@ -24,7 +24,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   palm_detection_inference_ = std::make_unique<api2::ModelInference>(palm_detection_model_path);
 
   // initialize for detection inference conversion to tensors
-  inference_filter_stage1_ = std::make_unique<api2::ConvertDetectionTensors>();
+  palm_detection_inference_filter_stage1_ = std::make_unique<api2::ConvertDetectionTensors>();
 
   // initialize for orienting the raw (axes parallel) palm rect detected by SSD, to the palm's rough shape by detection keypoints
   // included in the output of the palm detection inference itself (https://chatgpt.com/s/t_690b528ae748819181a48117cb417908).
@@ -89,15 +89,13 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   expand_rect_for_next_frame_ = std::make_unique<RectTransformation>(expand_rect_for_next_frame_options);
 
   // on the very first video frame there are no hand rectangles derived from the previous frame
-  hand_rect_from_previous_frame_ = std::vector<NormalizedRect>();
+  hand_rects_from_previous_frame_ = std::vector<NormalizedRect>();
 
   // ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
 
 }
 
-  absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::Process(
-    std::shared_ptr<const Image> image,
-    uint32_t max_hands_to_track) {
+  absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::Process(std::shared_ptr<const Image> image, uint32_t max_hands_to_track) {
 
     // initiate the result structure for the current image as empty vectors for all of its fields
     auto result = std::make_unique<ImageHandTrackingAndInferenceResult>(
@@ -114,17 +112,17 @@ Liberated::Liberated(MemoryManager* memory_manager) {
     auto merged_hand_rectangles_list = absl::make_unique<std::list<NormalizedRect>>();
     auto merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>();
 
-    if (hand_rect_from_previous_frame_.size() == max_hands_to_track) {
-      ABSL_LOG(INFO) << "the number of hands detected from the previous frame's landmarks (" << hand_rect_from_previous_frame_.size() << ") is equal to the globally set maximum number of hands to track " << max_hands_to_track;
+    if (hand_rects_from_previous_frame_.size() == max_hands_to_track) {
+      ABSL_LOG(INFO) << "the number of hands detected from the previous frame's landmarks (" << hand_rects_from_previous_frame_.size() << ") is equal to the globally set maximum number of hands to track " << max_hands_to_track;
       ABSL_LOG(INFO) << "skipping palm detection";
-    } else if (hand_rect_from_previous_frame_.size() > max_hands_to_track) { // this does happen, arising in the de-facto chains of calculation mirroring the original pipeline
-      ABSL_LOG(INFO) << "the number of hands rectangles from the previous frame's landmarks (" << hand_rect_from_previous_frame_.size() << ") is larger than the globally set maximum number of hands to track " << max_hands_to_track;
+    } else if (hand_rects_from_previous_frame_.size() > max_hands_to_track) { // this does happen, arising in the de-facto chains of calculation mirroring the original pipeline
+      ABSL_LOG(INFO) << "the number of hands rectangles from the previous frame's landmarks (" << hand_rects_from_previous_frame_.size() << ") is larger than the globally set maximum number of hands to track " << max_hands_to_track;
       ABSL_LOG(INFO) << "skipping palm detection";
       // return absl::InternalError("the number of hands rectangels from the previous frame's landmarks is larger than the globally set maximum number of hands to track, which is currently unexpected");
     }
 
     // start the palm detection -> expanded oriented hand region for landmark inference path of computation
-    if (hand_rect_from_previous_frame_.size() < max_hands_to_track) {
+    if (hand_rects_from_previous_frame_.size() < max_hands_to_track) {
 
       ABSL_LOG(INFO) << "palm detection will be triggered for the current frame as the number of previous frame's detections from landmarks is smaller than the set maximum number of hands to track";
 
@@ -137,13 +135,13 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       image_as_tensor_span = MakeTensorSpan(image_as_tensor.tensors);
 
       // palm detection inference
-      absl::StatusOr<std::vector<Tensor>> inference;
-      MP_ASSIGN_OR_RETURN(inference, palm_detection_inference_->Process(image_as_tensor_span));
+      absl::StatusOr<std::vector<Tensor>> palm_detection_inference_output;
+      MP_ASSIGN_OR_RETURN(palm_detection_inference_output, palm_detection_inference_->Process(image_as_tensor_span));
       ABSL_LOG(INFO) << "palm detection inference completed";
 
       // extract and first step filter the detection inference output
       std::unique_ptr<std::vector<Detection>> filtered_detections_letterboxed;
-      MP_ASSIGN_OR_RETURN(filtered_detections_letterboxed, inference_filter_stage1_->Process(*inference));
+      MP_ASSIGN_OR_RETURN(filtered_detections_letterboxed, palm_detection_inference_filter_stage1_->Process(*palm_detection_inference_output));
       ABSL_LOG(INFO) << "detection inference conversion to tensors completed";
 
       std::unique_ptr<std::vector<Detection>> filtered_detections = UnLetterBox(*filtered_detections_letterboxed, letterbox_padding_);
@@ -184,11 +182,11 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
     // merges with IoU threshold based filtering, the set of hand rects derived directly from palm detection inference, with the set of hand rects derived from the previous frame's landmarks inference,
     // both of which input sets to this merge may be empty or not. if both are empty, an empty set should be the result.
-    MP_ASSIGN_OR_RETURN(*merged_hand_rectangles_list, mediapipe_v01013_based::IouFilterMerge(*hand_rects_from_detections, hand_rect_from_previous_frame_, 0.5));
+    MP_ASSIGN_OR_RETURN(*merged_hand_rectangles_list, mediapipe_v01013_based::IouFilterMerge(*hand_rects_from_detections, hand_rects_from_previous_frame_, 0.5));
     merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>(merged_hand_rectangles_list->begin(), merged_hand_rectangles_list->end());  // convert from list to vector
 
     // reset the list of rectangles passed from the previous frame's pass, before we start building one from scratch for the next frame ...
-    hand_rect_from_previous_frame_ = std::vector<NormalizedRect>();
+    hand_rects_from_previous_frame_ = std::vector<NormalizedRect>();
 
     // start looping or fanning out in place of the original pipeline's fanning out of the hand rects for landmarks inference, which have been accomplished above.
     for (auto rectangle_for_landmarks_inference : *merged_hand_rectangles) {
@@ -321,12 +319,11 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       result->object_landmarkss->push_back(final_object_landmarks);
       result->handedness_classifications->push_back(*inferred_handedness_classification_object);
 
-      hand_rect_from_previous_frame_.push_back(*hand_rect_for_next_frame);
+      hand_rects_from_previous_frame_.push_back(*hand_rect_for_next_frame);
     }
 
   return result;
 
-  // return merged_hand_rectangles;
 }
 
 }

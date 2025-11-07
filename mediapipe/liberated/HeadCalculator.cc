@@ -65,19 +65,12 @@ namespace mediapipe_v01013_based {
         static constexpr api2::Input<api2::OneOf<Image, ImageFrame>>::Optional kIn{"IMAGE"};
         std::shared_ptr<const mediapipe_v01013_based::Image> image;
         MP_ASSIGN_OR_RETURN(image, GetInputImage(kIn(cc)));
-        GetSharedState().image = image;
-
-        // bool iterable_is_empty = cc->Inputs().Tag("ITERABLE").IsEmpty();
-        // if (!iterable_is_empty) {
-        //   const auto& rects = cc->Inputs().Tag("ITERABLE").Get<std::vector<NormalizedRect>>();
-        // }
 
         absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> resultOrStatus = liberated_->Process(image, max_hands_to_track);
         if (resultOrStatus.ok()) {
           cc->Outputs().Tag("LANDMARKS").Add(resultOrStatus.value()->viewport_landmarkss.release(), cc->InputTimestamp());
           cc->Outputs().Tag("WORLD_LANDMARKS").Add(resultOrStatus.value()->object_landmarkss.release(), cc->InputTimestamp());
           cc->Outputs().Tag("HANDEDNESS").Add(resultOrStatus.value()->handedness_classifications.release(), cc->InputTimestamp());
-          // cc->Outputs().Index(1).Add(resultOrStatus.value().get(), cc->InputTimestamp());
           return absl::OkStatus();
         }
         else {

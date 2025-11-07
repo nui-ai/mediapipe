@@ -30,7 +30,7 @@ absl::Status Open(const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptio
 
 ProcessingResult HandPresenceExtract(
     const std::vector<Tensor>& input_tensors,
-    const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions& options) {
+    const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions& options) {  // the options arg is no longer necessary actually
 
   ProcessingResult result;
 

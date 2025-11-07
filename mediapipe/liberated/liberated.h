@@ -63,7 +63,7 @@ namespace mediapipe_v01013_based {
   std::unique_ptr<ImageToTensorConverter> gpu_converter_;
   std::unique_ptr<ImageToTensorConverter> cpu_converter_;
   std::unique_ptr<api2::ModelInference> palm_detection_inference_;
-  std::unique_ptr<api2::ConvertDetectionTensors> inference_filter_stage1_;
+  std::unique_ptr<api2::ConvertDetectionTensors> palm_detection_inference_filter_stage1_;
   std::unique_ptr<DetectionsToOrientedRects> palm_detection_to_oriented_palm_rect_;
   std::unique_ptr<RectTransformation> oriented_palm_rect_to_hand_rect_expander_;
   std::unique_ptr<api2::ImageToTensorCalculatorCore> sub_image_for_landmarks_inference_extractor_;
@@ -75,7 +75,7 @@ namespace mediapipe_v01013_based {
 
   // state which replaces the former passing of information by
   // a framework loopback to the pipeline's head
-  std::vector<NormalizedRect> hand_rect_from_previous_frame_;
+  std::vector<NormalizedRect> hand_rects_from_previous_frame_;
 
  };
 

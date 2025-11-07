@@ -21,25 +21,8 @@ namespace mediapipe_v01013_based {
         static void ResetCounter();
 
         const uint32_t NUM_HANDS = 3;
-        const bool USE_PREV_LANDMARKS = true;
 
-        // image being input to the pipeline
-        std::shared_ptr<const mediapipe_v01013_based::Image> image;
-        // image to apply palm detection to, or null pointer when palm detection should be skipped
-        std::shared_ptr<const mediapipe_v01013_based::Image> palm_detection_image;
-
-        // rects from landmarks tracking in the previous frame
         std::vector<::mediapipe_v01013_based::NormalizedRect> prev_hand_rects_from_landmarks;
-
-        uint32_t ImageToTensorCalculatorOptions_input_selection_field;  //  0 => use palm_detection_image as input;
-        int32_t ImageToTensorCalculatorOptions_num_landmakrs;
-        int32_t ImageToTensorCalculatorOptions_output_tensor_width ;
-        int32_t ImageToTensorCalculatorOptions_output_tensor_height;
-        bool ImageToTensorCalculatorOptions_keep_aspect_ratio;
-        float ImageToTensorCalculatorOptions_float_range_min;
-        float ImageToTensorCalculatorOptions_float_range_max;
-        int32_t ImageToTensorCalculatorOptions_border_mode;
-        float ImageToTensorCalculatorOptions_normalize_z;
 
     private:
         static int counter_;
