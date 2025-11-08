@@ -51,18 +51,19 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
   // for any ops which are not claimed by our XNNPACK delegate, if any.
   // as seen in XNNPack logging, juxtapose with https://github.com/nui-ai/tflite-analysis,
   // XNNPack satisfies all ops which are included in our two model graphs:
-  // the landmarks inference model has 165 operators, and we get in the log ―
+  // the landmarks inference model for example has 165 operators, and we get in the log ―
   // "Replacing 165 out of 165 node(s) with delegate (TfLiteXNNPackDelegate) node".
-  // so as long as that holds concurrency at the interpreter level is void for us.
+  // tflite will never default to the default op_resolver we pass here.
   auto op_resolver = std::make_unique<mediapipe_v01013_based::CpuOpResolver>();
 
   // use the XNNPACK delegate, which will use the requested number of threads, but this is a little confusing
   // as we set the number of threads argument on both the XNNPack delegate here, and on the tflite interpreter
   // object later below, whereas the semantics of this argument can be different between tflite and XNNPack:
-  // https://chatgpt.com/s/t_690f7be2ebe48191ac0fb8bbd27a218b.
+  // https://chatgpt.com/s/t_690f80a52e048191aee5098ebbebf1cb.
   // last I recall tflite will only use concurrency if there are graph partitions, but in our case XNNPack
-  // owns all graph operations of our models so the tflite interpreter should not use threads,
-  // only the XNNPack delegate should or may, if helpful.
+  // owns all graph operations of our models so the tflite interpreter should not use threads, only the XNNPack
+  // delegate can, but as per discussion in the later parts of https://chatgpt.com/s/t_690f80a52e048191aee5098ebbebf1cb,
+  // and as observed in simple experimentation, that would be futile for e.g. our landmarks inference model.
   auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
   xnnpack_opts.num_threads = -1;
   auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts), &TfLiteXNNPackDelegateDelete);
