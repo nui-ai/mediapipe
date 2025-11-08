@@ -20,7 +20,7 @@ namespace mediapipe_v01013_based {
         static void IncrementCounter();
         static void ResetCounter();
 
-        const uint32_t NUM_HANDS = 3;
+        const uint32_t NUM_HANDS = 3; // only used by a calculator we no longer actively trigger by now
 
         std::vector<::mediapipe_v01013_based::NormalizedRect> prev_hand_rects_from_landmarks;
 

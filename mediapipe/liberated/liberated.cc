@@ -223,7 +223,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
       // extract the hand presence score from the landmarks inference output
       auto hand_presence_raw = tensors_to_floats_calculator_core::HandPresenceExtract(*inference_output_hand_presence, TensorsToFloatsCalculatorOptions());
-      ABSL_ASSERT(hand_presence_raw.num_values == 1);
+      ABSL_ASSERT(hand_presence_raw.status.ok() && hand_presence_raw.num_values == 1);
       float hand_presence_in_landmarks_inference = hand_presence_raw.output_floats->at(0);
 
       // gate naively by the hand presence detection which is part of the landmarks inference.

@@ -49,7 +49,9 @@ namespace mediapipe_v01013_based {
       }
 
       absl::Status Open(CalculatorContext* cc) override {
-        max_hands_to_track = GetSharedState().NUM_HANDS;
+        max_hands_to_track = 3;
+        ABSL_LOG(INFO) << "tracking up to " << max_hands_to_track << " hands";
+
         MemoryManager* memory_manager_ = nullptr;
         if (cc->Service(kMemoryManagerService).IsAvailable()) {
           memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();

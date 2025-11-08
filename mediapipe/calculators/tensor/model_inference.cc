@@ -56,12 +56,43 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
   xnnpack_opts.num_threads = XNNPackDelegate_threads;
   auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts), &TfLiteXNNPackDelegateDelete);
 
-  // create a mediapipe wrapper class called a runner, for the interpeter and delegate
+  /*
+   * creates a mediapipe wrapper class called a runner, for the interpeter and delegate.
+   *
+   * for the meaning of the interpreter_num_threads argument c.f. https://chatgpt.com/s/t_690f234671f481918a7c9ea096134dd5.
+   * fiddling the number of threads instead of using the default seems to provide no speedup at all,
+   * maybe it doesn't really take effect at our current versions of XNNPACK and TFLITE, or our tflite
+   * graphs of the landmarks inference and palm detection modles don't benefit from parallelization.
+   *
+   * other paths to inference performance:
+   *
+   *   • pinning the inference steps to a processor as a way of forcing model weights (and XNNPACK/tflite code)
+   *     cache residency higher may help, which is of course platform specific.
+   *
+   *   • enabling XNNPACK weights caching may slightly help with cache persistence as well,
+   *     or it can just be marginal for that (https://chatgpt.com/c/68f05fb1-a444-8328-b1c0-53b1e57a99f1).
+   *     it's really not any complicated code work to enable it, lest the unexpected.
+   *
+   *   • if possible, performance (P) cores may or may not yield faster elapsed time than efficiency (E) cores on Intel x86-64,
+   *     and actual processor speeds are on Intel aggressively over-managed by the OS->Hardware and hardware-only throttling
+   *     and cooling strategies which are partly user-configurable and partly version dependent.
+   *     we have code benchmarking processor speeds from python in https: *github.com/nui-ai/core.
+   *
+   *   • you may use our tflite-analysis code (https://github.com/nui-ai/tflite-analysis)
+   *     to juxtapose model weights total memory size with the machine's CPU cache levels
+   *     sharing architecture and sizes to estimate impact.
+   *
+   *   • remember that subscription into multi-threading typically effects overall performance in different ways
+   *     in different scenarios as per the overall workload not just a single layer's concurrency so never optimize
+   *     in a way which prevents a different optimization for other workloads ― keep all concurrency levels fully
+   *     and recursively parameterizeable for flexible switching across workload scenarios and machine differences.
+   */
   auto runner_construction_status = CreateInferenceInterpreterDelegateRunner(
       model_packet,
       PacketAdopting<tflite::OpResolver>(std::move(op_resolver)),
       std::move(delegate),
-      &InferenceCalculatorOptions().input_output_config());
+      &InferenceCalculatorOptions().input_output_config(),
+      0);
   if (!runner_construction_status.ok()) {
     ABSL_LOG(ERROR) << "failed to create the mediapipe inference runner object";
     throw std::runtime_error(runner_construction_status.status().ToString());
