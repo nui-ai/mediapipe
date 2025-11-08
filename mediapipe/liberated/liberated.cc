@@ -221,6 +221,12 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       // perform landmarks inference over the provided sub-image
       auto start_time = std::chrono::high_resolution_clock::now();
       auto start_time_us = std::chrono::duration_cast<std::chrono::microseconds>(start_time.time_since_epoch()).count();
+      if (call_counter_>= 454) {
+        // proof that it's not a ModelInference long-running issue, as we get imparity with the reference data just the same with a brand new instance
+        ABSL_LOG(INFO) << "re-initializing the landmarks inference object";
+        const std::string& landmarks_infernce_model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
+        landmarks_inference_ = std::make_unique<api2::ModelInference>(landmarks_infernce_model_path);
+      }
       MP_ASSIGN_OR_RETURN(std::vector<Tensor> landmarks_inference_output_tensors, landmarks_inference_->Process(MakeTensorSpan(extracted_sub_image_struct.tensors)));
       auto end_time = std::chrono::high_resolution_clock::now();
       auto end_time_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time.time_since_epoch()).count();
