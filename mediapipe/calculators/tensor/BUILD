@@ -432,27 +432,27 @@ cc_library(
 )
 
 # dedicated detection inference calculator
-cc_library(
-    name = "detection_inference_calculator",
-    srcs = ["detection_inference_calculator.cc"],
-    deps = [":model_inference"],
-    alwayslink = 1,
-)
-
-# dedicated landmarks inference calculator
-cc_library(
-    name = "landmarks_inference_calculator",
-    srcs = ["landmarks_inference_calculator.cc"],
-    deps = [
-        ":model_inference",
-        #        ":inference_interpreter_delegate_runner_new",
-        #        "//mediapipe/calculators/tensor:inference_calculator",
-        #        "//mediapipe/framework:calculator_framework",
-        #        "//mediapipe/framework/api2:node",
-        #        "@com_google_absl//absl/status",
-    ],
-    alwayslink = 1,
-)
+#cc_library(
+#    name = "detection_inference_calculator",
+#    srcs = ["detection_inference_calculator.cc"],
+#    deps = [":model_inference"],
+#    alwayslink = 1,
+#)
+#
+## dedicated landmarks inference calculator
+#cc_library(
+#    name = "landmarks_inference_calculator",
+#    srcs = ["landmarks_inference_calculator.cc"],
+#    deps = [
+#        ":model_inference",
+#        #        ":inference_interpreter_delegate_runner_new",
+#        #        "//mediapipe/calculators/tensor:inference_calculator",
+#        #        "//mediapipe/framework:calculator_framework",
+#        #        "//mediapipe/framework/api2:node",
+#        #        "@com_google_absl//absl/status",
+#    ],
+#    alwayslink = 1,
+#)
 
 # The legacy generic inference calculator.
 # This target defines the "InferenceCalculator" component, which looks for the available concrete

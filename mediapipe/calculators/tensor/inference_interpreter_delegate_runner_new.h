@@ -63,10 +63,6 @@ public:
           input_output_tensor_names_(std::move(input_output_tensor_names)),
           feedback_manager_(std::move(feedback_manager)){}
 
-    const InputOutputTensorNames& GetInputOutputTensorNames() const override {
-        return input_output_tensor_names_;
-    }
-
     absl::StatusOr<std::vector<Tensor>> Run(const TensorSpan &tensor_span) override;
 
 private:
