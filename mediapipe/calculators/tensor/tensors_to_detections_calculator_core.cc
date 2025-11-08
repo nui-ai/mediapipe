@@ -167,8 +167,8 @@ namespace api2 {
   // Output:
   //  DETECTIONS - Result MediaPipe detections.
   //
-  ConvertDetectionTensors::ConvertDetectionTensors() {
-    ABSL_CHECK_OK(SetDecodingParameters());
+  ConvertDetectionTensors::ConvertDetectionTensors(float score_threshold) {
+    ABSL_CHECK_OK(SetDecodingParameters(score_threshold));
     ABSL_CHECK_OK(SetNmsParameters());
     initialized_ = true;
 
@@ -207,10 +207,10 @@ namespace api2 {
     }
 
     MP_RETURN_IF_ERROR(ProcessCPU(filtered_detections.get(), input_tensors));
-    ABSL_LOG(INFO) << "TensorsToDetectionsCore::Process: " << " filtered detections:      " << filtered_detections->size();
+    ABSL_LOG(INFO) << "SSD score thresholding surviving palm detections:  " << filtered_detections->size();
 
     auto nms_surviving_detections = FilterDetectionsByNonMaximumSuppression(*filtered_detections, nms_options_, false, 0, 0);
-    ABSL_LOG(INFO) << "TensorsToDetectionsCore::Process: " << " nms surviving detections: " << nms_surviving_detections->size();
+    ABSL_LOG(INFO) << "Non-Maximum Suppression surviving palm detections: " << nms_surviving_detections->size();
 
     return nms_surviving_detections;
   }
@@ -369,9 +369,9 @@ namespace api2 {
     return absl::OkStatus();
   }
 
-  absl::Status ConvertDetectionTensors::SetDecodingParameters() {
+  absl::Status ConvertDetectionTensors::SetDecodingParameters(float score_threshold) {
     MP_RETURN_IF_ERROR(SetSsdAnchors());
-    MP_RETURN_IF_ERROR(SetSsdDecodingOptions());
+    MP_RETURN_IF_ERROR(SetSsdDecodingOptions(score_threshold));
     return absl::OkStatus();
   }
 
@@ -423,7 +423,9 @@ namespace api2 {
 
   // Configure specific post-SSD decoding parameters and options ― hardwired for coupling to the class itself.
   // (originally these values were given as mediapipe graph calculator node "options")
-  absl::Status ConvertDetectionTensors::SetSsdDecodingOptions() {
+  absl::Status ConvertDetectionTensors::SetSsdDecodingOptions(const float score_threshold) {
+
+    ABSL_ASSERT((0.0f < score_threshold) && (score_threshold < 1.0f));
 
     ssd_decoding_options_ = TensorsToDetectionsCalculatorOptions();
 
@@ -451,7 +453,7 @@ namespace api2 {
 
     // Minimum confidence score required for a detection to be considered valid.
     // Can be tuned after training to balance precision and recall.
-    ssd_decoding_options_.set_min_score_thresh(0.5);
+    ssd_decoding_options_.set_min_score_thresh(score_threshold);
 
     RET_CHECK(ssd_decoding_options_.has_num_classes());
     RET_CHECK(ssd_decoding_options_.has_num_coords());

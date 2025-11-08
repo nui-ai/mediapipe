@@ -24,7 +24,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   palm_detection_inference_ = std::make_unique<api2::ModelInference>(palm_detection_model_path);
 
   // initialize for detection inference conversion to tensors
-  palm_detection_inference_filter_stage1_ = std::make_unique<api2::ConvertDetectionTensors>();
+  palm_detection_inference_filter = std::make_unique<api2::ConvertDetectionTensors>(0.5);
 
   // initialize for orienting the raw (axes parallel) palm rect detected by SSD, to the palm's rough shape by detection keypoints
   // included in the output of the palm detection inference itself (https://chatgpt.com/s/t_690b528ae748819181a48117cb417908).
@@ -135,13 +135,16 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       image_as_tensor_span = MakeTensorSpan(image_as_tensor.tensors);
 
       // palm detection inference
+      auto palm_start_time = std::chrono::high_resolution_clock::now();
       absl::StatusOr<std::vector<Tensor>> palm_detection_inference_output;
       MP_ASSIGN_OR_RETURN(palm_detection_inference_output, palm_detection_inference_->Process(image_as_tensor_span));
-      ABSL_LOG(INFO) << "palm detection inference completed";
+      auto palm_end_time = std::chrono::high_resolution_clock::now();
+      auto palm_duration_us = std::chrono::duration_cast<std::chrono::microseconds>(palm_end_time - palm_start_time).count();
+      ABSL_LOG(INFO) << "palm detection inference took (ms): " << (static_cast<double>(palm_duration_us) / 1000.0);
 
       // extract and first step filter the detection inference output
       std::unique_ptr<std::vector<Detection>> filtered_detections_letterboxed;
-      MP_ASSIGN_OR_RETURN(filtered_detections_letterboxed, palm_detection_inference_filter_stage1_->Process(*palm_detection_inference_output));
+      MP_ASSIGN_OR_RETURN(filtered_detections_letterboxed, palm_detection_inference_filter->Process(*palm_detection_inference_output));
       ABSL_LOG(INFO) << "detection inference conversion to tensors completed";
 
       std::unique_ptr<std::vector<Detection>> filtered_detections = UnLetterBox(*filtered_detections_letterboxed, letterbox_padding_);
@@ -152,7 +155,9 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       // this is mostly a weak stop-gap element unless they have been ordered in some semantic way by the previous
       // above stages, and otherwise would be thrown out as part of harmonizing the overall handling of the potential
       // and expected multiplicity of detection (and their landmarks) which are inherent to SSD and to our overall.
-      if (filtered_detections->size() > max_hands_to_track) {
+      auto excessive_detections_count = static_cast<long>(filtered_detections->size()) - static_cast<long>(max_hands_to_track);
+      if ( excessive_detections_count > 0) {
+        ABSL_LOG(INFO) << "naively discarded " << excessive_detections_count << "palm detections to keep only the same number of them as the set number of hands for tracking (" << max_hands_to_track << ")";
         for (int i = 0; i < max_hands_to_track; ++i) {
           count_capped_detections->push_back(filtered_detections->at(i));
         }
@@ -161,7 +166,6 @@ Liberated::Liberated(MemoryManager* memory_manager) {
           count_capped_detections->push_back(filtered_detections->at(i));
         }
       }
-      ABSL_LOG(INFO) << "naive detections capping completed";
 
       // orient the palm detections all by one function call which takes all of them
       std::vector<NormalizedRect> oriented_palm_norm_rects;
@@ -169,7 +173,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       auto image_size = std::make_pair(image->width(), image->height());
       MP_RETURN_IF_ERROR(palm_detection_to_oriented_palm_rect_->OrientedRectsFromDetections(*count_capped_detections, image_size, &oriented_palm_norm_rects, &oriented_palm_rects));
 
-      // technically speaking unlike the former step, we loop each rect here not in the inside expander fn but by looping the inside expander fn
+      // technically speaking unlike the former step, we loop each rect here not in the inside expander fn but by looping the ins
       hand_rects_from_detections = absl::make_unique<std::vector<NormalizedRect>>(oriented_palm_rects.size());
       for (int i = 0; i < oriented_palm_rects.size(); ++i) {
         // copy the rect
@@ -194,7 +198,15 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       // this sub-image will currently be 224x224 pixels.
       api2::ImageToTensorCoreResult extracted_sub_image_struct;
       MP_RETURN_IF_ERROR(sub_image_for_landmarks_inference_extractor_->Process(*image, rectangle_for_landmarks_inference, &extracted_sub_image_struct));
+
+      // perform landmarks inference over the provided sub-image
+      auto start_time = std::chrono::high_resolution_clock::now();
+      auto start_time_us = std::chrono::duration_cast<std::chrono::microseconds>(start_time.time_since_epoch()).count();
       MP_ASSIGN_OR_RETURN(std::vector<Tensor> output_tensors, landmarks_inference_->Process(MakeTensorSpan(extracted_sub_image_struct.tensors)));
+      auto end_time = std::chrono::high_resolution_clock::now();
+      auto end_time_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time.time_since_epoch()).count();
+      auto duration_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
+      ABSL_LOG(INFO) << "landmarks inference over the given sub-image took (ms): " << (static_cast<double>(duration_us) / 1000.0);
 
       // get a unique pointer to output_tensors that can be passed to a function expecting std::unique_ptr<std::vector<T>>*
       auto output_tensors_ptr = std::make_unique<std::vector<Tensor>>(std::move(output_tensors));

@@ -194,7 +194,7 @@ namespace api2 {
 #endif  // !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
     }
     // Instantiate and open core
-    core_ = std::make_unique<ConvertDetectionTensors>();
+    core_ = std::make_unique<ConvertDetectionTensors>(0.5);
     return absl::OkStatus();
   }
 

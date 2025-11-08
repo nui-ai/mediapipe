@@ -21,15 +21,15 @@ using Anchor = ::mediapipe_v01013_based::Anchor;
 
 class ConvertDetectionTensors {
 public:
-  ConvertDetectionTensors();
+  explicit ConvertDetectionTensors(float score_threshold);
 
   absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Process(const std::vector<Tensor>& input_tensors);
 
 private:
   absl::Status ProcessCPU(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors);
-  absl::Status SetDecodingParameters();
+  absl::Status SetDecodingParameters(float score_threshold);
   absl::Status SetSsdAnchors();
-  absl::Status SetSsdDecodingOptions();
+  absl::Status SetSsdDecodingOptions(float score_threshold);
   absl::Status SetNmsParameters();
   absl::Status DecodeBoxes(const float* raw_boxes,
                            const std::vector<Anchor>& anchors,
