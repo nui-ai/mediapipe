@@ -124,7 +124,6 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
       model_packet,
       PacketAdopting<tflite::OpResolver>(std::move(op_resolver)),
       std::move(delegate),
-      &options.input_output_config(),
       1);
   if (!runner_construction_status.ok()) {
     ABSL_LOG(ERROR) << "failed to create the mediapipe inference runner object";

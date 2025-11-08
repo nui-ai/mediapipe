@@ -32,7 +32,6 @@ cc_library(
         "//mediapipe/calculators/core:split_vector_calculator_core",
         "//mediapipe/calculators/tensor:image_to_tensor_calculator_core",
         "//mediapipe/calculators/tensor:image_to_tensor_utils",
-        #        "//mediapipe/calculators/tensor:inference_calculator",  # clean to be its own dependencies not the calculator itself.
         "//mediapipe/calculators/tensor:inference_runner_new",
         "//mediapipe/calculators/tensor:model_inference",
         "//mediapipe/calculators/tensor:tensors_to_classification_calculator_cc_proto",

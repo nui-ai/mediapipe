@@ -87,30 +87,17 @@ absl::Status CopyInterpreterTensorIntoCpuOutput(
 
 }  // namespace
 absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(const TensorSpan& tensor_span) {
-  const int num_feedback_tensors =
-      feedback_manager_ ? feedback_manager_->GetNumberOfFeedbackTensors() : 0;
 
-  RET_CHECK_EQ(tensor_span.size() + num_feedback_tensors, interpreter_->inputs().size());
+  RET_CHECK_EQ(tensor_span.size(), interpreter_->inputs().size());
 
   std::vector<int> input_indices_excluding_feedback_tensors;
   input_indices_excluding_feedback_tensors.reserve(tensor_span.size());
   for (int i = 0; i < interpreter_->inputs().size(); ++i) {
-    if (feedback_manager_ &&
-        feedback_manager_->IsFeedbackInputTensorAtIndex(i)) {
-      // Feedback tensors are stripped from the InferenceRunner input.
-      continue;
-    }
     input_indices_excluding_feedback_tensors.push_back(i);
   }
   std::vector<int> output_indices_excluding_feedback_tensors;
-  output_indices_excluding_feedback_tensors.reserve(
-      interpreter_->outputs().size() - num_feedback_tensors);
+  output_indices_excluding_feedback_tensors.reserve(interpreter_->outputs().size());
   for (int i = 0; i < interpreter_->outputs().size(); ++i) {
-    if (feedback_manager_ &&
-        feedback_manager_->IsFeedbackOutputTensorAtIndex(i)) {
-      // Exclude feedback tensors from InferenceRunner output.
-      continue;
-    }
     output_indices_excluding_feedback_tensors.push_back(i);
   }
 
@@ -212,9 +199,6 @@ absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(cons
           *interpreter_, output_tensor_index, output_tensors[i]));
     }
   }
-  if (feedback_manager_ && num_feedback_tensors > 0) {
-    feedback_manager_->SwapFeedbackTensors();
-  }
   return output_tensors;
 }
 
@@ -225,7 +209,6 @@ CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
     api2::Packet<tflite::OpResolver> op_resolver,
     TfLiteDelegatePtr delegate,
-    const InferenceCalculatorOptions::InputOutputConfig* input_output_config,
     int interpreter_num_threads) {
 
   InterpreterBuilder interpreter_builder(*model.Get(), op_resolver.Get());
@@ -242,26 +225,11 @@ CreateInferenceInterpreterDelegateRunner(
   RET_CHECK_EQ(interpreter_builder(&interpreter), kTfLiteOk);
   RET_CHECK(interpreter);
   RET_CHECK_EQ(interpreter->AllocateTensors(), kTfLiteOk);
-  MP_ASSIGN_OR_RETURN(
-      auto input_output_tensor_names,
-      InferenceIoMapper::GetInputOutputTensorNamesFromInterpreter(
-          *interpreter));
-  std::unique_ptr<InferenceFeedbackManager> inference_feedback_manager;
-  if (input_output_config) {
-    // Create inference_feedback_manager if input_output_config is available.
-    inference_feedback_manager = std::make_unique<InferenceFeedbackManager>();
-    MP_RETURN_IF_ERROR(inference_feedback_manager->Init(
-        *input_output_config, input_output_tensor_names, interpreter.get()));
-  }
 
-  // if (enable_zero_copy_tensor_io) {
-  //   MP_RETURN_IF_ERROR(VerifyModelTensorsForCustomAllocation(*interpreter));
-  // }
+  std::unique_ptr<InferenceFeedbackManager> inference_feedback_manager;
 
   return std::make_unique<InferenceInterpreterDelegateRunner>(
-      std::move(model), std::move(interpreter), std::move(delegate),
-      std::move(input_output_tensor_names),
-      std::move(inference_feedback_manager));
+      std::move(model), std::move(interpreter), std::move(delegate));
 }
 
 }  // namespace mediapipe_v01013_based

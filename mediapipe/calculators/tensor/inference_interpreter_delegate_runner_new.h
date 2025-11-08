@@ -54,14 +54,10 @@ class InferenceInterpreterDelegateRunner : public InferenceRunner {
 public:
     InferenceInterpreterDelegateRunner(
         api2::Packet<TfLiteModelPtr> model,
-        std::unique_ptr<Interpreter> interpreter, TfLiteDelegatePtr delegate,
-        InputOutputTensorNames&& input_output_tensor_names,
-        std::unique_ptr<InferenceFeedbackManager> feedback_manager)
+        std::unique_ptr<Interpreter> interpreter, TfLiteDelegatePtr delegate)
         : model_(std::move(model)),
           delegate_(std::move(delegate)),
-          interpreter_(std::move(interpreter)),
-          input_output_tensor_names_(std::move(input_output_tensor_names)),
-          feedback_manager_(std::move(feedback_manager)){}
+          interpreter_(std::move(interpreter)){}
 
     absl::StatusOr<std::vector<Tensor>> Run(const TensorSpan &tensor_span) override;
 
@@ -69,8 +65,6 @@ private:
     api2::Packet<TfLiteModelPtr> model_;
     TfLiteDelegatePtr delegate_;
     std::unique_ptr<Interpreter> interpreter_;
-    InputOutputTensorNames input_output_tensor_names_;
-    std::unique_ptr<InferenceFeedbackManager> feedback_manager_;
 
     // Copy output tensors from the interpreter always, because zero copy may cause a stability issue,
     // as seen in inline code comments from the mediapipe team around the use of this variable.
@@ -96,8 +90,8 @@ private:
 absl::StatusOr<std::unique_ptr<InferenceRunner>>
 CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
-    api2::Packet<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
-    const mediapipe_v01013_based::InferenceCalculatorOptions::InputOutputConfig* input_output_config = nullptr,
+    api2::Packet<tflite::OpResolver> op_resolver,
+    TfLiteDelegatePtr delegate,
     int interpreter_num_threads = 1);
 
 }  // namespace mediapipe_v01013_based
