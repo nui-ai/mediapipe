@@ -57,7 +57,8 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
   auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts), &TfLiteXNNPackDelegateDelete);
 
   /*
-   * creates a mediapipe wrapper class called a runner, for the interpeter and delegate.
+   * creates a mediapipe wrapper class called a runner, for the interpeter and delegate,
+   * cpu only implementation for now, providing coverage for hardware well supported by XNNPACK.
    *
    * for the meaning of the interpreter_num_threads argument c.f. https://chatgpt.com/s/t_690f234671f481918a7c9ea096134dd5.
    * fiddling the number of threads instead of using the default seems to provide no speedup at all,
@@ -73,19 +74,38 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
    *     or it can just be marginal for that (https://chatgpt.com/c/68f05fb1-a444-8328-b1c0-53b1e57a99f1).
    *     it's really not any complicated code work to enable it, lest the unexpected.
    *
-   *   • if possible, performance (P) cores may or may not yield faster elapsed time than efficiency (E) cores on Intel x86-64,
-   *     and actual processor speeds are on Intel aggressively over-managed by the OS->Hardware and hardware-only throttling
-   *     and cooling strategies which are partly user-configurable and partly version dependent.
-   *     we have code benchmarking processor speeds from python in https: *github.com/nui-ai/core.
-   *
+   *   • as evident in its logging XNNPACK is aware of cache sizes and may or may not adapt to them
+   *     in some ways which should be read from its code prior to any tinkering outside of XNNPACK.
    *   • you may use our tflite-analysis code (https://github.com/nui-ai/tflite-analysis)
    *     to juxtapose model weights total memory size with the machine's CPU cache levels
    *     sharing architecture and sizes to estimate impact.
+   *
+   *   • performance (P) cores may or may not yield faster elapsed time than efficiency (E) cores on Intel x86-64
+   *     Performance Hybrid Architecture, which most 12th Gen forward seem to be, and parallel to this actual processor
+   *     speeds over time are on Intel x86-64 aggressively over-managed by the OS->Hardware and hardware-only throttling
+   *     and cooling strategies which are partly user-configurable and partly version dependent.
+   *     we have code recording processor speeds from python in https: https://github.com/nui-ai/core.
    *
    *   • remember that subscription into multi-threading typically effects overall performance in different ways
    *     in different scenarios as per the overall workload not just a single layer's concurrency so never optimize
    *     in a way which prevents a different optimization for other workloads ― keep all concurrency levels fully
    *     and recursively parameterizeable for flexible switching across workload scenarios and machine differences.
+   *
+   *   • as elsewhere noted, all else equal GPU inference flow can be faster than CPU even for real-time inference,
+   *     which is aptly exemplified in the official browser demo as modern browser versions pass images from camera to GPU
+   *     associated memory such that the classical GPU transfer time becomes a non-issue. an equivalent fast route from camera
+   *     to inference on GPU can be tailored in OS and driver dependent ways (i.e. the browser driving of webcams is smarter
+   *     in this than e.g. default use of the v4l2 UVC driver).
+   *
+   *     for a delineation refer to:
+   *       https://chatgpt.com/s/t_690269a8c35481918dbe2dad7df757c8,
+   *       https://chatgpt.com/s/t_6902657e23408191b6d9d368dc904205,
+   *
+   *     it should be noted that browser passing to GPU may be faster but it depends also on the GPU model, host memory
+   *     speeds, and the browser api for camera video acquisition may not provide other needed affordances like frame
+   *     rate stabilizing ones, and all other camera controls like gain, brightness, focus settings etc. to the same
+   *     levels or by the same ways that a driver like v4l2 poorly does up to a webcam's effort to comply
+   *     with them.
    */
   auto runner_construction_status = CreateInferenceInterpreterDelegateRunner(
       model_packet,
