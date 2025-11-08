@@ -77,6 +77,8 @@ namespace mediapipe_v01013_based {
   // a framework loopback to the pipeline's head
   std::vector<NormalizedRect> hand_rects_from_previous_frame_;
 
+  uint32_t call_counter_ = 0;
+
  };
 
 }

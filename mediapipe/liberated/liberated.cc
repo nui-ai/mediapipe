@@ -13,8 +13,8 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   image_to_tensor_options.mutable_output_tensor_float_range()->set_max(1.0f);
   image_to_tensor_options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
   auto params = GetOutputTensorParams(image_to_tensor_options);
-  int input_tensor_width = params.output_width.value_or(0);
-  int input_tensor_height = params.output_height.value_or(0);
+  int input_tensor_width = params.output_width.value();
+  int input_tensor_height = params.output_height.value();
   image_to_tensor_core_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
       image_to_tensor_options, input_tensor_width, input_tensor_height, params,
       gpu_converter_, cpu_converter_, memory_manager);
@@ -49,8 +49,8 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   sub_image_extraction_options.mutable_output_tensor_float_range()->set_max(1.0f);
   sub_image_extraction_options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_UNSPECIFIED);
   auto params_ = GetOutputTensorParams(sub_image_extraction_options);
-  auto sub_image_extraction_input_tensor_width = params_.output_width.value_or(0);
-  auto sub_image_extraction_input_tensor_height = params_.output_height.value_or(0);
+  auto sub_image_extraction_input_tensor_width = params_.output_width.value();
+  auto sub_image_extraction_input_tensor_height = params_.output_height.value();;
   sub_image_for_landmarks_inference_extractor_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
       sub_image_extraction_options, sub_image_extraction_input_tensor_width, sub_image_extraction_input_tensor_height, params_,
       gpu_converter_, cpu_converter_, memory_manager);
@@ -199,6 +199,27 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       api2::ImageToTensorCoreResult extracted_sub_image_struct;
       MP_RETURN_IF_ERROR(sub_image_for_landmarks_inference_extractor_->Process(*image, rectangle_for_landmarks_inference, &extracted_sub_image_struct));
 
+      ABSL_LOG(INFO) << "sub image padding: ";
+      std::cout << extracted_sub_image_struct.padding[0] << " "
+                << extracted_sub_image_struct.padding[1] << " "
+                << extracted_sub_image_struct.padding[2] << " "
+                << extracted_sub_image_struct.padding[3] << std::endl;
+
+      ABSL_LOG(INFO) << "sub image matrix: ";
+      for (const auto& val : extracted_sub_image_struct.matrix) {
+        std::cout << val << " ";
+      }
+      std::cout << std::endl;
+
+      ABSL_LOG(INFO) << "sub image first few values: ";
+      for (const auto& tensor: extracted_sub_image_struct.tensors) {
+        const auto& vals = tensor.GetCpuReadView().buffer<float>();
+        for (int i = 0; i < 10; ++i) {
+            std::cout << vals[i] << " ";
+        }
+      }
+      std::cout << std::endl;
+
       // perform landmarks inference over the provided sub-image
       auto start_time = std::chrono::high_resolution_clock::now();
       auto start_time_us = std::chrono::duration_cast<std::chrono::microseconds>(start_time.time_since_epoch()).count();
@@ -332,6 +353,8 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       result->handedness_classifications->push_back(*inferred_handedness_classification_object);
 
       hand_rects_from_previous_frame_.push_back(*hand_rect_for_next_frame);
+
+      ++call_counter_;
     }
 
   return result;

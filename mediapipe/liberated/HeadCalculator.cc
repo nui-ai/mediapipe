@@ -23,7 +23,7 @@ namespace mediapipe_v01013_based {
       std::unique_ptr<ImageToTensorConverter> gpu_converter_;
       std::unique_ptr<ImageToTensorConverter> cpu_converter_;
       std::unique_ptr<Liberated> liberated_;
-      int max_hands_to_track = 0;
+      int max_hands_to_track = 2;
 
       static constexpr api2::Output<std::vector<Tensor>>::Optional kOutTensors{"TENSORS"};
       static constexpr api2::Output<Tensor>::Optional kOutTensor{"TENSOR"};
@@ -49,7 +49,6 @@ namespace mediapipe_v01013_based {
       }
 
       absl::Status Open(CalculatorContext* cc) override {
-        max_hands_to_track = 3;
         ABSL_LOG(INFO) << "tracking up to " << max_hands_to_track << " hands";
 
         MemoryManager* memory_manager_ = nullptr;
