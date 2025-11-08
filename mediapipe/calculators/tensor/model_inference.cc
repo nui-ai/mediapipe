@@ -36,7 +36,7 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
 
   // load the model
   auto default_resources = CreateDefaultResources();
-  auto model_packet_status = TfLiteModelLoader::LoadFromPath(*default_resources, model_path, true);
+  auto model_packet_status = TfLiteModelLoader::LoadFromPath(*default_resources, model_path, false);
   if (!model_packet_status.ok()) {
     ABSL_LOG(ERROR) << "failed to load model from path: " << model_path;
     throw std::runtime_error(model_packet_status.status().ToString());
@@ -53,7 +53,7 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
 
   // use the XNNPACK delegate, which will use the requested number of threads
   auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
-  xnnpack_opts.num_threads = XNNPackDelegate_threads;
+  xnnpack_opts.num_threads = 1;
   auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts), &TfLiteXNNPackDelegateDelete);
 
   /*
@@ -107,11 +107,12 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
    *     levels or by the same ways that a driver like v4l2 poorly does up to a webcam's effort to comply
    *     with them.
    */
+  auto options = InferenceCalculatorOptions();
   auto runner_construction_status = CreateInferenceInterpreterDelegateRunner(
       model_packet,
       PacketAdopting<tflite::OpResolver>(std::move(op_resolver)),
       std::move(delegate),
-      &InferenceCalculatorOptions().input_output_config(),
+      &options.input_output_config(),
       0);
   if (!runner_construction_status.ok()) {
     ABSL_LOG(ERROR) << "failed to create the mediapipe inference runner object";

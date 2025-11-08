@@ -214,7 +214,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       ABSL_LOG(INFO) << "sub image first few values: ";
       for (const auto& tensor: extracted_sub_image_struct.tensors) {
         const auto& vals = tensor.GetCpuReadView().buffer<float>();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 244; ++i) {
             std::cout << vals[i] << " ";
         }
       }
@@ -223,20 +223,27 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       // perform landmarks inference over the provided sub-image
       auto start_time = std::chrono::high_resolution_clock::now();
       auto start_time_us = std::chrono::duration_cast<std::chrono::microseconds>(start_time.time_since_epoch()).count();
-      MP_ASSIGN_OR_RETURN(std::vector<Tensor> output_tensors, landmarks_inference_->Process(MakeTensorSpan(extracted_sub_image_struct.tensors)));
+      MP_ASSIGN_OR_RETURN(std::vector<Tensor> landmarks_inference_output_tensors, landmarks_inference_->Process(MakeTensorSpan(extracted_sub_image_struct.tensors)));
       auto end_time = std::chrono::high_resolution_clock::now();
       auto end_time_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time.time_since_epoch()).count();
       auto duration_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
       ABSL_LOG(INFO) << "landmarks inference over the given sub-image took (ms): " << (static_cast<double>(duration_us) / 1000.0);
 
+      ABSL_LOG(INFO) << "landmarks inference first few values: ";
+      const auto& first_tensor_vals = landmarks_inference_output_tensors[0].GetCpuReadView().buffer<float>();
+      for (int i = 0; i < 21; ++i) {
+        std::cout << first_tensor_vals[i] << " ";
+      }
+      std::cout << std::endl;
+
       // get a unique pointer to output_tensors that can be passed to a function expecting std::unique_ptr<std::vector<T>>*
-      auto output_tensors_ptr = std::make_unique<std::vector<Tensor>>(std::move(output_tensors));
+      auto landmarks_inference_output_tensors_ptr = std::make_unique<std::vector<Tensor>>(std::move(landmarks_inference_output_tensors));
 
       // split the result of the landmarks inference into topics (this can be much distilled to discard the over-generalized Run method entirely and just assign the inference outputs directly)
-      std::vector<Tensor> output_elements;  // output argument not consumed by our code (an over generalization feature of the original pipeline)
-      std::unique_ptr<std::vector<Tensor>> combined_output;  // output argument not consumed by our code (an over generalization feature of the original pipeline)
+      std::vector<Tensor> output_elements_ignored;  // output argument not consumed by our code (an over generalization feature of the original pipeline)
+      std::unique_ptr<std::vector<Tensor>> combined_output_ignored;  // output argument not consumed by our code (an over generalization feature of the original pipeline)
       std::vector<std::unique_ptr<std::vector<Tensor>>> output_vectors;
-      MP_RETURN_IF_ERROR(landmarks_inference_splitter_->Run(&output_tensors_ptr, &output_vectors, &output_elements, &combined_output));
+      MP_RETURN_IF_ERROR(landmarks_inference_splitter_->Run(&landmarks_inference_output_tensors_ptr, &output_vectors, &output_elements_ignored, &combined_output_ignored));
       std::unique_ptr<std::vector<Tensor>> inference_output_viewport_landmarks = std::move(output_vectors[0]);
       std::unique_ptr<std::vector<Tensor>> inference_output_hand_presence = std::move(output_vectors[1]);
       std::unique_ptr<std::vector<Tensor>> inference_output_hand_handedness = std::move(output_vectors[2]);
