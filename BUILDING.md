@@ -20,10 +20,13 @@ Unlike original mediapipe, this build builds OpenCV from source which avoids [pr
 
 ### Jetbrains as IDE
 + Consider installing the following JetBrains Plugins for IDE support:
-  1. `Bazel for Clion` (in Clion) is a must-have plugin if you use Clion as your C++ IDE, as it makes the IDE aware of the bazel build graph and its generated files, which is essential for code navigation and understanding in a bazel-built project like this one.
-  2. `Bazel` for the equivalent support (in PyCharm).
+  1. `Bazel for Clion` (in Clion) is a _must-have_ plugin if you use Clion as your C++ IDE, as it makes the IDE understand the project strutcture by running bazel info commands on its sync, which is super-essential for code navigation between bazel BUILD files and their respective C++ source files and vice versa by your normal "go to definition" keyboard shortcut and through its context option "go to corresponding BUILD file" on the context menus. without this plugin, most of the source code will be flagged red as unknown symbols, and you won't have other conveniences like run configurations for building and running through bazel and you basically aren't getting any proper IDE experience at all!
+      + https://www.youtube.com/watch?v=GV_KwWK3Qy8
+      + https://ij.bazel.build/docs/bazel-plugin.html
+      + `.clwb/.bazelproject` controls which parts of the huge mediapipe codebase are built by bazel, and which files should be ignored by the bazel plugin to avoid over-indexing. fill it wisely. you can take the git version of it, but the plugin generates it from scratch when you initally import the project, so you can only manually copy its content into there after it has been generated automatically.
+  2. `Bazel` for the equivalent support in PyCharm, but using Clion is more relevant most of the time.  
   2. `Protocol Buffers` from Jetbrains (in Both IDE).
-  3. Only optionally add the `FlatBuffers` from a 3rd party developer.
+  3. Only optionally add the `FlatBuffers` plugin from a 3rd party developer.
 + Why plugins?
   + Chiefly, the first two plugins make the editor aware of `pb.h` header files which are only generated during each bazel build, outside the codebase source-tree, from the underlying protobuf definitions which mediapipe uses for mostly all of its C++ classes; these `pb.h` are expected by C++ include statements, without which most code symbols are marked as unknown in the editor, rendering code editing noisy and unusable.
   + The editing awareness through these plugins is only materialized after you trigger the "bazel Sync" action of the bazel plugin, from the Bazel menu, the IDE icon, or context menus ― it basically draws the bazel build graph into the IDE's project model to make the IDE understand the project code. You have to repeat this plugin sync after build file changes. this sync is not really related to the bazel sync commmand so
@@ -42,6 +45,17 @@ Unlike original mediapipe, this build builds OpenCV from source which avoids [pr
 # Building 
 
 0. clone this repository and cd into it.
+
+1. test the C++ only build
+    ```bash 
+         bazel build \
+         -c opt
+         --define MEDIAPIPE_DISABLE_GPU=1
+         --define OPENCV=source
+         --disk_cache=/home/matan/.cache/bazel-disk-cache
+         --fission=no```
+   ```
+   see here https://chatgpt.com/c/690f1afd-57cc-8327-8ce3-5ce9ca9e2713 for memory safety warnings in google dependency packages which are expected.
 
 1. make and activate a python 3.12 venv:
     ```bash
@@ -86,7 +100,7 @@ For being able to place breakpoints in the bazel built C++, it is necessary to u
 + `--fission=no` (this option simplifies the debug symbol's writing into the executables, thus enabling Clion/GDB/LLDB to use them; without it, you cannot place breakpoints in the C++ code and expect them to actually work).
 + the same bazel flags should be used on the run configuration as in the build run configuration, otherwise the run configuration will trigger a rebuild with the default bazel build options.
 
-Running the built executables through bazel (rather than directly running the executable) may be required for being able to set breakpoints, and it also makes ABSL_LOG messages appear with a hyperlink to the source code line where they are issued from, which is very convenient.
+Running the built executables through bazel (by using a `bazel run` command) rather than directly running the executable, may be required for being able to set breakpoints. Running through the bazel command also makes ABSL_LOG messages appear with a hyperlink to the source code line where they are issued from, and is supported by the Bazel Plugin for Clion.
 
 ## see also
 https://github.com/nui-ai/mediapipe/issues/18
