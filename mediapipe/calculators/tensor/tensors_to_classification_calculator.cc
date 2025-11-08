@@ -113,7 +113,7 @@ absl::Status ExtractHandednessClassification::Process(CalculatorContext* cc) {
   auto raw_scores = view.buffer<float>();
 
   // Use core function to process tensor to classifications
-  auto classification_list = HandednessClassificationExtract(raw_scores, num_classes, config_);
+  auto classification_list = HandednessClassificationExtract(raw_scores, config_);
 
   kOutClassificationList(cc).Send(std::move(classification_list));
   return absl::OkStatus();
