@@ -65,7 +65,7 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
   // delegate can, but as per discussion in the later parts of https://chatgpt.com/s/t_690f80a52e048191aee5098ebbebf1cb,
   // and as observed in simple experimentation, that would be futile for e.g. our landmarks inference model.
   auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
-  xnnpack_opts.num_threads = -1;
+  xnnpack_opts.num_threads = XNNPackDelegate_threads;
   auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts), &TfLiteXNNPackDelegateDelete);
 
   /*
@@ -125,7 +125,7 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
       PacketAdopting<tflite::OpResolver>(std::move(op_resolver)),
       std::move(delegate),
       &options.input_output_config(),
-      -1);
+      1);
   if (!runner_construction_status.ok()) {
     ABSL_LOG(ERROR) << "failed to create the mediapipe inference runner object";
     throw std::runtime_error(runner_construction_status.status().ToString());
@@ -134,7 +134,10 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
 }
 
 absl::StatusOr<std::vector<Tensor>> ModelInference::Process(const TensorSpan& tensor_span) const {
-  return inference_runner_->Run(tensor_span);}
+  ABSL_LOG(INFO) << "inference count: " << inference_count_;
+  inference_count_++;
+  return inference_runner_->Run(tensor_span);
+}
 
 }  // namespace api2
 }  // namespace mediapipe_v01013_based

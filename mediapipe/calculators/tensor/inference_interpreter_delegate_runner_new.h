@@ -102,7 +102,7 @@ CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
     api2::Packet<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
     const mediapipe_v01013_based::InferenceCalculatorOptions::InputOutputConfig* input_output_config = nullptr,
-    int interpreter_num_threads = 0);
+    int interpreter_num_threads = 1);
 
 }  // namespace mediapipe_v01013_based
 

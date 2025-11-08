@@ -39,6 +39,7 @@ class ModelInference {
 
  private:
   std::unique_ptr<InferenceRunner> inference_runner_;
+  mutable int inference_count_ = 0;
 };
 
 }  // namespace api2

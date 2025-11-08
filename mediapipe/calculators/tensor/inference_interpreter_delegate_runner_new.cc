@@ -212,7 +212,7 @@ absl::StatusOr<std::vector<Tensor>> InferenceInterpreterDelegateRunner::Run(cons
           *interpreter_, output_tensor_index, output_tensors[i]));
     }
   }
-  if (feedback_manager_) {
+  if (feedback_manager_ && num_feedback_tensors > 0) {
     feedback_manager_->SwapFeedbackTensors();
   }
   return output_tensors;
