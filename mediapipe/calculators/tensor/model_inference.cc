@@ -51,9 +51,15 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
   // for any ops which are not claimed by our XNNPACK delegate, if any.
   auto op_resolver = std::make_unique<mediapipe_v01013_based::CpuOpResolver>();
 
-  // use the XNNPACK delegate, which will use the requested number of threads
+  // use the XNNPACK delegate, which will use the requested number of threads, but this is a little confusing
+  // as we set the number of threads argument on both the XNNPack delegate here, and on the tflite interpreter
+  // object later below, whereas the semantics of this argument can be different between tflite and XNNPack:
+  // https://chatgpt.com/s/t_690f7be2ebe48191ac0fb8bbd27a218b.
+  // last I recall tflite will only use concurrency if there are graph partitions, but in our case XNNPack
+  // owns the entire graph with one partition so the tflite interpreter should not use threads,
+  // only XNNPack should or may, if helpful.
   auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
-  xnnpack_opts.num_threads = 1;
+  xnnpack_opts.num_threads = -1;
   auto delegate = TfLiteDelegatePtr(TfLiteXNNPackDelegateCreate(&xnnpack_opts), &TfLiteXNNPackDelegateDelete);
 
   /*
@@ -113,7 +119,7 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
       PacketAdopting<tflite::OpResolver>(std::move(op_resolver)),
       std::move(delegate),
       &options.input_output_config(),
-      0);
+      -1);
   if (!runner_construction_status.ok()) {
     ABSL_LOG(ERROR) << "failed to create the mediapipe inference runner object";
     throw std::runtime_error(runner_construction_status.status().ToString());
