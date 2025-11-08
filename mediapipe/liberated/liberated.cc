@@ -105,8 +105,6 @@ Liberated::Liberated(MemoryManager* memory_manager) {
         std::make_unique<std::vector<ClassificationList>>()
     });
 
-  // auto palm_detection_image = nullptr;
-
     auto count_capped_detections = absl::make_unique<std::vector<Detection>>();
     auto hand_rects_from_detections = absl::make_unique<std::vector<NormalizedRect>>();
     auto merged_hand_rectangles_list = absl::make_unique<std::list<NormalizedRect>>();
@@ -229,7 +227,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       auto duration_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
       ABSL_LOG(INFO) << "landmarks inference over the given sub-image took (ms): " << (static_cast<double>(duration_us) / 1000.0);
 
-      ABSL_LOG(INFO) << "landmarks inference first few values: ";
+      ABSL_LOG(INFO) << "landmarks inference first few values (the viewport landmarks unnormalized): ";
       const auto& first_tensor_vals = landmarks_inference_output_tensors[0].GetCpuReadView().buffer<float>();
       for (int i = 0; i < 21; ++i) {
         std::cout << first_tensor_vals[i] << " ";
@@ -289,7 +287,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
       // extract the hand handedness classification object (object holding handedness value and its confidence) from the landmarks inference output
       auto inferred_handedness_score = inference_output_hand_handedness->at(0).GetCpuReadView().buffer<float>();
-      std::unique_ptr<ClassificationList> inferred_handedness_classification_object = HandednessClassificationExtract(inferred_handedness_score, 2, handedness_classification_config_);
+      std::unique_ptr<ClassificationList> inferred_handedness_classification_object = HandednessClassificationExtract(inferred_handedness_score, handedness_classification_config_);
 
       // extract the viewport landmarks from the landmarks inference output
       NormalizedLandmarkList inferred_landmarks;

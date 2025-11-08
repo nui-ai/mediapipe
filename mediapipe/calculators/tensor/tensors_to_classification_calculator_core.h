@@ -65,7 +65,6 @@ void SetClassificationLabel(const LabelMapItem& label_map_item,
 // Process tensor data and convert to classification list.
 std::unique_ptr<ClassificationList> HandednessClassificationExtract(
     const float* raw_scores,
-    int num_classes,
     const TensorsToClassificationConfig& config);
 
 }  // namespace api2
