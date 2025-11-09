@@ -40,7 +40,6 @@ cc_library(
         "//mediapipe/calculators/core:previous_loopback_calculator",
         "//mediapipe/calculators/image:image_properties_calculator",
         "//mediapipe/calculators/image:image_properties_calculator2",
-        "//mediapipe/calculators/util:association_norm_rect_calculator",
         "//mediapipe/calculators/util:collection_has_min_size_calculator",
         "//mediapipe/calculators/util:detection_model_provider",
         "//mediapipe/calculators/util:dummy_calculator",

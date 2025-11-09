@@ -33,8 +33,11 @@ message Rect {
   // Rotation angle is clockwise in radians.
   optional float rotation = 5 [default = 0.0];
 
-  // Optional unique id to help associate different Rects to each other.
-  optional int64 rect_id = 6;
+  // Source identifier for the rectangle.
+  optional string source = 7;
+
+  // String identifier for the rectangle.
+  optional int64 id = 8;
 }
 
 // A rectangle with rotation in normalized coordinates. The values of box center
@@ -52,7 +55,9 @@ message NormalizedRect {
   // Rotation angle is clockwise in radians.
   optional float rotation = 5 [default = 0.0];
 
-  // Optional unique id to help associate different NormalizedRects to each
-  // other.
-  optional int64 rect_id = 6;
+  // Source identifier for the normalized rectangle.
+  optional string source = 7;
+
+  // String identifier for the normalized rectangle.
+  optional int64 id = 8;
 }

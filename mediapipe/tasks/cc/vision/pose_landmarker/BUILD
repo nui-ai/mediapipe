@@ -124,7 +124,6 @@ cc_library(
         "//mediapipe/calculators/core:previous_loopback_calculator",
         "//mediapipe/calculators/image:image_properties_calculator",
         "//mediapipe/calculators/util:association_calculator_cc_proto",
-        "//mediapipe/calculators/util:association_norm_rect_calculator",
         "//mediapipe/calculators/util:collection_has_min_size_calculator",
         "//mediapipe/calculators/util:collection_has_min_size_calculator_cc_proto",
         "//mediapipe/framework/api2:builder",

@@ -47,17 +47,17 @@ namespace mediapipe_v01013_based {
     /// existing instances which have overlap with it above the given IoU threshold.
     inline absl::Status AddWhileDiscardingByIoU(const NormalizedRect& new_normalized_rect, std::list<NormalizedRect>* normalized_rects, float iou_similarity_threshold) {
 
-    ABSL_LOG(INFO) << "filter-merging is adding rectangle:\n" << new_normalized_rect.DebugString();
+    ABSL_LOG(INFO) << "filter-merging is adding hand rectangle " << new_normalized_rect.ShortDebugString();
 
     // check IoU of the new rect with the each rect of the list, transforming them from NormalizedRect to Rect for the IoU checking
-    MP_ASSIGN_OR_RETURN(Rectangle_f new_rect, ::mediapipe_v01013_based::RectangleFromNormalizedRect(new_normalized_rect));
+    MP_ASSIGN_OR_RETURN(Rectangle_f new_rectangle, ::mediapipe_v01013_based::RectangleFromNormalizedRect(new_normalized_rect));
     for (auto uit = normalized_rects->begin(); uit != normalized_rects->end();) {
       MP_ASSIGN_OR_RETURN(Rectangle_f rect, RectangleFromNormalizedRect(*uit));
 
       // remove existing IoU threshold overlapping rectangle if threshold overlapping with the one being added
-      const float iou = CalculateIou(new_rect, rect);
+      const float iou = CalculateIou(new_rectangle, rect);
       if (iou > iou_similarity_threshold) {
-        ABSL_LOG(INFO) << "filter-merging is pushing out a rectangle:\n" << uit->DebugString();
+        ABSL_LOG(INFO) << "filter-merging is pushing out hand rectangle: " << uit->ShortDebugString();
         uit = normalized_rects->erase(uit);
       } else {
         ++uit;
@@ -101,18 +101,20 @@ namespace mediapipe_v01013_based {
   /// generalize to a helpful statement for the case of two real hands being tracked)
   template <typename T>
   absl::StatusOr<std::list<T>> IouFilterMerge(
-      const std::vector<T>& rects_from_palm_detection,
-      const std::vector<T>& rects_from_landmarks_inference,
+      std::vector<T>& hand_rects_from_palm_detection,
+      std::vector<T>& hand_rects_from_landmarks_inference,
       float min_similarity_threshold = 0.5) {
 
     std::list<T> result_set;  // the final set of hand rectangles passing forward
 
     // this step places the hand rectangles derived from explicit palm detections into the result set ―
     // while filtering them by IoU thershold in a naive order where the later element always "wins".
-    ABSL_LOG(INFO) << "filter-merging the set of hand rectangles derived from palm detections againts itself, by IoU";
-    if (!rects_from_palm_detection.empty()) {
-      for (size_t j = 0; j < rects_from_palm_detection.size(); ++j) {
-        MP_RETURN_IF_ERROR(AddWhileDiscardingByIoU(rects_from_palm_detection[j], &result_set, min_similarity_threshold));
+    // debug logging: ABSL_LOG(INFO) << "filter-merging the set of hand rectangles derived from palm detections againts itself, by IoU";
+    if (!hand_rects_from_palm_detection.empty()) {
+      for (int j = 0; j < hand_rects_from_palm_detection.size(); ++j) {
+        hand_rects_from_palm_detection[j].set_source("palm detection");
+        hand_rects_from_palm_detection[j].set_id(j);
+        MP_RETURN_IF_ERROR(AddWhileDiscardingByIoU(hand_rects_from_palm_detection[j], &result_set, min_similarity_threshold));
       }
     }
 
@@ -120,10 +122,12 @@ namespace mediapipe_v01013_based {
     // while filtering them by IoU threshold by the same naive order ―
     // each rectangle from landmarks inference wins over any ones already in the result set admitted from the explicit palm detections set,
     // if they have IoU threshold overlap ... and each such element also wins over any previous one from its own set if they have IoU threshold overlap.
-    ABSL_LOG(INFO) << "filter-merging the set of hand rectangles derived from landmarks inference into the result set, by IoU";
-    if (!rects_from_landmarks_inference.empty()) {
-      for (size_t vi = 0; vi < rects_from_landmarks_inference.size(); ++vi) {
-        MP_RETURN_IF_ERROR(AddWhileDiscardingByIoU(rects_from_landmarks_inference[vi], &result_set, min_similarity_threshold));
+    // debug logging: ABSL_LOG(INFO) << "filter-merging the set of hand rectangles derived from landmarks inference into the result set, by IoU";
+    if (!hand_rects_from_landmarks_inference.empty()) {
+      for (int j = 0; j < hand_rects_from_landmarks_inference.size(); ++j) {
+        hand_rects_from_landmarks_inference[j].set_source("landmarks inference");
+        hand_rects_from_landmarks_inference[j].set_id(j);
+        MP_RETURN_IF_ERROR(AddWhileDiscardingByIoU(hand_rects_from_landmarks_inference[j], &result_set, min_similarity_threshold));
       }
     }
     return result_set;

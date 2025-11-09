@@ -39,6 +39,11 @@ namespace mediapipe_v01013_based {
  public:
 
   explicit Liberated(MemoryManager* memory_manager);
+
+  static void sub_image_for_landmarks_inference_debug_logging(api2::ImageToTensorCoreResult *extracted_sub_image_struct);
+
+  void landmarks_inference_debug_logging(std::vector<Tensor> landmarks_inference_output_tensors);
+
   ~Liberated() = default;
 
   // Non-copyable, movable.

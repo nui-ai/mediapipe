@@ -1544,20 +1544,6 @@ cc_library(
 )
 
 cc_library(
-    name = "association_norm_rect_calculator",
-    srcs = ["association_norm_rect_calculator.cc"],
-    deps = [
-        ":association_calculator",
-        "//mediapipe/framework:calculator_context",
-        "//mediapipe/framework:calculator_framework",
-        "//mediapipe/framework/formats:rect_cc_proto",
-        "//mediapipe/framework/port:rectangle",
-        "//mediapipe/framework/port:status",
-    ],
-    alwayslink = 1,
-)
-
-cc_library(
     name = "association_detection_calculator",
     srcs = ["association_detection_calculator.cc"],
     deps = [
@@ -1577,7 +1563,6 @@ cc_test(
     srcs = ["association_calculator_test.cc"],
     deps = [
         ":association_detection_calculator",
-        ":association_norm_rect_calculator",
         "//mediapipe/framework:calculator_cc_proto",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:calculator_runner",

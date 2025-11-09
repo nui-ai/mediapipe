@@ -97,6 +97,48 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
 }
 
+void Liberated::sub_image_for_landmarks_inference_debug_logging(api2::ImageToTensorCoreResult *extracted_sub_image_struct) {
+  ABSL_LOG(INFO) << "sub image padding: ";
+  std::cout << extracted_sub_image_struct->padding[0] << " "
+      << extracted_sub_image_struct->padding[1] << " "
+      << extracted_sub_image_struct->padding[2] << " "
+      << extracted_sub_image_struct->padding[3] << std::endl;
+
+  ABSL_LOG(INFO) << "sub image matrix: ";
+  for (const auto& val : extracted_sub_image_struct->matrix) {
+    std::cout << val << " ";
+  }
+  std::cout << std::endl;
+
+  ABSL_LOG(INFO) << "sub image first few values: ";
+  for (const auto& tensor: extracted_sub_image_struct->tensors) {
+    const auto& vals = tensor.GetCpuReadView().buffer<float>();
+    for (int i = 0; i <  224*3; ++i) {
+      std::cout << vals[i] << " ";
+    }
+  }
+  std::cout << std::endl;
+
+  std::cout << "sub image hash: ";
+  std::size_t hash = 0;
+  for (const auto& tensor : extracted_sub_image_struct->tensors) {
+    const auto& vals = tensor.GetCpuReadView().buffer<float>();
+    for (int i = 0; i < tensor.shape().num_elements(); ++i) {
+      hash ^= std::hash<float>{}(vals[i]) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+    }
+  }
+  std::cout << std::hex << hash << std::dec << " " << std::endl;
+}
+
+void Liberated::landmarks_inference_debug_logging(std::vector<Tensor> landmarks_inference_output_tensors) {
+  ABSL_LOG(INFO) << "landmarks inference first few values (the viewport landmarks unnormalized): ";
+  const auto& first_tensor_vals = landmarks_inference_output_tensors[0].GetCpuReadView().buffer<float>();
+  for (int i = 0; i < 21; ++i) {
+    std::cout << first_tensor_vals[i] << " ";
+  }
+  std::cout << std::endl;
+}
+
   absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::Process(std::shared_ptr<const Image> image, uint32_t max_hands_to_track) {
 
     // initiate the result structure for the current image as empty vectors for all of its fields
@@ -206,58 +248,17 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       api2::ImageToTensorCoreResult extracted_sub_image_struct;
       MP_RETURN_IF_ERROR(sub_image_for_landmarks_inference_extractor_->Process(*image, rectangle_for_landmarks_inference, &extracted_sub_image_struct));
 
-      ABSL_LOG(INFO) << "sub image padding: ";
-      std::cout << extracted_sub_image_struct.padding[0] << " "
-                << extracted_sub_image_struct.padding[1] << " "
-                << extracted_sub_image_struct.padding[2] << " "
-                << extracted_sub_image_struct.padding[3] << std::endl;
-
-      ABSL_LOG(INFO) << "sub image matrix: ";
-      for (const auto& val : extracted_sub_image_struct.matrix) {
-        std::cout << val << " ";
-      }
-      std::cout << std::endl;
-
-      ABSL_LOG(INFO) << "sub image first few values: ";
-      for (const auto& tensor: extracted_sub_image_struct.tensors) {
-        const auto& vals = tensor.GetCpuReadView().buffer<float>();
-        for (int i = 0; i <  224*3; ++i) {
-            std::cout << vals[i] << " ";
-        }
-      }
-      std::cout << std::endl;
-
-      std::cout << "sub image hash: ";
-      std::size_t hash = 0;
-      for (const auto& tensor : extracted_sub_image_struct.tensors) {
-        const auto& vals = tensor.GetCpuReadView().buffer<float>();
-        for (int i = 0; i < tensor.shape().num_elements(); ++i) {
-          hash ^= std::hash<float>{}(vals[i]) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-        }
-      }
-      std::cout << std::hex << hash << std::dec << " " << std::endl;
+      // sub_image_for_landmarks_inference_debug_logging(&extracted_sub_image_struct);
 
       // perform landmarks inference over the provided sub-image
       auto start_time = std::chrono::high_resolution_clock::now();
       auto start_time_us = std::chrono::duration_cast<std::chrono::microseconds>(start_time.time_since_epoch()).count();
-      if (call_counter_>= 454) {
-        // proof that it's not a ModelInference long-running issue, as we get imparity with the reference data just the same with a brand new instance
-        ABSL_LOG(INFO) << "re-initializing the landmarks inference object";
-        const std::string& landmarks_infernce_model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
-        landmarks_inference_ = std::make_unique<api2::ModelInference>(landmarks_infernce_model_path);
-      }
       MP_ASSIGN_OR_RETURN(std::vector<Tensor> landmarks_inference_output_tensors, landmarks_inference_->Process(MakeTensorSpan(extracted_sub_image_struct.tensors)));
       auto end_time = std::chrono::high_resolution_clock::now();
       auto end_time_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time.time_since_epoch()).count();
       auto duration_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
       ABSL_LOG(INFO) << "landmarks inference over the given sub-image took (ms): " << (static_cast<double>(duration_us) / 1000.0);
-
-      ABSL_LOG(INFO) << "landmarks inference first few values (the viewport landmarks unnormalized): ";
-      const auto& first_tensor_vals = landmarks_inference_output_tensors[0].GetCpuReadView().buffer<float>();
-      for (int i = 0; i < 21; ++i) {
-        std::cout << first_tensor_vals[i] << " ";
-      }
-      std::cout << std::endl;
+      // debug logging: landmarks_inference_debug_logging(landmarks_inference_output_tensors);
 
       // get a unique pointer to output_tensors that can be passed to a function expecting std::unique_ptr<std::vector<T>>*
       auto landmarks_inference_output_tensors_ptr = std::make_unique<std::vector<Tensor>>(std::move(landmarks_inference_output_tensors));

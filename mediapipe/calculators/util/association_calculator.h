@@ -91,8 +91,8 @@ public:
     assert(*input_stream_1.name_ == std::string("hand_rects_from_palm_detections"));
     assert(*input_stream_2.name_ == std::string("prev_hand_rects_from_landmarks"));
 
-    const auto& hand_rects_from_palm_detection = input_stream_1.IsEmpty() ? std::vector<T>() : input_stream_1.Get<std::vector<T>>();
-    const auto& prev_hand_rects_from_landmarks = input_stream_2.IsEmpty() ? std::vector<T>() : input_stream_2.Get<std::vector<T>>();
+    auto& hand_rects_from_palm_detection = input_stream_1.IsEmpty() ? std::vector<T>() : input_stream_1.Get<std::vector<T>>();
+    auto& prev_hand_rects_from_landmarks = input_stream_2.IsEmpty() ? std::vector<T>() : input_stream_2.Get<std::vector<T>>();
 
     std::list<T> result_set;
     MP_ASSIGN_OR_RETURN(result_set,
