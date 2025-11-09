@@ -60,7 +60,7 @@ const alphaDecay = {alpha_decay};
 const repulsion = -Math.max(window.innerWidth, window.innerHeight) * {repulsion_factor};
 const CURVINESS_FACTOR = {curviness_factor};
 const CURVINESS_MAX_PX = {curviness_max_px};
-let curvyEdgesEnabled = false;
+let curvyEdgesEnabled = true;
 
 // Visual constants
 // Global edge thickness scale (applies to both straight and curved edges)
@@ -485,8 +485,10 @@ function updateLinkDisplay() {{
 }}
 
 function setCurvyEdgesEnabled(enabled) {{
-  if (curvyEdgesEnabled === enabled) return;
-  curvyEdgesEnabled = enabled;
+  // Always-curvy mode: ignore requests to disable
+  if (!enabled) return;
+  if (curvyEdgesEnabled === true) return;
+  curvyEdgesEnabled = true;
   if (link) {{
     refreshVisibility();
     updateLinkDisplay();
@@ -562,7 +564,7 @@ function refreshVisibility() {{
 
   // Sync custom arrowhead visibility with links and curvy mode
   if (typeof arrow !== 'undefined' && arrow) {{
-    arrow.style('display', d => (curvyEdgesEnabled && visibleEdgeSet.has(d)) ? '' : 'none');
+    arrow.style('display', d => (visibleEdgeSet.has(d)) ? '' : 'none');
   }}
 
   // Preserve gray/blue fills
