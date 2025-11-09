@@ -2,6 +2,8 @@
 
 namespace mediapipe_v01013_based {
 
+/// object for driving the entire processing of images from an image stream, for hand tracking and inference;
+/// formerly this was a mediapipe pipeline HandLandmarkTrackingCpu of mediapipe commit tag v0.10.13.
 Liberated::Liberated(MemoryManager* memory_manager) {
 
   // initialize for converting the input image to a 192x192 grid for palm detection inference.
@@ -92,11 +94,10 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
   // on the very first video frame there are no hand rectangles derived from the previous frame
   hand_rects_from_previous_frame_ = std::vector<NormalizedRect>();
-
-  // ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
-
 }
 
+
+/// helper debug logging function
 void Liberated::sub_image_for_landmarks_inference_debug_logging(api2::ImageToTensorCoreResult *extracted_sub_image_struct) {
   ABSL_LOG(INFO) << "sub image padding: ";
   std::cout << extracted_sub_image_struct->padding[0] << " "
@@ -130,7 +131,7 @@ void Liberated::sub_image_for_landmarks_inference_debug_logging(api2::ImageToTen
   std::cout << std::hex << hash << std::dec << " " << std::endl;
 }
 
-
+/// helper debug logging function
 void Liberated::sub_image_padding_debug_logging(api2::ImageToTensorCoreResult* extracted_sub_image_struct) {
 if (std::any_of(extracted_sub_image_struct->padding.begin(), extracted_sub_image_struct->padding.end(),
                 [](float v) { return v > 0.0001f; })) {
@@ -139,6 +140,7 @@ if (std::any_of(extracted_sub_image_struct->padding.begin(), extracted_sub_image
                       << extracted_sub_image_struct->padding[2] << extracted_sub_image_struct->padding[3]; }
 }
 
+/// helper debug logging function
 void Liberated::landmarks_inference_debug_logging(std::vector<Tensor> landmarks_inference_output_tensors) {
   ABSL_LOG(INFO) << "landmarks inference first few values (the viewport landmarks unnormalized): ";
   const auto& first_tensor_vals = landmarks_inference_output_tensors[0].GetCpuReadView().buffer<float>();
@@ -148,7 +150,8 @@ void Liberated::landmarks_inference_debug_logging(std::vector<Tensor> landmarks_
   std::cout << std::endl;
 }
 
-
+/// entire current processing of the current image for hand tracking and inference;
+/// formerly this was a mediapipe pipeline HandLandmarkTrackingCpu of mediapipe commit tag v0.10.13.
 absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::Process(std::shared_ptr<const Image> image, uint32_t max_hands_to_track) {
 
   // initiate the result structure for the current image as empty vectors for all of its fields
@@ -222,12 +225,13 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::
     auto image_size = std::make_pair(image->width(), image->height());
     MP_RETURN_IF_ERROR(palm_detection_to_oriented_palm_rect_->OrientedRectsFromDetections(*count_capped_detections, image_size, &oriented_palm_norm_rects, &oriented_palm_rects));
 
-    // technically speaking unlike the former step, we loop each rect here not in the inside expander fn but by looping the ins
+    // expand the now oriented palm detections such that they will likely contain the entire hand (meaning palm + fingers).
+    // technically speaking unlike the former step, we loop each rect here rather than inside the expanding function.
     hand_rects_from_detections = absl::make_unique<std::vector<NormalizedRect>>(oriented_palm_rects.size());
     for (int i = 0; i < oriented_palm_rects.size(); ++i) {
-      // copy the rect
+      // copy the rectangle
       hand_rects_from_detections->at(i) = oriented_palm_norm_rects[i];
-      // expand the rect
+      // expand the rectangle
       auto it = hand_rects_from_detections->begin() + i;
       oriented_palm_rect_to_hand_rect_expander_->ExpandNormalizedRect(&(*it), image->width(), image->height());
     }
@@ -311,11 +315,10 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::
     //
     // well, as we know, good baselines are hard to beat without very disciplined effort;
     // further, what isn't explicitly harmonized may still be near optimal.
+    ABSL_LOG(INFO) << "hand rectangle presence validation score from landmarks inference is " << hand_presence_in_landmarks_inference;
     if (hand_presence_in_landmarks_inference < hand_presence_in_landmarks_inference_threshold_) {
-      ABSL_LOG(INFO) << "a rectangle for hand landmarks inference failed in presence validation by a presence post-hoc score of " << hand_presence_in_landmarks_inference;
+      ABSL_LOG(INFO) << "hand rectangle failed in presence validation by landmarks inference and is being ignored";
       continue;
-    } else {
-      ABSL_LOG(INFO) << "presence validation value is " << hand_presence_in_landmarks_inference;
     }
 
     // extract the hand handedness classification object (object holding handedness value and its confidence) from the landmarks inference output
