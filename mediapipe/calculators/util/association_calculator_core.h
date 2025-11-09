@@ -47,7 +47,7 @@ namespace mediapipe_v01013_based {
     /// existing instances which have overlap with it above the given IoU threshold.
     inline absl::Status AddWhileDiscardingByIoU(const NormalizedRect& new_normalized_rect, std::list<NormalizedRect>* normalized_rects, float iou_similarity_threshold) {
 
-    ABSL_LOG(INFO) << "filter-merging is adding hand rectangle " << new_normalized_rect.ShortDebugString();
+    ABSL_LOG(INFO) << "filter-merging hand rectangles is adding hand rectangle " << new_normalized_rect.ShortDebugString();
 
     // check IoU of the new rect with the each rect of the list, transforming them from NormalizedRect to Rect for the IoU checking
     MP_ASSIGN_OR_RETURN(Rectangle_f new_rectangle, ::mediapipe_v01013_based::RectangleFromNormalizedRect(new_normalized_rect));
@@ -57,7 +57,7 @@ namespace mediapipe_v01013_based {
       // remove existing IoU threshold overlapping rectangle if threshold overlapping with the one being added
       const float iou = CalculateIou(new_rectangle, rect);
       if (iou > iou_similarity_threshold) {
-        ABSL_LOG(INFO) << "filter-merging is pushing out hand rectangle: " << uit->ShortDebugString();
+        ABSL_LOG(INFO) << "filter-merging hand rectangles is pushing out hand rectangle " << uit->ShortDebugString();
         uit = normalized_rects->erase(uit);
       } else {
         ++uit;

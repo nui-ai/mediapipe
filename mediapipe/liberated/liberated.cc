@@ -154,19 +154,18 @@ void Liberated::landmarks_inference_debug_logging(std::vector<Tensor> landmarks_
     auto merged_hand_rectangles_list = absl::make_unique<std::list<NormalizedRect>>();
     auto merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>();
 
+    ABSL_LOG(INFO) << "hand rectangles from the previous frame's landmarks inferences: " << hand_rects_from_previous_frame_.size();
     if (hand_rects_from_previous_frame_.size() == max_hands_to_track) {
-      ABSL_LOG(INFO) << "the number of hands detected from the previous frame's landmarks (" << hand_rects_from_previous_frame_.size() << ") is equal to the globally set maximum number of hands to track " << max_hands_to_track;
-      ABSL_LOG(INFO) << "skipping palm detection";
-    } else if (hand_rects_from_previous_frame_.size() > max_hands_to_track) { // this does happen, arising in the de-facto chains of calculation mirroring the original pipeline
-      ABSL_LOG(INFO) << "the number of hands rectangles from the previous frame's landmarks (" << hand_rects_from_previous_frame_.size() << ") is larger than the globally set maximum number of hands to track " << max_hands_to_track;
-      ABSL_LOG(INFO) << "skipping palm detection";
-      // return absl::InternalError("the number of hands rectangels from the previous frame's landmarks is larger than the globally set maximum number of hands to track, which is currently unexpected");
+      ABSL_LOG(INFO) << "skipping palm detection inference";
+    } else if (hand_rects_from_previous_frame_.size() > max_hands_to_track) {
+      ABSL_LOG(INFO) << "(more hand rectangles from the previous frame's landmarks inferences than the number of hands to track " << max_hands_to_track << ")";
+      ABSL_LOG(INFO) << "skipping palm detection inference";
     }
 
     // start the palm detection -> expanded oriented hand region for landmark inference path of computation
     if (hand_rects_from_previous_frame_.size() < max_hands_to_track) {
 
-      ABSL_LOG(INFO) << "palm detection will be triggered for the current frame as the number of previous frame's detections from landmarks is smaller than the set maximum number of hands to track";
+      ABSL_LOG(INFO) << "palm detection inference is being invoked as there are not enough hand rectangles derived from the previous frame's landmarks inference";
 
       // turn the input image to a Tensor of the right size for the palm detection model ― this typically involves letterboxing as in the input image is typically not square
       api2::ImageToTensorCoreResult image_as_tensor;
@@ -187,10 +186,8 @@ void Liberated::landmarks_inference_debug_logging(std::vector<Tensor> landmarks_
       // extract and first step filter the detection inference output
       std::unique_ptr<std::vector<Detection>> filtered_detections_letterboxed;
       MP_ASSIGN_OR_RETURN(filtered_detections_letterboxed, palm_detection_inference_filter->Process(*palm_detection_inference_output));
-      ABSL_LOG(INFO) << "detection inference conversion to tensors completed";
 
       std::unique_ptr<std::vector<Detection>> filtered_detections = UnLetterBox(*filtered_detections_letterboxed, letterbox_padding_);
-      ABSL_LOG(INFO) << "detection letterbox removal completed";
 
       // extremely naively fit the number of detections to be no larger than the maximum hands being tracked constant;
       // this was part of the original pipeline (as a ClipVectorSizeCalculator subclass calculator).

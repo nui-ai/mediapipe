@@ -133,7 +133,6 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
 }
 
 absl::StatusOr<std::vector<Tensor>> ModelInference::Process(const TensorSpan& tensor_span) const {
-  ABSL_LOG(INFO) << "inference count: " << inference_count_;
   inference_count_++;
   return inference_runner_->Run(tensor_span);
 }

@@ -61,8 +61,6 @@ namespace mediapipe_v01013_based {
 
       absl::Status Process(CalculatorContext* cc) override {
 
-        ABSL_LOG(INFO) << "HeadCalculator starting to process";
-
         static constexpr api2::Input<api2::OneOf<Image, ImageFrame>>::Optional kIn{"IMAGE"};
         std::shared_ptr<const mediapipe_v01013_based::Image> image;
         MP_ASSIGN_OR_RETURN(image, GetInputImage(kIn(cc)));

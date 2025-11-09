@@ -160,7 +160,7 @@ absl::Status RunPipelineWithDiffing() {
   // process all input frames
   for (int i = 0; i < 999999; ++i) {
 
-    ABSL_LOG(WARNING) << "processing frame number: " << i;
+    ABSL_LOG(WARNING) << "processing frame number " << i;
     cv::Mat input_frame_raw;
     capture >> input_frame_raw;
     if (input_frame_raw.empty()) {
