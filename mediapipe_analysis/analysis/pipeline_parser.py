@@ -13,6 +13,7 @@ from dataclasses import dataclass
 import json
 import yaml
 import os
+import argparse
 
 @dataclass
 class GraphSelfDescription:
@@ -57,9 +58,21 @@ class MediaPipePipelineParser:
     def print_with_ident(self, text: str):
         print(4 * ' ' * self.ident + text)
 
-    def __init__(self, mediapipe_source_path: Path):
+    def __init__(self, root_search_path: Path):
 
-        self.mediapipe_source = Path(mediapipe_source_path)
+        # root_search_path may be relative or absolute; normalize to absolute for consistent mapping
+        self.mediapipe_source = Path(root_search_path).resolve()
+
+        # Verify path exists and is a directory; print banner as the very first message
+        if not self.mediapipe_source.exists():
+            raise FileNotFoundError(f"root_search_path does not exist: {self.mediapipe_source}")
+        if not self.mediapipe_source.is_dir():
+            raise NotADirectoryError(f"root_search_path is not a directory: {self.mediapipe_source}")
+        try:
+            display_path = self.mediapipe_source.relative_to(Path.cwd())
+        except Exception:
+            display_path = self.mediapipe_source
+        print(f"mapping mediapipe calculators and graphs under {display_path}")
 
         # map all calculator and graph sources across the mediapipe source code
         self.calculators_source_mapping, self.graph_source_files = self.map_node_sources()
@@ -369,18 +382,26 @@ class MediaPipePipelineParser:
         return ''.join(x.capitalize() for x in components)
 
 
-    def analyze_pipeline(self, pipeline_name: str, parent_output_dir: Optional[Path] = None, node_fields: dict = None) -> PipelineNode:
+    def analyze_pipeline(self, pipeline: str, parent_output_dir: Optional[Path] = None, node_fields: dict = None) -> PipelineNode:
 
         """Analyze the specific hand landmark tracking pipeline and build a hierarchy tree."""
 
-        if pipeline_name in self.graph_source_files:
-            src_info = self.graph_source_files[pipeline_name]
+        if pipeline in self.graph_source_files:
+            src_info = self.graph_source_files[pipeline]
             graph_path = str(src_info[0])
             graph_line_number = src_info[1]
             graph_line_code = src_info[2]
-            self.print_with_ident(f'analyzing the pipeline definition of \'{pipeline_name}\' found at {Path(graph_path).relative_to(Path.cwd())}')
+            # Print path relative to CWD when possible, otherwise to the provided root, else absolute
+            try:
+                rel = Path(graph_path).relative_to(Path.cwd())
+            except Exception:
+                try:
+                    rel = Path(graph_path).relative_to(self.mediapipe_source.parent)
+                except Exception:
+                    rel = Path(graph_path)
+            self.print_with_ident(f"analyzing the pipeline definition of '{pipeline}' found at {rel}")
         else:
-            raise FileNotFoundError(f'could not find a pipeline graph definition of {pipeline_name} in mediapipe source code')
+            raise FileNotFoundError(f'could not find a pipeline graph definition of {pipeline} in mediapipe source code')
 
         if graph_path.endswith('.pbtxt'):
             graph, graph_header_comment = self.parse_pbtxt_file(graph_path)
@@ -396,7 +417,7 @@ class MediaPipePipelineParser:
             warning = '⚠️ this graph is defined in C++ code (not by a parseable .pbtxt file). its own nodes are therefore not expanded here, but you can read them in its source code.'
             self.print_with_ident(warning)
             return PipelineNode(
-                name=pipeline_name,
+                name=pipeline,
                 node_type='graph',
                 source=graph_path,
                 warning = warning,
@@ -440,7 +461,9 @@ class MediaPipePipelineParser:
                         'the current source association of it is hard-wired and not auto-discovered. ')
                     is_calc = True
                     node_source_rel = 'mediapipe/calculators/tensor/inference_calculator_cpu.cc'
-                    node_source = str(Path.cwd() / node_source_rel)
+                    cand1 = (self.mediapipe_source / node_source_rel)
+                    cand2 = (self.mediapipe_source.parent / node_source_rel)
+                    node_source = str(cand1 if cand1.exists() else cand2)
                     source_line_number = None
                 case 'LandmarkProjectionCalculator':
                     is_calc = True
@@ -448,7 +471,9 @@ class MediaPipePipelineParser:
                         f' *️this calculator is defined in the source tree by C++ code (not in a pipeline\'s .pbtxt definition file) per pipeline each '
                         f'defined by the C++ api call graph.AddNode("\'{node_name}\'"). the current source association of it is hard-wired and not auto-discovered. ')
                     node_source_rel = 'mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarks_detector_graph.cc'
-                    node_source = str(Path.cwd() / node_source_rel)
+                    cand1 = (self.mediapipe_source / node_source_rel)
+                    cand2 = (self.mediapipe_source.parent / node_source_rel)
+                    node_source = str(cand1 if cand1.exists() else cand2)
                     source_line_number = 344
                 case 'WorldLandmarkProjectionCalculator':
                     is_calc = True
@@ -456,7 +481,9 @@ class MediaPipePipelineParser:
                         f' *️this calculator is defined in the source tree by C++ code (not in a pipeline\'s .pbtxt definition file) per pipeline each '
                         f'defined by the C++ api call graph.AddNode("\'{node_name}\'") the current source association of it is hard-wired and not auto-discovered. ')
                     node_source_rel = 'mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarks_detector_graph.cc'
-                    node_source = str(Path.cwd() / node_source_rel)
+                    cand1 = (self.mediapipe_source / node_source_rel)
+                    cand2 = (self.mediapipe_source.parent / node_source_rel)
+                    node_source = str(cand1 if cand1.exists() else cand2)
                     source_line_number = 356
             is_calc = is_calc or node_name in self.calculators_source_mapping
             is_graph = is_graph or node_name in self.graph_source_files
@@ -472,7 +499,16 @@ class MediaPipePipelineParser:
                     node_source = str(src_info[0])
                     source_line_number = src_info[1]
                     source_line_code = src_info[2]
-                    node_source_rel = str(Path(node_source).relative_to(Path.cwd())) if node_source else node_source
+                    if node_source:
+                        try:
+                            node_source_rel = str(Path(node_source).relative_to(Path.cwd()))
+                        except Exception:
+                            try:
+                                node_source_rel = str(Path(node_source).relative_to(self.mediapipe_source.parent))
+                            except Exception:
+                                node_source_rel = node_source
+                    else:
+                        node_source_rel = node_source
                 if node_source_rel:
                     calculator_mapping[node_name] = node_source
                     self.print_with_ident(f'✅ calculator node \'{node_name}\' : {node_source_rel}')
@@ -501,7 +537,16 @@ class MediaPipePipelineParser:
                 source_line_number = src_info[1]
                 source_line_code = src_info[2]
                 subgraph_mapping[node_name] = node_source
-                node_source_rel = str(Path(node_source).relative_to(Path.cwd())) if node_source else node_source
+                if node_source:
+                    try:
+                        node_source_rel = str(Path(node_source).relative_to(Path.cwd()))
+                    except Exception:
+                        try:
+                            node_source_rel = str(Path(node_source).relative_to(self.mediapipe_source.parent))
+                        except Exception:
+                            node_source_rel = node_source
+                else:
+                    node_source_rel = node_source
                 self.print_with_ident(f'✅ graph node \'{node_name}\' : {node_source_rel}')
                 self.print_with_ident(f'🔁 \'{node_name}\' is a graph')
                 self.ident += 1
@@ -529,7 +574,7 @@ class MediaPipePipelineParser:
         # For the topmost graph node, do not assign a node description or node-level fields
         if node_fields is None:
             return PipelineNode(
-                name=pipeline_name,
+                name=pipeline,
                 node_type='graph',
                 source=graph_path,
                 warning=None,
@@ -547,7 +592,7 @@ class MediaPipePipelineParser:
         else:
             # For subgraph nodes, assign both node-level fields and graph_self_description
             return PipelineNode(
-                name=pipeline_name,
+                name=pipeline,
                 node_type='graph',
                 source=graph_path,
                 warning=None,
@@ -1130,21 +1175,25 @@ code, pre {{ background: #222; color: #eee; }}
         return results
 
 def main():
-    parser = MediaPipePipelineParser(Path('mediapipe').resolve())
+    # CLI: accept root_search_path and pipeline, plus optional output_dir
+    argp = argparse.ArgumentParser(description='MediaPipe Pipelines Parser')
+    argp.add_argument('-r', '--root_search_path', default='mediapipe', help='Root directory under which to search for calculators/graphs (relative or absolute). Default: mediapipe')
+    argp.add_argument('-p', '--pipeline', default='HandLandmarkTrackingCpu', help='Name of the top-level pipeline/graph to analyze.')
+    argp.add_argument('output_dir', nargs='?', default='mediapipe_analysis/analysis/output', help='Output directory for generated files (optional).')
+    args = argp.parse_args()
+
+    parser_obj = MediaPipePipelineParser(Path(args.root_search_path))
     print()
-    root_node = parser.analyze_pipeline('HandLandmarkTrackingCpu')
-    if len(sys.argv) > 1:
-        output_dir = Path(sys.argv[1])
-    else:
-        output_dir = Path('mediapipe_analysis/analysis/output')
-    parser.write_pipeline_outputs(root_node, output_dir)
+    root_node = parser_obj.analyze_pipeline(args.pipeline)
+    output_dir = Path(args.output_dir)
+    parser_obj.write_pipeline_outputs(root_node, output_dir)
 
     # Phase 2: Build the pipeline flow graph
     print("\nBuilding stream-level flow graph...")
     from mediapipe_analysis.analysis.flow_graph_builder import build_pipeline_flow
     verbose_json_path = output_dir / 'json' / 'pipeline.verbose.json'
     flow_graph_path = output_dir / 'json' / 'streams-flow.json'
-    build_pipeline_flow(parser, verbose_json_path, flow_graph_path)
+    build_pipeline_flow(parser_obj, verbose_json_path, flow_graph_path)
     print(f"✅ Generated stream-level flow graph at file://{flow_graph_path.resolve()}")
 
     output_dir_abs = output_dir.resolve()
