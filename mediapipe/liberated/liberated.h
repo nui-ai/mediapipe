@@ -59,9 +59,7 @@ namespace mediapipe_v01013_based {
 
   // step implementations, some of which need initialization and hence an object,
   // and some don't and are just free functions.
-  std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
-  std::unique_ptr<ImageToTensorConverter> gpu_converter_;
-  std::unique_ptr<ImageToTensorConverter> cpu_converter_;
+  std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_palm_detection_input_;
   std::unique_ptr<api2::ModelInference> palm_detection_inference_;
   std::unique_ptr<api2::ConvertDetectionTensors> palm_detection_inference_filter;
   std::unique_ptr<DetectionsToOrientedRects> palm_detection_to_oriented_palm_rect_;
@@ -72,6 +70,12 @@ namespace mediapipe_v01013_based {
   api2::TensorsToClassificationConfig handedness_classification_config_;
   std::unique_ptr<api2::TensorsToLandmarksCore> landmarks_extractor_;
   std::unique_ptr<RectTransformation> expand_rect_for_next_frame_;
+
+  // objects which are owned from here but should be refactored to be owned by the ImageToTensorCalculatorCore objects themselves ...
+  std::unique_ptr<ImageToTensorConverter> palm_detection_gpu_converter_;  // must have lifetime equal to image_to_palm_detection_input_, or be refactored to be owned by it
+  std::unique_ptr<ImageToTensorConverter> palm_detection_cpu_converter_;  // must have lifetime equal to image_to_palm_detection_input_, or be refactored to be owned by it
+  std::unique_ptr<ImageToTensorConverter> landmarks_inference_gpu_converter_;  // must have lifetime equal to sub_image_for_landmarks_inference_extractor_, or refactored to be owned by it
+  std::unique_ptr<ImageToTensorConverter> landmarks_inference_cpu_converter_;  // must have lifetime equal to sub_image_for_landmarks_inference_extractor_, or refactored to be owned by it
 
   // state which replaces the former passing of information by
   // a framework loopback to the pipeline's head

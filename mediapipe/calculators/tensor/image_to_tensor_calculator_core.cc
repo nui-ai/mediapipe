@@ -82,14 +82,14 @@ absl::Status ImageToTensorCalculatorCore::Process(
     absl::optional<mediapipe_v01013_based::NormalizedRect> norm_rect,
     ImageToTensorCoreResult* result) {
 
-  mediapipe_v01013_based::RotatedRect roi = GetRoi(image.width(), image.height(), norm_rect);
+  RotatedRect roi = GetRoi(image.width(), image.height(), norm_rect);
   MP_ASSIGN_OR_RETURN(auto padding, mediapipe_v01013_based::PadRoi(tensor_width_, tensor_height_, options_.keep_aspect_ratio(), &roi));
   result->padding = padding;
   GetRotatedSubRectToRectTransformMatrix(
       roi, image.width(), image.height(), /*flip_horizontally=*/false, &result->matrix);
   MP_RETURN_IF_ERROR(InitConverterIfNecessary(image, options_, params_, gpu_converter_, cpu_converter_));
   Tensor::ElementType output_tensor_type = GetOutputTensorType(image.UsesGpu(), params_);
-  Tensor tensor(output_tensor_type, {1, tensor_height_, tensor_width_, mediapipe_v01013_based::GetNumOutputChannels(image)}, memory_manager_);
+  Tensor tensor(output_tensor_type, {1, tensor_height_, tensor_width_, GetNumOutputChannels(image)}, memory_manager_);
 
   MP_RETURN_IF_ERROR((image.UsesGpu() ? gpu_converter_.get() : cpu_converter_.get())->Convert(
       image, roi, params_.range_min, params_.range_max, 0, tensor));

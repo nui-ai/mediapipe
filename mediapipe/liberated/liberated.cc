@@ -4,26 +4,27 @@ namespace mediapipe_v01013_based {
 
 Liberated::Liberated(MemoryManager* memory_manager) {
 
-  // initialize for image to tensors conversions (to be reduced into much less surface)
-  auto image_to_tensor_options = ImageToTensorCalculatorOptions();
-  image_to_tensor_options.set_output_tensor_width(192);
-  image_to_tensor_options.set_output_tensor_height(192);
-  image_to_tensor_options.set_keep_aspect_ratio(true);
-  image_to_tensor_options.mutable_output_tensor_float_range()->set_min(0.0f);
-  image_to_tensor_options.mutable_output_tensor_float_range()->set_max(1.0f);
-  image_to_tensor_options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
-  auto params = GetOutputTensorParams(image_to_tensor_options);
-  int input_tensor_width = params.output_width.value();
-  int input_tensor_height = params.output_height.value();
-  image_to_tensor_core_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
-      image_to_tensor_options, input_tensor_width, input_tensor_height, params,
-      gpu_converter_, cpu_converter_, memory_manager);
+  // initialize for converting the input image to a 192x192 grid for palm detection inference.
+  // this cascade of argument setting can be simplified for less surface and the converters
+  // can be made encapsulated by it, by simplifying ImageToTensorCalculatorCore for that.
+  auto image_to_palm_detection_input_options = ImageToTensorCalculatorOptions();
+  image_to_palm_detection_input_options.set_output_tensor_width(192);
+  image_to_palm_detection_input_options.set_output_tensor_height(192);
+  image_to_palm_detection_input_options.set_keep_aspect_ratio(true);
+  image_to_palm_detection_input_options.mutable_output_tensor_float_range()->set_min(0.0f);
+  image_to_palm_detection_input_options.mutable_output_tensor_float_range()->set_max(1.0f);
+  image_to_palm_detection_input_options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
+  auto params = GetOutputTensorParams(image_to_palm_detection_input_options);
+  image_to_palm_detection_input_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
+      image_to_palm_detection_input_options, 192, 192, params,
+      palm_detection_gpu_converter_, palm_detection_cpu_converter_, memory_manager);
 
   // initialize for palm detection inference
   const std::string& palm_detection_model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
   palm_detection_inference_ = std::make_unique<api2::ModelInference>(palm_detection_model_path);
 
-  // initialize for detection inference conversion to tensors
+  // initialize for detection inference thresholding and filtering by Non-Maximum Suppression,
+  // circumstantially this is coupled here with converting from the output tensors to mediapipe tensor objects as in the original pipeline.
   palm_detection_inference_filter = std::make_unique<api2::ConvertDetectionTensors>(0.5);
 
   // initialize for orienting the raw (axes parallel) palm rect detected by SSD, to the palm's rough shape by detection keypoints
@@ -40,7 +41,10 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   // ABSL_LOG(INFO) << "RectTransformationCalculator options: " << options_.DebugString();
   oriented_palm_rect_to_hand_rect_expander_ = std::make_unique<RectTransformation>(oriented_palm_rect_to_hand_rect_expander_options);
 
-  // initialize for extracting the sub-image implied by the hand rectangles (to be reduced into much less surface)
+  // initialize for extracting the sub-image implied by each oriented hand rectangle.
+  // this cascade of argument setting can be simplified for less surface and the converters
+  // can be made encapsulated by it, by simplifying ImageToTensorCalculatorCore for that.
+
   auto sub_image_extraction_options = ImageToTensorCalculatorOptions();
   sub_image_extraction_options.set_output_tensor_width(224);
   sub_image_extraction_options.set_output_tensor_height(224);
@@ -49,11 +53,9 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   sub_image_extraction_options.mutable_output_tensor_float_range()->set_max(1.0f);
   sub_image_extraction_options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_UNSPECIFIED);
   auto params_ = GetOutputTensorParams(sub_image_extraction_options);
-  auto sub_image_extraction_input_tensor_width = params_.output_width.value();
-  auto sub_image_extraction_input_tensor_height = params_.output_height.value();;
   sub_image_for_landmarks_inference_extractor_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
-      sub_image_extraction_options, sub_image_extraction_input_tensor_width, sub_image_extraction_input_tensor_height, params_,
-      gpu_converter_, cpu_converter_, memory_manager);
+      sub_image_extraction_options, 224, 224, params_,
+      landmarks_inference_gpu_converter_, landmarks_inference_cpu_converter_, memory_manager);
 
   // initialize for landmarks inference
   const std::string& landmarks_infernce_model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
@@ -124,10 +126,10 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
       ABSL_LOG(INFO) << "palm detection will be triggered for the current frame as the number of previous frame's detections from landmarks is smaller than the set maximum number of hands to track";
 
-      // image to tensor input format for the palm detection model
+      // turn the input image to a Tensor of the right size for the palm detection model ― this typically involves letterboxing as in the input image is typically not square
       api2::ImageToTensorCoreResult image_as_tensor;
       absl::optional<NormalizedRect> norm_rect = absl::nullopt;
-      MP_RETURN_IF_ERROR(image_to_tensor_core_->Process(*image, norm_rect, &image_as_tensor));
+      MP_RETURN_IF_ERROR(image_to_palm_detection_input_->Process(*image, norm_rect, &image_as_tensor));
       auto letterbox_padding_ = image_as_tensor.padding;
       TensorSpan image_as_tensor_span;
       image_as_tensor_span = MakeTensorSpan(image_as_tensor.tensors);
@@ -192,8 +194,15 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
     // start looping or fanning out in place of the original pipeline's fanning out of the hand rects for landmarks inference, which have been accomplished above.
     for (auto rectangle_for_landmarks_inference : *merged_hand_rectangles) {
-      // extract the sub-image implied by the established hand rectangles, for landmarks inference.
-      // this sub-image will currently be 224x224 pixels.
+
+      // extract the sub-image implied by the established hand rectangle, for landmarks inference.
+      // this sub-image will currently be 224x224 pixels, regardless the orientation of the hand rectangle which is typically not axes parallel.
+      // as there is more than one way to extract a 224x224 grid from a rotated rectangle, this step is a little sensitive to implementation details,
+      // which may ultimately slightly change the landmarks inference from the extracted grid, but presumably the outcome will not differ by *too much*
+      // by just those small differences in antialiasing and padding the oriented rectangle from the original image: indeed when mistakenly using an
+      // unintended converter (the one used to extract the entire image for palm detection) for extracting these sub-images for landmarks inference,
+      // only about 1/1000 of hand inferences got different landmarks than they get with the intended converter, i.e. ~0.999 of the time the final
+      // landmarks inference of a hand was identical despite the different extraction method details which used a different border extraction style.
       api2::ImageToTensorCoreResult extracted_sub_image_struct;
       MP_RETURN_IF_ERROR(sub_image_for_landmarks_inference_extractor_->Process(*image, rectangle_for_landmarks_inference, &extracted_sub_image_struct));
 
@@ -212,11 +221,21 @@ Liberated::Liberated(MemoryManager* memory_manager) {
       ABSL_LOG(INFO) << "sub image first few values: ";
       for (const auto& tensor: extracted_sub_image_struct.tensors) {
         const auto& vals = tensor.GetCpuReadView().buffer<float>();
-        for (int i = 0; i < 244; ++i) {
+        for (int i = 0; i <  224*3; ++i) {
             std::cout << vals[i] << " ";
         }
       }
       std::cout << std::endl;
+
+      std::cout << "sub image hash: ";
+      std::size_t hash = 0;
+      for (const auto& tensor : extracted_sub_image_struct.tensors) {
+        const auto& vals = tensor.GetCpuReadView().buffer<float>();
+        for (int i = 0; i < tensor.shape().num_elements(); ++i) {
+          hash ^= std::hash<float>{}(vals[i]) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        }
+      }
+      std::cout << std::hex << hash << std::dec << " " << std::endl;
 
       // perform landmarks inference over the provided sub-image
       auto start_time = std::chrono::high_resolution_clock::now();
