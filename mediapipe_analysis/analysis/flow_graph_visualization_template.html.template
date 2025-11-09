@@ -7,8 +7,9 @@
   <style>
     html, body {{ height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; }}
     svg {{ width: 100vw; height: 100vh; display: block; background: #000; }}
-    .link {{ stroke: #0f0; stroke-opacity: 1; stroke-width: 8px; }}
+    .link {{ fill: none; stroke: #0f0; stroke-opacity: 1; stroke-width: 8px; stroke-linecap: round; stroke-linejoin: round; shape-rendering: geometricPrecision; }}
     .arrowhead {{ fill: #0f0; }}
+    .arrowhead-shape {{ pointer-events: none; shape-rendering: geometricPrecision; }}
     .node text {{ pointer-events: none; fill: #fff; font-weight: bold; }}
     #nodeSearchBox {{ position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10; font-size: 5em; padding: 40px 80px; border-radius: 40px; border: 6px solid #1976d2; background: #222; color: #fff; width: 1600px; text-align: center; }}
     #copyFeedback {{ position: fixed; top: 250px; left: 50%; transform: translateX(-50%); background: #4CAF50; color: #fff; padding: 30px 60px; border-radius: 25px; font-size: 2.5em; z-index: 100; display: none; font-weight: bold; transition: opacity 0.3s ease; text-align: center; min-width: 600px; }}
@@ -57,6 +58,21 @@ const links = {links_json};
 const fontScale = {font_scale};
 const alphaDecay = {alpha_decay};
 const repulsion = -Math.max(window.innerWidth, window.innerHeight) * {repulsion_factor};
+const CURVINESS_FACTOR = {curviness_factor};
+const CURVINESS_MAX_PX = {curviness_max_px};
+let curvyEdgesEnabled = false;
+
+// Visual constants
+// Global edge thickness scale (applies to both straight and curved edges)
+const EDGE_WIDTH_SCALE = 0.60; // 60% of previous thickness
+
+// Custom arrowhead geometry (used in curvy mode)
+// Fixed size so arrowheads are consistent regardless of hover/focus width changes
+const ARROW_LEN_PX = 26; // tip-to-base-center length in pixels (before protrusion)
+// Triangle base width in pixels
+const ARROW_WID_PX = 20;
+// Fraction of arrow length by which the tip protrudes into the target node circle
+const ARROW_PROTRUSION_FRAC = 0.25; // 25%
 
 const BASE_LINK_DISTANCE = 200;
 let userDistanceMultiplier = 1.0;
@@ -79,6 +95,7 @@ function stopSimulation() {{
   try {{ simulation.stop(); }} catch (e) {{}}
   simulationStopped = true;
   if (simStopTimer) {{ clearTimeout(simStopTimer); simStopTimer = null; }}
+  setCurvyEdgesEnabled(true);
 }}
 
 function scheduleSimulationStop() {{
@@ -96,6 +113,7 @@ function scheduleSimulationStop() {{
 function markSimulationStarted() {{
   simulationStopped = false;
   simRunId += 1; // new run token
+  setCurvyEdgesEnabled(false);
   scheduleSimulationStop();
 }}
 
@@ -346,7 +364,7 @@ function refreshHoverBox() {{
   }}
 }}
 
-let simulation, node, link, nodeRadius;
+let simulation, node, link, arrow, nodeRadius;
 
 // NEW: Move updateLinkDisplay to global scope as well
 function updateLinkDisplay() {{
@@ -358,10 +376,11 @@ function updateLinkDisplay() {{
     // Calculate link length and adjust endpoints
     const dx = d.target.x - d.source.x;
     const dy = d.target.y - d.source.y;
-    const length = Math.sqrt(dx * dx + dy * dy);
+    const length = Math.sqrt(dx * dx + dy * dy) || 1;
 
-    const sourceRadius = nodeRadius + 2;
-    const targetRadius = nodeRadius + 2;
+    const padding = curvyEdgesEnabled ? 0 : 2;
+    const sourceRadius = nodeRadius + padding;
+    const targetRadius = nodeRadius + padding;
     const ux = dx / length;
     const uy = dy / length;
 
@@ -370,15 +389,27 @@ function updateLinkDisplay() {{
     const endX = d.target.x - ux * targetRadius;
     const endY = d.target.y - uy * targetRadius;
 
-    line.attr('x1', startX)
-        .attr('y1', startY)
-        .attr('x2', endX)
-        .attr('y2', endY);
+    // Build path command: straight when animating, curved when stable/stopped
+    let pathD;
+    let cx = null, cy = null; // control point for curve when curvy
+    if (curvyEdgesEnabled) {{
+      const mx = (startX + endX) / 2;
+      const my = (startY + endY) / 2;
+      const offset = Math.min(CURVINESS_FACTOR * length, CURVINESS_MAX_PX);
+      const perpX = -uy;
+      const perpY = ux;
+      cx = mx + perpX * offset;
+      cy = my + perpY * offset;
+      pathD = 'M ' + startX + ',' + startY + ' Q ' + cx + ',' + cy + ' ' + endX + ',' + endY;
+    }} else {{
+      pathD = 'M ' + startX + ',' + startY + ' L ' + endX + ',' + endY;
+    }}
 
-    // Color edges with set semantics:
-    // - Blue for any edge whose target is in the set of blue-incoming nodes (hovered and/or sticky-focused roots)
-    // - Else green for any edge whose source is a root (outgoing from roots)
-    // - Else default green
+    line.attr('d', pathD);
+
+    // Determine color and marker per existing logic
+    let strokeColor = '#0f0';
+    let markerId = 'arrowhead-green';
     const roots = getRoots();
     if (roots && roots.length) {{
       const blueIncomingIds = new Set(roots.map(r => r.id));
@@ -390,21 +421,78 @@ function updateLinkDisplay() {{
       const isGreenOutgoing = rootIdSet.has(sourceId);
 
       if (isBlueIncoming) {{
-        line.style('stroke', '#1976d2', 'important')
-            .attr('marker-end', 'url(#arrowhead-blue)');
+        strokeColor = '#1976d2';
+        markerId = 'arrowhead-blue';
       }} else if (isGreenOutgoing) {{
-        line.style('stroke', '#0f0', 'important')
-            .attr('marker-end', 'url(#arrowhead-green)');
+        strokeColor = '#0f0';
+        markerId = 'arrowhead-green';
       }} else {{
-        line.style('stroke', '#0f0', 'important')
-            .attr('marker-end', 'url(#arrowhead-green)');
+        strokeColor = '#0f0';
+        markerId = 'arrowhead-green';
       }}
     }} else {{
-      // Default state: all edges are green
-      line.style('stroke', '#0f0', 'important')
-          .attr('marker-end', 'url(#arrowhead-green)');
+      strokeColor = '#0f0';
+      markerId = 'arrowhead-green';
+    }}
+
+    line.style('stroke', strokeColor, 'important');
+
+    // Arrowheads handling:
+    // - Straight edges: keep built-in markers
+    // - Curvy edges: remove markers, draw custom triangle so the tip touches target circle
+    if (curvyEdgesEnabled) {{
+      line.attr('marker-end', null);
+      const arrowEl = d.__arrowEl;
+      if (arrowEl) {{
+        const segDx = endX - startX;
+        const segDy = endY - startY;
+        const segLen = Math.sqrt(segDx * segDx + segDy * segDy) || 1;
+
+        // Tangent at end of quadratic bezier is end - control; fallback to straight segment
+        let tx = (cx !== null && cy !== null) ? (endX - cx) : segDx;
+        let ty = (cx !== null && cy !== null) ? (endY - cy) : segDy;
+        const tlen = Math.sqrt(tx * tx + ty * ty) || 1;
+        const tux = tx / tlen;
+        const tuy = ty / tlen;
+
+        // Fixed-size arrowhead for consistency; clamp by segment length for very short links
+        let arrowLen = Math.min(ARROW_LEN_PX, segLen * 0.6);
+        let arrowWid = ARROW_WID_PX;
+
+        // Make the tip protrude slightly into the target node by a fraction of its length
+        const protrude = ARROW_PROTRUSION_FRAC * arrowLen; // inline-documented ratio
+
+        const apexX = endX + tux * protrude;
+        const apexY = endY + tuy * protrude;
+        const baseCenterX = apexX - tux * arrowLen;
+        const baseCenterY = apexY - tuy * arrowLen;
+        const px = -tuy; // perp unit
+        const py = tux;
+        const halfW = arrowWid / 2;
+        const b1x = baseCenterX + px * halfW;
+        const b1y = baseCenterY + py * halfW;
+        const b2x = baseCenterX - px * halfW;
+        const b2y = baseCenterY - py * halfW;
+
+        const ad = 'M ' + apexX + ',' + apexY + ' L ' + b1x + ',' + b1y + ' L ' + b2x + ',' + b2y + ' Z';
+        arrowEl.setAttribute('d', ad);
+        arrowEl.setAttribute('fill', strokeColor);
+      }}
+    }} else {{
+      line.attr('marker-end', 'url(#' + markerId + ')');
     }}
   }});
+}}
+
+function setCurvyEdgesEnabled(enabled) {{
+  if (curvyEdgesEnabled === enabled) return;
+  curvyEdgesEnabled = enabled;
+  if (link) {{
+    refreshVisibility();
+    updateLinkDisplay();
+    setTimeout(refreshVisibility, 10);
+    setTimeout(updateLinkDisplay, 10);
+  }}
 }}
 
 // Helper function to get node clique (connected nodes)
@@ -467,8 +555,15 @@ function refreshVisibility() {{
   const rootsCount = res[2];
 
   node.style('display', n => visibleNodeIds.has(n.id) ? '' : 'none');
+  const baseWidth = rootsCount ? 16 : 8;
+  const width = baseWidth * EDGE_WIDTH_SCALE; // apply global 60% thickness
   link.style('display', l => visibleEdgeSet.has(l) ? '' : 'none')
-      .attr('stroke-width', rootsCount ? 16 : 8);
+      .attr('stroke-width', width);
+
+  // Sync custom arrowhead visibility with links and curvy mode
+  if (typeof arrow !== 'undefined' && arrow) {{
+    arrow.style('display', d => (curvyEdgesEnabled && visibleEdgeSet.has(d)) ? '' : 'none');
+  }}
 
   // Preserve gray/blue fills
   node.filter(n => visibleNodeIds.has(n.id))
@@ -566,10 +661,21 @@ function renderGraph() {{
   markSimulationStarted();
 
   link = svg.append('g')
-      .selectAll('line')
+      .selectAll('path')
       .data(links)
-      .enter().append('line')
+      .enter().append('path')
       .attr('class', 'link');
+
+  // Custom arrowheads for curvy mode (hidden by default; shown when curvy edges enabled)
+  arrow = svg.append('g')
+      .selectAll('path')
+      .data(links)
+      .enter().append('path')
+      .attr('class', 'arrowhead-shape')
+      .style('display', 'none');
+
+  // Keep a direct reference from link datum to its arrow element for faster updates
+  try {{ arrow.each(function(d) {{ d.__arrowEl = this; }}); }} catch(e) {{}}
 
   node = svg.append('g')
       .selectAll('g')
@@ -653,6 +759,13 @@ function renderGraph() {{
     updateLinkDisplay();
 
     node.attr('transform', d => `translate(${{d.x}}, ${{d.y}})`);
+  }});
+
+  // Enable curvy edges when the simulation naturally cools to a stop
+  simulation.on('end', () => {{
+    simulationStopped = true;
+    if (simStopTimer) {{ clearTimeout(simStopTimer); simStopTimer = null; }}
+    setCurvyEdgesEnabled(true);
   }});
 
   function dragstarted(event, d) {{

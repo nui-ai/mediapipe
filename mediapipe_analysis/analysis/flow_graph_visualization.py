@@ -23,6 +23,8 @@ parser = argparse.ArgumentParser(description='Generate D3.js graph HTML for medi
 parser.add_argument('--font_scale', type=float, default=0.5, help='Font size as a fraction of node radius (default: 0.5)')
 parser.add_argument('--alpha_decay', type=float, default=0.03, help='D3 simulation alpha decay (default: 0.03, lower = longer movement)')
 parser.add_argument('--repulsion_factor', type=float, default=2.8, help='Repulsion factor for D3 force simulation (default: 2.8, lower = more compact graph)')
+parser.add_argument('--curviness_factor', type=float, default=0.18, help='Curviness as fraction of edge length when drawing curved edges on stabilization/stop')
+parser.add_argument('--curviness_max_px', type=float, default=120, help='Maximum perpendicular pixel offset for curved edges')
 args = parser.parse_args()
 
 def load_json(path):
@@ -128,7 +130,7 @@ with open(template_path, 'r') as f:
 
 try:
     # using template.format is a quick way to template the html file with the nodes and links json data
-    html = template.format(nodes_json=nodes_json, links_json=links_json, font_scale=args.font_scale, alpha_decay=args.alpha_decay, repulsion_factor=args.repulsion_factor)
+    html = template.format(nodes_json=nodes_json, links_json=links_json, font_scale=args.font_scale, alpha_decay=args.alpha_decay, repulsion_factor=args.repulsion_factor, curviness_factor=args.curviness_factor, curviness_max_px=args.curviness_max_px)
 except Exception as e:
     print(f"\nError formatting the HTML template source file:\n"
           f"this may be due to not using double curly braces {{ and }} in the html template source file's included javascript, which is currently relied upon by the python str.format() method "
