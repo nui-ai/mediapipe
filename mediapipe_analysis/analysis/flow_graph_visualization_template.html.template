@@ -901,12 +901,19 @@ function renderGraph() {{
       }} else {{
         const feedbackDiv = document.getElementById('copyFeedbackBox');
         feedbackDiv.textContent = 'no source code path available for ' + d.id;
+        // Use a neutral gray background for this specific notification
+        const prevBg = feedbackDiv.style.background;
+        feedbackDiv.style.background = '#9E9E9E'; // gray
         feedbackDiv.style.display = 'block';
         feedbackDiv.style.opacity = '1';
         setTimeout(() => {{
           feedbackDiv.style.opacity = '0';
-          setTimeout(() => {{ feedbackDiv.style.display = 'none'; }}, 300);
-        }}, 1200);
+          setTimeout(() => {{
+            feedbackDiv.style.display = 'none';
+            // Restore default success color for subsequent messages
+            feedbackDiv.style.background = '#4CAF50';
+          }}, 300);
+        }}, 3000);
       }}
     }}
     else {{ // right click without ctrl held: copy node name
