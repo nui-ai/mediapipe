@@ -89,19 +89,27 @@ let shiftHeld = false;
 let ctrlHeld = false; // NEW: track Ctrl state uniformly with Shift
 
 // --- Simulation auto-stop configuration ---
-const SIM_STOP_AFTER_SECONDS = 7; // Stop the force simulation after this many seconds from each (re)start
+const SIM_STOP_AFTER_SECONDS = 4.5; // Stop the force simulation after this many seconds from each (re)start
 let simStopTimer = null;          // Timer handle for the scheduled stop
 let simRunId = 0;                 // Monotonically increasing token to distinguish runs; increments on every (re)start.
 // We count simulation starts (via simRunId) so that any previously scheduled timers from an older run
 // cannot stop a newer run. In scheduleSimulationStop() we capture the current runId and only stop the
 // simulation if the timer's runId still matches simRunId, effectively cancelling stale timers.
 let simulationStopped = false;    // Whether the current run has been stopped
+let simFirstClickHandler = null;  // One-shot click listener to stop the simulation on first user click per run
 
 function stopSimulation() {{
   if (!simulation) return;
   try {{ simulation.stop(); }} catch (e) {{}}
   simulationStopped = true;
   if (simStopTimer) {{ clearTimeout(simStopTimer); simStopTimer = null; }}
+  // Remove per-run first-click listener if it exists
+  try {{
+    if (simFirstClickHandler) {{
+      window.removeEventListener('click', simFirstClickHandler, true);
+      simFirstClickHandler = null;
+    }}
+  }} catch (e) {{}}
   setCurvyEdgesEnabled(true);
 }}
 
@@ -122,15 +130,71 @@ function markSimulationStarted() {{
   simRunId += 1; // new run token
   setCurvyEdgesEnabled(false);
   scheduleSimulationStop();
+
+  // Arm a per-run first-click stop: on the first user click after start/restart, stop the simulation
+  // Remove any previous listener just in case
+  try {{
+    if (simFirstClickHandler) {{
+      window.removeEventListener('click', simFirstClickHandler, true);
+      simFirstClickHandler = null;
+    }}
+  }} catch (e) {{}}
+
+  const runIdAtArm = simRunId;
+  simFirstClickHandler = function firstClickStopper(ev) {{
+    // Only act for the current run and if not already stopped
+    if (runIdAtArm === simRunId && simulation && !simulationStopped) {{
+      stopSimulation();
+    }}
+    // Remove self to ensure one-shot behavior
+    try {{
+      window.removeEventListener('click', simFirstClickHandler, true);
+    }} catch (e) {{}}
+    simFirstClickHandler = null;
+  }};
+  // Use capture to catch clicks even if inner handlers stop propagation
+  window.addEventListener('click', simFirstClickHandler, true);
 }}
 
 function installSimulationAutoStopHooks() {{
   if (!simulation) return;
-  // This monkey-patches d3's simulation.restart() so that ANY time the simulation warms up again
-  // (initial start, dragging, programmatic restarts, alphaTarget nudges that call .restart(), etc.)
-  // we treat that as the start of a NEW run. That lets us re-arm the 7s auto-stop window each time.
+  // Simulation (re)start triggers — analyzed and documented:
   //
-  // We must also avoid patching multiple times (e.g., on window resize re-render), so we set a flag.
+  // We monkey‑patch d3's simulation.restart() so that ANY time the simulation warms up again
+  // we treat it as the start of a NEW run (re‑arming auto‑stop and related UI state). Concretely, in this file the
+  // simulation can start or restart due to the following situations:
+  //
+  // 1) Initial page load / page refresh / opening in a new tab:
+  //    - renderGraph() is called at the end of the script, which constructs a new simulation and then calls
+  //      installSimulationAutoStopHooks(); markSimulationStarted();
+  //    - This is effectively a brand‑new run.
+  //
+  // 2) Window resize (including maximizing/restoring the window):
+  //    - window.addEventListener('resize', ...) calls renderGraph(); which creates a new simulation instance and then
+  //      calls markSimulationStarted(); (it also bumps alpha to 1 on the fresh instance).
+  //    - So resizing leads to a new run.
+  //
+  // 3) User begins a drag on a node:
+  //    - In dragstarted(), when !event.active we call simulation.alphaTarget(0.3).restart();
+  //    - That explicit restart is captured by our monkey‑patch and treated as a new run.
+  //
+  // 4) Programmatic centering/animation of a focused node:
+  //    - In animateNodeToViewport(), we call simulation.alpha(0.3).restart(); during the animation loop.
+  //    - Each such restart is treated as a new run; the auto‑stop timer is re‑armed accordingly.
+  //    - Selecting a node via the search box can trigger this path when the node is off‑screen:
+  //      search input → focusNode(found) → animateNodeToViewport(found) → simulation.alpha(...).restart().
+  //
+  // 5) Any other explicit calls to simulation.restart() (present or future):
+  //    - Our patch wraps simulation.restart, so any direct or library‑internal .restart() calls are treated as
+  //      new runs automatically.
+  //
+  // Notes on what does NOT constitute a restart here:
+  //    - Calls that only bump alpha without .restart() (e.g., refreshVisibility() uses simulation.alpha(...)) are not
+  //      restarts by themselves; they keep the current run.
+  //    - Key presses '+'/'-' adjust forces and bump alpha, but do not call .restart(); still the run continues.
+  //
+  // Implementation detail:
+  // We must also avoid patching multiple times (e.g., on window resize re‑render), so we set a guard flag below.
   if (!simulation.__autoStopPatched) {{
     const origRestart = simulation.restart;
     simulation.restart = function() {{
@@ -149,6 +213,7 @@ let hoverBoxNode = null; // id of node currently showing hover box
 let hoverBoxEl = null; // cached element reference
 let hoverGroupEl = null; // the SVG group element for hovered node
 let draggingNode = null; // currently dragged node datum (or null)
+let hoverEnabled = false; // Block hover-induced actions until the user moves the mouse at least once
 
 function setSearchBoxToNode(node) {{
   const searchBox = document.getElementById('nodeSearchBox');
@@ -281,21 +346,24 @@ function refreshSearchBoxMode() {{
   // Manual override: when user interacts with the search box, keep default visuals
   if (window.__searchBoxManualOverride__) {{ setSearchBoxTranslucentMode(false); return; }}
 
+  // Consider the actively interacted node: prefer a dragging node, else the hovered node (hover only if enabled)
+  const activeNode = draggingNode || (hoverEnabled ? currentHoverNode : null);
+
   // Enable translucent mode when:
-  // 1) A hovered node intersects the search box; OR
-  // 2) While hovering, any node in the hovered node's clique has a neighbor that intersects the search box.
-  if (!currentHoverNode) {{ setSearchBoxTranslucentMode(false); return; }}
+  // 1) The active node intersects the search box; OR
+  // 2) Any node in the active node's clique has a neighbor that intersects the search box.
+  if (!activeNode) {{ setSearchBoxTranslucentMode(false); return; }}
 
   const minFrac = SEARCH_BOX_INTERSECT_MIN_FRAC;
   // Condition 1
-  if (nodeIntersectsSearchBox(currentHoverNode, minFrac)) {{
+  if (nodeIntersectsSearchBox(activeNode, minFrac)) {{
     setSearchBoxTranslucentMode(true);
     return;
   }}
 
   // Condition 2
   try {{
-    const clique = getNodeClique(currentHoverNode.id);
+    const clique = getNodeClique(activeNode.id);
     for (const cid of clique) {{
       const neigh = neighborsById.get(cid);
       if (!neigh || neigh.size === 0) continue;
@@ -453,6 +521,9 @@ function hideHoverBox() {{
 
 // Centralized hover box state refresher: shows when (hovered && Shift) else hides
 function refreshHoverBox() {{
+  // Block all hover-box behavior until the user has moved the mouse at least once
+  if (!hoverEnabled) {{ hideHoverBox(); return; }}
+
   // Lazily resolve the hovered group's element if missing (e.g., Shift pressed after hover)
   if (shiftHeld && currentHoverNode && !hoverGroupEl && node) {{
     try {{
@@ -918,6 +989,7 @@ function renderGraph() {{
   }}
 
   function nodeMouseOver(event, d) {{
+    if (!hoverEnabled) {{ return; }}
     hoverGroupEl = this;
     currentHoverNode = d;
     lastMouseX = event.clientX; lastMouseY = event.clientY;
@@ -994,6 +1066,9 @@ function nodeMouseOut(event, d) {{
     }};
   }}
 
+  // Moves a node into viewport center when it's off-screen.
+  // Invoked by focusNode(...) after search-box selection if the node is out of view.
+  // This function calls simulation.alpha(0.3).restart() while animating, so it restarts the simulation run.
   function animateNodeToViewport(node) {{
     if (isNodeInViewport(node, 80)) return; // Already in view
 
@@ -1140,6 +1215,13 @@ document.addEventListener('DOMContentLoaded', function() {{
 window.addEventListener('mousemove', function(e) {{
   lastMouseX = e.clientX;
   lastMouseY = e.clientY;
+  if (!hoverEnabled) {{
+    hoverEnabled = true; // First real user motion: allow hover features from now on
+    // Re-evaluate UI dependent on hover state
+    refreshHoverBox();
+    refreshVisibility();
+    refreshSearchBoxMode();
+  }}
   if (hoverBoxNode) {{ positionHoverBox(lastMouseX, lastMouseY); }}
 }});
 
