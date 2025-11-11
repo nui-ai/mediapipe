@@ -148,8 +148,66 @@ void Liberated::landmarks_inference_debug_logging(std::vector<Tensor> landmarks_
   std::cout << std::endl;
 }
 
-/// entire current processing of the current image for hand tracking and inference;
-/// formerly this was a mediapipe pipeline HandLandmarkTrackingCpu of mediapipe commit tag v0.10.13.
+/// this method performs weak tracking and inference of hand landmarks for hands, up to the initialization
+/// given argument for the number of hands to track.
+///
+/// formerly this was a mediapipe pipeline HandLandmarkTrackingCpu of mediapipe commit tag v0.10.13,
+/// from which the original logic was reverse-ported by trimming and ridding the many layers of excessive
+/// generalization's that the pipeline calculators were wrapped and infused with, as the original pipeline
+/// is reusing calculators having may dimensions of generalization for the sake of many usage cases which
+/// are used by other unrelated mediapipe provided pipelines but act purely as "dead code" for the
+/// hand tracking use case and pipeline.
+///
+/// note that the input argument for the number of hands to track currently restricts the number of hands which
+/// which it returns for each frame to the amount of hands given upon initialization by that argument, as does
+/// the original mediapipe pipeline; this is a baseline behavior which the original pipeline is also tuned for
+/// in ways somewhat implicit in its workflow, even now that the workflow is much more transparent
+/// to follow in the current pipeline-liberated implementation that the current class is.
+///
+/// tracking and hand identities can't be seen as separate in this domain, yet hand identities are only
+/// made (very) weakly consistent in the original mediapipe pipeline which the current class re-implements:
+///
+/// they tend to keep tracking the same user hands which it has started tracking (started tracking at the onset)
+/// rather than arbitrarily picking which hands to keep for each frame's output ― a property which it only softly
+/// maintains and will fail to maintain that desireable trait in various edgy cases:
+///
+///   ✤ hands moved too fast relative to (the reverse of) distance from the camera and relative to the time distance between a pair of frames
+///   ✤ after a frame where a hand tracked in the previous frame fails to register as present in a valid way in the current frame.
+///   ⊛ when the scene is very noisy for the machine vision parts of this pipeline, of course, but that will make the tracking
+///     unusable anyway, and is not what you'd focus on in the context of a next-gen of this algorithm.. e.g. if hand detection
+///     often fails to follow the hands in basic ways deep in the pipeline, or non-hand skin like face areas register as hands,
+///     but these situations should be best thought of as just things that a new algorithm would be immune to while planning
+///     that new algorithm to tackle the former two cases.
+///
+/// the above description of the tracking behavior is not mirrored by any explicit branching logic of the original
+/// pipeline nor the current implementation mirroring it, but is an analytic outcome of how the current workflow works.
+///
+/// the current implementation may partially maintain hand identity across frames in a weak manner which caters
+/// for the majority of time with simple hand motion scenarios, yet is is not by any way guaranteed to be fully consistent
+/// in that. in terms of how this reflects in api use, this weak identity of hands across frames is quite accordingly
+/// only expressed (as noted, only weakly) by the indexing of the hand objects returned by the current function.
+///
+/// the success of this form of weak tracking however cannot be dismissed or refuted,
+/// and it also enables easy user recovery.
+///
+/// alternatively, an implementation could be evolved to track hands in entirely different regimes:
+///
+///   ◎ not restrict hands number at all, but try to track their identity across frames always
+///
+///   ◎ home in on specific hands which are registered with user cooperation by a "hello" phase:
+///       ◌ the user places their hands centered within a circle shown, or waves them etc to
+///         identify them give or take allowing the system to calibrate their personal
+///         geometry traits ("acquire control" from the user point of view).
+///       ◌ other ways of acknowledging which hands to track,
+///         explicit or more implicit than above.
+///
+///   ◎ knowing which hands to expect (and thus how many) sure can lead to robust tracking
+///     flows within the algorithm
+///
+///   ◎ leave it entirely to the caller to implement the selection of hands from a plurality
+///     of returned hand inferences ― this is a little weak since the caller may want to have
+///     most of the information that the internal workflow has if it wishes to be
+///     very smart about its identity tracking at each frame.
 absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::Process(std::shared_ptr<const Image> image, uint32_t max_hands_to_track) {
 
   // initiate the result structure for the current image as empty vectors for all of its fields
@@ -381,9 +439,9 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::
 
     // accumulate into vectors of results that we return to the caller -> like the original pipeline, like so:
     // each result type is a vector and all those result vectors are implicitly indexed by the hand to which they apply.
-    // this indexing is does guaranteed to fully preserve "hand identity" as the implementation makes no explicit effort
-    // to associate hands detected ― across frames ― though they may be consistently indexed if the ordering of SSD
-    // detection anchors is circumstantially consistent across frames, which is not guaranteed.
+    // this indexing is not guaranteed to fully preserve "hand identity" across frames as the implementation makes no
+    // explicit effort to associate hands detected ― across frames ― other than perhaps as only an artefact of SSD
+    // detection boxes ordering when the hands are kept each at its distinct region of the viewport.
     //
     // this implicit indexing *is* only technically consistent within the humble scope of the current pipeline result:
     //   • each index across the contained result vectors corresponds to the same detected hand,
