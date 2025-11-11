@@ -5,9 +5,9 @@ edition = "2021"
 
 [dependencies]
 
-# opencv = { version = "0.97.0", default-features = false, features = ["imgproc","imgcodecs","highgui","videoio"] }  # in support of https://github.com/nui-ai/mediapipe/issues/22
+opencv = { version = "0.97.2", default-features = false, features = ["imgproc","imgcodecs","highgui","videoio"] }  # in support of https://github.com/nui-ai/mediapipe/issues/22
 # for building the opencv crate from a local fork use e.g.:
-opencv = { path = "/home/matan/code/opencv-rust", default-features = false, features = ["imgproc","imgcodecs","highgui","videoio"] }
+# opencv = { path = "/home/matan/code/opencv-rust", default-features = false, features = ["imgproc","imgcodecs","highgui","videoio"] }
 
 protobuf = "3.7.2"  # this crate is for mediapipe interop in reading pipeline output, which is still required for now. this crate does not handle protobuf extension syntax, which we avoid needing to use by e.g. not trying to consume mediapipe pbtxt files from rust.
 clap = { version = "4.4", features = ["derive"] }

@@ -214,9 +214,16 @@ let hoverBoxEl = null; // cached element reference
 let hoverGroupEl = null; // the SVG group element for hovered node
 let draggingNode = null; // currently dragged node datum (or null)
 let hoverEnabled = false; // Block hover-induced actions until the user moves the mouse at least once
-// Track last time the mouse actually moved to distinguish node-initiated hovers from user-initiated hovers
+// Hover-suppression mini‑mechanism:
+// - lastMouseMoveTime stores a timestamp of the most recent real mousemove event on window.
+// - When the cursor is stationary (no real mousemove) and a node drifts under it due to the simulation,
+//   browsers will often fire mouseover with event.movementX === 0 and event.movementY === 0.
+// - We treat such a mouseover as simulation-driven and suppress hover if the cursor has been idle
+//   for more than MOUSE_IDLE_HOVER_BLOCK_MS milliseconds.
+// - Any genuine mouse move immediately updates lastMouseMoveTime and re-allows hover.
 let lastMouseMoveTime = 0;
-const MOUSE_IDLE_HOVER_BLOCK_MS = 200; // Suppress hover if mouse idle longer than this
+// Time in ms that must elapse with no real mousemove before we consider the cursor “idle” and block hover
+const MOUSE_IDLE_HOVER_BLOCK_MS = 200; // Tuneable: increase to be stricter, decrease to be more permissive
 
 function setSearchBoxToNode(node) {{
   const searchBox = document.getElementById('nodeSearchBox');
@@ -1014,13 +1021,20 @@ function renderGraph() {{
 
   function nodeMouseOver(event, d) {{
     if (!hoverEnabled) {{ return; }}
-    // Suppress hover effects when the mouse is stationary and the node moved under the cursor
+    // Idle-cursor hover suppression rationale:
+    // - If the user hasn't actually moved the mouse recently (cursor is idle), but the simulation
+    //   moves a node under the cursor, browsers may emit mouseover with zero movement deltas.
+    // - We interpret (event.movementX === 0 && event.movementY === 0) combined with a sufficiently
+    //   old lastMouseMoveTime as a simulation-driven hover, and we suppress it to avoid confusing
+    //   highlight/focus flicker while the user is not interacting.
     const now = performance.now ? performance.now() : Date.now();
     if (!event.movementX && !event.movementY && (now - lastMouseMoveTime) > MOUSE_IDLE_HOVER_BLOCK_MS) {{
-      // Update last known mouse position for hoverbox positioning, but do not set hover state
+      // We still record the mouse coordinates so that, if a hover box is shown later (after a real move
+      // or while dragging with Shift), it positions near the cursor. But we do not alter hover state now.
       lastMouseX = event.clientX; lastMouseY = event.clientY;
       return;
     }}
+    // Genuine user-initiated hover path: set current hover node and proceed with UI updates
     hoverGroupEl = this;
     currentHoverNode = d;
     lastMouseX = event.clientX; lastMouseY = event.clientY;
@@ -1243,6 +1257,10 @@ document.addEventListener('DOMContentLoaded', function() {{
 }});
 
 // Track mouse position globally for hover box positioning
+// Global real-mousemove tracker:
+// - Updates lastMouseMoveTime on every genuine pointer move so the idle timer resets.
+// - On the very first move since page load, we enable all hover features (previously blocked),
+//   preserving the original behavior that prevents accidental hovers before any user intent.
 window.addEventListener('mousemove', function(e) {{
   lastMouseX = e.clientX;
   lastMouseY = e.clientY;
@@ -1254,6 +1272,7 @@ window.addEventListener('mousemove', function(e) {{
     refreshVisibility();
     refreshSearchBoxMode();
   }}
+  // If a hover box is already visible (e.g., Shift-hover), keep it following the cursor
   if (hoverBoxNode) {{ positionHoverBox(lastMouseX, lastMouseY); }}
 }});
 
