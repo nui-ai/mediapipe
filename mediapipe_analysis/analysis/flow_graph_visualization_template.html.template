@@ -214,6 +214,9 @@ let hoverBoxEl = null; // cached element reference
 let hoverGroupEl = null; // the SVG group element for hovered node
 let draggingNode = null; // currently dragged node datum (or null)
 let hoverEnabled = false; // Block hover-induced actions until the user moves the mouse at least once
+// Track last time the mouse actually moved to distinguish node-initiated hovers from user-initiated hovers
+let lastMouseMoveTime = 0;
+const MOUSE_IDLE_HOVER_BLOCK_MS = 200; // Suppress hover if mouse idle longer than this
 
 function setSearchBoxToNode(node) {{
   const searchBox = document.getElementById('nodeSearchBox');
@@ -834,6 +837,20 @@ function renderGraph() {{
 
   nodeRadius = Math.max(30, Math.min(width, height) / 18);
 
+  // D3 force simulation — forces in use and their parameters (analysis):
+  // - link: we use d3.forceLink over our links data; id accessor is node.id; distance is dynamic via getStableLinkDistance
+  //         distance inputs: BASE_LINK_DISTANCE (200) * userDistanceMultiplier (nudged by +/- keys),
+  //         with a minimum of 80 px; during hover, edges touching the hovered node are shortened by 50% (still clamped).
+  //         We do not set link.strength/iterations, so d3 defaults are used (strength auto based on degree; iterations=1).
+  // - charge (manyBody): we set strength to a repulsion value derived from viewport size times a template parameter repulsion_factor
+  //         repulsion = -max(window.innerWidth, window.innerHeight) * repulsion_factor (repulsion_factor comes from Python CLI and template).
+  //         We do not set distanceMin/distanceMax/theta, so defaults apply.
+  // - center: we center to (width/2, height/2) where width/height come from current viewport size; this recenters on resize.
+  // - collision (collide): we set radius to nodeRadius + 5, where nodeRadius = max(30, min(width,height)/18); this avoids overlaps.
+  //         We keep collide.strength and iterations at defaults (1.0 and 1 respectively).
+  // Forces not used here: forceX, forceY, forceRadial (none are added implicitly by d3; we rely only on the four above).
+  // Simulation cooling parameters: alpha(1), alphaTarget(0.3), alphaDecay(alphaDecay); alphaDecay is provided via template from Python args.
+  // Other defaults we rely on at the simulation level: velocityDecay stays at d3’s default (0.6); alphaMin stays at default (0.001).
   simulation = d3.forceSimulation(nodes)
       .force('link', d3.forceLink(links).id(d => d.id).distance(getStableLinkDistance))
       .force('charge', d3.forceManyBody().strength(repulsion))
@@ -997,6 +1014,13 @@ function renderGraph() {{
 
   function nodeMouseOver(event, d) {{
     if (!hoverEnabled) {{ return; }}
+    // Suppress hover effects when the mouse is stationary and the node moved under the cursor
+    const now = performance.now ? performance.now() : Date.now();
+    if (!event.movementX && !event.movementY && (now - lastMouseMoveTime) > MOUSE_IDLE_HOVER_BLOCK_MS) {{
+      // Update last known mouse position for hoverbox positioning, but do not set hover state
+      lastMouseX = event.clientX; lastMouseY = event.clientY;
+      return;
+    }}
     hoverGroupEl = this;
     currentHoverNode = d;
     lastMouseX = event.clientX; lastMouseY = event.clientY;
@@ -1222,6 +1246,7 @@ document.addEventListener('DOMContentLoaded', function() {{
 window.addEventListener('mousemove', function(e) {{
   lastMouseX = e.clientX;
   lastMouseY = e.clientY;
+  lastMouseMoveTime = performance.now ? performance.now() : Date.now();
   if (!hoverEnabled) {{
     hoverEnabled = true; // First real user motion: allow hover features from now on
     // Re-evaluate UI dependent on hover state

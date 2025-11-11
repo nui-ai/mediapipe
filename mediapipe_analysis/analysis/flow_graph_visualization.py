@@ -130,7 +130,21 @@ with open(template_path, 'r') as f:
 
 try:
     # using template.format is a quick way to template the html file with the nodes and links json data
-    html = template.format(nodes_json=nodes_json, links_json=links_json, font_scale=args.font_scale, alpha_decay=args.alpha_decay, repulsion_factor=args.repulsion_factor, curviness_factor=args.curviness_factor, curviness_max_px=args.curviness_max_px)
+    # Mapping of Python CLI params to D3 simulation settings inside the HTML template:
+    # - font_scale -> scales node label font size relative to node radius.
+    # - alpha_decay -> passed to simulation.alphaDecay(alphaDecay) to control cooling rate.
+    # - repulsion_factor -> used to compute manyBody strength: strength = -max(viewportW, viewportH) * repulsion_factor.
+    # - curviness_factor -> controls perpendicular offset of curved edges when simulation is stable.
+    # - curviness_max_px -> caps the maximum offset (in pixels) for curved edges.
+    html = template.format(
+        nodes_json=nodes_json,
+        links_json=links_json,
+        font_scale=args.font_scale,
+        alpha_decay=args.alpha_decay,
+        repulsion_factor=args.repulsion_factor,
+        curviness_factor=args.curviness_factor,
+        curviness_max_px=args.curviness_max_px
+    )
 except Exception as e:
     print(f"\nError formatting the HTML template source file:\n"
           f"this may be due to not using double curly braces {{ and }} in the html template source file's included javascript, which is currently relied upon by the python str.format() method "
