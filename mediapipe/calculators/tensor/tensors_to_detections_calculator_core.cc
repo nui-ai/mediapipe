@@ -57,7 +57,6 @@
 #endif  // MEDIAPIPE_METAL_ENABLED
 
 namespace {
-constexpr int kNumInputTensorsWithAnchors = 3;
 constexpr int kNumCoordsPerBox = 4;
 
 bool CanUseGpu() {
@@ -170,7 +169,6 @@ namespace api2 {
   ConvertDetectionTensors::ConvertDetectionTensors(float score_threshold) {
     ABSL_CHECK_OK(SetDecodingParameters(score_threshold));
     ABSL_CHECK_OK(SetNmsParameters());
-    initialized_ = true;
 
     if (CanUseGpu()) {
 #ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
@@ -188,23 +186,10 @@ namespace api2 {
   //    with only some optional leverage for filtering the raw detections.
   // 2. it also transforms them into mediapipe vector types.
   absl::StatusOr<std::unique_ptr<std::vector<Detection>>> ConvertDetectionTensors::Process(const std::vector<Tensor>& input_tensors) {
-    assert (initialized_);
-
 
     auto filtered_detections = absl::make_unique<std::vector<Detection>>();
-    for (const auto& tensor : input_tensors) {
-      RET_CHECK(tensor.element_type() == Tensor::ElementType::kFloat32);
-    }
-    const int num_input_tensors = input_tensors.size();
-    if (!scores_tensor_index_is_set_) {
-      if (num_input_tensors == 2 ||
-          num_input_tensors == kNumInputTensorsWithAnchors) {
-        ssd_decoding_tensor_mapping_.set_scores_tensor_index(1);
-          } else {
-            ssd_decoding_tensor_mapping_.set_scores_tensor_index(2);
-          }
-      scores_tensor_index_is_set_ = true;
-    }
+    for (const auto& tensor : input_tensors) { RET_CHECK(tensor.element_type() == Tensor::ElementType::kFloat32); }
+    ssd_decoding_tensor_mapping_.set_scores_tensor_index(1);
 
     MP_RETURN_IF_ERROR(ProcessCPU(filtered_detections.get(), input_tensors));
     ABSL_LOG(INFO) << "SSD score thresholding surviving palm detections:  " << filtered_detections->size();
@@ -217,155 +202,74 @@ namespace api2 {
 
   absl::Status ConvertDetectionTensors::ProcessCPU(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors) {
 
-    if (input_tensors.size() == 2 ||
-        input_tensors.size() == kNumInputTensorsWithAnchors) {
-      // Postprocessing on CPU for model without postprocessing op. E.g. output
-      // raw score tensor and box tensor. Anchor decoding will be handled below.
-      auto raw_box_tensor =
-          &input_tensors[ssd_decoding_tensor_mapping_.detections_tensor_index()];
-      RET_CHECK_GT(num_boxes_, 0) << "Please set num_boxes in calculator options";
-      if (raw_box_tensor->shape().dims.size() == 3) {
-        // The tensors from CPU inference has dim 3.
-        RET_CHECK_EQ(raw_box_tensor->shape().dims[0], 1);
-        RET_CHECK_EQ(raw_box_tensor->shape().dims[1], num_boxes_);
-        RET_CHECK_EQ(raw_box_tensor->shape().dims[2], num_coords_);
-      } else if (raw_box_tensor->shape().dims.size() == 4) {
-        // The tensors from GPU inference has dim 4. For gpu-cpu fallback support,
-        // we allow tensors with 4 dims.
-        RET_CHECK_EQ(raw_box_tensor->shape().dims[0], 1);
-        RET_CHECK_EQ(raw_box_tensor->shape().dims[1], 1);
-        RET_CHECK_EQ(raw_box_tensor->shape().dims[2], num_boxes_);
-        RET_CHECK_EQ(raw_box_tensor->shape().dims[3], num_coords_);
-      } else {
-        return absl::InvalidArgumentError(
-            "The dimensions of box Tensor must be 3 or 4.");
-      }
-      auto raw_score_tensor =
-          &input_tensors[ssd_decoding_tensor_mapping_.scores_tensor_index()];
-      if (raw_score_tensor->shape().dims.size() == 3) {
-        // The tensors from CPU inference has dim 3.
-        RET_CHECK_EQ(raw_score_tensor->shape().dims[0], 1);
-        RET_CHECK_EQ(raw_score_tensor->shape().dims[1], num_boxes_);
-        RET_CHECK_EQ(raw_score_tensor->shape().dims[2], num_classes_);
-      } else if (raw_score_tensor->shape().dims.size() == 4) {
-        // The tensors from GPU inference has dim 4. For gpu-cpu fallback support,
-        // we allow tensors with 4 dims.
-        RET_CHECK_EQ(raw_score_tensor->shape().dims[0], 1);
-        RET_CHECK_EQ(raw_score_tensor->shape().dims[1], 1);
-        RET_CHECK_EQ(raw_score_tensor->shape().dims[2], num_boxes_);
-        RET_CHECK_EQ(raw_score_tensor->shape().dims[3], num_classes_);
-      } else {
-        return absl::InvalidArgumentError(
-            "The dimensions of score Tensor must be 3 or 4.");
-      }
-      auto raw_box_view = raw_box_tensor->GetCpuReadView();
-      auto raw_boxes = raw_box_view.buffer<float>();
-      auto raw_scores_view = raw_score_tensor->GetCpuReadView();
-      auto raw_scores = raw_scores_view.buffer<float>();
+    // Postprocessing on CPU for model without postprocessing op. E.g. output
+    // raw score tensor and box tensor. Anchor decoding will be handled below.
+    ABSL_ASSERT(num_boxes_ > 0);
 
-      std::vector<float> boxes(num_boxes_ * num_coords_);
-      MP_RETURN_IF_ERROR(DecodeBoxes(raw_boxes, ssd_anchors_, &boxes));
+    auto raw_box_tensor = &input_tensors[ssd_decoding_tensor_mapping_.detections_tensor_index()];
 
-      std::vector<float> detection_scores(num_boxes_);
-      std::vector<int> detection_classes(num_boxes_);
+    ABSL_ASSERT(raw_box_tensor->shape().dims.size() == 3);
+      RET_CHECK_EQ(raw_box_tensor->shape().dims[0], 1);
+      RET_CHECK_EQ(raw_box_tensor->shape().dims[1], num_boxes_);
+      RET_CHECK_EQ(raw_box_tensor->shape().dims[2], num_coords_);
+      auto raw_score_tensor = &input_tensors[ssd_decoding_tensor_mapping_.scores_tensor_index()];
 
-      // score each box's detected class instances by scores ― note that:
-      // the model was trained for only one class (palm), so this loop essentially becomes trivial.
-      // It will only iterate once per box, and the logic for finding the maximum score and class index
-      // is unnecessary since there is only one possible class. The filtering and score selection logic
-      // are only meaningful for multi-class models. For a single-class model, we can most probably simplify
-      // this code to directly assign the score and class index without searching for the maximum
-      for (int i = 0; i < num_boxes_; ++i) {
-        int class_id = -1;
-        float max_score = -std::numeric_limits<float>::max();
-        // Find the top score for box i, but as said we only have one class so will only score one instance for each box.
-        for (int score_idx = 0; score_idx < num_classes_; ++score_idx) {
-          auto score = raw_scores[i * num_classes_ + score_idx];
-          if (ssd_decoding_options_.sigmoid_score()) {
-            if (ssd_decoding_options_.has_score_clipping_thresh()) {
-              score = score < -ssd_decoding_options_.score_clipping_thresh()
-                          ? -ssd_decoding_options_.score_clipping_thresh()
-                          : score;
-              score = score > ssd_decoding_options_.score_clipping_thresh()
-                          ? ssd_decoding_options_.score_clipping_thresh()
-                          : score;
-            }
+    if (raw_score_tensor->shape().dims.size() == 3);
+      RET_CHECK_EQ(raw_score_tensor->shape().dims[0], 1);
+      RET_CHECK_EQ(raw_score_tensor->shape().dims[1], num_boxes_);
+      RET_CHECK_EQ(raw_score_tensor->shape().dims[2], num_classes_);
 
-            // the SSD palm detection model was trained to output logits,
-            // so it's only implied to to apply sigmoid to get the score per box.
-            // and this line is original mediapipe inherited scoring code.
-            score = 1.0f / (1.0f + std::exp(-score));
+    auto raw_box_view = raw_box_tensor->GetCpuReadView();
+    auto raw_boxes = raw_box_view.buffer<float>();
+    auto raw_scores_view = raw_score_tensor->GetCpuReadView();
+    auto raw_scores = raw_scores_view.buffer<float>();
 
+    std::vector<float> boxes(num_boxes_ * num_coords_);
+    MP_RETURN_IF_ERROR(DecodeBoxes(raw_boxes, ssd_anchors_, &boxes));
+
+    std::vector<float> detection_scores(num_boxes_);
+    std::vector<int> detection_classes(num_boxes_);
+
+    // score each box's detected class instances by scores ― note that:
+    // the model was trained for only one class (palm), so this loop essentially becomes trivial.
+    // It will only iterate once per box, and the logic for finding the maximum score and class index
+    // is unnecessary since there is only one possible class. The filtering and score selection logic
+    // are only meaningful for multi-class models. For a single-class model, we can most probably simplify
+    // this code to directly assign the score and class index without searching for the maximum
+    for (int i = 0; i < num_boxes_; ++i) {
+      int class_id = -1;
+      float max_score = -std::numeric_limits<float>::max();
+      // Find the top score for box i, but as said we only have one class so will only score one instance for each box.
+      for (int score_idx = 0; score_idx < num_classes_; ++score_idx) {
+        auto score = raw_scores[i * num_classes_ + score_idx];
+        if (ssd_decoding_options_.sigmoid_score()) {
+          if (ssd_decoding_options_.has_score_clipping_thresh()) {
+            score = score < -ssd_decoding_options_.score_clipping_thresh()
+                        ? -ssd_decoding_options_.score_clipping_thresh()
+                        : score;
+            score = score > ssd_decoding_options_.score_clipping_thresh()
+                        ? ssd_decoding_options_.score_clipping_thresh()
+                        : score;
           }
-          if (max_score < score) {
-            max_score = score;
-            class_id = score_idx;
-          }
+
+          // the SSD palm detection model was trained to output logits,
+          // so it's only implied to to apply sigmoid to get the score per box.
+          // and this line is original mediapipe inherited scoring code.
+          score = 1.0f / (1.0f + std::exp(-score));
+
         }
-        detection_scores[i] = max_score;
-        detection_classes[i] = class_id;
-      }
-
-      MP_RETURN_IF_ERROR(
-          ConvertToDetections(boxes.data(), detection_scores.data(),
-                              detection_classes.data(), output_detections));
-        } else {
-          // Postprocessing on CPU with postprocessing op (e.g. anchor decoding and
-          // non-maximum suppression) within the model.
-          RET_CHECK_EQ(input_tensors.size(), 4);
-          auto num_boxes_tensor =
-              &input_tensors[ssd_decoding_tensor_mapping_.num_detections_tensor_index()];
-          RET_CHECK_EQ(num_boxes_tensor->shape().dims.size(), 1);
-          RET_CHECK_EQ(num_boxes_tensor->shape().dims[0], 1);
-
-          auto detection_boxes_tensor =
-              &input_tensors[ssd_decoding_tensor_mapping_.detections_tensor_index()];
-          RET_CHECK_EQ(detection_boxes_tensor->shape().dims.size(), 3);
-          RET_CHECK_EQ(detection_boxes_tensor->shape().dims[0], 1);
-          const int max_detections = detection_boxes_tensor->shape().dims[1];
-          RET_CHECK_EQ(detection_boxes_tensor->shape().dims[2], num_coords_);
-
-          auto detection_classes_tensor =
-              &input_tensors[ssd_decoding_tensor_mapping_.classes_tensor_index()];
-          RET_CHECK_EQ(detection_classes_tensor->shape().dims.size(), 2);
-          RET_CHECK_EQ(detection_classes_tensor->shape().dims[0], 1);
-          RET_CHECK_EQ(detection_classes_tensor->shape().dims[1], max_detections);
-
-          auto detection_scores_tensor =
-              &input_tensors[ssd_decoding_tensor_mapping_.scores_tensor_index()];
-          RET_CHECK_EQ(detection_scores_tensor->shape().dims.size(), 2);
-          RET_CHECK_EQ(detection_scores_tensor->shape().dims[0], 1);
-          RET_CHECK_EQ(detection_scores_tensor->shape().dims[1], max_detections);
-
-          auto num_boxes_view = num_boxes_tensor->GetCpuReadView();
-          auto num_boxes = num_boxes_view.buffer<float>();
-          num_boxes_ = num_boxes[0];
-          // The detection model with Detection_PostProcess op may output duplicate
-          // boxes with different classes, in the following format:
-          //   num_boxes_tensor = [num_boxes]
-          //   detection_classes_tensor = [box_1_class_1, box_1_class_2, ...]
-          //   detection_scores_tensor = [box_1_score_1, box_1_score_2, ... ]
-          //   detection_boxes_tensor = [box_1, box1, ... ]
-          // Each box repeats classes_per_detection_ times.
-          // Note Detection_PostProcess op is only supported in CPU.
-          classes_per_detection_ = ssd_decoding_options_.max_classes_per_detection();
-
-          auto detection_boxes_view = detection_boxes_tensor->GetCpuReadView();
-          auto detection_boxes = detection_boxes_view.buffer<float>();
-
-          auto detection_scores_view = detection_scores_tensor->GetCpuReadView();
-          auto detection_scores = detection_scores_view.buffer<float>();
-
-          auto detection_classes_view = detection_classes_tensor->GetCpuReadView();
-          auto detection_classes_ptr = detection_classes_view.buffer<float>();
-          std::vector<int> detection_classes(num_boxes_ * classes_per_detection_);
-          for (int i = 0; i < detection_classes.size(); ++i) {
-            detection_classes[i] = static_cast<int>(detection_classes_ptr[i]);
-          }
-          MP_RETURN_IF_ERROR(ConvertToDetections(detection_boxes, detection_scores,
-                                                 detection_classes.data(),
-                                                 output_detections));
+        if (max_score < score) {
+          max_score = score;
+          class_id = score_idx;
         }
+      }
+      detection_scores[i] = max_score;
+      detection_classes[i] = class_id;
+    }
+
+    MP_RETURN_IF_ERROR(
+        ConvertToDetections(boxes.data(), detection_scores.data(),
+                            detection_classes.data(), output_detections));
     return absl::OkStatus();
   }
 
@@ -473,37 +377,14 @@ namespace api2 {
     // Check if the output size is equal to the requested boxes and keypoints.
     ABSL_CHECK_EQ(ssd_decoding_options_.num_keypoints() * ssd_decoding_options_.num_values_per_keypoint() + kNumCoordsPerBox, num_coords_);
 
-    // Configure tensor mappings
-    if (ssd_decoding_options_.has_tensor_mapping()) {
-      RET_CHECK_OK(CheckCustomTensorMapping(ssd_decoding_options_.tensor_mapping()));
-      ssd_decoding_tensor_mapping_ = ssd_decoding_options_.tensor_mapping();
-      scores_tensor_index_is_set_ = true;
-    } else {
-      // Assigns the default tensor indices.
-      ssd_decoding_tensor_mapping_.set_detections_tensor_index(0);
-      ssd_decoding_tensor_mapping_.set_classes_tensor_index(1);
-      ssd_decoding_tensor_mapping_.set_anchors_tensor_index(2);
-      ssd_decoding_tensor_mapping_.set_num_detections_tensor_index(3);
-      // The scores tensor index needs to be determined based on the number of
-      // model's output tensors, which will be available in the first invocation
-      // of the Process() method.
-      ssd_decoding_tensor_mapping_.set_scores_tensor_index(-1);
-      scores_tensor_index_is_set_ = false;
-    }
-
-    if (ssd_decoding_options_.has_box_boundaries_indices()) {
-      box_indices_ = {ssd_decoding_options_.box_boundaries_indices().ymin(),
-                      ssd_decoding_options_.box_boundaries_indices().xmin(),
-                      ssd_decoding_options_.box_boundaries_indices().ymax(),
-                      ssd_decoding_options_.box_boundaries_indices().xmax()};
-      int bitmap = 0;
-      for (int i : box_indices_) {
-        bitmap |= 1 << i;
-      }
-      RET_CHECK_EQ(bitmap, 15) << "The custom box boundaries indices should only "
-                                  "cover index 0, 1, 2, and 3.";
-      has_custom_box_indices_ = true;
-    }
+    ssd_decoding_tensor_mapping_.set_detections_tensor_index(0);
+    ssd_decoding_tensor_mapping_.set_classes_tensor_index(1);
+    ssd_decoding_tensor_mapping_.set_anchors_tensor_index(2);
+    ssd_decoding_tensor_mapping_.set_num_detections_tensor_index(3);
+    // The scores tensor index needs to be determined based on the number of
+    // model's output tensors, which will be available in the first invocation
+    // of the Process() method.
+    ssd_decoding_tensor_mapping_.set_scores_tensor_index(-1);
 
     return absl::OkStatus();
   }

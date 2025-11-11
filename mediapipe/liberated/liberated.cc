@@ -27,7 +27,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
   // initialize for detection inference thresholding and filtering by Non-Maximum Suppression,
   // circumstantially this is coupled here with converting from the output tensors to mediapipe tensor objects as in the original pipeline.
-  palm_detection_inference_filter = std::make_unique<api2::ConvertDetectionTensors>(0.5);
+  palm_detection_inference_filter_ = std::make_unique<api2::ConvertDetectionTensors>(0.5);
 
   // initialize for orienting the raw (axes parallel) palm rect detected by SSD, to the palm's rough shape by detection keypoints
   // included in the output of the palm detection inference itself (https://chatgpt.com/s/t_690b528ae748819181a48117cb417908).
@@ -46,7 +46,6 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   // initialize for extracting the sub-image implied by each oriented hand rectangle.
   // this cascade of argument setting can be simplified for less surface and the converters
   // can be made encapsulated by it, by simplifying ImageToTensorCalculatorCore for that.
-
   auto sub_image_extraction_options = ImageToTensorCalculatorOptions();
   sub_image_extraction_options.set_output_tensor_width(224);
   sub_image_extraction_options.set_output_tensor_height(224);
@@ -198,7 +197,7 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::
 
     // extract and first step filter the detection inference output
     std::unique_ptr<std::vector<Detection>> filtered_detections_letterboxed;
-    MP_ASSIGN_OR_RETURN(filtered_detections_letterboxed, palm_detection_inference_filter->Process(*palm_detection_inference_output));
+    MP_ASSIGN_OR_RETURN(filtered_detections_letterboxed, palm_detection_inference_filter_->Process(*palm_detection_inference_output));
 
     std::unique_ptr<std::vector<Detection>> filtered_detections = UnLetterBox(*filtered_detections_letterboxed, letterbox_padding_);
 
