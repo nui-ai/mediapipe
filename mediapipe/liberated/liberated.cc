@@ -256,16 +256,16 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::
     auto palm_duration_us = std::chrono::duration_cast<std::chrono::microseconds>(palm_end_time - palm_start_time).count();
     ABSL_LOG(INFO) << "palm detection inference took (ms): " << (static_cast<double>(palm_duration_us) / 1000.0);
 
-    // extract-decode the detection inference output; resulting in detections which are letterboxed and not the final image coordinates of them.
-    std::unique_ptr<std::vector<Detection>> detections_letterboxed;
-    MP_ASSIGN_OR_RETURN(detections_letterboxed, palm_detection_inference_filter_->Extract(*palm_detection_inference_output));
+    // extract-decode the detection inference output
+    std::unique_ptr<std::vector<Detection>> letterboxed_detections;
+    MP_ASSIGN_OR_RETURN(letterboxed_detections, palm_detection_inference_filter_->Extract(*palm_detection_inference_output));
 
     // filter the extracted detections by their detection score and by NMS.
-    std::unique_ptr<std::vector<Detection>> filtered_detections_letterboxed;
-    MP_ASSIGN_OR_RETURN(filtered_detections_letterboxed, palm_detection_inference_filter_->Filter(*detections_letterboxed));
+    std::unique_ptr<std::vector<Detection>> filtered_letterboxed_detections;
+    MP_ASSIGN_OR_RETURN(filtered_letterboxed_detections, palm_detection_inference_filter_->Filter(*letterboxed_detections));
 
     // unletterbox the surviving filtered detections to the original image coordinates.
-    std::unique_ptr<std::vector<Detection>> filtered_detections = UnLetterBox(*filtered_detections_letterboxed, letterbox_padding_);
+    std::unique_ptr<std::vector<Detection>> filtered_detections = UnLetterBox(*filtered_letterboxed_detections, letterbox_padding_);
 
     // extremely naively clip the number of detections surviving the previous filtering, to the constant number of hands to be tracked;
     // this was part of the original pipeline (as a ClipVectorSizeCalculator subclass calculator there) as an obviously naive way

@@ -26,7 +26,7 @@ public:
   absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Filter(const std::vector<Detection>& detections);
 
 private:
-  absl::Status ExtractDetections(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors);
+  absl::Status ExtractDo(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors);
   absl::Status SetDecodingParameters(float score_threshold);
   absl::Status SetSsdAnchors();
   absl::Status SetSsdDecodingOptions(float score_threshold);

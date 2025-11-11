@@ -182,13 +182,11 @@ namespace api2 {
   /// decodes the raw SSD neural network outputs, which is a lot of technical pedantic work, into mediapipe objects
   absl::StatusOr<std::unique_ptr<std::vector<Detection>>> DetectionsExtractionAndFiltering::Extract(const std::vector<Tensor>& input_tensors) {
     for (const auto& tensor : input_tensors) { RET_CHECK(tensor.element_type() == Tensor::ElementType::kFloat32); }
-
     // extract from the model's output all but detections which are invalid (have a zero or a nan box dimension)
-    auto valid_extracted_detections = absl::make_unique<std::vector<Detection>>();
-    MP_RETURN_IF_ERROR(ExtractDetections(valid_extracted_detections.get(), input_tensors));
-    ABSL_LOG(INFO) << "valid SSD extracted detections:  " << valid_extracted_detections->size();
+    auto detections = absl::make_unique<std::vector<Detection>>();
+    MP_RETURN_IF_ERROR(ExtractDo(detections.get(), input_tensors));
 
-    return valid_extracted_detections;
+    return detections;
   }
 
   /// filters the extracted detections
@@ -211,7 +209,7 @@ namespace api2 {
   }
 
   /// extract the scored detections from the network output
-  absl::Status DetectionsExtractionAndFiltering::ExtractDetections(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors) {
+  absl::Status DetectionsExtractionAndFiltering::ExtractDo(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors) {
 
     ABSL_ASSERT(num_boxes_ > 0);
 
@@ -271,6 +269,7 @@ namespace api2 {
     }
 
     MP_RETURN_IF_ERROR(AsDetections(boxes.data(), detection_scores.data(), detection_classes.data(), output_detections));
+
     return absl::OkStatus();
   }
 

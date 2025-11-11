@@ -160,16 +160,17 @@ absl::Status RunPipelineWithDiffing() {
   // process all input frames
   for (int i = 0; i < 999999; ++i) {
 
-    ABSL_LOG(WARNING) << "processing frame number " << i;
     cv::Mat input_frame_raw;
     capture >> input_frame_raw;
     if (input_frame_raw.empty()) {
       if (!video_file_input) {
-        ABSL_LOG(WARNING) << "empty frame from camera being ignored";
+        ABSL_LOG(WARNING) << "empty frame from camera for frame number " << i << " will not be processed";
         continue;
       }
       break; // end of video file (irrelevant when the input is from a camera)
     }
+
+    ABSL_LOG(WARNING) << "processing frame number " << i;
 
     cv::Mat input_frame;
     cv::cvtColor(input_frame_raw, input_frame, cv::COLOR_BGR2RGB);

@@ -241,5 +241,6 @@ int main(int argc, char** argv) {
         std::cerr << "Error during mediapipe graph finalization: " << hands_pipeline_operator_get_last_error() << std::endl;
     }
     hands_pipeline_operator_destroy(pipeline_operator);
+    ABSL_LOG(INFO) << "done processing all input";
     return EXIT_SUCCESS;
 }
