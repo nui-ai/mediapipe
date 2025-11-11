@@ -62,7 +62,7 @@ namespace mediapipe_v01013_based {
   // and some don't and are just free functions.
   std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_palm_detection_input_;
   std::unique_ptr<api2::ModelInference> palm_detection_inference_;
-  std::unique_ptr<api2::ExtractValidDetections> palm_detection_inference_filter_;
+  std::unique_ptr<api2::DetectionsExtractionAndFiltering> palm_detection_inference_filter_;
   std::unique_ptr<DetectionsToOrientedRects> palm_detection_to_oriented_palm_rect_;
   std::unique_ptr<RectTransformation> oriented_palm_rect_to_hand_rect_expander_;
   std::unique_ptr<api2::ImageToTensorCalculatorCore> sub_image_for_landmarks_inference_extractor_;

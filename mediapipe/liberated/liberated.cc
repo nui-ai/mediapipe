@@ -26,7 +26,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   palm_detection_inference_ = std::make_unique<api2::ModelInference>(palm_detection_model_path);
 
   // initialize for extracting the raw palm detections inference outputs, and also for filtering them
-  palm_detection_inference_filter_ = std::make_unique<api2::ExtractValidDetections>(0.5);
+  palm_detection_inference_filter_ = std::make_unique<api2::DetectionsExtractionAndFiltering>(0.5);
 
   // initialize for orienting the raw (axes parallel) palm rect detected by SSD, to the palm's rough shape by detection keypoints
   // included in the output of the palm detection inference itself (https://chatgpt.com/s/t_690b528ae748819181a48117cb417908).

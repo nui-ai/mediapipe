@@ -19,9 +19,9 @@ namespace api2 {
 using BoxFormat = ::mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::BoxFormat;
 using Anchor = ::mediapipe_v01013_based::Anchor;
 
-class ExtractValidDetections {
+class DetectionsExtractionAndFiltering {
 public:
-  explicit ExtractValidDetections(float score_threshold);
+  explicit DetectionsExtractionAndFiltering(float score_threshold);
   absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Extract(const std::vector<Tensor>& input_tensors);
   absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Filter(const std::vector<Detection>& detections);
 

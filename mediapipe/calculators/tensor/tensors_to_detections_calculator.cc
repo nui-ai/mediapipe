@@ -37,7 +37,7 @@
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/calculators/tensor/detections_extraction.h"
-using mediapipe_v01013_based::api2::ExtractValidDetections;
+using mediapipe_v01013_based::api2::DetectionsExtractionAndFiltering;
 
 // Note: On Apple platforms MEDIAPIPE_DISABLE_GL_COMPUTE is automatically
 // defined in mediapipe/framework/port.h. Therefore,
@@ -160,7 +160,7 @@ namespace api2 {
     std::unique_ptr<Tensor> raw_anchors_buffer_;
     std::unique_ptr<Tensor> decoded_boxes_buffer_;
     std::unique_ptr<Tensor> scored_boxes_buffer_;
-    std::unique_ptr<ExtractValidDetections> core_;
+    std::unique_ptr<DetectionsExtractionAndFiltering> core_;
 
     bool gpu_inited_ = false;
     bool gpu_input_ = false;
@@ -194,7 +194,7 @@ namespace api2 {
 #endif  // !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
     }
     // Instantiate and open core
-    core_ = std::make_unique<ExtractValidDetections>(0.5);
+    core_ = std::make_unique<DetectionsExtractionAndFiltering>(0.5);
     return absl::OkStatus();
   }
 

@@ -166,7 +166,7 @@ namespace api2 {
   // Output:
   //  DETECTIONS - Result MediaPipe detections.
   //
-  ExtractValidDetections::ExtractValidDetections(float score_threshold) {
+  DetectionsExtractionAndFiltering::DetectionsExtractionAndFiltering(float score_threshold) {
     ABSL_CHECK_OK(SetDecodingParameters(score_threshold));
     ABSL_CHECK_OK(SetNmsParameters());
 
@@ -180,7 +180,7 @@ namespace api2 {
   }
 
   /// decodes the raw SSD neural network outputs, which is a lot of technical pedantic work, into mediapipe objects
-  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> ExtractValidDetections::Extract(const std::vector<Tensor>& input_tensors) {
+  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> DetectionsExtractionAndFiltering::Extract(const std::vector<Tensor>& input_tensors) {
     for (const auto& tensor : input_tensors) { RET_CHECK(tensor.element_type() == Tensor::ElementType::kFloat32); }
 
     // extract from the model's output all but detections which are invalid (have a zero or a nan box dimension)
@@ -192,7 +192,7 @@ namespace api2 {
   }
 
   /// filters the extracted detections
-  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> ExtractValidDetections::Filter(const std::vector<Detection>& detections) {
+  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> DetectionsExtractionAndFiltering::Filter(const std::vector<Detection>& detections) {
 
     // filter them by threshold score
     auto score_thresholded_detections = absl::make_unique<std::vector<Detection>>();
@@ -211,7 +211,7 @@ namespace api2 {
   }
 
   /// extract the scored detections from the network output
-  absl::Status ExtractValidDetections::ExtractDetections(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors) {
+  absl::Status DetectionsExtractionAndFiltering::ExtractDetections(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors) {
 
     ABSL_ASSERT(num_boxes_ > 0);
 
@@ -274,7 +274,7 @@ namespace api2 {
     return absl::OkStatus();
   }
 
-  absl::Status ExtractValidDetections::SetDecodingParameters(float score_threshold) {
+  absl::Status DetectionsExtractionAndFiltering::SetDecodingParameters(float score_threshold) {
     MP_RETURN_IF_ERROR(SetSsdAnchors());
     MP_RETURN_IF_ERROR(SetSsdDecodingOptions(score_threshold));
     return absl::OkStatus();
@@ -283,7 +283,7 @@ namespace api2 {
   // Configure to extract the detections from the neural network output in compliance to the detection neural network's
   // shapes, strides, scales, etc. which must be known here in order to extract the neural network's output. so these
   // just replicate the anchors which the neural network was trained with/for.
-  absl::Status ExtractValidDetections::SetSsdAnchors() {
+  absl::Status DetectionsExtractionAndFiltering::SetSsdAnchors() {
 
     // The SSD anchors parameters of the detection neural network
     // see https://chatgpt.com/s/t_6900bef5d9788191946d78b7ac6e27c9 regarding the sizes, and overlaps, of the trained anchors,
@@ -308,7 +308,7 @@ namespace api2 {
     return SsdAnchorsCalculatorUtils::GenerateAnchors(&ssd_anchors_, ssd_anchors);
   }
 
-  absl::Status ExtractValidDetections::SetNmsParameters() {
+  absl::Status DetectionsExtractionAndFiltering::SetNmsParameters() {
     nms_options_ = NonMaxSuppressionCalculatorOptions();
 
     // Directly set the non-maximum suppression options from the values that were previously provided as pipeline node options:
@@ -328,7 +328,7 @@ namespace api2 {
 
   // Configure specific post-SSD decoding parameters and options ― hardwired for coupling to the class itself.
   // (originally these values were given as mediapipe graph calculator node "options")
-  absl::Status ExtractValidDetections::SetSsdDecodingOptions(const float score_threshold) {
+  absl::Status DetectionsExtractionAndFiltering::SetSsdDecodingOptions(const float score_threshold) {
 
     ABSL_ASSERT((0.0f < score_threshold) && (score_threshold < 1.0f));
 
@@ -385,7 +385,7 @@ namespace api2 {
   }
 
 
-  absl::Status ExtractValidDetections::DecodeSsdBoxes(
+  absl::Status DetectionsExtractionAndFiltering::DecodeSsdBoxes(
       const float* raw_boxes, const std::vector<Anchor>& anchors,
       std::vector<float>* boxes) {
     for (int i = 0; i < num_boxes_; ++i) {
@@ -475,7 +475,7 @@ namespace api2 {
   // extract all but invalid detections from the inference output
   // for modularity, filtering out invalid ones should be moved
   // to take place before reaching this function.
-  absl::Status ExtractValidDetections::AsDetections(
+  absl::Status DetectionsExtractionAndFiltering::AsDetections(
       const float* detection_boxes, const float* detection_scores,
       const int* detection_classes, std::vector<Detection>* output_detections) {
 
@@ -520,7 +520,7 @@ namespace api2 {
   // converts to mediapipe detection object, while also filtering out by the set score threshold.
   // (really bad coupling by the original mediapipe code, these should not optimally be in the same fn).
   // the class filtering is vacuous in our case as it is a single class SSD model we consume from.
-  Detection ExtractValidDetections::AsDetection(
+  Detection DetectionsExtractionAndFiltering::AsDetection(
       float box_ymin, float box_xmin, float box_ymax, float box_xmax,
       absl::Span<const float> scores, absl::Span<const int> class_ids) {
 
