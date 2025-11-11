@@ -208,6 +208,10 @@ void Liberated::landmarks_inference_debug_logging(std::vector<Tensor> landmarks_
 ///     of returned hand inferences ― this is a little weak since the caller may want to have
 ///     most of the information that the internal workflow has if it wishes to be
 ///     very smart about its identity tracking at each frame.
+///
+/// not currently ported or implemented:
+/// - GPU inference.
+/// - Inference on platforms which do not have solid XNNPACK support.
 absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::Process(std::shared_ptr<const Image> image, uint32_t max_hands_to_track) {
 
   // initiate the result structure for the current image as empty vectors for all of its fields
