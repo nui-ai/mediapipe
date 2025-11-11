@@ -25,7 +25,7 @@
 #include "absl/strings/str_format.h"
 #include "absl/types/span.h"
 #include "mediapipe/calculators/tensor/tensors_to_detections_calculator.pb.h"
-#include "mediapipe/calculators/tensor/tensors_to_detections_calculator_core.h"
+#include "mediapipe/calculators/tensor/detections_extraction.h"
 #include "mediapipe/calculators/tflite/ssd_anchors_calculator_utils.h"
 #include "mediapipe/calculators/util/non_max_suppression_calculator.pb.h"
 #include "mediapipe/calculators/util/non_max_suppression_calculator.h"
@@ -166,7 +166,7 @@ namespace api2 {
   // Output:
   //  DETECTIONS - Result MediaPipe detections.
   //
-  ConvertDetectionTensors::ConvertDetectionTensors(float score_threshold) {
+  ExtractValidDetections::ExtractValidDetections(float score_threshold) {
     ABSL_CHECK_OK(SetDecodingParameters(score_threshold));
     ABSL_CHECK_OK(SetNmsParameters());
 
@@ -179,31 +179,40 @@ namespace api2 {
     }
   }
 
-  // 1. this method decodes the raw palm detections neural network output tensors into detections;
-  //    a few of the parameters it uses may also over-filter its raw output detections, those parameters are
-  //    inline documented as such where we set them in the parameter setting methods of this class!
-  //    so basically this class performs the pedantic work of extracting the raw SSD neural network outputs,
-  //    with only some optional leverage for filtering the raw detections.
-  // 2. it also transforms them into mediapipe vector types.
-  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> ConvertDetectionTensors::Process(const std::vector<Tensor>& input_tensors) {
-
-    auto filtered_detections = absl::make_unique<std::vector<Detection>>();
+  /// decodes the raw SSD neural network outputs, which is a lot of technical pedantic work, into mediapipe objects
+  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> ExtractValidDetections::Extract(const std::vector<Tensor>& input_tensors) {
     for (const auto& tensor : input_tensors) { RET_CHECK(tensor.element_type() == Tensor::ElementType::kFloat32); }
-    ssd_decoding_tensor_mapping_.set_scores_tensor_index(1);
 
-    MP_RETURN_IF_ERROR(ProcessCPU(filtered_detections.get(), input_tensors));
-    ABSL_LOG(INFO) << "SSD score thresholding surviving palm detections:  " << filtered_detections->size();
+    // extract from the model's output all but detections which are invalid (have a zero or a nan box dimension)
+    auto valid_extracted_detections = absl::make_unique<std::vector<Detection>>();
+    MP_RETURN_IF_ERROR(ExtractDetections(valid_extracted_detections.get(), input_tensors));
+    ABSL_LOG(INFO) << "valid SSD extracted detections:  " << valid_extracted_detections->size();
 
-    auto nms_surviving_detections = FilterDetectionsByNonMaximumSuppression(*filtered_detections, nms_options_, false, 0, 0);
-    ABSL_LOG(INFO) << "Non-Maximum Suppression surviving palm detections: " << nms_surviving_detections->size();
+    return valid_extracted_detections;
+  }
+
+  /// filters the extracted detections
+  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> ExtractValidDetections::Filter(const std::vector<Detection>& detections) {
+
+    // filter them by threshold score
+    auto score_thresholded_detections = absl::make_unique<std::vector<Detection>>();
+    for (const Detection& detection : detections) {
+      if (detection.score()[0] >= ssd_decoding_options_.min_score_thresh()) {
+        score_thresholded_detections->emplace_back(detection);
+      }
+    }
+    ABSL_LOG(INFO) << "palm detections surviving detection score threshold filtering:  " << score_thresholded_detections->size();
+
+    // filter them by Non-Maximum Suppression
+    auto nms_surviving_detections = FilterDetectionsByNonMaximumSuppression(*score_thresholded_detections, nms_options_, false, 0, 0);
+    ABSL_LOG(INFO) << "palm detections surviving Non-Maximum Suppression filtering: " << nms_surviving_detections->size();
 
     return nms_surviving_detections;
   }
 
-  absl::Status ConvertDetectionTensors::ProcessCPU(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors) {
+  /// extract the scored detections from the network output
+  absl::Status ExtractValidDetections::ExtractDetections(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors) {
 
-    // Postprocessing on CPU for model without postprocessing op. E.g. output
-    // raw score tensor and box tensor. Anchor decoding will be handled below.
     ABSL_ASSERT(num_boxes_ > 0);
 
     auto raw_box_tensor = &input_tensors[ssd_decoding_tensor_mapping_.detections_tensor_index()];
@@ -214,7 +223,7 @@ namespace api2 {
       RET_CHECK_EQ(raw_box_tensor->shape().dims[2], num_coords_);
       auto raw_score_tensor = &input_tensors[ssd_decoding_tensor_mapping_.scores_tensor_index()];
 
-    if (raw_score_tensor->shape().dims.size() == 3);
+    ABSL_ASSERT(raw_score_tensor->shape().dims.size() == 3);
       RET_CHECK_EQ(raw_score_tensor->shape().dims[0], 1);
       RET_CHECK_EQ(raw_score_tensor->shape().dims[1], num_boxes_);
       RET_CHECK_EQ(raw_score_tensor->shape().dims[2], num_classes_);
@@ -225,55 +234,47 @@ namespace api2 {
     auto raw_scores = raw_scores_view.buffer<float>();
 
     std::vector<float> boxes(num_boxes_ * num_coords_);
-    MP_RETURN_IF_ERROR(DecodeBoxes(raw_boxes, ssd_anchors_, &boxes));
+    MP_RETURN_IF_ERROR(DecodeSsdBoxes(raw_boxes, ssd_anchors_, &boxes));
 
     std::vector<float> detection_scores(num_boxes_);
     std::vector<int> detection_classes(num_boxes_);
 
-    // score each box's detected class instances by scores ― note that:
-    // the model was trained for only one class (palm), so this loop essentially becomes trivial.
-    // It will only iterate once per box, and the logic for finding the maximum score and class index
-    // is unnecessary since there is only one possible class. The filtering and score selection logic
-    // are only meaningful for multi-class models. For a single-class model, we can most probably simplify
-    // this code to directly assign the score and class index without searching for the maximum
+    // extract each detection's score from the model output.
+    // the model was trained for only one class (palm), so this loop over classes essentially reduces to triviality;
+    // It will only iterate once per box, and the logic for finding the maximum score and class index is unnecessary
+    // since there is only one possible class. The filtering and score selection logic are only meaningful
+    // for multi-class models. For a single-class model, we can probably simplify it to directly assign
+    // the score and class index without searching for the maximum
     for (int i = 0; i < num_boxes_; ++i) {
       int class_id = -1;
-      float max_score = -std::numeric_limits<float>::max();
-      // Find the top score for box i, but as said we only have one class so will only score one instance for each box.
-      for (int score_idx = 0; score_idx < num_classes_; ++score_idx) {
-        auto score = raw_scores[i * num_classes_ + score_idx];
+      float max_box_score = -std::numeric_limits<float>::max();
+      // get the top score for the detection box, from among all class scores of it,
+      // while as above said, we only have one class so looping is not necessary.
+      for (int class_score_idx = 0; class_score_idx < num_classes_; ++class_score_idx) {
+        auto class_score = raw_scores[i * num_classes_ + class_score_idx];
         if (ssd_decoding_options_.sigmoid_score()) {
+          // optionally clip the score
           if (ssd_decoding_options_.has_score_clipping_thresh()) {
-            score = score < -ssd_decoding_options_.score_clipping_thresh()
-                        ? -ssd_decoding_options_.score_clipping_thresh()
-                        : score;
-            score = score > ssd_decoding_options_.score_clipping_thresh()
-                        ? ssd_decoding_options_.score_clipping_thresh()
-                        : score;
+            class_score = class_score < -ssd_decoding_options_.score_clipping_thresh() ? -ssd_decoding_options_.score_clipping_thresh() : class_score;
+            class_score = class_score > ssd_decoding_options_.score_clipping_thresh() ? ssd_decoding_options_.score_clipping_thresh() : class_score;
           }
-
-          // the SSD palm detection model was trained to output logits,
-          // so it's only implied to to apply sigmoid to get the score per box.
-          // and this line is original mediapipe inherited scoring code.
-          score = 1.0f / (1.0f + std::exp(-score));
-
+          // the SSD palm detection model was trained to output logits, so it's only implied to to apply sigmoid to get the score per box, as in the original mediapipe inherited scoring code.
+          class_score = 1.0f / (1.0f + std::exp(-class_score));
         }
-        if (max_score < score) {
-          max_score = score;
-          class_id = score_idx;
+        if (max_box_score < class_score) {
+          max_box_score = class_score;
+          class_id = class_score_idx;
         }
       }
-      detection_scores[i] = max_score;
+      detection_scores[i] = max_box_score;
       detection_classes[i] = class_id;
     }
 
-    MP_RETURN_IF_ERROR(
-        ConvertToDetections(boxes.data(), detection_scores.data(),
-                            detection_classes.data(), output_detections));
+    MP_RETURN_IF_ERROR(AsDetections(boxes.data(), detection_scores.data(), detection_classes.data(), output_detections));
     return absl::OkStatus();
   }
 
-  absl::Status ConvertDetectionTensors::SetDecodingParameters(float score_threshold) {
+  absl::Status ExtractValidDetections::SetDecodingParameters(float score_threshold) {
     MP_RETURN_IF_ERROR(SetSsdAnchors());
     MP_RETURN_IF_ERROR(SetSsdDecodingOptions(score_threshold));
     return absl::OkStatus();
@@ -282,7 +283,7 @@ namespace api2 {
   // Configure to extract the detections from the neural network output in compliance to the detection neural network's
   // shapes, strides, scales, etc. which must be known here in order to extract the neural network's output. so these
   // just replicate the anchors which the neural network was trained with/for.
-  absl::Status ConvertDetectionTensors::SetSsdAnchors() {
+  absl::Status ExtractValidDetections::SetSsdAnchors() {
 
     // The SSD anchors parameters of the detection neural network
     // see https://chatgpt.com/s/t_6900bef5d9788191946d78b7ac6e27c9 regarding the sizes, and overlaps, of the trained anchors,
@@ -307,7 +308,7 @@ namespace api2 {
     return SsdAnchorsCalculatorUtils::GenerateAnchors(&ssd_anchors_, ssd_anchors);
   }
 
-  absl::Status ConvertDetectionTensors::SetNmsParameters() {
+  absl::Status ExtractValidDetections::SetNmsParameters() {
     nms_options_ = NonMaxSuppressionCalculatorOptions();
 
     // Directly set the non-maximum suppression options from the values that were previously provided as pipeline node options:
@@ -327,7 +328,7 @@ namespace api2 {
 
   // Configure specific post-SSD decoding parameters and options ― hardwired for coupling to the class itself.
   // (originally these values were given as mediapipe graph calculator node "options")
-  absl::Status ConvertDetectionTensors::SetSsdDecodingOptions(const float score_threshold) {
+  absl::Status ExtractValidDetections::SetSsdDecodingOptions(const float score_threshold) {
 
     ABSL_ASSERT((0.0f < score_threshold) && (score_threshold < 1.0f));
 
@@ -366,10 +367,6 @@ namespace api2 {
     num_boxes_ = ssd_decoding_options_.num_boxes();
     num_coords_ = ssd_decoding_options_.num_coords();
     box_output_format_ = GetBoxFormat(ssd_decoding_options_);
-    ABSL_CHECK_NE(ssd_decoding_options_.max_results(), 0)
-        << "The maximum number of the top-scored detection results must be "
-           "non-zero.";
-    max_results_ = ssd_decoding_options_.max_results();
 
     // Currently only support 2D when num_values_per_keypoint equals to 2.
     ABSL_CHECK_EQ(ssd_decoding_options_.num_values_per_keypoint(), 2);
@@ -381,16 +378,14 @@ namespace api2 {
     ssd_decoding_tensor_mapping_.set_classes_tensor_index(1);
     ssd_decoding_tensor_mapping_.set_anchors_tensor_index(2);
     ssd_decoding_tensor_mapping_.set_num_detections_tensor_index(3);
-    // The scores tensor index needs to be determined based on the number of
-    // model's output tensors, which will be available in the first invocation
-    // of the Process() method.
-    ssd_decoding_tensor_mapping_.set_scores_tensor_index(-1);
+
+    ssd_decoding_tensor_mapping_.set_scores_tensor_index(1);
 
     return absl::OkStatus();
   }
 
 
-  absl::Status ConvertDetectionTensors::DecodeBoxes(
+  absl::Status ExtractValidDetections::DecodeSsdBoxes(
       const float* raw_boxes, const std::vector<Anchor>& anchors,
       std::vector<float>* boxes) {
     for (int i = 0; i < num_boxes_; ++i) {
@@ -477,43 +472,35 @@ namespace api2 {
     return absl::OkStatus();
   }
 
-  // converts to mediapipe detection objects, while also:
-  // 1. filtering to only pass forward the maximum requested number of detections
-  // 2. filtering out by the set score threshold (within the ConvertToDetection() call)
-  // 2. optionally vertically flipping the detection coordinates
-  absl::Status ConvertDetectionTensors::ConvertToDetections(
+  // extract all but invalid detections from the inference output
+  // for modularity, filtering out invalid ones should be moved
+  // to take place before reaching this function.
+  absl::Status ExtractValidDetections::AsDetections(
       const float* detection_boxes, const float* detection_scores,
       const int* detection_classes, std::vector<Detection>* output_detections) {
 
     for (int i = 0; i < num_boxes_ * classes_per_detection_; i += classes_per_detection_) {
-      if (max_results_ > 0 && output_detections->size() == max_results_) {
-        break;
-      }
       const int box_offset = i * num_coords_;
-      Detection detection = ConvertToDetection(
+
+      // extract box geometry
+      Detection detection = AsDetection(
           /*box_ymin=*/detection_boxes[box_offset + box_indices_[0]],
           /*box_xmin=*/detection_boxes[box_offset + box_indices_[1]],
           /*box_ymax=*/detection_boxes[box_offset + box_indices_[2]],
           /*box_xmax=*/detection_boxes[box_offset + box_indices_[3]],
           absl::MakeConstSpan(detection_scores + i, classes_per_detection_),
-          absl::MakeConstSpan(detection_classes + i, classes_per_detection_),
-          ssd_decoding_options_.flip_vertically());
-      // if all the scores and classes are filtered out, we skip the empty detection.
-      if (detection.score().empty()) {
-        continue;
-      }
+          absl::MakeConstSpan(detection_classes + i, classes_per_detection_));
+      if (detection.score().empty()) { continue; }
 
-      // filter out box predictions which are possible as neural network output but should be ignored as invalid:
-      // Decoded detection boxes could have negative values for width/height due
-      // to model prediction. Filter out those boxes since some downstream
-      // calculators may assume non-negative values. (b/171391719)
+      // filter out box predictions which are possible as neural network output but should be ignored as invalid ―
+      // e.g. decoded detection boxes can have negative values for width/height from model prediction.
+      // we filter out those boxes, as well as width/height assigned nan values by the model.
+      // this function should be made more modular: the current function should only convert to a Detection
+      // object and filtering out invalid box outputs should be somewhere outside and before reaching it.
       const auto& bbox = detection.location_data().relative_bounding_box();
-      if (bbox.width() < 0 || bbox.height() < 0 || std::isnan(bbox.width()) ||
-          std::isnan(bbox.height())) {
-        continue;
-      }
+      if (bbox.width() < 0 || bbox.height() < 0 || std::isnan(bbox.width()) || std::isnan(bbox.height())) { continue; }
 
-      // Add keypoints.
+      // extract the associated keypoints
       if (ssd_decoding_options_.num_keypoints() > 0) {
         auto* location_data = detection.mutable_location_data();
         for (int kp_id = 0; kp_id < ssd_decoding_options_.num_keypoints() *
@@ -522,9 +509,7 @@ namespace api2 {
           auto keypoint = location_data->add_relative_keypoints();
           const int keypoint_index = box_offset + ssd_decoding_options_.keypoint_coord_offset() + kp_id;
           keypoint->set_x(detection_boxes[keypoint_index + 0]);
-          keypoint->set_y(ssd_decoding_options_.flip_vertically()
-                              ? 1.f - detection_boxes[keypoint_index + 1]
-                              : detection_boxes[keypoint_index + 1]);
+          keypoint->set_y(ssd_decoding_options_.flip_vertically() ? 1.f - detection_boxes[keypoint_index + 1] : detection_boxes[keypoint_index + 1]);
         }
       }
       output_detections->emplace_back(detection);
@@ -535,19 +520,11 @@ namespace api2 {
   // converts to mediapipe detection object, while also filtering out by the set score threshold.
   // (really bad coupling by the original mediapipe code, these should not optimally be in the same fn).
   // the class filtering is vacuous in our case as it is a single class SSD model we consume from.
-  Detection ConvertDetectionTensors::ConvertToDetection(
+  Detection ExtractValidDetections::AsDetection(
       float box_ymin, float box_xmin, float box_ymax, float box_xmax,
-      absl::Span<const float> scores, absl::Span<const int> class_ids,
-      bool flip_vertically) {
+      absl::Span<const float> scores, absl::Span<const int> class_ids) {
+
     Detection detection;
-    for (int i = 0; i < scores.size(); ++i) {
-      if (ssd_decoding_options_.has_min_score_thresh() &&
-          scores[i] < ssd_decoding_options_.min_score_thresh()) {
-        continue;
-      }
-      detection.add_score(scores[i]);
-      detection.add_label_id(class_ids[i]);
-    }
 
     LocationData* location_data = detection.mutable_location_data();
     location_data->set_format(LocationData::RELATIVE_BOUNDING_BOX);
@@ -556,9 +533,16 @@ namespace api2 {
         location_data->mutable_relative_bounding_box();
 
     relative_bbox->set_xmin(box_xmin);
-    relative_bbox->set_ymin(flip_vertically ? 1.f - box_ymax : box_ymin);
+    relative_bbox->set_ymin(box_ymin);
     relative_bbox->set_width(box_xmax - box_xmin);
     relative_bbox->set_height(box_ymax - box_ymin);
+
+    // in our case, only one class (and thus one score) per detection, so a loop is not really necessary.
+    for (int i = 0; i < scores.size(); ++i) {
+      detection.add_score(scores[i]);
+      detection.add_label_id(class_ids[i]);
+    }
+
     return detection;
   }
 

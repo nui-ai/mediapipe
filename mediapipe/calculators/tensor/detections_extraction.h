@@ -19,34 +19,32 @@ namespace api2 {
 using BoxFormat = ::mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::BoxFormat;
 using Anchor = ::mediapipe_v01013_based::Anchor;
 
-class ConvertDetectionTensors {
+class ExtractValidDetections {
 public:
-  explicit ConvertDetectionTensors(float score_threshold);
-
-  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Process(const std::vector<Tensor>& input_tensors);
+  explicit ExtractValidDetections(float score_threshold);
+  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Extract(const std::vector<Tensor>& input_tensors);
+  absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Filter(const std::vector<Detection>& detections);
 
 private:
-  absl::Status ProcessCPU(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors);
+  absl::Status ExtractDetections(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors);
   absl::Status SetDecodingParameters(float score_threshold);
   absl::Status SetSsdAnchors();
   absl::Status SetSsdDecodingOptions(float score_threshold);
   absl::Status SetNmsParameters();
-  absl::Status DecodeBoxes(const float* raw_boxes,
+  absl::Status DecodeSsdBoxes(const float* raw_boxes,
                            const std::vector<Anchor>& anchors,
                            std::vector<float>* boxes);
-  absl::Status ConvertToDetections(const float* detection_boxes,
+  absl::Status AsDetections(const float* detection_boxes,
                                    const float* detection_scores,
                                    const int* detection_classes,
                                    std::vector<Detection>* output_detections);
-  Detection ConvertToDetection(float box_ymin, float box_xmin, float box_ymax,
+  Detection AsDetection(float box_ymin, float box_xmin, float box_ymax,
                                float box_xmax, absl::Span<const float> scores,
-                               absl::Span<const int> class_ids,
-                               bool flip_vertically);
+                               absl::Span<const int> class_ids);
 
   int num_classes_ = 0;
   int num_boxes_ = 0;
   int num_coords_ = 0;
-  int max_results_ = -1;
   int classes_per_detection_= 1;
   BoxFormat box_output_format_ = mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::YXHW;
 

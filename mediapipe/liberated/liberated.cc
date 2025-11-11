@@ -25,9 +25,8 @@ Liberated::Liberated(MemoryManager* memory_manager) {
   const std::string& palm_detection_model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
   palm_detection_inference_ = std::make_unique<api2::ModelInference>(palm_detection_model_path);
 
-  // initialize for detection inference thresholding and filtering by Non-Maximum Suppression,
-  // circumstantially this is coupled here with converting from the output tensors to mediapipe tensor objects as in the original pipeline.
-  palm_detection_inference_filter_ = std::make_unique<api2::ConvertDetectionTensors>(0.5);
+  // initialize for extracting the raw palm detections inference outputs, and also for filtering them
+  palm_detection_inference_filter_ = std::make_unique<api2::ExtractValidDetections>(0.5);
 
   // initialize for orienting the raw (axes parallel) palm rect detected by SSD, to the palm's rough shape by detection keypoints
   // included in the output of the palm detection inference itself (https://chatgpt.com/s/t_690b528ae748819181a48117cb417908).
@@ -195,17 +194,25 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::
     auto palm_duration_us = std::chrono::duration_cast<std::chrono::microseconds>(palm_end_time - palm_start_time).count();
     ABSL_LOG(INFO) << "palm detection inference took (ms): " << (static_cast<double>(palm_duration_us) / 1000.0);
 
-    // extract and first step filter the detection inference output
-    std::unique_ptr<std::vector<Detection>> filtered_detections_letterboxed;
-    MP_ASSIGN_OR_RETURN(filtered_detections_letterboxed, palm_detection_inference_filter_->Process(*palm_detection_inference_output));
+    // extract-decode the detection inference output; resulting in detections which are letterboxed and not the final image coordinates of them.
+    std::unique_ptr<std::vector<Detection>> detections_letterboxed;
+    MP_ASSIGN_OR_RETURN(detections_letterboxed, palm_detection_inference_filter_->Extract(*palm_detection_inference_output));
 
+    // filter the extracted detections by their detection score and by NMS.
+    std::unique_ptr<std::vector<Detection>> filtered_detections_letterboxed;
+    MP_ASSIGN_OR_RETURN(filtered_detections_letterboxed, palm_detection_inference_filter_->Filter(*detections_letterboxed));
+
+    // unletterbox the surviving filtered detections to the original image coordinates.
     std::unique_ptr<std::vector<Detection>> filtered_detections = UnLetterBox(*filtered_detections_letterboxed, letterbox_padding_);
 
-    // extremely naively fit the number of detections to be no larger than the maximum hands being tracked constant;
-    // this was part of the original pipeline (as a ClipVectorSizeCalculator subclass calculator).
-    // this is mostly a weak stop-gap element unless they have been ordered in some semantic way by the previous
-    // above stages, and otherwise would be thrown out as part of harmonizing the overall handling of the potential
-    // and expected multiplicity of detection (and their landmarks) which are inherent to SSD and to our overall.
+    // extremely naively clip the number of detections surviving the previous filtering, to the constant number of hands to be tracked;
+    // this was part of the original pipeline (as a ClipVectorSizeCalculator subclass calculator there) as an obviously naive way
+    // of enforcing the number of hands being output to the overall requested number of hands to be tracked, but does not really
+    // have to be handled in isolation of the plethora of state that can be used for more advanced or softer handling:
+    //   ◎ the locations, presence scores, handedness confidence etc. of the hands known from previous frames.
+    //   ◎ the locations, presence scores, handedness confidence etc. of the current frame (i.e. don't clip so soon here).
+    // ---------------------------------------------------------------------------------------------------------------------
+    // further, the filtering does not have to be linear in time but may even look back in time in some downstream scenarios
     auto excessive_detections_count = static_cast<long>(filtered_detections->size()) - static_cast<long>(max_hands_to_track);
     if ( excessive_detections_count > 0) {
       ABSL_LOG(INFO) << "naively discarded " << excessive_detections_count << "palm detections to keep only the same number of them as the set number of hands for tracking (" << max_hands_to_track << ")";

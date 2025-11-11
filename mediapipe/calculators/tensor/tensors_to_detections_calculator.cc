@@ -36,8 +36,8 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/port/ret_check.h"
-#include "mediapipe/calculators/tensor/tensors_to_detections_calculator_core.h"
-using mediapipe_v01013_based::api2::ConvertDetectionTensors;
+#include "mediapipe/calculators/tensor/detections_extraction.h"
+using mediapipe_v01013_based::api2::ExtractValidDetections;
 
 // Note: On Apple platforms MEDIAPIPE_DISABLE_GL_COMPUTE is automatically
 // defined in mediapipe/framework/port.h. Therefore,
@@ -160,7 +160,7 @@ namespace api2 {
     std::unique_ptr<Tensor> raw_anchors_buffer_;
     std::unique_ptr<Tensor> decoded_boxes_buffer_;
     std::unique_ptr<Tensor> scored_boxes_buffer_;
-    std::unique_ptr<ConvertDetectionTensors> core_;
+    std::unique_ptr<ExtractValidDetections> core_;
 
     bool gpu_inited_ = false;
     bool gpu_input_ = false;
@@ -194,7 +194,7 @@ namespace api2 {
 #endif  // !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
     }
     // Instantiate and open core
-    core_ = std::make_unique<ConvertDetectionTensors>(0.5);
+    core_ = std::make_unique<ExtractValidDetections>(0.5);
     return absl::OkStatus();
   }
 
@@ -214,7 +214,7 @@ namespace api2 {
       RET_CHECK(tensor.element_type() == Tensor::ElementType::kFloat32);
     }
 
-    auto filtered_detections = core_->Process(input_tensors);
+    auto filtered_detections = core_->Extract(input_tensors);
     MP_RETURN_IF_ERROR(filtered_detections.status());
     kOutDetections(cc).Send(*filtered_detections.value());
 

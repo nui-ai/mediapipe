@@ -1292,8 +1292,8 @@ mediapipe_proto_library(
 
 cc_library(
     name = "tensors_to_detections_calculator_core",
-    srcs = ["tensors_to_detections_calculator_core.cc"],
-    hdrs = ["tensors_to_detections_calculator_core.h"],
+    srcs = ["detections_extraction.cc"],
+    hdrs = ["detections_extraction.h"],
     copts = select({
         "//mediapipe:apple": [
             "-x objective-c++",
