@@ -209,7 +209,11 @@ OPENCV_SO_VERSION = "4.10.0"
 # SONAME used by linkers/NEEDED
 OPENCV_SO_SONAME = "410"
 
-# custom build OpenCV yielding identical version-named and non versioned-named .so lib files as its output
+# custom build OpenCV yielding identical version-named and non versioned-named .so lib files as its output.
+# perhaps we don't really need all of them per each lib, but having them does not hurt either.
+# previously there was an issue due to sometimes getting symlink hpp (header) files,
+# which the opencv crate has been tentatively fixed for by now https://github.com/twistedfall/opencv-rust/issues/697.
+# most comments to this cmake are from the original mediapipe build of mediapipe version v0.10.13.
 cmake(
     name = "opencv_cmake",
     # Values to be passed as -Dkey=value on the CMake command line;
