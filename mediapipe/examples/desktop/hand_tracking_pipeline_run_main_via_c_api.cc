@@ -27,19 +27,23 @@
 
 #include "mediapipe/examples/desktop/hands_pipeline_operator_c_api.h" // the C api header
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
-#include "absl/flags/flag.h"
-#include "absl/flags/parse.h"
+
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/util/resource_util.h"
+
 #include <google/protobuf/util/delimited_message_util.h>
 #include <google/protobuf/util/message_differencer.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
 #include <opencv2/opencv.hpp>
+
+#include "absl/flags/flag.h"
+#include "absl/flags/parse.h"
+
 
 constexpr char kInputStream[] = "image";
 constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";

@@ -1,7 +1,5 @@
 // Copyright 2025 The MediaPipe Authors.
 // Licensed under the Apache License, Version 2.0.
-//
-// HandsPipelineOperator: Encapsulates operating a MediaPipe pipeline
 
 #include "mediapipe/examples/desktop/hands_pipeline_operator.h"
 #include "mediapipe/framework/formats/image_frame_opencv.h"
@@ -12,6 +10,8 @@
 
 namespace mediapipe_v01013_based {
 
+/// class operating a MediaPipe pipeline from cpp code.
+/// this was not implemented in mediapipe v0.10.13 itself.
 absl::StatusOr<std::unique_ptr<HandsPipelineOperator>> HandsPipelineOperator::Create(
     const std::string& graph_file_path,
     const std::vector<std::string>& output_streams) {

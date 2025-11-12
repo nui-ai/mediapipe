@@ -1,4 +1,4 @@
-// C API for HandsPipelineOperator to be used in other languages (e.g. rust).
+// C API for the CPP HandsPipelineOperator to be used in other languages (e.g. rust).
 // this is necessary because C++ ABI is not stable across compiler versions hence C++ cannot be typically be linked from other languages.
 // and also because C++ exceptions cannot propagate across language boundaries so we need to catch them and convert them to plain
 // error codes and messages for the other language to consume.

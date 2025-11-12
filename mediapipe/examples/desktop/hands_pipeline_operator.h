@@ -19,6 +19,8 @@
 
 namespace mediapipe_v01013_based {
 
+/// class operating a MediaPipe pipeline from cpp code.
+/// this was not implemented in mediapipe v0.10.13 itself.
 class HandsPipelineOperator {
  public:
   // Use a static factory method for idiomatic error handling
