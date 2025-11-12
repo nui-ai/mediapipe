@@ -22,23 +22,24 @@
 #include <string>
 
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
-#include "mediapipe/framework/formats/landmark.pb.h"
-#include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/liberated/liberated.h"
 
-#include "absl/flags/flag.h"
-#include "absl/flags/parse.h"
-#include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/port/file_helpers.h"
-#include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/port/opencv_video_inc.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
+#include "mediapipe/framework/formats/image_opencv.h"
+#include "mediapipe/framework/formats/landmark.pb.h"
+#include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/util/resource_util.h"
+
 #include <google/protobuf/util/delimited_message_util.h>
 #include <google/protobuf/util/message_differencer.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
-#include "mediapipe/framework/formats/image_opencv.h"
+
+#include "absl/flags/flag.h"
+#include "absl/flags/parse.h"
+
 
 using namespace mediapipe_v01013_based;
 

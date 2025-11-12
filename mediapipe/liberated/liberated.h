@@ -4,6 +4,9 @@
 #include <memory>
 
 #include "mediapipe/framework/memory_manager.h"
+#include "mediapipe/framework/formats/tensor.h"
+#include "mediapipe/framework/formats/classification.pb.h"
+
 #include "mediapipe/calculators/tensor/image_to_tensor_calculator_core.h"
 #include "mediapipe/calculators/tensor/model_inference.h"
 #include "mediapipe/calculators/tensor/detections_extraction.h"
@@ -15,8 +18,6 @@
 #include "mediapipe/calculators/core/inference_output_tensor_splitting.h"
 #include "mediapipe/calculators/tensor/tensors_to_floats_calculator_core.h"
 #include "mediapipe/calculators/tensor/tensors_to_classification_calculator_core.h"
-#include "mediapipe/framework/formats/tensor.h"
-#include "mediapipe/framework/formats/classification.pb.h"
 #include "mediapipe/calculators/tensor/tensors_to_landmarks_calculator.pb.h"
 #include "mediapipe/calculators/tensor/tensors_to_classification_calculator.pb.h"
 #include "mediapipe/calculators/tensor/tensors_to_landmarks_calculator_core.h"
