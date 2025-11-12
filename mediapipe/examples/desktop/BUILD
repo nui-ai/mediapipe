@@ -45,6 +45,8 @@ cc_library(
         "//mediapipe/calculators/util:dummy_calculator",
         "//mediapipe/calculators/util:filter_collection_calculator",
         "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework:memory_manager",
+        "//mediapipe/framework:memory_manager_service",
         "//mediapipe/framework/formats:detection_cc_proto",
         "//mediapipe/framework/formats:image_frame",
         "//mediapipe/framework/formats:image_frame_opencv",
@@ -68,9 +70,33 @@ cc_library(
 )
 
 cc_library(
+    name = "hand_tracking_no_pipeline_run_main",
+    srcs = ["hand_tracking_no_pipeline_run_main.cc"],
+    deps = [
+        ":hands_pipeline_operator",
+        ":pipeline_output_cc_proto",
+        "//mediapipe/calculators/util:detection_model_provider",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/formats:detection_cc_proto",
+        "//mediapipe/framework/formats:image_frame",
+        "//mediapipe/framework/formats:image_frame_opencv",
+        "//mediapipe/framework/port:file_helpers",
+        "//mediapipe/framework/port:opencv_highgui",
+        "//mediapipe/framework/port:opencv_imgproc",
+        "//mediapipe/framework/port:opencv_video",
+        "//mediapipe/framework/port:parse_text_proto",
+        "//mediapipe/framework/port:status",
+        "//mediapipe/liberated",
+        "//mediapipe/util:resource_util",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/log:absl_log",
+    ],
+)
+
+cc_library(
     name = "hand_tracking_pipeline_run_main",
     srcs = ["hand_tracking_pipeline_run_main.cc"],
-    data = ["//mediapipe/modules/hand_landmark:handedness.txt"],
     deps = [
         ":hands_pipeline_operator",
         ":pipeline_output_cc_proto",
@@ -95,7 +121,6 @@ cc_library(
 cc_library(
     name = "hand_tracking_pipeline_run_via_c_api",
     srcs = ["hand_tracking_pipeline_run_main_via_c_api.cc"],
-    data = ["//mediapipe/modules/hand_landmark:handedness.txt"],
     visibility = ["//visibility:public"],
     deps = [
         ":hands_pipeline_operator_c_api",

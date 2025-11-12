@@ -274,20 +274,18 @@ int GetNumOutputChannels(const mediapipe_v01013_based::Image& image) {
   return 3;
 }
 
-absl::StatusOr<std::shared_ptr<const mediapipe_v01013_based::Image>> GetInputImage(
-    const api2::Packet<api2::OneOf<Image, mediapipe_v01013_based::ImageFrame>>&
-        image_packet) {
+absl::StatusOr<std::shared_ptr<const Image>> GetInputImage(
+    const api2::Packet<api2::OneOf<Image, ImageFrame>>& image_packet) {
   return image_packet.Visit(
-      [&image_packet](const mediapipe_v01013_based::Image&) {
-        return image_packet.Share<mediapipe_v01013_based::Image>();
+      [&image_packet](const Image&) {
+        return image_packet.Share<Image>();
       },
-      [&image_packet](const mediapipe_v01013_based::ImageFrame&)
-          -> absl::StatusOr<std::shared_ptr<const mediapipe_v01013_based::Image>> {
+      [&image_packet](const mediapipe_v01013_based::ImageFrame&) -> absl::StatusOr<std::shared_ptr<const Image>> {
         MP_ASSIGN_OR_RETURN(
             std::shared_ptr<const mediapipe_v01013_based::ImageFrame> image_frame,
             image_packet.Share<mediapipe_v01013_based::ImageFrame>());
-        return std::make_shared<const mediapipe_v01013_based::Image>(
-            std::const_pointer_cast<mediapipe_v01013_based::ImageFrame>(
+        return std::make_shared<const Image>(
+            std::const_pointer_cast<ImageFrame>(
                 std::move(image_frame)));
       });
 }

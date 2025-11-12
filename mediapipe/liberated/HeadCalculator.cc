@@ -22,7 +22,7 @@ namespace mediapipe_v01013_based {
       std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
       std::unique_ptr<ImageToTensorConverter> gpu_converter_;
       std::unique_ptr<ImageToTensorConverter> cpu_converter_;
-      std::unique_ptr<Liberated> liberated_;
+      std::unique_ptr<HandTrackingCore> liberated_;
       int max_hands_to_track = 3;
 
       static constexpr api2::Output<std::vector<Tensor>>::Optional kOutTensors{"TENSORS"};
@@ -55,7 +55,7 @@ namespace mediapipe_v01013_based {
         if (cc->Service(kMemoryManagerService).IsAvailable()) {
           memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();
         }
-        liberated_ = std::make_unique<Liberated>(memory_manager_);
+        liberated_ = std::make_unique<HandTrackingCore>(memory_manager_);
         return absl::OkStatus();
       }
 

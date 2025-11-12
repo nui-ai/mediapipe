@@ -15,9 +15,23 @@
 licenses(["notice"])
 
 cc_binary(
+    name = "hand_tracking_no_pipeline_run",
+    data = [
+        "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
+        "//mediapipe/modules/hand_landmark:handedness.txt",
+        "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
+    ],
+    deps = [
+        "//mediapipe/examples/desktop:hand_tracking_no_pipeline_run_main",
+        "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
+    ],
+)
+
+cc_binary(
     name = "hand_tracking_pipeline_run",
     data = [
         "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
+        "//mediapipe/modules/hand_landmark:handedness.txt",
         "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
     ],
     deps = [
@@ -30,6 +44,7 @@ cc_binary(
     name = "hand_tracking_pipeline_run_via_c_api",
     data = [
         "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
+        "//mediapipe/modules/hand_landmark:handedness.txt",
         "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
     ],
     deps = [

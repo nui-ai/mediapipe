@@ -4,7 +4,7 @@ namespace mediapipe_v01013_based {
 
 /// object for driving the entire processing of images from an image stream, for hand tracking and inference;
 /// formerly this was a mediapipe pipeline HandLandmarkTrackingCpu of mediapipe commit tag v0.10.13.
-Liberated::Liberated(MemoryManager* memory_manager) {
+HandTrackingCore::HandTrackingCore(MemoryManager* memory_manager) {
 
   // initialize for converting the input image to a 192x192 grid for palm detection inference.
   // this cascade of argument setting can be simplified for less surface and the converters
@@ -96,7 +96,7 @@ Liberated::Liberated(MemoryManager* memory_manager) {
 
 
 /// helper debug logging function
-void Liberated::sub_image_for_landmarks_inference_debug_logging(api2::ImageToTensorCoreResult *extracted_sub_image_struct) {
+void HandTrackingCore::sub_image_for_landmarks_inference_debug_logging(api2::ImageToTensorCoreResult *extracted_sub_image_struct) {
   ABSL_LOG(INFO) << "sub image padding: ";
   std::cout << extracted_sub_image_struct->padding[0] << " "
       << extracted_sub_image_struct->padding[1] << " "
@@ -130,7 +130,7 @@ void Liberated::sub_image_for_landmarks_inference_debug_logging(api2::ImageToTen
 }
 
 /// helper debug logging function
-void Liberated::sub_image_padding_debug_logging(api2::ImageToTensorCoreResult* extracted_sub_image_struct) {
+void HandTrackingCore::sub_image_padding_debug_logging(api2::ImageToTensorCoreResult* extracted_sub_image_struct) {
 if (std::any_of(extracted_sub_image_struct->padding.begin(), extracted_sub_image_struct->padding.end(),
                 [](float v) { return v > 0.0001f; })) {
   ABSL_LOG(INFO) << "non-zero letterbox padding: "
@@ -139,7 +139,7 @@ if (std::any_of(extracted_sub_image_struct->padding.begin(), extracted_sub_image
 }
 
 /// helper debug logging function
-void Liberated::landmarks_inference_debug_logging(std::vector<Tensor> landmarks_inference_output_tensors) {
+void HandTrackingCore::landmarks_inference_debug_logging(std::vector<Tensor> landmarks_inference_output_tensors) {
   ABSL_LOG(INFO) << "landmarks inference first few values (the viewport landmarks unnormalized): ";
   const auto& first_tensor_vals = landmarks_inference_output_tensors[0].GetCpuReadView().buffer<float>();
   for (int i = 0; i < 21; ++i) {
@@ -212,7 +212,7 @@ void Liberated::landmarks_inference_debug_logging(std::vector<Tensor> landmarks_
 /// not currently ported or implemented:
 /// - GPU inference.
 /// - Inference on platforms which do not have solid XNNPACK support.
-absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Liberated::Process(std::shared_ptr<const Image> image, uint32_t max_hands_to_track) {
+absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackingCore::Process(std::shared_ptr<const Image> image, uint32_t max_hands_to_track) {
 
   // initiate the result structure for the current image as empty vectors for all of its fields
   auto result = std::make_unique<ImageHandTrackingAndInferenceResult>(

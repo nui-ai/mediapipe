@@ -35,18 +35,18 @@ namespace mediapipe_v01013_based {
   std::unique_ptr<std::vector<ClassificationList>> handedness_classifications;
  };
 
- class Liberated {
+ class HandTrackingCore {
  public:
 
-  explicit Liberated(MemoryManager* memory_manager);
+  explicit HandTrackingCore(MemoryManager* memory_manager);
 
-  ~Liberated() = default;
+  ~HandTrackingCore() = default;
 
   // Non-copyable, movable.
-  Liberated(const Liberated&) = delete;
-  Liberated& operator=(const Liberated&) = delete;
-  Liberated(Liberated&&) = default;
-  Liberated& operator=(Liberated&&) = default;
+  HandTrackingCore(const HandTrackingCore&) = delete;
+  HandTrackingCore& operator=(const HandTrackingCore&) = delete;
+  HandTrackingCore(HandTrackingCore&&) = default;
+  HandTrackingCore& operator=(HandTrackingCore&&) = default;
 
   [[nodiscard]] absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Process(std::shared_ptr<const mediapipe_v01013_based::Image> image, uint32_t max_hands_to_track);
 

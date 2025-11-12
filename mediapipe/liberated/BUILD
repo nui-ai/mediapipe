@@ -24,6 +24,8 @@ cc_library(
     alwayslink = 1,
 )
 
+# as seen in deps below, the pipeline-liberated dependencies are still scattered around
+# by the original disparate locations of the original pipeline calculators they have been cored from.
 cc_library(
     name = "liberated",
     srcs = ["liberated.cc"],
