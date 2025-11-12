@@ -111,6 +111,18 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013
     return true;
 }
 
+/// runs the pipeline implementation performing hand tracking by the same computation
+/// as the original mediapipe HandLandmarkTrackingCpu pipeline, yet simplified into
+/// a linear flow all contained in non-calculator code, and invoked by a single
+/// calculator rather than the original pipeline.
+///
+/// the linear flow run by the single calculator is the result of the de-cluttering
+/// and undoing of many over-generalizations never reached in the original pipeline's
+/// code.
+///
+/// the per image result is juxtaposed against the reference data if provided as a run argument,
+/// and the run's inferences are written to the provided output path in the same format,
+/// so the output of different runs against a same input video may be always compared.
 absl::Status RunPipelineWithDiffing() {
   // Load reference data if a path to a reference data file has been provided as a program argument
   bool diffing = false;

@@ -94,6 +94,42 @@ HandTrackingCore::HandTrackingCore(MemoryManager* memory_manager) {
   hand_rects_from_previous_frame_ = std::vector<NormalizedRect>();
 }
 
+/// helper debug logging function
+void HandTrackingCore::image_debug_logging(api2::ImageToTensorCoreResult *image_struct) {
+  ABSL_LOG(INFO) << "image padding: ";
+  std::cout << image_struct->padding[0] << " "
+      << image_struct->padding[1] << " "
+      << image_struct->padding[2] << " "
+      << image_struct->padding[3] << std::endl;
+
+  ABSL_LOG(INFO) << "image matrix: ";
+  for (const auto& val : image_struct->matrix) {
+    std::cout << val << " ";
+  }
+  std::cout << std::endl;
+
+  ABSL_LOG(INFO) << "image middle section values: ";
+  for (const auto& tensor: image_struct->tensors) {
+    const auto& vals = tensor.GetCpuReadView().buffer<float>();
+    // since there's a lot of letterbox padding in placing a monitor aspect ratio image into a square,
+    // we debug-log a small arbitrary middle section of the image rather than its beginning pixel values,
+    // as the latter are all zero when the given image is the one prepared for palm inference.
+    for (int i = static_cast<int>(192*192*3*0.4); i < static_cast<int>(192*192*3*0.402); ++i) {
+      std::cout << vals[i] << " ";
+    }
+  }
+  std::cout << std::endl;
+
+  std::cout << "image hash: ";
+  std::size_t hash = 0;
+  for (const auto& tensor : image_struct->tensors) {
+    const auto& vals = tensor.GetCpuReadView().buffer<float>();
+    for (int i = 0; i < tensor.shape().num_elements(); ++i) {
+      hash ^= std::hash<float>{}(vals[i]) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+    }
+  }
+  std::cout << std::hex << hash << std::dec << " " << std::endl;
+}
 
 /// helper debug logging function
 void HandTrackingCore::sub_image_for_landmarks_inference_debug_logging(api2::ImageToTensorCoreResult *extracted_sub_image_struct) {
@@ -244,9 +280,11 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
     api2::ImageToTensorCoreResult image_as_tensor;
     absl::optional<NormalizedRect> norm_rect = absl::nullopt;
     MP_RETURN_IF_ERROR(image_to_palm_detection_input_->Process(*image, norm_rect, &image_as_tensor));
+    // image_debug_logging(&image_as_tensor);
     auto letterbox_padding_ = image_as_tensor.padding;
     TensorSpan image_as_tensor_span;
     image_as_tensor_span = MakeTensorSpan(image_as_tensor.tensors);
+
 
     // palm detection inference
     auto palm_start_time = std::chrono::high_resolution_clock::now();

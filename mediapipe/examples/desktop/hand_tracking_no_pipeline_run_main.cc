@@ -25,7 +25,6 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/liberated/liberated.h"
-// #include "mediapipe/examples/desktop/hands_pipeline_operator.h"
 
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
@@ -39,14 +38,13 @@
 #include <google/protobuf/util/delimited_message_util.h>
 #include <google/protobuf/util/message_differencer.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
-
 #include "mediapipe/framework/formats/image_opencv.h"
+
+using namespace mediapipe_v01013_based;
 
 constexpr char kInputStream[] = "image";
 constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";
 
-ABSL_FLAG(std::string, graph_file, "",
-          "name of pipeline pbtxt file.");
 ABSL_FLAG(std::string, input_video_path, "",
           "video to load. "
           "if not provided, attempts to use a webcam (not tested).");
@@ -83,7 +81,7 @@ std::string GetProjectRootedPath(const std::string& filename) {
 }
 
 // helper function to read the output reference data from file
-bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013_based::PipelineOutputData>& out) {
+bool ReadReferenceData(const std::string& filename, std::vector<PipelineOutputData>& out) {
     std::ifstream input(filename, std::ios::binary);
     if (!input.is_open()) {
         ABSL_LOG(ERROR) << "Failed to open reference file: " << filename;
@@ -93,7 +91,7 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013
     bool clean_eof = false;
     int msg_count = 0;
     while (true) {
-        mediapipe_v01013_based::PipelineOutputData msg;
+        PipelineOutputData msg;
         std::streampos pos = input.tellg();
         if (!google::protobuf::util::ParseDelimitedFromZeroCopyStream(&msg, &zero_copy_input, &clean_eof)) {
             if (msg_count == 0) {
@@ -115,10 +113,16 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013
     return true;
 }
 
-absl::Status RunPipelineWithDiffing() {
+/// runs the no-pipeline algorithm implementation performing hand tracking by the same computation
+/// as the original mediapipe HandLandmarkTrackingCpu pipeline.
+///
+/// the per image result is juxtaposed against the reference data if provided as a run argument,
+/// and the run's inferences are written to the provided output path in the same format,
+/// so the output of different runs against a same input video may be always compared.
+absl::Status RunNoPipelineTrackingWithDiffing() {
   // Load reference data if a path to a reference data file has been provided as a program argument
   bool diffing = false;
-  std::vector<mediapipe_v01013_based::PipelineOutputData> reference_data;
+  std::vector<PipelineOutputData> reference_data;
   if (absl::GetFlag(FLAGS_reference_data_path).empty()) {
     ABSL_LOG(WARNING) << "no reference data file path provided";
   } else {
@@ -136,15 +140,8 @@ absl::Status RunPipelineWithDiffing() {
     // "hand_rects_from_palm_detections"
   };
 
-  auto memory_manager = mediapipe_v01013_based::MemoryManager();
-  auto hand_tracking = mediapipe_v01013_based::HandTrackingCore(&memory_manager);
-
-  // auto status_or_op = mediapipe_v01013_based::HandsPipelineOperator::Create(GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)), graph_output_streams_names);
-  // if (!status_or_op.ok()) {
-  //   std::cerr << "Failed to create HandsPipelineOperator: " << status_or_op.status().message() << std::endl;
-  //   return status_or_op.status();
-  // }
-  // auto pipeline_operator = std::move(status_or_op.value());
+  auto memory_manager = MemoryManager();
+  auto hand_tracking = HandTrackingCore(&memory_manager);
 
   // initializing the camera or load the input video
   cv::VideoCapture capture;
@@ -168,9 +165,9 @@ absl::Status RunPipelineWithDiffing() {
   for (int i = 0; i < 999999; ++i) {
 
     // acquire an image
-    cv::Mat input_frame_raw;
-    capture >> input_frame_raw;
-    if (input_frame_raw.empty()) {
+    cv::Mat raw_image;
+    capture >> raw_image;  // this is a copy operation in OpenCV
+    if (raw_image.empty()) {
       if (!video_file_input) {
         ABSL_LOG(WARNING) << "empty frame from camera for frame number " << i << " will not be processed";
         continue;
@@ -179,26 +176,38 @@ absl::Status RunPipelineWithDiffing() {
     }
     ABSL_LOG(WARNING) << "processing frame number " << i;
 
-    // convert to mediapipe image format
-    cv::Mat input_frame;
-    cv::cvtColor(input_frame_raw, input_frame, cv::COLOR_BGR2RGB);
-    if (!video_file_input) { cv::flip(input_frame, input_frame, /*flipcode=HORIZONTAL*/ 1); }
+    // convert to mediapipe image color space and flip
+    cv::Mat image;
+    cv::cvtColor(raw_image, image, cv::COLOR_BGR2RGB);  // this is a copy operation in OpenCV
+    if (!video_file_input) { cv::flip(image, image, /*flipcode=HORIZONTAL*/ 1); }
 
-    auto image_frame_ptr = std::make_shared<mediapipe_v01013_based::ImageFrame>(
-        mediapipe_v01013_based::ImageFormat::SRGB,
-        input_frame.cols, input_frame.rows,
-        mediapipe_v01013_based::ImageFrame::kDefaultAlignmentBoundary);
-    auto image_ptr = std::make_shared<const mediapipe_v01013_based::Image>(image_frame_ptr);
+    // no-copy convert the cv::Mat image object to the image type which our tracker expects due to it having been cored out of the original mediapipe pipeline,
+    // which happens to be a mediapipe Image type ― which can only be built from a cv::Mat using the mediapipe ImageFrame type builder type as we do below
+    auto image_ptr = std::make_shared<cv::Mat>(std::move(image));  // wrap the cv::Mat image by a shared pointer, as the builder requires a reference type
+    auto image_frame_ptr = std::make_shared<ImageFrame>(
+        ImageFormat::SRGB,
+        image_ptr->cols, image_ptr->rows,
+        image_ptr->step[0],
+        image_ptr->data,
+        [image_ptr](uint8_t*) {
+          // underlying image data lifetime management:
+          // the role of the current explicit deleter lambda is only to hold a reference to the shared pointer to the cv::Mat object,
+          // thus preventing the deletion of the original cv2::Mat image object up until the current ImageFrame dervied from it, is destroyed itself,
+          // thus ensuring that the image data has the expected lifespan;
+          // it would otherwise get freed before the ImageFrame object is actually used.
+          // this is the intended scenario for the ImageFrame constructor being used here.
+        });
+    auto mediapipe_image = std::make_shared<const Image>(image_frame_ptr);
 
     // pass the image to the hand tracking workflow
-    absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::ImageHandTrackingAndInferenceResult>> inference;
-    MP_ASSIGN_OR_RETURN(inference, hand_tracking.Process(image_ptr, 3));
+    absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> inference;
+    MP_ASSIGN_OR_RETURN(inference, hand_tracking.Process(mediapipe_image, 3));
 
     // put the result into protobuf format just in case we want to log it to file for offline juxtaposing to other runs' output
     // which is typically useful during development phases. we use protobuf format just because we already have code
     // for serializing/deserializing and comparing protobuf messages due to working within the mediapipe framework.
     // it can be any other format that's convenient to work with.
-    mediapipe_v01013_based::PipelineOutputData inference_as_proto_msg;
+    PipelineOutputData inference_as_proto_msg;
     inference_as_proto_msg.set_frame_number(i);
     for (const auto& ol : *inference.value()->object_landmarkss) {
       *inference_as_proto_msg.add_multi_hand_world_landmarks() = ol;
@@ -280,15 +289,13 @@ int main(int argc, char** argv) {
 
   absl::ParseCommandLine(argc, argv);
 
-  // Check input files exist before use
-  CheckFileExistsOrExit(GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)), "graph_file");
   if (!absl::GetFlag(FLAGS_input_video_path).empty()) {
     CheckFileExistsOrExit(GetProjectRootedPath(absl::GetFlag(FLAGS_input_video_path)), "input_video_path");
   }
   // Optionally check reference proto file if you want to require its existence
   // CheckFileExistsOrExit(GetProjectRootedPath(kReferenceProtoFilename), "reference_proto_filename");
 
-  absl::Status run_status = RunPipelineWithDiffing();
+  absl::Status run_status = RunNoPipelineTrackingWithDiffing();
   if (!run_status.ok()) {
     ABSL_LOG(INFO) << "aborted due to the following reason: " << run_status.message();
     return EXIT_FAILURE;
