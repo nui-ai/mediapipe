@@ -50,7 +50,7 @@ static absl::Status DetectionToNormalizedRect(const Detection& detection, Normal
 }
 
 
-/// from a raw axes parallel detection rect of the SSD model, orients a rect based on keypoints of the palm detection!
+/// from a raw axes parallel detection rect of the SSD model, orients a rectangle based on the detected keypoints inferred as part of the palm detection neural network!
 DetectionsToOrientedRects::DetectionsToOrientedRects(float target_angle_radians, bool output_zero_rect_for_empty_detections) {
 
   const int start_keypoint_index = 0;  // Center of wrist.
