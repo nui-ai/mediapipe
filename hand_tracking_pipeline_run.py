@@ -53,7 +53,7 @@ if appearances > 0:
     print("INFO: the working directory will be ignored by import statements, by removing it from python's sys.path for the current run, to avoid it overshadowing the environment installed mediapipe package for import statements.")
 
 from mediapipe.python.solutions import hands as mp_hands
-# these imports may still be flagged as unknown symbols by the IDE,
+# the below imports from mediapipe may still be flagged as unknown symbols by the IDE,
 # since the IDE too may typically look for the packages under the project root's subdirectories first, rather than where the package
 # sources have been installed by pip install, which is where these generated files actually are after you've pip installed mediapipe.
 # (configuring PyCharm to acknowledge their location (e.g. .venv/lib/python3.12/site-packages) as a source root directory doesn't seem
@@ -63,6 +63,8 @@ from mediapipe.python.solutions import hands as mp_hands
 # it's best to avoid this quirk only affecting IDE flagging of this small set of proto-generated symbols,
 # than dive deep on it for now ― you can easily view the same named proto files, and the generated same
 # named modules are just under the venv after you have pip installed ...
+# ---------------------------------------------------------------------------------------------------
+# thanks to the above safe importing, this is only a static analysis quirk not manifesting at runtime!
 from mediapipe.framework.formats import landmark_pb2, classification_pb2, rect_pb2, detection_pb2
 from mediapipe.examples.desktop import pipeline_output_pb2
 

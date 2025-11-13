@@ -132,11 +132,6 @@ def _check_bazel():
     sys.exit(-1)
 
 
-def _maybe_modify_opencv_cmake_rule():
-    """Modify opencv_cmake rule to build the static opencv libraries."""
-    return
-
-
 def _write__init__source_file():
     """ write mediapipe/__init__.py rather than trust its git contents, we could throw away this piece if we wanted and just pin and trust the contents of mediapipe/__init__.py in git.
         basically this content exports a subset of the mediapipe submodules, and then deletes some of what's been exported so a little messy to simplify. """
@@ -523,7 +518,6 @@ class BuildPy(build_py.build_py):
     build_py.build_py.finalize_options(self)
 
   def run(self):
-    _maybe_modify_opencv_cmake_rule()
     _write__init__source_file()
     self.run_command('gen_protos')
     self.run_command('generate_metadata_schema')
