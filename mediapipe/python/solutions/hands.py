@@ -113,14 +113,10 @@ class Hands(SolutionBase):
     """
     super().__init__(
         binary_graph_path=_BINARYPB_FILE_PATH,
-        calculator_params={
-            'palmdetectioncpu__TensorsToDetectionsCalculator.min_score_thresh':
-                min_detection_confidence,
-            'handlandmarkcpu__ThresholdingCalculator.threshold':
-                min_tracking_confidence,
-        },
+        calculator_params={},
         outputs=[
-            'multi_hand_landmarks', 'multi_hand_world_landmarks',
+            'multi_hand_landmarks',
+            'multi_hand_world_landmarks',
             'multi_handedness'
         ])
 

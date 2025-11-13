@@ -150,6 +150,7 @@ mediapipe_simple_subgraph(
         "//mediapipe/calculators/image:image_properties_calculator2",
         "//mediapipe/calculators/util:collection_has_min_size_calculator",
         "//mediapipe/calculators/util:filter_collection_calculator",
+        "//mediapipe/liberated:HeadCalculator",
         "//mediapipe/modules/palm_detection:palm_detection_cpu",
     ],
 )

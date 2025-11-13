@@ -210,28 +210,26 @@ def _build_bazel_command(target, extra_bazel_args=None):
     up-to-date and what needs to be rebuilt when starting a bazel build command. since this script invokes bazel commands several
     times this is necessary. """
 
-    # currently mimicking the build commands used by the underlying C++ bazel project
+    # the bazel build flags/options herea are currently mimicking the ones used by the underlying C++ bazel project
+    # for all of its targets, not just its C++ targets used by the python mediapipe package being built by pip.
     bazel_command = [
         'bazel',
         'build',
         '-c', 'opt',
         '--define', 'MEDIAPIPE_DISABLE_GPU=1',
         '--define', 'OPENCV=source',
+        # not sure whether it uses this path, in the python pip context of an isolated pip build
         '--disk_cache=/home/matan/.cache/bazel-disk-cache',
+        # enables debugging of the c++ code (somewhat less relevant in the python package context, yet ..)
         '--fission=no',
         # '--nostamp',
         target,
-    ] + GPU_OPTIONS
-    if extra_bazel_args:
-        bazel_command += extra_bazel_args
-        print(f'extra args provided for the current bazel build command:\n{extra_bazel_args}', flush=True)
-    bazel_command.append('--define=OPENCV=source')  # as a consequence of the opencv cmake rule now building opencv from source (https://github.com/nui-ai/mediapipe/issues/22)
+    ]
     return bazel_command
 
 
 class GeneratePyProtos(build_ext.build_ext):
-  """Generate MediaPipe Python protobuf files by Protocol Compiler."""
-
+  """Generates MediaPipe Python protobuf files through the Protocol Buffers Compiler."""
   def run(self):
     if 'PROTOC' in os.environ and os.path.exists(os.environ['PROTOC']):
       self._protoc = os.environ['PROTOC']
@@ -284,15 +282,13 @@ class GeneratePyProtos(build_ext.build_ext):
     if not os.path.exists(init_file):
       open(init_file, 'w').close()
 
-  def _generate_proto(self, source):
+  def _generate_proto(self, proto_source_file):
     """Invokes the Protocol Compiler to generate a _pb2.py."""
-    output = os.path.join(self.build_lib, source.replace('.proto', '_pb2.py'))
-    if not os.path.exists(output):
-      sys.stderr.write('generating proto file: %s\n' % output)
-      protoc_command = [
-          self._protoc, '-I.', '--python_out=' + os.path.abspath(self.build_lib), source
-      ]
-      _invoke_shell_command(protoc_command)
+    generated_source_file = proto_source_file.replace('.proto', '_pb2.py')
+    output = os.path.join(self.build_lib, generated_source_file)
+    sys.stderr.write(f'generating a python source file from proto source file {proto_source_file}: %s\n' % output)
+    protoc_command = [self._protoc, '-I.', '--python_out=' + os.path.abspath(self.build_lib), proto_source_file]
+    _invoke_shell_command(protoc_command)
 
 
 class BuildModules(build_ext.build_ext):
@@ -313,16 +309,16 @@ class BuildModules(build_ext.build_ext):
   def run(self):
     _check_bazel()
     external_files = [
+        'hand_landmark/hand_landmark_full.tflite',
+        'palm_detection/palm_detection_full.tflite',
         # 'face_detection/face_detection_full_range_sparse.tflite',
         # 'face_detection/face_detection_short_range.tflite',
         # 'face_landmark/face_landmark.tflite',
         # 'face_landmark/face_landmark_with_attention.tflite',
-        'hand_landmark/hand_landmark_full.tflite',
         # 'hand_landmark/hand_landmark_lite.tflite',
         # 'holistic_landmark/hand_recrop.tflite',
         # 'iris_landmark/iris_landmark.tflite',
-        'palm_detection/palm_detection_full.tflite',
-        'palm_detection/palm_detection_lite.tflite',
+        # 'palm_detection/palm_detection_lite.tflite',
         # 'pose_detection/pose_detection.tflite',
         # 'pose_landmark/pose_landmark_full.tflite',
         # 'selfie_segmentation/selfie_segmentation.tflite',
@@ -463,7 +459,7 @@ class BuildExtension(build_ext.build_ext):
       for ext in self.extensions:
         self._build_binary(ext)
     # Use self.build_lib as the destination for .so files
-    _copy_opencv_shared_libs(self.build_lib)
+    _copy_opencv_libs(self.build_lib)
     build_ext.build_ext.run(self)
 
   def _build_binary(self, ext, extra_args=None):
@@ -485,7 +481,7 @@ class BuildExtension(build_ext.build_ext):
         shutil.copy(opencv_dll, ext_dest_dir)
 
 
-def _copy_opencv_shared_libs(build_lib=None):
+def _copy_opencv_libs(build_lib=None):
     """Copy Bazel-built OpenCV .so files into the build_lib/python/ for runtime loading, and set owner write permissions
     to support repeat `pip install .` runs being able to overwrite them."""
     opencv_lib_dir = os.path.join('bazel-bin', 'third_party', 'opencv_cmake', 'lib')
@@ -510,7 +506,6 @@ def _copy_opencv_shared_libs(build_lib=None):
 
 
 class BuildPy(build_py.build_py):
-  """Build command that generates protos, builds binary graphs and extension, builds python source, and performs a cleanup afterwards."""
 
   user_options = build_py.build_py.user_options + [
       ('link-opencv', None, 'if true, use the installed opencv library.'),
@@ -536,7 +531,6 @@ class BuildPy(build_py.build_py):
 
 
 class Install(install.install):
-  """Install command that generates protos, builds binary graphs and extension, builds python source, and performs a cleanup afterwards."""
 
   user_options = install.install.user_options + [
       ('link-opencv', None, 'if true, use the installed opencv library.'),
@@ -600,20 +594,10 @@ setuptools.setup(
         'install': Install,
         'restore': Restore,
     },
-    ext_modules=[
+    ext_modules=[ # these are lib files (.so on linux) that will be built through bazel
         BazelExtension('//mediapipe/python:_framework_bindings'),
-
-        # new calculators we add during liberation must be also built by the python extension bazel build targets,
-        # which we wire in from here though we could wire them more intimately in other targets which that build
-        # is building. they are not part of the bazel targets of the pip install process unless we add them like
-        # here, as our C++ liberation bazel target is separate from the pip install one's.
-        # BazelExtension("//mediapipe/calculators/util:detection_model_provider"),
-
-        BazelExtension(
-            '//mediapipe/tasks/cc/metadata/python:_pywrap_metadata_version'),
-        BazelExtension(
-            '//mediapipe/tasks/python/metadata/flatbuffers_lib:_pywrap_flatbuffers'
-        ),
+        BazelExtension('//mediapipe/tasks/cc/metadata/python:_pywrap_metadata_version'),
+        BazelExtension('//mediapipe/tasks/python/metadata/flatbuffers_lib:_pywrap_flatbuffers'),
     ],
     zip_safe=False,
     include_package_data=True,

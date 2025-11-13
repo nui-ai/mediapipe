@@ -16,6 +16,8 @@ mediapipe_proto_library(
     ],
 )
 
+# builds a class operating the hand tracking pipeline from cpp,
+# which the original mediapipe v0.10.13 did not provide or have.
 # stuffs many calculators as direct dependencies, in order to make them "alwayslink",
 # for the sake of the shared library that we build which depends on this target.
 # we could have added them in that lib target directly, but feels cleaner here.
