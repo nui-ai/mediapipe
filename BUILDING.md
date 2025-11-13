@@ -72,13 +72,13 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     + if you want to only build the hands pipeline (yes, a mediapipe graph should be built, not only fed as a pbtxt file to C++ code running it) you can build the bottom line target of the three, which you find in the `deps` field of their build definitions in the said build file.
 
 # ⚠️ Build Known Issue ⚠️  
-Sometimes you get this error from python, or a similar one from C++ mains:
+You get this error from python, or a similar one from C++ mains. this only happens on this branch and solved by radical changes in the liberation branch:
 ```
 Failed to load resource: mediapipe/modules/palm_detection/palm_detection_full.tflite
 ```
-Probably only after doing a `pip uninstall mediapipe`, which seems to reproduce this behavior.
+This is caused by a `pip uninstall mediapipe` or after re-running the `pip install .` after the first run of it.
 
-**Solution:** rerun the pure bazel build, after repeating the `pip install` for the python environment's sake. somehow this places something where it needs to be to avoid this error happening.  
+**Solution:** rerun the pure bazel build, using the command from the previous section. that places those files which the python build probably only links to.  
 
 Conclusions: 
 1. Something must be not perfect enough still, if this can happen.
