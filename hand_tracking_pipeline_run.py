@@ -1,5 +1,6 @@
 # runs the hands pipeline over an input file, writing its outputs to a protobuf output file.
 # adapted from hands_test.py, which looks for a testdata directory that isn't part of the original mediapipe repository ...
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -30,7 +31,7 @@ def write_delimited_message(pb_file, message):
             break
     pb_file.write(data)
 
-def _process_video(input_video, model_complexity, max_num_hands=2):
+def run_for_video(input_video, max_num_hands, model_complexity=1):
     # Predict pose landmarks for each frame.
     video_cap = cv2.VideoCapture(input_video)
     total_frames = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -93,9 +94,18 @@ def _process_video(input_video, model_complexity, max_num_hands=2):
         raise RuntimeError(f"Video processing stopped early: processed {processed_frames} out of {total_frames} frames. Possible bad/corrupt frame encountered.")
 
 
-def test_video(input_video):
+if __name__ == '__main__':
+    import sys
+    if not sys.argv[1:] or len(sys.argv) > 2:
+        print("Usage: python -P hand_tracking_pipeline_run.py <input-video-path>")
+        sys.exit(1)
+    if not Path(sys.argv[1]).exists():
+        print(f"{sys.argv[1]} does not exist")
+        sys.exit(1)
 
-    """ Tests the hand models on a video file. """
+    input_video = sys.argv[1]
+
+    run_for_video(input_video, max_num_hands=2)
 
     # The following stderr output is expected at the start of the run:
     # INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
@@ -103,12 +113,3 @@ def test_video(input_video):
     # W0000 00:00:1758560081.963286 2425952 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
     # W0000 00:00:1758560081.975544 2425952 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
     # W0000 00:00:1758560082.720623 2425968 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
-
-    _process_video(input_video, model_complexity=1)
-
-if __name__ == '__main__':
-    import sys
-    if not sys.argv[1:]:
-        print("Usage: python hand_tracking_pipeline_run.py <input-video>")
-        sys.exit(1)
-    test_video(input_video=sys.argv[1])

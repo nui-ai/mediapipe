@@ -23,6 +23,9 @@ Notes:
 to avoid it building the C++ parts from scratch even when no source code has changed.
 3. Modern pip swallows all bazel stdout/stderr output, unless you attach -v in the pip command """
 
+# print the value of the MEDIAPIPE_PYTHON_BIN env variable, which is used by pip do determine the target python env to install to
+import os
+print(f'target python environment: {os.environ.get("MEDIAPIPE_PYTHON_BIN")}', flush=True)
 
 import glob
 import os
@@ -106,9 +109,11 @@ def _check_bazel():
   try:
     bazel_version_info = subprocess.check_output(['bazel', '--version'])
   except subprocess.CalledProcessError as e:
-    sys.stderr.write('fail to get bazel version by $ bazel --version: ' +
-                     str(e.output))
+    sys.stderr.write('fail to get bazel version by $ bazel --version: ' + str(e.output))
     sys.exit(-1)
+
+  print(f'using bazel version: {bazel_version_info.decode("UTF-8")}', flush=True)
+
   bazel_version_info = bazel_version_info.decode('UTF-8').strip()
   version = bazel_version_info.split('bazel ')[1].split('-')[0]
   version_segments = version.split('.')
@@ -200,19 +205,21 @@ def _build_bazel_command(target, extra_bazel_args=None):
     """ Constructs a consistent Bazel build command for all build invocations.
     This avoids Bazel discarding the analysis cache due to option changes between the different bazel build invocations made
     by the current source file, as otherwise seen in messages like: "INFO: Build options --action_env, --compilation_mode, --copt, and 1 more have changed, discarding analysis cache"
-    which it would if the build command is invoked with different options each time, in which case bazel will rebuild
-    everything from scratch on every bazel command rather than use its analysis cache to determine what is already
-    up-to-date and what needs to be rebuilt when starting a bazel build command. """
+    which it would if the build command is invoked with different options each time this script invokes it, in which case bazel would
+    otherwise rebuild everything from scratch on every bazel command rather than use its analysis cache to determine what is already
+    up-to-date and what needs to be rebuilt when starting a bazel build command. since this script invokes bazel commands several
+    times this is necessary. """
 
+    # currently mimicking the build commands used by the underlying C++ bazel project
     bazel_command = [
         'bazel',
         'build',
-        '--nostamp',
-        '--compilation_mode=opt',
-        '--copt=-DNDEBUG',
-        #'--copt=-I/usr/include/opencv4', as a consequence of the opencv cmake rule now building opencv from source (https://github.com/nui-ai/mediapipe/issues/22), this is not needed anymore
-        '--explain=/tmp/bazel.explain',
-    "--verbose_explanations",
+        '-c', 'opt',
+        '--define', 'MEDIAPIPE_DISABLE_GPU=1',
+        '--define', 'OPENCV=source',
+        '--disk_cache=/home/matan/.cache/bazel-disk-cache',
+        '--fission=no',
+        # '--nostamp',
         target,
     ] + GPU_OPTIONS
     if extra_bazel_args:

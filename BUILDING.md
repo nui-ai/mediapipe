@@ -57,21 +57,26 @@ Unlike original mediapipe, this build builds OpenCV from source which avoids [pr
    ```
    see here https://chatgpt.com/c/690f1afd-57cc-8327-8ce3-5ce9ca9e2713 for memory safety warnings in google dependency packages which are expected.
 
-1. make and activate a python 3.12 venv:
+1. make and activate a python 3.12 venv, or start a terminal in your PyCharm project view of this repo. 
     ```bash
     python3.12 -m venv .venv
     source .venv/bin/activate
     ```
-2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api to the active python venv. the included `setup.py`, triggered to run by the below `pip` command runs bazel under the hood to build all C++ dependencies required for the hands model. this not only builds all required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package and installing it to the current python environment. Note that without the preceding export of the python environment variable, `pip` will cause bazel to rebuild from scratch for any source change when used by pip (as a direct consequence of modern pip's build isolation feature). without the export, mediapipe will also fail to run from python. so you want that export command before you use pip here:  
-    ```bash
-    export MEDIAPIPE_PYTHON_BIN=$(which python)
-    pip install . 
-    ```
-    for a verbose output which includes print statements made by `setup.py`, add `-v` to the pip command as otherwise due to pip's build isolation stdout is swallowed when the build does not fai.:
+2. run pip to build and install the python package providing python api to the mediapipe C++ core. <br>
+   + `setup.py`, which is triggered to run by the below `pip` command, runs with PEP 517 isolation invokes bazel to build all C++ bazel build targets required for our pipeline. 
+   + it not builds all required C++ targets, plus the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package and installing it to the current python environment. it is able to install it to the active python venv thanks to exporting the below environment variable prior to issuing the pip command. without the export preceding the below
+   + `pip install` command, mediapipe will fail to import in the active python venv. 
+   + without the preceding export of the python environment variable, you are installing the built package to an arbitrary location (which may in edge cases also degrade the bazel building outside of the python use case). 
+   + running the python package build and install, run after activating the project's python venv:
+       ```bash
+       export MEDIAPIPE_PYTHON_BIN=$(which python)
+       pip install . 
+       ```
+   + for a verbose output which includes for example the _bazel commands being invoked by `setup.py`_, add `-v` to the pip command as otherwise due to pip's build isolation stdout is swallowed unless pip fails entirely.
 
 3. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
 
-4. place a video file with hands in the project root path, as `sample-video.avi`, to enable the tests.
+4. place a video file with hands in the project root path, to enable the test-running the pipeline on it.
     + typically the video files are too large for git/github, so bring your own by using Gesture Studio.
 
 5. python test which should complete with exit code 0, it doesn't show any fancy results but only records the pipeline's output per input to a protobuf file:
