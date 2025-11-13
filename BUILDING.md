@@ -82,9 +82,7 @@ Unlike original mediapipe, this build builds OpenCV from source which avoids [pr
 5. python test which should complete with exit code 0, it doesn't show any fancy results but only records the pipeline's output per input to a protobuf file:
     ```bash
     python3 -P hand_tracking_pipeline_run.py
-    ``` 
-    note that without `-P` python will try loading python modules from the `mediapipe` directory under the project's tree root, which is essentially our python "source directory", which is a horrible entanglement, and is also bound to fail since some of the mediapipe python modules are only dynamically built & placed (into the active python environment) by the pip install process ― because most of mediapipe python-exposed sub-packages are either pybind generated or bazel generated from protobuf definitions or both (e.g. mediapipe.python._framework_bindings). So the python source tree _never_ contains all the modules that the mediapipe python api expects to find, but it can sure throw you off track with cryptic module loading errors if you try to run without -P and thus let python first look for modules under the python source directory `mediapipe`. With this project you only want python to run from the active python environment, not from its "source" path, which is what `-P` does.
-
+    ```
 6. build and run our C++ mains which drive the mediapipe pipeline, using the repo included JetBrains run configurations.
    
 7. to clear all bazel build caching:
