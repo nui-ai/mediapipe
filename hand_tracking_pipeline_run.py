@@ -1,9 +1,63 @@
 # runs the hands pipeline over an input file, writing its outputs to a protobuf output file.
 # adapted from hands_test.py, which looks for a testdata directory that isn't part of the original mediapipe repository ...
 
+import sys
 import cv2
 import numpy as np
 import os
+
+# implement safe importing of mediapipe. meaning, one that will successfully import it from the installed mediapipe package,
+# rather than fail to import it when running in debug mode via pydev:
+#
+# Traceback (most recent call last):
+#   File "pycharm/plugins/python-ce/helpers/pydev/pydevd.py", line 1648, in _exec
+#     pydev_imports.execfile(file, globals, locals)  # execute the script
+#     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#   File "pycharm/plugins/python-ce/helpers/pydev/_pydev_imps/_pydev_execfile.py", line 18, in execfile
+#     exec(compile(contents+"\n", file, 'exec'), glob, loc)
+#   File "/home/usermediapipe/hand_tracking_pipeline_run.py", line 38, in <module>
+#     from mediapipe.python.solutions import hands as mp_hands
+#   File "/home/usermediapipe/mediapipe/__init__.py", line 15, in <module>
+#     from mediapipe.python import *
+#   File "/home/usermediapipe/mediapipe/python/__init__.py", line 17, in <module>
+#     from mediapipe.python._framework_bindings import model_ckpt_util
+# ModuleNotFoundError: No module named 'mediapipe.python._framework_bindings'
+#
+# why we need this?
+# with a plain python interpreter we can use -P for this behavior, but for debugging python mains reliant on pydev.py,
+# which most python IDE use for debugging python, we have to code this defensive behavior in our main itself, since pydev does not handle or safely pass -P
+# to the actual interpeter that is launches or itself is, and our mains do expect to run from our project root,
+# which always contains a "mediapipe" source directory in this fork of mediapipe, which must be ignored
+# by import statements when run from the project root.
+# ----------------------------------------------------
+# alternative no-code solution:
+# env variable PYTHONSAFEPATH=1 works but only with the regular python interpreter, not wity pydev
+# in mediapipe docs they recommend just exiting the project directory before running its mains, instead.
+# ------------------------------------------------------------------------------------------------------
+# current solution:
+# before importing mediapipe ―
+# identify the absolute path of the directory containing the our script running, and remove that directory (which is also normally the working directory)
+# from python's sys.path, so that python does not try importing packages from subdirectories which have their name, which is the case when you are running
+# python in the current project ― whereas the subdirectories should be thought of (despite it being python) only source folders in this project.
+current_script_dir = os.path.dirname(os.path.abspath(__file__))
+appearances = 0
+for path in sys.path:
+    # Note: the following code is not it will only filter out instances of the current path from sys.path which are absolute (and not relative) paths.
+    #       not sure if sys.path would ever use relative paths.
+    if os.path.abspath(path) == current_script_dir:
+        appearances += 1
+if appearances > 0:
+    for i in range(appearances):
+        sys.path.remove(current_script_dir)
+    print("INFO: the current working directory will be ignored by import statements, by removing it from python's sys.path for the current run")
+
+from mediapipe.python.solutions import hands as mp_hands
+# imports of auto-generated source code generated from proto files by pip, the IDE may flag them as unknown symbols,
+# as it does not necessarily know where to find them unless explicitly configured to look in the right places:
+from mediapipe.framework.formats import landmark_pb2, classification_pb2, rect_pb2, detection_pb2
+from mediapipe.examples.desktop import pipeline_output_pb2
+
+
 from mediapipe.python.solutions import hands as mp_hands
 from mediapipe.examples.desktop import pipeline_output_pb2
 from mediapipe.framework.formats import landmark_pb2, classification_pb2, rect_pb2, detection_pb2
@@ -30,7 +84,7 @@ def write_delimited_message(pb_file, message):
             break
     pb_file.write(data)
 
-def _process_video(input_video, model_complexity, max_num_hands=3):
+def _process_video(input_video, model_complexity, max_num_hands=2):
     # Predict pose landmarks for each frame.
     video_cap = cv2.VideoCapture(input_video)
     total_frames = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -54,7 +108,11 @@ def _process_video(input_video, model_complexity, max_num_hands=3):
                 model_complexity = model_complexity,
                 min_detection_confidence = 0.5
                 ) as hands:
+
             while True:
+
+                print(f'about to process frame {frame_idx}')
+
                 success, input_frame = video_cap.read()
                 if not success:
                     if frame_idx < total_frames:
