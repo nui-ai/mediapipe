@@ -133,8 +133,8 @@ mediapipe_simple_subgraph(
 
 mediapipe_simple_subgraph(
     name = "hand_landmark_tracking_cpu",
-    graph = "hand_landmark_tracking_cpu.pbtxt",
-    register_as = "HandLandmarkTrackingCpu",
+    graph = "hand_tracking_pipeline.pbtxt",
+    register_as = "HandTrackingPipeline",
     deps = [
         ":hand_landmark_cpu",
         ":hand_landmark_landmarks_to_roi",

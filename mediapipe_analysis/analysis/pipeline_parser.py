@@ -1178,7 +1178,7 @@ def main():
     # CLI: accept root_search_path and pipeline, plus optional output_dir
     argp = argparse.ArgumentParser(description='MediaPipe Pipelines Parser')
     argp.add_argument('-r', '--root_search_path', default='mediapipe', help='Root directory under which to search for calculators/graphs (relative or absolute). Default: mediapipe')
-    argp.add_argument('-p', '--pipeline', default='HandLandmarkTrackingCpu', help='Name of the top-level pipeline/graph to analyze.')
+    argp.add_argument('-p', '--pipeline', default='"HandTrackingPipeline"', help='Name of the top-level pipeline/graph to analyze.')
     argp.add_argument('output_dir', nargs='?', default='mediapipe_analysis/analysis/output', help='Output directory for generated files (optional).')
     args = argp.parse_args()
 

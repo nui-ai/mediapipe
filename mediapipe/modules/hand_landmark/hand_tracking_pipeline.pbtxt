@@ -1,4 +1,4 @@
-type: "HandLandmarkTrackingCpu"
+type: "HandTrackingPipeline"
 input_stream: "IMAGE:image"
 output_stream: "LANDMARKS:multi_hand_landmarks"
 output_stream: "WORLD_LANDMARKS:multi_hand_world_landmarks"

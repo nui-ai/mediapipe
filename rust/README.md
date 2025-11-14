@@ -37,7 +37,7 @@ From the `rust/` directory:
 
 ```bash
 cargo run --release -- \
-  --graph-file mediapipe/modules/hand_landmark/hand_landmark_tracking_cpu.pbtxt \
+  --graph-file mediapipe/modules/hand_landmark/hand_tracking_pipeline.pbtxt \
   --input-video-path ../sample-video.avi
 ```
 

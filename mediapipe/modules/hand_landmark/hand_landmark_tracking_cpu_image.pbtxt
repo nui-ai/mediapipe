@@ -102,7 +102,7 @@ node: {
 }
 
 node {
-  calculator: "HandLandmarkTrackingCpu"
+  calculator: "HandTrackingPipeline"
   input_stream: "IMAGE:image_frame"
   input_side_packet: "NUM_HANDS:num_hands"
   input_side_packet: "MODEL_COMPLEXITY:model_complexity"
