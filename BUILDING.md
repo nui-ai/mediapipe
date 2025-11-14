@@ -1,25 +1,34 @@
+# About this Branch
+
+This branch has accomplishes a safe and parity-verified reduced mediapipe v0.10.13 hands pipeline, namely it reproduces its work with performance no lesser, having been safely and gradually having been reduced to:
+1. a no-pipeline single-component implementation of the same as the original.
+2. a single-calculator mediapipe pipeline, which merely wraps the former component.  
+
+This work was made possible by developing a set of verification mains which verified after each step of the gradual liberation process, that the output per frame of the current code is the same as that of the original pipeline:
++ a C++ main comparing the current code's output per frame to output yielded from the original v0.10.13 tag code's run over the same input video, through branch `buildable-reference`.
++ `buildable-reference` still includes that main which produces an output file when running the original pipeline over a given input video, to enable these parity testing workflows mentioned, for repeating the same parity testing process over any new video file. 
++ a python main performing the same verification.
++ a C++ main utilizing newly made C API bindings for the same component, which is also performing the same verification.
++ a rust main which does the same, using rust FFI bindings made for the said C API facade wrapping the C++ component. 
+
+1. These quickly ascertained after each pipeline reduction step, that the pipeline still produces the same output as before, thus safely facilitating the liberation development process. They can be reused for verifying other pipelines' liberation work if applicable (e.g. face landmarks tracking).
+2. They can be repurposed or evolved to juxtapose results rather than strictly compare output for equality. 
+
+GPU support was not tested and not across all the many disparate code locations providing GPU support in mediapipe, in this branch, preserved.<br>
+That is because GPU support in this pipeline was originally scattered across many layers of the mediapipe stack: both many of its framework layers, and within many calculators themselves. The GPU supporting code elements have been preserved in this branch only on a best-effort basis and not where they significatnly hindered clarity and code surface; GPU support when applicable, should be better developed from scratch, with a lot of attention to detail. 
+
 # Development Environment and Build Guide
 
-This branch reflects the exact code revision of git tag v0.10.13 of the original MediaPipe repository, plus modifications for making it buildable again, and it now successfully builds the hand tracking pipeline target as well as the python package that exposes the mediapipe api to python as a python package called `mediapipe`, installable into a python environment by `pip install .` as per the instructions below.
-
-Its mediapipe hands pipeline is gradually and safely being reduced on the way to liberating it from mediapipe completely, while using as a verification harness:
-+ a C++ main which runs the mediapipe hand tracking pipeline and compares its output per frame to output yielded for the same frame before starting the liberation process.
-+ a python main which does the same, using the python mediapipe api.
-+ a rust main which does the same, using rust FFI bindings for a C API facade wrapping the C++ pipeline runner.
-+ a C++ main (and a python main) comparing two given output files made by a pipeline runner, as extra.
-
-These quickly ascertain after each pipeline reduction step, that the pipeline still produces the same output as before, thus safely facilitating the liberation development process. 
-
-# Build and Development Environment Setup
+## Build and Development Environment Setup
 
 Successful building on Ubuntu 24.04 as well as building a Docker image (Ubuntu 22.04 based) that can build mediapipe at this revision have been accomplished, and reproducible as per below, as the basis for reducing the hand processing pipeline from mediapipe into liberation from use of mediapipe framework.
 
 Currently successfully building with Bazel 6.5.0 as also seen in the [Dockerfile](Dockerfile).
 
-Unlike original mediapipe, this build builds OpenCV from source which avoids [protobuf runtime issues](https://github.com/nui-ai/mediapipe/issues/18).
+Unlike original mediapipe, this build builds a specific version of OpenCV from source which avoids [protobuf runtime issues](https://github.com/nui-ai/mediapipe/issues/18). This is also more responsible in the general case, as there is no reason to get an arbitrary version and build of OpenCV just because it is globally installed on the system.
 
 ### Jetbrains as IDE
-+ Consider installing the following JetBrains Plugins for IDE support:
++ Consider installing the following JetBrains Plugins for proper IDE operation:
   1. `Bazel for Clion` (in Clion) is a _must-have_ plugin if you use Clion as your C++ IDE, as it makes the IDE understand the project strutcture by running bazel info commands on its sync, which is super-essential for code navigation between bazel BUILD files and their respective C++ source files and vice versa by your normal "go to definition" keyboard shortcut and through its context option "go to corresponding BUILD file" on the context menus. without this plugin, most of the source code will be flagged red as unknown symbols, and you won't have other conveniences like run configurations for building and running through bazel and you basically aren't getting any proper IDE experience at all!
       + https://www.youtube.com/watch?v=GV_KwWK3Qy8
       + https://ij.bazel.build/docs/bazel-plugin.html
@@ -35,18 +44,27 @@ Unlike original mediapipe, this build builds OpenCV from source which avoids [pr
   + Case in point: jumping from a CC source file directly to its very build definition in the respective BAZEL file! (available as a right click option)
   + Don't install conflicting Clion plugins for Protocol Buffers IDE support, they will make the IDE silently fail on many features and become defunct. Just use the JetBrains one.
 
-+ As a byproduct of the Bazel for Clion plugin, Clion uses the `.clwb` (Clion With Bazel Acronym) path as the working directory or the console home directory; you usually want to revert to the project root path for running stuff.
++ Note: as a byproduct of the Bazel for Clion plugin, Clion uses the `.clwb` (Clion With Bazel Acronym) path as the working directory in many contexts; you usually want to revert to the project root path one level back upwards, for running stuff.
 
 ### VS Code as IDE
   + VSCode has popular bazel extensions which provide a different set of features; some things from those VSCode plugins you'd want in JetBrains and vice versa.
   + Let CoPilot port the project's JetBrains run configurations into VSCode's equivalent json files for the same.
   + VSCode is generally more configurable and extensible for you to code your way to make the extensions do more. 
 
-# Building 
+### Bring Your Own Test Video
+place an avi video file with hands motion in the project root path, to enable the test-running the pipeline on it:
+  + typically the video files are too large for git/github, so bring your own by using Gesture Studio.
+  + you'd ultimately provide its name to any run command which uses our hand tracking from among the repo's built runnables.
+  + the builds per-se do not require this video file to be present, it is only used at runtime as hand tracking input.
+  + you can use [Gesture Studio](https://github.com/nui-ai/core?tab=readme-ov-file#gesture-studio) to generate your own video, give or take using ffmpeg to convert to avi if needed. 
+
+# Build Verification Flow ― python oriented only
 
 0. clone this repository and cd into it.
 
-1. test the C++ only build
+1. replace all run configurations in your JetBrains IDE to use your own bazel cache path of choice instead of /home/matan/.cache/bazel-disk-cache.
+
+1. verify that the C++ build is fine:
     ```bash 
          bazel build \
          -c opt
@@ -76,34 +94,86 @@ Unlike original mediapipe, this build builds OpenCV from source which avoids [pr
 
 3. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
 
-4. place a video file with hands in the project root path, to enable the test-running the pipeline on it.
-    + typically the video files are too large for git/github, so bring your own by using Gesture Studio.
-
 5. python test which should complete with exit code 0, it doesn't show any fancy results but only records the pipeline's output per input to a protobuf file:
     ```bash
     python3 -P hand_tracking_pipeline_run.py
     ```
-6. build and run our C++ mains which drive the mediapipe pipeline, using the repo included JetBrains run configurations.
-   
-7. to clear all bazel build caching:
+
+This accomplishes building and running the mediapipe hand tracking pipeline from python.
+
+# Build Verification Flow ― Full  
+
+**Verify all of the many intended buildables of this repository:**
+<br>
+build all bazel build targets, using the repo included JetBrains run configuration from `.run/build all liberation project targets.run.xml`, or by mimicking it as below:
+and mimicking their build command:
+```bash
+bazel build \
+        -c
+        opt
+        --define
+        MEDIAPIPE_DISABLE_GPU=1
+        --define
+        OPENCV=source
+        --disk_cache=/home/matan/.cache/bazel-disk-cache
+        --fission=no
+        //mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run
+        //mediapipe/examples/desktop/hand_tracking:libhands_pipeline_operator_c_api.so
+        //mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run_via_c_api
+        //mediapipe/examples/desktop/hand_tracking:compare_pipelines_output_data
+        //mediapipe/examples/desktop/hand_tracking:hand_tracking_no_pipeline_run
+        //mediapipe/python:_framework_bindings
+```        
+each bazel target yields an executable or a shared library as per its name. 
+
+Then, run the built C++ mains through their respective JetBrains run configurations from `.run/`, or by mimicking their bazel run commands, from under the project root path:
+
+build the rust main/s which are using the C++ based hand tracking and included in this repo, after you have built the above bazel targets:
+```bash
+cd rust
+cargo build
+```
+
+rust the rust mains through the provided rust run configuration, or by mimicking their `cargo run` command, from under the rust subdirectory, e.g.:
+```bash
+cargo run -- --graph-file mediapipe/modules/hand_landmark/hand_tracking_pipeline.pbtxt --input-video-path ../sample-video-two-hands.avi
+```
+
+pip install to generate and install the python package built by this repo into your active python venv, as per above, and run the main python code which uses it as per abvoe too.
+
+## Build Cleaning
+
+Only for those rare cases where you don't trust any of the build systems' incremental awareness, and shouldn't typically be needed.
+
++ to clear all bazel build caching:
     ```bash
     bazel clean --expunge && trash /tmp/bazel-\$\{USER\}/ && trash ~/.cache/bazel/
+    trash /home/matan/.cache/bazel-disk-cache
     ```
    + This should be stressed: a mere bazel clean --expunge is not enough to clear _all_ bazel caches. See the end parts of https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35 for a delination of what it clears. the above trashing of specific paths is aligned to the way that this repository uses specific caching paths after we added a fixed cache location for it to avoid it from avoiding incremental building by pip's ephemeral isolated build environments.
-   + Sometimes manually trashing the built executable is also necessary (at least, encountered consistently, when fiddling to make VLOG work under ABSL to no avail in our new module same as it does for mediapipe's original modules; don't try again). 
    + This does not clear the wheel installed binary of mediapipe which `pip install .` installs into the active python environment! only `pip uninstall mediapipe` does that!
    + This does not uninstall the mediapipe python package (only a `pip uninstall mediapipe` does;  `pip uninstall` caused the known issue described below, but after recent changes no longer does).
+   + Sometimes manually trashing the built executable is also necessary (at least, encountered only during some earlier stages of development). 
 
-8. build and run our mediapipe pipeline from rust using the repo included JetBrains (cargo based) dedicated run configuration.
++ to clear the cargo build which builds the rust code of this project which runs our pipeline and our no-pipeline derivation:
+    ```bash
+    cargo clean
+    ```
+  
++ to clear the pip installed mediapipe package built by the setup.py of this repository from any target venv to which it was installed:
+    ```bash
+    cd <path to the target python venv> ...
+    pip uninstall mediapipe
+    ```
 
 ## Debugging
 
-For being able to place breakpoints in the bazel built C++, it is necessary to use the following build flags in the bazel build command to build the top-level build targets (executable, lib) as really debuggable:
+For being able to place breakpoints in the bazel built C++, it is necessary to use the following build flags in the bazel build commands in order to build the top-level build targets (executable, lib) as really debuggable:
 + `-c dbg` (or any equivalent which generates debug symbols)
 + `--fission=no` (this option simplifies the debug symbol's writing into the executables, thus enabling Clion/GDB/LLDB to use them; without it, you cannot place breakpoints in the C++ code and expect them to actually work).
 + the same bazel flags should be used on the run configuration as in the build run configuration, otherwise the run configuration will trigger a rebuild with the default bazel build options.
 
-Running the built executables through bazel (by using a `bazel run` command) rather than directly running the executable, may be required for being able to set breakpoints. Running through the bazel command also makes ABSL_LOG messages appear with a hyperlink to the source code line where they are issued from, and is supported by the Bazel Plugin for Clion.
+Running the built executables not directly but rather through bazel (by using a `bazel run` command, or the IDE's bazel plugin provided run configuration types) rather than directly running the executable, may be required for being able to set breakpoints. Running through the bazel command also makes ABSL_LOG messages more ergonomic (a hyperlink to the source code line where they are issued from is attached to each one of them in JetBrains IDE).
 
 ## see also
 https://github.com/nui-ai/mediapipe/issues/18
