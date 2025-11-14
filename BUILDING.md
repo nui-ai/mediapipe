@@ -80,26 +80,27 @@ place an avi video file with hands motion in the project root path, to enable th
     python3.12 -m venv .venv
     source .venv/bin/activate
     ```
-2. run pip to build and install the python package providing python api to the mediapipe C++ core. <br>
-   + `setup.py`, which is triggered to run by the below `pip` command, runs with PEP 517 isolation invokes bazel to build all C++ bazel build targets required for our pipeline. 
-   + it not builds all required C++ targets, plus the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package and installing it to the current python environment. it is able to install it to the active python venv thanks to exporting the below environment variable prior to issuing the pip command. without the export preceding the below
-   + `pip install` command, mediapipe will fail to import in the active python venv. 
-   + without the preceding export of the python environment variable, you are installing the built package to an arbitrary location (which may in edge cases also degrade the bazel building outside of the python use case). 
-   + running the python package build and install, run after activating the project's python venv:
+2. run the below `pip` command to both build a python package providing python api to the mediapipe C++ core as a python package, and to install that package to the currently active python environment. <br>
+   + `setup.py`, which is triggered to run by the below `pip` command, runs with PEP 517 isolation,
+   + it invokes bazel to build all required C++ bazel build targets before building the resulting python package.
+   + it may or may not reuse the bazel cache from the previous step (need to double-check that) despite its pip build isolation. 
+   + it builds all required C++ targets, plus the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package and installing it to the current python environment. it is able to install it to the active python venv thanks to exporting the below environment variable prior to issuing the pip command. without the export preceding the below `pip install` command, mediapipe will fail to import in the active python environment.
+   + to reiterate: without the preceding export of the python environment variable, you are installing the built package to an arbitrary location (which may in edge cases also degrade the bazel building outside of the python use case). 
+   + to build and install the python package, run after activating your project's python venv:
        ```bash
        export MEDIAPIPE_PYTHON_BIN=$(which python)
-       pip install . 
+       pip install . -v
        ```
-   + for a verbose output which includes for example the _bazel commands being invoked by `setup.py`_, add `-v` to the pip command as otherwise due to pip's build isolation stdout is swallowed unless pip fails entirely.
+   + without `-v` stdout is swallowed unless pip fails entirely.
 
 3. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
 
-5. python test which should complete with exit code 0, it doesn't show any fancy results but only records the pipeline's output per input to a protobuf file:
+5. run the python verification main which should complete with exit code 0, it doesn't show any fancy results but only records the pipeline's output per input to a protobuf file:
     ```bash
     python3 -P hand_tracking_pipeline_run.py
     ```
 
-This accomplishes building and running the mediapipe hand tracking pipeline from python.
+This concludes building and running the hand tracking from python.
 
 # Build Verification Flow ― Full  
 
@@ -174,6 +175,18 @@ For being able to place breakpoints in the bazel built C++, it is necessary to u
 + the same bazel flags should be used on the run configuration as in the build run configuration, otherwise the run configuration will trigger a rebuild with the default bazel build options.
 
 Running the built executables not directly but rather through bazel (by using a `bazel run` command, or the IDE's bazel plugin provided run configuration types) rather than directly running the executable, may be required for being able to set breakpoints. Running through the bazel command also makes ABSL_LOG messages more ergonomic (a hyperlink to the source code line where they are issued from is attached to each one of them in JetBrains IDE).
+
+## Deploying to Python Environments
+Unlike rust which just takes a lib from the C++ build, python can only use the built wheel package which `pip install .` installs into the active python environment.<br>
+When you work within the current repo, this is what pip installing does.
+<br><br>
+There's a pethora of ways to get the mediapipe python package built by this repo, into any other project environment, instead of stipulating one way, the full gamut of options is discussed here: https://chatgpt.com/s/t_6917132141d48191abdf9d9eb1e4217b.
+In general there are two ways to get the mediapipe python package built by this repo into any other project environment:
+
+1. reuse this repo's `pip install` process to rebuild and install the wheel it's building into your target other project environment.
+2. install the python wheel built by this repo into any other python environment like any local wheel installation, namely just install last wheel that `pip install` (the exact pip install command from above) has already built in this repo, into your target python environment.
+
++ recall that our `pip install` command both re-builds the mediapipe python package and installs it into a target python environment.
 
 ## see also
 https://github.com/nui-ai/mediapipe/issues/18
