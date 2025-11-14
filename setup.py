@@ -332,7 +332,7 @@ class BuildModules(build_ext.build_ext):
         # 'hand_landmark/hand_landmark_lite.tflite',
         # 'holistic_landmark/hand_recrop.tflite',
         # 'iris_landmark/iris_landmark.tflite',
-        # 'palm_detection/palm_detection_full.tflite',
+        'palm_detection/palm_detection_full.tflite',
         # 'palm_detection/palm_detection_lite.tflite',
         # 'pose_detection/pose_detection.tflite',
         # 'pose_landmark/pose_landmark_full.tflite',
