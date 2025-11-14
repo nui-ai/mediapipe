@@ -44,11 +44,11 @@ Unlike original mediapipe, this build builds a specific version of OpenCV from s
    + 👉 **PyCharm**: install the JetBrains `Bazel` for the equivalent support in PyCharm, but using Clion is more relevant most of the time.
 <br><br>   
 
-2. 👉 Install the `Protocol Buffers` plugin from Jetbrains (in Both IDE).
-3. 👉 Only optionally add the `FlatBuffers` plugin from a 3rd party developer.
-4. Do not install conflicting Clion plugins for Protocol Buffers IDE support, they will make the IDE silently fail on many features and become defunct, which is a known issue in the JetBrains plugin framework not marking them as conflicting plugins. Just use the JetBrains one.
+3. Do not ⚠ install conflicting Clion plugins for Protocol Buffers IDE support, they will make the IDE silently fail on many features and become defunct, which is a known issue in the JetBrains plugin framework not marking them as conflicting plugins. Just use the JetBrains one.
+4. 👉 Install the `Protocol Buffers` plugin from Jetbrains (in Both IDE).
+5. 👉 Only optionally add the `FlatBuffers` plugin from a 3rd party developer.
 
-5. 👉 [Set-up preqrequisites for rust](rust/README.md).
+6. 👉 [Set-up preqrequisites for rust](rust/README.md).
  
  
 + Note: as a byproduct of the Bazel for Clion plugin, Clion uses the `.clwb` (Clion With Bazel Acronym) path as the working directory in many contexts; you usually want to revert to the project root path one level back upwards, for running stuff.
