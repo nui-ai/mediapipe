@@ -32,7 +32,7 @@ Unlike original mediapipe, this build builds a specific version of OpenCV from s
   1. `Bazel for Clion` (in Clion) is a _must-have_ plugin if you use Clion as your C++ IDE, as it makes the IDE understand the project strutcture by running bazel info commands on its sync, which is super-essential for code navigation between bazel BUILD files and their respective C++ source files and vice versa by your normal "go to definition" keyboard shortcut and through its context option "go to corresponding BUILD file" on the context menus. without this plugin, most of the source code will be flagged red as unknown symbols, and you won't have other conveniences like run configurations for building and running through bazel and you basically aren't getting any proper IDE experience at all!
       + https://www.youtube.com/watch?v=GV_KwWK3Qy8
       + https://ij.bazel.build/docs/bazel-plugin.html
-      + `.clwb/.bazelproject` controls which parts of the huge mediapipe codebase are built by bazel, and which files should be ignored by the bazel plugin to avoid over-indexing. fill it wisely. you can take the git version of it, but the plugin generates it from scratch when you initally import the project, so you can only manually copy its content into there after it has been generated automatically.
+      + [bazelproject](.clwb/.bazelproject) controls which parts of the huge mediapipe codebase are built by bazel, and which files should be ignored by the bazel plugin to avoid over-indexing. fill it wisely. you can take the git version of it, but the plugin generates it from scratch when you initally import the project, so you can only manually copy its content into there after it has been generated automatically.
   2. `Bazel` for the equivalent support in PyCharm, but using Clion is more relevant most of the time.  
   2. `Protocol Buffers` from Jetbrains (in Both IDE).
   3. Only optionally add the `FlatBuffers` plugin from a 3rd party developer.
@@ -58,20 +58,30 @@ place an avi video file with hands motion in the project root path, to enable th
   + the builds per-se do not require this video file to be present, it is only used at runtime as hand tracking input.
   + you can use [Gesture Studio](https://github.com/nui-ai/core?tab=readme-ov-file#gesture-studio) to generate your own video, give or take using ffmpeg to convert to avi if needed. 
 
+# Initial Local Setup
+0. clone this repository and cd into it.
+1. [.bazelproject](.clwb/.bazelproject) controls which parts of the huge mediapipe codebase are built by bazel, and which files should be ignored by the bazel plugin to avoid over-indexing. 
+    + review it, make sure you understand it, and update it wisely when needed. 
+    + you can use the git version of it, but this requires active action in the case of JetBrains IDE:<br>
+      the plugin generates it from scratch when you initally import the project, so you can only manually copy its git versioned copy into there after it has been generated automatically by the plugin on project initialization when first opening the repo as a bazel project in a bazel plugin enabled IDE.
+2. replace all run configurations in your JetBrains IDE to use your own bazel cache path of choice instead of /home/matan/.cache/bazel-disk-cache. some of the git included run configurations build the targets, some run them. update all of them bazel run configs to use your own local bazel cache path, by a "find and replace" of their underlying xml files under [.run](.run). 
+
 # Build Verification Flow ― python oriented only
 
-0. clone this repository and cd into it.
-
-1. replace all run configurations in your JetBrains IDE to use your own bazel cache path of choice instead of /home/matan/.cache/bazel-disk-cache.
-
-1. verify that the C++ build is fine:
-    ```bash 
+verify that the C++ build is fine:
+   ```bash 
          bazel build \
-         -c opt
-         --define MEDIAPIPE_DISABLE_GPU=1
-         --define OPENCV=source
-         --disk_cache=/home/matan/.cache/bazel-disk-cache
-         --fission=no```
+         -c opt \
+         --define MEDIAPIPE_DISABLE_GPU=1 \
+         --define OPENCV=source \
+         --disk_cache=/home/matan/.cache/bazel-disk-cache \
+         --fission=no \
+         //mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run \
+         //mediapipe/examples/desktop/hand_tracking:libhands_pipeline_operator_c_api.so \
+         //mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run_via_c_api \
+         //mediapipe/examples/desktop/hand_tracking:compare_pipelines_output_data \
+         //mediapipe/examples/desktop/hand_tracking:hand_tracking_no_pipeline_run \
+         //mediapipe/python:_framework_bindings
    ```
    see here https://chatgpt.com/c/690f1afd-57cc-8327-8ce3-5ce9ca9e2713 for memory safety warnings in google dependency packages which are expected.
 
@@ -81,17 +91,16 @@ place an avi video file with hands motion in the project root path, to enable th
     source .venv/bin/activate
     ```
 2. run the below `pip` command to both build a python package providing python api to the mediapipe C++ core as a python package, and to install that package to the currently active python environment. <br>
-   + `setup.py`, which is triggered to run by the below `pip` command, runs with PEP 517 isolation,
+   + [setup.py](setup.py), which is triggered to run by the below `pip` command, runs with PEP 517 isolation,
    + it invokes bazel to build all required C++ bazel build targets before building the resulting python package.
    + it may or may not reuse the bazel cache from the previous step (need to double-check that) despite its pip build isolation. 
-   + it builds all required C++ targets, plus the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package and installing it to the current python environment. it is able to install it to the active python venv thanks to exporting the below environment variable prior to issuing the pip command. without the export preceding the below `pip install` command, mediapipe will fail to import in the active python environment.
+   + it builds all required C++ targets, plus the python bindings and cumbersome fiddles which [setup.py](setup.py) does for building the mediapipe python package and installing it to the current python environment. it is able to install it to the active python venv thanks to exporting the below environment variable prior to issuing the pip command. without the export preceding the below `pip install` command, mediapipe will fail to import in the active python environment.
    + to reiterate: without the preceding export of the python environment variable, you are installing the built package to an arbitrary location (which may in edge cases also degrade the bazel building outside of the python use case). 
    + to build and install the python package, run after activating your project's python venv:
        ```bash
-       export MEDIAPIPE_PYTHON_BIN=$(which python)
-       pip install . -v
+       MEDIAPIPE_PYTHON_BIN=$(which python) pip install . -v
        ```
-   + without `-v` stdout is swallowed unless pip fails entirely.
+   + without `-v` stdout is swallowed unless pip fails entirely, but its stdout is useful when wishing to follow what it is doing.   
 
 3. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
 
@@ -106,41 +115,38 @@ This concludes building and running the hand tracking from python.
 
 **Verify all of the many intended buildables of this repository:**
 <br>
-build all bazel build targets, using the repo included JetBrains run configuration from `.run/build all liberation project targets.run.xml`, or by mimicking it as below:
+1. build all bazel build targets, using the repo included JetBrains run configuration from `.run/build all liberation project targets.run.xml`, or by mimicking it as below:
 and mimicking their build command:
-```bash
-bazel build \
-        -c
-        opt
-        --define
-        MEDIAPIPE_DISABLE_GPU=1
-        --define
-        OPENCV=source
-        --disk_cache=/home/matan/.cache/bazel-disk-cache
-        --fission=no
-        //mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run
-        //mediapipe/examples/desktop/hand_tracking:libhands_pipeline_operator_c_api.so
-        //mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run_via_c_api
-        //mediapipe/examples/desktop/hand_tracking:compare_pipelines_output_data
-        //mediapipe/examples/desktop/hand_tracking:hand_tracking_no_pipeline_run
-        //mediapipe/python:_framework_bindings
-```        
-each bazel target yields an executable or a shared library as per its name. 
+    ```bash
+    bazel build \
+            -c \
+            opt \
+            --define MEDIAPIPE_DISABLE_GPU=1 \
+            --define OPENCV=source \
+            --disk_cache=/home/matan/.cache/bazel-disk-cache \
+            --fission=no \
+            //mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run \
+            //mediapipe/examples/desktop/hand_tracking:libhands_pipeline_operator_c_api.so \
+            //mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run_via_c_api \
+            //mediapipe/examples/desktop/hand_tracking:compare_pipelines_output_data \
+            //mediapipe/examples/desktop/hand_tracking:hand_tracking_no_pipeline_run \
+            //mediapipe/python:_framework_bindings 
+    ```        
+    + each of the above bazel targets yields an executable or a shared library as per its name, the above command runs them all.  
+    + Then, run the built C++ mains through their respective JetBrains run configurations from `.run/`, or by mimicking their bazel run commands, from under the project root path.
+   <br>
+2. build and run the rust main/s which are using the C++ based hand tracking and included in this repo, after you have built the above bazel targets: 
+   + build:
+       ```bash
+       cd rust
+       cargo build
+       ```
+   + run the rust mains through the provided rust run configuration, or by mimicking their `cargo run` command, from under the `rust/` subdirectory, e.g.:
+     ```bash
+     cargo run -- --graph-file mediapipe/modules/hand_landmark/hand_tracking_pipeline.pbtxt --input-video-path ../sample-video-two-hands.avi
+     ```
 
-Then, run the built C++ mains through their respective JetBrains run configurations from `.run/`, or by mimicking their bazel run commands, from under the project root path:
-
-build the rust main/s which are using the C++ based hand tracking and included in this repo, after you have built the above bazel targets:
-```bash
-cd rust
-cargo build
-```
-
-rust the rust mains through the provided rust run configuration, or by mimicking their `cargo run` command, from under the rust subdirectory, e.g.:
-```bash
-cargo run -- --graph-file mediapipe/modules/hand_landmark/hand_tracking_pipeline.pbtxt --input-video-path ../sample-video-two-hands.avi
-```
-
-pip install to generate and install the python package built by this repo into your active python venv, as per above, and run the main python code which uses it as per abvoe too.
+3. pip install to generate and install the python package built by this repo into your active python venv, as per above, and run the main python code which uses it as per abvoe too.
 
 ## Build Cleaning
 
@@ -176,8 +182,8 @@ For being able to place breakpoints in the bazel built C++, it is necessary to u
 
 Running the built executables not directly but rather through bazel (by using a `bazel run` command, or the IDE's bazel plugin provided run configuration types) rather than directly running the executable, may be required for being able to set breakpoints. Running through the bazel command also makes ABSL_LOG messages more ergonomic (a hyperlink to the source code line where they are issued from is attached to each one of them in JetBrains IDE).
 
-## Deploying to Python Environments
-Unlike rust which just takes a lib from the C++ build, python can only use the built wheel package which `pip install .` installs into the active python environment.<br>
+## Deploying to Other Environments
+Unlike rust which just needs to find a lib built by C++ build, python can only use the built wheel package which `pip install .` installs into the active python environment.<br>
 When you work within the current repo, this is what pip installing does.
 <br><br>
 There's a pethora of ways to get the mediapipe python package built by this repo, into any other project environment, instead of stipulating one way, the full gamut of options is discussed here: https://chatgpt.com/s/t_6917132141d48191abdf9d9eb1e4217b.
