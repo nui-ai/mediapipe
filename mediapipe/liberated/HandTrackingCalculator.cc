@@ -1,4 +1,4 @@
-#include "HeadCalculator.h"
+#include "HandTrackingCalculator.h"
 #include <vector>
 #include <memory>
 #include <array>
@@ -17,13 +17,17 @@
 
 namespace hand_tracking_mp_lean {
 
-  class HeadCalculator : public CalculatorBase {
+  // mediapipe Calculator performing the entire work of the former hand tracking pipeline (HandLandmarkTrackingCpu)
+  // of mediapipe commit tag v0.10.13, which originally spanned many calculators and sub-graphs.
+  // this implementation was one-to-one verified to yield the same results over long videos.
+  class HandTrackingCalculator : public CalculatorBase {
+
+      int max_hands_to_track = 3;
 
       std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
       std::unique_ptr<ImageToTensorConverter> gpu_converter_;
       std::unique_ptr<ImageToTensorConverter> cpu_converter_;
       std::unique_ptr<HandTrackingCore> liberated_;
-      int max_hands_to_track = 3;
 
       static constexpr api2::Output<std::vector<Tensor>>::Optional kOutTensors{"TENSORS"};
       static constexpr api2::Output<Tensor>::Optional kOutTensor{"TENSOR"};
@@ -78,5 +82,5 @@ namespace hand_tracking_mp_lean {
       }
     };
 
-  REGISTER_CALCULATOR(HeadCalculator);
+  REGISTER_CALCULATOR(HandTrackingCalculator);
 }

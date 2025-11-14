@@ -163,7 +163,7 @@ if __name__ == '__main__':
 
     input_video = sys.argv[1]
 
-    run_for_video(input_video, max_num_hands=2)
+    run_for_video(input_video, max_num_hands=3)
 
     # The following stderr output is expected at the start of the run:
     # INFO: Created TensorFlow Lite XNNPACK delegate for CPU.

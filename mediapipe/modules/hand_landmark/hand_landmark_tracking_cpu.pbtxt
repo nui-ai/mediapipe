@@ -10,7 +10,7 @@ output_stream: "HANDEDNESS:multi_handedness"
 # Determines if the number of hands detected for the previous frame is equal to (or larger than)
 # the pipeline defined num_hands which it expects to track.
 node {
-  calculator: "HeadCalculator"
+  calculator: "HandTrackingCalculator"
   input_stream: "IMAGE:image"
   output_stream: "LANDMARKS:multi_hand_landmarks"
   output_stream: "WORLD_LANDMARKS:multi_hand_world_landmarks"

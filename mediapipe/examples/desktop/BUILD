@@ -58,7 +58,7 @@ cc_library(
         "//mediapipe/framework/port:opencv_video",
         "//mediapipe/framework/port:parse_text_proto",
         "//mediapipe/framework/port:status",
-        "//mediapipe/liberated:HeadCalculator",
+        "//mediapipe/liberated:HandTrackingCalculator",
         "//mediapipe/modules/hand_landmark:hand_landmark_cpu",
         "//mediapipe/modules/hand_landmark:hand_landmark_landmarks_to_roi",
         "//mediapipe/modules/hand_landmark:palm_detection_detection_to_roi",

@@ -5,9 +5,9 @@ licenses(["notice"])
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-    name = "HeadCalculator",
-    srcs = ["HeadCalculator.cc"],
-    hdrs = ["HeadCalculator.h"],
+    name = "HandTrackingCalculator",
+    srcs = ["HandTrackingCalculator.cc"],
+    hdrs = ["HandTrackingCalculator.h"],
     deps = [
         ":liberated",
         "//mediapipe/framework:calculator_framework",

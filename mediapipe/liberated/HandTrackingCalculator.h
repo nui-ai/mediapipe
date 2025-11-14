@@ -1,0 +1,3 @@
+#ifndef HandTrackingCalculator_H
+#define HandTrackingCalculator_H
+#endif

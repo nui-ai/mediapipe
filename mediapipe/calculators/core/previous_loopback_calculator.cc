@@ -117,7 +117,7 @@ class LoopbackAnticipatoryHandRects : public Node {
     // this calculator gets kicked off at pipeline beginning AND end, not just at the end of the pipeline, as if the framework is not waiting for its "LOOP:hand_rects_from_landmarks" input stream,
     // and starts this calculator as soon as merely the "MAIN:input_video" input stream has a new packet.
     // so you'll see at as the very first calc to run for an input iteration, and then at the end of each pipeline flow it runs again.
-    // the first run doesn't send anything on its output stream which the next HeadCalculator is waiting for, but only used for timestamp
+    // the first run doesn't send anything on its output stream which the next pipeline head calculator is waiting for, but only used for timestamp
     // bookkeeping, and the second run sends the actual packet on its output stream as expected.
     while (!main_packet_specs_.empty() && !loop_packets_.empty()) {
       // The earliest MAIN packet.
