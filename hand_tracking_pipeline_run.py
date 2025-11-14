@@ -53,7 +53,9 @@ if appearances > 0:
 
 from mediapipe.python.solutions import hands as mp_hands
 # imports of auto-generated source code generated from proto files by pip, the IDE may flag them as unknown symbols,
-# as it does not necessarily know where to find them unless explicitly configured to look in the right places:
+# either because you didn't configure their path under the active project venv as one for source files (e.g. as a project "source root" in PyCharm)
+# or because the project's mediapipe subdirectory (which never contains these generated source files) shadows the installed mediapipe package
+# during the IDE's project analysis due to the same reasone that we describe above.
 from mediapipe.framework.formats import landmark_pb2, classification_pb2, rect_pb2, detection_pb2
 from mediapipe.examples.desktop import pipeline_output_pb2
 

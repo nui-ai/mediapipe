@@ -21,6 +21,24 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
 
 0. clone this repository and cd into it.
 
+1. verify the building of some mediapipe C++ bazel build targets which the python build will rely on, as you might need to rebuild them after the pip install as per the known issue documented below.:
+    ```bash
+    bazel build -c opt --copt=-I/usr/include/opencv4 --define MEDIAPIPE_DISABLE_GPU=1 \
+    //mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite \
+    //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
+    ```
+
+8. above we dealt with one example C++ main which runs the hands pipeline. but there are three C++ example mains which build and use the hand tracking pipeline, all of which run it over an input video. 
+   + their build commands and run commands are originally described in [their shared build file](mediapipe/examples/desktop/hand_tracking/BUILD)
+   + they are named very non-descriptively:
+   + `hand_tracking_cpu`: applies the hands pipeline to an input video file, and writes a video file with the pipeline's results drawn on it. this is the one we used above.
+   + `hand_tracking_tflite`: applies the hands pipeline to an input video file, and writes a video file with the pipeline's results drawn on it. and shows each image with its results drawn on it, in an OpenCV window as it goes.
+   + `hand_tracking_gpu`: applies the hands pipeline to an input video file, and writes a video file with the pipeline's results drawn on it. and shows each image with its results drawn on it, in an OpenCV window as it goes. Uses GPU for inference.
+   + the naming could not be more awkwardly non-descriptive, but now you have the mapping for what each does.
+   + all defined as said in the same build file. 
+   + if you want to only build the hands pipeline (yes, a mediapipe graph should be built, not only fed as a pbtxt file to C++ code running it) you can build the bottom line target of the three, which you find in the `deps` field of their build definitions in the said build file.
+   + most of the above C++ mains are used by the python api, they are mostly other demo runners from the original mediapipe codebase.
+
 1. make and activate a python 3.12 venv:
     ```bash
     python3.12 -m venv .venv
@@ -29,9 +47,9 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
 2. run the python build, which triggers bazel to build the hand tracking pipelines and underlying mediapipe framework before building and installing the python wheel which provides the python mediapipe api. the included `setup.py`, triggered to run by the below `pip` command runs bazel under the hood to build all C++ dependencies required for the hands model. this not only builds all required C++ targets, but also the python bindings and cumbersome fiddles that `setup.py` does for building the mediapipe python package and installing it to the current python environment. Note that without the preceding export of the python environment variable, `pip` will cause bazel to rebuild from scratch for any source change when used by pip (as a direct consequence of modern pip's build isolation feature). without the export, mediapipe will also fail to run from python. so you want that export command before you use pip here:  
     ```bash
     export MEDIAPIPE_PYTHON_BIN=$(which python)
-    pip install . 
+    pip install . -v 
     ```
-    for a verbose output which includes print statements made by `setup.py`, add `-v` to the pip command as otherwise due to pip's build isolation stdout is swallowed when the build does not fai.:
+    `-v` should be used as otherwise due to pip's build isolation stdout is swallowed when the build does not fail altogether, making its steps hard to trace if needed.
 4. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
 
 5. place a video file with hands in the project root path, as `sample-video.avi`, and run both of the following tests:<br>
@@ -47,45 +65,29 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
         ``` 
         note that without `-P` python will try loading python modules from the `mediapipe` directory under the project's tree root, which is essentially our python "source directory", which is a horrible entanglement, and is also bound to fail since some of the mediapipe python modules are only dynamically built & placed (into the active python environment) by the pip install process ― because most of mediapipe python-exposed sub-packages are either pybind generated or bazel generated from protobuf definitions or both (e.g. mediapipe.python._framework_bindings). So the python source tree _never_ contains all the modules that the mediapipe python api expects to find, but it can sure throw you off track with cryptic module loading errors if you try to run without -P and thus let python first look for modules under the python source directory `mediapipe`. With this project you only want python to run from the active python environment, not from its "source" path, which is what `-P` does.
    
-6. if you wish to only build the C++ part, maybe for isolation that it builds without errors, or for C++ development:
+6. **to install the same built package into another target python environments:** the former pip command only built the mediapipe python package (which itself uses the necessary C++ bazel built lib files) and installed it into the active python environment (the venv you created and activated above). **to install the same built package into another target python environment** for example one associated only to a downstream project's venv, use the following steps:
+    + use pip to rebuild in a way not throwing away the wheel file, but keeping it under the `dist/` directory:
     ```bash
-    bazel build -c opt --copt=-I/usr/include/opencv4 --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite
+    python -m pip wheel . -w dist 
     ```
-    just remember this option doesn't (probably build the python bindgins and doesn't) deploy any library object for python use.
+    + this leaves the wheel file under `dist/`, so after this you can run `pip install ...dist/mediapipe-0.10.13.dev0-py3-none-any.whl` in any target python environment to install the built mediapipe package from here into that environment (if the package .whl file name changes, replace with its name as given by the pip install output). the `...` portion is only a placehoder to substitute: you should replace the relative path to the wheel file in the command just given, to one that points to the wheel file from the target environment's perspective, before running that command. you typically want to `pip uninstall mediapipe`in the target python environment before this step.  
 
-7. to clear all bazel build caching:
-    ```bash
-    bazel clean --expunge && trash /tmp/bazel-\$\{USER\}/ && trash ~/.cache/bazel/
-    ```
-   + This should be stressed: a mere bazel clean --expunge is not enough to clear _all_ bazel caches. See the end parts of https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35 for a delination of what it clears. the above trashing of specific paths is aligned to the way that this repository uses specific caching paths after we added a fixed cache location for it to avoid it from avoiding incremental building by pip's ephemeral isolated build environments. 
-   + This does not clear the wheel installed binary of mediapipe which `pip install .` installs into the active python environment! only `pip uninstall mediapipe` does that!
-   + This does not uninstall the mediapipe python package (only a `pip uninstall mediapipe` does, but don't do that, just repeat the pip install for updating, as `pip uninstall` causes the known issue described below).
-
-8. above we dealt with one example C++ main which runs the hands pipeline. but there are three C++ example mains which build and use the hand tracking pipeline, all of which run it over an input video. 
-   + their build commands and run commands are originally described in [their shared build file](mediapipe/examples/desktop/hand_tracking/BUILD)
-   + they are named very non-descriptively:
-    + `hand_tracking_cpu`: applies the hands pipeline to an input video file, and writes a video file with the pipeline's results drawn on it. this is the one we used above.
-    + `hand_tracking_tflite`: applies the hands pipeline to an input video file, and writes a video file with the pipeline's results drawn on it. and shows each image with its results drawn on it, in an OpenCV window as it goes.
-    + `hand_tracking_gpu`: applies the hands pipeline to an input video file, and writes a video file with the pipeline's results drawn on it. and shows each image with its results drawn on it, in an OpenCV window as it goes. Uses GPU for inference.
-    + the naming could not be more awkwardly non-descriptive, but now you have the mapping for what each does.
-    + all defined as said in the same build file. 
-    + if you want to only build the hands pipeline (yes, a mediapipe graph should be built, not only fed as a pbtxt file to C++ code running it) you can build the bottom line target of the three, which you find in the `deps` field of their build definitions in the said build file.
-
-# ⚠️ Build Known Issue ⚠️  
+# ⚠️ Build Known Issue in this branch ⚠️  
 You get this error from python, or a similar one from C++ mains. this only happens on this branch and solved by radical changes in the liberation branch:
 ```
 Failed to load resource: mediapipe/modules/palm_detection/palm_detection_full.tflite
 ```
 This is caused by a `pip uninstall mediapipe` or after re-running the `pip install .` after the first run of it.
 
-**Solution:** rerun the pure bazel build, using the command from the previous section. that places those files which the python build probably only links to.  
+**Solution:** if you get that message when trying to run hand_tracking_pipeline_run.py, rerun the pure bazel build, using the command from the previous section. that places those files which the python build probably only links to. after this you can run `hand_tracking_pipeline_run.py` and you won't get that error. this is fixed in the liberation branch but hard to trace and backport here, so just go through this extra step in this branch when you hit that.  
 
 Conclusions: 
 1. Something must be not perfect enough still, if this can happen.
 2. The pip installed mediapipe is not fully isolated from the (non-pip) Bazel-built mediapipe afterall, even though pip mostly uses build isolation for its bazel building.  
 
 **How to solve it from happening:**<br>
-The tflite model file actually used in the normal non-fail scenario is named `hand_landmark_full.tflite`. It contains both that palm detection model and the landmarks model, and when it's not found, the runtime tries looking for the palm model in default locations where it shouldn't be, and issues that error. This file is available both under the bazel `./build` and under the virtual environment directories alike, but it's not a symlink from one to the other.  
++ The tflite model file actually used in the normal non-fail scenario is named `hand_landmark_full.tflite`. It contains both that palm detection model and the landmarks model, and when it's not found, the runtime tries looking for the palm model in default locations where it shouldn't be, and issues that error. This file is available both under the bazel `./build` and under the virtual environment directories alike, but it's not a symlink from one to the other.
++ Update: this is solved in the liberation branch, but in the current branch you still need to workaround this issue by re-running the bazel build after the `pip install` command from above.
 
 ```
 For a Python package installed via pip, the list of installed files is recorded in the package metadata, typically in a file named RECORD (for wheels) or installed-files.txt (for legacy setup.py install). These files are located in the package's .dist-info or .egg-info directory inside your Python environment's site-packages.
@@ -107,6 +109,20 @@ This can be ironed out as part of the wider https://github.com/nui-ai/mediapipe/
    - [The other included docker files](Dockerfile.md), provided originally by mediapipe's original codebase, were not tested.
 2. The changes having been made for current-day buildability are documented in the git commits trail. 
 3. Maybe `pip install` builds a bit more than we need as we didn't modify `setup.py` to only build only the hands target as `bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu` would, though most of the bazel build time is the shared mediapipe framework anyway. 
+
+# bazel clean
+
+the bazel cache might be used across different branches of this repository, whether you have each branch in its own local project copy, or not. 
+
+to explicitly clear bazel build caching:
+
+```bash
+bazel clean --expunge && trash /tmp/bazel-\$\{USER\}/ && trash ~/.cache/bazel/
+```
+
++ This should be stressed: a mere bazel clean --expunge is not enough to clear _all_ bazel caches. See the end parts of https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35 for a delination of what it clears. the above trashing of specific paths is aligned to the way that this repository uses specific caching paths after we added a fixed cache location for it to avoid it from avoiding incremental building by pip's ephemeral isolated build environments. 
++ This does not clear the wheel installed binary of mediapipe which `pip install .` installs into the active python environment! only `pip uninstall mediapipe` does that!
++ This does not uninstall the mediapipe python package (only a `pip uninstall mediapipe` does, but don't do that, just repeat the pip install for updating, as `pip uninstall` causes the known issue described below).
 
 # old deprecated comments (but has some gems in it to be extracted into above)
 
