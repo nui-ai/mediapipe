@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/validate_type.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 inline Packet PacketFrom(int i) { return Adopt(new int(i)).At(Timestamp(i)); }
@@ -98,4 +98,4 @@ TEST(PacketInnerJoinCalculatorTest, SomeMatching) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -27,12 +27,12 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 namespace {
 
 class FooApi1Base : public CalculatorBase {
  public:
-  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc) {
+  static absl::Status GetContract(hand_tracking_mp_lean::CalculatorContract* cc) {
     cc->Inputs().Tag("INPUT").Set<int>();
     cc->Outputs().Tag("OUTPUT").Set<int>();
     cc->InputSidePackets().Tag("SIDE_INPUT").Set<std::string>();
@@ -45,7 +45,7 @@ class FooCheckPortsAccessCalculator : public FooApi1Base {
  public:
   using FooApi1Base::GetContract;
 
-  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) final {
+  absl::Status Process(hand_tracking_mp_lean::CalculatorContext* cc) final {
     CalculatorContext<FooNode> foo(*cc);
 
     RET_CHECK(foo.input);
@@ -83,22 +83,22 @@ TEST(PortContextTest, CanReadInputWriteOutputPorts) {
 
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize(std::move(config)));
-  mediapipe_v01013_based::Packet out;
+  hand_tracking_mp_lean::Packet out;
   MP_ASSERT_OK(
-      graph.ObserveOutputStream("out", [&out](const mediapipe_v01013_based::Packet& p) {
+      graph.ObserveOutputStream("out", [&out](const hand_tracking_mp_lean::Packet& p) {
         out = p;
         return absl::OkStatus();
       }));
 
   // Starting and sending inputs.
   MP_ASSERT_OK(graph.StartRun(
-      {{"side_in", mediapipe_v01013_based::MakePacket<std::string>("foo_input_side")}}));
+      {{"side_in", hand_tracking_mp_lean::MakePacket<std::string>("foo_input_side")}}));
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe_v01013_based::MakePacket<int>(21).At(Timestamp(0))));
+      "in", hand_tracking_mp_lean::MakePacket<int>(21).At(Timestamp(0))));
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
   // Verifying outputs.
-  MP_ASSERT_OK_AND_ASSIGN(mediapipe_v01013_based::Packet side_out,
+  MP_ASSERT_OK_AND_ASSIGN(hand_tracking_mp_lean::Packet side_out,
                           graph.GetOutputSidePacket("side_out"));
   ASSERT_FALSE(side_out.IsEmpty());
   EXPECT_EQ(side_out.Get<std::string>(), "foo_output_side");
@@ -113,7 +113,7 @@ TEST(PortContextTest, CanReadInputWriteOutputPorts) {
 
 class RepeatedFooContractBase : public CalculatorBase {
  public:
-  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc) {
+  static absl::Status GetContract(hand_tracking_mp_lean::CalculatorContract* cc) {
     for (int i = 0; i < cc->Inputs().NumEntries("INPUT"); ++i) {
       cc->Inputs().Get("INPUT", i).Set<int>();
     }
@@ -135,7 +135,7 @@ class RepeatedFooCheckPortsAccessCalculator : public RepeatedFooContractBase {
  public:
   using RepeatedFooContractBase::GetContract;
 
-  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) final {
+  absl::Status Process(hand_tracking_mp_lean::CalculatorContext* cc) final {
     CalculatorContext<RepeatedFooNode> repeated_foo(*cc);
 
     RET_CHECK_EQ(repeated_foo.input.Count(), 1);
@@ -179,22 +179,22 @@ TEST(PortContextTest, CanReadInputWriteOutputRepeatedPortsWhenOneSpecified) {
 
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize(std::move(config)));
-  mediapipe_v01013_based::Packet out;
+  hand_tracking_mp_lean::Packet out;
   MP_ASSERT_OK(
-      graph.ObserveOutputStream("out", [&out](const mediapipe_v01013_based::Packet& p) {
+      graph.ObserveOutputStream("out", [&out](const hand_tracking_mp_lean::Packet& p) {
         out = p;
         return absl::OkStatus();
       }));
 
   // Starting and sending inputs.
   MP_ASSERT_OK(graph.StartRun(
-      {{"side_in", mediapipe_v01013_based::MakePacket<std::string>("foo_input_side")}}));
+      {{"side_in", hand_tracking_mp_lean::MakePacket<std::string>("foo_input_side")}}));
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe_v01013_based::MakePacket<int>(21).At(Timestamp(0))));
+      "in", hand_tracking_mp_lean::MakePacket<int>(21).At(Timestamp(0))));
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
   // Verifying outputs.
-  MP_ASSERT_OK_AND_ASSIGN(mediapipe_v01013_based::Packet side_out,
+  MP_ASSERT_OK_AND_ASSIGN(hand_tracking_mp_lean::Packet side_out,
                           graph.GetOutputSidePacket("side_out"));
   ASSERT_FALSE(side_out.IsEmpty());
   EXPECT_EQ(side_out.Get<std::string>(), "foo_output_side");
@@ -212,7 +212,7 @@ class RepeatedFooCheckManyPortsAccessCalculator
  public:
   using RepeatedFooContractBase::GetContract;
 
-  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) final {
+  absl::Status Process(hand_tracking_mp_lean::CalculatorContext* cc) final {
     CalculatorContext<RepeatedFooNode> repeated_foo(*cc);
 
     RET_CHECK_EQ(repeated_foo.input.Count(), 2);
@@ -279,40 +279,40 @@ TEST(PortContextTest, CanReadInputWriteOutputRepeatedPortsWhenManySpecified) {
 
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize(std::move(config)));
-  mediapipe_v01013_based::Packet out0;
+  hand_tracking_mp_lean::Packet out0;
   MP_ASSERT_OK(
-      graph.ObserveOutputStream("out0", [&out0](const mediapipe_v01013_based::Packet& p) {
+      graph.ObserveOutputStream("out0", [&out0](const hand_tracking_mp_lean::Packet& p) {
         out0 = p;
         return absl::OkStatus();
       }));
-  mediapipe_v01013_based::Packet out1;
+  hand_tracking_mp_lean::Packet out1;
   MP_ASSERT_OK(
-      graph.ObserveOutputStream("out1", [&out1](const mediapipe_v01013_based::Packet& p) {
+      graph.ObserveOutputStream("out1", [&out1](const hand_tracking_mp_lean::Packet& p) {
         out1 = p;
         return absl::OkStatus();
       }));
-  mediapipe_v01013_based::Packet out2;
+  hand_tracking_mp_lean::Packet out2;
   MP_ASSERT_OK(
-      graph.ObserveOutputStream("out2", [&out2](const mediapipe_v01013_based::Packet& p) {
+      graph.ObserveOutputStream("out2", [&out2](const hand_tracking_mp_lean::Packet& p) {
         out2 = p;
         return absl::OkStatus();
       }));
 
   // Staring and sending inputs.
   MP_ASSERT_OK(graph.StartRun(
-      {{"side_in0", mediapipe_v01013_based::MakePacket<std::string>("foo_input_side0")},
-       {"side_in1", mediapipe_v01013_based::MakePacket<std::string>("foo_input_side1")},
-       {"side_in2", mediapipe_v01013_based::MakePacket<std::string>("foo_input_side2")}}));
+      {{"side_in0", hand_tracking_mp_lean::MakePacket<std::string>("foo_input_side0")},
+       {"side_in1", hand_tracking_mp_lean::MakePacket<std::string>("foo_input_side1")},
+       {"side_in2", hand_tracking_mp_lean::MakePacket<std::string>("foo_input_side2")}}));
 
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "in0", mediapipe_v01013_based::MakePacket<int>(21).At(Timestamp(0))));
+      "in0", hand_tracking_mp_lean::MakePacket<int>(21).At(Timestamp(0))));
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "in1", mediapipe_v01013_based::MakePacket<int>(22).At(Timestamp(0))));
+      "in1", hand_tracking_mp_lean::MakePacket<int>(22).At(Timestamp(0))));
 
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
   // Verifying outputs.
-  mediapipe_v01013_based::Packet side_out;
+  hand_tracking_mp_lean::Packet side_out;
   MP_ASSERT_OK_AND_ASSIGN(side_out, graph.GetOutputSidePacket("side_out0"));
   ASSERT_FALSE(side_out.IsEmpty());
   EXPECT_EQ(side_out.Get<std::string>(), "foo_output_side0");
@@ -335,4 +335,4 @@ TEST(PortContextTest, CanReadInputWriteOutputRepeatedPortsWhenManySpecified) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3

@@ -14,14 +14,14 @@
 
 syntax = "proto2";
 
-// TODO: Switch to package mediapipe_v01013_based.
-package mediapipe_v01013_based;
+// TODO: Switch to package hand_tracking_mp_lean.
+package hand_tracking_mp_lean;
 
 import "mediapipe/framework/calculator.proto";
 
 // Options for PacketFrequencyCalculator.
 message PacketFrequencyCalculatorOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional PacketFrequencyCalculatorOptions ext = 168468918;
   }
 

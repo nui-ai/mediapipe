@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 template <typename T>
 void DoTestSingleSidePacket(absl::string_view packet_spec,
@@ -42,7 +42,7 @@ void DoTestSingleSidePacket(absl::string_view packet_spec,
         }
       )";
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           absl::Substitute(graph_config_template, packet_spec));
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize(graph_config));
@@ -73,7 +73,7 @@ TEST(ConstantSidePacketCalculatorTest, EveryPossibleType) {
 
 TEST(ConstantSidePacketCalculatorTest, MultiplePackets) {
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "ConstantSidePacketCalculator"
           output_side_packet: "PACKET:0:int_packet"
@@ -122,7 +122,7 @@ TEST(ConstantSidePacketCalculatorTest, MultiplePackets) {
 
 TEST(ConstantSidePacketCalculatorTest, ProcessingPacketsWithCorrectTagOnly) {
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "ConstantSidePacketCalculator"
           output_side_packet: "PACKET:0:int_packet"
@@ -163,7 +163,7 @@ TEST(ConstantSidePacketCalculatorTest, ProcessingPacketsWithCorrectTagOnly) {
 
 TEST(ConstantSidePacketCalculatorTest, IncorrectConfig_MoreOptionsThanPackets) {
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "ConstantSidePacketCalculator"
           output_side_packet: "PACKET:int_packet"
@@ -181,7 +181,7 @@ TEST(ConstantSidePacketCalculatorTest, IncorrectConfig_MoreOptionsThanPackets) {
 
 TEST(ConstantSidePacketCalculatorTest, IncorrectConfig_MorePacketsThanOptions) {
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "ConstantSidePacketCalculator"
           output_side_packet: "PACKET:0:int_packet"
@@ -197,4 +197,4 @@ TEST(ConstantSidePacketCalculatorTest, IncorrectConfig_MorePacketsThanOptions) {
   EXPECT_FALSE(graph.Initialize(graph_config).ok());
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

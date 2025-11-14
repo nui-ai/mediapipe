@@ -22,7 +22,7 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/port/opencv_core_inc.h"
 
-namespace mediapipe_v01013_based::formats {
+namespace hand_tracking_mp_lean::formats {
 
 // Creates a cv::Mat view into a Tensor (zero copy).
 // The passed read view needs to outlive the returned cv::Mat.
@@ -53,6 +53,6 @@ absl::StatusOr<cv::Mat> MatView(const Tensor& tensor,
                                 Tensor::CpuReadView&& view,
                                 std::vector<int> slice = {}) = delete;
 
-}  // namespace mediapipe_v01013_based::formats
+}  // namespace hand_tracking_mp_lean::formats
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_IMAGE_FRAME_OPENCV_H_

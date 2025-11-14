@@ -18,7 +18,7 @@
 #include "HalideBuffer.h"
 #include "HalideRuntime.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace frame_buffer {
 
 // FloatBuffer represents a view over an interleaved floating-point image.
@@ -80,6 +80,6 @@ class FloatBuffer {
 };
 
 }  // namespace frame_buffer
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_FRAME_BUFFER_FLOAT_BUFFER_H_

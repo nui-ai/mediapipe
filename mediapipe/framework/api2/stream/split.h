@@ -19,42 +19,42 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "tensorflow/lite/c/common.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 
 namespace stream_split_internal {
 
 // Helper function that adds a node to a graph, that is capable of splitting a
 // specific type (T).
 template <class T>
-mediapipe_v01013_based::api2::builder::GenericNode& AddSplitVectorNode(
-    mediapipe_v01013_based::api2::builder::Graph& graph) {
+hand_tracking_mp_lean::api2::builder::GenericNode& AddSplitVectorNode(
+    hand_tracking_mp_lean::api2::builder::Graph& graph) {
   if constexpr (std::is_same_v<T, std::vector<TfLiteTensor>>) {
     return graph.AddNode("SplitTfLiteTensorVectorCalculator");
-  } else if constexpr (std::is_same_v<T, std::vector<mediapipe_v01013_based::Tensor>>) {
+  } else if constexpr (std::is_same_v<T, std::vector<hand_tracking_mp_lean::Tensor>>) {
     return graph.AddNode("SplitTensorVectorCalculator");
   } else if constexpr (std::is_same_v<T, std::vector<uint64_t>>) {
     return graph.AddNode("SplitUint64tVectorCalculator");
   } else if constexpr (std::is_same_v<
-                           T, std::vector<mediapipe_v01013_based::NormalizedLandmark>>) {
+                           T, std::vector<hand_tracking_mp_lean::NormalizedLandmark>>) {
     return graph.AddNode("SplitLandmarkVectorCalculator");
   } else if constexpr (std::is_same_v<
-                           T, std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>) {
+                           T, std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>>) {
     return graph.AddNode("SplitNormalizedLandmarkListVectorCalculator");
   } else if constexpr (std::is_same_v<T,
-                                      std::vector<mediapipe_v01013_based::NormalizedRect>>) {
+                                      std::vector<hand_tracking_mp_lean::NormalizedRect>>) {
     return graph.AddNode("SplitNormalizedRectVectorCalculator");
   } else if constexpr (std::is_same_v<T, std::vector<Matrix>>) {
     return graph.AddNode("SplitMatrixVectorCalculator");
-  } else if constexpr (std::is_same_v<T, std::vector<mediapipe_v01013_based::Detection>>) {
+  } else if constexpr (std::is_same_v<T, std::vector<hand_tracking_mp_lean::Detection>>) {
     return graph.AddNode("SplitDetectionVectorCalculator");
   } else if constexpr (std::is_same_v<
-                           T, std::vector<mediapipe_v01013_based::ClassificationList>>) {
+                           T, std::vector<hand_tracking_mp_lean::ClassificationList>>) {
     return graph.AddNode("SplitClassificationListVectorCalculator");
-  } else if constexpr (std::is_same_v<T, mediapipe_v01013_based::NormalizedLandmarkList>) {
+  } else if constexpr (std::is_same_v<T, hand_tracking_mp_lean::NormalizedLandmarkList>) {
     return graph.AddNode("SplitNormalizedLandmarkListCalculator");
-  } else if constexpr (std::is_same_v<T, mediapipe_v01013_based::LandmarkList>) {
+  } else if constexpr (std::is_same_v<T, hand_tracking_mp_lean::LandmarkList>) {
     return graph.AddNode("SplitLandmarkListCalculator");
-  } else if constexpr (std::is_same_v<T, mediapipe_v01013_based::JointList>) {
+  } else if constexpr (std::is_same_v<T, hand_tracking_mp_lean::JointList>) {
     return graph.AddNode("SplitJointListCalculator");
   } else {
     static_assert(dependent_false<T>::value,
@@ -67,14 +67,14 @@ struct split_result_item {
   using type = typename T::value_type;
 };
 template <>
-struct split_result_item<mediapipe_v01013_based::NormalizedLandmarkList,
+struct split_result_item<hand_tracking_mp_lean::NormalizedLandmarkList,
                          /*kIteratorContainsRanges=*/false> {
-  using type = mediapipe_v01013_based::NormalizedLandmark;
+  using type = hand_tracking_mp_lean::NormalizedLandmark;
 };
 template <>
-struct split_result_item<mediapipe_v01013_based::LandmarkList,
+struct split_result_item<hand_tracking_mp_lean::LandmarkList,
                          /*kIteratorContainsRanges=*/false> {
-  using type = mediapipe_v01013_based::Landmark;
+  using type = hand_tracking_mp_lean::Landmark;
 };
 
 template <typename T>
@@ -82,19 +82,19 @@ struct split_result_item<T, /*kIteratorContainsRanges=*/true> {
   using type = std::vector<typename T::value_type>;
 };
 template <>
-struct split_result_item<mediapipe_v01013_based::NormalizedLandmarkList,
+struct split_result_item<hand_tracking_mp_lean::NormalizedLandmarkList,
                          /*kIteratorContainsRanges=*/true> {
-  using type = mediapipe_v01013_based::NormalizedLandmarkList;
+  using type = hand_tracking_mp_lean::NormalizedLandmarkList;
 };
 template <>
-struct split_result_item<mediapipe_v01013_based::LandmarkList,
+struct split_result_item<hand_tracking_mp_lean::LandmarkList,
                          /*kIteratorContainsRanges=*/true> {
-  using type = mediapipe_v01013_based::LandmarkList;
+  using type = hand_tracking_mp_lean::LandmarkList;
 };
 
 template <typename CollectionT, typename I>
 auto Split(Stream<CollectionT> items, I begin, I end,
-           mediapipe_v01013_based::api2::builder::Graph& graph) {
+           hand_tracking_mp_lean::api2::builder::Graph& graph) {
   auto& splitter = AddSplitVectorNode<CollectionT>(graph);
   items.ConnectTo(splitter.In(""));
 
@@ -104,7 +104,7 @@ auto Split(Stream<CollectionT> items, I begin, I end,
   using R =
       typename split_result_item<CollectionT, kIteratorContainsRanges>::type;
   auto& splitter_opts =
-      splitter.template GetOptions<mediapipe_v01013_based::SplitVectorCalculatorOptions>();
+      splitter.template GetOptions<hand_tracking_mp_lean::SplitVectorCalculatorOptions>();
   if constexpr (!kIteratorContainsRanges) {
     splitter_opts.set_element_only(true);
   }
@@ -126,7 +126,7 @@ auto Split(Stream<CollectionT> items, I begin, I end,
 
 template <typename CollectionT, typename I>
 Stream<CollectionT> SplitAndCombine(Stream<CollectionT> items, I begin, I end,
-                                    mediapipe_v01013_based::api2::builder::Graph& graph) {
+                                    hand_tracking_mp_lean::api2::builder::Graph& graph) {
   auto& splitter = AddSplitVectorNode<CollectionT>(graph);
   items.ConnectTo(splitter.In(""));
 
@@ -135,7 +135,7 @@ Stream<CollectionT> SplitAndCombine(Stream<CollectionT> items, I begin, I end,
                      std::pair<int, int>>;
 
   auto& splitter_opts =
-      splitter.template GetOptions<mediapipe_v01013_based::SplitVectorCalculatorOptions>();
+      splitter.template GetOptions<hand_tracking_mp_lean::SplitVectorCalculatorOptions>();
   splitter_opts.set_combine_outputs(true);
 
   for (auto it = begin; it != end; ++it) {
@@ -173,7 +173,7 @@ Stream<CollectionT> SplitAndCombine(Stream<CollectionT> items, I begin, I end,
 // ```
 template <typename CollectionT, typename I>
 auto Split(Stream<CollectionT> items, const I& indices,
-           mediapipe_v01013_based::api2::builder::Graph& graph) {
+           hand_tracking_mp_lean::api2::builder::Graph& graph) {
   return stream_split_internal::Split(items, indices.begin(), indices.end(),
                                       graph);
 }
@@ -197,7 +197,7 @@ auto Split(Stream<CollectionT> items, const I& indices,
 // ```
 template <typename CollectionT>
 auto Split(Stream<CollectionT> items, std::initializer_list<int> indices,
-           mediapipe_v01013_based::api2::builder::Graph& graph) {
+           hand_tracking_mp_lean::api2::builder::Graph& graph) {
   return stream_split_internal::Split(items, indices.begin(), indices.end(),
                                       graph);
 }
@@ -222,7 +222,7 @@ auto Split(Stream<CollectionT> items, std::initializer_list<int> indices,
 // ```
 template <typename CollectionT, typename RangeT>
 auto SplitToRanges(Stream<CollectionT> items, const RangeT& ranges,
-                   mediapipe_v01013_based::api2::builder::Graph& graph) {
+                   hand_tracking_mp_lean::api2::builder::Graph& graph) {
   return stream_split_internal::Split(items, ranges.begin(), ranges.end(),
                                       graph);
 }
@@ -248,7 +248,7 @@ auto SplitToRanges(Stream<CollectionT> items, const RangeT& ranges,
 template <typename CollectionT>
 auto SplitToRanges(Stream<CollectionT> items,
                    std::initializer_list<std::pair<int, int>> ranges,
-                   mediapipe_v01013_based::api2::builder::Graph& graph) {
+                   hand_tracking_mp_lean::api2::builder::Graph& graph) {
   return stream_split_internal::Split(items, ranges.begin(), ranges.end(),
                                       graph);
 }
@@ -274,7 +274,7 @@ auto SplitToRanges(Stream<CollectionT> items,
 template <typename CollectionT, typename RangeT>
 Stream<CollectionT> SplitAndCombine(Stream<CollectionT> items,
                                     const RangeT& ranges,
-                                    mediapipe_v01013_based::api2::builder::Graph& graph) {
+                                    hand_tracking_mp_lean::api2::builder::Graph& graph) {
   return stream_split_internal::SplitAndCombine(items, ranges.begin(),
                                                 ranges.end(), graph);
 }
@@ -300,7 +300,7 @@ template <typename CollectionT>
 Stream<CollectionT> SplitAndCombine(
     Stream<CollectionT> items,
     std::initializer_list<std::pair<int, int>> ranges,
-    mediapipe_v01013_based::api2::builder::Graph& graph) {
+    hand_tracking_mp_lean::api2::builder::Graph& graph) {
   return stream_split_internal::SplitAndCombine(items, ranges.begin(),
                                                 ranges.end(), graph);
 }
@@ -325,11 +325,11 @@ Stream<CollectionT> SplitAndCombine(
 template <typename CollectionT>
 Stream<CollectionT> SplitAndCombine(Stream<CollectionT> items,
                                     std::initializer_list<int> ranges,
-                                    mediapipe_v01013_based::api2::builder::Graph& graph) {
+                                    hand_tracking_mp_lean::api2::builder::Graph& graph) {
   return stream_split_internal::SplitAndCombine(items, ranges.begin(),
                                                 ranges.end(), graph);
 }
 
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_STREAM_SPLIT_H_

@@ -21,27 +21,27 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 typedef FilterCollectionCalculator<std::vector<uint64_t>>
     FilterUInt64CollectionCalculator;
 REGISTER_CALCULATOR(FilterUInt64CollectionCalculator);
 
-typedef FilterCollectionCalculator<std::vector<::mediapipe_v01013_based::NormalizedRect>>
+typedef FilterCollectionCalculator<std::vector<::hand_tracking_mp_lean::NormalizedRect>>
     FilterNormalizedRectCollectionCalculator;
 REGISTER_CALCULATOR(FilterNormalizedRectCollectionCalculator);
 
-typedef FilterCollectionCalculator<std::vector<::mediapipe_v01013_based::LandmarkList>>
+typedef FilterCollectionCalculator<std::vector<::hand_tracking_mp_lean::LandmarkList>>
     FilterLandmarkListCollectionCalculator;
 REGISTER_CALCULATOR(FilterLandmarkListCollectionCalculator);
 
 typedef FilterCollectionCalculator<
-    std::vector<::mediapipe_v01013_based::NormalizedLandmarkList>>
+    std::vector<::hand_tracking_mp_lean::NormalizedLandmarkList>>
     FilterNormalizedLandmarkListCollectionCalculator;
 REGISTER_CALCULATOR(FilterNormalizedLandmarkListCollectionCalculator);
 
-typedef FilterCollectionCalculator<std::vector<::mediapipe_v01013_based::ClassificationList>>
+typedef FilterCollectionCalculator<std::vector<::hand_tracking_mp_lean::ClassificationList>>
     FilterClassificationListCollectionCalculator;
 REGISTER_CALCULATOR(FilterClassificationListCollectionCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

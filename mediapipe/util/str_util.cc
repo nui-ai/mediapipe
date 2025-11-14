@@ -5,7 +5,7 @@
 #include "absl/functional/any_invocable.h"
 #include "absl/strings/string_view.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -57,4 +57,4 @@ void ForEachLine(absl::string_view utf8_text,
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

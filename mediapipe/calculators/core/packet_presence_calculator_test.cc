@@ -26,7 +26,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/sink.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 using ::testing::ElementsAre;
 using ::testing::Eq;
 using ::testing::Value;
@@ -82,4 +82,4 @@ TEST(PreviousLoopbackCalculator, CorrectTimestamps) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

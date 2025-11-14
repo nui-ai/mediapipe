@@ -42,20 +42,20 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/proto/inference_subgraph.pb.h"
 #include "mediapipe/tasks/cc/core/proto/model_resources_calculator.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace core {
 namespace {
 
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::SideInput;
-using ::mediapipe_v01013_based::api2::SideOutput;
-using ::mediapipe_v01013_based::api2::builder::GenericNode;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::tasks::core::proto::Acceleration;
-using ::mediapipe_v01013_based::tasks::core::proto::InferenceSubgraphOptions;
-using ::mediapipe_v01013_based::tasks::core::proto::ModelResourcesCalculatorOptions;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::SideInput;
+using ::hand_tracking_mp_lean::api2::SideOutput;
+using ::hand_tracking_mp_lean::api2::builder::GenericNode;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::tasks::core::proto::Acceleration;
+using ::hand_tracking_mp_lean::tasks::core::proto::InferenceSubgraphOptions;
+using ::hand_tracking_mp_lean::tasks::core::proto::ModelResourcesCalculatorOptions;
 
 constexpr char kMetadataExtractorTag[] = "METADATA_EXTRACTOR";
 constexpr char kModelTag[] = "MODEL";
@@ -110,7 +110,7 @@ class InferenceSubgraph : public Subgraph {
         graph.SideOut(kMetadataExtractorTag);
 
     auto& inference_node = graph.AddNode("InferenceCalculator");
-    inference_node.GetOptions<mediapipe_v01013_based::InferenceCalculatorOptions>()
+    inference_node.GetOptions<hand_tracking_mp_lean::InferenceCalculatorOptions>()
         .mutable_delegate()
         ->CopyFrom(inference_delegate);
     model_resources_node.SideOut(kModelTag) >> inference_node.SideIn(kModelTag);
@@ -122,11 +122,11 @@ class InferenceSubgraph : public Subgraph {
   }
 
  private:
-  absl::StatusOr<mediapipe_v01013_based::InferenceCalculatorOptions::Delegate>
+  absl::StatusOr<hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate>
   DecideInferenceSettings(const InferenceSubgraphOptions& options) {
     // TODO: Fills in the inference delegate options based on the
     // model, acceleration settings, and device hardware info.
-    mediapipe_v01013_based::InferenceCalculatorOptions::Delegate delegate;
+    hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate delegate;
     const Acceleration& acceleration = options.base_options().acceleration();
     switch (acceleration.delegate_case()) {
       case Acceleration::kXnnpack:
@@ -149,7 +149,7 @@ class InferenceSubgraph : public Subgraph {
   }
 };
 
-REGISTER_MEDIAPIPE_GRAPH(::mediapipe_v01013_based::tasks::core::InferenceSubgraph)
+REGISTER_MEDIAPIPE_GRAPH(::hand_tracking_mp_lean::tasks::core::InferenceSubgraph)
 
 absl::StatusOr<CalculatorGraphConfig> ModelTaskGraph::GetConfig(
     SubgraphContext* sc) {
@@ -265,4 +265,4 @@ GenericNode& ModelTaskGraph::AddInference(
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -23,7 +23,7 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/types.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -282,4 +282,4 @@ TEST_F(VectorIntToTensorCalculatorTest, TestOneDimToScalar) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

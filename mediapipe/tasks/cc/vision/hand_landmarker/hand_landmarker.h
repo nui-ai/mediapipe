@@ -31,7 +31,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/running_mode.h"
 #include "mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarker_result.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
@@ -101,7 +101,7 @@ class HandLandmarker : tasks::vision::core::BaseVisionTaskApi {
   // or streaming data. Hand landmarker can be created with one of the following
   // three running modes:
   // 1) Image mode for detecting hand landmarks on single image inputs. Users
-  //    provide mediapipe_v01013_based::Image to the `Detect` method, and will receive the
+  //    provide hand_tracking_mp_lean::Image to the `Detect` method, and will receive the
   //    detected hand landmarks results as the return value.
   // 2) Video mode for detecting hand landmarks on the decoded frames of a
   //    video. Users call `DetectForVideo` method, and will receive the detected
@@ -186,6 +186,6 @@ class HandLandmarker : tasks::vision::core::BaseVisionTaskApi {
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_HAND_LANDMARKER_HAND_LANDMARKER_H_

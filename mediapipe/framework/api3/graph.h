@@ -35,7 +35,7 @@
 #include "mediapipe/framework/api3/stream.h"
 #include "mediapipe/framework/calculator.pb.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 // `Graph` must be used whenever you want to build a MediaPipe graph in C++.
 //
@@ -303,7 +303,7 @@ class GenericGraph {
     return graph_.AddExecutor(name);
   }
 
-  absl::StatusOr<mediapipe_v01013_based::CalculatorGraphConfig> GetConfig() {
+  absl::StatusOr<hand_tracking_mp_lean::CalculatorGraphConfig> GetConfig() {
     return graph_.GetConfig();
   }
 
@@ -703,6 +703,6 @@ class Repeated<
   auto Add() { return internal_graph::BuilderRepeated<P>::InternalAdd().Get(); }
 };
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_GRAPH_H_

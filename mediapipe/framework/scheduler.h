@@ -31,7 +31,7 @@
 #include "mediapipe/framework/scheduler_queue.h"
 #include "mediapipe/framework/scheduler_shared.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class CalculatorGraph;
 class Executor;
@@ -338,6 +338,6 @@ class Scheduler {
 };
 
 }  // namespace internal
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_SCHEDULER_H_

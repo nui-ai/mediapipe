@@ -22,7 +22,7 @@
 #include "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
 #include "mediapipe/util/tracking/box_tracker.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 // Create a new object annotation by shifting a reference
@@ -141,4 +141,4 @@ TEST(FrameAnnotationTrackerTest, TestConsolidation) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

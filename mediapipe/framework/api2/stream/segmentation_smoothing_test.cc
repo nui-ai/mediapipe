@@ -7,10 +7,10 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 namespace {
 
-using ::mediapipe_v01013_based::Image;
+using ::hand_tracking_mp_lean::Image;
 
 TEST(SegmentationSmoothing, VerifyConfig) {
   Graph graph;
@@ -40,4 +40,4 @@ TEST(SegmentationSmoothing, VerifyConfig) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

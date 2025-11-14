@@ -30,8 +30,8 @@
 #include "mediapipe/framework/tool/status_util.h"
 #include "mediapipe/framework/type_map.h"
 
-namespace mediapipe_v01013_based {
-using ::mediapipe_v01013_based::AffineTransformData;
+namespace hand_tracking_mp_lean {
+using ::hand_tracking_mp_lean::AffineTransformData;
 
 AffineTransform::AffineTransform() { SetScale(Point2_f(1, 1)); }
 
@@ -221,7 +221,7 @@ bool AffineTransform::Equal(const AffineTransform& lhs,
   return lhs.Equals(rhs, epsilon);
 }
 
-MEDIAPIPE_REGISTER_TYPE(mediapipe_v01013_based::AffineTransform,
-                        "::mediapipe_v01013_based::AffineTransform", nullptr, nullptr);
+MEDIAPIPE_REGISTER_TYPE(hand_tracking_mp_lean::AffineTransform,
+                        "::hand_tracking_mp_lean::AffineTransform", nullptr, nullptr);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

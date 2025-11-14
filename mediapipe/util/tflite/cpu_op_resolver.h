@@ -17,7 +17,7 @@
 
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // This function registers the CPU implementations for following custom ops:
 // "Convolution2DTransposeBias"
@@ -33,6 +33,6 @@ class CpuOpResolver
   CpuOpResolver() { MediaPipe_RegisterTfLiteOpResolver(this); }
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_CPU_OP_RESOLVER_H_

@@ -27,7 +27,7 @@
 #include "mediapipe/modules/face_geometry/protos/face_geometry.pb.h"
 #include "mediapipe/modules/face_geometry/protos/mesh_3d.pb.h"
 
-namespace mediapipe_v01013_based::face_geometry {
+namespace hand_tracking_mp_lean::face_geometry {
 
 // Encapsulates a stateful face effect renderer.
 class EffectRenderer {
@@ -87,6 +87,6 @@ absl::StatusOr<std::unique_ptr<EffectRenderer>> CreateEffectRenderer(
     const absl::optional<Mesh3d>& effect_mesh_3d,  //
     ImageFrame&& effect_texture);
 
-}  // namespace mediapipe_v01013_based::face_geometry
+}  // namespace hand_tracking_mp_lean::face_geometry
 
 #endif  // MEDIAPIPE_MODULES_FACE_GEOMETRY_LIBS_EFFECT_RENDERER_H_

@@ -36,7 +36,7 @@ node {
   output_side_packet: "PACKET:0:num_faces"
   output_side_packet: "PACKET:1:with_attention"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.ConstantSidePacketCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.ConstantSidePacketCalculatorOptions]: {
       packet { int_value: 1 }
       packet { bool_value: true }
     }

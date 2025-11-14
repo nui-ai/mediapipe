@@ -32,7 +32,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/base_vision_task_api.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace core {
@@ -104,6 +104,6 @@ class VisionTaskApiFactory {
 }  // namespace core
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_CORE_BASE_VISION_TASK_API_FACTORY_H_

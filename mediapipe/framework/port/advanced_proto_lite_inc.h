@@ -25,9 +25,9 @@
 #include "mediapipe/framework/port/core_proto_inc.h"
 #include "mediapipe/framework/port/proto_ns.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 using proto_int64 = google::protobuf::int64;
 using proto_uint64 = google::protobuf::uint64;
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_PORT_ADVANCED_PROTO_LITE_INC_H_

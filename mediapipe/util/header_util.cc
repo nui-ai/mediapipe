@@ -17,7 +17,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 absl::Status CopyInputHeadersToOutputs(const InputStreamSet& inputs,
                                        const OutputStreamSet& outputs) {
@@ -45,4 +45,4 @@ absl::Status CopyInputHeadersToOutputs(const InputStreamShardSet& inputs,
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

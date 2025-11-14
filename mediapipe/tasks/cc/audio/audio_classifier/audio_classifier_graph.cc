@@ -42,19 +42,19 @@ limitations under the License.
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace audio {
 namespace audio_classifier {
 
 namespace {
 
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::GenericNode;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::GenericNode;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::ClassificationResult;
 
 constexpr char kAtPrestreamTag[] = "AT_PRESTREAM";
 constexpr char kAudioTag[] = "AUDIO";
@@ -175,13 +175,13 @@ class AudioClassifierGraph : public core::ModelTaskGraph {
  private:
   // Adds a mediapipe audio classification task graph into the provided
   // builder::Graph instance. The audio classification task takes an audio
-  // buffer (mediapipe_v01013_based::Matrix) and the corresponding sample rate (double) as
+  // buffer (hand_tracking_mp_lean::Matrix) and the corresponding sample rate (double) as
   // the inputs and returns one classification result per input audio buffer.
   //
   // task_options: the mediapipe tasks AudioClassifierGraphOptions proto.
   // model_resources: the ModelSources object initialized from an audio
   // classifier model file with model metadata.
-  // audio_in: (mediapipe_v01013_based::Matrix) stream to run audio classification on.
+  // audio_in: (hand_tracking_mp_lean::Matrix) stream to run audio classification on.
   // sample_rate_in: (double) optional stream of the input audio sample rate.
   // graph: the mediapipe builder::Graph instance to be updated.
   absl::StatusOr<AudioClassifierOutputStreams> BuildAudioClassificationTask(
@@ -264,9 +264,9 @@ class AudioClassifierGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe_v01013_based::tasks::audio::audio_classifier::AudioClassifierGraph);
+    ::hand_tracking_mp_lean::tasks::audio::audio_classifier::AudioClassifierGraph);
 
 }  // namespace audio_classifier
 }  // namespace audio
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

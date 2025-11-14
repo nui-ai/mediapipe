@@ -33,7 +33,7 @@
 #include "mediapipe/framework/tool/status_util.h"
 #include "mediapipe/framework/type_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 // Extracts from the BinaryMask, stored as mediapipe.Rasterization in
@@ -90,7 +90,7 @@ Location Location::CreateBBoxLocation(const Rectangle_i& rect) {
                             rect.Height());
 }
 
-Location Location::CreateBBoxLocation(const ::mediapipe_v01013_based::BoundingBox& bbox) {
+Location Location::CreateBBoxLocation(const ::hand_tracking_mp_lean::BoundingBox& bbox) {
   return CreateBBoxLocation(bbox.left_x(), bbox.upper_y(),
                             bbox.right_x() - bbox.left_x(),
                             bbox.lower_y() - bbox.upper_y());
@@ -460,10 +460,10 @@ Rectangle_f Location::ConvertToRelativeBBox(int image_width,
 }
 
 template <>
-::mediapipe_v01013_based::BoundingBox Location::GetBBox<::mediapipe_v01013_based::BoundingBox>() const {
+::hand_tracking_mp_lean::BoundingBox Location::GetBBox<::hand_tracking_mp_lean::BoundingBox>() const {
   ABSL_CHECK_EQ(LocationData::BOUNDING_BOX, location_data_.format());
   const auto& box = location_data_.bounding_box();
-  ::mediapipe_v01013_based::BoundingBox bounding_box;
+  ::hand_tracking_mp_lean::BoundingBox bounding_box;
   bounding_box.set_left_x(box.xmin());
   bounding_box.set_upper_y(box.ymin());
   bounding_box.set_right_x(box.width() + box.xmin());
@@ -472,10 +472,10 @@ template <>
 }
 
 template <>
-::mediapipe_v01013_based::BoundingBox Location::ConvertToBBox<::mediapipe_v01013_based::BoundingBox>(
+::hand_tracking_mp_lean::BoundingBox Location::ConvertToBBox<::hand_tracking_mp_lean::BoundingBox>(
     int image_width, int image_height) const {
   const auto& rect = ConvertToBBox<Rectangle_i>(image_width, image_height);
-  ::mediapipe_v01013_based::BoundingBox bounding_box;
+  ::hand_tracking_mp_lean::BoundingBox bounding_box;
   bounding_box.set_left_x(rect.xmin());
   bounding_box.set_upper_y(rect.ymin());
   bounding_box.set_right_x(rect.xmax());
@@ -526,4 +526,4 @@ LocationData Location::ConvertToProto() const {
   return location_data;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -35,17 +35,17 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/text_embedder/proto/text_embedder_graph_options.pb.h"
 #include "mediapipe/tasks/cc/text/utils/text_model_utils.h"
 
-namespace mediapipe_v01013_based::tasks::text::text_embedder {
+namespace hand_tracking_mp_lean::tasks::text::text_embedder {
 namespace {
 
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
-using ::mediapipe_v01013_based::tasks::components::processors::proto::TextModelType;
-using ::mediapipe_v01013_based::tasks::core::ModelResources;
-using ::mediapipe_v01013_based::tasks::text::utils::GetModelType;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::EmbeddingResult;
+using ::hand_tracking_mp_lean::tasks::components::processors::proto::TextModelType;
+using ::hand_tracking_mp_lean::tasks::core::ModelResources;
+using ::hand_tracking_mp_lean::tasks::text::utils::GetModelType;
 
 constexpr char kEmbeddingsTag[] = "EMBEDDINGS";
 constexpr char kTextTag[] = "TEXT";
@@ -162,6 +162,6 @@ class TextEmbedderGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe_v01013_based::tasks::text::text_embedder::TextEmbedderGraph);
+    ::hand_tracking_mp_lean::tasks::text::text_embedder::TextEmbedderGraph);
 
-}  // namespace mediapipe_v01013_based::tasks::text::text_embedder
+}  // namespace hand_tracking_mp_lean::tasks::text::text_embedder

@@ -33,7 +33,7 @@
 #include "mediapipe/framework/tool/status_util.h"
 #include "mediapipe/framework/tool/tag_map_helper.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace test_ns {
 
@@ -65,7 +65,7 @@ class DeadEndCalculator : public CalculatorBase {
     }
   }
 };
-REGISTER_CALCULATOR(::mediapipe_v01013_based::test_ns::DeadEndCalculator);
+REGISTER_CALCULATOR(::hand_tracking_mp_lean::test_ns::DeadEndCalculator);
 
 namespace whitelisted_ns {
 
@@ -93,7 +93,7 @@ class EndCalculator : public CalculatorBase {
     return absl::OkStatus();
   }
 };
-REGISTER_CALCULATOR(::mediapipe_v01013_based::EndCalculator);
+REGISTER_CALCULATOR(::hand_tracking_mp_lean::EndCalculator);
 
 namespace {
 
@@ -139,7 +139,7 @@ TEST(CalculatorTest, SourceProcessOrder) {
 }
 
 // Tests registration of a calculator within a namespace.
-// DeadEndCalculator is registered in namespace "mediapipe_v01013_based::test_ns".
+// DeadEndCalculator is registered in namespace "hand_tracking_mp_lean::test_ns".
 TEST(CalculatorTest, CreateByName) {
   MP_EXPECT_OK(CalculatorBaseRegistry::CreateByNameInNamespace(  //
       "", "mediapipe.test_ns.DeadEndCalculator"));
@@ -177,15 +177,15 @@ TEST(CalculatorTest, CreateByNameWhitelisted) {
   // Reset the registration namespace whitelist.
   *const_cast<absl::flat_hash_set<std::string>*>(
       &NamespaceAllowlist::TopNamespaces()) = absl::flat_hash_set<std::string>{
-      "mediapipe_v01013_based::test_ns::whitelisted_ns",
+      "hand_tracking_mp_lean::test_ns::whitelisted_ns",
       "mediapipe",
   };
 
   // Register a whitelisted calculator.
   CalculatorBaseRegistry::Register(
-      "::mediapipe_v01013_based::test_ns::whitelisted_ns::DeadCalculator",
+      "::hand_tracking_mp_lean::test_ns::whitelisted_ns::DeadCalculator",
       absl::make_unique<internal::CalculatorBaseFactoryFor<
-          mediapipe_v01013_based::test_ns::whitelisted_ns::DeadCalculator>>);
+          hand_tracking_mp_lean::test_ns::whitelisted_ns::DeadCalculator>>);
 
   // A whitelisted calculator can be found in its own namespace.
   MP_EXPECT_OK(CalculatorBaseRegistry::CreateByNameInNamespace(  //
@@ -209,4 +209,4 @@ TEST(CalculatorTest, CreateByNameWhitelisted) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

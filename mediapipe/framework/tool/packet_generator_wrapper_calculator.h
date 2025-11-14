@@ -18,7 +18,7 @@
 #include "absl/status/status.h"
 #include "mediapipe/framework/calculator_base.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class PacketGeneratorWrapperCalculator : public CalculatorBase {
  public:
@@ -27,6 +27,6 @@ class PacketGeneratorWrapperCalculator : public CalculatorBase {
   absl::Status Process(CalculatorContext* cc) override;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_PACKET_GENERATOR_WRAPPER_CALCULATOR_H_

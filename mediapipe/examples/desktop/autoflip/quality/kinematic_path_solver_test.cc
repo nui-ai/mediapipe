@@ -24,7 +24,7 @@
 constexpr int64_t kMicroSecInSec = 1000000;
 constexpr float kWidthFieldOfView = 60;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 namespace {
 
@@ -462,4 +462,4 @@ TEST(KinematicPathSolverTest, PassUpdateUpdateMinMaxLocationIfInitialized) {
 
 }  // namespace
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

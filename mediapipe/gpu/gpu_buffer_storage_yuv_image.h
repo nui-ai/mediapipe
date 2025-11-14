@@ -26,7 +26,7 @@ limitations under the License.
 #ifndef MEDIAPIPE_GPU_GPU_BUFFER_STORAGE_YUV_IMAGE_H_
 #define MEDIAPIPE_GPU_GPU_BUFFER_STORAGE_YUV_IMAGE_H_
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace internal {
 
@@ -79,6 +79,6 @@ class GpuBufferStorageYuvImage
  private:
   std::shared_ptr<YUVImage> yuv_image_;
 };
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GPU_BUFFER_STORAGE_YUV_IMAGE_H_

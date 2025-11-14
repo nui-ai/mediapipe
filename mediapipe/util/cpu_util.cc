@@ -34,7 +34,7 @@
 #include "mediapipe/framework/port/canonical_errors.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr uint32_t kBufferLength = 64;
@@ -126,4 +126,4 @@ std::set<int> InferHigherCoreIds() {
   return InferLowerOrHigherCoreIds(/* lower= */ false);
 }
 
-}  // namespace mediapipe_v01013_based.
+}  // namespace hand_tracking_mp_lean.

@@ -21,7 +21,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Validates a CalculatorGraphConfig, including subgraphs, template graphs,
 // and side-packets.
@@ -53,6 +53,6 @@ class GraphValidation {
   CalculatorGraph graph_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_GRAPH_VALIDATION_H_

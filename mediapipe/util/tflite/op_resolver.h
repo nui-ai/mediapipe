@@ -17,7 +17,7 @@
 
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // This OpResolver is used for supporting "Convolution2DTransposeBias" on GPU.
 class OpResolver
@@ -26,6 +26,6 @@ class OpResolver
   OpResolver();
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_OP_RESOLVER_H_

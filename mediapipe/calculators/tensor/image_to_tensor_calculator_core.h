@@ -11,7 +11,7 @@
 #include "absl/status/status.h"
 #include "absl/types/optional.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 struct ImageToTensorCoreResult {
@@ -26,28 +26,28 @@ struct ImageToTensorCoreResult {
 class ImageToTensorCalculatorCore {
  public:
   ImageToTensorCalculatorCore(
-      const mediapipe_v01013_based::ImageToTensorCalculatorOptions& options,
+      const hand_tracking_mp_lean::ImageToTensorCalculatorOptions& options,
       int tensor_width,
       int tensor_height,
       const OutputTensorParams& params,
       std::unique_ptr<ImageToTensorConverter>& gpu_converter,
       std::unique_ptr<ImageToTensorConverter>& cpu_converter,
-      mediapipe_v01013_based::MemoryManager* memory_manager);
+      hand_tracking_mp_lean::MemoryManager* memory_manager);
 
-  absl::Status Process(const mediapipe_v01013_based::Image& image,
-                       absl::optional<mediapipe_v01013_based::NormalizedRect> norm_rect,
+  absl::Status Process(const hand_tracking_mp_lean::Image& image,
+                       absl::optional<hand_tracking_mp_lean::NormalizedRect> norm_rect,
                        ImageToTensorCoreResult* result);
 
  private:
-  const mediapipe_v01013_based::ImageToTensorCalculatorOptions options_;
+  const hand_tracking_mp_lean::ImageToTensorCalculatorOptions options_;
   const int tensor_width_;
   const int tensor_height_;
   const OutputTensorParams params_;
   // References to converters so the core can lazily initialize them.
   std::unique_ptr<ImageToTensorConverter>& gpu_converter_;
   std::unique_ptr<ImageToTensorConverter>& cpu_converter_;
-  mediapipe_v01013_based::MemoryManager* memory_manager_ = nullptr;
+  hand_tracking_mp_lean::MemoryManager* memory_manager_ = nullptr;
 };
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

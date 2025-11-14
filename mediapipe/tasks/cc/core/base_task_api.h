@@ -22,7 +22,7 @@ limitations under the License.
 
 #include "mediapipe/tasks/cc/core/task_runner.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace core {
 
@@ -43,6 +43,6 @@ class BaseTaskApi {
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_CORE_BASE_TASK_API_H_

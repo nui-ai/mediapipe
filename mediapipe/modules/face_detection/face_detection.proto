@@ -14,18 +14,18 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/calculators/tensor/inference_calculator.proto";
 import "mediapipe/framework/calculator_options.proto";
 import "mediapipe/gpu/gpu_origin.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.modules.facedetection";
+option java_package = "com.google.hand_tracking_mp_lean.modules.facedetection";
 option java_outer_classname = "FaceDetectionFrontProto";
 
 // Defines the face geometry pipeline estimation result format.
 message FaceDetectionOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional FaceDetectionOptions ext = 374290926;
   }
   // Path to the TF Lite model (ex: /path/to/modelname.tflite).

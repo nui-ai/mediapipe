@@ -42,7 +42,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif  // defined(__APPLE__)
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using ::tflite::Interpreter;
 
@@ -126,6 +126,6 @@ void DoSmokeTest(const std::string& graph_proto) {
   MP_ASSERT_OK(graph.WaitUntilDone());
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TFLITE_TFLITE_INFERENCE_CALCULATOR_TEST_H_

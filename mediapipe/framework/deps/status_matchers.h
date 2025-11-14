@@ -20,7 +20,7 @@
 #include "gtest/gtest.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 inline const ::absl::Status& GetStatus(const ::absl::Status& status) {
   return status;
@@ -252,12 +252,12 @@ StatusIsMatcher StatusIs(CodeMatcher code_matcher) {
   return StatusIs(std::move(code_matcher), ::testing::_);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 // Macros for testing the results of functions that return absl::Status or
 // absl::StatusOr<T> (for any type T).
-#define MP_EXPECT_OK(expression) EXPECT_THAT(expression, mediapipe_v01013_based::IsOk())
-#define MP_ASSERT_OK(expression) ASSERT_THAT(expression, mediapipe_v01013_based::IsOk())
+#define MP_EXPECT_OK(expression) EXPECT_THAT(expression, hand_tracking_mp_lean::IsOk())
+#define MP_ASSERT_OK(expression) ASSERT_THAT(expression, hand_tracking_mp_lean::IsOk())
 
 #define STATUS_MACROS_IMPL_CONCAT_INNER_(x, y) x##y
 #define STATUS_MACROS_IMPL_CONCAT_(x, y) STATUS_MACROS_IMPL_CONCAT_INNER_(x, y)

@@ -19,7 +19,7 @@
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/port/opencv_core_inc.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace formats {
 
 // ImageFrame to OpenCV helper conversion function.
@@ -31,6 +31,6 @@ namespace formats {
 cv::Mat MatView(const ImageFrame* image);
 
 }  // namespace formats
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_IMAGE_FRAME_OPENCV_H_

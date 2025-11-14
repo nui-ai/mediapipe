@@ -42,12 +42,12 @@
 #include "tensorflow/lite/string_util.h"
 #include "tensorflow/lite/util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr int kDefaultNumXnnpackThreads = 1;
 
-using ElementType = ::mediapipe_v01013_based::Tensor::ElementType;
+using ElementType = ::hand_tracking_mp_lean::Tensor::ElementType;
 using ::testing::ElementsAreArray;
 using ::testing::HasSubstr;
 using ::tflite::Interpreter;
@@ -194,7 +194,7 @@ TEST_F(InferenceCalculatorUtilsTest,
 
 TEST_F(InferenceCalculatorUtilsTest,
        GetXnnpackNumThreadsReturnsDefaultIfThreadsNotSpecified) {
-  mediapipe_v01013_based::InferenceCalculatorOptions::Delegate opts_delegate;
+  hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate opts_delegate;
   opts_delegate.mutable_xnnpack();
   EXPECT_EQ(GetXnnpackNumThreads(/*opts_has_delegate=*/true, opts_delegate),
             kDefaultNumXnnpackThreads);
@@ -203,7 +203,7 @@ TEST_F(InferenceCalculatorUtilsTest,
 TEST_F(InferenceCalculatorUtilsTest,
        GetXnnpackNumThreadsReturnsSetNumberOfThreads) {
   absl::SetFlag(&FLAGS_xnnpack_default_num_threads, 42);
-  mediapipe_v01013_based::InferenceCalculatorOptions::Delegate opts_delegate;
+  hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate opts_delegate;
   opts_delegate.mutable_xnnpack()->set_num_threads(43);
   EXPECT_EQ(GetXnnpackNumThreads(/*opts_has_delegate=*/true, opts_delegate),
             43);
@@ -211,7 +211,7 @@ TEST_F(InferenceCalculatorUtilsTest,
 
 TEST_F(InferenceCalculatorUtilsTest,
        GetXnnpackNumThreadsReturnsDefaultIfHasDelegateIsFalse) {
-  mediapipe_v01013_based::InferenceCalculatorOptions::Delegate opts_delegate;
+  hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate opts_delegate;
   opts_delegate.mutable_xnnpack()->set_num_threads(44);
   EXPECT_EQ(GetXnnpackNumThreads(/*opts_has_delegate=*/false, opts_delegate),
             kDefaultNumXnnpackThreads);
@@ -758,4 +758,4 @@ INSTANTIATE_TEST_SUITE_P(AllocateTensorWithTfLiteTensorSpecsParamTest,
                          ::testing::ValuesIn(GetTensorTypePairs()));
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

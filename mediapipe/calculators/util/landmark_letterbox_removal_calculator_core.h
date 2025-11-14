@@ -19,7 +19,7 @@
 
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Adjusts a single landmark's coordinates based on letterbox padding.
 // Returns a new NormalizedLandmark with adjusted coordinates.
@@ -33,6 +33,6 @@ NormalizedLandmarkList AdjustLandmarkListToLetterboxRemoval(
     const NormalizedLandmarkList& input_landmarks,
     const std::array<float, 4>& letterbox_padding);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_LANDMARK_LETTERBOX_REMOVAL_CALCULATOR_CORE_H_

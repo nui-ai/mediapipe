@@ -25,7 +25,7 @@
 #include "mediapipe/util/tracking/parallel_invoker.h"
 #include "mediapipe/util/tracking/region_flow.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 void VisualizeRegionFlowImpl(const RegionFlowFrame& region_flow_frame,
                              cv::Mat* output) {
@@ -193,4 +193,4 @@ void VisualizeLongFeatureStream(const LongFeatureStream& stream,
                                  output);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

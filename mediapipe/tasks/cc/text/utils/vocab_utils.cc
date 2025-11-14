@@ -20,7 +20,7 @@ limitations under the License.
 #include "absl/strings/str_split.h"
 #include "mediapipe/util/resource_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace text {
 namespace {
@@ -101,4 +101,4 @@ absl::node_hash_map<std::string, int> LoadVocabAndIndexFromBuffer(
 
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -33,9 +33,9 @@
 #include "mediapipe/framework/tool/subgraph_expansion.h"
 #include "mediapipe/framework/tool/switch_container.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tool {
-using mediapipe_v01013_based::SwitchContainerOptions;
+using hand_tracking_mp_lean::SwitchContainerOptions;
 
 // A graph factory producing a CalculatorGraphConfig routing packets to
 // one of several contained CalculatorGraphConfigs.
@@ -214,7 +214,7 @@ absl::Status ValidateContract(
     const CalculatorGraphConfig::Node& subgraph_node,
     const Subgraph::SubgraphOptions& subgraph_options) {
   auto options =
-      Subgraph::GetOptions<mediapipe_v01013_based::SwitchContainerOptions>(subgraph_options);
+      Subgraph::GetOptions<hand_tracking_mp_lean::SwitchContainerOptions>(subgraph_options);
   std::map<TagIndex, std::string> input_tags, side_tags;
   ParseTags(subgraph_node.input_stream(), &input_tags);
   ParseTags(subgraph_node.input_side_packet(), &side_tags);
@@ -274,7 +274,7 @@ absl::StatusOr<CalculatorGraphConfig> SwitchContainer::GetConfig(
 
   // Add a PacketSequencerCalculator node for "SELECT" or "ENABLE" streams.
   const auto& switch_options =
-      Subgraph::GetOptions<mediapipe_v01013_based::SwitchContainerOptions>(options);
+      Subgraph::GetOptions<hand_tracking_mp_lean::SwitchContainerOptions>(options);
   bool async_selection = switch_options.async_selection();
   if (HasTag(container_node.input_stream(), "SELECT")) {
     select_node = BuildTimestampNode(&config, async_selection);
@@ -349,7 +349,7 @@ absl::StatusOr<CalculatorGraphConfig> SwitchContainer::GetConfig(
   }
 
   // Add a subnode for each contained_node.
-  auto nodes = Subgraph::GetOptions<mediapipe_v01013_based::SwitchContainerOptions>(options)
+  auto nodes = Subgraph::GetOptions<hand_tracking_mp_lean::SwitchContainerOptions>(options)
                    .contained_node();
   std::vector<CalculatorGraphConfig::Node> contained_nodes(nodes.begin(),
                                                            nodes.end());
@@ -415,4 +415,4 @@ absl::StatusOr<CalculatorGraphConfig> SwitchContainer::GetConfig(
 }
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

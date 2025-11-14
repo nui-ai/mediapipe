@@ -24,7 +24,7 @@
 #include "mediapipe/framework/mediapipe_options.pb.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Implementation of an input stream handler that considers a node as ready for
 // Close() if any input stream is done.
@@ -33,7 +33,7 @@ class EarlyCloseInputStreamHandler : public InputStreamHandler {
   EarlyCloseInputStreamHandler() = delete;
   EarlyCloseInputStreamHandler(std::shared_ptr<tool::TagMap> tag_map,
                                CalculatorContextManager* cc_manager,
-                               const mediapipe_v01013_based::MediaPipeOptions& options,
+                               const hand_tracking_mp_lean::MediaPipeOptions& options,
                                bool calculator_run_in_parallel)
       : InputStreamHandler(std::move(tag_map), cc_manager, options,
                            calculator_run_in_parallel) {}
@@ -51,6 +51,6 @@ class EarlyCloseInputStreamHandler : public InputStreamHandler {
                     InputStreamShardSet* input_set) override;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_STREAM_HANDLER_EARLY_CLOSE_INPUT_STREAM_HANDLER_H_

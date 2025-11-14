@@ -26,7 +26,7 @@
 #include "mediapipe/util/tracking/box_tracker.h"
 #include "mediapipe/util/tracking/measure_time.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -749,4 +749,4 @@ BoxDetectorOpencvBfImpl::MatchFeatureDescriptors(
   return correspondence_result;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

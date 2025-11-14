@@ -21,7 +21,7 @@
 #include "mediapipe/framework/tool/validate_type.h"
 #include "tensorflow/core/framework/tensor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -79,4 +79,4 @@ TEST_F(GraphTensorsPacketGeneratorTest, VerifyTensorSizeShapeAndValue) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

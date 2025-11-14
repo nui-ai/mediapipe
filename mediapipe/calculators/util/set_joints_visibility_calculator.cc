@@ -25,7 +25,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 namespace {}  // namespace
@@ -105,4 +105,4 @@ class SetJointsVisibilityCalculatorImpl
 MEDIAPIPE_NODE_IMPLEMENTATION(SetJointsVisibilityCalculatorImpl);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

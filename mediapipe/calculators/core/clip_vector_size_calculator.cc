@@ -20,13 +20,13 @@
 #include "mediapipe/framework/formats/detection.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-typedef ClipVectorSizeCalculator<::mediapipe_v01013_based::NormalizedRect>
+typedef ClipVectorSizeCalculator<::hand_tracking_mp_lean::NormalizedRect>
     ClipNormalizedRectVectorSizeCalculator;
 REGISTER_CALCULATOR(ClipNormalizedRectVectorSizeCalculator);
 
-class FilterDetectionsToMaxNumHands : public ClipVectorSizeCalculator<::mediapipe_v01013_based::Detection> {
+class FilterDetectionsToMaxNumHands : public ClipVectorSizeCalculator<::hand_tracking_mp_lean::Detection> {
  public:
   absl::Status Open(CalculatorContext* cc) override {
     MP_RETURN_IF_ERROR(ClipVectorSizeCalculator::Open(cc));
@@ -36,4 +36,4 @@ class FilterDetectionsToMaxNumHands : public ClipVectorSizeCalculator<::mediapip
 };
 REGISTER_CALCULATOR(FilterDetectionsToMaxNumHands);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

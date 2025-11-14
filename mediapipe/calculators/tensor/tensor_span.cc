@@ -19,7 +19,7 @@
 
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Create reference pointer vector from vector of tensors
 TensorSpan MakeTensorSpan(const std::vector<Tensor>& tensors) {
@@ -40,4 +40,4 @@ const Tensor& TensorSpan::operator[](int index) const {
   return *(tensor_refs_[index]);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

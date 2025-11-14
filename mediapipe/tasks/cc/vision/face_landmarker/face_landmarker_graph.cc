@@ -53,29 +53,29 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/util/graph_builder_utils.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
 
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::SidePacket;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::components::utils::DisallowIf;
-using ::mediapipe_v01013_based::tasks::core::ModelAssetBundleResources;
-using ::mediapipe_v01013_based::tasks::metadata::SetExternalFile;
-using ::mediapipe_v01013_based::tasks::vision::face_detector::proto::
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::SidePacket;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::components::utils::DisallowIf;
+using ::hand_tracking_mp_lean::tasks::core::ModelAssetBundleResources;
+using ::hand_tracking_mp_lean::tasks::metadata::SetExternalFile;
+using ::hand_tracking_mp_lean::tasks::vision::face_detector::proto::
     FaceDetectorGraphOptions;
-using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::Environment;
-using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::FaceGeometry;
-using ::mediapipe_v01013_based::tasks::vision::face_landmarker::proto::
+using ::hand_tracking_mp_lean::tasks::vision::face_geometry::proto::Environment;
+using ::hand_tracking_mp_lean::tasks::vision::face_geometry::proto::FaceGeometry;
+using ::hand_tracking_mp_lean::tasks::vision::face_landmarker::proto::
     FaceLandmarkerGraphOptions;
-using ::mediapipe_v01013_based::tasks::vision::face_landmarker::proto::
+using ::hand_tracking_mp_lean::tasks::vision::face_landmarker::proto::
     FaceLandmarksDetectorGraphOptions;
 
 constexpr char kImageTag[] = "IMAGE";
@@ -332,7 +332,7 @@ class FaceLandmarkerGraph : public core::ModelTaskGraph {
       MP_RETURN_IF_ERROR(SetSubTaskBaseOptions(
           *model_asset_bundle_resources,
           sc->MutableOptions<FaceLandmarkerGraphOptions>(),
-          !sc->Service(::mediapipe_v01013_based::tasks::core::kModelResourcesCacheService)
+          !sc->Service(::hand_tracking_mp_lean::tasks::core::kModelResourcesCacheService)
                .IsAvailable()));
       if (output_geometry) {
         // Set the face geometry metadata file for
@@ -403,7 +403,7 @@ class FaceLandmarkerGraph : public core::ModelTaskGraph {
   // instance.
   //
   // tasks_options: the mediapipe tasks module FaceLandmarkerGraphOptions.
-  // image_in: (mediapipe_v01013_based::Image) stream to run face landmark detection on.
+  // image_in: (hand_tracking_mp_lean::Image) stream to run face landmark detection on.
   // graph: the mediapipe graph instance to be updated.
   absl::StatusOr<FaceLandmarkerOutputs> BuildFaceLandmarkerGraph(
       FaceLandmarkerGraphOptions& tasks_options, Source<Image> image_in,
@@ -488,7 +488,7 @@ class FaceLandmarkerGraph : public core::ModelTaskGraph {
       auto expanded_face_rects_from_face_detector =
           face_detector.Out(kExpandedFaceRectsTag);
       auto& face_association = graph.AddNode("AssociationNormRectCalculator");
-      face_association.GetOptions<mediapipe_v01013_based::AssociationCalculatorOptions>()
+      face_association.GetOptions<hand_tracking_mp_lean::AssociationCalculatorOptions>()
           .set_min_similarity_threshold(
               tasks_options.min_tracking_confidence());
       prev_face_rects_from_landmarks >>
@@ -561,9 +561,9 @@ class FaceLandmarkerGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe_v01013_based::tasks::vision::face_landmarker::FaceLandmarkerGraph);
+    ::hand_tracking_mp_lean::tasks::vision::face_landmarker::FaceLandmarkerGraph);
 
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -154,9 +154,9 @@ std::string DebugString(Packet p) {
 // Shows a bypass subgraph that passes through one stream.
 TEST(BypassCalculatorTest, SubgraphChannel) {
   CalculatorGraphConfig config_1 =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(kTestGraphConfig1);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(kTestGraphConfig1);
   CalculatorGraphConfig config_2 =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(kTestGraphConfig2);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(kTestGraphConfig2);
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize({config_1, config_2}, {}));
 
@@ -196,7 +196,7 @@ TEST(BypassCalculatorTest, SubgraphChannel) {
 // Shows a BypassCalculator that passes through one stream.
 TEST(BypassCalculatorTest, CalculatorChannel) {
   CalculatorGraphConfig config_3 =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(kTestGraphConfig3);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(kTestGraphConfig3);
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize({config_3}, {}));
 
@@ -236,7 +236,7 @@ TEST(BypassCalculatorTest, CalculatorChannel) {
 // Shows a BypassCalculator that discards all inputs when ENABLED is false.
 TEST(BypassCalculatorTest, GatedChannel) {
   CalculatorGraphConfig config_3 =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(kTestGraphConfig4);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(kTestGraphConfig4);
   CalculatorGraph graph;
   MP_ASSERT_OK(graph.Initialize({config_3}, {}));
 
@@ -301,4 +301,4 @@ TEST(BypassCalculatorTest, GatedChannel) {
 
 }  // namespace
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

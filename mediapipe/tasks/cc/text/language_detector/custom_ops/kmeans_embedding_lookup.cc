@@ -23,7 +23,7 @@ limitations under the License.
 #include "tensorflow/lite/kernels/internal/tensor_ctypes.h"
 #include "tensorflow/lite/kernels/kernel_util.h"
 
-namespace mediapipe_v01013_based::tflite_operations {
+namespace hand_tracking_mp_lean::tflite_operations {
 namespace kmeans_embedding_lookup_op {
 
 namespace {
@@ -146,4 +146,4 @@ TfLiteRegistration* Register_KmeansEmbeddingLookup() {
   return &r;
 }
 
-}  // namespace mediapipe_v01013_based::tflite_operations
+}  // namespace hand_tracking_mp_lean::tflite_operations

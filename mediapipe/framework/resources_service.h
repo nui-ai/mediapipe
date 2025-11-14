@@ -4,7 +4,7 @@
 #include "mediapipe/framework/graph_service.h"
 #include "mediapipe/framework/resources.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // The service represents resources (files, assets, etc.) subgraph and
 // calculators can load using `SubgraphContext::GetResources` and
@@ -15,6 +15,6 @@ namespace mediapipe_v01013_based {
 inline constexpr GraphService<Resources> kResourcesService(
     "kResourcesService", GraphServiceBase::kDisallowDefaultInitialization);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_RESOURCES_SERVICE_H_

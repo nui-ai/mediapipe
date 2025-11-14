@@ -34,7 +34,7 @@
 #include "mediapipe/framework/status_handler.pb.h"
 #include "mediapipe/framework/tool/options_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // CalculatorContract contains the expectations and properties of a Node
 // object, such as the expected packet types of input and output streams and
@@ -221,6 +221,6 @@ class CalculatorContract {
   friend class CalculatorNode;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_CALCULATOR_CONTRACT_H_

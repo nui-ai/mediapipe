@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/validate_type.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 // A 3x4 Matrix of random integers in [0,1000).
@@ -237,4 +237,4 @@ TEST(MatrixMultiplyCalculatorTest, Multiply) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -41,13 +41,13 @@
 #include "mediapipe/gpu/gpu_origin_utils.h"
 #include "mediapipe/gpu/shader_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, NUM_ATTRIBUTES };
 
-using ::mediapipe_v01013_based::tensors_to_segmentation_utils::GetHwcFromDims;
-using ::mediapipe_v01013_based::tensors_to_segmentation_utils::GlRender;
+using ::hand_tracking_mp_lean::tensors_to_segmentation_utils::GetHwcFromDims;
+using ::hand_tracking_mp_lean::tensors_to_segmentation_utils::GlRender;
 
 class TensorsToSegmentationGlTextureConverter
     : public TensorsToSegmentationConverter {
@@ -60,7 +60,7 @@ class TensorsToSegmentationGlTextureConverter
                                                  int output_height) override;
 
  private:
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
   // TODO: Refactor upsample program out of the conversion.
   GLuint upsample_program_;
   bool gpu_initialized_ = false;
@@ -89,7 +89,7 @@ absl::Status TensorsToSegmentationGlTextureConverter::Init(
     // Currently uses 4 channels for output, and sets R+A channels as mask
     // value.
     const std::string shader_header = absl::StrCat(
-        std::string(mediapipe_v01013_based::kMediaPipeFragmentShaderPreamble), R"(
+        std::string(hand_tracking_mp_lean::kMediaPipeFragmentShaderPreamble), R"(
 DEFAULT_PRECISION(mediump, float)
 )");
     /* Shader defines will be inserted here. */
@@ -139,7 +139,7 @@ void main() {
 })";
 
     // Shader defines.
-    using Options = ::mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions;
+    using Options = ::hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions;
     const std::string output_layer_index =
         "\n#define OUTPUT_LAYER_INDEX int(" +
         std::to_string(options.output_layer_index()) + ")";
@@ -175,16 +175,16 @@ void main() {
     };
 
     // Main shader program & parameters
-    mediapipe_v01013_based::GlhCreateProgram(
-        mediapipe_v01013_based::kBasicVertexShader, shader_src_no_previous.c_str(),
+    hand_tracking_mp_lean::GlhCreateProgram(
+        hand_tracking_mp_lean::kBasicVertexShader, shader_src_no_previous.c_str(),
         NUM_ATTRIBUTES, &attr_name[0], attr_location, &mask_program_20_);
     RET_CHECK(mask_program_20_) << "Problem initializing the program.";
     glUseProgram(mask_program_20_);
     glUniform1i(glGetUniformLocation(mask_program_20_, "input_texture"), 1);
 
     // Simple pass-through program, used for hardware upsampling.
-    mediapipe_v01013_based::GlhCreateProgram(
-        mediapipe_v01013_based::kBasicVertexShader, mediapipe_v01013_based::kBasicTexturedFragmentShader,
+    hand_tracking_mp_lean::GlhCreateProgram(
+        hand_tracking_mp_lean::kBasicVertexShader, hand_tracking_mp_lean::kBasicTexturedFragmentShader,
         NUM_ATTRIBUTES, &attr_name[0], attr_location, &upsample_program_);
     RET_CHECK(upsample_program_) << "Problem initializing the program.";
     glUseProgram(upsample_program_);
@@ -215,13 +215,13 @@ TensorsToSegmentationGlTextureConverter::Convert(const Tensor& input_tensor,
         auto [tensor_height, tensor_width, tensor_channels] = hwc;
 
         // Create initial working mask texture.
-        mediapipe_v01013_based::GlTexture small_mask_texture;
+        hand_tracking_mp_lean::GlTexture small_mask_texture;
 
         // Run shader, process mask tensor.
         {
           small_mask_texture = gpu_helper_.CreateDestinationTexture(
               tensor_width, tensor_height,
-              mediapipe_v01013_based::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
+              hand_tracking_mp_lean::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
 
           // Go through CPU if not already texture 2D (no direct conversion
           // yet). Tensor::GetOpenGlTexture2dReadView() doesn't automatically
@@ -242,10 +242,10 @@ TensorsToSegmentationGlTextureConverter::Convert(const Tensor& input_tensor,
         }
 
         // Upsample small mask into output.
-        mediapipe_v01013_based::GlTexture output_texture =
+        hand_tracking_mp_lean::GlTexture output_texture =
             gpu_helper_.CreateDestinationTexture(
                 output_width, output_height,
-                mediapipe_v01013_based::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
+                hand_tracking_mp_lean::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
 
         // Run shader, upsample result.
         {
@@ -274,12 +274,12 @@ TensorsToSegmentationGlTextureConverter::Convert(const Tensor& input_tensor,
 absl::StatusOr<std::unique_ptr<TensorsToSegmentationConverter>>
 CreateGlTextureConverter(
     CalculatorContext* cc,
-    const mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions& options) {
+    const hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions& options) {
   auto converter = std::make_unique<TensorsToSegmentationGlTextureConverter>();
   MP_RETURN_IF_ERROR(converter->Init(cc, options));
   return converter;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // !MEDIAPIPE_DISABLE_GPU

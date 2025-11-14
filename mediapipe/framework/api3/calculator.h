@@ -28,7 +28,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 // Calculator class should be used to implement a defined node as a calculator.
 //
@@ -260,7 +260,7 @@ class Calculator : public CalculatorBase,
 
   static constexpr auto kCalculatorName = NodeT::GetRegistrationName();
 
-  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc) {
+  static absl::Status GetContract(hand_tracking_mp_lean::CalculatorContract* cc) {
     RET_CHECK_EQ(cc->GetMaxInFlight(), 1)
         << "Only single invocation in flight is allowed.";
 
@@ -293,21 +293,21 @@ class Calculator : public CalculatorBase,
     return tool::CombinedStatus("Multiple errors", statuses);
   }
 
-  absl::Status Open(mediapipe_v01013_based::CalculatorContext* cc) final {
+  absl::Status Open(hand_tracking_mp_lean::CalculatorContext* cc) final {
     context_.emplace(*cc);
     absl::Status status = Open(*context_);
     context_->Clear();
     return status;
   }
 
-  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) final {
+  absl::Status Process(hand_tracking_mp_lean::CalculatorContext* cc) final {
     context_->Reset(*cc);
     absl::Status status = Process(*context_);
     context_->Clear();
     return status;
   }
 
-  absl::Status Close(mediapipe_v01013_based::CalculatorContext* cc) final {
+  absl::Status Close(hand_tracking_mp_lean::CalculatorContext* cc) final {
     context_->Reset(*cc);
     absl::Status status = Close(*context_);
     context_->Clear();
@@ -320,6 +320,6 @@ class Calculator : public CalculatorBase,
   std::optional<CalculatorContext<NodeT>> context_;
 };
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_CALCULATOR_H_

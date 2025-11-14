@@ -20,7 +20,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -123,4 +123,4 @@ class UnletterboxLandmarksPrediction : public CalculatorBase {
 };
 REGISTER_CALCULATOR(UnletterboxLandmarksPrediction);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

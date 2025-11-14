@@ -37,7 +37,7 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #endif  // !MEDIAPIPE_DISABLE_OPENCV
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 constexpr char kCurrentMaskTag[] = "MASK";
@@ -102,7 +102,7 @@ class SegmentationSmoothingCalculator : public CalculatorBase {
 
   bool gpu_initialized_ = false;
 #if !MEDIAPIPE_DISABLE_GPU
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
   GLuint program_ = 0;
 #endif  // !MEDIAPIPE_DISABLE_GPU
 };
@@ -117,7 +117,7 @@ absl::Status SegmentationSmoothingCalculator::GetContract(
   cc->Outputs().Tag(kOutputMaskTag).Set<Image>();
 
 #if !MEDIAPIPE_DISABLE_GPU
-  MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(
+  MP_RETURN_IF_ERROR(hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract(
       cc, /*request_gpu_as_optional=*/true));
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
@@ -128,7 +128,7 @@ absl::Status SegmentationSmoothingCalculator::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
 
   auto options =
-      cc->Options<mediapipe_v01013_based::SegmentationSmoothingCalculatorOptions>();
+      cc->Options<hand_tracking_mp_lean::SegmentationSmoothingCalculatorOptions>();
   combine_with_previous_ratio_ = options.combine_with_previous_ratio();
 
   return absl::OkStatus();
@@ -193,12 +193,12 @@ absl::Status SegmentationSmoothingCalculator::RenderCpu(CalculatorContext* cc) {
 #if !MEDIAPIPE_DISABLE_OPENCV
   // Setup source images.
   const auto& current_frame = cc->Inputs().Tag(kCurrentMaskTag).Get<Image>();
-  auto current_mat = mediapipe_v01013_based::formats::MatView(&current_frame);
+  auto current_mat = hand_tracking_mp_lean::formats::MatView(&current_frame);
   RET_CHECK_EQ(current_mat->type(), CV_32FC1)
       << "Only 1-channel float input image is supported.";
 
   const auto& previous_frame = cc->Inputs().Tag(kPreviousMaskTag).Get<Image>();
-  auto previous_mat = mediapipe_v01013_based::formats::MatView(&previous_frame);
+  auto previous_mat = hand_tracking_mp_lean::formats::MatView(&previous_frame);
   RET_CHECK_EQ(previous_mat->type(), current_mat->type())
       << "Warning: mixing input format types: " << previous_mat->type()
       << " != " << previous_mat->type();
@@ -209,7 +209,7 @@ absl::Status SegmentationSmoothingCalculator::RenderCpu(CalculatorContext* cc) {
   // Setup destination image.
   auto output_frame = std::make_shared<ImageFrame>(
       current_frame.image_format(), current_mat->cols, current_mat->rows);
-  cv::Mat output_mat = mediapipe_v01013_based::formats::MatView(output_frame.get());
+  cv::Mat output_mat = hand_tracking_mp_lean::formats::MatView(output_frame.get());
   output_mat.setTo(cv::Scalar(0));
 
   // Blending function.
@@ -265,10 +265,10 @@ absl::Status SegmentationSmoothingCalculator::RenderGpu(CalculatorContext* cc) {
   // Setup source textures.
   const auto& current_frame = cc->Inputs().Tag(kCurrentMaskTag).Get<Image>();
   RET_CHECK(
-      (current_frame.format() == mediapipe_v01013_based::GpuBufferFormat::kBGRA32 ||
-       current_frame.format() == mediapipe_v01013_based::GpuBufferFormat::kGrayHalf16 ||
-       current_frame.format() == mediapipe_v01013_based::GpuBufferFormat::kGrayFloat32 ||
-       current_frame.format() == mediapipe_v01013_based::GpuBufferFormat::kRGB24))
+      (current_frame.format() == hand_tracking_mp_lean::GpuBufferFormat::kBGRA32 ||
+       current_frame.format() == hand_tracking_mp_lean::GpuBufferFormat::kGrayHalf16 ||
+       current_frame.format() == hand_tracking_mp_lean::GpuBufferFormat::kGrayFloat32 ||
+       current_frame.format() == hand_tracking_mp_lean::GpuBufferFormat::kRGB24))
       << "Only RGBA, RGB, or 1-channel Float input image supported.";
 
   auto current_texture = gpu_helper_.CreateSourceTexture(current_frame);
@@ -375,7 +375,7 @@ absl::Status SegmentationSmoothingCalculator::GlSetup(CalculatorContext* cc) {
 
   // Shader to blend in previous mask based on computed uncertainty probability.
   const std::string frag_src =
-      absl::StrCat(std::string(mediapipe_v01013_based::kMediaPipeFragmentShaderPreamble),
+      absl::StrCat(std::string(hand_tracking_mp_lean::kMediaPipeFragmentShaderPreamble),
                    R"(
     DEFAULT_PRECISION(mediump, float)
 
@@ -422,7 +422,7 @@ absl::Status SegmentationSmoothingCalculator::GlSetup(CalculatorContext* cc) {
   )");
 
   // Create shader program and set parameters.
-  mediapipe_v01013_based::GlhCreateProgram(mediapipe_v01013_based::kBasicVertexShader, frag_src.c_str(),
+  hand_tracking_mp_lean::GlhCreateProgram(hand_tracking_mp_lean::kBasicVertexShader, frag_src.c_str(),
                               NUM_ATTRIBUTES, (const GLchar**)&attr_name[0],
                               attr_location, &program_);
   RET_CHECK(program_) << "Problem initializing the program.";
@@ -437,4 +437,4 @@ absl::Status SegmentationSmoothingCalculator::GlSetup(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -20,7 +20,7 @@
 #include "mediapipe/examples/desktop/autoflip/quality/utils.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 
 absl::Status FrameCropRegionComputer::ExpandSegmentUnderConstraint(
@@ -260,4 +260,4 @@ absl::Status FrameCropRegionComputer::ComputeFrameCropRegion(
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

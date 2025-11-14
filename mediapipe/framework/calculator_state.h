@@ -36,7 +36,7 @@
 #include "mediapipe/framework/resources.h"
 #include "mediapipe/framework/tool/options_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class ProfilingContext;
 // Holds data that the Calculator needs access to.  This data is not
@@ -167,6 +167,6 @@ class CalculatorState {
   CounterFactory* counter_factory_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_CALCULATOR_STATE_H_

@@ -29,7 +29,7 @@
 #include "mediapipe/framework/tool/options_util.h"
 #include "mediapipe/util/packet_test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 using ::testing::ElementsAre;
@@ -503,4 +503,4 @@ TEST(SidePacketToStreamCalculator, AtTimestampWithMultipleOutputs) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

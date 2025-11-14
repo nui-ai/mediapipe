@@ -30,7 +30,7 @@
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/port/point2.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class AffineTransform {
  public:
@@ -81,6 +81,6 @@ class AffineTransform {
   std::vector<float> matrix_ = {1, 0, 0, 0, 1, 0, 0, 0, 1};
   bool is_dirty_ = false;
 };
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_AFFINE_TRANSFORM_H_

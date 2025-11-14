@@ -35,23 +35,23 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace python {
 namespace {
 
-Packet CreateImageFramePacket(mediapipe_v01013_based::ImageFormat::Format format,
+Packet CreateImageFramePacket(hand_tracking_mp_lean::ImageFormat::Format format,
                               const py::array& data, bool copy) {
-  if (format == mediapipe_v01013_based::ImageFormat::SRGB ||
-      format == mediapipe_v01013_based::ImageFormat::SRGBA ||
-      format == mediapipe_v01013_based::ImageFormat::GRAY8) {
+  if (format == hand_tracking_mp_lean::ImageFormat::SRGB ||
+      format == hand_tracking_mp_lean::ImageFormat::SRGBA ||
+      format == hand_tracking_mp_lean::ImageFormat::GRAY8) {
     return Adopt(CreateImageFrame<uint8_t>(format, data, copy).release());
-  } else if (format == mediapipe_v01013_based::ImageFormat::GRAY16 ||
-             format == mediapipe_v01013_based::ImageFormat::SRGB48 ||
-             format == mediapipe_v01013_based::ImageFormat::SRGBA64) {
+  } else if (format == hand_tracking_mp_lean::ImageFormat::GRAY16 ||
+             format == hand_tracking_mp_lean::ImageFormat::SRGB48 ||
+             format == hand_tracking_mp_lean::ImageFormat::SRGBA64) {
     return Adopt(CreateImageFrame<uint16_t>(format, data, copy).release());
-  } else if (format == mediapipe_v01013_based::ImageFormat::VEC32F1 ||
-             format == mediapipe_v01013_based::ImageFormat::VEC32F2 ||
-             format == mediapipe_v01013_based::ImageFormat::VEC32F4) {
+  } else if (format == hand_tracking_mp_lean::ImageFormat::VEC32F1 ||
+             format == hand_tracking_mp_lean::ImageFormat::VEC32F2 ||
+             format == hand_tracking_mp_lean::ImageFormat::VEC32F4) {
     return Adopt(CreateImageFrame<float>(format, data, copy).release());
   }
   throw RaisePyError(PyExc_RuntimeError,
@@ -59,21 +59,21 @@ Packet CreateImageFramePacket(mediapipe_v01013_based::ImageFormat::Format format
   return Packet();
 }
 
-Packet CreateImagePacket(mediapipe_v01013_based::ImageFormat::Format format,
+Packet CreateImagePacket(hand_tracking_mp_lean::ImageFormat::Format format,
                          const py::array& data, bool copy) {
-  if (format == mediapipe_v01013_based::ImageFormat::SRGB ||
-      format == mediapipe_v01013_based::ImageFormat::SRGBA ||
-      format == mediapipe_v01013_based::ImageFormat::GRAY8) {
+  if (format == hand_tracking_mp_lean::ImageFormat::SRGB ||
+      format == hand_tracking_mp_lean::ImageFormat::SRGBA ||
+      format == hand_tracking_mp_lean::ImageFormat::GRAY8) {
     return MakePacket<Image>(std::shared_ptr<ImageFrame>(
         CreateImageFrame<uint8_t>(format, data, copy)));
-  } else if (format == mediapipe_v01013_based::ImageFormat::GRAY16 ||
-             format == mediapipe_v01013_based::ImageFormat::SRGB48 ||
-             format == mediapipe_v01013_based::ImageFormat::SRGBA64) {
+  } else if (format == hand_tracking_mp_lean::ImageFormat::GRAY16 ||
+             format == hand_tracking_mp_lean::ImageFormat::SRGB48 ||
+             format == hand_tracking_mp_lean::ImageFormat::SRGBA64) {
     return MakePacket<Image>(std::shared_ptr<ImageFrame>(
         CreateImageFrame<uint16_t>(format, data, copy)));
-  } else if (format == mediapipe_v01013_based::ImageFormat::VEC32F1 ||
-             format == mediapipe_v01013_based::ImageFormat::VEC32F2 ||
-             format == mediapipe_v01013_based::ImageFormat::VEC32F4) {
+  } else if (format == hand_tracking_mp_lean::ImageFormat::VEC32F1 ||
+             format == hand_tracking_mp_lean::ImageFormat::VEC32F2 ||
+             format == hand_tracking_mp_lean::ImageFormat::VEC32F4) {
     return MakePacket<Image>(std::shared_ptr<ImageFrame>(
         CreateImageFrame<float>(format, data, copy)));
   }
@@ -748,4 +748,4 @@ void PacketCreatorSubmodule(pybind11::module* module) {
 }
 
 }  // namespace python
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

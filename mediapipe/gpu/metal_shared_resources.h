@@ -23,7 +23,7 @@
 
 @end
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class MetalSharedResources {
  public:
@@ -35,6 +35,6 @@ class MetalSharedResources {
   MPPMetalSharedResources* resources_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_METAL_SHARED_RESOURCES_H_

@@ -19,7 +19,7 @@
 #include "absl/log/absl_check.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 TopologicalSorter::TopologicalSorter(int num_nodes) : num_nodes_(num_nodes) {
   ABSL_CHECK_GE(num_nodes_, 0);
@@ -151,4 +151,4 @@ void TopologicalSorter::FindCycle(std::vector<int>* cycle_nodes) {
   // vector has been cleared already.
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

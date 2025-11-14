@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/any_proto.h"
 #include "mediapipe/framework/tool/options_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tool {
 
@@ -79,6 +79,6 @@ absl::Status DefineGraphOptions(const CalculatorGraphConfig::Node& parent_node,
                                 CalculatorGraphConfig* config);
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_OPTIONS_UTIL_H_

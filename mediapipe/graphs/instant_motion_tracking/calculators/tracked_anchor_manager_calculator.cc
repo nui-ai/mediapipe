@@ -18,7 +18,7 @@
 #include "mediapipe/graphs/instant_motion_tracking/calculators/transformations.h"
 #include "mediapipe/util/tracking/box_tracker.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kSentinelTag[] = "SENTINEL";
 constexpr char kAnchorsTag[] = "ANCHORS";
@@ -81,11 +81,11 @@ class TrackedAnchorManagerCalculator : public CalculatorBase {
     cc->Inputs().Tag(kSentinelTag).Set<int>();
 
     if (cc->Inputs().HasTag(kBoxesInputTag)) {
-      cc->Inputs().Tag(kBoxesInputTag).Set<mediapipe_v01013_based::TimedBoxProtoList>();
+      cc->Inputs().Tag(kBoxesInputTag).Set<hand_tracking_mp_lean::TimedBoxProtoList>();
     }
 
     cc->Outputs().Tag(kAnchorsTag).Set<std::vector<Anchor>>();
-    cc->Outputs().Tag(kBoxesOutputTag).Set<mediapipe_v01013_based::TimedBoxProtoList>();
+    cc->Outputs().Tag(kBoxesOutputTag).Set<hand_tracking_mp_lean::TimedBoxProtoList>();
 
     if (cc->Outputs().HasTag(kCancelTag)) {
       cc->Outputs().Tag(kCancelTag).Set<int>();
@@ -101,18 +101,18 @@ class TrackedAnchorManagerCalculator : public CalculatorBase {
 REGISTER_CALCULATOR(TrackedAnchorManagerCalculator);
 
 absl::Status TrackedAnchorManagerCalculator::Process(CalculatorContext* cc) {
-  mediapipe_v01013_based::Timestamp timestamp = cc->InputTimestamp();
+  hand_tracking_mp_lean::Timestamp timestamp = cc->InputTimestamp();
   const int sticker_sentinel = cc->Inputs().Tag(kSentinelTag).Get<int>();
   std::vector<Anchor> current_anchor_data =
       cc->Inputs().Tag(kAnchorsTag).Get<std::vector<Anchor>>();
-  auto pos_boxes = absl::make_unique<mediapipe_v01013_based::TimedBoxProtoList>();
+  auto pos_boxes = absl::make_unique<hand_tracking_mp_lean::TimedBoxProtoList>();
   std::vector<Anchor> tracked_scaled_anchor_data;
 
   // Delete any boxes being tracked without an associated anchor
-  for (const mediapipe_v01013_based::TimedBoxProto& box :
+  for (const hand_tracking_mp_lean::TimedBoxProto& box :
        cc->Inputs()
            .Tag(kBoxesInputTag)
-           .Get<mediapipe_v01013_based::TimedBoxProtoList>()
+           .Get<hand_tracking_mp_lean::TimedBoxProtoList>()
            .box()) {
     bool anchor_exists = false;
     for (Anchor anchor : current_anchor_data) {
@@ -140,7 +140,7 @@ absl::Status TrackedAnchorManagerCalculator::Process(CalculatorContext* cc) {
           .Tag(kCancelTag)
           .AddPacket(MakePacket<int>(anchor.sticker_id).At(timestamp++));
       // Add a tracking box
-      mediapipe_v01013_based::TimedBoxProto* box = pos_boxes->add_box();
+      hand_tracking_mp_lean::TimedBoxProto* box = pos_boxes->add_box();
       box->set_left(anchor.x - kBoxEdgeSize * 0.5f);
       box->set_right(anchor.x + kBoxEdgeSize * 0.5f);
       box->set_top(anchor.y - kBoxEdgeSize * 0.5f);
@@ -154,8 +154,8 @@ absl::Status TrackedAnchorManagerCalculator::Process(CalculatorContext* cc) {
       // Attempt to update anchor position from tracking subgraph
       // (TimedBoxProto)
       bool updated_from_tracker = false;
-      const mediapipe_v01013_based::TimedBoxProtoList box_list =
-          cc->Inputs().Tag(kBoxesInputTag).Get<mediapipe_v01013_based::TimedBoxProtoList>();
+      const hand_tracking_mp_lean::TimedBoxProtoList box_list =
+          cc->Inputs().Tag(kBoxesInputTag).Get<hand_tracking_mp_lean::TimedBoxProtoList>();
       for (const auto& box : box_list.box()) {
         if (box.id() == anchor.sticker_id) {
           // Get center x normalized coordinate [0.0-1.0]
@@ -177,7 +177,7 @@ absl::Status TrackedAnchorManagerCalculator::Process(CalculatorContext* cc) {
       if (!updated_from_tracker) {
         for (const Anchor& prev_anchor : previous_anchor_data_) {
           if (anchor.sticker_id == prev_anchor.sticker_id) {
-            mediapipe_v01013_based::TimedBoxProto* box = pos_boxes->add_box();
+            hand_tracking_mp_lean::TimedBoxProto* box = pos_boxes->add_box();
             box->set_left(prev_anchor.x - kBoxEdgeSize * 0.5f);
             box->set_right(prev_anchor.x + kBoxEdgeSize * 0.5f);
             box->set_top(prev_anchor.y - kBoxEdgeSize * 0.5f);
@@ -207,4 +207,4 @@ absl::Status TrackedAnchorManagerCalculator::Process(CalculatorContext* cc) {
 
   return absl::OkStatus();
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

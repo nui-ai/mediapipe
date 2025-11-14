@@ -21,7 +21,7 @@
 #include "mediapipe/gpu/webgpu/webgpu_texture_view.h"
 #include "mediapipe/gpu/webgpu/webgpu_utils.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr uint32_t kTileSize = 8;
@@ -159,7 +159,7 @@ fn main(@builtin(global_invocation_id) gid : vec3<u32>) {
     params_buffer_ = service_.device().CreateBuffer(&buffer_desc);
   }
 
-  absl::Status Convert(const mediapipe_v01013_based::Image& input, const RotatedRect& roi,
+  absl::Status Convert(const hand_tracking_mp_lean::Image& input, const RotatedRect& roi,
                        float range_min, float range_max,
                        int tensor_buffer_offset, Tensor& output_tensor) final {
     RET_CHECK_EQ(tensor_buffer_offset, 0)
@@ -284,4 +284,4 @@ CreateImageToWebGpuTextureTensorConverter(CalculatorContext* cc) {
   return std::make_unique<Converter>(cc);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

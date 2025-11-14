@@ -18,7 +18,7 @@ limitations under the License.
 
 #include "mediapipe/tasks/cc/components/processors/proto/embedder_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace components {
 namespace processors {
@@ -44,6 +44,6 @@ proto::EmbedderOptions ConvertEmbedderOptionsToProto(
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_PROCESSORS_EMBEDDER_OPTIONS_H_

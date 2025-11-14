@@ -16,7 +16,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kFloatsTag[] = "FLOATS";
 constexpr char kFloatTag[] = "FLOAT";
@@ -104,4 +104,4 @@ absl::Status TfLiteTensorsToFloatsCalculator::Process(CalculatorContext* cc) {
 
   return absl::OkStatus();
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

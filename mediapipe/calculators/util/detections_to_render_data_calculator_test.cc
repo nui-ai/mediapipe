@@ -27,7 +27,7 @@
 #include "mediapipe/util/color.pb.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kDetectionsTag[] = "DETECTIONS";
 constexpr char kRenderDataTag[] = "RENDER_DATA";
@@ -258,4 +258,4 @@ TEST(DetectionsToRenderDataCalculatorTest, ProduceEmptyPacket) {
   EXPECT_EQ(exact2[0].Get<RenderData>().render_annotations_size(), 0);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

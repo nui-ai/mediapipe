@@ -17,7 +17,7 @@
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/formats/video_stream_header.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kVideoPrestreamTag[] = "VIDEO_PRESTREAM";
 constexpr char kFrameTag[] = "FRAME";
@@ -141,4 +141,4 @@ absl::Status VideoPreStreamCalculator::ProcessWithFrameRateInOptions(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -36,7 +36,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_stylizer/proto/face_stylizer_graph_options.pb.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace face_stylizer {
@@ -54,7 +54,7 @@ constexpr char kStylizedImageName[] = "stylized_image";
 constexpr int kMicroSecondsPerMilliSecond = 1000;
 
 using FaceStylizerGraphOptionsProto =
-    ::mediapipe_v01013_based::tasks::vision::face_stylizer::proto::FaceStylizerGraphOptions;
+    ::hand_tracking_mp_lean::tasks::vision::face_stylizer::proto::FaceStylizerGraphOptions;
 
 // Creates a MediaPipe graph config that only contains a single subgraph node of
 // "mediapipe.tasks.vision.face_stylizer.FaceStylizerGraph".
@@ -131,7 +131,7 @@ absl::StatusOr<std::unique_ptr<FaceStylizer>> FaceStylizer::Create(
 }
 
 absl::StatusOr<std::optional<Image>> FaceStylizer::Stylize(
-    mediapipe_v01013_based::Image image,
+    hand_tracking_mp_lean::Image image,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -155,4 +155,4 @@ absl::StatusOr<std::optional<Image>> FaceStylizer::Stylize(
 }  // namespace face_stylizer
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

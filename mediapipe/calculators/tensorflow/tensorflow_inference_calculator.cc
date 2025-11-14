@@ -48,7 +48,7 @@
 
 namespace tf = ::tensorflow;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -234,8 +234,8 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
       "TotalNumSessionRuns";
 
   TensorFlowInferenceCalculator() : session_(nullptr) {
-    clock_ = std::unique_ptr<mediapipe_v01013_based::Clock>(
-        mediapipe_v01013_based::MonotonicClock::CreateSynchronizedMonotonicClock());
+    clock_ = std::unique_ptr<hand_tracking_mp_lean::Clock>(
+        hand_tracking_mp_lean::MonotonicClock::CreateSynchronizedMonotonicClock());
   }
 
   static absl::Status GetContract(CalculatorContract* cc) {
@@ -247,7 +247,7 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
       if (!options.batched_input()) {
         cc->Inputs().Tag(tag).Set<tf::Tensor>();
       } else {
-        cc->Inputs().Tag(tag).Set<std::vector<mediapipe_v01013_based::Packet>>();
+        cc->Inputs().Tag(tag).Set<std::vector<hand_tracking_mp_lean::Packet>>();
       }
     }
     RET_CHECK(!cc->Outputs().GetTags().empty());
@@ -257,7 +257,7 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
       // with channels set to 0.
       cc->Outputs().Tag(tag).Set<tf::Tensor>();
     }
-    // A mediapipe_v01013_based::TensorFlowSession with a model loaded and ready for use.
+    // A hand_tracking_mp_lean::TensorFlowSession with a model loaded and ready for use.
     // For this calculator it must include a tag_to_tensor_map.
     cc->InputSidePackets().Tag(kSessionTag).Set<TensorFlowSession>();
     if (cc->InputSidePackets().HasTag(kRecurrentInitTensorsTag)) {
@@ -314,11 +314,11 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
                                       "separated string with two components: "
                                    << tag_pair;
 
-      RET_CHECK(mediapipe_v01013_based::ContainsKey(tag_to_tensor_map_, tags[0]))
+      RET_CHECK(hand_tracking_mp_lean::ContainsKey(tag_to_tensor_map_, tags[0]))
           << "Can't find tag '" << tags[0] << "' in signature "
           << options_.signature_name() << "; instead found tags "
           << absl::StrJoin(tag_to_tensor_map_, ", ", TagFormatter);
-      RET_CHECK(mediapipe_v01013_based::ContainsKey(tag_to_tensor_map_, tags[1]))
+      RET_CHECK(hand_tracking_mp_lean::ContainsKey(tag_to_tensor_map_, tags[1]))
           << "Can't find tag '" << tags[1] << "' in signature "
           << options_.signature_name() << " ; instead found tags "
           << absl::StrJoin(tag_to_tensor_map_, ", ", TagFormatter);
@@ -328,13 +328,13 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
 
     // Check that all tags are present in this signature bound to tensors.
     for (const std::string& tag : cc->Inputs().GetTags()) {
-      RET_CHECK(mediapipe_v01013_based::ContainsKey(tag_to_tensor_map_, tag))
+      RET_CHECK(hand_tracking_mp_lean::ContainsKey(tag_to_tensor_map_, tag))
           << "Can't find tag '" << tag << "' in signature "
           << options_.signature_name() << "; instead found tags "
           << absl::StrJoin(tag_to_tensor_map_, ", ", TagFormatter);
     }
     for (const std::string& tag : cc->Outputs().GetTags()) {
-      RET_CHECK(mediapipe_v01013_based::ContainsKey(tag_to_tensor_map_, tag))
+      RET_CHECK(hand_tracking_mp_lean::ContainsKey(tag_to_tensor_map_, tag))
           << "Can't find tag '" << tag << "' in signature "
           << options_.signature_name() << "; instead found tags "
           << absl::StrJoin(tag_to_tensor_map_, ", ", TagFormatter);
@@ -372,7 +372,7 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
       InferenceState* inference_state) ABSL_EXCLUSIVE_LOCKS_REQUIRED(mutex_) {
     tf::Tensor input_tensor(packet.Get<tf::Tensor>());
     RET_CHECK_OK(AddBatchDimension(&input_tensor));
-    if (mediapipe_v01013_based::ContainsKey(recurrent_feed_tags_, tag_name)) {
+    if (hand_tracking_mp_lean::ContainsKey(recurrent_feed_tags_, tag_name)) {
       // If we receive an input on a recurrent tag, override the state.
       // It's OK to override the global state because there is just one
       // input stream allowed for recurrent tensors.
@@ -409,7 +409,7 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
       for (const std::string& tag_as_node_name : cc->Inputs().GetTags()) {
         if (cc->Inputs().Tag(tag_as_node_name).IsEmpty()) {
           // Recurrent tensors can be empty.
-          if (!mediapipe_v01013_based::ContainsKey(recurrent_feed_tags_, tag_as_node_name)) {
+          if (!hand_tracking_mp_lean::ContainsKey(recurrent_feed_tags_, tag_as_node_name)) {
             if (options_.skip_on_missing_features()) {
               return absl::OkStatus();
             } else {
@@ -491,7 +491,7 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
   absl::Status OutputBatch(CalculatorContext* cc,
                            std::unique_ptr<InferenceState> inference_state) {
     const int64_t start_time = absl::ToUnixMicros(clock_->TimeNow());
-    std::vector<std::pair<mediapipe_v01013_based::ProtoString, tf::Tensor>> input_tensors;
+    std::vector<std::pair<hand_tracking_mp_lean::ProtoString, tf::Tensor>> input_tensors;
 
     for (auto& keyed_tensors : inference_state->input_tensor_batches_) {
       if (options_.batch_size() == 1) {
@@ -502,7 +502,7 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
         } else {
           // The input buffer can be empty for recurrent tensors.
           RET_CHECK(
-              mediapipe_v01013_based::ContainsKey(recurrent_feed_tags_, keyed_tensors.first))
+              hand_tracking_mp_lean::ContainsKey(recurrent_feed_tags_, keyed_tensors.first))
               << "A non-recurrent tensor does not have an input: "
               << keyed_tensors.first;
         }
@@ -523,7 +523,7 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
       }
     }
     inference_state->input_tensor_batches_.clear();
-    std::vector<mediapipe_v01013_based::ProtoString> output_tensor_names;
+    std::vector<hand_tracking_mp_lean::ProtoString> output_tensor_names;
     std::vector<std::string> output_name_in_signature;
     for (const std::string& tag : cc->Outputs().GetTags()) {
       output_tensor_names.emplace_back(tag_to_tensor_map_[tag]);
@@ -648,7 +648,7 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
   std::map<std::string, std::string> recurrent_fetch_tags_to_feed_tags_;
 
   // Clock used to measure the computation time in OutputBatch().
-  std::unique_ptr<mediapipe_v01013_based::Clock> clock_;
+  std::unique_ptr<hand_tracking_mp_lean::Clock> clock_;
 
   // The static singleton semaphore to throttle concurrent session runs.
   static SimpleSemaphore* get_session_run_throttle(
@@ -667,4 +667,4 @@ constexpr char
     TensorFlowInferenceCalculator::kTotalSessionRunsTimeUsecsCounterSuffix[];
 constexpr char
     TensorFlowInferenceCalculator::kTotalNumSessionRunsCounterSuffix[];
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -7,7 +7,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 TEST(TfLiteCustomOpResolverCalculatorTest, FindResamplerOp) {
   CalculatorGraphConfig graph_config =
@@ -31,4 +31,4 @@ TEST(TfLiteCustomOpResolverCalculatorTest, FindResamplerOp) {
   EXPECT_THAT(resolver.FindOp("Resampler", /*version=*/1), testing::NotNull());
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

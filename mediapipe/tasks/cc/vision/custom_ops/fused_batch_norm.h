@@ -18,11 +18,11 @@ limitations under the License.
 
 #include "tensorflow/lite/core/c/common.h"
 
-namespace mediapipe_v01013_based::tflite_operations {
+namespace hand_tracking_mp_lean::tflite_operations {
 
 // The FusedBatchNorm op resolver is CPU-friendly only.
 TfLiteRegistration* Register_FusedBatchNorm();
 
-}  // namespace mediapipe_v01013_based::tflite_operations
+}  // namespace hand_tracking_mp_lean::tflite_operations
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_CUSTOM_OPS_FUSED_BATCH_NORM_H_

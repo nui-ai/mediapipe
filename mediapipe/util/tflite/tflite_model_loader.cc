@@ -28,7 +28,7 @@
 #include "mediapipe/framework/resources.h"
 #include "tensorflow/lite/model_builder.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using ::tflite::FlatBufferModel;
 
@@ -74,4 +74,4 @@ TfLiteModelLoader::LoadFromPathAndGetResource(
   return TfLiteModelWithResource{.model_packet = std::move(model_packet),
                                  .resource = std::move(model_resource)};
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

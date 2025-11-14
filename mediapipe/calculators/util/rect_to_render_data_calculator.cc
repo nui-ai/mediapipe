@@ -20,7 +20,7 @@
 #include "mediapipe/util/color.pb.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -30,8 +30,8 @@ constexpr char kNormRectsTag[] = "NORM_RECTS";
 constexpr char kRectsTag[] = "RECTS";
 constexpr char kRenderDataTag[] = "RENDER_DATA";
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::Rect;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::Rect;
 
 RenderAnnotation::Rectangle* NewRect(
     const RectToRenderDataCalculatorOptions& options, RenderData* render_data) {
@@ -203,4 +203,4 @@ absl::Status RectToRenderDataCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

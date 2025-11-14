@@ -30,7 +30,7 @@
 #include "mediapipe/framework/mediapipe_profiling.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 using SyncSet = InputStreamHandler::SyncSet;
@@ -234,7 +234,7 @@ bool InputStreamHandler::ScheduleInvocations(int max_allowance,
       }
       CalculatorContext* default_context =
           calculator_context_manager_->GetDefaultCalculatorContext();
-      mediapipe_v01013_based::LogEvent(default_context->GetProfilingContext(),
+      hand_tracking_mp_lean::LogEvent(default_context->GetProfilingContext(),
                           TraceEvent(TraceEvent::NOT_READY)
                               .set_node_id(default_context->NodeId()));
       break;
@@ -252,7 +252,7 @@ bool InputStreamHandler::ScheduleInvocations(int max_allowance,
         schedule_callback_(calculator_context);
         ++invocations_scheduled;
       }
-      mediapipe_v01013_based::LogEvent(calculator_context->GetProfilingContext(),
+      hand_tracking_mp_lean::LogEvent(calculator_context->GetProfilingContext(),
                           TraceEvent(TraceEvent::READY_FOR_PROCESS)
                               .set_node_id(calculator_context->NodeId()));
     } else {
@@ -273,7 +273,7 @@ bool InputStreamHandler::ScheduleInvocations(int max_allowance,
       schedule_callback_(default_context);
       ++invocations_scheduled;
       prepared_context_for_close_ = true;
-      mediapipe_v01013_based::LogEvent(default_context->GetProfilingContext(),
+      hand_tracking_mp_lean::LogEvent(default_context->GetProfilingContext(),
                           TraceEvent(TraceEvent::READY_FOR_CLOSE)
                               .set_node_id(default_context->NodeId()));
       break;
@@ -305,11 +305,11 @@ void LogQueuedPackets(CalculatorContext* context, InputStreamManager* stream,
                            .set_input_ts(queue_tail.Timestamp())
                            .set_stream_id(&stream->Name())
                            .set_event_data(stream->QueueSize() + 1);
-    mediapipe_v01013_based::LogEvent(context->GetProfilingContext(),
+    hand_tracking_mp_lean::LogEvent(context->GetProfilingContext(),
                         event.set_packet_ts(queue_tail.Timestamp()));
     Packet queue_head = stream->QueueHead();
     if (!queue_head.IsEmpty()) {
-      mediapipe_v01013_based::LogEvent(context->GetProfilingContext(),
+      hand_tracking_mp_lean::LogEvent(context->GetProfilingContext(),
                           event.set_packet_ts(queue_head.Timestamp()));
     }
   }
@@ -500,4 +500,4 @@ void SyncSet::FillInputBounds(InputStreamShardSet* input_set) {
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

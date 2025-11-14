@@ -68,7 +68,7 @@ constexpr char kTensorsGpuTag[] = "TENSORS_GPU";
 constexpr char kMatrixTag[] = "MATRIX";
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 #if MEDIAPIPE_TFLITE_GL_INFERENCE
@@ -154,7 +154,7 @@ class TfLiteConverterCalculator : public CalculatorBase {
   std::unique_ptr<tflite::Interpreter> interpreter_ = nullptr;
 
 #if MEDIAPIPE_TFLITE_GL_INFERENCE
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
   std::unique_ptr<GPUData> gpu_data_out_;
 #elif MEDIAPIPE_TFLITE_METAL_INFERENCE
   MPPMetalHelper* gpu_helper_ = nullptr;
@@ -201,7 +201,7 @@ absl::Status TfLiteConverterCalculator::GetContract(CalculatorContract* cc) {
   }
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Inputs().HasTag(kGpuBufferTag)) {
-    cc->Inputs().Tag(kGpuBufferTag).Set<mediapipe_v01013_based::GpuBuffer>();
+    cc->Inputs().Tag(kGpuBufferTag).Set<hand_tracking_mp_lean::GpuBuffer>();
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
@@ -214,7 +214,7 @@ absl::Status TfLiteConverterCalculator::GetContract(CalculatorContract* cc) {
 
   if (ShouldUseGpu(cc)) {
 #if MEDIAPIPE_TFLITE_GL_INFERENCE
-    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc));
+    MP_RETURN_IF_ERROR(hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract(cc));
 #elif MEDIAPIPE_TFLITE_METAL_INFERENCE
     MP_RETURN_IF_ERROR([MPPMetalHelper updateContract:cc]);
 #endif  // MEDIAPIPE_TFLITE_GL_INFERENCE
@@ -295,17 +295,17 @@ absl::Status TfLiteConverterCalculator::ProcessCPU(CalculatorContext* cc) {
     const int width = image_frame.Width();
     const int channels = image_frame.NumberOfChannels();
     const int channels_preserved = std::min(channels, max_num_channels_);
-    const mediapipe_v01013_based::ImageFormat::Format format = image_frame.Format();
+    const hand_tracking_mp_lean::ImageFormat::Format format = image_frame.Format();
 
     if (!initialized_) {
-      if (!(format == mediapipe_v01013_based::ImageFormat::SRGBA ||
-            format == mediapipe_v01013_based::ImageFormat::SRGB ||
-            format == mediapipe_v01013_based::ImageFormat::GRAY8 ||
-            format == mediapipe_v01013_based::ImageFormat::VEC32F1))
+      if (!(format == hand_tracking_mp_lean::ImageFormat::SRGBA ||
+            format == hand_tracking_mp_lean::ImageFormat::SRGB ||
+            format == hand_tracking_mp_lean::ImageFormat::GRAY8 ||
+            format == hand_tracking_mp_lean::ImageFormat::VEC32F1))
         RET_CHECK_FAIL() << "Unsupported CPU input format.";
       TfLiteQuantization quant;
       if (use_quantized_tensors_) {
-        RET_CHECK(format != mediapipe_v01013_based::ImageFormat::VEC32F1)
+        RET_CHECK(format != hand_tracking_mp_lean::ImageFormat::VEC32F1)
             << "Only 8-bit input images are supported for quantization.";
         quant.type = kTfLiteAffineQuantization;
         auto quant_params = static_cast<TfLiteAffineQuantization*>(
@@ -412,7 +412,7 @@ absl::Status TfLiteConverterCalculator::ProcessGPU(CalculatorContext* cc) {
 #if MEDIAPIPE_TFLITE_GL_INFERENCE
   // GpuBuffer to tflite::gpu::GlBuffer conversion.
   const auto& input =
-      cc->Inputs().Tag(kGpuBufferTag).Get<mediapipe_v01013_based::GpuBuffer>();
+      cc->Inputs().Tag(kGpuBufferTag).Get<hand_tracking_mp_lean::GpuBuffer>();
   MP_RETURN_IF_ERROR(
       gpu_helper_.RunInGlContext([this, &input]() -> absl::Status {
         // Convert GL texture into TfLite GlBuffer (SSBO).
@@ -449,7 +449,7 @@ absl::Status TfLiteConverterCalculator::ProcessGPU(CalculatorContext* cc) {
 #elif MEDIAPIPE_TFLITE_METAL_INFERENCE
   // GpuBuffer to id<MTLBuffer> conversion.
   const auto& input =
-      cc->Inputs().Tag(kGpuBufferTag).Get<mediapipe_v01013_based::GpuBuffer>();
+      cc->Inputs().Tag(kGpuBufferTag).Get<hand_tracking_mp_lean::GpuBuffer>();
   id<MTLCommandBuffer> command_buffer = [gpu_helper_ commandBuffer];
 
   id<MTLTexture> src_texture = [gpu_helper_ metalTextureWithGpuBuffer:input];
@@ -494,17 +494,17 @@ absl::Status TfLiteConverterCalculator::InitGpu(CalculatorContext* cc) {
 #if MEDIAPIPE_TFLITE_GPU_SUPPORTED
   // Get input image sizes.
   const auto& input =
-      cc->Inputs().Tag(kGpuBufferTag).Get<mediapipe_v01013_based::GpuBuffer>();
-  mediapipe_v01013_based::ImageFormat::Format format =
-      mediapipe_v01013_based::ImageFormatForGpuBufferFormat(input.format());
+      cc->Inputs().Tag(kGpuBufferTag).Get<hand_tracking_mp_lean::GpuBuffer>();
+  hand_tracking_mp_lean::ImageFormat::Format format =
+      hand_tracking_mp_lean::ImageFormatForGpuBufferFormat(input.format());
   gpu_data_out_ = absl::make_unique<GPUData>();
   gpu_data_out_->elements = input.height() * input.width() * max_num_channels_;
   const bool include_alpha = (max_num_channels_ == 4);
-  if (!(format == mediapipe_v01013_based::ImageFormat::GRAY8 ||
-        format == mediapipe_v01013_based::ImageFormat::SRGB ||
-        format == mediapipe_v01013_based::ImageFormat::SRGBA))
+  if (!(format == hand_tracking_mp_lean::ImageFormat::GRAY8 ||
+        format == hand_tracking_mp_lean::ImageFormat::SRGB ||
+        format == hand_tracking_mp_lean::ImageFormat::SRGBA))
     RET_CHECK_FAIL() << "Unsupported GPU input format.";
-  if (include_alpha && (format != mediapipe_v01013_based::ImageFormat::SRGBA))
+  if (include_alpha && (format != hand_tracking_mp_lean::ImageFormat::SRGBA))
     RET_CHECK_FAIL() << "Num input channels is less than desired output.";
 #endif  // MEDIAPIPE_TFLITE_GPU_SUPPORTED
 
@@ -630,7 +630,7 @@ absl::Status TfLiteConverterCalculator::InitGpu(CalculatorContext* cc) {
 absl::Status TfLiteConverterCalculator::LoadOptions(CalculatorContext* cc) {
   // Get calculator options specified in the graph.
   const auto& options =
-      cc->Options<::mediapipe_v01013_based::TfLiteConverterCalculatorOptions>();
+      cc->Options<::hand_tracking_mp_lean::TfLiteConverterCalculatorOptions>();
 
   // if zero_center, set output float range to match [-1, 1] as specified in
   // calculator proto.
@@ -741,4 +741,4 @@ absl::Status TfLiteConverterCalculator::CopyMatrixToTensor(const Matrix& matrix,
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

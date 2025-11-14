@@ -7,7 +7,7 @@
 #include "mediapipe/framework/packet.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 absl::Status GraphServiceManager::SetServicePacket(
     const GraphServiceBase& service, Packet p) {
@@ -27,4 +27,4 @@ Packet GraphServiceManager::GetServicePacket(
   return it->second;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -38,7 +38,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 cv::Mat GetRgb(absl::string_view path) {
@@ -87,7 +87,7 @@ void RunTest(const std::string& graph_text, const std::string& tag,
         break;
     }
   }
-  auto graph_config = mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+  auto graph_config = hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
       absl::Substitute(graph_text, /*$0=*/border_mode_str,
                        /*$1=*/interpolation_str));
 
@@ -274,22 +274,22 @@ void RunTest(cv::Mat input, cv::Mat expected_result,
           matrix, out_width, out_height, border_mode, interpolation);
 }
 
-std::array<float, 16> GetMatrix(cv::Mat input, mediapipe_v01013_based::NormalizedRect roi,
+std::array<float, 16> GetMatrix(cv::Mat input, hand_tracking_mp_lean::NormalizedRect roi,
                                 bool keep_aspect_ratio, int out_width,
                                 int out_height) {
   std::array<float, 16> transform_mat;
-  mediapipe_v01013_based::RotatedRect roi_absolute =
-      mediapipe_v01013_based::GetRoi(input.cols, input.rows, roi);
-  mediapipe_v01013_based::PadRoi(out_width, out_height, keep_aspect_ratio, &roi_absolute)
+  hand_tracking_mp_lean::RotatedRect roi_absolute =
+      hand_tracking_mp_lean::GetRoi(input.cols, input.rows, roi);
+  hand_tracking_mp_lean::PadRoi(out_width, out_height, keep_aspect_ratio, &roi_absolute)
       .IgnoreError();
-  mediapipe_v01013_based::GetRotatedSubRectToRectTransformMatrix(
+  hand_tracking_mp_lean::GetRotatedSubRectToRectTransformMatrix(
       roi_absolute, input.cols, input.rows,
       /*flip_horizontally=*/false, &transform_mat);
   return transform_mat;
 }
 
 TEST(WarpAffineCalculatorTest, MediumSubRectKeepAspect) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -313,7 +313,7 @@ TEST(WarpAffineCalculatorTest, MediumSubRectKeepAspect) {
 }
 
 TEST(WarpAffineCalculatorTest, MediumSubRectKeepAspectBorderZero) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -339,7 +339,7 @@ TEST(WarpAffineCalculatorTest, MediumSubRectKeepAspectBorderZero) {
 }
 
 TEST(WarpAffineCalculatorTest, MediumSubRectKeepAspectWithRotation) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -365,7 +365,7 @@ TEST(WarpAffineCalculatorTest, MediumSubRectKeepAspectWithRotation) {
 }
 
 TEST(WarpAffineCalculatorTest, MediumSubRectKeepAspectWithRotationBorderZero) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -391,7 +391,7 @@ TEST(WarpAffineCalculatorTest, MediumSubRectKeepAspectWithRotationBorderZero) {
 }
 
 TEST(WarpAffineCalculatorTest, MediumSubRectWithRotation) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -416,7 +416,7 @@ TEST(WarpAffineCalculatorTest, MediumSubRectWithRotation) {
 }
 
 TEST(WarpAffineCalculatorTest, MediumSubRectWithRotationBorderZero) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -442,7 +442,7 @@ TEST(WarpAffineCalculatorTest, MediumSubRectWithRotationBorderZero) {
 }
 
 TEST(WarpAffineCalculatorTest, MediumSubRectWithRotationBorderZeroInterpCubic) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.65f);
   roi.set_y_center(0.4f);
   roi.set_width(0.5f);
@@ -469,7 +469,7 @@ TEST(WarpAffineCalculatorTest, MediumSubRectWithRotationBorderZeroInterpCubic) {
 }
 
 TEST(WarpAffineCalculatorTest, LargeSubRect) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -494,7 +494,7 @@ TEST(WarpAffineCalculatorTest, LargeSubRect) {
 }
 
 TEST(WarpAffineCalculatorTest, LargeSubRectBorderZero) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -519,7 +519,7 @@ TEST(WarpAffineCalculatorTest, LargeSubRectBorderZero) {
 }
 
 TEST(WarpAffineCalculatorTest, LargeSubRectKeepAspect) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -544,7 +544,7 @@ TEST(WarpAffineCalculatorTest, LargeSubRectKeepAspect) {
 }
 
 TEST(WarpAffineCalculatorTest, LargeSubRectKeepAspectBorderZero) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -570,7 +570,7 @@ TEST(WarpAffineCalculatorTest, LargeSubRectKeepAspectBorderZero) {
 }
 
 TEST(WarpAffineCalculatorTest, LargeSubRectKeepAspectWithRotation) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -595,7 +595,7 @@ TEST(WarpAffineCalculatorTest, LargeSubRectKeepAspectWithRotation) {
 }
 
 TEST(WarpAffineCalculatorTest, LargeSubRectKeepAspectWithRotationBorderZero) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.5f);
@@ -621,7 +621,7 @@ TEST(WarpAffineCalculatorTest, LargeSubRectKeepAspectWithRotationBorderZero) {
 }
 
 TEST(WarpAffineCalculatorTest, NoOp) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.0f);
@@ -646,7 +646,7 @@ TEST(WarpAffineCalculatorTest, NoOp) {
 }
 
 TEST(WarpAffineCalculatorTest, NoOpBorderZero) {
-  mediapipe_v01013_based::NormalizedRect roi;
+  hand_tracking_mp_lean::NormalizedRect roi;
   roi.set_x_center(0.5f);
   roi.set_y_center(0.5f);
   roi.set_width(1.0f);
@@ -671,4 +671,4 @@ TEST(WarpAffineCalculatorTest, NoOpBorderZero) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

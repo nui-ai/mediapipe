@@ -22,7 +22,7 @@
 #include "mediapipe/framework/thread_pool_executor.pb.h"
 #include "mediapipe/util/cpu_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // static
 absl::StatusOr<Executor*> ThreadPoolExecutor::Create(
@@ -34,7 +34,7 @@ absl::StatusOr<Executor*> ThreadPoolExecutor::Create(
         "num_threads is not specified in ThreadPoolExecutorOptions.");
   }
   if (options.num_threads() <= 0) {
-    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "The num_threads field in ThreadPoolExecutorOptions should be "
               "positive but is "
            << options.num_threads();
@@ -46,7 +46,7 @@ absl::StatusOr<Executor*> ThreadPoolExecutor::Create(
     // pass a negative value. 0 has a special meaning (the default thread
     // stack size for the system), so we also avoid that.
     if (options.stack_size() <= 0) {
-      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "The stack_size field in ThreadPoolExecutorOptions should be "
                 "positive but is "
              << options.stack_size();
@@ -106,4 +106,4 @@ void ThreadPoolExecutor::Start() {
 
 REGISTER_EXECUTOR(ThreadPoolExecutor);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

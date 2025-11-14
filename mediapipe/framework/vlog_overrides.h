@@ -1,7 +1,7 @@
 #ifndef MEDIAPIPE_FRAMEWORK_VLOG_OVERRIDES_H_
 #define MEDIAPIPE_FRAMEWORK_VLOG_OVERRIDES_H_
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // If possible, rely on --v / --vmodule to set VLOG level and modules.
 //
@@ -27,6 +27,6 @@ namespace mediapipe_v01013_based {
 // `vlog_overrides.cc` adding MEDIAPIPE_VLOG_V/VMODULE at the very top.
 void SetVLogOverrides();
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_VLOG_OVERRIDES_H_

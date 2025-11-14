@@ -12,7 +12,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace {
 
@@ -230,37 +230,37 @@ TEST(PacketTest, PacketGeneric) {
 
 TEST(PacketTest, PacketGenericTimestamp) {
   Packet<> p = MakePacket<int>(5);
-  EXPECT_EQ(p.timestamp(), mediapipe_v01013_based::Timestamp::Unset());
+  EXPECT_EQ(p.timestamp(), hand_tracking_mp_lean::Timestamp::Unset());
   auto p2 = p.At(Timestamp(1));
-  EXPECT_EQ(p.timestamp(), mediapipe_v01013_based::Timestamp::Unset());
+  EXPECT_EQ(p.timestamp(), hand_tracking_mp_lean::Timestamp::Unset());
   EXPECT_EQ(p2.timestamp(), Timestamp(1));
   auto p3 = std::move(p2).At(Timestamp(3));
   EXPECT_EQ(p3.timestamp(), Timestamp(3));
 }
 
 TEST(PacketTest, FromOldPacket) {
-  mediapipe_v01013_based::Packet op = mediapipe_v01013_based::MakePacket<int>(7);
+  hand_tracking_mp_lean::Packet op = hand_tracking_mp_lean::MakePacket<int>(7);
   Packet<int> p = FromOldPacket(op).As<int>();
   EXPECT_EQ(p.Get(), 7);
   EXPECT_EQ(op.Get<int>(), 7);
 }
 
 TEST(PacketTest, FromOldPacketConsume) {
-  mediapipe_v01013_based::Packet op = mediapipe_v01013_based::MakePacket<int>(7);
+  hand_tracking_mp_lean::Packet op = hand_tracking_mp_lean::MakePacket<int>(7);
   Packet<int> p = FromOldPacket(std::move(op)).As<int>();
   MP_EXPECT_OK(p.Consume());
 }
 
 TEST(PacketTest, ToOldPacket) {
   auto p = MakePacket<int>(7);
-  mediapipe_v01013_based::Packet op = ToOldPacket(p);
+  hand_tracking_mp_lean::Packet op = ToOldPacket(p);
   EXPECT_EQ(op.Get<int>(), 7);
   EXPECT_EQ(p.Get(), 7);
 }
 
 TEST(PacketTest, ToOldPacketConsume) {
   auto p = MakePacket<int>(7);
-  mediapipe_v01013_based::Packet op = ToOldPacket(std::move(p));
+  hand_tracking_mp_lean::Packet op = ToOldPacket(std::move(p));
   MP_EXPECT_OK(op.Consume<int>());
 }
 
@@ -268,7 +268,7 @@ TEST(PacketTest, OldRefCounting) {
   bool alive = false;
   PacketBase p = PacketAdopting(new LiveCheck(&alive));
   EXPECT_TRUE(alive);
-  mediapipe_v01013_based::Packet op = ToOldPacket(p);
+  hand_tracking_mp_lean::Packet op = ToOldPacket(p);
   p = {};
   EXPECT_TRUE(alive);
   PacketBase p2 = FromOldPacket(op);
@@ -343,4 +343,4 @@ TEST(PacketTest, PolymorphismAbstract) {
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

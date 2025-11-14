@@ -28,7 +28,7 @@
 #include "tensorflow/lite/delegates/gpu/gl/gl_buffer.h"
 #endif  // !defined(MEDIAPIPE_DISABLE_GL_COMPUTE)
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Example config:
 // node {
@@ -74,15 +74,15 @@ MEDIAPIPE_REGISTER_NODE(ConcatenateTfLiteTensorVectorCalculator);
 typedef ConcatenateVectorCalculator<Tensor> ConcatenateTensorVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateTensorVectorCalculator);
 
-typedef ConcatenateVectorCalculator<::mediapipe_v01013_based::NormalizedLandmark>
+typedef ConcatenateVectorCalculator<::hand_tracking_mp_lean::NormalizedLandmark>
     ConcatenateLandmarkVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateLandmarkVectorCalculator);
 
-typedef ConcatenateVectorCalculator<::mediapipe_v01013_based::LandmarkList>
+typedef ConcatenateVectorCalculator<::hand_tracking_mp_lean::LandmarkList>
     ConcatenateLandmarkListVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateLandmarkListVectorCalculator);
 
-typedef ConcatenateVectorCalculator<::mediapipe_v01013_based::NormalizedLandmarkList>
+typedef ConcatenateVectorCalculator<::hand_tracking_mp_lean::NormalizedLandmarkList>
     ConcatenateNormalizedLandmarkListVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateNormalizedLandmarkListVectorCalculator);
 
@@ -91,7 +91,7 @@ using ConcatenateLandmarListVectorCalculator =
     ConcatenateNormalizedLandmarkListVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateLandmarListVectorCalculator);
 
-typedef ConcatenateVectorCalculator<mediapipe_v01013_based::ClassificationList>
+typedef ConcatenateVectorCalculator<hand_tracking_mp_lean::ClassificationList>
     ConcatenateClassificationListVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateClassificationListVectorCalculator);
 
@@ -101,11 +101,11 @@ typedef ConcatenateVectorCalculator<::tflite::gpu::gl::GlBuffer>
 MEDIAPIPE_REGISTER_NODE(ConcatenateGlBufferVectorCalculator);
 #endif
 
-typedef ConcatenateVectorCalculator<mediapipe_v01013_based::RenderData>
+typedef ConcatenateVectorCalculator<hand_tracking_mp_lean::RenderData>
     ConcatenateRenderDataVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateRenderDataVectorCalculator);
 
-typedef ConcatenateVectorCalculator<mediapipe_v01013_based::Image>
+typedef ConcatenateVectorCalculator<hand_tracking_mp_lean::Image>
     ConcatenateImageVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateImageVectorCalculator);
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -28,14 +28,14 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/image_processing_options.h"
 #include "mediapipe/tasks/cc/vision/core/running_mode.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace image_embedder {
 
 // Alias the shared EmbeddingResult struct as result typo.
 using ImageEmbedderResult =
-    ::mediapipe_v01013_based::tasks::components::containers::EmbeddingResult;
+    ::hand_tracking_mp_lean::tasks::components::containers::EmbeddingResult;
 
 // The options for configuring a MediaPipe image embedder task.
 struct ImageEmbedderOptions {
@@ -108,7 +108,7 @@ class ImageEmbedder : core::BaseVisionTaskApi {
   //
   // The image can be of any size with format RGB or RGBA.
   absl::StatusOr<ImageEmbedderResult> Embed(
-      mediapipe_v01013_based::Image image,
+      hand_tracking_mp_lean::Image image,
       std::optional<core::ImageProcessingOptions> image_processing_options =
           std::nullopt);
 
@@ -131,7 +131,7 @@ class ImageEmbedder : core::BaseVisionTaskApi {
   // provide the video frame's timestamp (in milliseconds). The input timestamps
   // must be monotonically increasing.
   absl::StatusOr<ImageEmbedderResult> EmbedForVideo(
-      mediapipe_v01013_based::Image image, int64_t timestamp_ms,
+      hand_tracking_mp_lean::Image image, int64_t timestamp_ms,
       std::optional<core::ImageProcessingOptions> image_processing_options =
           std::nullopt);
 
@@ -164,7 +164,7 @@ class ImageEmbedder : core::BaseVisionTaskApi {
   //     longer be valid when the callback returns. To access the image data
   //     outside of the callback, callers need to make a copy of the image.
   //   - The input timestamp in milliseconds.
-  absl::Status EmbedAsync(mediapipe_v01013_based::Image image, int64_t timestamp_ms,
+  absl::Status EmbedAsync(hand_tracking_mp_lean::Image image, int64_t timestamp_ms,
                           std::optional<core::ImageProcessingOptions>
                               image_processing_options = std::nullopt);
 
@@ -185,6 +185,6 @@ class ImageEmbedder : core::BaseVisionTaskApi {
 }  // namespace image_embedder
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_IMAGE_EMBEDDER_IMAGE_EMBEDDER_H_

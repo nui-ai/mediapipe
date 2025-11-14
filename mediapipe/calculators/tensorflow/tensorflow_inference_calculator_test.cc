@@ -38,7 +38,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif  // defined(__APPLE__)
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using ::testing::AllOf;
 using ::testing::HasSubstr;
@@ -58,15 +58,15 @@ std::string GetGraphDefPath() {
   CFURLGetFileSystemRepresentation(
       bundle_url, true, reinterpret_cast<UInt8*>(path), sizeof(path));
   CFRelease(bundle_url);
-  return mediapipe_v01013_based::file::JoinPath(path, "testdata/frozen_graph_def.pb");
+  return hand_tracking_mp_lean::file::JoinPath(path, "testdata/frozen_graph_def.pb");
 #elif defined(__ANDROID__)
   char path[1024];
   getcwd(path, sizeof(path));
-  return mediapipe_v01013_based::file::JoinPath(path,
+  return hand_tracking_mp_lean::file::JoinPath(path,
                                    "mediapipe/calculators/tensorflow/"
                                    "testdata/frozen_graph_def.pb");
 #else
-  return mediapipe_v01013_based::file::JoinPath(
+  return hand_tracking_mp_lean::file::JoinPath(
       ::testing::SrcDir(),
       // This should match the path of the output files
       // of the genrule() that generates test model files.
@@ -796,4 +796,4 @@ TEST_F(TensorflowInferenceCalculatorTest, BatchedInputTooBigBatch) {
           "has more packets than batch capacity. batch_size: 2 packets: 3"));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

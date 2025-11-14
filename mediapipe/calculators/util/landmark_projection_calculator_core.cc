@@ -25,7 +25,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 /// adapts the landmark coordinates originating in the inference model's output, to the image coordinates ―
 /// this completes the work of TensorsToLandmarksCalculator which performs initial steps for this adaptation
@@ -80,4 +80,4 @@ void ToViewportCoordinates(
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

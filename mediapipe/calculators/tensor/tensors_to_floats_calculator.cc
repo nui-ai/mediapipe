@@ -19,7 +19,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/calculators/tensor/tensors_to_floats_calculator_core.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -59,7 +59,7 @@ class ExtractHandPresence : public Node {
   absl::Status Process(CalculatorContext* cc) final;
 
  private:
-  ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions options_;
+  ::hand_tracking_mp_lean::TensorsToFloatsCalculatorOptions options_;
 };
 MEDIAPIPE_REGISTER_NODE(ExtractHandPresence);
 
@@ -70,7 +70,7 @@ absl::Status ExtractHandPresence::UpdateContract(CalculatorContract* cc) {
 }
 
 absl::Status ExtractHandPresence::Open(CalculatorContext* cc) {
-  options_ = cc->Options<::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions>();
+  options_ = cc->Options<::hand_tracking_mp_lean::TensorsToFloatsCalculatorOptions>();
   return tensors_to_floats_calculator_core::Open(options_);
 }
 
@@ -94,4 +94,4 @@ absl::Status ExtractHandPresence::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

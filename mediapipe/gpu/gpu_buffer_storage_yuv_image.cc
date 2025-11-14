@@ -28,7 +28,7 @@ limitations under the License.
 #include "mediapipe/gpu/gpu_buffer_format.h"
 #include "mediapipe/util/frame_buffer/frame_buffer_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -227,4 +227,4 @@ std::shared_ptr<ImageFrame> GpuBufferStorageYuvImage::GetWriteView(
   // easily be ported back to the original YUV image.
   ABSL_LOG(FATAL) << "GetWriteView<ImageFrame> is not supported.";
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

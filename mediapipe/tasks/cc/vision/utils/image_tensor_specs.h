@@ -24,7 +24,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 
@@ -86,7 +86,7 @@ absl::StatusOr<const tflite::TensorMetadata*> GetImageTensorMetadataIfAny(
 // Note: both model and metadata extractor *must* be successfully
 // initialized before calling this function by means of (respectively):
 // - `tflite::GetModel`,
-// - `mediapipe_v01013_based::metadata::ModelMetadataExtractor::CreateFromModelBuffer`.
+// - `hand_tracking_mp_lean::metadata::ModelMetadataExtractor::CreateFromModelBuffer`.
 absl::StatusOr<ImageTensorSpecs> BuildInputImageTensorSpecs(
     const tflite::Tensor& image_tensor,
     const tflite::TensorMetadata* image_tensor_metadata);
@@ -98,6 +98,6 @@ absl::StatusOr<ImageTensorSpecs> BuildInputImageTensorSpecs(
 
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_UTILS_IMAGE_TENSOR_SPECS_H_

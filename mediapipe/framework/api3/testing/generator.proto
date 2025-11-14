@@ -1,11 +1,11 @@
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/framework/packet_generator.proto";
 
 message GeneratorOptions {
-  extend mediapipe_v01013_based.PacketGeneratorOptions {
+  extend hand_tracking_mp_lean.PacketGeneratorOptions {
     optional GeneratorOptions ext = 4200000;
   }
   optional int32 value = 1;

@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // PreviousLoopbackCalculator is useful when a graph needs to process an input
@@ -137,7 +137,7 @@ class LoopbackAnticipatoryHandRects : public Node {
         if (loop_candidate.IsEmpty()) {
           // However, LOOP packet is empty.
           kPrevLoop(cc).SetNextTimestampBound(main_spec.timestamp + 1);
-          GetSharedState().prev_hand_rects_from_landmarks = std::vector<::mediapipe_v01013_based::NormalizedRect>();
+          GetSharedState().prev_hand_rects_from_landmarks = std::vector<::hand_tracking_mp_lean::NormalizedRect>();
           ABSL_LOG(INFO) << "PreviousLoopbackCalculator setting prev_hand_rects_from_landmarks to empty list";
         } else {
           // Avoids sending leftovers to a stream that's already closed.
@@ -145,9 +145,9 @@ class LoopbackAnticipatoryHandRects : public Node {
             // finally:
             // passes forward the same packet received by it, with the necessary timestamp tweaks.
             kPrevLoop(cc).Send(loop_candidate.At(main_spec.timestamp));
-            // and we write the same to shared state, we know in our pipeline that the type is std::vector<mediapipe_v01013_based::NormalizedRect> of course.
-            ABSL_LOG(INFO) << "PreviousLoopbackCalculator setting prev_hand_rects_from_landmarks to size: " << loop_candidate.Get<std::vector<::mediapipe_v01013_based::NormalizedRect>>().size();
-            GetSharedState().prev_hand_rects_from_landmarks = loop_candidate.Get<std::vector<::mediapipe_v01013_based::NormalizedRect>>();
+            // and we write the same to shared state, we know in our pipeline that the type is std::vector<hand_tracking_mp_lean::NormalizedRect> of course.
+            ABSL_LOG(INFO) << "PreviousLoopbackCalculator setting prev_hand_rects_from_landmarks to size: " << loop_candidate.Get<std::vector<::hand_tracking_mp_lean::NormalizedRect>>().size();
+            GetSharedState().prev_hand_rects_from_landmarks = loop_candidate.Get<std::vector<::hand_tracking_mp_lean::NormalizedRect>>();
           }
         }
         loop_packets_.pop_front();
@@ -199,4 +199,4 @@ class LoopbackAnticipatoryHandRects : public Node {
 MEDIAPIPE_REGISTER_NODE(LoopbackAnticipatoryHandRects);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

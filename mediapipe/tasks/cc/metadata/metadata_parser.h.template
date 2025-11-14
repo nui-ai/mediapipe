@@ -15,7 +15,7 @@ limitations under the License.
 #ifndef MEDIAPIPE_TASKS_METADATA_METADATA_PARSER_H_
 #define MEDIAPIPE_TASKS_METADATA_METADATA_PARSER_H_
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace metadata {
 
@@ -25,6 +25,6 @@ inline constexpr char kMetadataParserVersion[] = "{LATEST_METADATA_PARSER_VERSIO
 
 }  // namespace metadata
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_METADATA_METADATA_PARSER_H_

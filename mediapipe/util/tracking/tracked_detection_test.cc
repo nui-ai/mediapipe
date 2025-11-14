@@ -16,9 +16,9 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-using ::mediapipe_v01013_based::NormalizedRect;
+using ::hand_tracking_mp_lean::NormalizedRect;
 
 const float kErrorMargin = 1e-4f;
 
@@ -108,4 +108,4 @@ TEST(TrackedDetectionTest, MergeLabels) {
   EXPECT_EQ(labels.find("4")->second, 4.f);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

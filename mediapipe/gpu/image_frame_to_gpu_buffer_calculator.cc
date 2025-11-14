@@ -21,7 +21,7 @@
 #include "mediapipe/objc/util.h"
 #endif
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Convert ImageFrame to GpuBuffer.
 //
@@ -85,4 +85,4 @@ absl::Status ImageFrameToGpuBufferCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -20,7 +20,7 @@
 #include "mediapipe/util/tracking/flow_packager.pb.h"
 #include "mediapipe/util/tracking/tracking.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Visualizes state to frame. Also overlays statistics if print_stats is set.
 void RenderState(const MotionBoxState& box_state, bool print_stats,
@@ -38,6 +38,6 @@ void RenderTrackingData(const TrackingData& data, cv::Mat* mat,
 // Visualize TimeBoxProto onto image.
 void RenderBox(const TimedBoxProto& box_proto, cv::Mat* mat);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_TRACKING_VISUALIZATION_UTILITIES_H_

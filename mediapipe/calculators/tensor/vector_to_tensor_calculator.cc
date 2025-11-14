@@ -32,15 +32,15 @@ limitations under the License.
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::CalculatorContext;
-using ::mediapipe_v01013_based::Tensor;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Node;
-using ::mediapipe_v01013_based::api2::OneOf;
-using ::mediapipe_v01013_based::api2::Output;
+using ::hand_tracking_mp_lean::CalculatorContext;
+using ::hand_tracking_mp_lean::Tensor;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Node;
+using ::hand_tracking_mp_lean::api2::OneOf;
+using ::hand_tracking_mp_lean::api2::Output;
 
 }  // namespace
 
@@ -142,4 +142,4 @@ absl::Status VectorToTensorCalculator::UpdateContract(CalculatorContract* cc) {
 
 MEDIAPIPE_REGISTER_NODE(VectorToTensorCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

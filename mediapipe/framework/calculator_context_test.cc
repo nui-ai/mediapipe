@@ -31,7 +31,7 @@
 #include "mediapipe/framework/testdata/sky_light_calculator.pb.h"
 #include "mediapipe/framework/tool/tag_map_helper.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace test_ns {
 
@@ -111,8 +111,8 @@ std::unique_ptr<CalculatorContext> MakeCalculatorContext(
 }
 
 TEST(CalculatorTest, NodeMethods) {
-  mediapipe_v01013_based::CalculatorGraphConfig config =
-      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(Proto3GraphStr());
+  hand_tracking_mp_lean::CalculatorGraphConfig config =
+      ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(Proto3GraphStr());
 
   auto calculator_state_0 =
       MakeCalculatorState(config.node(0), /*node_id=*/0, /*node_name=*/"Node0");
@@ -138,8 +138,8 @@ TEST(CalculatorTest, NodeMethods) {
 }
 
 TEST(CalculatorTest, GetOptions) {
-  mediapipe_v01013_based::CalculatorGraphConfig config =
-      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(Proto3GraphStr());
+  hand_tracking_mp_lean::CalculatorGraphConfig config =
+      ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(Proto3GraphStr());
 
   auto calculator_state_0 = MakeCalculatorState(config.node(0), 0);
   auto cc_0 = MakeCalculatorContext(&*calculator_state_0);
@@ -167,8 +167,8 @@ TEST(CalculatorTest, GetOptions) {
 }
 
 TEST(CalculatorContextTest, CanLoadResourcesThroughCalculatorContext) {
-  mediapipe_v01013_based::CalculatorGraphConfig config =
-      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(R"pb(
+  hand_tracking_mp_lean::CalculatorGraphConfig config =
+      ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(R"pb(
         node {
           calculator: "NightLightCalculator"
           input_side_packet: "input_value"
@@ -186,11 +186,11 @@ TEST(CalculatorContextTest, CanLoadResourcesThroughCalculatorContext) {
   auto cc = MakeCalculatorContext(calculator_state.get());
 
   MP_ASSERT_OK_AND_ASSIGN(
-      std::unique_ptr<mediapipe_v01013_based::Resource> data,
+      std::unique_ptr<hand_tracking_mp_lean::Resource> data,
       cc->GetResources().Get(
           "mediapipe/framework/testdata/resource_calculator.data"));
   EXPECT_EQ(data->ToStringView(), "File system calculator contents\n");
 }
 
 }  // namespace test_ns
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

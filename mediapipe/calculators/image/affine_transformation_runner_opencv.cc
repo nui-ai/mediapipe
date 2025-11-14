@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -174,4 +174,4 @@ CreateAffineTransformationOpenCvRunner(
   return absl::make_unique<OpenCvRunner>(interpolation);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

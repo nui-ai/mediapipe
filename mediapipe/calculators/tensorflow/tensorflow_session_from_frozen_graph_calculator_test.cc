@@ -34,7 +34,7 @@
 #include "tensorflow/core/protobuf/config.pb.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -45,7 +45,7 @@ constexpr char kStringModelTag[] = "STRING_MODEL";
 constexpr char kSessionTag[] = "SESSION";
 
 std::string GetGraphDefPath() {
-  return mediapipe_v01013_based::file::JoinPath(::testing::SrcDir(),
+  return hand_tracking_mp_lean::file::JoinPath(::testing::SrcDir(),
                                    "mediapipe/calculators/tensorflow/"
                                    "testdata/frozen_graph_def.pb");
 }
@@ -136,7 +136,7 @@ TEST_F(TensorFlowSessionFromFrozenGraphCalculatorTest,
 TEST_F(TensorFlowSessionFromFrozenGraphCalculatorTest,
        ProducesPacketUsableByTensorFlowInferenceCalculator) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           absl::Substitute(R"(
       node {
         calculator: "TensorFlowInferenceCalculator"
@@ -204,7 +204,7 @@ TEST_F(TensorFlowSessionFromFrozenGraphCalculatorTest,
                        PrintOptionsAsTextProto(*calculator_options_)));
 
   std::string serialized_graph_contents;
-  MP_EXPECT_OK(mediapipe_v01013_based::file::GetContents(GetGraphDefPath(),
+  MP_EXPECT_OK(hand_tracking_mp_lean::file::GetContents(GetGraphDefPath(),
                                             &serialized_graph_contents));
   runner.MutableSidePackets()->Tag(kStringModelTag) =
       Adopt(new std::string(serialized_graph_contents));
@@ -277,7 +277,7 @@ TEST_F(TensorFlowSessionFromFrozenGraphCalculatorTest,
   runner.MutableSidePackets()->Tag(kStringModelFilePathTag) =
       Adopt(new std::string(GetGraphDefPath()));
   std::string serialized_graph_contents;
-  MP_EXPECT_OK(mediapipe_v01013_based::file::GetContents(GetGraphDefPath(),
+  MP_EXPECT_OK(hand_tracking_mp_lean::file::GetContents(GetGraphDefPath(),
                                             &serialized_graph_contents));
   runner.MutableSidePackets()->Tag(kStringModelTag) =
       Adopt(new std::string(serialized_graph_contents));
@@ -305,7 +305,7 @@ TEST_F(TensorFlowSessionFromFrozenGraphCalculatorTest,
   runner.MutableSidePackets()->Tag(kStringModelFilePathTag) =
       Adopt(new std::string(GetGraphDefPath()));
   std::string serialized_graph_contents;
-  MP_EXPECT_OK(mediapipe_v01013_based::file::GetContents(GetGraphDefPath(),
+  MP_EXPECT_OK(hand_tracking_mp_lean::file::GetContents(GetGraphDefPath(),
                                             &serialized_graph_contents));
   runner.MutableSidePackets()->Tag(kStringModelTag) =
       Adopt(new std::string(serialized_graph_contents));
@@ -336,4 +336,4 @@ TEST_F(TensorFlowSessionFromFrozenGraphCalculatorTest,
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

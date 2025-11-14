@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 std::ostream& operator<<(std::ostream& os, const absl::Status& x) {
   os << x.ToString();
@@ -33,4 +33,4 @@ std::string* MediaPipeCheckOpHelperOutOfLine(const absl::Status& v,
   return new std::string(r);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

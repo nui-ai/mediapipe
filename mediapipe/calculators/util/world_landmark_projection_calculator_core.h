@@ -8,15 +8,15 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
-std::function<void(const mediapipe_v01013_based::Landmark&, mediapipe_v01013_based::Landmark*)>
-CreateRotationFunction(const mediapipe_v01013_based::NormalizedRect* rect);
+std::function<void(const hand_tracking_mp_lean::Landmark&, hand_tracking_mp_lean::Landmark*)>
+CreateRotationFunction(const hand_tracking_mp_lean::NormalizedRect* rect);
 
 LandmarkList RotateWorldLandmarks(
-    const mediapipe_v01013_based::LandmarkList& in_landmarks,
+    const hand_tracking_mp_lean::LandmarkList& in_landmarks,
     const NormalizedRect *hand_rect);
 
-} // namespace mediapipe_v01013_based::api3
+} // namespace hand_tracking_mp_lean::api3
 
 #endif // MEDIAPIPE_CALCULATORS_UTIL_WORLD_LANDMARK_PROJECTION_CALCULATOR_CORE_H_

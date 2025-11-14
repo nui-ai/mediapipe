@@ -24,11 +24,11 @@
 #import "mediapipe/gpu/metal_shared_resources.h"
 
 @interface MPPMetalHelper () {
-  mediapipe_v01013_based::GpuResources* _gpuResources;
+  hand_tracking_mp_lean::GpuResources* _gpuResources;
 }
 @end
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Using a C++ class so it can be declared as a friend of
 // LegacyCalculatorSupport.
@@ -43,11 +43,11 @@ class MetalHelperLegacySupport {
   }
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 @implementation MPPMetalHelper
 
-- (instancetype)initWithGpuResources:(mediapipe_v01013_based::GpuResources*)gpuResources {
+- (instancetype)initWithGpuResources:(hand_tracking_mp_lean::GpuResources*)gpuResources {
   self = [super init];
   if (self) {
     _gpuResources = gpuResources;
@@ -55,32 +55,32 @@ class MetalHelperLegacySupport {
   return self;
 }
 
-- (instancetype)initWithGpuSharedData:(mediapipe_v01013_based::GpuSharedData*)gpuShared {
+- (instancetype)initWithGpuSharedData:(hand_tracking_mp_lean::GpuSharedData*)gpuShared {
   return [self initWithGpuResources:gpuShared->gpu_resources.get()];
 }
 
-- (instancetype)initWithCalculatorContext:(mediapipe_v01013_based::CalculatorContext*)cc {
+- (instancetype)initWithCalculatorContext:(hand_tracking_mp_lean::CalculatorContext*)cc {
   if (!cc) return nil;
   return [self
-      initWithGpuResources:&cc->Service(mediapipe_v01013_based::kGpuService).GetObject()];
+      initWithGpuResources:&cc->Service(hand_tracking_mp_lean::kGpuService).GetObject()];
 }
 
-+ (absl::Status)updateContract:(mediapipe_v01013_based::CalculatorContract*)cc {
-  cc->UseService(mediapipe_v01013_based::kGpuService);
++ (absl::Status)updateContract:(hand_tracking_mp_lean::CalculatorContract*)cc {
+  cc->UseService(hand_tracking_mp_lean::kGpuService);
   // Allow the legacy side packet to be provided, too, for backwards
   // compatibility with existing graphs. It will just be ignored.
   auto& input_side_packets = cc->InputSidePackets();
-  auto id = input_side_packets.GetId(mediapipe_v01013_based::kGpuSharedTagName, 0);
+  auto id = input_side_packets.GetId(hand_tracking_mp_lean::kGpuSharedTagName, 0);
   if (id.IsValid()) {
-    input_side_packets.Get(id).Set<mediapipe_v01013_based::GpuSharedData*>();
+    input_side_packets.Get(id).Set<hand_tracking_mp_lean::GpuSharedData*>();
   }
   return absl::OkStatus();
 }
 
 // Legacy support.
 - (instancetype)initWithSidePackets:
-    (const mediapipe_v01013_based::PacketSet&)inputSidePackets {
-  auto cc = mediapipe_v01013_based::MetalHelperLegacySupport::GetCalculatorContext();
+    (const hand_tracking_mp_lean::PacketSet&)inputSidePackets {
+  auto cc = hand_tracking_mp_lean::MetalHelperLegacySupport::GetCalculatorContext();
   if (cc) {
     ABSL_CHECK_EQ(&inputSidePackets, &cc->InputSidePackets());
     return [self initWithCalculatorContext:cc];
@@ -90,17 +90,17 @@ class MetalHelperLegacySupport {
   ABSL_LOG(WARNING)
       << "CalculatorContext not available. If this calculator uses "
          "CalculatorBase, call initWithCalculatorContext instead.";
-  mediapipe_v01013_based::GpuSharedData* gpu_shared =
-      inputSidePackets.Tag(mediapipe_v01013_based::kGpuSharedTagName)
-          .Get<mediapipe_v01013_based::GpuSharedData*>();
+  hand_tracking_mp_lean::GpuSharedData* gpu_shared =
+      inputSidePackets.Tag(hand_tracking_mp_lean::kGpuSharedTagName)
+          .Get<hand_tracking_mp_lean::GpuSharedData*>();
 
   return [self initWithGpuResources:gpu_shared->gpu_resources.get()];
 }
 
 // Legacy support.
 + (absl::Status)setupInputSidePackets:
-    (mediapipe_v01013_based::PacketTypeSet*)inputSidePackets {
-  auto cc = mediapipe_v01013_based::MetalHelperLegacySupport::GetCalculatorContract();
+    (hand_tracking_mp_lean::PacketTypeSet*)inputSidePackets {
+  auto cc = hand_tracking_mp_lean::MetalHelperLegacySupport::GetCalculatorContract();
   if (cc) {
     ABSL_CHECK_EQ(inputSidePackets, &cc->InputSidePackets());
     return [self updateContract:cc];
@@ -110,10 +110,10 @@ class MetalHelperLegacySupport {
   ABSL_LOG(WARNING)
       << "CalculatorContract not available. If you're calling this "
          "from a GetContract method, call updateContract instead.";
-  auto id = inputSidePackets->GetId(mediapipe_v01013_based::kGpuSharedTagName, 0);
-  RET_CHECK(id.IsValid()) << "A " << mediapipe_v01013_based::kGpuSharedTagName
+  auto id = inputSidePackets->GetId(hand_tracking_mp_lean::kGpuSharedTagName, 0);
+  RET_CHECK(id.IsValid()) << "A " << hand_tracking_mp_lean::kGpuSharedTagName
                           << " input side packet is required here.";
-  inputSidePackets->Get(id).Set<mediapipe_v01013_based::GpuSharedData*>();
+  inputSidePackets->Get(id).Set<hand_tracking_mp_lean::GpuSharedData*>();
   return absl::OkStatus();
 }
 
@@ -135,9 +135,9 @@ class MetalHelperLegacySupport {
 }
 
 - (CVMetalTextureRef)copyCVMetalTextureWithGpuBuffer:
-                         (const mediapipe_v01013_based::GpuBuffer&)gpuBuffer
+                         (const hand_tracking_mp_lean::GpuBuffer&)gpuBuffer
                                                plane:(size_t)plane {
-  CVPixelBufferRef pixel_buffer = mediapipe_v01013_based::GetCVPixelBufferRef(gpuBuffer);
+  CVPixelBufferRef pixel_buffer = hand_tracking_mp_lean::GetCVPixelBufferRef(gpuBuffer);
   OSType pixel_format = CVPixelBufferGetPixelFormatType(pixel_buffer);
 
   MTLPixelFormat metalPixelFormat = MTLPixelFormatInvalid;
@@ -185,40 +185,40 @@ class MetalHelperLegacySupport {
   CVMetalTextureRef texture;
   CVReturn err = CVMetalTextureCacheCreateTextureFromImage(
       NULL, _gpuResources->metal_shared().resources().mtlTextureCache,
-      mediapipe_v01013_based::GetCVPixelBufferRef(gpuBuffer), NULL, metalPixelFormat, width,
+      hand_tracking_mp_lean::GetCVPixelBufferRef(gpuBuffer), NULL, metalPixelFormat, width,
       height, plane, &texture);
   ABSL_CHECK_EQ(err, kCVReturnSuccess);
   return texture;
 }
 
 - (CVMetalTextureRef)copyCVMetalTextureWithGpuBuffer:
-    (const mediapipe_v01013_based::GpuBuffer&)gpuBuffer {
+    (const hand_tracking_mp_lean::GpuBuffer&)gpuBuffer {
   return [self copyCVMetalTextureWithGpuBuffer:gpuBuffer plane:0];
 }
 
 - (id<MTLTexture>)metalTextureWithGpuBuffer:
-    (const mediapipe_v01013_based::GpuBuffer&)gpuBuffer {
+    (const hand_tracking_mp_lean::GpuBuffer&)gpuBuffer {
   return [self metalTextureWithGpuBuffer:gpuBuffer plane:0];
 }
 
 - (id<MTLTexture>)metalTextureWithGpuBuffer:
-                      (const mediapipe_v01013_based::GpuBuffer&)gpuBuffer
+                      (const hand_tracking_mp_lean::GpuBuffer&)gpuBuffer
                                       plane:(size_t)plane {
   CFHolder<CVMetalTextureRef> cvTexture;
   cvTexture.adopt([self copyCVMetalTextureWithGpuBuffer:gpuBuffer plane:plane]);
   return CVMetalTextureGetTexture(*cvTexture);
 }
 
-- (mediapipe_v01013_based::GpuBuffer)mediapipeGpuBufferWithWidth:(int)width
+- (hand_tracking_mp_lean::GpuBuffer)mediapipeGpuBufferWithWidth:(int)width
                                              height:(int)height {
   auto gpu_buffer = _gpuResources->gpu_buffer_pool().GetBuffer(width, height);
   ABSL_CHECK_OK(gpu_buffer);
   return *gpu_buffer;
 }
 
-- (mediapipe_v01013_based::GpuBuffer)mediapipeGpuBufferWithWidth:(int)width
+- (hand_tracking_mp_lean::GpuBuffer)mediapipeGpuBufferWithWidth:(int)width
                                              height:(int)height
-                                             format:(mediapipe_v01013_based::GpuBufferFormat)
+                                             format:(hand_tracking_mp_lean::GpuBufferFormat)
                                                         format {
   auto gpu_buffer =
       _gpuResources->gpu_buffer_pool().GetBuffer(width, height, format);

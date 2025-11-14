@@ -55,7 +55,7 @@
     }                                                             \
   } while (0)
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr int kMaxShaderInfoLength = 1024;
@@ -237,4 +237,4 @@ bool CreateShaderProgram(
   return true;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

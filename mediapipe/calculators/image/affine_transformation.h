@@ -19,7 +19,7 @@
 
 #include "absl/status/statusor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class AffineTransformation {
  public:
@@ -53,6 +53,6 @@ class AffineTransformation {
   };
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_IMAGE_AFFINE_TRANSFORMATION_H_

@@ -18,7 +18,7 @@
 
 #include <algorithm>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 CalculatorBase::CalculatorBase() {}
 
@@ -40,4 +40,4 @@ Timestamp CalculatorBase::SourceProcessOrder(
   return result;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

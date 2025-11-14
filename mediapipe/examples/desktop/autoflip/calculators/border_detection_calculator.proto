@@ -14,13 +14,13 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based.autoflip;
+package hand_tracking_mp_lean.autoflip;
 
 import "mediapipe/framework/calculator.proto";
 
 // Next tag: 7
 message BorderDetectionCalculatorOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional BorderDetectionCalculatorOptions ext = 276599815;
   }
   // Max difference in color to be considered the same (per rgb channel).

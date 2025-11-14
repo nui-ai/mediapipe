@@ -28,11 +28,11 @@ Pose and Hund Hand models and pose landmarks.
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/tasks/cc/vision/utils/ghum/ghum_topology.h"
 
-namespace mediapipe_v01013_based::tasks::vision::utils::ghum {
+namespace hand_tracking_mp_lean::tasks::vision::utils::ghum {
 
 struct HundToGhumJointsMapping {
   // Joints produced by the HUND models.
-  mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::JointList> hund_joints;
+  hand_tracking_mp_lean::api2::builder::Stream<hand_tracking_mp_lean::JointList> hund_joints;
   // Order of joints in GHUM topology.
   absl::Span<const GhumJointName> ghum_joints_order;
 };
@@ -45,23 +45,23 @@ struct HundToGhumJointsMapping {
 //
 // All joints specified later in order will override those that were specified
 // earlier.
-mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::JointList>
+hand_tracking_mp_lean::api2::builder::Stream<hand_tracking_mp_lean::JointList>
 SetGhumJointsFromHundJoints(
     std::vector<HundToGhumJointsMapping>& hund_to_ghum_joints_mappings,
-    mediapipe_v01013_based::api2::builder::Graph& graph);
+    hand_tracking_mp_lean::api2::builder::Graph& graph);
 
 // Sets visibility of 63 GHUM joints from 33 pose world landmarks.
-mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::JointList>
+hand_tracking_mp_lean::api2::builder::Stream<hand_tracking_mp_lean::JointList>
 SetGhumJointsVisibilityFromWorldLandmarks(
-    mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::JointList> ghum_joints,
-    mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::LandmarkList>
+    hand_tracking_mp_lean::api2::builder::Stream<hand_tracking_mp_lean::JointList> ghum_joints,
+    hand_tracking_mp_lean::api2::builder::Stream<hand_tracking_mp_lean::LandmarkList>
         pose_world_landmarks,
-    mediapipe_v01013_based::api2::builder::Graph& graph);
+    hand_tracking_mp_lean::api2::builder::Graph& graph);
 
 // Gets a subset of kGhumRestingJointRotations in 6D format.
 std::vector<std::array<float, 6>> GetGhumRestingJointRotationsSubset(
     absl::Span<const GhumJointName> ghum_joint_names);
 
-}  // namespace mediapipe_v01013_based::tasks::vision::utils::ghum
+}  // namespace hand_tracking_mp_lean::tasks::vision::utils::ghum
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_UTILS_GHUM_GHUM_UTILS_H_

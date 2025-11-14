@@ -21,7 +21,7 @@
 #include "mediapipe/gpu/gl_base.h"
 #include "mediapipe/gpu/scale_mode.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Valid rotation values. Counterclockwise.
 enum class FrameRotation { kNone, k90, k180, k270 };
@@ -95,6 +95,6 @@ absl::Status FrameRotationFromInt(FrameRotation* rotation, int degrees_ccw);
 // Input degrees must be one of: [0, 90, 180, 270].
 FrameRotation FrameRotationFromDegrees(int degrees_ccw);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GL_QUAD_RENDERER_H_

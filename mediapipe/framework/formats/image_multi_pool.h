@@ -42,7 +42,7 @@
 #endif  // !MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using ImageFrameSharedPtr = std::shared_ptr<ImageFrame>;
 
@@ -63,10 +63,10 @@ class ImageMultiPool {
 
   // Inform the pool of a cache that should be flushed when it is low on
   // reusable buffers.
-  void RegisterTextureCache(mediapipe_v01013_based::CVTextureCacheType cache);
+  void RegisterTextureCache(hand_tracking_mp_lean::CVTextureCacheType cache);
 
   // Remove a texture cache from the list of caches to be flushed.
-  void UnregisterTextureCache(mediapipe_v01013_based::CVTextureCacheType cache);
+  void UnregisterTextureCache(hand_tracking_mp_lean::CVTextureCacheType cache);
 
 #endif  // defined(__APPLE__)
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -76,11 +76,11 @@ class ImageMultiPool {
   }
 
   struct IBufferSpec {
-    IBufferSpec(int w, int h, mediapipe_v01013_based::ImageFormat::Format f)
+    IBufferSpec(int w, int h, hand_tracking_mp_lean::ImageFormat::Format f)
         : width(w), height(h), format(f) {}
     int width;
     int height;
-    mediapipe_v01013_based::ImageFormat::Format format;
+    hand_tracking_mp_lean::ImageFormat::Format format;
     // Note: alignment should be added here if ImageFrameBufferPool is changed
     // to allow for customizable alignment sizes (currently fixed at 4 for best
     // compatability with OpenGL).
@@ -105,7 +105,7 @@ class ImageMultiPool {
 #if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
   typedef CFHolder<CVPixelBufferPoolRef> SimplePoolGpu;
 #else
-  typedef std::shared_ptr<mediapipe_v01013_based::GlTextureBufferPool> SimplePoolGpu;
+  typedef std::shared_ptr<hand_tracking_mp_lean::GlTextureBufferPool> SimplePoolGpu;
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
   SimplePoolGpu MakeSimplePoolGpu(IBufferSpec spec);
   Image GetBufferFromSimplePool(IBufferSpec spec, const SimplePoolGpu& pool);
@@ -132,7 +132,7 @@ class ImageMultiPool {
 #if !MEDIAPIPE_DISABLE_GPU
 #ifdef __APPLE__
   // Texture caches used with this pool.
-  std::vector<CFHolder<mediapipe_v01013_based::CVTextureCacheType>> texture_caches_
+  std::vector<CFHolder<hand_tracking_mp_lean::CVTextureCacheType>> texture_caches_
       GUARDED_BY(mutex_gpu_);
 #endif  // defined(__APPLE__)
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -149,6 +149,6 @@ inline bool operator!=(const ImageMultiPool::IBufferSpec& lhs,
   return !operator==(lhs, rhs);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_IMAGE_MULTI_POOL_H_

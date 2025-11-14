@@ -21,13 +21,13 @@
 #include "mediapipe/calculators/image/affine_transformation.h"
 #include "mediapipe/framework/formats/image_frame.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 absl::StatusOr<
     std::unique_ptr<AffineTransformation::Runner<ImageFrame, ImageFrame>>>
 CreateAffineTransformationOpenCvRunner(
     AffineTransformation::Interpolation interpolation);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_IMAGE_AFFINE_TRANSFORMATION_RUNNER_OPENCV_H_

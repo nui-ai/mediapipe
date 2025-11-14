@@ -32,19 +32,19 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/proto/model_resources_calculator.pb.h"
 #include "mediapipe/tasks/cc/text/text_classifier/proto/text_classifier_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace text {
 namespace text_classifier {
 
 namespace {
 
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
-using ::mediapipe_v01013_based::tasks::core::ModelResources;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::ClassificationResult;
+using ::hand_tracking_mp_lean::tasks::core::ModelResources;
 
 constexpr char kClassificationsTag[] = "CLASSIFICATIONS";
 constexpr char kTextTag[] = "TEXT";
@@ -151,9 +151,9 @@ class TextClassifierGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe_v01013_based::tasks::text::text_classifier::TextClassifierGraph);
+    ::hand_tracking_mp_lean::tasks::text::text_classifier::TextClassifierGraph);
 
 }  // namespace text_classifier
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

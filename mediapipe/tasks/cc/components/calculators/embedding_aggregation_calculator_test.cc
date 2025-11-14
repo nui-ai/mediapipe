@@ -33,15 +33,15 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/proto/embeddings.pb.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::ParseTextProtoOrDie;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
+using ::hand_tracking_mp_lean::ParseTextProtoOrDie;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::EmbeddingResult;
 using ::testing::Pointwise;
 
 constexpr char kEmbeddingsTag[] = "EMBEDDINGS";
@@ -157,4 +157,4 @@ TEST_F(EmbeddingAggregationCalculatorTest, SucceedsWithAggregation) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

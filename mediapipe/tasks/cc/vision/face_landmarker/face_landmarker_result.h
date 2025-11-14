@@ -26,7 +26,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/classification_result.h"
 #include "mediapipe/tasks/cc/components/containers/landmark.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
@@ -45,15 +45,15 @@ struct FaceLandmarkerResult {
 
 // Convert face landmarks result from proto format to FaceLandmarkerResult.
 FaceLandmarkerResult ConvertToFaceLandmarkerResult(
-    std::vector<mediapipe_v01013_based::NormalizedLandmarkList> face_landmarks_proto,
-    std::optional<std::vector<mediapipe_v01013_based::ClassificationList>>
+    std::vector<hand_tracking_mp_lean::NormalizedLandmarkList> face_landmarks_proto,
+    std::optional<std::vector<hand_tracking_mp_lean::ClassificationList>>
         face_blendshapes_proto = std::nullopt,
-    std::optional<std::vector<mediapipe_v01013_based::MatrixData>>
+    std::optional<std::vector<hand_tracking_mp_lean::MatrixData>>
         facial_transformation_matrixes_proto = std::nullopt);
 
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_FACE_LANDMARKER_FACE_LANDMARKER_RESULT_H_

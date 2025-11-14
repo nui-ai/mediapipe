@@ -34,7 +34,7 @@
   CVOpenGLESTextureCacheRef _textureCache;
 
   /// Internal renderer.
-  std::unique_ptr<mediapipe_v01013_based::QuadRenderer> renderer_;
+  std::unique_ptr<hand_tracking_mp_lean::QuadRenderer> renderer_;
 
   /// Used to synchronize access to _nextPixelBufferToRender.
   OSSpinLock _bufferLock;
@@ -84,31 +84,31 @@
   _GTMDevAssert(err == kCVReturnSuccess,
                 @"CVOpenGLESTextureCacheCreate failed: %d", err);
 
-  renderer_ = absl::make_unique<mediapipe_v01013_based::QuadRenderer>();
+  renderer_ = absl::make_unique<hand_tracking_mp_lean::QuadRenderer>();
   auto status = renderer_->GlSetup();
   _GTMDevAssert(status.ok(),
                 @"renderer setup failed: %@", [NSError gus_errorWithStatus:status]);
 }
 
-mediapipe_v01013_based::FrameScaleMode InternalScaleMode(MPPFrameScaleMode mode) {
+hand_tracking_mp_lean::FrameScaleMode InternalScaleMode(MPPFrameScaleMode mode) {
   switch (mode) {
     case MPPFrameScaleModeFit:
-      return mediapipe_v01013_based::FrameScaleMode::kFit;
+      return hand_tracking_mp_lean::FrameScaleMode::kFit;
     case MPPFrameScaleModeFillAndCrop:
-      return mediapipe_v01013_based::FrameScaleMode::kFillAndCrop;
+      return hand_tracking_mp_lean::FrameScaleMode::kFillAndCrop;
   }
 }
 
-mediapipe_v01013_based::FrameRotation InternalRotationMode(MPPFrameRotation rot) {
+hand_tracking_mp_lean::FrameRotation InternalRotationMode(MPPFrameRotation rot) {
   switch (rot) {
     case MPPFrameRotationNone:
-      return mediapipe_v01013_based::FrameRotation::kNone;
+      return hand_tracking_mp_lean::FrameRotation::kNone;
     case MPPFrameRotationCw90:
-      return mediapipe_v01013_based::FrameRotation::k90;
+      return hand_tracking_mp_lean::FrameRotation::k90;
     case MPPFrameRotationCw180:
-      return mediapipe_v01013_based::FrameRotation::k180;
+      return hand_tracking_mp_lean::FrameRotation::k180;
     case MPPFrameRotationCw270:
-      return mediapipe_v01013_based::FrameRotation::k270;
+      return hand_tracking_mp_lean::FrameRotation::k270;
   }
 }
 

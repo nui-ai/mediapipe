@@ -33,13 +33,13 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/image_processing_options.h"
 #include "mediapipe/tasks/cc/vision/core/running_mode.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 
 // Alias the shared DetectionResult struct as result typo.
 using ObjectDetectorResult =
-    ::mediapipe_v01013_based::tasks::components::containers::DetectionResult;
+    ::hand_tracking_mp_lean::tasks::components::containers::DetectionResult;
 
 // Options related to non-maximum-suppression.
 struct NonMaxSuppressionOptions {
@@ -166,7 +166,7 @@ class ObjectDetector : public tasks::vision::core::BaseVisionTaskApi {
   // data or streaming data. Object detector can be created with one of the
   // following three running modes:
   // 1) Image mode for detecting objects on single image inputs.
-  //    Users provide mediapipe_v01013_based::Image to the `Detect` method, and will
+  //    Users provide hand_tracking_mp_lean::Image to the `Detect` method, and will
   //    receive the detection results as the return value.
   // 2) Video mode for detecting objects on the decoded frames of a video.
   // 3) Live stream mode for detecting objects on the live stream of the input
@@ -198,7 +198,7 @@ class ObjectDetector : public tasks::vision::core::BaseVisionTaskApi {
   // TODO: Describes the output bounding boxes for gpu input
   // images after enabling the gpu support in MediaPipe Tasks.
   absl::StatusOr<ObjectDetectorResult> Detect(
-      mediapipe_v01013_based::Image image,
+      hand_tracking_mp_lean::Image image,
       std::optional<core::ImageProcessingOptions> image_processing_options =
           std::nullopt);
 
@@ -221,7 +221,7 @@ class ObjectDetector : public tasks::vision::core::BaseVisionTaskApi {
   // image_width) x [0, image_height)`, which are the dimensions of the
   // underlying image data.
   absl::StatusOr<ObjectDetectorResult> DetectForVideo(
-      mediapipe_v01013_based::Image image, int64_t timestamp_ms,
+      hand_tracking_mp_lean::Image image, int64_t timestamp_ms,
       std::optional<core::ImageProcessingOptions> image_processing_options =
           std::nullopt);
 
@@ -251,7 +251,7 @@ class ObjectDetector : public tasks::vision::core::BaseVisionTaskApi {
   //     longer be valid when the callback returns. To access the image data
   //     outside of the callback, callers need to make a copy of the image.
   //   - The input timestamp in milliseconds.
-  absl::Status DetectAsync(mediapipe_v01013_based::Image image, int64_t timestamp_ms,
+  absl::Status DetectAsync(hand_tracking_mp_lean::Image image, int64_t timestamp_ms,
                            std::optional<core::ImageProcessingOptions>
                                image_processing_options = std::nullopt);
 
@@ -261,6 +261,6 @@ class ObjectDetector : public tasks::vision::core::BaseVisionTaskApi {
 
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_OBJECT_DETECTOR_OBJECT_DETECTOR_H_

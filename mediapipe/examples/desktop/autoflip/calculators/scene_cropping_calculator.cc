@@ -32,7 +32,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 
 constexpr char kInputVideoFrames[] = "VIDEO_FRAMES";
@@ -69,7 +69,7 @@ constexpr char kExternalRenderingPerFrame[] = "EXTERNAL_RENDERING_PER_FRAME";
 constexpr char kExternalRenderingFullVid[] = "EXTERNAL_RENDERING_FULL_VID";
 
 absl::Status SceneCroppingCalculator::GetContract(
-    mediapipe_v01013_based::CalculatorContract* cc) {
+    hand_tracking_mp_lean::CalculatorContract* cc) {
   if (cc->InputSidePackets().HasTag(kInputExternalSettings)) {
     cc->InputSidePackets().Tag(kInputExternalSettings).Set<std::string>();
   }
@@ -249,7 +249,7 @@ int RoundToEven(float value) {
 }  // namespace
 
 absl::Status SceneCroppingCalculator::InitializeSceneCroppingCalculator(
-    mediapipe_v01013_based::CalculatorContext* cc) {
+    hand_tracking_mp_lean::CalculatorContext* cc) {
   if (cc->Inputs().HasTag(kInputVideoFrames)) {
     const auto& frame = cc->Inputs().Tag(kInputVideoFrames).Get<ImageFrame>();
     frame_width_ = frame.Width();
@@ -261,7 +261,7 @@ absl::Status SceneCroppingCalculator::InitializeSceneCroppingCalculator(
     frame_height_ =
         cc->Inputs().Tag(kInputVideoSize).Get<std::pair<int, int>>().second;
   } else {
-    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "Input VIDEO or VIDEO_SIZE must be provided.";
   }
   RET_CHECK_GT(frame_height_, 0) << "Input frame height is non-positive.";
@@ -352,7 +352,7 @@ absl::Status SceneCroppingCalculator::InitializeSceneCroppingCalculator(
   return absl::OkStatus();
 }
 
-bool HasFrameSignal(mediapipe_v01013_based::CalculatorContext* cc) {
+bool HasFrameSignal(hand_tracking_mp_lean::CalculatorContext* cc) {
   if (cc->Inputs().HasTag(kInputVideoFrames)) {
     return !cc->Inputs().Tag(kInputVideoFrames).Value().IsEmpty();
   }
@@ -360,7 +360,7 @@ bool HasFrameSignal(mediapipe_v01013_based::CalculatorContext* cc) {
 }
 
 absl::Status SceneCroppingCalculator::Process(
-    mediapipe_v01013_based::CalculatorContext* cc) {
+    hand_tracking_mp_lean::CalculatorContext* cc) {
   // Sets frame dimension and initializes scenecroppingcalculator on first video
   // frame.
   if (frame_width_ < 0) {
@@ -432,7 +432,7 @@ absl::Status SceneCroppingCalculator::Process(
   return absl::OkStatus();
 }
 
-absl::Status SceneCroppingCalculator::Close(mediapipe_v01013_based::CalculatorContext* cc) {
+absl::Status SceneCroppingCalculator::Close(hand_tracking_mp_lean::CalculatorContext* cc) {
   if (!scene_frame_timestamps_.empty()) {
     MP_RETURN_IF_ERROR(ProcessScene(/* is_end_of_scene = */ true, cc));
   }
@@ -834,4 +834,4 @@ absl::Status SceneCroppingCalculator::OutputVizFrames(
 REGISTER_CALCULATOR(SceneCroppingCalculator);
 
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

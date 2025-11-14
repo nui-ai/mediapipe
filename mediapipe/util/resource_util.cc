@@ -23,7 +23,7 @@
 #include "mediapipe/util/resource_util_custom.h"
 #include "mediapipe/util/resource_util_internal.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 ResourceProviderFn resource_provider_ = nullptr;
@@ -43,4 +43,4 @@ void SetCustomGlobalResourceProvider(ResourceProviderFn fn) {
   resource_provider_ = std::move(fn);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

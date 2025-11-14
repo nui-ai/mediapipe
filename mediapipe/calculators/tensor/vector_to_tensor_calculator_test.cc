@@ -29,16 +29,16 @@ limitations under the License.
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-using ::mediapipe_v01013_based::Packet;
-using ::mediapipe_v01013_based::Tensor;
-using ::mediapipe_v01013_based::Timestamp;
+using ::hand_tracking_mp_lean::Packet;
+using ::hand_tracking_mp_lean::Tensor;
+using ::hand_tracking_mp_lean::Timestamp;
 using ::testing::_;
 using ::testing::HasSubstr;
 using ::testing::Matcher;
 using ::testing::Test;
 using ::testing::Types;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 // Matcher to verify that a status is an RCheck error with the given message.
@@ -162,4 +162,4 @@ TYPED_TEST(VectorToTensorCalculatorTest, ShouldCreateDynamicTensor) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

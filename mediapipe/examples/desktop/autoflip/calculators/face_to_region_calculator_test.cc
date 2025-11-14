@@ -27,9 +27,9 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-using mediapipe_v01013_based::Detection;
+using hand_tracking_mp_lean::Detection;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 namespace {
 
@@ -320,4 +320,4 @@ TEST(FaceToRegionCalculatorTest, FaceNoVideoPass) {
 
 }  // namespace
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

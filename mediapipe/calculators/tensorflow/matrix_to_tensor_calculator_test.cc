@@ -25,7 +25,7 @@
 #include "tensorflow/core/framework/tensor_shape.h"
 #include "tensorflow/core/framework/types.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr char kTransposeOptionsString[] =
@@ -161,4 +161,4 @@ TEST_F(MatrixToTensorCalculatorTest, RandomMatrixAddDimension) {
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

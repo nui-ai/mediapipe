@@ -31,15 +31,15 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/text_classifier/proto/text_classifier_graph_options.pb.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace text {
 namespace text_classifier {
 
 namespace {
 
-using ::mediapipe_v01013_based::tasks::components::containers::ConvertToClassificationResult;
-using ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
+using ::hand_tracking_mp_lean::tasks::components::containers::ConvertToClassificationResult;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::ClassificationResult;
 
 constexpr char kTextStreamName[] = "text_in";
 constexpr char kTextTag[] = "TEXT";
@@ -102,4 +102,4 @@ absl::StatusOr<TextClassifierResult> TextClassifier::Classify(
 }  // namespace text_classifier
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

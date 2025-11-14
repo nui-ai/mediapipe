@@ -17,7 +17,7 @@
 
 #include <vector>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 
 // Implementation of piecewise linear functions. The function is specified as a
@@ -78,5 +78,5 @@ class PiecewiseLinearFunction {
 };
 
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 #endif  // MEDIAPIPE_EXAMPLES_DESKTOP_AUTOFLIP_QUALITY_PIECEWISE_LINEAR_FUNCTION_H_

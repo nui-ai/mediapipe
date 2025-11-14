@@ -8,20 +8,20 @@
 #include "mediapipe/tasks/cc/vision/utils/image_tensor_specs.h"
 #include "research/aimatter/api/face_detector_metadata_generated.h"
 
-namespace mediapipe_v01013_based::tasks::vision::hand_detector {
+namespace hand_tracking_mp_lean::tasks::vision::hand_detector {
 
 // Configure SsdAnchorsCalculator from the tflite model with aimatter metadata.
 absl::Status ConfigureSsdAnchorsCalculator(
     const ImageTensorSpecs& image_tensor_specs,
     const research::aimatter::api::fb::FaceDetectorMetadata& metadata_fb,
-    mediapipe_v01013_based::SsdAnchorsCalculatorOptions& options);
+    hand_tracking_mp_lean::SsdAnchorsCalculatorOptions& options);
 
 // Configure TensorsToDetectionCalculator.
 absl::Status ConfigureTensorsToDetectionsCalculator(
     const ImageTensorSpecs& image_tensor_specs, int num_boxes,
     float min_detection_confidence,
-    mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions& options);
+    hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions& options);
 
-}  // namespace mediapipe_v01013_based::tasks::vision::hand_detector
+}  // namespace hand_tracking_mp_lean::tasks::vision::hand_detector
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_HAND_DETECTOR_UTILS_H_

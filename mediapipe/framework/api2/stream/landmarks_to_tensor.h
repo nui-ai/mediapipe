@@ -10,14 +10,14 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 
 // Updates @graph to convert @landmarks to a Tensor. Values and their order are
 // defined by @attributes. If @flatten is true resulting tensor will be 1D,
 // otherwise tensor will be 2D with (n_landmarks, n_attributes) shape.
 Stream<std::vector<Tensor>> ConvertLandmarksToTensor(
-    Stream<mediapipe_v01013_based::LandmarkList> landmarks,
-    absl::Span<const mediapipe_v01013_based::LandmarksToTensorCalculatorOptions::Attribute>
+    Stream<hand_tracking_mp_lean::LandmarkList> landmarks,
+    absl::Span<const hand_tracking_mp_lean::LandmarksToTensorCalculatorOptions::Attribute>
         attributes,
     bool flatten, Graph& graph);
 
@@ -26,12 +26,12 @@ Stream<std::vector<Tensor>> ConvertLandmarksToTensor(
 // @image_size. If @flatten is true resulting tensor will be 1D, otherwise
 // tensor will be 2D with (n_landmarks, n_attributes) shape.
 Stream<std::vector<Tensor>> ConvertNormalizedLandmarksToTensor(
-    Stream<mediapipe_v01013_based::NormalizedLandmarkList> normalized_landmarks,
+    Stream<hand_tracking_mp_lean::NormalizedLandmarkList> normalized_landmarks,
     Stream<std::pair<int, int>> image_size,
-    absl::Span<const mediapipe_v01013_based::LandmarksToTensorCalculatorOptions::Attribute>
+    absl::Span<const hand_tracking_mp_lean::LandmarksToTensorCalculatorOptions::Attribute>
         attributes,
     bool flatten, Graph& graph);
 
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_STREAM_LANDMARKS_TO_TENSOR_H_

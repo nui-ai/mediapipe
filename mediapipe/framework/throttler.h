@@ -17,7 +17,7 @@
 #ifndef MEDIAPIPE_FRAMEWORK_THROTTLER_H_
 #define MEDIAPIPE_FRAMEWORK_THROTTLER_H_
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class Throttler {
  public:
@@ -26,6 +26,6 @@ class Throttler {
   virtual void Wait() = 0;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_THROTTLER_H_

@@ -17,7 +17,7 @@
 
 #include "mediapipe/framework/executor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace internal {
 
 // An executor that delegates the running of tasks using a callback.
@@ -33,6 +33,6 @@ class DelegatingExecutor : public Executor {
 };
 
 }  // namespace internal
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_DELEGATING_EXECUTOR_H_

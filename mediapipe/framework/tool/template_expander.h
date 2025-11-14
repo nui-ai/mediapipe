@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/tool/calculator_graph_template.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tool {
 
@@ -43,6 +43,6 @@ class TemplateExpander {
 };
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_TEMPLATE_EXPANDER_H_

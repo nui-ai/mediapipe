@@ -31,7 +31,7 @@
 #include "mediapipe/gpu/gpu_buffer_format.h"
 #include "mediapipe/gpu/gpu_buffer_storage.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class GlCalculatorHelperImpl;
 
@@ -185,6 +185,6 @@ void ReadTexture(GlContext& ctx, const GlTextureView& texture_view,
 
 using GlTextureBufferSharedPtr = std::shared_ptr<GlTextureBuffer>;
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GL_TEXTURE_BUFFER_H_

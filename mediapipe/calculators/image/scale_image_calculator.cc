@@ -40,7 +40,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/util/image_frame_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -317,7 +317,7 @@ absl::Status ScaleImageCalculator::Open(CalculatorContext* cc) {
   }
 
   // The output packets are at the same timestamp as the input.
-  cc->Outputs().Get(output_data_id_).SetOffset(mediapipe_v01013_based::TimestampDiff(0));
+  cc->Outputs().Get(output_data_id_).SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
 
   has_header_ = false;
   input_width_ = 0;
@@ -623,10 +623,10 @@ absl::Status ScaleImageCalculator::Process(CalculatorContext* cc) {
   } else if (input_format_ == ImageFormat::SRGB &&
              output_format_ == ImageFormat::SRGBA) {
     image_frame = &cc->Inputs().Get(input_data_id_).Get<ImageFrame>();
-    cv::Mat input_mat = ::mediapipe_v01013_based::formats::MatView(image_frame);
+    cv::Mat input_mat = ::hand_tracking_mp_lean::formats::MatView(image_frame);
     converted_image_frame.Reset(ImageFormat::SRGBA, image_frame->Width(),
                                 image_frame->Height(), alignment_boundary_);
-    cv::Mat output_mat = ::mediapipe_v01013_based::formats::MatView(&converted_image_frame);
+    cv::Mat output_mat = ::hand_tracking_mp_lean::formats::MatView(&converted_image_frame);
     cv::cvtColor(input_mat, output_mat, cv::COLOR_RGB2RGBA, 4);
     image_frame = &converted_image_frame;
   } else {
@@ -705,10 +705,10 @@ absl::Status ScaleImageCalculator::Process(CalculatorContext* cc) {
       image_frame->Height() >= output_height_) {
     // Downscale.
     cc->GetCounter("Downscales")->Increment();
-    cv::Mat input_mat = ::mediapipe_v01013_based::formats::MatView(image_frame);
+    cv::Mat input_mat = ::hand_tracking_mp_lean::formats::MatView(image_frame);
     output_frame->Reset(image_frame->Format(), output_width_, output_height_,
                         alignment_boundary_);
-    cv::Mat output_mat = ::mediapipe_v01013_based::formats::MatView(output_frame.get());
+    cv::Mat output_mat = ::hand_tracking_mp_lean::formats::MatView(output_frame.get());
     downscaler_->Resize(input_mat, &output_mat);
   } else {
     // Upscale. If upscaling is disallowed, output_width_ and output_height_ are
@@ -733,4 +733,4 @@ absl::Status ScaleImageCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

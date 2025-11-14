@@ -12,7 +12,7 @@
 #include "absl/time/time.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based::tool {
+namespace hand_tracking_mp_lean::tool {
 
 absl::StatusOr<std::string> GetGraphRuntimeInfoString(
     const GraphRuntimeInfo& graph_runtime_info) {
@@ -139,4 +139,4 @@ absl::StatusOr<std::string> GetGraphRuntimeInfoString(
       calulators_with_unprocessed_packets_str, calculators_runtime_info_str);
 }
 
-}  // namespace mediapipe_v01013_based::tool
+}  // namespace hand_tracking_mp_lean::tool

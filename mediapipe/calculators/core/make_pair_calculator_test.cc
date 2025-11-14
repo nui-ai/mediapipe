@@ -24,10 +24,10 @@
 #include "mediapipe/util/packet_test_util.h"
 #include "mediapipe/util/time_series_test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class MakePairCalculatorTest
-    : public mediapipe_v01013_based::TimeSeriesCalculatorTest<mediapipe_v01013_based::NoOptions> {
+    : public hand_tracking_mp_lean::TimeSeriesCalculatorTest<hand_tracking_mp_lean::NoOptions> {
  protected:
   void SetUp() override {
     calculator_name_ = "MakePairCalculator";
@@ -49,22 +49,22 @@ TEST_F(MakePairCalculatorTest, ProducesExpectedPairs) {
   EXPECT_THAT(
       output().packets,
       ::testing::ElementsAre(
-          mediapipe_v01013_based::PacketContainsTimestampAndPayload<
+          hand_tracking_mp_lean::PacketContainsTimestampAndPayload<
               std::pair<Packet, Packet>>(
               Timestamp(1),
               ::testing::Pair(
-                  mediapipe_v01013_based::PacketContainsTimestampAndPayload<std::string>(
+                  hand_tracking_mp_lean::PacketContainsTimestampAndPayload<std::string>(
                       Timestamp(1), std::string("first packet")),
-                  mediapipe_v01013_based::PacketContainsTimestampAndPayload<int>(
+                  hand_tracking_mp_lean::PacketContainsTimestampAndPayload<int>(
                       Timestamp(1), 10))),
-          mediapipe_v01013_based::PacketContainsTimestampAndPayload<
+          hand_tracking_mp_lean::PacketContainsTimestampAndPayload<
               std::pair<Packet, Packet>>(
               Timestamp(5),
               ::testing::Pair(
-                  mediapipe_v01013_based::PacketContainsTimestampAndPayload<std::string>(
+                  hand_tracking_mp_lean::PacketContainsTimestampAndPayload<std::string>(
                       Timestamp(5), std::string("second packet")),
-                  mediapipe_v01013_based::PacketContainsTimestampAndPayload<int>(
+                  hand_tracking_mp_lean::PacketContainsTimestampAndPayload<int>(
                       Timestamp(5), 20)))));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

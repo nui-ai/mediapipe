@@ -26,7 +26,7 @@
 
 typedef struct AHardwareBuffer AHardwareBuffer;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 struct HardwareBufferSpec {
   // Buffer pixel formats. See NDK's hardware_buffer.h for descriptions.
@@ -176,6 +176,6 @@ class HardwareBuffer {
   bool is_locked_ = false;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_AHWB_BUFFER_H_

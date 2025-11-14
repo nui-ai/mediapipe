@@ -43,7 +43,7 @@ static int object_id = 0;
 inline int GetNextObjectId() { return ++object_id; }
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Convert result TFLite tensors from deep pursuit 3d model into
 // FrameAnnotation.
@@ -84,7 +84,7 @@ class TfLiteTensorsToObjectsCalculator : public CalculatorBase {
   int num_classes_ = 0;
   int num_keypoints_ = 0;
 
-  ::mediapipe_v01013_based::TfLiteTensorsToObjectsCalculatorOptions options_;
+  ::hand_tracking_mp_lean::TfLiteTensorsToObjectsCalculatorOptions options_;
   std::unique_ptr<Decoder> decoder_;
   Eigen::Matrix<float, 4, 4, Eigen::RowMajor> projection_matrix_;
 };
@@ -174,7 +174,7 @@ absl::Status TfLiteTensorsToObjectsCalculator::LoadOptions(
     CalculatorContext* cc) {
   // Get calculator options specified in the graph.
   options_ =
-      cc->Options<::mediapipe_v01013_based::TfLiteTensorsToObjectsCalculatorOptions>();
+      cc->Options<::hand_tracking_mp_lean::TfLiteTensorsToObjectsCalculatorOptions>();
 
   num_classes_ = options_.num_classes();
   num_keypoints_ = options_.num_keypoints();
@@ -216,4 +216,4 @@ void TfLiteTensorsToObjectsCalculator::AssignObjectIdAndTimestamp(
   annotation->set_timestamp(timestamp_us);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

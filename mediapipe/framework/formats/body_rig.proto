@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 // Joint of a 3D human model (e.g. elbow, knee, wrist). Contains 3D rotation of
 // the joint and its visibility.

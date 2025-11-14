@@ -27,7 +27,7 @@
 #error This file must be built with ARC.
 #endif
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 GlContext::StatusOrGlContext GlContext::Create(std::nullptr_t nullp,
                                                bool create_thread) {
@@ -106,6 +106,6 @@ bool GlContext::IsCurrent() const {
   return HasContext() && ([EAGLContext currentContext] == context_);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // HAS_EAGL

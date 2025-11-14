@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 namespace {
@@ -139,4 +139,4 @@ class LandmarksTransformationCalculatorImpl
 MEDIAPIPE_NODE_IMPLEMENTATION(LandmarksTransformationCalculatorImpl);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

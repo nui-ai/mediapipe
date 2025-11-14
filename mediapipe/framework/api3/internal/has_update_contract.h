@@ -17,7 +17,7 @@
 
 #include <type_traits>
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 template <typename I, typename C, typename = std::void_t<>>
 struct HasUpdateContractHelper : std::false_type {};
@@ -30,6 +30,6 @@ struct HasUpdateContractHelper<
 template <typename I, typename C>
 static constexpr bool kHasUpdateContract = HasUpdateContractHelper<I, C>{};
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_INTERNAL_HAS_UPDATE_CONTRACT_H_

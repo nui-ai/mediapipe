@@ -9,7 +9,7 @@
 #include "mediapipe/gpu/egl_sync.h"
 #include "mediapipe/gpu/gl_context.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -85,4 +85,4 @@ absl::StatusOr<std::unique_ptr<GlSyncPoint>> CreateEglSyncPoint(
                                              std::move(egl_sync));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

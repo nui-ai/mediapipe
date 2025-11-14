@@ -26,7 +26,7 @@
 #include "tensorflow/lite/builtin_op_data.h"
 #include "tensorflow/lite/mutable_op_resolver.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 void MediaPipe_RegisterTfLiteOpResolver(tflite::MutableOpResolver *resolver) {
   ABSL_CHECK(resolver != nullptr);
@@ -51,4 +51,4 @@ void MediaPipe_RegisterTfLiteOpResolver(tflite::MutableOpResolver *resolver) {
                       /*version=*/1);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -9,7 +9,7 @@
 #include "testing/base/public/gmock.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -152,4 +152,4 @@ TEST(HardwareBufferTest, ShouldSupportReadWrite) {
 
 }  // namespace
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

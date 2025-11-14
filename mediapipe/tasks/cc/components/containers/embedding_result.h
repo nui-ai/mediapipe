@@ -22,7 +22,7 @@ limitations under the License.
 
 #include "mediapipe/tasks/cc/components/containers/proto/embeddings.pb.h"
 
-namespace mediapipe_v01013_based::tasks::components::containers {
+namespace hand_tracking_mp_lean::tasks::components::containers {
 
 // Embedding result for a given embedder head.
 //
@@ -67,6 +67,6 @@ Embedding ConvertToEmbedding(const proto::Embedding& proto);
 // struct.
 EmbeddingResult ConvertToEmbeddingResult(const proto::EmbeddingResult& proto);
 
-}  // namespace mediapipe_v01013_based::tasks::components::containers
+}  // namespace hand_tracking_mp_lean::tasks::components::containers
 
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_CONTAINERS_EMBEDDING_RESULT_H_

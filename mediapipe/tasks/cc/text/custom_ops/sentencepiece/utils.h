@@ -19,7 +19,7 @@ limitations under the License.
 #include <ostream>
 #include <string>
 
-namespace mediapipe_v01013_based::tflite_operations::sentencepiece {
+namespace hand_tracking_mp_lean::tflite_operations::sentencepiece {
 
 // AOSP and WASM doesn't support string_view,
 // we put here a minimal re-implementation.
@@ -55,6 +55,6 @@ inline bool operator==(const string_view& view1, const string_view& view2) {
 }
 
 }  // namespace utils
-}  // namespace mediapipe_v01013_based::tflite_operations::sentencepiece
+}  // namespace hand_tracking_mp_lean::tflite_operations::sentencepiece
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_CUSTOM_OPS_SENTENCEPIECE_UTILS_H_

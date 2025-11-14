@@ -19,7 +19,7 @@
 
 #include "absl/base/call_once.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Implements a subset of RE2 using std::regex_match.
 class RE2 {
@@ -56,6 +56,6 @@ class LazyRE2 {
   mutable absl::once_flag once_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_DEPS_RE2_H_

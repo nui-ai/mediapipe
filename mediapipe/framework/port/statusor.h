@@ -17,12 +17,12 @@
 
 #include "absl/status/statusor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 template <typename T>
 using StatusOr ABSL_DEPRECATED("Use absl::StatusOr directly") =
     absl::StatusOr<T>;
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_PORT_STATUSOR_H_

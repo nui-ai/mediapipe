@@ -33,7 +33,7 @@
 //       }
 //     }
 //   }
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kFloatVectorTag[] = "FLOAT_VECTOR";
 constexpr char kEncodedTag[] = "ENCODED";
@@ -48,7 +48,7 @@ class DequantizeByteArrayCalculator : public CalculatorBase {
 
   absl::Status Open(CalculatorContext* cc) final {
     const auto options =
-        cc->Options<::mediapipe_v01013_based::DequantizeByteArrayCalculatorOptions>();
+        cc->Options<::hand_tracking_mp_lean::DequantizeByteArrayCalculatorOptions>();
     if (!options.has_max_quantized_value() ||
         !options.has_min_quantized_value()) {
       return absl::InvalidArgumentError(
@@ -90,4 +90,4 @@ class DequantizeByteArrayCalculator : public CalculatorBase {
 
 REGISTER_CALCULATOR(DequantizeByteArrayCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

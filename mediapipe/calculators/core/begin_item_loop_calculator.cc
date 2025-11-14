@@ -25,13 +25,13 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-using ::mediapipe_v01013_based::api2::AnyType;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Node;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::SameType;
+using ::hand_tracking_mp_lean::api2::AnyType;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Node;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::SameType;
 
 // Calculator for implementing loops on fixed-sized sets of items inside a
 // MediaPipe graph. Given a set of inputs of type InputT, the following graph
@@ -93,7 +93,7 @@ class BeginItemLoopCalculator : public Node {
   static constexpr Output<AnyType>::Multiple kCloneOut{"CLONE"};
 
   MEDIAPIPE_NODE_CONTRACT(kItemsIn, kCloneIn, kBatchEndOut, kItemOut, kCloneOut,
-                          mediapipe_v01013_based::api2::TimestampChange::Arbitrary());
+                          hand_tracking_mp_lean::api2::TimestampChange::Arbitrary());
 
   static absl::Status UpdateContract(CalculatorContract* cc) {
     // The below enables processing of timestamp bound updates, and that enables
@@ -158,4 +158,4 @@ class BeginItemLoopCalculator : public Node {
 
 MEDIAPIPE_REGISTER_NODE(BeginItemLoopCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

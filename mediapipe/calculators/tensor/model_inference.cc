@@ -26,7 +26,7 @@
 #include "mediapipe/util/tflite/cpu_op_resolver.h"
 #include "tensorflow/lite/delegates/xnnpack/xnnpack_delegate.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 /// a tensorflow interpreter, which is always using the XNNPACK delegate for CPU inference.
@@ -54,7 +54,7 @@ ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDel
   // the landmarks inference model for example has 165 operators, and we get in the log ―
   // "Replacing 165 out of 165 node(s) with delegate (TfLiteXNNPackDelegate) node".
   // tflite will never default to the default op_resolver we pass here.
-  auto op_resolver = std::make_unique<mediapipe_v01013_based::CpuOpResolver>();
+  auto op_resolver = std::make_unique<hand_tracking_mp_lean::CpuOpResolver>();
 
   // use the XNNPACK delegate, which will use the requested number of threads, but this is a little confusing
   // as we set the number of threads argument on both the XNNPack delegate here, and on the tflite interpreter
@@ -138,7 +138,7 @@ absl::StatusOr<std::vector<Tensor>> ModelInference::Process(const TensorSpan& te
 }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 
 

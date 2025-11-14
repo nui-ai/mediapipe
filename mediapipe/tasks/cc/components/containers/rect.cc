@@ -15,7 +15,7 @@ limitations under the License.
 
 #include "mediapipe/tasks/cc/components/containers/rect.h"
 
-namespace mediapipe_v01013_based::tasks::components::containers {
+namespace hand_tracking_mp_lean::tasks::components::containers {
 
 RectF ToRectF(const Rect& rect, int image_height, int image_width) {
   return RectF{static_cast<float>(rect.left) / image_width,
@@ -31,4 +31,4 @@ Rect ToRect(const RectF& rect, int image_height, int image_width) {
               static_cast<int>(rect.bottom * image_height)};
 }
 
-}  // namespace mediapipe_v01013_based::tasks::components::containers
+}  // namespace hand_tracking_mp_lean::tasks::components::containers

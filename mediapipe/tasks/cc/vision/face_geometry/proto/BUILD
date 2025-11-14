@@ -28,8 +28,8 @@ mediapipe_register_type(
     base_name = "face_geometry",
     include_headers = ["mediapipe/tasks/cc/vision/face_geometry/proto/face_geometry.pb.h"],
     types = [
-        "::mediapipe_v01013_based::tasks::vision::face_geometry::proto::FaceGeometry",
-        "::std::vector<::mediapipe_v01013_based::tasks::vision::face_geometry::proto::FaceGeometry>",
+        "::hand_tracking_mp_lean::tasks::vision::face_geometry::proto::FaceGeometry",
+        "::std::vector<::hand_tracking_mp_lean::tasks::vision::face_geometry::proto::FaceGeometry>",
     ],
     deps = [":face_geometry_cc_proto"],
 )

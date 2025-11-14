@@ -15,17 +15,17 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe_v01013_based.tasks.vision.face_landmarker.proto;
+package hand_tracking_mp_lean.tasks.vision.face_landmarker.proto;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/framework/calculator_options.proto";
 import "mediapipe/tasks/cc/core/proto/base_options.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.tasks.vision.facelandmarker.proto";
+option java_package = "com.google.hand_tracking_mp_lean.tasks.vision.facelandmarker.proto";
 option java_outer_classname = "FaceBlendshapesGraphOptionsProto";
 
 message FaceBlendshapesGraphOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional FaceBlendshapesGraphOptions ext = 508981768;
   }
   // Base options for configuring Task library, such as specifying the TfLite

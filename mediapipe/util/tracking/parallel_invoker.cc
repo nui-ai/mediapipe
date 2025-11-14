@@ -19,7 +19,7 @@
 int flags_parallel_invoker_mode = PARALLEL_INVOKER_MAX_VALUE;
 int flags_parallel_invoker_max_threads = 4;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 #if defined(PARALLEL_INVOKER_ACTIVE)
 ThreadPool* ParallelInvokerThreadPool() {
@@ -33,4 +33,4 @@ ThreadPool* ParallelInvokerThreadPool() {
 }
 #endif
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

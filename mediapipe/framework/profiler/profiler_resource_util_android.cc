@@ -18,7 +18,7 @@
 #include "mediapipe/framework/profiler/profiler_resource_util.h"
 #include "mediapipe/java/com/google/mediapipe/framework/jni/jni_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 StatusOr<std::string> GetDefaultTraceLogDirectory() {
   // The path to external storage directory on a device doesn't change when an
@@ -71,4 +71,4 @@ StatusOr<std::string> GetDefaultTraceLogDirectory() {
   return *kExternalStorageDirectory;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

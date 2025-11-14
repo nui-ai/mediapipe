@@ -25,17 +25,17 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Creates image to tensor (represented as OpenGL buffer) converter.
-// NOTE: mediapipe_v01013_based::GlCalculatorHelper::UpdateContract invocation must precede
+// NOTE: hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract invocation must precede
 // converter creation.
 absl::StatusOr<std::unique_ptr<ImageToTensorConverter>>
 CreateImageToGlBufferTensorConverter(CalculatorContext* cc,
                                      bool input_starts_at_bottom,
                                      BorderMode border_mode);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
 

@@ -20,7 +20,7 @@
 #include <utility>
 #include <vector>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -232,4 +232,4 @@ CreateInferenceInterpreterDelegateRunner(
       std::move(model), std::move(interpreter), std::move(delegate));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

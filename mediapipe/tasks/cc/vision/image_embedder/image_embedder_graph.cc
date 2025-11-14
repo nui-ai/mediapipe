@@ -27,20 +27,20 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/model_task_graph.h"
 #include "mediapipe/tasks/cc/vision/image_embedder/proto/image_embedder_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace image_embedder {
 
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::GenericNode;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::GenericNode;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::EmbeddingResult;
 
 constexpr char kEmbeddingsTag[] = "EMBEDDINGS";
 constexpr char kImageTag[] = "IMAGE";
@@ -114,15 +114,15 @@ class ImageEmbedderGraph : public core::ModelTaskGraph {
  private:
   // Adds a mediapipe image embedding teask graph into the provided
   // builder::Graph instance. The image embedding task takes images
-  // (mediapipe_v01013_based::Image) and optional region-of-interest
-  // (mediapipe_v01013_based::NormalizedRect) as inputs and returns on embedding result per
+  // (hand_tracking_mp_lean::Image) and optional region-of-interest
+  // (hand_tracking_mp_lean::NormalizedRect) as inputs and returns on embedding result per
   // input image.
   //
   // task_options: the mediapipe tasks ImageEmbedderGraphOptions.
   // model_resources: the ModelSources object initialized from an image
   // embedding model file with model optional metadata.
-  // image_in: (mediapipe_v01013_based::Image) stream to run embedding extraction on.
-  // norm_rect_in: (mediapipe_v01013_based::NormalizedRect) optional region-of-interest to
+  // image_in: (hand_tracking_mp_lean::Image) stream to run embedding extraction on.
+  // norm_rect_in: (hand_tracking_mp_lean::NormalizedRect) optional region-of-interest to
   // perform embedding extraction on.
   // graph: the mediapipe builder::Graph instance to be updated.
   absl::StatusOr<ImageEmbedderOutputStreams> BuildImageEmbedderTask(
@@ -169,9 +169,9 @@ class ImageEmbedderGraph : public core::ModelTaskGraph {
   }
 };
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe_v01013_based::tasks::vision::image_embedder::ImageEmbedderGraph);
+    ::hand_tracking_mp_lean::tasks::vision::image_embedder::ImageEmbedderGraph);
 
 }  // namespace image_embedder
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

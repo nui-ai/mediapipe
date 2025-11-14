@@ -31,7 +31,7 @@
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -68,14 +68,14 @@ class ImageToTensorOpenCvConverter : public ImageToTensorConverter {
     }
   }
 
-  absl::Status Convert(const mediapipe_v01013_based::Image& input, const RotatedRect& roi,
+  absl::Status Convert(const hand_tracking_mp_lean::Image& input, const RotatedRect& roi,
                        float range_min, float range_max,
                        int tensor_buffer_offset,
                        Tensor& output_tensor) override {
     const bool is_supported_format =
-        input.image_format() == mediapipe_v01013_based::ImageFormat::SRGB ||
-        input.image_format() == mediapipe_v01013_based::ImageFormat::SRGBA ||
-        input.image_format() == mediapipe_v01013_based::ImageFormat::GRAY8;
+        input.image_format() == hand_tracking_mp_lean::ImageFormat::SRGB ||
+        input.image_format() == hand_tracking_mp_lean::ImageFormat::SRGBA ||
+        input.image_format() == hand_tracking_mp_lean::ImageFormat::GRAY8;
     if (!is_supported_format) {
       return absl::InvalidArgumentError(absl::StrCat(
           "Unsupported format: ", static_cast<uint32_t>(input.image_format())));
@@ -145,7 +145,7 @@ class ImageToTensorOpenCvConverter : public ImageToTensorConverter {
                             dst_width, dst_height};
     /* clang-format on */
 
-    auto src = mediapipe_v01013_based::formats::MatView(&input);
+    auto src = hand_tracking_mp_lean::formats::MatView(&input);
     cv::Mat dst_points = cv::Mat(4, 2, CV_32F, dst_corners);
     cv::Mat projection_matrix =
         cv::getPerspectiveTransform(src_points, dst_points);
@@ -207,4 +207,4 @@ absl::StatusOr<std::unique_ptr<ImageToTensorConverter>> CreateOpenCvConverter(
                                                         tensor_type, flags);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

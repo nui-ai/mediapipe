@@ -31,13 +31,13 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 using ::testing::SizeIs;
 using ::testing::TestWithParam;
-using Options = mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions;
-namespace test_utils = ::mediapipe_v01013_based::tensors_to_segmentation_utils;
+using Options = hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions;
+namespace test_utils = ::hand_tracking_mp_lean::tensors_to_segmentation_utils;
 
 using TensorsToSegmentationCalculatorTest =
     TestWithParam<test_utils::FormattingTestCase>;
@@ -75,7 +75,7 @@ TEST_P(TensorsToSegmentationCalculatorTest, ParameterizedTests) {
 
   // The output size is defined as pair(new_width, new_height).
   MP_ASSERT_OK(graph.AddPacketToInputStream(
-      "size", mediapipe_v01013_based::Adopt(new std::pair<int, int>(cols_new, rows_new))
+      "size", hand_tracking_mp_lean::Adopt(new std::pair<int, int>(cols_new, rows_new))
                   .At(Timestamp(0))));
   MP_ASSERT_OK(graph.WaitUntilIdle());
 
@@ -223,4 +223,4 @@ INSTANTIATE_TEST_SUITE_P(
     });
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

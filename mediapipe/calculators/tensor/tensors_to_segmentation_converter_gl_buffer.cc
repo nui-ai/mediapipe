@@ -48,12 +48,12 @@
 #include "tensorflow/lite/delegates/gpu/gl/gl_shader.h"
 #include "tensorflow/lite/delegates/gpu/gl/gl_texture.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::tensors_to_segmentation_utils::GetHwcFromDims;
-using ::mediapipe_v01013_based::tensors_to_segmentation_utils::GlRender;
-using ::mediapipe_v01013_based::tensors_to_segmentation_utils::NumGroups;
+using ::hand_tracking_mp_lean::tensors_to_segmentation_utils::GetHwcFromDims;
+using ::hand_tracking_mp_lean::tensors_to_segmentation_utils::GlRender;
+using ::hand_tracking_mp_lean::tensors_to_segmentation_utils::NumGroups;
 using ::tflite::gpu::gl::GlProgram;
 using ::tflite::gpu::gl::GlShader;
 
@@ -71,7 +71,7 @@ class TensorsToSegmentationGlBufferConverter
                                                  int output_height) override;
 
  private:
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
   // TODO: Refactor upsample program out of the conversion.
   GLuint upsample_program_;
   bool gpu_initialized_ = false;
@@ -168,7 +168,7 @@ void main() {
 })";
 
     // Shader defines.
-    using Options = ::mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions;
+    using Options = ::hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions;
     const std::string output_layer_index =
         "\n#define OUTPUT_LAYER_INDEX int(" +
         std::to_string(options.output_layer_index()) + ")";
@@ -213,8 +213,8 @@ void main() {
     small_mask_texture_ = absl::make_unique<tflite::gpu::gl::GlTexture>();
 
     // Simple pass-through program, used for hardware upsampling.
-    mediapipe_v01013_based::GlhCreateProgram(
-        mediapipe_v01013_based::kBasicVertexShader, mediapipe_v01013_based::kBasicTexturedFragmentShader,
+    hand_tracking_mp_lean::GlhCreateProgram(
+        hand_tracking_mp_lean::kBasicVertexShader, hand_tracking_mp_lean::kBasicTexturedFragmentShader,
         NUM_ATTRIBUTES, &attr_name[0], attr_location, &upsample_program_);
     RET_CHECK(upsample_program_) << "Problem initializing the program.";
     glUseProgram(upsample_program_);
@@ -274,10 +274,10 @@ TensorsToSegmentationGlBufferConverter::Convert(const Tensor& input_tensor,
         }
 
         // Upsample small mask into output.
-        mediapipe_v01013_based::GlTexture output_texture =
+        hand_tracking_mp_lean::GlTexture output_texture =
             gpu_helper_.CreateDestinationTexture(
                 output_width, output_height,
-                mediapipe_v01013_based::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
+                hand_tracking_mp_lean::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
 
         // Run shader, upsample result.
         {
@@ -306,12 +306,12 @@ TensorsToSegmentationGlBufferConverter::Convert(const Tensor& input_tensor,
 absl::StatusOr<std::unique_ptr<TensorsToSegmentationConverter>>
 CreateGlBufferConverter(
     CalculatorContext* cc,
-    const mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions& options) {
+    const hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions& options) {
   auto converter = std::make_unique<TensorsToSegmentationGlBufferConverter>();
   MP_RETURN_IF_ERROR(converter->Init(cc, options));
   return converter;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31

@@ -29,11 +29,11 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/processors/embedder_options.h"
 #include "mediapipe/tasks/cc/core/base_options.h"
 
-namespace mediapipe_v01013_based::tasks::audio::audio_embedder {
+namespace hand_tracking_mp_lean::tasks::audio::audio_embedder {
 
 // Alias the shared EmbeddingResult struct as result type.
 using AudioEmbedderResult =
-    ::mediapipe_v01013_based::tasks::components::containers::EmbeddingResult;
+    ::hand_tracking_mp_lean::tasks::components::containers::EmbeddingResult;
 
 struct AudioEmbedderOptions {
   // Base options for configuring Task library, such as specifying the TfLite
@@ -128,6 +128,6 @@ class AudioEmbedder : core::BaseAudioTaskApi {
   absl::Status Close() { return runner_->Close(); }
 };
 
-}  // namespace mediapipe_v01013_based::tasks::audio::audio_embedder
+}  // namespace hand_tracking_mp_lean::tasks::audio::audio_embedder
 
 #endif  // MEDIAPIPE_TASKS_CC_AUDIO_AUDIO_EMBEDDER_AUDIO_EMBEDDER_H_

@@ -6,7 +6,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 namespace {
 
 TEST(Presence, VerifyConfig) {
@@ -19,7 +19,7 @@ TEST(Presence, VerifyConfig) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "PacketPresenceCalculator"
           input_stream: "PACKET:stream_to_check"
@@ -30,4 +30,4 @@ TEST(Presence, VerifyConfig) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

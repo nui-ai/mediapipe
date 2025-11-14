@@ -26,7 +26,7 @@
 #include "mediapipe/framework/resources.h"
 #include "tensorflow/lite/model_builder.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Represents a TfLite model as a FlatBuffer.
 using TfLiteModelPtr =
@@ -67,6 +67,6 @@ class TfLiteModelLoader {
       std::optional<MMapMode> mmap_mode);
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_TFLITE_MODEL_LOADER_H_

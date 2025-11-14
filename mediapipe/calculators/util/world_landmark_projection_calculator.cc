@@ -25,7 +25,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 class WorldLandmarkProjectionNodeImpl
     : public Calculator<WorldLandmarkProjectionNode,
@@ -44,11 +44,11 @@ class WorldLandmarkProjectionNodeImpl
     const NormalizedRect* in_rect = nullptr;
     in_rect = &cc.input_rect.GetOrDie();
 
-    LandmarkList out_landmarks = mediapipe_v01013_based::api3::RotateWorldLandmarks(in_landmarks, in_rect);
+    LandmarkList out_landmarks = hand_tracking_mp_lean::api3::RotateWorldLandmarks(in_landmarks, in_rect);
 
     cc.output_landmarks.Send(std::move(out_landmarks));
     return absl::OkStatus();
   }
 };
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3

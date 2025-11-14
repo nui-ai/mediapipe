@@ -24,7 +24,7 @@ input_stream: "ROI:roi"
 output_stream: "DETECTIONS:detections"
 
 graph_options: {
-  [type.googleapis.com/mediapipe_v01013_based.FaceDetectionOptions] {}
+  [type.googleapis.com/hand_tracking_mp_lean.FaceDetectionOptions] {}
 }
 
 node {
@@ -33,7 +33,7 @@ node {
   input_stream: "ROI:roi"
   output_stream: "DETECTIONS:detections"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.FaceDetectionOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.FaceDetectionOptions] {
       model_path: "mediapipe/modules/face_detection/face_detection_full_range_sparse.tflite"
       tensor_width: 192
       tensor_height: 192

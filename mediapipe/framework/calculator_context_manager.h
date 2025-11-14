@@ -30,7 +30,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Calculator context manager owns and manages all calculator context objects of
 // a calculator node.
@@ -141,6 +141,6 @@ class CalculatorContextManager {
       ABSL_GUARDED_BY(contexts_mutex_);
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_CALCULATOR_CONTEXT_MANAGER_H_

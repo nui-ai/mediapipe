@@ -20,13 +20,13 @@
 
 #include "tensorflow/lite/c/c_api_types.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // TODO: Consider renaming TfLiteDelegatePtr.
 using TfLiteDelegatePtr =
     std::unique_ptr<TfLiteOpaqueDelegate,
                     std::function<void(TfLiteOpaqueDelegate*)>>;
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TFLITE_DELEGATE_PTR_H_

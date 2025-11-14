@@ -18,7 +18,7 @@
 #include <functional>
 #include <vector>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 // RegistrationToken is a generic class that represents a registration that
 // can be later undone, via a call to Unregister().
 //
@@ -112,6 +112,6 @@ class Unregister {
  private:
   RegistrationToken token_;
 };
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_DEPS_REGISTRATION_TOKEN_H_

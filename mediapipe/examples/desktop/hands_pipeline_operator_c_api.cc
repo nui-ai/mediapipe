@@ -70,11 +70,11 @@ void check_protobuf_linking() {
 
     // Step 3: Finally reference some key message descriptors
     fprintf(stderr, "Step 3: Checking CalculatorGraphConfig descriptor\n");
-    if (mediapipe_v01013_based::CalculatorGraphConfig::descriptor() == nullptr) {
+    if (hand_tracking_mp_lean::CalculatorGraphConfig::descriptor() == nullptr) {
         fprintf(stderr, "[pipeline C API protobuf initialization] FATAL: CalculatorGraphConfig descriptor not registered!\n");
         abort();
     }
-    if (mediapipe_v01013_based::PipelineOutputData::descriptor() == nullptr) {
+    if (hand_tracking_mp_lean::PipelineOutputData::descriptor() == nullptr) {
         fprintf(stderr, "[pipeline C API protobuf initialization] FATAL: PipelineOutputData descriptor not registered!\n");
         abort();
     }
@@ -91,7 +91,7 @@ static void set_last_error(const std::string& err) { g_last_error = err; }
 extern "C" const char* hands_pipeline_operator_get_last_error() { return g_last_error.c_str(); }
 
 struct HandsPipelineOperatorWrapper {
-    std::unique_ptr<mediapipe_v01013_based::HandsPipelineOperator> impl;
+    std::unique_ptr<hand_tracking_mp_lean::HandsPipelineOperator> impl;
 };
 
 extern "C" HandsPipelineOperatorHandle hands_pipeline_operator_create(
@@ -108,7 +108,7 @@ extern "C" HandsPipelineOperatorHandle hands_pipeline_operator_create(
         if (!item.empty()) output_streams.push_back(item);
     }
     HandsPipelineOperatorWrapper* wrapper = new HandsPipelineOperatorWrapper;
-    auto status_or_op = mediapipe_v01013_based::HandsPipelineOperator::Create(std::string(graph_file_path), output_streams);
+    auto status_or_op = hand_tracking_mp_lean::HandsPipelineOperator::Create(std::string(graph_file_path), output_streams);
     if (!status_or_op.ok()) {
         set_last_error(std::string(status_or_op.status().message()));
         delete wrapper;
@@ -153,7 +153,7 @@ extern "C" int hands_pipeline_operator_wait_for_output(
         return -1;
     }
     auto* wrapper = static_cast<HandsPipelineOperatorWrapper*>(handle);
-    mediapipe_v01013_based::PipelineOutputData output;
+    hand_tracking_mp_lean::PipelineOutputData output;
     absl::Status status = wrapper->impl->wait_for_output(&output, frame_number);
     if (!status.ok()) {
         set_last_error(std::string(status.message()));

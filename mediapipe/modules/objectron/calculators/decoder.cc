@@ -30,7 +30,7 @@
 #include "mediapipe/modules/objectron/calculators/epnp.h"
 #include "mediapipe/modules/objectron/calculators/types.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr int Decoder::kNumOffsetmaps = 16;
 constexpr int kNumKeypoints = 9;
@@ -250,4 +250,4 @@ absl::Status Decoder::Lift2DTo3D(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

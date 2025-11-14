@@ -10,7 +10,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 TEST(BuildLabelMapFromFiles, WorksForLables) {
@@ -86,14 +86,14 @@ TEST(BuildLabelMapFromFiles, HandlesInvalidArguments) {
   EXPECT_THAT(BuildLabelMapFromFiles(
                   absl::StrJoin({"label1"}, "\n"),
                   absl::StrJoin({"display_name1", "display_name2"}, "\n")),
-              mediapipe_v01013_based::StatusIs(absl::StatusCode::kInvalidArgument));
+              hand_tracking_mp_lean::StatusIs(absl::StatusCode::kInvalidArgument));
   EXPECT_THAT(BuildLabelMapFromFiles(absl::StrJoin({"label1", "label2"}, "\n"),
                                      absl::StrJoin({"display_name1"}, "\n")),
-              mediapipe_v01013_based::StatusIs(absl::StatusCode::kInvalidArgument));
+              hand_tracking_mp_lean::StatusIs(absl::StatusCode::kInvalidArgument));
   EXPECT_THAT(BuildLabelMapFromFiles(absl::StrJoin({}, "\n"),
                                      absl::StrJoin({"display_name1"}, "\n")),
-              mediapipe_v01013_based::StatusIs(absl::StatusCode::kInvalidArgument));
+              hand_tracking_mp_lean::StatusIs(absl::StatusCode::kInvalidArgument));
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

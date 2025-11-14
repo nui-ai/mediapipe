@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 
 using testing::HasSubstr;
@@ -226,4 +226,4 @@ TEST(SceneCropperTest, CropFromLocation) {
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

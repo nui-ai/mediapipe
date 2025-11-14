@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -97,4 +97,4 @@ class DetectionToLandmarksCalculator : public CalculatorBase {
 
 REGISTER_CALCULATOR(DetectionToLandmarksCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -27,7 +27,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_detector/proto/face_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_landmarks_detector_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
@@ -37,15 +37,15 @@ struct HolisticFaceTrackingRequest {
 };
 
 struct HolisticFaceTrackingOutput {
-  std::optional<api2::builder::Stream<mediapipe_v01013_based::NormalizedLandmarkList>>
+  std::optional<api2::builder::Stream<hand_tracking_mp_lean::NormalizedLandmarkList>>
       landmarks;
-  std::optional<api2::builder::Stream<mediapipe_v01013_based::ClassificationList>>
+  std::optional<api2::builder::Stream<hand_tracking_mp_lean::ClassificationList>>
       classifications;
 
   struct DebugOutput {
-    api2::builder::Stream<mediapipe_v01013_based::NormalizedRect> roi_from_pose;
-    api2::builder::Stream<mediapipe_v01013_based::NormalizedRect> roi_from_detection;
-    api2::builder::Stream<mediapipe_v01013_based::NormalizedRect> tracking_roi;
+    api2::builder::Stream<hand_tracking_mp_lean::NormalizedRect> roi_from_pose;
+    api2::builder::Stream<hand_tracking_mp_lean::NormalizedRect> roi_from_detection;
+    api2::builder::Stream<hand_tracking_mp_lean::NormalizedRect> tracking_roi;
   };
 
   DebugOutput debug_output;
@@ -72,18 +72,18 @@ struct HolisticFaceTrackingOutput {
 // @graph - graph to update.
 absl::StatusOr<HolisticFaceTrackingOutput> TrackHolisticFace(
     api2::builder::Stream<Image> image,
-    api2::builder::Stream<mediapipe_v01013_based::NormalizedLandmarkList>
+    api2::builder::Stream<hand_tracking_mp_lean::NormalizedLandmarkList>
         pose_face_landmarks,
     const face_detector::proto::FaceDetectorGraphOptions&
         face_detector_graph_options,
     const face_landmarker::proto::FaceLandmarksDetectorGraphOptions&
         face_landmarks_detector_graph_options,
     const HolisticFaceTrackingRequest& request,
-    mediapipe_v01013_based::api2::builder::Graph& graph);
+    hand_tracking_mp_lean::api2::builder::Graph& graph);
 
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_HOLISTIC_LANDMARKER_HOLISTIC_FACE_TRACKING_H_

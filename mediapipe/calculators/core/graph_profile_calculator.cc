@@ -23,11 +23,11 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // This calculator periodically copies the GraphProfile from
-// mediapipe_v01013_based::GraphProfiler::CaptureProfile to the "PROFILE" output stream.
+// hand_tracking_mp_lean::GraphProfiler::CaptureProfile to the "PROFILE" output stream.
 //
 // Similarly to the log files saved by GraphProfiler::WriteProfile when trace
 // logging is enabled, the first captured profile contains the full
@@ -53,7 +53,7 @@ class GraphProfileCalculator : public Node {
   }
 
   absl::Status Process(CalculatorContext* cc) final {
-    auto options = cc->Options<::mediapipe_v01013_based::GraphProfileCalculatorOptions>();
+    auto options = cc->Options<::hand_tracking_mp_lean::GraphProfileCalculatorOptions>();
 
     bool first_profile = prev_profile_ts_ == Timestamp::Unset();
     if (first_profile ||
@@ -75,4 +75,4 @@ class GraphProfileCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(GraphProfileCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

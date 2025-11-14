@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 message ResourceProviderCalculatorOptions {
   // The calculator will use `resource_id` to load and provide the resource

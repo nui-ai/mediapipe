@@ -25,7 +25,7 @@
 #include "mediapipe/framework/tool/packet_generator_wrapper_calculator.pb.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -37,7 +37,7 @@ CalculatorGraphConfig::Node MakePacketGeneratorWrapperConfig(
   *wrapper_node.mutable_output_side_packet() = node.output_side_packet();
 
   auto* wrapper_options = wrapper_node.mutable_options()->MutableExtension(
-      mediapipe_v01013_based::PacketGeneratorWrapperCalculatorOptions::ext);
+      hand_tracking_mp_lean::PacketGeneratorWrapperCalculatorOptions::ext);
   wrapper_options->set_packet_generator(node.packet_generator());
   wrapper_options->set_package(package);
   if (node.has_options()) {
@@ -72,7 +72,7 @@ absl::Status CalculatorContract::Initialize(
   }
 
   if (!statuses.empty()) {
-    auto builder = mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    auto builder = hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
                    << "Unable to initialize TagMaps for node.";
     for (const auto& status : statuses) {
       builder << "\n" << status.message();
@@ -149,7 +149,7 @@ absl::Status CalculatorContract::Initialize(const StatusHandlerConfig& node) {
   }
 
   if (!statuses.empty()) {
-    auto builder = mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    auto builder = hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
                    << "NodeTypeInfo Initialization failed.";
     for (const auto& status : statuses) {
       builder << "\n" << status.message();
@@ -166,4 +166,4 @@ absl::Status CalculatorContract::Initialize(const StatusHandlerConfig& node) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

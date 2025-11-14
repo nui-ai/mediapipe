@@ -29,7 +29,7 @@
 #include "mediapipe/util/frame_buffer/rgb_buffer.h"
 #include "mediapipe/util/frame_buffer/yuv_buffer.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace frame_buffer {
 
 namespace {
@@ -853,4 +853,4 @@ FrameBuffer::Dimension GetCropDimension(int x0, int x1, int y0, int y1) {
 }
 
 }  // namespace frame_buffer
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

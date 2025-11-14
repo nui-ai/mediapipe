@@ -36,10 +36,10 @@ extern "C" {
 #include "mediapipe/util/audio_decoder.pb.h"
 }
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-using mediapipe_v01013_based::AudioStreamOptions;
-using mediapipe_v01013_based::TimeSeriesHeader;
+using hand_tracking_mp_lean::AudioStreamOptions;
+using hand_tracking_mp_lean::TimeSeriesHeader;
 
 // The base helper class for a processor which handles decoding of a single
 // stream.
@@ -194,7 +194,7 @@ class AudioDecoder {
   ~AudioDecoder();
 
   absl::Status Initialize(const std::string& input_file,
-                          const mediapipe_v01013_based::AudioDecoderOptions options);
+                          const hand_tracking_mp_lean::AudioDecoderOptions options);
 
   absl::Status GetData(int* options_index, Packet* data);
 
@@ -222,6 +222,6 @@ class AudioDecoder {
   AVFormatContext* avformat_ctx_ = nullptr;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_AUDIO_DECODER_H_

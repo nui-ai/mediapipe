@@ -35,7 +35,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -56,7 +56,7 @@ class SlowPlusOneCalculator : public CalculatorBase {
   }
 
   absl::Status Open(CalculatorContext* cc) override {
-    cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
+    cc->SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
     return absl::OkStatus();
   }
 
@@ -90,7 +90,7 @@ class ParallelExecutionTest : public testing::Test {
 
 TEST_F(ParallelExecutionTest, SlowPlusOneCalculatorsTest) {
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input"
         node {
           calculator: "SlowPlusOneCalculator"
@@ -153,4 +153,4 @@ TEST_F(ParallelExecutionTest, SlowPlusOneCalculatorsTest) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -35,12 +35,12 @@ limitations under the License.
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/tasks/cc/vision/image_segmenter/calculators/tensors_to_segmentation_calculator.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
-using ::mediapipe_v01013_based::Image;
-using ::mediapipe_v01013_based::Tensor;
+using ::hand_tracking_mp_lean::Image;
+using ::hand_tracking_mp_lean::Tensor;
 using ::testing::HasSubstr;
 
 constexpr std::array<float, 4> kTestValues = {0.2, 1.5, -0.6, 3.4};
@@ -73,7 +73,7 @@ void PushTensorsToRunner(int tensor_height, int tensor_width,
   // Pushs input to the runner.
   auto& input_stream_packets = runner->MutableInputs()->Tag("TENSORS").packets;
   input_stream_packets.push_back(
-      mediapipe_v01013_based::Adopt(tensors.release()).At(Timestamp(0)));
+      hand_tracking_mp_lean::Adopt(tensors.release()).At(Timestamp(0)));
 }
 
 std::vector<Packet> GetPackets(const CalculatorRunner& runner) {
@@ -115,7 +115,7 @@ MATCHER_P4(Uint8ImagePacket, expected_height, expected_width, expected_value,
 
 TEST(TensorsToSegmentationCalculatorTest, FailsInvalidTensorDimensionOne) {
   CalculatorRunner runner(
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig::Node>(
           R"pb(
             calculator: "mediapipe.tasks.TensorsToSegmentationCalculator"
             input_stream: "TENSORS:tensors"
@@ -130,7 +130,7 @@ TEST(TensorsToSegmentationCalculatorTest, FailsInvalidTensorDimensionOne) {
   tensors->emplace_back(Tensor::ElementType::kFloat32, Tensor::Shape{2});
   auto& input_stream_packets = runner.MutableInputs()->Tag("TENSORS").packets;
   input_stream_packets.push_back(
-      mediapipe_v01013_based::Adopt(tensors.release()).At(Timestamp(0)));
+      hand_tracking_mp_lean::Adopt(tensors.release()).At(Timestamp(0)));
   absl::Status status = runner.Run();
   EXPECT_EQ(status.code(), absl::StatusCode::kInvalidArgument);
   EXPECT_THAT(status.message(),
@@ -139,7 +139,7 @@ TEST(TensorsToSegmentationCalculatorTest, FailsInvalidTensorDimensionOne) {
 
 TEST(TensorsToSegmentationCalculatorTest, FailsInvalidTensorDimensionFive) {
   CalculatorRunner runner(
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig::Node>(
           R"pb(
             calculator: "mediapipe.tasks.TensorsToSegmentationCalculator"
             input_stream: "TENSORS:tensors"
@@ -155,7 +155,7 @@ TEST(TensorsToSegmentationCalculatorTest, FailsInvalidTensorDimensionFive) {
                         Tensor::Shape{2, 2, 1, 3, 5});
   auto& input_stream_packets = runner.MutableInputs()->Tag("TENSORS").packets;
   input_stream_packets.push_back(
-      mediapipe_v01013_based::Adopt(tensors.release()).At(Timestamp(0)));
+      hand_tracking_mp_lean::Adopt(tensors.release()).At(Timestamp(0)));
   absl::Status status = runner.Run();
   EXPECT_EQ(status.code(), absl::StatusCode::kInvalidArgument);
   EXPECT_THAT(status.message(),
@@ -164,7 +164,7 @@ TEST(TensorsToSegmentationCalculatorTest, FailsInvalidTensorDimensionFive) {
 
 TEST(TensorsToSegmentationCalculatorTest, SucceedsConfidenceMaskWithSoftmax) {
   CalculatorRunner runner(
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig::Node>(
           R"pb(
             calculator: "mediapipe.tasks.TensorsToSegmentationCalculator"
             input_stream: "TENSORS:tensors"
@@ -206,7 +206,7 @@ TEST(TensorsToSegmentationCalculatorTest, SucceedsConfidenceMaskWithSoftmax) {
 
 TEST(TensorsToSegmentationCalculatorTest, SucceedsConfidenceMaskWithNone) {
   CalculatorRunner runner(
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig::Node>(
           R"pb(
             calculator: "mediapipe.tasks.TensorsToSegmentationCalculator"
             input_stream: "TENSORS:tensors"
@@ -244,7 +244,7 @@ TEST(TensorsToSegmentationCalculatorTest, SucceedsConfidenceMaskWithNone) {
 
 TEST(TensorsToSegmentationCalculatorTest, SucceedsConfidenceMaskWithSigmoid) {
   CalculatorRunner runner(
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig::Node>(
           R"pb(
             calculator: "mediapipe.tasks.TensorsToSegmentationCalculator"
             input_stream: "TENSORS:tensors"
@@ -283,7 +283,7 @@ TEST(TensorsToSegmentationCalculatorTest, SucceedsConfidenceMaskWithSigmoid) {
 
 TEST(TensorsToSegmentationCalculatorTest, SucceedsCategoryMask) {
   CalculatorRunner runner(
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig::Node>(
           R"pb(
             calculator: "mediapipe.tasks.TensorsToSegmentationCalculator"
             input_stream: "TENSORS:tensors"
@@ -317,7 +317,7 @@ TEST(TensorsToSegmentationCalculatorTest, SucceedsCategoryMask) {
 
 TEST(TensorsToSegmentationCalculatorTest, SucceedsCategoryMaskResize) {
   CalculatorRunner runner(
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig::Node>(
           R"pb(
             calculator: "mediapipe.tasks.TensorsToSegmentationCalculator"
             input_stream: "TENSORS:tensors"
@@ -344,7 +344,7 @@ TEST(TensorsToSegmentationCalculatorTest, SucceedsCategoryMaskResize) {
       std::vector<float>(kTestValues.begin(), kTestValues.end()), &runner);
   runner.MutableInputs()
       ->Tag("OUTPUT_SIZE")
-      .packets.push_back(mediapipe_v01013_based::MakePacket<std::pair<int, int>>(
+      .packets.push_back(hand_tracking_mp_lean::MakePacket<std::pair<int, int>>(
                              std::make_pair(output_width, output_height))
                              .At(Timestamp(0)));
   MP_ASSERT_OK(runner.Run());
@@ -361,4 +361,4 @@ TEST(TensorsToSegmentationCalculatorTest, SucceedsCategoryMaskResize) {
                                             expected_index, buffer_indices)));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

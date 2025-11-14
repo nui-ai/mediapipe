@@ -25,11 +25,11 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Stream;
 
 namespace test_ns {
 
@@ -39,13 +39,13 @@ constexpr char kInTag[] = "IN";
 class TestSinkCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
-    cc->Inputs().Tag(kInTag).Set<mediapipe_v01013_based::InputOnlyProto>();
+    cc->Inputs().Tag(kInTag).Set<hand_tracking_mp_lean::InputOnlyProto>();
     cc->Outputs().Tag(kOutTag).Set<int>();
     return absl::OkStatus();
   }
 
   absl::Status Process(CalculatorContext* cc) override {
-    int x = cc->Inputs().Tag(kInTag).Get<mediapipe_v01013_based::InputOnlyProto>().x();
+    int x = cc->Inputs().Tag(kInTag).Get<hand_tracking_mp_lean::InputOnlyProto>().x();
     cc->Outputs().Tag(kOutTag).AddPacket(
         MakePacket<int>(x).At(cc->InputTimestamp()));
     return absl::OkStatus();
@@ -57,7 +57,7 @@ REGISTER_CALCULATOR(TestSinkCalculator);
 
 TEST(PacketRegistrationTest, InputTypeRegistration) {
   using testing::Contains;
-  ASSERT_EQ(mediapipe_v01013_based::InputOnlyProto{}.GetTypeName(),
+  ASSERT_EQ(hand_tracking_mp_lean::InputOnlyProto{}.GetTypeName(),
             "mediapipe.InputOnlyProto");
   EXPECT_THAT(packet_internal::MessageHolderRegistry::GetRegisteredNames(),
               Contains("mediapipe.InputOnlyProto"));
@@ -67,8 +67,8 @@ TEST(PacketRegistrationTest, AdoptingRegisteredProtoWorks) {
   CalculatorGraphConfig config;
   {
     Graph graph;
-    Stream<mediapipe_v01013_based::InputOnlyProto> input =
-        graph.In(0).SetName("in").Cast<mediapipe_v01013_based::InputOnlyProto>();
+    Stream<hand_tracking_mp_lean::InputOnlyProto> input =
+        graph.In(0).SetName("in").Cast<hand_tracking_mp_lean::InputOnlyProto>();
 
     auto& sink_node = graph.AddNode("TestSinkCalculator");
     input.ConnectTo(sink_node.In(test_ns::kInTag));
@@ -84,7 +84,7 @@ TEST(PacketRegistrationTest, AdoptingRegisteredProtoWorks) {
   MP_ASSERT_OK(calculator_graph.StartRun({}));
 
   int value = 10;
-  auto proto = std::make_unique<mediapipe_v01013_based::InputOnlyProto>();
+  auto proto = std::make_unique<hand_tracking_mp_lean::InputOnlyProto>();
   proto->set_x(value);
   MP_ASSERT_OK(calculator_graph.AddPacketToInputStream(
       "in", Adopt(proto.release()).At(Timestamp(0))));
@@ -92,4 +92,4 @@ TEST(PacketRegistrationTest, AdoptingRegisteredProtoWorks) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

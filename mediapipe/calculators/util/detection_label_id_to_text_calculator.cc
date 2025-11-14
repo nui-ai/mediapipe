@@ -39,7 +39,7 @@
 #include "mediapipe/framework/port/file_helpers.h"
 #endif
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Takes a label map (from label IDs to names), and replaces the label IDs
 // in Detection protos with label names. Note that the calculator makes a copy
@@ -94,7 +94,7 @@ absl::Status DetectionLabelIdToTextCalculator::Open(CalculatorContext* cc) {
     std::string string_path;
     MP_ASSIGN_OR_RETURN(string_path,
                         PathToResourceAsFile(options.label_map_path()));
-    MP_ASSIGN_OR_RETURN(std::unique_ptr<mediapipe_v01013_based::Resource> label_map,
+    MP_ASSIGN_OR_RETURN(std::unique_ptr<hand_tracking_mp_lean::Resource> label_map,
                         cc->GetResources().Get(string_path));
     MP_ASSIGN_OR_RETURN(
         local_label_map_,
@@ -150,4 +150,4 @@ DetectionLabelIdToTextCalculator::GetLabelMap(CalculatorContext* cc) {
                    .label_items();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

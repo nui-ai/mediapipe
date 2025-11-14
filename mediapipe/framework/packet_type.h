@@ -38,7 +38,7 @@
 #include "mediapipe/framework/tool/validate_name.h"
 #include "mediapipe/framework/type_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Encapsulates the type and description of an input stream, output
 // stream, or input side packet.  The type to expect is set with Set<type>()
@@ -273,6 +273,6 @@ PacketType& PacketType::SetOneOf() {
   return *this;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_PACKET_TYPE_H_

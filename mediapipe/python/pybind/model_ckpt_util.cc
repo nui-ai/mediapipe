@@ -24,7 +24,7 @@
 #include "odml/infra/genai/inference/utils/xnn_utils/model_ckpt_util.h"
 #endif  // ENABLE_ODML_CONVERTER
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace python {
 
 namespace py = pybind11;
@@ -42,11 +42,11 @@ void ModelCkptUtilModule(pybind11::module* module) {
   m.def("GenerateGpuTfLite", &odml::infra::gpu::GenerateTfLite,
         "Generates the TfLite flatbuffer file from the serialized weight files "
         "for the GPU backend.");
-  m.def("ConvertHfTokenizer", &mediapipe_v01013_based::tasks::text::ConvertHfTokenizer,
+  m.def("ConvertHfTokenizer", &hand_tracking_mp_lean::tasks::text::ConvertHfTokenizer,
         "Converts the HuggingeFace BPE tokenizer to internal SentencePiece "
         "vocab model.");
 #endif  // ENABLE_ODML_CONVERTER
 }
 
 }  // namespace python
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

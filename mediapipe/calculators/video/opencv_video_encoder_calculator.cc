@@ -34,7 +34,7 @@
 #include "mediapipe/framework/port/status_builder.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kAudioFilePathTag[] = "AUDIO_FILE_PATH";
 constexpr char kOutputFilePathTag[] = "OUTPUT_FILE_PATH";
@@ -44,7 +44,7 @@ constexpr char kVideoTag[] = "VIDEO";
 // Encodes the input video stream and produces a media file.
 // The media file can be output to the output_file_path specified as a side
 // packet. Currently, the calculator only supports one video stream (in
-// mediapipe_v01013_based::ImageFrame).
+// hand_tracking_mp_lean::ImageFrame).
 //
 // Example config:
 // node {
@@ -115,7 +115,7 @@ absl::Status OpenCvVideoEncoderCalculator::Open(CalculatorContext* cc) {
       << "A 4-character codec code must be specified in "
          "OpenCvVideoEncoderCalculatorOptions";
   const char* codec_array = options.codec().c_str();
-  four_cc_ = mediapipe_v01013_based::fourcc(codec_array[0], codec_array[1], codec_array[2],
+  four_cc_ = hand_tracking_mp_lean::fourcc(codec_array[0], codec_array[1], codec_array[2],
                                codec_array[3]);
   RET_CHECK(!options.video_format().empty())
       << "Video format must be specified in "
@@ -152,7 +152,7 @@ absl::Status OpenCvVideoEncoderCalculator::Process(CalculatorContext* cc) {
   if (format == ImageFormat::GRAY8) {
     frame = formats::MatView(&image_frame);
     if (frame.empty()) {
-      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Receive empty frame at timestamp "
              << cc->Inputs().Tag(kVideoTag).Value().Timestamp()
              << " in OpenCvVideoEncoderCalculator::Process()";
@@ -160,7 +160,7 @@ absl::Status OpenCvVideoEncoderCalculator::Process(CalculatorContext* cc) {
   } else {
     cv::Mat tmp_frame = formats::MatView(&image_frame);
     if (tmp_frame.empty()) {
-      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Receive empty frame at timestamp "
              << cc->Inputs().Tag(kVideoTag).Value().Timestamp()
              << " in OpenCvVideoEncoderCalculator::Process()";
@@ -170,7 +170,7 @@ absl::Status OpenCvVideoEncoderCalculator::Process(CalculatorContext* cc) {
     } else if (format == ImageFormat::SRGBA) {
       cv::cvtColor(tmp_frame, frame, cv::COLOR_RGBA2BGR);
     } else {
-      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Unsupported image format: " << format;
     }
   }
@@ -203,7 +203,7 @@ absl::Status OpenCvVideoEncoderCalculator::Close(CalculatorContext* cc) {
     }
 
 #else
-    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "OpenCVVideoEncoderCalculator can't attach the audio tracks to "
               "the video because FFmpeg is not installed. Please remove "
               "input_side_packet: \"AUDIO_FILE_PATH\" from the node "
@@ -222,11 +222,11 @@ absl::Status OpenCvVideoEncoderCalculator::SetUpVideoWriter(float frame_rate,
   writer_ = absl::make_unique<cv::VideoWriter>(
       output_file_path_, four_cc_, frame_rate, cv::Size(width, height));
   if (!writer_->isOpened()) {
-    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "Fail to open file at " << output_file_path_;
   }
   return absl::OkStatus();
 }
 
 REGISTER_CALCULATOR(OpenCvVideoEncoderCalculator);
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -24,7 +24,7 @@
 #include "mediapipe/framework/formats/location_data.pb.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 const char kInputDetectionsTag[] = "INPUT_DETECTIONS";
 const char kImageSizeTag[] = "IMAGE_SIZE";  //  <width, height>
@@ -52,7 +52,7 @@ class FilterDetectionsCalculator : public CalculatorBase {
 
   absl::Status Open(CalculatorContext* cc) override {
     cc->SetOffset(TimestampDiff(0));
-    options_ = cc->Options<mediapipe_v01013_based::FilterDetectionsCalculatorOptions>();
+    options_ = cc->Options<hand_tracking_mp_lean::FilterDetectionsCalculatorOptions>();
 
     if (options_.has_min_pixel_size() || options_.has_max_pixel_size()) {
       RET_CHECK(cc->Inputs().HasTag(kImageSizeTag));
@@ -109,9 +109,9 @@ class FilterDetectionsCalculator : public CalculatorBase {
   }
 
  private:
-  mediapipe_v01013_based::FilterDetectionsCalculatorOptions options_;
+  hand_tracking_mp_lean::FilterDetectionsCalculatorOptions options_;
 };
 
 REGISTER_CALCULATOR(FilterDetectionsCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

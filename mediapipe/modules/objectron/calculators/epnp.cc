@@ -16,7 +16,7 @@
 
 #include "absl/log/absl_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -166,4 +166,4 @@ absl::Status SolveEpnp(const Eigen::Matrix4f& projection_matrix,
                    input_points_2d, output_points_3d);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

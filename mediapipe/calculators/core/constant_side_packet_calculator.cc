@@ -28,7 +28,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {}  // namespace
 
@@ -61,7 +61,7 @@ class ConstantSidePacketCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
     const auto& options =
-        cc->Options<::mediapipe_v01013_based::ConstantSidePacketCalculatorOptions>();
+        cc->Options<::hand_tracking_mp_lean::ConstantSidePacketCalculatorOptions>();
     RET_CHECK_EQ(cc->OutputSidePackets().NumEntries(kPacketTag),
                  options.packet_size())
         << "Number of output side packets has to be same as number of packets "
@@ -110,7 +110,7 @@ class ConstantSidePacketCalculator : public CalculatorBase {
 
   absl::Status Open(CalculatorContext* cc) override {
     const auto& options =
-        cc->Options<::mediapipe_v01013_based::ConstantSidePacketCalculatorOptions>();
+        cc->Options<::hand_tracking_mp_lean::ConstantSidePacketCalculatorOptions>();
     int index = 0;
     for (CollectionItemId id = cc->OutputSidePackets().BeginId(kPacketTag);
          id != cc->OutputSidePackets().EndId(kPacketTag); ++id, ++index) {
@@ -182,4 +182,4 @@ class ConstantSidePacketCalculator : public CalculatorBase {
 
 REGISTER_CALCULATOR(ConstantSidePacketCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

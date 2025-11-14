@@ -22,7 +22,7 @@
 #include "absl/strings/string_view.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tool {
 
 // Return a status which signals that an action should stop.  For example,
@@ -56,6 +56,6 @@ absl::Status CombinedStatus(absl::string_view general_comment,
                             const std::vector<absl::Status>& statuses);
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_STATUS_UTIL_H_

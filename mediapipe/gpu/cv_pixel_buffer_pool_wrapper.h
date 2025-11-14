@@ -33,7 +33,7 @@
 #include "mediapipe/gpu/pixel_buffer_pool_util.h"
 #include "mediapipe/objc/CFHolder.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class CvPixelBufferPoolWrapper {
  public:
@@ -68,6 +68,6 @@ class CvPixelBufferPoolWrapper {
   CvTextureCacheManager* texture_caches_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_CV_PIXEL_BUFFER_POOL_WRAPPER_H_

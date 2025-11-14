@@ -35,7 +35,7 @@
 #include "mediapipe/framework/tool/tag_map.h"
 #include "mediapipe/framework/tool/validate_name.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using tool::TagMap;
 
@@ -150,8 +150,8 @@ GraphProfiler::GraphProfiler()
       previous_log_end_time_(absl::InfinitePast()),
       previous_log_index_(-1),
       validated_graph_(nullptr) {
-  clock_ = std::shared_ptr<mediapipe_v01013_based::Clock>(
-      mediapipe_v01013_based::MonotonicClock::CreateSynchronizedMonotonicClock());
+  clock_ = std::shared_ptr<hand_tracking_mp_lean::Clock>(
+      hand_tracking_mp_lean::MonotonicClock::CreateSynchronizedMonotonicClock());
 }
 
 GraphProfiler::~GraphProfiler() {}
@@ -201,13 +201,13 @@ void GraphProfiler::Initialize(
   is_initialized_ = true;
 }
 
-void GraphProfiler::SetClock(const std::shared_ptr<mediapipe_v01013_based::Clock>& clock) {
+void GraphProfiler::SetClock(const std::shared_ptr<hand_tracking_mp_lean::Clock>& clock) {
   absl::WriterMutexLock lock(&profiler_mutex_);
   ABSL_CHECK(clock) << "GraphProfiler::SetClock() is called with a nullptr.";
   clock_ = clock;
 }
 
-const std::shared_ptr<mediapipe_v01013_based::Clock> GraphProfiler::GetClock() const {
+const std::shared_ptr<hand_tracking_mp_lean::Clock> GraphProfiler::GetClock() const {
   return clock_;
 }
 
@@ -241,7 +241,7 @@ void GraphProfiler::Reset() {
 }
 
 // Begins profiling for a single graph run.
-absl::Status GraphProfiler::Start(mediapipe_v01013_based::Executor* executor) {
+absl::Status GraphProfiler::Start(hand_tracking_mp_lean::Executor* executor) {
   // If specified, start periodic profile output while the graph runs.
   Resume();
   if (is_tracing_ && IsTraceIntervalEnabled(profiler_config_, tracer()) &&
@@ -581,7 +581,7 @@ std::unique_ptr<GlProfilingHelper> GraphProfiler::CreateGlProfilingHelper() {
   if (!IsTracerEnabled(profiler_config_)) {
     return nullptr;
   }
-  return absl::make_unique<mediapipe_v01013_based::GlProfilingHelper>(shared_from_this());
+  return absl::make_unique<hand_tracking_mp_lean::GlProfilingHelper>(shared_from_this());
 }
 
 // A simple ZeroCopyOutputStream that writes to a std::ostream.
@@ -756,4 +756,4 @@ absl::Status GraphProfiler::WriteProfile() {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

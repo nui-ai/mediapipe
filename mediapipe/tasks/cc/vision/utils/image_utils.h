@@ -25,7 +25,7 @@ limitations under the License.
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 
@@ -35,7 +35,7 @@ struct Shape {
   int channels;
 };
 
-// Decodes an image file and returns it as a mediapipe_v01013_based::Image object.
+// Decodes an image file and returns it as a hand_tracking_mp_lean::Image object.
 //
 // Support a wide range of image formats (see stb_image.h for the full list), as
 // long as the image data is grayscale (1 channel), RGB (3 channels) or RGBA (4
@@ -43,9 +43,9 @@ struct Shape {
 //
 // Note: this function is not optimized for speed, and thus shouldn't be used
 // outside of tests or simple CLI demo tools.
-absl::StatusOr<mediapipe_v01013_based::Image> DecodeImageFromFile(const std::string& path);
+absl::StatusOr<hand_tracking_mp_lean::Image> DecodeImageFromFile(const std::string& path);
 
-// Creates an image and returns it as a mediapipe_v01013_based::Image object.
+// Creates an image and returns it as a hand_tracking_mp_lean::Image object.
 //
 // Support a wide range of image formats, namely grayscale (1 channel), RGB (3
 // channels) or RGBA (4 channels) and BGRA (4 channels).
@@ -57,10 +57,10 @@ absl::StatusOr<Image> CreateImageFromBuffer(ImageFormat::Format format,
 //
 // The tensor should have dimension 2, 3 or 4, representing `[height x width]`,
 // `[height x width x channels]`, or `[batch x height x width x channels]`.
-absl::StatusOr<Shape> GetImageLikeTensorShape(const mediapipe_v01013_based::Tensor& tensor);
+absl::StatusOr<Shape> GetImageLikeTensorShape(const hand_tracking_mp_lean::Tensor& tensor);
 
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_UTILS_IMAGE_UTILS_H_

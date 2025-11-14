@@ -14,11 +14,11 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/framework/calculator.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.proto";
+option java_package = "com.google.hand_tracking_mp_lean.proto";
 option java_outer_classname = "CalculatorProfileProto";
 
 // Stores the profiling information.

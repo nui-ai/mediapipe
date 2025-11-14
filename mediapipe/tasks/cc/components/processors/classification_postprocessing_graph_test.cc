@@ -51,19 +51,19 @@ limitations under the License.
 #include "mediapipe/util/label_map.pb.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace components {
 namespace processors {
 namespace {
 
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::file::JoinPath;
-using ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
-using ::mediapipe_v01013_based::tasks::core::ModelResources;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::file::JoinPath;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::ClassificationResult;
+using ::hand_tracking_mp_lean::tasks::core::ModelResources;
 using ::testing::HasSubstr;
 using ::testing::Pointwise;
 using ::testing::proto::Approximately;
@@ -734,4 +734,4 @@ TEST_F(PostprocessingTest, SucceedsWithTimestamps) {
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

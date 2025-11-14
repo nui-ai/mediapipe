@@ -7,7 +7,7 @@
 #include "mediapipe/framework/formats/unique_fd.h"
 #include "mediapipe/gpu/egl_base.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // RAII wrapper for EGL sync object.
 class EglSync {
@@ -75,6 +75,6 @@ class EglSync {
   EGLSyncKHR sync_ = EGL_NO_SYNC_KHR;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_EGL_SYNC_H_

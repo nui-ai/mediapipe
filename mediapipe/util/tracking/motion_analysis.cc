@@ -36,7 +36,7 @@
 #include "mediapipe/util/tracking/region_flow_computation.pb.h"
 #include "mediapipe/util/tracking/region_flow_visualization.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 MotionAnalysis::MotionAnalysis(const MotionAnalysisOptions& options,
                                int frame_width, int frame_height)
@@ -844,4 +844,4 @@ void MotionAnalysis::ComputeSaliency() {
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

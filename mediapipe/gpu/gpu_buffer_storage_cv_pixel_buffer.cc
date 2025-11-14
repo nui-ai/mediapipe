@@ -8,7 +8,7 @@
 #include "mediapipe/gpu/gpu_buffer_storage_image_frame.h"
 #include "mediapipe/objc/util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 #if TARGET_OS_OSX
 typedef CVOpenGLTextureRef CVTextureType;
@@ -44,7 +44,7 @@ GlTextureView GpuBufferStorageCvPixelBuffer::GetTexture(
   return GlTextureView(
       gl_context.get(), CVOpenGLTextureGetTarget(*cv_texture),
       CVOpenGLTextureGetName(*cv_texture), width(), height(), plane,
-      [cv_texture](mediapipe_v01013_based::GlTextureView&) { /* only retains cv_texture */ },
+      [cv_texture](hand_tracking_mp_lean::GlTextureView&) { /* only retains cv_texture */ },
       done_writing);
 #else
   const GlTextureInfo info = GlTextureInfoForGpuBufferFormat(
@@ -62,7 +62,7 @@ GlTextureView GpuBufferStorageCvPixelBuffer::GetTexture(
   return GlTextureView(
       gl_context.get(), CVOpenGLESTextureGetTarget(*cv_texture),
       CVOpenGLESTextureGetName(*cv_texture), width(), height(), plane,
-      [cv_texture](mediapipe_v01013_based::GlTextureView&) { /* only retains cv_texture */ },
+      [cv_texture](hand_tracking_mp_lean::GlTextureView&) { /* only retains cv_texture */ },
       done_writing);
 #endif  // TARGET_OS_OSX
 }
@@ -129,7 +129,7 @@ GlTextureView GpuBufferStorageCvPixelBuffer::GetWriteView(
   return GetTexture(plane,
 #if TARGET_IPHONE_SIMULATOR
                     [pixel_buffer = CFHolder<CVPixelBufferRef>(*this)](
-                        const mediapipe_v01013_based::GlTextureView& view) {
+                        const hand_tracking_mp_lean::GlTextureView& view) {
                       ViewDoneWritingSimulatorWorkaround(*pixel_buffer, view);
                     }
 #else
@@ -175,4 +175,4 @@ std::shared_ptr<internal::GpuBufferStorage> AsGpuBufferStorage(
 }
 }  // namespace internal
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

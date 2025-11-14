@@ -33,10 +33,10 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/task_runner.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe_v01013_based::tasks::audio::audio_embedder {
+namespace hand_tracking_mp_lean::tasks::audio::audio_embedder {
 namespace {
-using ::mediapipe_v01013_based::tasks::components::containers::ConvertToEmbeddingResult;
-using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
+using ::hand_tracking_mp_lean::tasks::components::containers::ConvertToEmbeddingResult;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::EmbeddingResult;
 constexpr char kAudioStreamName[] = "audio_in";
 constexpr char kAudioTag[] = "AUDIO";
 constexpr char kEmbeddingsTag[] = "EMBEDDINGS";
@@ -146,4 +146,4 @@ absl::Status AudioEmbedder::EmbedAsync(Matrix audio_block,
             .At(Timestamp(timestamp_ms * kMicroSecondsPerMilliSecond))}});
 }
 
-}  // namespace mediapipe_v01013_based::tasks::audio::audio_embedder
+}  // namespace hand_tracking_mp_lean::tasks::audio::audio_embedder

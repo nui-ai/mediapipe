@@ -49,19 +49,19 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/utils/image_tensor_specs.h"
 #include "mediapipe/util/graph_builder_utils.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
 
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Stream;
-using ::mediapipe_v01013_based::tasks::components::utils::AllowIf;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Stream;
+using ::hand_tracking_mp_lean::tasks::components::utils::AllowIf;
 
 constexpr char kImageTag[] = "IMAGE";
 constexpr char kNormRectTag[] = "NORM_RECT";
@@ -119,7 +119,7 @@ absl::Status SanityCheckOptions(
 // Split face landmark detection model output tensor into two parts,
 // representing landmarks and face presence scores.
 void ConfigureSplitTensorVectorCalculator(
-    mediapipe_v01013_based::SplitVectorCalculatorOptions* options) {
+    hand_tracking_mp_lean::SplitVectorCalculatorOptions* options) {
   auto* range = options->add_ranges();
   range->set_begin(0);
   range->set_end(kFaceLandmarksOutputTensorsNum - 1);
@@ -136,7 +136,7 @@ void ConfigureTensorsToFaceLandmarksGraph(
 }
 
 void ConfigureFaceDetectionsToRectsCalculator(
-    mediapipe_v01013_based::DetectionsToRectsCalculatorOptions* options) {
+    hand_tracking_mp_lean::DetectionsToRectsCalculatorOptions* options) {
   // Left side of left eye.
   options->set_rotation_vector_start_keypoint_index(33);
   // Right side of right eye.
@@ -145,7 +145,7 @@ void ConfigureFaceDetectionsToRectsCalculator(
 }
 
 void ConfigureFaceRectTransformationCalculator(
-    mediapipe_v01013_based::RectTransformationCalculatorOptions* options) {
+    hand_tracking_mp_lean::RectTransformationCalculatorOptions* options) {
   // TODO: make rect transformation configurable, e.g. from
   // Metadata or configuration options.
   options->set_scale_x(1.5f);
@@ -154,7 +154,7 @@ void ConfigureFaceRectTransformationCalculator(
 }
 
 void ConfigureLandmarksSmoothingCalculator(
-    mediapipe_v01013_based::LandmarksSmoothingCalculatorOptions& options) {
+    hand_tracking_mp_lean::LandmarksSmoothingCalculatorOptions& options) {
   // Min cutoff 0.05 results into ~0.01 alpha in landmark EMA filter when
   // landmark is static.
   options.mutable_one_euro_filter()->set_min_cutoff(0.05f);
@@ -250,7 +250,7 @@ class SingleFaceLandmarksDetectorGraph : public core::ModelTaskGraph {
   //   FaceLandmarksDetectorGraphOptions.
   // model_resources: the ModelSources object initialized from a face landmark
   //   detection model file with model metadata.
-  // image_in: (mediapipe_v01013_based::Image) stream to run face landmark detection on.
+  // image_in: (hand_tracking_mp_lean::Image) stream to run face landmark detection on.
   // face_rect: (NormalizedRect) stream to run on the RoI of image.
   // graph: the mediapipe graph instance to be updated.
   absl::StatusOr<SingleFaceLandmarksOutputs>
@@ -284,7 +284,7 @@ class SingleFaceLandmarksDetectorGraph : public core::ModelTaskGraph {
     auto& split_tensors_vector = graph.AddNode("SplitTensorVectorCalculator");
     ConfigureSplitTensorVectorCalculator(
         &split_tensors_vector
-             .GetOptions<mediapipe_v01013_based::SplitVectorCalculatorOptions>());
+             .GetOptions<hand_tracking_mp_lean::SplitVectorCalculatorOptions>());
     output_tensors >> split_tensors_vector.In("");
     auto landmark_tensors = split_tensors_vector.Out(0);
     auto presence_flag_tensors = split_tensors_vector.Out(1);
@@ -306,15 +306,15 @@ class SingleFaceLandmarksDetectorGraph : public core::ModelTaskGraph {
     // confidence score of face presence.
     auto& tensors_to_presence = graph.AddNode("TensorsToFloatsCalculator");
     tensors_to_presence
-        .GetOptions<mediapipe_v01013_based::TensorsToFloatsCalculatorOptions>()
-        .set_activation(mediapipe_v01013_based::TensorsToFloatsCalculatorOptions::SIGMOID);
+        .GetOptions<hand_tracking_mp_lean::TensorsToFloatsCalculatorOptions>()
+        .set_activation(hand_tracking_mp_lean::TensorsToFloatsCalculatorOptions::SIGMOID);
     presence_flag_tensors >> tensors_to_presence.In(kTensorsTag);
     auto presence_score = tensors_to_presence.Out(kFloatTag).Cast<float>();
 
     // Applies a threshold to the confidence score to determine whether a
     // face is present.
     auto& presence_thresholding = graph.AddNode("ThresholdingCalculator");
-    presence_thresholding.GetOptions<mediapipe_v01013_based::ThresholdingCalculatorOptions>()
+    presence_thresholding.GetOptions<hand_tracking_mp_lean::ThresholdingCalculatorOptions>()
         .set_threshold(subgraph_options.min_detection_confidence());
     presence_score >> presence_thresholding.In(kFloatTag);
     auto presence = presence_thresholding.Out(kFlagTag).Cast<bool>();
@@ -349,7 +349,7 @@ class SingleFaceLandmarksDetectorGraph : public core::ModelTaskGraph {
     auto& detection_to_rect = graph.AddNode("DetectionsToRectsCalculator");
     ConfigureFaceDetectionsToRectsCalculator(
         &detection_to_rect
-             .GetOptions<mediapipe_v01013_based::DetectionsToRectsCalculatorOptions>());
+             .GetOptions<hand_tracking_mp_lean::DetectionsToRectsCalculatorOptions>());
     face_landmarks_detection >> detection_to_rect.In(kDetectionTag);
     image_size >> detection_to_rect.In(kImageSizeTag);
     auto face_landmarks_rect = detection_to_rect.Out(kNormRectTag);
@@ -360,7 +360,7 @@ class SingleFaceLandmarksDetectorGraph : public core::ModelTaskGraph {
         graph.AddNode("RectTransformationCalculator");
     ConfigureFaceRectTransformationCalculator(
         &face_rect_transformation
-             .GetOptions<mediapipe_v01013_based::RectTransformationCalculatorOptions>());
+             .GetOptions<hand_tracking_mp_lean::RectTransformationCalculatorOptions>());
     image_size >> face_rect_transformation.In(kImageSizeTag);
     face_landmarks_rect >> face_rect_transformation.In(kNormRectTag);
     auto face_rect_next_frame =
@@ -378,7 +378,7 @@ class SingleFaceLandmarksDetectorGraph : public core::ModelTaskGraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe_v01013_based::tasks::vision::face_landmarker::SingleFaceLandmarksDetectorGraph); // NOLINT
+  ::hand_tracking_mp_lean::tasks::vision::face_landmarker::SingleFaceLandmarksDetectorGraph); // NOLINT
 // clang-format on
 
 // A "mediapipe.tasks.vision.face_landmarker.MultiFaceLandmarksDetectorGraph"
@@ -586,7 +586,7 @@ class MultiFaceLandmarksDetectorGraph : public core::ModelTaskGraph {
       // Get the single face landmarks
       auto& get_vector_item =
           graph.AddNode("GetNormalizedLandmarkListVectorItemCalculator");
-      get_vector_item.GetOptions<mediapipe_v01013_based::GetVectorItemCalculatorOptions>()
+      get_vector_item.GetOptions<hand_tracking_mp_lean::GetVectorItemCalculatorOptions>()
           .set_item_index(0);
       landmark_lists >> get_vector_item.In(kVectorTag);
       Stream<NormalizedLandmarkList> single_landmarks =
@@ -600,7 +600,7 @@ class MultiFaceLandmarksDetectorGraph : public core::ModelTaskGraph {
       auto& landmarks_smoothing = graph.AddNode("LandmarksSmoothingCalculator");
       ConfigureLandmarksSmoothingCalculator(
           landmarks_smoothing
-              .GetOptions<mediapipe_v01013_based::LandmarksSmoothingCalculatorOptions>());
+              .GetOptions<hand_tracking_mp_lean::LandmarksSmoothingCalculatorOptions>());
       single_landmarks >> landmarks_smoothing.In(kNormLandmarksTag);
       image_size >> landmarks_smoothing.In(kImageSizeTag);
       single_landmarks = landmarks_smoothing.Out(kNormFilteredLandmarksTag)
@@ -663,11 +663,11 @@ class MultiFaceLandmarksDetectorGraph : public core::ModelTaskGraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe_v01013_based::tasks::vision::face_landmarker::MultiFaceLandmarksDetectorGraph);
+  ::hand_tracking_mp_lean::tasks::vision::face_landmarker::MultiFaceLandmarksDetectorGraph);
   // NOLINT
 // clang-format on
 
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

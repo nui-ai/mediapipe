@@ -29,7 +29,7 @@
 #include "mediapipe/framework/tool/status_util.h"
 #include "mediapipe/util/time_series_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // A calculator that converts a Matrix M to a vector containing all the
@@ -57,7 +57,7 @@ MEDIAPIPE_REGISTER_NODE(MatrixToVectorCalculator);
 
 absl::Status MatrixToVectorCalculator::Open(CalculatorContext* cc) {
   cc->SetOffset(0);
-  return mediapipe_v01013_based::OkStatus();
+  return hand_tracking_mp_lean::OkStatus();
 }
 
 absl::Status MatrixToVectorCalculator::Process(CalculatorContext* cc) {
@@ -76,4 +76,4 @@ absl::Status MatrixToVectorCalculator::Process(CalculatorContext* cc) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

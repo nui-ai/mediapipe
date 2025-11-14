@@ -26,7 +26,7 @@
 #include "mediapipe/util/tracking/box_tracker.pb.h"
 #include "mediapipe/util/tracking/tracking.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -166,4 +166,4 @@ absl::Status TimedBoxListToRenderDataCalculator::Process(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

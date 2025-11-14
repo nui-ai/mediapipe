@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/file_helpers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Helper functions for generating SSD anchors
 class SsdAnchorsCalculatorUtils {
@@ -46,6 +46,6 @@ class SsdAnchorsCalculatorUtils {
       std::vector<Anchor>* anchors, const SsdAnchorsCalculatorOptions& options);
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TFLITE_SSD_ANCHORS_CALCULATOR_UTILS_H_

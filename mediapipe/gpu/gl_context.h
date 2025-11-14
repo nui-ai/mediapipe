@@ -72,7 +72,7 @@ struct EAGLContext;
 
 #endif  // __APPLE__
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 typedef std::function<void()> GlVoidFunction;
 typedef std::function<absl::Status()> GlStatusFunction;
@@ -189,7 +189,7 @@ class GlContext : public std::enable_shared_from_this<GlContext> {
   // GlProfilingHelper is uninitialized. This ensures that the GlProfilingHelper
   // is unique to and only initialized once per GlContext object.
   void SetProfilingContext(
-      std::shared_ptr<mediapipe_v01013_based::ProfilingContext> profiling_context);
+      std::shared_ptr<hand_tracking_mp_lean::ProfilingContext> profiling_context);
 
   // Executes a function in the GL context. Waits for the
   // function's execution to be complete before returning to the caller.
@@ -481,7 +481,7 @@ class GlContext : public std::enable_shared_from_this<GlContext> {
   absl::Mutex mutex_;
   absl::CondVar wait_for_gl_finish_cv_ ABSL_GUARDED_BY(mutex_);
 
-  std::unique_ptr<mediapipe_v01013_based::GlProfilingHelper> profiling_helper_ = nullptr;
+  std::unique_ptr<hand_tracking_mp_lean::GlProfilingHelper> profiling_helper_ = nullptr;
 
   bool destructing_ = false;
 };
@@ -511,6 +511,6 @@ bool IsOpenGlVersionSameOrAbove(const OpenGlVersion& version,
 
 }  // namespace internal_gl_context
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GL_CONTEXT_H_

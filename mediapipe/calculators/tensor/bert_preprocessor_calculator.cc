@@ -39,11 +39,11 @@
 #include "mediapipe/tasks/cc/text/tokenizers/tokenizer_utils.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
-using ::mediapipe_v01013_based::tasks::core::FindTensorIndexByMetadataName;
-using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
+using ::hand_tracking_mp_lean::tasks::core::FindTensorIndexByMetadataName;
+using ::hand_tracking_mp_lean::tasks::metadata::ModelMetadataExtractor;
 
 constexpr int kNumInputTensorsForBert = 3;
 constexpr int kTokenizerProcessUnitIndex = 0;
@@ -149,7 +149,7 @@ class BertPreprocessorCalculator : public Node {
 absl::Status BertPreprocessorCalculator::UpdateContract(
     CalculatorContract* cc) {
   const auto& options =
-      cc->Options<mediapipe_v01013_based::BertPreprocessorCalculatorOptions>();
+      cc->Options<hand_tracking_mp_lean::BertPreprocessorCalculatorOptions>();
   if (options.has_dynamic_input_tensors()) {
     return absl::OkStatus();
   } else {
@@ -191,7 +191,7 @@ absl::Status BertPreprocessorCalculator::Open(CalculatorContext* cc) {
   }
 
   const auto& options =
-      cc->Options<mediapipe_v01013_based::BertPreprocessorCalculatorOptions>();
+      cc->Options<hand_tracking_mp_lean::BertPreprocessorCalculatorOptions>();
   bert_max_seq_len_ = options.bert_max_seq_len();
   has_dynamic_input_tensors_ = options.has_dynamic_input_tensors();
   return absl::OkStatus();
@@ -273,4 +273,4 @@ std::vector<Tensor> BertPreprocessorCalculator::GenerateInputTensors(
 MEDIAPIPE_REGISTER_NODE(BertPreprocessorCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -20,7 +20,7 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 struct Size {
   int width;
@@ -42,12 +42,12 @@ class ImageToTensorConverter {
   // buffer the result should be written to.
   // @output_tensor a tensor with pre-defined shape. The "Convert" is
   // responsible of populating the content into the output tensor.
-  virtual absl::Status Convert(const mediapipe_v01013_based::Image& input,
+  virtual absl::Status Convert(const hand_tracking_mp_lean::Image& input,
                                const RotatedRect& roi, float range_min,
                                float range_max, int tensor_buffer_offset,
                                Tensor& output_tensor) = 0;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_IMAGE_TO_TENSOR_CONVERTER_H_

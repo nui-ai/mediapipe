@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class OutputStream {
  public:
@@ -121,6 +121,6 @@ class OutputStream {
   virtual ~OutputStream() {}
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_OUTPUT_STREAM_H_

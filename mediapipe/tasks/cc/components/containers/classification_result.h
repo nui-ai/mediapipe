@@ -24,7 +24,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/category.h"
 #include "mediapipe/tasks/cc/components/containers/proto/classifications.pb.h"
 
-namespace mediapipe_v01013_based::tasks::components::containers {
+namespace hand_tracking_mp_lean::tasks::components::containers {
 
 // Defines classification results for a given classifier head.
 struct Classifications {
@@ -62,7 +62,7 @@ Classifications ConvertToClassifications(const proto::Classifications& proto);
 // Utility function to convert from ClassificationList proto to
 // Classifications struct.
 Classifications ConvertToClassifications(
-    const mediapipe_v01013_based::ClassificationList& proto, int head_index = 0,
+    const hand_tracking_mp_lean::ClassificationList& proto, int head_index = 0,
     std::optional<std::string> head_name = std::nullopt);
 
 // Utility function to convert from ClassificationResult proto to
@@ -70,6 +70,6 @@ Classifications ConvertToClassifications(
 ClassificationResult ConvertToClassificationResult(
     const proto::ClassificationResult& proto);
 
-}  // namespace mediapipe_v01013_based::tasks::components::containers
+}  // namespace hand_tracking_mp_lean::tasks::components::containers
 
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_CONTAINERS_CLASSIFICATION_RESULT_H_

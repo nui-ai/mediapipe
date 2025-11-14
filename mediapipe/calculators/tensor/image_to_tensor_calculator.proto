@@ -14,13 +14,13 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/gpu/gpu_origin.proto";
 
 message ImageToTensorCalculatorOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional ImageToTensorCalculatorOptions ext = 334361939;
   }
 

@@ -20,7 +20,7 @@ limitations under the License.
 
 #include "mediapipe/tasks/cc/components/containers/rect.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace core {
@@ -48,6 +48,6 @@ struct ImageProcessingOptions {
 }  // namespace core
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_CORE_IMAGE_PROCESSING_OPTIONS_H_

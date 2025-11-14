@@ -20,7 +20,7 @@
 #include "mediapipe/framework/formats/body_rig.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // A calculator set Joints visibility from Landmarks.
@@ -55,14 +55,14 @@ namespace api2 {
 //   }
 class SetJointsVisibilityCalculator : public NodeIntf {
  public:
-  static constexpr Input<mediapipe_v01013_based::JointList> kInJoints{"JOINTS"};
-  static constexpr Input<mediapipe_v01013_based::LandmarkList> kInLandmarks{"LANDMARKS"};
-  static constexpr Output<mediapipe_v01013_based::JointList> kOutJoints{"JOINTS"};
+  static constexpr Input<hand_tracking_mp_lean::JointList> kInJoints{"JOINTS"};
+  static constexpr Input<hand_tracking_mp_lean::LandmarkList> kInLandmarks{"LANDMARKS"};
+  static constexpr Output<hand_tracking_mp_lean::JointList> kOutJoints{"JOINTS"};
   MEDIAPIPE_NODE_INTERFACE(SetJointsVisibilityCalculator, kInJoints,
                            kInLandmarks, kOutJoints);
 };
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_SET_JOINTS_VISIBILITY_CALCULATOR_H_

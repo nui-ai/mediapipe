@@ -9,7 +9,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/tool/switch/packet_processor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Processes MediaPipe Packets using a MediaPipe CalculatorGraph.
 class GraphProcessor : public PacketProcessor {
@@ -54,6 +54,6 @@ class GraphProcessor : public PacketProcessor {
   absl::Mutex graph_mutex_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_GRAPH_PROCESSOR_H_

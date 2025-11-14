@@ -19,7 +19,7 @@
 #include "mediapipe/framework/collection_item_id.h"
 #include "mediapipe/framework/output_stream_shard.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 REGISTER_OUTPUT_STREAM_HANDLER(InOrderOutputStreamHandler);
 
@@ -131,4 +131,4 @@ void InOrderOutputStreamHandler::PropagationBound(
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

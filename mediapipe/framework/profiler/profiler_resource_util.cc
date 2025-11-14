@@ -14,10 +14,10 @@
 
 #include "mediapipe/framework/profiler/profiler_resource_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 StatusOr<std::string> GetDefaultTraceLogDirectory() {
   return std::string("/tmp");
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -21,7 +21,7 @@
 
 namespace {
 
-using mediapipe_v01013_based::TrackedDetection;
+using hand_tracking_mp_lean::TrackedDetection;
 
 // Checks if a point is out of view.
 // x and y should both be in [0, 1] to be considered in view.
@@ -41,7 +41,7 @@ bool AreCornersOutOfView(const TrackedDetection& object) {
 }
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 std::vector<int> TrackedDetectionManager::AddDetection(
     std::unique_ptr<TrackedDetection> detection) {
@@ -192,4 +192,4 @@ std::vector<int> TrackedDetectionManager::RemoveDuplicatedDetections(int id) {
   return ids_to_remove;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

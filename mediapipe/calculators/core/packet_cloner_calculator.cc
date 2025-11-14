@@ -23,7 +23,7 @@
 #include "mediapipe/calculators/core/packet_cloner_calculator.pb.h"
 #include "mediapipe/framework/calculator_framework.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // For every packet received on the last stream, output the latest packet
 // obtained on all other streams. Therefore, if the last stream outputs at a
@@ -72,7 +72,7 @@ class PacketClonerCalculator : public CalculatorBase {
   absl::Status Open(CalculatorContext* cc) final {
     // Load options.
     const auto calculator_options =
-        cc->Options<mediapipe_v01013_based::PacketClonerCalculatorOptions>();
+        cc->Options<hand_tracking_mp_lean::PacketClonerCalculatorOptions>();
     output_only_when_all_inputs_received_ =
         calculator_options.output_only_when_all_inputs_received() ||
         calculator_options.output_packets_only_when_all_inputs_received();
@@ -183,4 +183,4 @@ class PacketClonerCalculator : public CalculatorBase {
 
 REGISTER_CALCULATOR(PacketClonerCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

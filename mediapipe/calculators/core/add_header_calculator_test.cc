@@ -22,7 +22,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/validate_type.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kDataTag[] = "DATA";
 constexpr char kHeaderTag[] = "HEADER";
@@ -160,4 +160,4 @@ TEST_F(AddHeaderCalculatorTest, UsingBothSideInputAndStream) {
   EXPECT_EQ(runner.Run().code(), absl::InvalidArgumentError("").code());
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

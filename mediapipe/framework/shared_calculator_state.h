@@ -10,7 +10,7 @@
 #include <mutex>
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
     // Forward declaration to break circular dependency
     class Image;
     class SharedCalculatorState {
@@ -22,7 +22,7 @@ namespace mediapipe_v01013_based {
 
         const uint32_t NUM_HANDS = 3; // only used by a calculator we no longer actively trigger by now
 
-        std::vector<::mediapipe_v01013_based::NormalizedRect> prev_hand_rects_from_landmarks;
+        std::vector<::hand_tracking_mp_lean::NormalizedRect> prev_hand_rects_from_landmarks;
 
     private:
         static int counter_;
@@ -30,6 +30,6 @@ namespace mediapipe_v01013_based {
     };
 
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_NUI_DESKTOP_SHARED_CALCULATOR_STATE_H_

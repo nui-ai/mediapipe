@@ -53,7 +53,7 @@ limitations under the License.
 #include "mediapipe/util/label_map_util.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace components {
 namespace processors {
@@ -62,11 +62,11 @@ namespace {
 
 using ::flatbuffers::Offset;
 using ::flatbuffers::Vector;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::metadata::ModelMetadataExtractor;
 using ::tflite::BoundingBoxProperties;
 using ::tflite::ContentProperties;
 using ::tflite::ContentProperties_BoundingBoxProperties;
@@ -74,9 +74,9 @@ using ::tflite::EnumNameContentProperties;
 using ::tflite::ProcessUnit;
 using ::tflite::ProcessUnitOptions_ScoreThresholdingOptions;
 using ::tflite::TensorMetadata;
-using LabelItems = mediapipe_v01013_based::proto_ns::Map<int64_t, ::mediapipe_v01013_based::LabelMapItem>;
+using LabelItems = hand_tracking_mp_lean::proto_ns::Map<int64_t, ::hand_tracking_mp_lean::LabelMapItem>;
 using TensorsSource =
-    mediapipe_v01013_based::api2::builder::Source<std::vector<mediapipe_v01013_based::Tensor>>;
+    hand_tracking_mp_lean::api2::builder::Source<std::vector<hand_tracking_mp_lean::Tensor>>;
 
 constexpr int kInModelNmsDefaultLocationsIndex = 0;
 constexpr int kInModelNmsDefaultCategoriesIndex = 1;
@@ -236,7 +236,7 @@ absl::StatusOr<LabelItems> GetLabelItemsIfAny(
         display_names_file,
         metadata_extractor.GetAssociatedFile(display_names_filename));
   }
-  return mediapipe_v01013_based::BuildLabelMapFromFiles(labels_file, display_names_file);
+  return hand_tracking_mp_lean::BuildLabelMapFromFiles(labels_file, display_names_file);
 }
 
 absl::StatusOr<float> GetScoreThreshold(
@@ -517,7 +517,7 @@ absl::StatusOr<PostProcessingSpecs> BuildInModelNmsPostProcessingSpecs(
 // PostProcessingSpecs.
 void ConfigureInModelNmsTensorsToDetectionsCalculator(
     const PostProcessingSpecs& specs, const tflite::Model& model,
-    mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions* options) {
+    hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions* options) {
   options->set_num_classes(specs.label_items.size());
   options->set_num_coords(4);
   options->set_min_score_thresh(specs.score_threshold);
@@ -582,7 +582,7 @@ absl::StatusOr<PostProcessingSpecs> BuildOutModelNmsPostProcessingSpecs(
 absl::Status ConfigureOutModelNmsTensorsToDetectionsCalculator(
     const ModelMetadataExtractor* metadata_extractor,
     const PostProcessingSpecs& specs,
-    mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions* options) {
+    hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions* options) {
   bool found_detector_metadata = false;
   if (metadata_extractor->GetCustomMetadataList() != nullptr &&
       metadata_extractor->GetCustomMetadataList()->size() > 0) {
@@ -622,7 +622,7 @@ absl::Status ConfigureOutModelNmsTensorsToDetectionsCalculator(
   }
   // Options not configured through metadata.
   options->set_box_format(
-      mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::YXHW);
+      hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::YXHW);
   options->set_min_score_thresh(specs.score_threshold);
   if (specs.is_allowlist) {
     options->mutable_allow_classes()->Assign(
@@ -648,7 +648,7 @@ absl::Status ConfigureOutModelNmsTensorsToDetectionsCalculator(
 // (metadata/object_detector_metadata_schema.fbs).
 absl::Status ConfigureSsdAnchorsCalculator(
     const ModelMetadataExtractor* metadata_extractor,
-    mediapipe_v01013_based::SsdAnchorsCalculatorOptions* options) {
+    hand_tracking_mp_lean::SsdAnchorsCalculatorOptions* options) {
   bool found_detector_metadata = false;
   if (metadata_extractor->GetCustomMetadataList() != nullptr &&
       metadata_extractor->GetCustomMetadataList()->size() > 0) {
@@ -684,13 +684,13 @@ absl::Status ConfigureSsdAnchorsCalculator(
 // non-maximum-suppression.
 void ConfigureNonMaxSuppressionCalculator(
     const proto::DetectorOptions& detector_options,
-    mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions* options) {
+    hand_tracking_mp_lean::NonMaxSuppressionCalculatorOptions* options) {
   options->set_min_suppression_threshold(
       detector_options.min_suppression_threshold());
   options->set_overlap_type(
-      mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
+      hand_tracking_mp_lean::NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
   options->set_algorithm(
-      mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions::DEFAULT);
+      hand_tracking_mp_lean::NonMaxSuppressionCalculatorOptions::DEFAULT);
   options->set_max_num_detections(detector_options.max_results());
   options->set_multiclass_nms(detector_options.multiclass_nms());
 }
@@ -698,7 +698,7 @@ void ConfigureNonMaxSuppressionCalculator(
 // Sets the labels from post PostProcessingSpecs.
 void ConfigureDetectionLabelIdToTextCalculator(
     PostProcessingSpecs& specs,
-    mediapipe_v01013_based::DetectionLabelIdToTextCalculatorOptions* options) {
+    hand_tracking_mp_lean::DetectionLabelIdToTextCalculatorOptions* options) {
   *options->mutable_label_items() = std::move(specs.label_items);
 }
 
@@ -713,7 +713,7 @@ absl::StatusOr<Source<std::vector<Tensor>>> CalibrateScores(
       &graph.AddNode("SplitTensorVectorCalculator");
   auto& split_tensor_vector_options =
       split_tensor_vector_node
-          ->GetOptions<mediapipe_v01013_based::SplitVectorCalculatorOptions>();
+          ->GetOptions<hand_tracking_mp_lean::SplitVectorCalculatorOptions>();
   for (int i = 0; i < 4; ++i) {
     auto* range = split_tensor_vector_options.add_ranges();
     range->set_begin(i);
@@ -883,10 +883,10 @@ absl::Status ConfigureDetectionPostprocessingGraph(
 // The recommended way of using this graph is through the GraphBuilder API
 // using the 'ConfigureDetectionPostprocessingGraph()' function. See header
 // file for more details.
-class DetectionPostprocessingGraph : public mediapipe_v01013_based::Subgraph {
+class DetectionPostprocessingGraph : public hand_tracking_mp_lean::Subgraph {
  public:
-  absl::StatusOr<mediapipe_v01013_based::CalculatorGraphConfig> GetConfig(
-      mediapipe_v01013_based::SubgraphContext* sc) override {
+  absl::StatusOr<hand_tracking_mp_lean::CalculatorGraphConfig> GetConfig(
+      hand_tracking_mp_lean::SubgraphContext* sc) override {
     Graph graph;
     MP_ASSIGN_OR_RETURN(
         auto output_streams,
@@ -901,12 +901,12 @@ class DetectionPostprocessingGraph : public mediapipe_v01013_based::Subgraph {
  private:
   // Adds an on-device detection postprocessing graph into the provided
   // builder::Graph instance. The detection postprocessing graph takes
-  // tensors (std::vector<mediapipe_v01013_based::Tensor>) as input and returns one output
+  // tensors (std::vector<hand_tracking_mp_lean::Tensor>) as input and returns one output
   // stream:
   //  - Detection results as a std::vector<Detection>.
   //
   // graph_options: the on-device DetectionPostprocessingGraphOptions.
-  // tensors_in: (std::vector<mediapipe_v01013_based::Tensor>>) tensors to postprocess.
+  // tensors_in: (std::vector<hand_tracking_mp_lean::Tensor>>) tensors to postprocess.
   // graph: the mediapipe builder::Graph instance to be updated.
   absl::StatusOr<DetectionPostprocessingOutputStreams>
   BuildDetectionPostprocessing(
@@ -931,7 +931,7 @@ class DetectionPostprocessingGraph : public mediapipe_v01013_based::Subgraph {
       auto& tensors_to_detections =
           graph.AddNode("TensorsToDetectionsCalculator");
       tensors_to_detections
-          .GetOptions<mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions>()
+          .GetOptions<hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions>()
           .Swap(graph_options.mutable_tensors_to_detections_options());
       tensors >> tensors_to_detections.In(kTensorsTag);
       detections = tensors_to_detections.Out(kDetectionsTag)
@@ -939,25 +939,25 @@ class DetectionPostprocessingGraph : public mediapipe_v01013_based::Subgraph {
     } else {
       // Generates a single side packet containing a vector of SSD anchors.
       auto& ssd_anchor = graph.AddNode("SsdAnchorsCalculator");
-      ssd_anchor.GetOptions<mediapipe_v01013_based::SsdAnchorsCalculatorOptions>().Swap(
+      ssd_anchor.GetOptions<hand_tracking_mp_lean::SsdAnchorsCalculatorOptions>().Swap(
           graph_options.mutable_ssd_anchors_options());
       auto anchors =
-          ssd_anchor.SideOut("").Cast<std::vector<mediapipe_v01013_based::Anchor>>();
+          ssd_anchor.SideOut("").Cast<std::vector<hand_tracking_mp_lean::Anchor>>();
       // Convert raw output tensors to detections.
       auto& tensors_to_detections =
           graph.AddNode("TensorsToDetectionsCalculator");
       tensors_to_detections
-          .GetOptions<mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions>()
+          .GetOptions<hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions>()
           .Swap(graph_options.mutable_tensors_to_detections_options());
       anchors >> tensors_to_detections.SideIn(kAnchorsTag);
       tensors >> tensors_to_detections.In(kTensorsTag);
       detections = tensors_to_detections.Out(kDetectionsTag)
-                       .Cast<std::vector<mediapipe_v01013_based::Detection>>();
+                       .Cast<std::vector<hand_tracking_mp_lean::Detection>>();
       // Non maximum suppression removes redundant object detections.
       auto& non_maximum_suppression =
           graph.AddNode("NonMaxSuppressionCalculator");
       non_maximum_suppression
-          .GetOptions<mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions>()
+          .GetOptions<hand_tracking_mp_lean::NonMaxSuppressionCalculatorOptions>()
           .Swap(graph_options.mutable_non_max_suppression_options());
       *detections >> non_maximum_suppression.In("");
       detections =
@@ -968,7 +968,7 @@ class DetectionPostprocessingGraph : public mediapipe_v01013_based::Subgraph {
     auto& detection_label_id_to_text =
         graph.AddNode("DetectionLabelIdToTextCalculator");
     detection_label_id_to_text
-        .GetOptions<mediapipe_v01013_based::DetectionLabelIdToTextCalculatorOptions>()
+        .GetOptions<hand_tracking_mp_lean::DetectionLabelIdToTextCalculatorOptions>()
         .Swap(graph_options.mutable_detection_label_ids_to_text_options());
     *detections >> detection_label_id_to_text.In("");
     return {
@@ -979,10 +979,10 @@ class DetectionPostprocessingGraph : public mediapipe_v01013_based::Subgraph {
 // REGISTER_MEDIAPIPE_GRAPH argument has to fit on one line to work properly.
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe_v01013_based::tasks::components::processors::DetectionPostprocessingGraph); // NOLINT
+  ::hand_tracking_mp_lean::tasks::components::processors::DetectionPostprocessingGraph); // NOLINT
 // clang-format on
 
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

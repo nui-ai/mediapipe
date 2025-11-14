@@ -54,7 +54,7 @@
 #include "mediapipe/framework/tool/validate_name.h"
 #include "mediapipe/framework/validated_graph_config.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class CounterFactory;
 class InputStreamManager;
@@ -399,6 +399,6 @@ class CalculatorNode {
       absl::InfinitePast();
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_CALCULATOR_NODE_H_

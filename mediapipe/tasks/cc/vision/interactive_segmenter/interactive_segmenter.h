@@ -30,7 +30,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/image_processing_options.h"
 #include "mediapipe/tasks/cc/vision/image_segmenter/image_segmenter_result.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace interactive_segmenter {
@@ -115,7 +115,7 @@ class InteractiveSegmenter : tasks::vision::core::BaseVisionTaskApi {
   // region-of-interest using the 'region_of_interest' field is NOT supported
   // and will result in an invalid argument error being returned.
   absl::StatusOr<image_segmenter::ImageSegmenterResult> Segment(
-      mediapipe_v01013_based::Image image, const RegionOfInterest& roi,
+      hand_tracking_mp_lean::Image image, const RegionOfInterest& roi,
       std::optional<core::ImageProcessingOptions> image_processing_options =
           std::nullopt);
 
@@ -130,6 +130,6 @@ class InteractiveSegmenter : tasks::vision::core::BaseVisionTaskApi {
 }  // namespace interactive_segmenter
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_INTERACTIVE_SEGMENTER_INTERACTIVE_SEGMENTER_H_

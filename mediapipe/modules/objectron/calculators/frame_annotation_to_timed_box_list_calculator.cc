@@ -29,7 +29,7 @@ constexpr char kInputStreamTag[] = "FRAME_ANNOTATION";
 constexpr char kOutputStreamTag[] = "BOXES";
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Convert FrameAnnotation 3d bounding box detections to TimedBoxListProto
 // 2d bounding boxes.
@@ -112,4 +112,4 @@ absl::Status FrameAnnotationToTimedBoxListCalculator::Close(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -8,7 +8,7 @@
 #include "mediapipe/gpu/image_frame_view.h"
 #include "mediapipe/objc/CFHolder.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class GlContext;
 
@@ -84,6 +84,6 @@ std::shared_ptr<internal::GpuBufferStorage> AsGpuBufferStorage(
     CVPixelBufferRef pixel_buffer);
 }  // namespace internal
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GPU_BUFFER_STORAGE_CV_PIXEL_BUFFER_H_

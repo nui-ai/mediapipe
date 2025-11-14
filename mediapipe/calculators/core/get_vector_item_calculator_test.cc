@@ -10,7 +10,7 @@
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 MATCHER_P(IntPacket, value, "") {
   return testing::Value(arg.template Get<int>(), testing::Eq(value));
@@ -254,4 +254,4 @@ TEST(TestGetIntVectorItemCalculatorTest, IndexUint64) {
   EXPECT_THAT(outputs, testing::ElementsAre(IntPacket(inputs[index])));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

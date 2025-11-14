@@ -15,7 +15,7 @@
 #include "absl/strings/str_replace.h"
 #include "mediapipe/calculators/tflite/tflite_inference_calculator_test_common.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Tests a simple add model that adds an input tensor to itself.
 TEST(TfLiteInferenceCalculatorTest, SmokeTest) {
@@ -85,4 +85,4 @@ TEST(TfLiteInferenceCalculatorTest, SmokeTest_ModelAsInputSidePacket) {
   DoSmokeTest<float>(graph_proto);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

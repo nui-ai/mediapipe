@@ -31,7 +31,7 @@
 #include "mediapipe/util/color.pb.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kRenderDataTag[] = "RENDER_DATA";
 constexpr char kVideoPrestreamTag[] = "VIDEO_PRESTREAM";
@@ -204,4 +204,4 @@ absl::Status LabelsToRenderDataCalculator::Process(CalculatorContext* cc) {
 
   return absl::OkStatus();
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

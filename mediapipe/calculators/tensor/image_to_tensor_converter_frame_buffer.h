@@ -22,13 +22,13 @@
 #include "mediapipe/calculators/tensor/image_to_tensor_utils.h"
 #include "mediapipe/framework/calculator_context.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Creates FrameBuffer-based image-to-tensor converter relying on Halide.
 absl::StatusOr<std::unique_ptr<ImageToTensorConverter>>
 CreateFrameBufferConverter(CalculatorContext* cc, BorderMode border_mode,
                            Tensor::ElementType tensor_type);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_IMAGE_TO_TENSOR_CONVERTER_FRAME_BUFFER_H_

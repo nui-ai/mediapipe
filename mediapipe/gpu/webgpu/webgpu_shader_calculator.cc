@@ -37,7 +37,7 @@
 #include "mediapipe/gpu/webgpu/webgpu_texture_view.h"
 #include "mediapipe/gpu/webgpu/webgpu_utils.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Compiles a given WGSL shader, and runs it over the input WebGPU-backed
 // GpuBuffer streams to produce an output WebGPU-backed GpuBuffer stream.
@@ -94,11 +94,11 @@ namespace mediapipe_v01013_based {
 
 namespace {
 
-using ::mediapipe_v01013_based::api2::AnyType;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::NodeImpl;
-using ::mediapipe_v01013_based::api2::NodeIntf;
-using ::mediapipe_v01013_based::api2::Output;
+using ::hand_tracking_mp_lean::api2::AnyType;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::NodeImpl;
+using ::hand_tracking_mp_lean::api2::NodeIntf;
+using ::hand_tracking_mp_lean::api2::Output;
 
 // One query for start time, one for end time.
 constexpr uint32_t kQueryBufferByteSize = 2 * sizeof(uint64_t);
@@ -207,7 +207,7 @@ class ScopedWebGpuErrorHandler {
  public:
   ScopedWebGpuErrorHandler(
       WebGpuService* service, std::string_view callsite,
-      mediapipe_v01013_based::Timestamp timestamp = mediapipe_v01013_based::Timestamp::Unset())
+      hand_tracking_mp_lean::Timestamp timestamp = hand_tracking_mp_lean::Timestamp::Unset())
       : service_(service), callsite_(callsite), timestamp_(timestamp) {
     PushErrorScopes();
   }
@@ -217,7 +217,7 @@ class ScopedWebGpuErrorHandler {
  private:
   WebGpuService* service_ = nullptr;
   std::string callsite_;
-  mediapipe_v01013_based::Timestamp timestamp_;
+  hand_tracking_mp_lean::Timestamp timestamp_;
 
   void PushErrorScopes();
   void PopErrorScopes();
@@ -490,7 +490,7 @@ class WebGpuShaderCalculator
                           kInputFloatVecs, kInputWidth, kInputHeight,
                           kInputDepth, kInputTrigger, kOutput, kOutput3d);
 
-  static absl::Status UpdateContract(mediapipe_v01013_based::CalculatorContract* cc);
+  static absl::Status UpdateContract(hand_tracking_mp_lean::CalculatorContract* cc);
   absl::Status Open(CalculatorContext* cc) override;
   absl::Status Process(CalculatorContext* cc) override;
   absl::Status Close(CalculatorContext* cc) override;
@@ -555,7 +555,7 @@ class WebGpuShaderCalculator
 };
 
 absl::Status WebGpuShaderCalculator::UpdateContract(
-    mediapipe_v01013_based::CalculatorContract* cc) {
+    hand_tracking_mp_lean::CalculatorContract* cc) {
   RET_CHECK(kOutput(cc).IsConnected() || kOutput3d(cc).IsConnected())
       << "Output tag expected.";
   RET_CHECK(kOutput(cc).IsConnected() != kOutput3d(cc).IsConnected())
@@ -563,14 +563,14 @@ absl::Status WebGpuShaderCalculator::UpdateContract(
   RET_CHECK(kInputBuffers(cc).Count() > 0 || kInputBuffers3d(cc).Count() > 0 ||
             kInputTrigger(cc).IsConnected())
       << "At least one input tag expected.";
-  cc->UseService(mediapipe_v01013_based::kWebGpuService);
+  cc->UseService(hand_tracking_mp_lean::kWebGpuService);
   return absl::OkStatus();
 }
 
 absl::Status WebGpuShaderCalculator::Open(CalculatorContext* cc) {
   // Grab our shader sources from options, or default init them.
-  const mediapipe_v01013_based::WebGpuShaderCalculatorOptions& options =
-      cc->Options().GetExtension(mediapipe_v01013_based::WebGpuShaderCalculatorOptions::ext);
+  const hand_tracking_mp_lean::WebGpuShaderCalculatorOptions& options =
+      cc->Options().GetExtension(hand_tracking_mp_lean::WebGpuShaderCalculatorOptions::ext);
 
   if (options.has_shader_path()) {
     std::unique_ptr<Resource> resource_shader_source;
@@ -1097,4 +1097,4 @@ absl::Status WebGpuShaderCalculator::Close(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -19,7 +19,7 @@
 #include "mediapipe/modules/objectron/calculators/object.pb.h"
 #include "mediapipe/modules/objectron/calculators/types.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class Model {
  public:
@@ -87,6 +87,6 @@ class Model {
         category_(category) {}
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_MODULES_OBJECTRON_CALCULATORS_MODEL_H_

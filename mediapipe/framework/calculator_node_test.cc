@@ -29,7 +29,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -135,7 +135,7 @@ class CalculatorNodeTest : public ::testing::Test {
     CalculatorGraphConfig graph_config;
     // Add the test for the node under test.
     if (use_tags) {
-      graph_config = mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      graph_config = hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           first_two_nodes_string +
           "node {\n"  // Node index 2
           "  calculator: \"CountCalculator\"\n"
@@ -145,7 +145,7 @@ class CalculatorNodeTest : public ::testing::Test {
           "  input_side_packet: \"INPUT_SIDE_PACKET_TAG:input_a\"\n"
           "}\n");
     } else {
-      graph_config = mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      graph_config = hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           first_two_nodes_string +
           "node {\n"  // Node index 2
           "  calculator: \"CountCalculator\"\n"
@@ -594,16 +594,16 @@ TEST_F(CalculatorNodeTest, ShouldGenerateStreamMonitoringInfo) {
   EXPECT_EQ(stream_monitoring_info.calculator_name(), "CountCalculator");
   EXPECT_EQ(stream_monitoring_info.input_stream_infos_size(), 1);
   EXPECT_THAT(stream_monitoring_info.input_stream_infos(0),
-              mediapipe_v01013_based::EqualsProto(
-                  mediapipe_v01013_based::ParseTextProtoOrDie<InputStreamRuntimeInfo>(R"pb(
+              hand_tracking_mp_lean::EqualsProto(
+                  hand_tracking_mp_lean::ParseTextProtoOrDie<InputStreamRuntimeInfo>(R"pb(
                     stream_name: ":0:stream_a"
                     number_of_packets_added: 1
                     minimum_timestamp_or_bound: 2
                   )pb")));
   EXPECT_EQ(stream_monitoring_info.output_stream_infos_size(), 1);
   EXPECT_THAT(stream_monitoring_info.output_stream_infos(0),
-              mediapipe_v01013_based::EqualsProto(
-                  mediapipe_v01013_based::ParseTextProtoOrDie<OutputStreamRuntimeInfo>(R"pb(
+              hand_tracking_mp_lean::EqualsProto(
+                  hand_tracking_mp_lean::ParseTextProtoOrDie<OutputStreamRuntimeInfo>(R"pb(
                     stream_name: ":0:stream_b"
                     number_of_packets_added: 1
                     minimum_timestamp_or_bound: 2
@@ -611,4 +611,4 @@ TEST_F(CalculatorNodeTest, ShouldGenerateStreamMonitoringInfo) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

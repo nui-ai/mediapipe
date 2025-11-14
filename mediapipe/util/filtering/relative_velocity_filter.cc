@@ -21,7 +21,7 @@
 #include "absl/log/absl_log.h"
 #include "absl/memory/memory.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 float RelativeVelocityFilter::Apply(absl::Duration timestamp, float value_scale,
                                     float value) {
@@ -83,4 +83,4 @@ float RelativeVelocityFilter::Apply(absl::Duration timestamp, float value_scale,
   return low_pass_filter_.ApplyWithAlpha(value, alpha);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

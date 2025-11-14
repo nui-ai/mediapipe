@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/tool/options_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 const double kTimebaseUs = 1000000;  // Microseconds.
@@ -155,7 +155,7 @@ TimestampDiff abs(TimestampDiff t) { return t < 0 ? -t : t; }
 }  // namespace
 
 absl::Status PacketThinnerCalculator::Open(CalculatorContext* cc) {
-  PacketThinnerCalculatorOptions options = mediapipe_v01013_based::tool::RetrieveOptions(
+  PacketThinnerCalculatorOptions options = hand_tracking_mp_lean::tool::RetrieveOptions(
       cc->Options<PacketThinnerCalculatorOptions>(), cc->InputSidePackets(),
       kOptionsTag);
 
@@ -317,4 +317,4 @@ Timestamp PacketThinnerCalculator::NearestSyncTimestamp(Timestamp now) const {
   return Timestamp(sync64);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

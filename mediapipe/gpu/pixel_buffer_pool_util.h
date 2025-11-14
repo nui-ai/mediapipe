@@ -24,7 +24,7 @@
 #error gpu_pixel_buffer_pool_util is only for use on Apple platforms.
 #endif  // !defined(__APPLE__)
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 #if TARGET_OS_OSX
 typedef CVOpenGLTextureCacheRef CVTextureCacheType;
@@ -63,6 +63,6 @@ CVReturn CreateCVPixelBufferWithPool(CVPixelBufferPoolRef pool,
 CFDictionaryRef CreateCVPixelBufferPoolAuxiliaryAttributesForThreshold(
     int allocationThreshold);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_PIXEL_BUFFER_POOL_UTIL_H_

@@ -31,7 +31,7 @@
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/model.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 template <typename T>
 using IsCopyable = std::enable_if_t<std::is_copy_constructible<T>::value, bool>;
@@ -67,7 +67,7 @@ class SplitVectorCalculator : public CalculatorBase {
     cc->Inputs().Index(0).Set<std::vector<T>>();
 
     const auto& options =
-        cc->Options<::mediapipe_v01013_based::SplitVectorCalculatorOptions>();
+        cc->Options<::hand_tracking_mp_lean::SplitVectorCalculatorOptions>();
 
     if (!std::is_copy_constructible<T>::value || move_elements) {
       // Ranges of elements shouldn't overlap when the vector contains
@@ -113,7 +113,7 @@ class SplitVectorCalculator : public CalculatorBase {
     cc->SetOffset(TimestampDiff(0));
 
     const auto& options =
-        cc->Options<::mediapipe_v01013_based::SplitVectorCalculatorOptions>();
+        cc->Options<::hand_tracking_mp_lean::SplitVectorCalculatorOptions>();
 
     // Construct the splitting helper with options (no CalculatorContext dependency)
     splitter_ = InferenceOutputTensorSplitting<T, move_elements>(options);
@@ -157,6 +157,6 @@ class SplitVectorCalculator : public CalculatorBase {
   InferenceOutputTensorSplitting<T, move_elements> splitter_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_SPLIT_VECTOR_CALCULATOR_H_

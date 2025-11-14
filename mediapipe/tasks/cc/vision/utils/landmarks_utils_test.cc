@@ -18,7 +18,7 @@ limitations under the License.
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based::tasks::vision::utils {
+namespace hand_tracking_mp_lean::tasks::vision::utils {
 namespace {
 
 TEST(LandmarkUtilsTest, CalculateIOU) {
@@ -38,4 +38,4 @@ TEST(LandmarkUtilsTest, CalculateIOU) {
   EXPECT_EQ(0.25, CalculateIOU({0, 0, 1, 3}, {0, 2, 1, 4}));
 }
 }  // namespace
-}  // namespace mediapipe_v01013_based::tasks::vision::utils
+}  // namespace hand_tracking_mp_lean::tasks::vision::utils

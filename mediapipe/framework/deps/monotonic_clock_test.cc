@@ -31,7 +31,7 @@
 #include "mediapipe/framework/port/threadpool.h"
 #include "mediapipe/framework/tool/simulation_clock.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using RandomEngine = std::mt19937_64;
 using State = MonotonicClock::State;
@@ -428,7 +428,7 @@ class ClockFrenzy {
   void Start(int nthreads) {
     absl::MutexLock l(&lock_);
     running_ = true;
-    threads_ = absl::make_unique<mediapipe_v01013_based::ThreadPool>("Frenzy", nthreads);
+    threads_ = absl::make_unique<hand_tracking_mp_lean::ThreadPool>("Frenzy", nthreads);
     threads_->StartWorkers();
     for (int i = 0; i < nthreads; ++i) {
       threads_->Schedule([&]() { Feed(); });
@@ -452,7 +452,7 @@ class ClockFrenzy {
   Clock* real_clock_;
   std::vector<SimulationClock*> sim_clocks_;
   std::vector<MonotonicClock*> mono_clocks_;
-  std::unique_ptr<mediapipe_v01013_based::ThreadPool> threads_;
+  std::unique_ptr<hand_tracking_mp_lean::ThreadPool> threads_;
 
   // Provide a lock to avoid race conditions in non-threadsafe ACMRandom.
   mutable absl::Mutex lock_;
@@ -536,4 +536,4 @@ TEST_F(MonotonicClockTest, RealFrenzy) {
   delete m3;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

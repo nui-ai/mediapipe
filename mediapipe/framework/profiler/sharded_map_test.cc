@@ -79,7 +79,7 @@ void TestParallelAccess(Map& time_map, int num_threads) {
   int64_t kNumWrites = 1000;
   int64_t kNumReads = 10;
 
-  mediapipe_v01013_based::ThreadPool pool(num_threads);
+  hand_tracking_mp_lean::ThreadPool pool(num_threads);
   pool.StartWorkers();
   for (int i = 0; i < kNumTasks; ++i) {
     pool.Schedule([=, &time_map]() {

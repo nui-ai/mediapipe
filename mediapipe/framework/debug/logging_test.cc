@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/test_util.h"
 
-namespace mediapipe_v01013_based::debug {
+namespace hand_tracking_mp_lean::debug {
 namespace {
 
 using ::testing::_;
@@ -644,4 +644,4 @@ TEST_F(LoggingTest, LogHalideBufferEmpty) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::debug
+}  // namespace hand_tracking_mp_lean::debug

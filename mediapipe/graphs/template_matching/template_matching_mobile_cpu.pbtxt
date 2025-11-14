@@ -31,7 +31,7 @@ node: {
   input_stream: "IMAGE:input_video_cpu"
   output_stream: "IMAGE:transformed_input_video_cpu"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.ImageTransformationCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.ImageTransformationCalculatorOptions] {
       output_width: 640
       output_height: 640
       scale_mode: FILL_AND_CROP
@@ -61,7 +61,7 @@ node {
   input_stream: "TENSORS:patches"
   output_stream: "TENSORS:knift_feature_tensors"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TfLiteInferenceCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.TfLiteInferenceCalculatorOptions] {
       model_path: "mediapipe/models/knift_float.tflite"
       delegate { xnnpack {} }
     }
@@ -82,7 +82,7 @@ node {
   output_stream: "BOXES:detections"
 
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.BoxDetectorCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.BoxDetectorCalculatorOptions] {
       detector_options {
         index_type: OPENCV_BF
         detect_every_n_frame: 1
@@ -97,7 +97,7 @@ node {
   input_stream: "detections"
   output_stream: "labeled_detections"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TimedBoxListIdToLabelCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.TimedBoxListIdToLabelCalculatorOptions] {
       label_map_path: "mediapipe/models/knift_labelmap.txt"
     }
   }
@@ -108,7 +108,7 @@ node {
   input_stream: "BOX_LIST:labeled_detections"
   output_stream: "RENDER_DATA:box_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TimedBoxListToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.TimedBoxListToRenderDataCalculatorOptions] {
       box_color { r: 255 g: 0 b: 0 }
       thickness: 5.0
     }
@@ -120,7 +120,7 @@ node {
   input_stream: "NORM_LANDMARKS:landmarks"
   output_stream: "RENDER_DATA:landmarks_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.LandmarksToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.LandmarksToRenderDataCalculatorOptions] {
       landmark_color { r: 0 g: 255 b: 0 }
       thickness: 2.0
     }

@@ -14,7 +14,7 @@
 
 #include "mediapipe/calculators/tensor/tensors_to_floats_calculator_core.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tensors_to_floats_calculator_core {
 
 namespace {
@@ -23,14 +23,14 @@ inline float Sigmoid(float value) { return 1.0f / (1.0f + std::exp(-value)); }
 
 }  // namespace
 
-absl::Status Open(const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions& options) {
+absl::Status Open(const ::hand_tracking_mp_lean::TensorsToFloatsCalculatorOptions& options) {
   // Nothing to do here, just return OK status
   return absl::OkStatus();
 }
 
 ProcessingResult HandPresenceExtract(
     const std::vector<Tensor>& input_tensors,
-    const ::mediapipe_v01013_based::TensorsToFloatsCalculatorOptions& options) {  // the options arg is no longer necessary actually
+    const ::hand_tracking_mp_lean::TensorsToFloatsCalculatorOptions& options) {  // the options arg is no longer necessary actually
 
   ProcessingResult result;
 
@@ -69,4 +69,4 @@ ProcessingResult HandPresenceExtract(
 }
 
 }  // namespace tensors_to_floats_calculator_core
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

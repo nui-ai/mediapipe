@@ -29,11 +29,11 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace {
 
-using Node = ::mediapipe_v01013_based::CalculatorGraphConfig::Node;
+using Node = ::hand_tracking_mp_lean::CalculatorGraphConfig::Node;
 
 struct TensorToJointsTestCase {
   std::string test_name;
@@ -49,7 +49,7 @@ TEST_P(TensorToJointsTest, TensorToJointsTest) {
   const TensorToJointsTestCase& tc = GetParam();
 
   // Prepare graph.
-  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(absl::Substitute(
+  hand_tracking_mp_lean::CalculatorRunner runner(ParseTextProtoOrDie<Node>(absl::Substitute(
       R"(
       calculator: "TensorToJointsCalculator"
       input_stream: "TENSOR:tensor"
@@ -74,7 +74,7 @@ TEST_P(TensorToJointsTest, TensorToJointsTest) {
 
   // Send tensor to the graph.
   runner.MutableInputs()->Tag("TENSOR").packets.push_back(
-      mediapipe_v01013_based::MakePacket<Tensor>(std::move(tensor)).At(Timestamp(0)));
+      hand_tracking_mp_lean::MakePacket<Tensor>(std::move(tensor)).At(Timestamp(0)));
 
   // Run the graph.
   MP_ASSERT_OK(runner.Run());
@@ -120,4 +120,4 @@ INSTANTIATE_TEST_SUITE_P(
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

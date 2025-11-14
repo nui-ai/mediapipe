@@ -21,7 +21,7 @@
 #include "mediapipe/framework/input_stream.h"
 #include "mediapipe/framework/packet.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // For testing
 class MediaPipeProfilerTestPeer;
@@ -84,6 +84,6 @@ class InputStreamShard : public InputStream {
   friend class InputStreamHandler;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_INPUT_STREAM_SHARD_H_

@@ -51,7 +51,7 @@
 #include "mediapipe/gpu/webgpu/webgpu_utils.h"
 #endif  // MEDIAPIPE_USE_WEBGPU
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Zero and negative values are not checked here.
 bool IsPowerOfTwo(int v) { return (v & (v - 1)) == 0; }
@@ -215,7 +215,7 @@ Tensor::OpenGlTexture2dView Tensor::GetOpenGlTexture2dReadView() const {
     // expected to be more performant than glTexSubImage2D. Note that for WebGL2
     // we cannot use glTexImage2D, because we allocate using glTexStorage2D in
     // that case, which is incompatible.
-    if (gl_context_->GetGlVersion() == mediapipe_v01013_based::GlVersion::kGLES2) {
+    if (gl_context_->GetGlVersion() == hand_tracking_mp_lean::GlVersion::kGLES2) {
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width_, texture_height_,
                    0, GL_RGBA, GL_FLOAT, temp_buffer.get());
       texture_is_half_float_ = false;
@@ -292,7 +292,7 @@ Tensor::OpenGlTexture2dView::GetLayoutDimensions(const Tensor::Shape& shape,
 
 void Tensor::AllocateOpenGlTexture2d() const {
   if (opengl_texture2d_ == GL_INVALID_INDEX) {
-    gl_context_ = mediapipe_v01013_based::GlContext::GetCurrent();
+    gl_context_ = hand_tracking_mp_lean::GlContext::GetCurrent();
     ABSL_LOG_IF(FATAL, !gl_context_) << "GlContext is not bound to the thread.";
     glGenTextures(1, &opengl_texture2d_);
     glBindTexture(GL_TEXTURE_2D, opengl_texture2d_);
@@ -303,7 +303,7 @@ void Tensor::AllocateOpenGlTexture2d() const {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     OpenGlTexture2dView::GetLayoutDimensions(shape_, &texture_width_,
                                              &texture_height_);
-    if (gl_context_->GetGlVersion() != mediapipe_v01013_based::GlVersion::kGLES2) {
+    if (gl_context_->GetGlVersion() != hand_tracking_mp_lean::GlVersion::kGLES2) {
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
       glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, texture_width_,
@@ -415,7 +415,7 @@ Tensor::OpenGlBufferView Tensor::GetOpenGlBufferWriteView(
 void Tensor::AllocateOpenGlBuffer() const {
   if (opengl_buffer_ == GL_INVALID_INDEX) {
     if (gl_context_ == nullptr) {
-      gl_context_ = mediapipe_v01013_based::GlContext::GetCurrent();
+      gl_context_ = hand_tracking_mp_lean::GlContext::GetCurrent();
     }
     ABSL_LOG_IF(FATAL, !gl_context_) << "GlContext is not bound to the thread.";
     glGenBuffers(1, &opengl_buffer_);
@@ -798,4 +798,4 @@ void Tensor::FreeCpuBuffer() const {
   cpu_buffer_ = nullptr;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

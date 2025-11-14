@@ -20,7 +20,7 @@
 #include "absl/synchronization/mutex.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 void RunParallelTest() {
@@ -57,4 +57,4 @@ TEST(ParallelInvokerTest, ThreadPoolTest) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -27,7 +27,7 @@
 #include "mediapipe/framework/formats/time_series_header.pb.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace time_series_util {
 
 // Logs a warning and returns false if the current_timestamp is
@@ -116,6 +116,6 @@ int64_t SecondsToSamples(double time_in_seconds, double sample_rate);
 double SamplesToSeconds(int64_t num_samples, double sample_rate);
 
 }  // namespace time_series_util
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TIME_SERIES_UTIL_H_

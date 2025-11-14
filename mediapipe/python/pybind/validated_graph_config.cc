@@ -18,7 +18,7 @@
 #include "mediapipe/framework/validated_graph_config.h"
 #include "mediapipe/python/pybind/util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace python {
 
 namespace py = pybind11;
@@ -158,4 +158,4 @@ void ValidatedGraphConfigSubmodule(pybind11::module* module) {
 }
 
 }  // namespace python
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

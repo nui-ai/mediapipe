@@ -52,21 +52,21 @@ namespace {
 
 absl::StatusOr<std::string> ReadFileToString(const std::string& file_path) {
   std::string contents;
-  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(file_path, &contents));
+  MP_RETURN_IF_ERROR(hand_tracking_mp_lean::file::GetContents(file_path, &contents));
   return contents;
 }
 
-absl::Status ProcessImage(std::unique_ptr<mediapipe_v01013_based::CalculatorGraph> graph) {
+absl::Status ProcessImage(std::unique_ptr<hand_tracking_mp_lean::CalculatorGraph> graph) {
   ABSL_LOG(INFO) << "Load the image.";
   MP_ASSIGN_OR_RETURN(const std::string raw_image,
                       ReadFileToString(absl::GetFlag(FLAGS_input_image_path)));
 
   ABSL_LOG(INFO) << "Start running the calculator graph.";
-  MP_ASSIGN_OR_RETURN(mediapipe_v01013_based::OutputStreamPoller output_image_poller,
+  MP_ASSIGN_OR_RETURN(hand_tracking_mp_lean::OutputStreamPoller output_image_poller,
                       graph->AddOutputStreamPoller(kOutputImageStream));
-  MP_ASSIGN_OR_RETURN(mediapipe_v01013_based::OutputStreamPoller left_iris_depth_poller,
+  MP_ASSIGN_OR_RETURN(hand_tracking_mp_lean::OutputStreamPoller left_iris_depth_poller,
                       graph->AddOutputStreamPoller(kLeftIrisDepthMmStream));
-  MP_ASSIGN_OR_RETURN(mediapipe_v01013_based::OutputStreamPoller right_iris_depth_poller,
+  MP_ASSIGN_OR_RETURN(hand_tracking_mp_lean::OutputStreamPoller right_iris_depth_poller,
                       graph->AddOutputStreamPoller(kRightIrisDepthMmStream));
   MP_RETURN_IF_ERROR(graph->StartRun({}));
 
@@ -75,11 +75,11 @@ absl::Status ProcessImage(std::unique_ptr<mediapipe_v01013_based::CalculatorGrap
                                    (double)cv::getTickFrequency() *
                                    kMicrosPerSecond;
   MP_RETURN_IF_ERROR(graph->AddPacketToInputStream(
-      kInputStream, mediapipe_v01013_based::MakePacket<std::string>(raw_image).At(
-                        mediapipe_v01013_based::Timestamp(fake_timestamp_us))));
+      kInputStream, hand_tracking_mp_lean::MakePacket<std::string>(raw_image).At(
+                        hand_tracking_mp_lean::Timestamp(fake_timestamp_us))));
 
   // Get the graph result packets, or stop if that fails.
-  mediapipe_v01013_based::Packet left_iris_depth_packet;
+  hand_tracking_mp_lean::Packet left_iris_depth_packet;
   if (!left_iris_depth_poller.Next(&left_iris_depth_packet)) {
     return absl::UnknownError(
         "Failed to get packet from output stream 'left_iris_depth_mm'.");
@@ -88,7 +88,7 @@ absl::Status ProcessImage(std::unique_ptr<mediapipe_v01013_based::CalculatorGrap
   const int left_iris_depth_cm = std::round(left_iris_depth_mm / 10);
   std::cout << "Left Iris Depth: " << left_iris_depth_cm << " cm." << std::endl;
 
-  mediapipe_v01013_based::Packet right_iris_depth_packet;
+  hand_tracking_mp_lean::Packet right_iris_depth_packet;
   if (!right_iris_depth_poller.Next(&right_iris_depth_packet)) {
     return absl::UnknownError(
         "Failed to get packet from output stream 'right_iris_depth_mm'.");
@@ -98,15 +98,15 @@ absl::Status ProcessImage(std::unique_ptr<mediapipe_v01013_based::CalculatorGrap
   std::cout << "Right Iris Depth: " << right_iris_depth_cm << " cm."
             << std::endl;
 
-  mediapipe_v01013_based::Packet output_image_packet;
+  hand_tracking_mp_lean::Packet output_image_packet;
   if (!output_image_poller.Next(&output_image_packet)) {
     return absl::UnknownError(
         "Failed to get packet from output stream 'output_image'.");
   }
-  auto& output_frame = output_image_packet.Get<mediapipe_v01013_based::ImageFrame>();
+  auto& output_frame = output_image_packet.Get<hand_tracking_mp_lean::ImageFrame>();
 
   // Convert back to opencv for display or saving.
-  cv::Mat output_frame_mat = mediapipe_v01013_based::formats::MatView(&output_frame);
+  cv::Mat output_frame_mat = hand_tracking_mp_lean::formats::MatView(&output_frame);
   cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
   const bool save_image = !absl::GetFlag(FLAGS_output_image_path).empty();
   if (save_image) {
@@ -126,17 +126,17 @@ absl::Status ProcessImage(std::unique_ptr<mediapipe_v01013_based::CalculatorGrap
 
 absl::Status RunMPPGraph() {
   std::string calculator_graph_config_contents;
-  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
+  MP_RETURN_IF_ERROR(hand_tracking_mp_lean::file::GetContents(
       kCalculatorGraphConfigFile, &calculator_graph_config_contents));
   ABSL_LOG(INFO) << "Get calculator graph config contents: "
                  << calculator_graph_config_contents;
-  mediapipe_v01013_based::CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(
+  hand_tracking_mp_lean::CalculatorGraphConfig config =
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(
           calculator_graph_config_contents);
 
   ABSL_LOG(INFO) << "Initialize the calculator graph.";
-  std::unique_ptr<mediapipe_v01013_based::CalculatorGraph> graph =
-      absl::make_unique<mediapipe_v01013_based::CalculatorGraph>();
+  std::unique_ptr<hand_tracking_mp_lean::CalculatorGraph> graph =
+      absl::make_unique<hand_tracking_mp_lean::CalculatorGraph>();
   MP_RETURN_IF_ERROR(graph->Initialize(config));
 
   const bool load_image = !absl::GetFlag(FLAGS_input_image_path).empty();

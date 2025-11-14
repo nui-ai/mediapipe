@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 // Returns a CalculatorGraph to run a single calculator.
@@ -115,4 +115,4 @@ TEST_F(PacketSequencerCalculatorTest, ChannelEarly) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

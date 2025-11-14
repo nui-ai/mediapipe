@@ -17,7 +17,7 @@
 #include "mediapipe/calculators/core/concatenate_vector_calculator.h"
 #include "mediapipe/framework/formats/detection.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Example config:
 //
@@ -28,8 +28,8 @@ namespace mediapipe_v01013_based {
 //   output_stream: "concatenated_detection_vector"
 // }
 //
-typedef ConcatenateVectorCalculator<::mediapipe_v01013_based::Detection>
+typedef ConcatenateVectorCalculator<::hand_tracking_mp_lean::Detection>
     ConcatenateDetectionVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(ConcatenateDetectionVectorCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

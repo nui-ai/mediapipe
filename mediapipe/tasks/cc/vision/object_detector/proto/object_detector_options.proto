@@ -15,17 +15,17 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe_v01013_based.tasks.vision.object_detector.proto;
+package hand_tracking_mp_lean.tasks.vision.object_detector.proto;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/framework/calculator_options.proto";
 import "mediapipe/tasks/cc/core/proto/base_options.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.tasks.vision.objectdetector.proto";
+option java_package = "com.google.hand_tracking_mp_lean.tasks.vision.objectdetector.proto";
 option java_outer_classname = "ObjectDetectorOptionsProto";
 
 message ObjectDetectorOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional ObjectDetectorOptions ext = 443442058;
   }
   // Base options for configuring MediaPipe Tasks, such as specifying the TfLite

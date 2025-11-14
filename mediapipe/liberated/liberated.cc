@@ -1,6 +1,6 @@
 #include "mediapipe/liberated/liberated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 /// object for driving the entire processing of images from an image stream, for hand tracking and inference;
 /// formerly this was a mediapipe pipeline HandLandmarkTrackingCpu of mediapipe commit tag v0.10.13.
@@ -15,7 +15,7 @@ HandTrackingCore::HandTrackingCore(MemoryManager* memory_manager) {
   image_to_palm_detection_input_options.set_keep_aspect_ratio(true);
   image_to_palm_detection_input_options.mutable_output_tensor_float_range()->set_min(0.0f);
   image_to_palm_detection_input_options.mutable_output_tensor_float_range()->set_max(1.0f);
-  image_to_palm_detection_input_options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
+  image_to_palm_detection_input_options.set_border_mode(hand_tracking_mp_lean::ImageToTensorCalculatorOptions::BORDER_ZERO);
   auto params = GetOutputTensorParams(image_to_palm_detection_input_options);
   image_to_palm_detection_input_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
       image_to_palm_detection_input_options, 192, 192, params,
@@ -51,7 +51,7 @@ HandTrackingCore::HandTrackingCore(MemoryManager* memory_manager) {
   sub_image_extraction_options.set_keep_aspect_ratio(true);
   sub_image_extraction_options.mutable_output_tensor_float_range()->set_min(0.0f);
   sub_image_extraction_options.mutable_output_tensor_float_range()->set_max(1.0f);
-  sub_image_extraction_options.set_border_mode(mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_UNSPECIFIED);
+  sub_image_extraction_options.set_border_mode(hand_tracking_mp_lean::ImageToTensorCalculatorOptions::BORDER_UNSPECIFIED);
   auto params_ = GetOutputTensorParams(sub_image_extraction_options);
   sub_image_for_landmarks_inference_extractor_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
       sub_image_extraction_options, 224, 224, params_,
@@ -345,7 +345,7 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
 
   // merges with IoU threshold based filtering, the set of hand rects derived directly from palm detection inference, with the set of hand rects derived from the previous frame's landmarks inference,
   // both of which input sets to this merge may be empty or not. if both are empty, an empty set should be the result.
-  MP_ASSIGN_OR_RETURN(*merged_hand_rectangles_list, mediapipe_v01013_based::IouFilterMerge(*hand_rects_from_detections, hand_rects_from_previous_frame_, 0.5));
+  MP_ASSIGN_OR_RETURN(*merged_hand_rectangles_list, hand_tracking_mp_lean::IouFilterMerge(*hand_rects_from_detections, hand_rects_from_previous_frame_, 0.5));
   merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>(merged_hand_rectangles_list->begin(), merged_hand_rectangles_list->end());  // convert from list to vector
 
   // reset the list of rectangles passed from the previous frame's pass, before we start building one from scratch for the next frame ...

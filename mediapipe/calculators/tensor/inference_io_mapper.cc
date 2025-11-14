@@ -38,7 +38,7 @@
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/model_builder.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -323,4 +323,4 @@ absl::StatusOr<std::vector<Tensor>> InferenceIoMapper::RemapOutputTensors(
   }
   return mapped_tensors;
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

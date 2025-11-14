@@ -34,15 +34,15 @@ limitations under the License.
 #include "tensorflow/lite/mutable_op_resolver.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace image_embedder {
 namespace {
 
-using ::mediapipe_v01013_based::file::JoinPath;
-using ::mediapipe_v01013_based::tasks::components::containers::RectF;
-using ::mediapipe_v01013_based::tasks::vision::core::ImageProcessingOptions;
+using ::hand_tracking_mp_lean::file::JoinPath;
+using ::hand_tracking_mp_lean::tasks::components::containers::RectF;
+using ::hand_tracking_mp_lean::tasks::vision::core::ImageProcessingOptions;
 using ::testing::HasSubstr;
 using ::testing::Optional;
 
@@ -613,4 +613,4 @@ TEST_F(LiveStreamModeTest, Succeeds) {
 }  // namespace image_embedder
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

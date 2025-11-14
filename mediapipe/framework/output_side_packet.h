@@ -17,7 +17,7 @@
 
 #include "mediapipe/framework/packet.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // The OutputSidePacket base class defines the output side packet interface
 // exposed to calculators in the CalculatorContext. The framework actually
@@ -35,6 +35,6 @@ class OutputSidePacket {
   virtual void Set(const Packet& packet) = 0;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_OUTPUT_SIDE_PACKET_H_

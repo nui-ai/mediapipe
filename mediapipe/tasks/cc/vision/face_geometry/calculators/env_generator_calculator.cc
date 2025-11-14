@@ -19,12 +19,12 @@
 #include "mediapipe/tasks/cc/vision/face_geometry/libs/validation_utils.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/environment.pb.h"
 
-namespace mediapipe_v01013_based::tasks::vision::face_geometry {
+namespace hand_tracking_mp_lean::tasks::vision::face_geometry {
 namespace {
 
 static constexpr char kEnvironmentTag[] = "ENVIRONMENT";
 
-using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::Environment;
+using ::hand_tracking_mp_lean::tasks::vision::face_geometry::proto::Environment;
 
 // A calculator that generates an environment, which describes a virtual scene.
 //
@@ -48,7 +48,7 @@ class EnvGeneratorCalculator : public CalculatorBase {
   }
 
   absl::Status Open(CalculatorContext* cc) override {
-    cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
+    cc->SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
 
     const Environment& environment =
         cc->Options<FaceGeometryEnvGeneratorCalculatorOptions>().environment();
@@ -58,7 +58,7 @@ class EnvGeneratorCalculator : public CalculatorBase {
 
     cc->OutputSidePackets()
         .Tag(kEnvironmentTag)
-        .Set(mediapipe_v01013_based::MakePacket<Environment>(environment));
+        .Set(hand_tracking_mp_lean::MakePacket<Environment>(environment));
 
     return absl::OkStatus();
   }
@@ -78,7 +78,7 @@ using FaceGeometryEnvGeneratorCalculator = EnvGeneratorCalculator;
 
 // clang-format off
 REGISTER_CALCULATOR(
-  ::mediapipe_v01013_based::tasks::vision::face_geometry::FaceGeometryEnvGeneratorCalculator); // NOLINT
+  ::hand_tracking_mp_lean::tasks::vision::face_geometry::FaceGeometryEnvGeneratorCalculator); // NOLINT
 // clang-format on
 
-}  // namespace mediapipe_v01013_based::tasks::vision::face_geometry
+}  // namespace hand_tracking_mp_lean::tasks::vision::face_geometry

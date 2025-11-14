@@ -14,7 +14,7 @@
 #include "mediapipe/gpu/gpu_buffer_format.h"
 #endif
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 TEST(General, TestDimensions) {
   Tensor t1(Tensor::ElementType::kFloat32, Tensor::Shape{1, 2, 3, 4});
@@ -98,7 +98,7 @@ TEST(Cpu, TestViewMove) {
   EXPECT_EQ(v1.buffer<float>(), nullptr);  // NOLINT
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

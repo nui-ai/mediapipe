@@ -4,7 +4,7 @@
 #include "mediapipe/gpu/gl_base.h"
 #include "mediapipe/gpu/gl_texture_view.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Copies a texture to another.
 // Assumes a framebuffer is already set up
@@ -29,6 +29,6 @@ class TempGlFramebuffer {
   GLuint framebuffer_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GL_TEXTURE_UTIL_H_

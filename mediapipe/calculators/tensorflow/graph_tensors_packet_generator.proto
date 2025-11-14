@@ -14,12 +14,12 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/framework/packet_generator.proto";
 
 message GraphTensorsPacketGeneratorOptions {
-  extend mediapipe_v01013_based.PacketGeneratorOptions {
+  extend hand_tracking_mp_lean.PacketGeneratorOptions {
     optional GraphTensorsPacketGeneratorOptions ext = 142721046;
   }
 
@@ -38,7 +38,7 @@ message GraphTensorsPacketGeneratorOptions {
   //   packet_generator: "GraphTensorsPacketGenerator"
   //   output_side_packet: "init_tensors"
   //   options {
-  //     [mediapipe_v01013_based.StateTensorsPacketGeneratorOptions.ext]: {
+  //     [hand_tracking_mp_lean.StateTensorsPacketGeneratorOptions.ext]: {
   //      tensor_tag: "STATE_C_0"
   //       tensor_num_nodes:128
   //       tensor_tag: "STATE_M_0"

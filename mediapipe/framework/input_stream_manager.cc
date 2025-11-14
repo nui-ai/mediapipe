@@ -31,7 +31,7 @@
 #include "mediapipe/framework/port/status_builder.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 absl::Status InputStreamManager::Initialize(const std::string& name,
                                             const PacketType* packet_type,
@@ -79,7 +79,7 @@ Packet InputStreamManager::QueueHead() const {
 absl::Status InputStreamManager::SetHeader(const Packet& header) {
   absl::MutexLock stream_lock(&stream_mutex_);
   if (header.Timestamp() != Timestamp::Unset()) {
-    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "Headers must not have a timestamp.  Stream: \"" << name_
            << "\".";
   }
@@ -139,7 +139,7 @@ absl::Status InputStreamManager::AddOrMovePacketsInternal(Container container,
 
       const Timestamp timestamp = packet.Timestamp();
       if (!timestamp.IsAllowedInStream()) {
-        return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+        return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                << "In stream \"" << name_
                << "\", timestamp not specified or set to illegal value: "
                << timestamp.DebugString();
@@ -150,13 +150,13 @@ absl::Status InputStreamManager::AddOrMovePacketsInternal(Container container,
         // Timestamp::PreStream().NextAllowedInStream() is
         // Timestamp::OneOverPostStream().
         if (timestamp == Timestamp::PostStream() && num_packets_added_ > 0) {
-          return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+          return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                  << "In stream \"" << name_
                  << "\", a packet at Timestamp::PostStream() must be the only "
                     "Packet in an InputStream.";
         }
         if (timestamp < next_timestamp_bound_) {
-          return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+          return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
                  << "Packet timestamp mismatch on a calculator receiving from "
                     "stream \""
                  << name_ << "\". Current minimum expected timestamp is "
@@ -211,7 +211,7 @@ absl::Status InputStreamManager::SetNextTimestampBound(const Timestamp bound,
     }
 
     if (enable_timestamps_ && bound < next_timestamp_bound_) {
-      return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+      return hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
              << "SetNextTimestampBound must be called with a timestamp greater "
                 "than or equal to the current bound. In stream \""
              << name_ << "\". Current minimum expected timestamp is "
@@ -426,4 +426,4 @@ bool InputStreamManager::IsDone() const {
   return queue_.empty() && next_timestamp_bound_ == Timestamp::Done();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

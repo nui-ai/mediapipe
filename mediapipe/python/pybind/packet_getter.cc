@@ -31,7 +31,7 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace python {
 namespace {
 
@@ -307,13 +307,13 @@ void PublicPacketGetters(pybind11::module* m) {
       R"doc(Get the content of a MediaPipe Packet of Image vector as a list of MediaPipe Images.
 
   Args:
-    packet: A MediaPipe Packet that holds std:vector<mediapipe_v01013_based::Image>.
+    packet: A MediaPipe Packet that holds std:vector<hand_tracking_mp_lean::Image>.
 
   Returns:
     A list of MediaPipe Images.
 
   Raises:
-    ValueError: If the Packet doesn't contain std:vector<mediapipe_v01013_based::Image>.
+    ValueError: If the Packet doesn't contain std:vector<hand_tracking_mp_lean::Image>.
 
   Examples:
     packet = mp.packet_creator.create_image_vector([
@@ -326,14 +326,14 @@ void PublicPacketGetters(pybind11::module* m) {
       R"doc(Get the content of a MediaPipe Packet of ImageFrame vector as a list of MediaPipe ImageFrames.
 
   Args:
-    packet: A MediaPipe Packet that holds std:vector<mediapipe_v01013_based::ImageFrame>.
+    packet: A MediaPipe Packet that holds std:vector<hand_tracking_mp_lean::ImageFrame>.
 
   Returns:
     A list of MediaPipe ImageFrames that reference the same pixel data
     as the original ImageFrames.
 
   Raises:
-    ValueError: If the Packet doesn't contain std:vector<mediapipe_v01013_based::ImageFrame>.
+    ValueError: If the Packet doesn't contain std:vector<hand_tracking_mp_lean::ImageFrame>.
 
   Examples:
     packet = mp.packet_creator.create_image_frame_vector([
@@ -510,4 +510,4 @@ void PacketGetterSubmodule(pybind11::module* module) {
 }
 
 }  // namespace python
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

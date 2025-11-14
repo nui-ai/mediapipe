@@ -33,7 +33,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 namespace internal_port {
 
@@ -129,7 +129,7 @@ void SetPacketGenerator(V& v, G& generator) {
 }
 
 struct CalculatorContextHolder {
-  mediapipe_v01013_based::CalculatorContext* context = nullptr;
+  hand_tracking_mp_lean::CalculatorContext* context = nullptr;
 };
 
 template <typename V, typename H>
@@ -176,7 +176,7 @@ class Port<ContractSpecializer, FieldT> : public TagAndIndex {
   friend void SetCalculatorContract(V& v, CC& contract);
 
   // Not owned, set by the framework.
-  mediapipe_v01013_based::CalculatorContract* contract_ = nullptr;
+  hand_tracking_mp_lean::CalculatorContract* contract_ = nullptr;
 };
 
 template <typename FieldT>
@@ -286,7 +286,7 @@ class RepeatedBase<ContractSpecializer, FieldT> : public TagAndIndex {
   friend void SetCalculatorContract(V& v, CC& contract);
 
   // Not owned, set by the framework.
-  mediapipe_v01013_based::CalculatorContract* contract_ = nullptr;
+  hand_tracking_mp_lean::CalculatorContract* contract_ = nullptr;
 };
 
 template <typename FieldT>
@@ -426,6 +426,6 @@ absl::Status AddToContract(P& port, CC& contract, bool optional = false) {
 
 }  // namespace internal_port
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_INTERNAL_PORT_BASE_H_

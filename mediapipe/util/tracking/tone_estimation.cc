@@ -26,7 +26,7 @@
 #include "mediapipe/util/tracking/motion_models.pb.h"
 #include "mediapipe/util/tracking/tone_models.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 ToneEstimation::ToneEstimation(const ToneEstimationOptions& options,
                                int frame_width, int frame_height)
@@ -376,4 +376,4 @@ bool ToneEstimation::IsStableGainBiasModel(
   return true;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

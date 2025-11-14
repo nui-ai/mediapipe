@@ -22,7 +22,7 @@
 #include "mediapipe/framework/formats/image_frame_opencv.h"
 #include "mediapipe/framework/port/status_builder.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 namespace {
 constexpr char kInputFrameTag[] = "INPUT_FRAMES";
@@ -91,7 +91,7 @@ absl::Status VideoFilteringCalculator::Process(CalculatorContext* cc) {
   RET_CHECK_GT(target_height, 0);
 
   bool should_pass = false;
-  cv::Mat frame_mat = mediapipe_v01013_based::formats::MatView(&frame);
+  cv::Mat frame_mat = hand_tracking_mp_lean::formats::MatView(&frame);
   const double ratio = static_cast<double>(frame_mat.cols) / frame_mat.rows;
   const double target_ratio = static_cast<double>(target_width) / target_height;
   if (filter_type == VideoFilteringCalculatorOptions::AspectRatioFilter::
@@ -108,7 +108,7 @@ absl::Status VideoFilteringCalculator::Process(CalculatorContext* cc) {
     return absl::OkStatus();
   }
   if (options.fail_if_any()) {
-    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC) << absl::Substitute(
+    return hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC) << absl::Substitute(
                "Failing due to aspect ratio. Target aspect ratio: $0. Frame "
                "width: $1, height: $2.",
                target_ratio, frame.Width(), frame.Height());
@@ -117,4 +117,4 @@ absl::Status VideoFilteringCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

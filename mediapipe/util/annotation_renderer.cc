@@ -26,7 +26,7 @@
 #include "mediapipe/util/color.pb.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 using Arrow = RenderAnnotation::Arrow;
@@ -618,4 +618,4 @@ double AnnotationRenderer::ComputeFontScale(int font_face, int font_size,
          (cap_line + base_line);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

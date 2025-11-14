@@ -48,23 +48,23 @@ ABSL_FLAG(std::string, output_video_path, "",
 
 absl::Status RunMPPGraph() {
   std::string calculator_graph_config_contents;
-  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
+  MP_RETURN_IF_ERROR(hand_tracking_mp_lean::file::GetContents(
       absl::GetFlag(FLAGS_calculator_graph_config_file),
       &calculator_graph_config_contents));
   ABSL_LOG(INFO) << "Get calculator graph config contents: "
                  << calculator_graph_config_contents;
-  mediapipe_v01013_based::CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(
+  hand_tracking_mp_lean::CalculatorGraphConfig config =
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(
           calculator_graph_config_contents);
 
   ABSL_LOG(INFO) << "Initialize the calculator graph.";
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   MP_RETURN_IF_ERROR(graph.Initialize(config));
 
   ABSL_LOG(INFO) << "Initialize the GPU.";
-  MP_ASSIGN_OR_RETURN(auto gpu_resources, mediapipe_v01013_based::GpuResources::Create());
+  MP_ASSIGN_OR_RETURN(auto gpu_resources, hand_tracking_mp_lean::GpuResources::Create());
   MP_RETURN_IF_ERROR(graph.SetGpuResources(std::move(gpu_resources)));
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper;
   gpu_helper.InitializeForTest(graph.GetGpuResources().get());
 
   ABSL_LOG(INFO) << "Initialize the camera or load the video.";
@@ -89,7 +89,7 @@ absl::Status RunMPPGraph() {
   }
 
   ABSL_LOG(INFO) << "Start running the calculator graph.";
-  MP_ASSIGN_OR_RETURN(mediapipe_v01013_based::OutputStreamPoller poller,
+  MP_ASSIGN_OR_RETURN(hand_tracking_mp_lean::OutputStreamPoller poller,
                       graph.AddOutputStreamPoller(kOutputStream));
   MP_RETURN_IF_ERROR(graph.StartRun({}));
 
@@ -114,10 +114,10 @@ absl::Status RunMPPGraph() {
     }
 
     // Wrap Mat into an ImageFrame.
-    auto input_frame = absl::make_unique<mediapipe_v01013_based::ImageFrame>(
-        mediapipe_v01013_based::ImageFormat::SRGBA, camera_frame.cols, camera_frame.rows,
-        mediapipe_v01013_based::ImageFrame::kGlDefaultAlignmentBoundary);
-    cv::Mat input_frame_mat = mediapipe_v01013_based::formats::MatView(input_frame.get());
+    auto input_frame = absl::make_unique<hand_tracking_mp_lean::ImageFrame>(
+        hand_tracking_mp_lean::ImageFormat::SRGBA, camera_frame.cols, camera_frame.rows,
+        hand_tracking_mp_lean::ImageFrame::kGlDefaultAlignmentBoundary);
+    cv::Mat input_frame_mat = hand_tracking_mp_lean::formats::MatView(input_frame.get());
     camera_frame.copyTo(input_frame_mat);
 
     // Prepare and add graph input packet.
@@ -128,32 +128,32 @@ absl::Status RunMPPGraph() {
                                    &gpu_helper]() -> absl::Status {
           // Convert ImageFrame to GpuBuffer.
           auto texture = gpu_helper.CreateSourceTexture(*input_frame.get());
-          auto gpu_frame = texture.GetFrame<mediapipe_v01013_based::GpuBuffer>();
+          auto gpu_frame = texture.GetFrame<hand_tracking_mp_lean::GpuBuffer>();
           glFlush();
           texture.Release();
           // Send GPU image packet into the graph.
           MP_RETURN_IF_ERROR(graph.AddPacketToInputStream(
-              kInputStream, mediapipe_v01013_based::Adopt(gpu_frame.release())
-                                .At(mediapipe_v01013_based::Timestamp(frame_timestamp_us))));
+              kInputStream, hand_tracking_mp_lean::Adopt(gpu_frame.release())
+                                .At(hand_tracking_mp_lean::Timestamp(frame_timestamp_us))));
           return absl::OkStatus();
         }));
 
     // Get the graph result packet, or stop if that fails.
-    mediapipe_v01013_based::Packet packet;
+    hand_tracking_mp_lean::Packet packet;
     if (!poller.Next(&packet)) break;
-    std::unique_ptr<mediapipe_v01013_based::ImageFrame> output_frame;
+    std::unique_ptr<hand_tracking_mp_lean::ImageFrame> output_frame;
 
     // Convert GpuBuffer to ImageFrame.
     MP_RETURN_IF_ERROR(gpu_helper.RunInGlContext(
         [&packet, &output_frame, &gpu_helper]() -> absl::Status {
-          auto& gpu_frame = packet.Get<mediapipe_v01013_based::GpuBuffer>();
+          auto& gpu_frame = packet.Get<hand_tracking_mp_lean::GpuBuffer>();
           auto texture = gpu_helper.CreateSourceTexture(gpu_frame);
-          output_frame = absl::make_unique<mediapipe_v01013_based::ImageFrame>(
-              mediapipe_v01013_based::ImageFormatForGpuBufferFormat(gpu_frame.format()),
+          output_frame = absl::make_unique<hand_tracking_mp_lean::ImageFrame>(
+              hand_tracking_mp_lean::ImageFormatForGpuBufferFormat(gpu_frame.format()),
               gpu_frame.width(), gpu_frame.height(),
-              mediapipe_v01013_based::ImageFrame::kGlDefaultAlignmentBoundary);
+              hand_tracking_mp_lean::ImageFrame::kGlDefaultAlignmentBoundary);
           gpu_helper.BindFramebuffer(texture);
-          const auto info = mediapipe_v01013_based::GlTextureInfoForGpuBufferFormat(
+          const auto info = hand_tracking_mp_lean::GlTextureInfoForGpuBufferFormat(
               gpu_frame.format(), 0, gpu_helper.GetGlVersion());
           glReadPixels(0, 0, texture.width(), texture.height(), info.gl_format,
                        info.gl_type, output_frame->MutablePixelData());
@@ -163,7 +163,7 @@ absl::Status RunMPPGraph() {
         }));
 
     // Convert back to opencv for display or saving.
-    cv::Mat output_frame_mat = mediapipe_v01013_based::formats::MatView(output_frame.get());
+    cv::Mat output_frame_mat = hand_tracking_mp_lean::formats::MatView(output_frame.get());
     if (output_frame_mat.channels() == 4)
       cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGBA2BGR);
     else
@@ -172,7 +172,7 @@ absl::Status RunMPPGraph() {
       if (!writer.isOpened()) {
         ABSL_LOG(INFO) << "Prepare video writer.";
         writer.open(absl::GetFlag(FLAGS_output_video_path),
-                    mediapipe_v01013_based::fourcc('a', 'v', 'c', '1'),  // .mp4
+                    hand_tracking_mp_lean::fourcc('a', 'v', 'c', '1'),  // .mp4
                     capture.get(cv::CAP_PROP_FPS), output_frame_mat.size());
         RET_CHECK(writer.isOpened());
       }

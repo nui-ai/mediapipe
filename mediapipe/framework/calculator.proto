@@ -17,7 +17,7 @@
 // ONLY used by mediapipe open source project.
 syntax = "proto3";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import public "mediapipe/framework/calculator_options.proto";
 
@@ -28,7 +28,7 @@ import "mediapipe/framework/packet_generator.proto";
 import "mediapipe/framework/status_handler.proto";
 import "mediapipe/framework/stream_handler.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.proto";
+option java_package = "com.google.hand_tracking_mp_lean.proto";
 option java_outer_classname = "CalculatorProto";
 
 // Describes a MediaPipe Executor.
@@ -232,7 +232,7 @@ message GraphRuntimeInfoConfig {
 
 // Describes the topology and function of a MediaPipe Graph.  The graph of
 // Nodes must be a Directed Acyclic Graph (DAG) except as annotated by
-// "back_edge" in InputStreamInfo.  Use a mediapipe_v01013_based::CalculatorGraph object to
+// "back_edge" in InputStreamInfo.  Use a hand_tracking_mp_lean::CalculatorGraph object to
 // run the graph.
 message CalculatorGraphConfig {
   // A single node in the DAG.

@@ -7,7 +7,7 @@
 #include "absl/log/absl_log.h"
 #include "mediapipe/util/filtering/low_pass_filter.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 static const double kEpsilon = 0.000001;
 static constexpr int kUninitializedTimestamp = -1;
@@ -84,4 +84,4 @@ void OneEuroFilter::SetDerivateCutoff(double derivate_cutoff) {
   derivate_cutoff_ = derivate_cutoff;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

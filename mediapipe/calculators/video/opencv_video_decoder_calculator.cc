@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -110,7 +110,7 @@ class OpenCvVideoDecoderCalculator : public CalculatorBase {
         cc->InputSidePackets().Tag(kInputFilePathTag).Get<std::string>();
     cap_ = absl::make_unique<cv::VideoCapture>(input_file_path);
     if (!cap_->isOpened()) {
-      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Fail to open video file at " << input_file_path;
     }
     cap_->set(cv::CAP_PROP_ORIENTATION_AUTO, true);
@@ -124,19 +124,19 @@ class OpenCvVideoDecoderCalculator : public CalculatorBase {
     cv::Mat frame;
     ReadFrame(frame);
     if (frame.empty()) {
-      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Fail to read any frames from the video file at "
              << input_file_path;
     }
     format_ = GetImageFormat(frame.channels());
     if (format_ == ImageFormat::UNKNOWN) {
-      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Unsupported video format of the video file at "
              << input_file_path;
     }
 
     if (fps <= 0 || frame_count_ <= 0 || width_ <= 0 || height_ <= 0) {
-      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Fail to make video header due to the incorrect metadata from "
                 "the video file at "
              << input_file_path;
@@ -179,7 +179,7 @@ class OpenCvVideoDecoderCalculator : public CalculatorBase {
             .Set(MakePacket<std::string>(std::string()));
       }
 #else
-      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "OpenCVVideoDecoderCalculator can't save the audio file "
                 "because FFmpeg is not installed. Please remove "
                 "output_side_packet: \"SAVED_AUDIO_PATH\" from the node "
@@ -256,4 +256,4 @@ class OpenCvVideoDecoderCalculator : public CalculatorBase {
 };
 
 REGISTER_CALCULATOR(OpenCvVideoDecoderCalculator);
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

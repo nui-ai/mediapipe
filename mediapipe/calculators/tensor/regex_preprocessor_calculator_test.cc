@@ -32,10 +32,10 @@
 #include "mediapipe/tasks/cc/core/utils.h"
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
+using ::hand_tracking_mp_lean::tasks::metadata::ModelMetadataExtractor;
 using ::testing::ElementsAreArray;
 
 constexpr int kMaxSeqLen = 256;
@@ -128,4 +128,4 @@ TEST(RegexPreprocessorCalculatorTest, LongInput) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

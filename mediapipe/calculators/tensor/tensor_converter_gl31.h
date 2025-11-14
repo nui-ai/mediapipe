@@ -25,7 +25,7 @@
 #include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/gpu/gl_calculator_helper.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Instantiates and initializes an OpenGL 3.1-enabled TensorConverterGpu
 // instance.
@@ -47,7 +47,7 @@ absl::StatusOr<std::unique_ptr<TensorConverterGpu>> CreateTensorConverterGl31(
     std::optional<std::pair<float, float>> output_range, bool include_alpha,
     bool single_channel, bool flip_vertically, int num_output_channels);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSOR_CONVERTER_GL31_H_

@@ -20,7 +20,7 @@
 #include "absl/log/absl_log.h"
 #include "absl/strings/str_cat.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // In the following functions:
 // - The safe int type will check for overflow/underflow and other errors.
@@ -155,4 +155,4 @@ std::ostream& operator<<(std::ostream& os, TimestampDiff arg) {
   return os << arg.DebugString();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

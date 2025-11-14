@@ -30,7 +30,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/util/rectangle_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // AssocationCalculator<T> accepts multiple inputs of vectors of type T that can
 // be converted to Rectangle_f. The output is a vector of type T that contains
@@ -73,7 +73,7 @@ public:
     if (has_prev_input_stream_) {
       prev_input_stream_id_ = cc->Inputs().GetId("PREV", 0);
     }
-    options_ = cc->Options<::mediapipe_v01013_based::AssociationCalculatorOptions>();
+    options_ = cc->Options<::hand_tracking_mp_lean::AssociationCalculatorOptions>();
     ABSL_CHECK_GE(options_.min_similarity_threshold(), 0);
 
     return absl::OkStatus();
@@ -96,7 +96,7 @@ public:
 
     std::list<T> result_set;
     MP_ASSIGN_OR_RETURN(result_set,
-      mediapipe_v01013_based::IouFilterMerge(hand_rects_from_palm_detection, prev_hand_rects_from_landmarks, options_.min_similarity_threshold()));
+      hand_tracking_mp_lean::IouFilterMerge(hand_rects_from_palm_detection, prev_hand_rects_from_landmarks, options_.min_similarity_threshold()));
 
     auto output = absl::make_unique<std::vector<T>>();
     for (auto it = result_set.begin(); it != result_set.end(); ++it) {
@@ -108,7 +108,7 @@ public:
   }
 
 protected:
-  ::mediapipe_v01013_based::AssociationCalculatorOptions options_;
+  ::hand_tracking_mp_lean::AssociationCalculatorOptions options_;
 
   // if there is an input stream tagged with "PREV", set a boolean to true and store its ID.
   bool has_prev_input_stream_;
@@ -123,6 +123,6 @@ protected:
   }
 };
 
-};  // namespace mediapipe_v01013_based
+};  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_ASSOCIATION_CALCULATOR_H_

@@ -41,7 +41,7 @@ node: {
   input_stream: "IMAGE_GPU:throttled_input_video"
   output_stream: "IMAGE_GPU:transformed_input_video"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.ImageTransformationCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.ImageTransformationCalculatorOptions] {
       output_width: 320
       output_height: 320
     }
@@ -64,7 +64,7 @@ node {
   input_stream: "TENSORS_GPU:image_tensor"
   output_stream: "TENSORS_GPU:detection_tensors"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TfLiteInferenceCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.TfLiteInferenceCalculatorOptions] {
       model_path: "mediapipe/models/ssdlite_object_detection.tflite"
     }
   }
@@ -76,7 +76,7 @@ node {
   calculator: "SsdAnchorsCalculator"
   output_side_packet: "anchors"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.SsdAnchorsCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.SsdAnchorsCalculatorOptions] {
       num_layers: 6
       min_scale: 0.2
       max_scale: 0.95
@@ -109,7 +109,7 @@ node {
   input_side_packet: "ANCHORS:anchors"
   output_stream: "DETECTIONS:detections"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TfLiteTensorsToDetectionsCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.TfLiteTensorsToDetectionsCalculatorOptions] {
       num_classes: 91
       num_boxes: 2034
       num_coords: 4
@@ -131,7 +131,7 @@ node {
   input_stream: "detections"
   output_stream: "filtered_detections"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.NonMaxSuppressionCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.NonMaxSuppressionCalculatorOptions] {
       min_suppression_threshold: 0.4
       max_num_detections: 3
       overlap_type: INTERSECTION_OVER_UNION
@@ -147,7 +147,7 @@ node {
   input_stream: "filtered_detections"
   output_stream: "output_detections"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.DetectionLabelIdToTextCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.DetectionLabelIdToTextCalculatorOptions] {
       label_map_path: "mediapipe/models/ssdlite_object_detection_labelmap.txt"
     }
   }
@@ -159,7 +159,7 @@ node {
   input_stream: "DETECTIONS:output_detections"
   output_stream: "RENDER_DATA:render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.DetectionsToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.DetectionsToRenderDataCalculatorOptions] {
       thickness: 4.0
       color { r: 255 g: 0 b: 0 }
     }

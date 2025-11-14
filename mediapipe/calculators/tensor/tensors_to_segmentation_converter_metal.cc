@@ -44,12 +44,12 @@
 #include "mediapipe/gpu/gpu_origin_utils.h"
 #include "mediapipe/gpu/shader_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::tensors_to_segmentation_utils::GetHwcFromDims;
-using ::mediapipe_v01013_based::tensors_to_segmentation_utils::GlRender;
-using ::mediapipe_v01013_based::tensors_to_segmentation_utils::NumGroups;
+using ::hand_tracking_mp_lean::tensors_to_segmentation_utils::GetHwcFromDims;
+using ::hand_tracking_mp_lean::tensors_to_segmentation_utils::GlRender;
+using ::hand_tracking_mp_lean::tensors_to_segmentation_utils::NumGroups;
 
 constexpr int kWorkgroupSize = 8;  // Block size for GPU shader.
 enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, NUM_ATTRIBUTES };
@@ -65,7 +65,7 @@ class TensorsToSegmentationMetalConverter
                                                  int output_height) override;
 
  private:
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
   // TODO: Refactor upsample program out of the conversion.
   GLuint upsample_program_;
   bool gpu_initialized_ = false;
@@ -157,7 +157,7 @@ kernel void segmentationKernel(
 )";
 
     // Shader defines.
-    using Options = ::mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions;
+    using Options = ::hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions;
     const std::string output_layer_index =
         "\n#define OUTPUT_LAYER_INDEX int(" +
         std::to_string(options.output_layer_index()) + ")";
@@ -211,8 +211,8 @@ kernel void segmentationKernel(
         [[error localizedDescription] UTF8String];
 
     // Simple pass-through program, used for hardware upsampling.
-    mediapipe_v01013_based::GlhCreateProgram(
-        mediapipe_v01013_based::kBasicVertexShader, mediapipe_v01013_based::kBasicTexturedFragmentShader,
+    hand_tracking_mp_lean::GlhCreateProgram(
+        hand_tracking_mp_lean::kBasicVertexShader, hand_tracking_mp_lean::kBasicTexturedFragmentShader,
         NUM_ATTRIBUTES, &attr_name[0], attr_location, &upsample_program_);
     RET_CHECK(upsample_program_) << "Problem initializing the program.";
     glUseProgram(upsample_program_);
@@ -240,7 +240,7 @@ TensorsToSegmentationMetalConverter::Convert(const Tensor& input_tensor,
                                                  output_width, output_height]()
                                                     -> absl::Status {
     // Create initial working mask texture.
-    mediapipe_v01013_based::GlTexture small_mask_texture;
+    hand_tracking_mp_lean::GlTexture small_mask_texture;
 
     MP_ASSIGN_OR_RETURN(auto hwc, GetHwcFromDims(input_tensor.shape().dims));
     auto [tensor_height, tensor_width, tensor_channels] = hwc;
@@ -256,10 +256,10 @@ TensorsToSegmentationMetalConverter::Convert(const Tensor& input_tensor,
       auto read_view = MtlBufferView::GetReadView(input_tensor, command_buffer);
       [command_encoder setBuffer:read_view.buffer() offset:0 atIndex:0];
 
-      mediapipe_v01013_based::GpuBuffer small_mask_buffer = [metal_helper_
+      hand_tracking_mp_lean::GpuBuffer small_mask_buffer = [metal_helper_
           mediapipeGpuBufferWithWidth:tensor_width
                                height:tensor_height
-                               format:mediapipe_v01013_based::GpuBufferFormat::kBGRA32];
+                               format:hand_tracking_mp_lean::GpuBufferFormat::kBGRA32];
       id<MTLTexture> small_mask_texture_metal =
           [metal_helper_ metalTextureWithGpuBuffer:small_mask_buffer];
       [command_encoder setTexture:small_mask_texture_metal atIndex:1];
@@ -282,9 +282,9 @@ TensorsToSegmentationMetalConverter::Convert(const Tensor& input_tensor,
     }
 
     // Upsample small mask into output.
-    mediapipe_v01013_based::GlTexture output_texture = gpu_helper_.CreateDestinationTexture(
+    hand_tracking_mp_lean::GlTexture output_texture = gpu_helper_.CreateDestinationTexture(
         output_width, output_height,
-        mediapipe_v01013_based::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
+        hand_tracking_mp_lean::GpuBufferFormat::kBGRA32);  // actually GL_RGBA8
 
     // Run shader, upsample result.
     {
@@ -312,12 +312,12 @@ TensorsToSegmentationMetalConverter::Convert(const Tensor& input_tensor,
 absl::StatusOr<std::unique_ptr<TensorsToSegmentationConverter>>
 CreateMetalConverter(
     CalculatorContext* cc,
-    const mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions& options) {
+    const hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions& options) {
   auto converter = std::make_unique<TensorsToSegmentationMetalConverter>();
   MP_RETURN_IF_ERROR(converter->Init(cc, options));
   return converter;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_METAL_ENABLED

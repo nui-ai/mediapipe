@@ -19,12 +19,12 @@ limitations under the License.
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace {
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Node;
-using ::mediapipe_v01013_based::api2::Output;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Node;
+using ::hand_tracking_mp_lean::api2::Output;
 }  // namespace
 
 // A calculator to strip the rotation information from the NormalizedRect.
@@ -44,7 +44,7 @@ class StripRotationCalculator : public Node {
   }
 };
 
-MEDIAPIPE_REGISTER_NODE(::mediapipe_v01013_based::tasks::StripRotationCalculator);
+MEDIAPIPE_REGISTER_NODE(::hand_tracking_mp_lean::tasks::StripRotationCalculator);
 
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -20,7 +20,7 @@
 
 #include "mediapipe/framework/api3/internal/graph_builder.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 // Stream represents graph input stream (`CalculatorGraphConfig::input_stream`)
 // or node output stream (`CalculatorGraphConfig::Node::output_stream`).
@@ -65,6 +65,6 @@ class /*ABSL_ATTRIBUTE_VIEW*/ Stream {
   friend class Output;
 };
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_STREAM_H_

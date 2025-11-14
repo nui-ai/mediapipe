@@ -37,17 +37,17 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_roi_refinement_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/utils/image_tensor_specs.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
 
-using ::mediapipe_v01013_based::api2::builder::ConvertAlignmentPointsDetectionToRect;
-using ::mediapipe_v01013_based::api2::builder::ConvertLandmarksToDetection;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::ProjectLandmarks;
-using ::mediapipe_v01013_based::api2::builder::ScaleAndShiftAndMakeSquareLong;
-using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::hand_tracking_mp_lean::api2::builder::ConvertAlignmentPointsDetectionToRect;
+using ::hand_tracking_mp_lean::api2::builder::ConvertLandmarksToDetection;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::ProjectLandmarks;
+using ::hand_tracking_mp_lean::api2::builder::ScaleAndShiftAndMakeSquareLong;
+using ::hand_tracking_mp_lean::api2::builder::Stream;
 
 // Refine the input hand RoI with hand_roi_refinement model.
 //
@@ -62,7 +62,7 @@ using ::mediapipe_v01013_based::api2::builder::Stream;
 class HandRoiRefinementGraph : public core::ModelTaskGraph {
  public:
   absl::StatusOr<CalculatorGraphConfig> GetConfig(
-      mediapipe_v01013_based::SubgraphContext* context) override {
+      hand_tracking_mp_lean::SubgraphContext* context) override {
     Graph graph;
     Stream<Image> image_in = graph.In("IMAGE").Cast<Image>();
     Stream<NormalizedRect> roi_in =
@@ -88,7 +88,7 @@ class HandRoiRefinementGraph : public core::ModelTaskGraph {
              .mutable_image_to_tensor_options();
     image_to_tensor_options.set_keep_aspect_ratio(true);
     image_to_tensor_options.set_border_mode(
-        mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_REPLICATE);
+        hand_tracking_mp_lean::ImageToTensorCalculatorOptions::BORDER_REPLICATE);
     MP_RETURN_IF_ERROR(components::processors::ConfigureImagePreprocessingGraph(
         *model_resources, use_gpu, graph_options.base_options().gpu_origin(),
         &preprocessing.GetOptions<tasks::components::processors::proto::
@@ -113,14 +113,14 @@ class HandRoiRefinementGraph : public core::ModelTaskGraph {
     auto& to_landmarks = graph.AddNode("TensorsToLandmarksCalculator");
     auto& to_landmarks_opts =
         to_landmarks
-            .GetOptions<mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions>();
+            .GetOptions<hand_tracking_mp_lean::TensorsToLandmarksCalculatorOptions>();
     to_landmarks_opts.set_num_landmarks(/*num_landmarks=*/2);
     to_landmarks_opts.set_input_image_width(image_tensor_specs.image_width);
     to_landmarks_opts.set_input_image_height(image_tensor_specs.image_height);
     to_landmarks_opts.set_normalize_z(/*z_norm_factor=*/1.0f);
     tensors_out.ConnectTo(to_landmarks.In("TENSORS"));
     auto recrop_landmarks = to_landmarks.Out("NORM_LANDMARKS")
-                                .Cast<mediapipe_v01013_based::NormalizedLandmarkList>();
+                                .Cast<hand_tracking_mp_lean::NormalizedLandmarkList>();
 
     // Project landmarks.
     auto projected_recrop_landmarks =
@@ -146,9 +146,9 @@ class HandRoiRefinementGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe_v01013_based::tasks::vision::hand_landmarker::HandRoiRefinementGraph);
+    ::hand_tracking_mp_lean::tasks::vision::hand_landmarker::HandRoiRefinementGraph);
 
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

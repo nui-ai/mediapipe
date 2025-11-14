@@ -34,9 +34,9 @@
 #define MEDIAPIPE_FOURCC(a, b, c, d) \
   (((a) << 24) + ((b) << 16) + ((c) << 8) + (d))
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-using mediapipe_v01013_based::ImageFormat;
+using hand_tracking_mp_lean::ImageFormat;
 
 enum class GpuBufferFormat : uint32_t {
   kUnknown = 0,
@@ -206,6 +206,6 @@ inline bool operator!=(const GpuBufferSpec& lhs, const GpuBufferSpec& rhs) {
 
 }  // namespace internal
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GPU_BUFFER_FORMAT_H_

@@ -29,7 +29,7 @@
 #include "mediapipe/framework/tool/container_util.h"
 #include "mediapipe/framework/tool/switch_container.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // A calculator to redirect a set of input streams to one of several output
 // channels, each consisting of corresponding output streams.  Each channel
@@ -141,7 +141,7 @@ absl::Status SwitchDemuxCalculator::GetContract(CalculatorContract* cc) {
       }
     }
   }
-  auto& options = cc->Options<mediapipe_v01013_based::SwitchContainerOptions>();
+  auto& options = cc->Options<hand_tracking_mp_lean::SwitchContainerOptions>();
   if (!options.synchronize_io()) {
     cc->SetInputStreamHandler("ImmediateInputStreamHandler");
   }
@@ -268,4 +268,4 @@ absl::Status SwitchDemuxCalculator::SendActivePackets(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

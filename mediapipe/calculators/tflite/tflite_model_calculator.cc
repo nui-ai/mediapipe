@@ -32,7 +32,7 @@
 #include "tensorflow/lite/allocation.h"
 #include "tensorflow/lite/model_builder.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Struct to hold onto resources so that they can be properly managed
 // in the deleter function for TfLiteModel
@@ -50,7 +50,7 @@ struct ModelResources {
 // Input side packets:
 //   MODEL_PATH - TfLite model file path as std::string. The model will be loaded
 //                directly from the specified path.
-//   MODEL_RESOURCE - TfLite model file as mediapipe_v01013_based::Resource - enables
+//   MODEL_RESOURCE - TfLite model file as hand_tracking_mp_lean::Resource - enables
 //                    managed, unmanaged, in-memory, mmaped resources.
 //   MODEL_BLOB - TfLite model blob/file-contents (std::string). You can read
 //                model blob from file (using whatever APIs you have) and pass
@@ -232,4 +232,4 @@ class TfLiteModelCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(TfLiteModelCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -19,7 +19,7 @@ limitations under the License.
 #include "absl/status/statusor.h"
 #include "mediapipe/tasks/cc/components/containers/embedding_result.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace components {
 namespace utils {
@@ -35,6 +35,6 @@ absl::StatusOr<double> CosineSimilarity(const containers::Embedding& u,
 }  // namespace utils
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_UTILS_COSINE_SIMILARITY_H_

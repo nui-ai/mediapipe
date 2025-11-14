@@ -24,7 +24,7 @@
 #include "mediapipe/framework/formats/classification.pb.h"
 #include "mediapipe/util/label_map.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Forward declaration
 class TensorsToClassificationCalculatorOptions;
@@ -68,6 +68,6 @@ std::unique_ptr<ClassificationList> HandednessClassificationExtract(
     const TensorsToClassificationConfig& config);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_CLASSIFICATION_CALCULATOR_CORE_H_

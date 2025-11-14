@@ -19,7 +19,7 @@
 #include "absl/strings/substitute.h"
 #include "mediapipe/framework/input_stream_handler.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 REGISTER_INPUT_STREAM_HANDLER(DefaultInputStreamHandler);
 
@@ -66,4 +66,4 @@ void DefaultInputStreamHandler::FillInputSet(Timestamp input_timestamp,
   sync_set_.FillInputSet(input_timestamp, input_set);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

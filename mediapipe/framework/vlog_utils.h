@@ -3,7 +3,7 @@
 
 #include "absl/strings/string_view.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Helper to log a message with a large number of lines on mobile (Android).
 //
@@ -17,6 +17,6 @@ namespace mediapipe_v01013_based {
 // }
 void VlogLargeMessage(int verbose_level, absl::string_view message);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_VLOG_UTILS_H_

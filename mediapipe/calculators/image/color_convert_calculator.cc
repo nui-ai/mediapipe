@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/source_location.h"
 #include "mediapipe/framework/port/status_builder.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 void SetColorChannel(int channel, uint8_t value, cv::Mat* mat) {
   ABSL_CHECK(mat->depth() == CV_8U);
@@ -209,8 +209,8 @@ absl::Status ColorConvertCalculator::Process(CalculatorContext* cc) {
                             cv::COLOR_BGR2RGB, cc);
   }
 
-  return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+  return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
          << "Unsupported image format conversion.";
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

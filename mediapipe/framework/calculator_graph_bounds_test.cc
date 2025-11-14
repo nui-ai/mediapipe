@@ -28,7 +28,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/util/packet_test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr int kIntTestValue = 33;
@@ -62,7 +62,7 @@ class AtomicSemaphore {
   std::atomic<int64_t> supply_;
 };
 
-// A mediapipe_v01013_based::Executor that signals the start and finish of each task.
+// A hand_tracking_mp_lean::Executor that signals the start and finish of each task.
 class CountingExecutor : public Executor {
  public:
   CountingExecutor(int num_threads, std::function<void()> start_callback,
@@ -309,7 +309,7 @@ REGISTER_CALCULATOR(CustomBoundCalculator);
 TEST(CalculatorGraph, SetNextTimestampBoundPropagation) {
   CalculatorGraph graph;
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: 'in'
         input_stream: 'gate'
         node {
@@ -434,7 +434,7 @@ TEST(CalculatorGraph, NotAllInputPacketsAtNextTimestampBoundAvailable) {
   //
   CalculatorGraph graph;
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: 'in0_unfiltered'
         input_stream: 'in1_to_be_filtered'
         node {
@@ -506,7 +506,7 @@ TEST(CalculatorGraph, NotAllInputPacketsAtNextTimestampBoundAvailable) {
 
 TEST(CalculatorGraph, PropagateBoundLoop) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: 'OutputAndBoundSourceCalculator'
           output_stream: 'integers'
@@ -552,7 +552,7 @@ TEST(CalculatorGraph, CheckBatchProcessingBoundPropagation) {
   // the sink calculator's input stream should report packet timestamp
   // mismatches.
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: 'OutputAndBoundSourceCalculator'
           output_stream: 'integers'
@@ -584,7 +584,7 @@ TEST(CalculatorGraphBoundsTest, ImmediateHandlerBounds) {
   // The second PassthroughCalculator delivers an output packet whenever the
   // first PassThroughCalculator delivers a timestamp bound.
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: 'input'
         node {
           calculator: 'CustomBoundCalculator'
@@ -669,7 +669,7 @@ class BoundToPacketCalculator : public CalculatorBase {
     for (int i = 0; i < cc->Outputs().NumEntries(); ++i) {
       Timestamp t = cc->Inputs().Index(i).Value().Timestamp();
       cc->Outputs().Index(i).AddPacket(
-          mediapipe_v01013_based::MakePacket<Timestamp>(t).At(cc->InputTimestamp()));
+          hand_tracking_mp_lean::MakePacket<Timestamp>(t).At(cc->InputTimestamp()));
     }
     return absl::OkStatus();
   }
@@ -706,7 +706,7 @@ TEST(CalculatorGraphBoundsTest, OffsetBoundPropagation) {
   // The PassThroughCalculator delivers an output packet whenever the
   // OffsetBoundCalculator delivers a timestamp bound.
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: 'input'
         node {
           calculator: 'OffsetBoundCalculator'
@@ -754,7 +754,7 @@ TEST(CalculatorGraphBoundsTest, BoundWithoutInputPackets) {
   // The BoundToPacketCalculator delivers an output packet whenever the
   // OffsetBoundCalculator delivers a timestamp bound.
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: 'input'
         node {
           calculator: 'FuturePacketCalculator'
@@ -812,7 +812,7 @@ TEST(CalculatorGraphBoundsTest, FixedSizeHandlerBounds) {
   // The PassthroughCalculator delivers an output packet whenever the
   // LambdaCalculator delivers a timestamp bound.
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: 'input'
         input_side_packet: 'open_function'
         input_side_packet: 'process_function'
@@ -954,7 +954,7 @@ TEST(CalculatorGraphBoundsTest, LastPacketCheck) {
   // packet or input stream close.  The output "last_output" shows the
   // last packet, and "output" shows the timestamp bounds.
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: 'input'
         output_stream: 'output'
         output_stream: 'last_output'
@@ -1037,7 +1037,7 @@ void TestBoundsForEmptyInputs(std::string input_stream_handler) {
   absl::StrReplaceAll({{"$input_stream_handler", input_stream_handler}},
                       &config_str);
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
   CalculatorGraph graph;
   std::vector<Packet> input_ts_packets;
   std::vector<Packet> bounds_ts_packets;
@@ -1206,7 +1206,7 @@ void TestProcessForEmptyInputs(const std::string& input_stream_handler) {
   absl::StrReplaceAll({{"$input_stream_handler", input_stream_handler}},
                       &config_str);
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
   CalculatorGraph graph;
   std::vector<Packet> input_ts_packets;
   std::vector<Packet> bounds_ts_packets;
@@ -1306,7 +1306,7 @@ TEST(CalculatorGraphBoundsTest, ProcessTimestampBounds_Passthrough) {
             }
           )";
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
   CalculatorGraph graph;
   std::vector<Packet> output_0_packets;
   std::vector<Packet> output_1_packets;
@@ -1374,7 +1374,7 @@ TEST(CalculatorGraphBoundsTest, PostStreamPacketToSetProcessTimestampBound) {
             }
           )";
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
   CalculatorGraph graph;
   std::vector<Packet> output_0_packets;
   MP_ASSERT_OK(graph.Initialize(config));
@@ -1434,7 +1434,7 @@ TEST(CalculatorGraphBoundsTest, MaxInFlightWithOccasionalBound) {
             num_threads: 4
           )";
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
   CalculatorGraph graph;
   std::vector<Packet> output_0_packets;
   MP_ASSERT_OK(graph.Initialize(config));
@@ -1494,7 +1494,7 @@ TEST(CalculatorGraphBoundsTest, OffsetAndBound) {
             }
           )";
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
   CalculatorGraph graph;
   std::vector<Packet> output_0_packets;
   MP_ASSERT_OK(graph.Initialize(config));
@@ -1558,7 +1558,7 @@ TEST(CalculatorGraphBoundsTest, EmptyPacketOutput) {
             }
           )";
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
   CalculatorGraph graph;
   std::vector<Packet> output_0_packets;
   MP_ASSERT_OK(graph.Initialize(config));
@@ -1600,7 +1600,7 @@ TEST(CalculatorGraphBoundsTest, SetInputStreamTimestampBound) {
             }
           )";
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
   CalculatorGraph graph;
   std::vector<Packet> output_0_packets;
   MP_ASSERT_OK(graph.Initialize(config));
@@ -1648,7 +1648,7 @@ TEST(CalculatorGraphBoundsTest, TimestampBoundsForInfrequentInput) {
   )pb";
 
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
   CalculatorGraph graph;
   std::vector<Packet> frame_packets;
   MP_ASSERT_OK(graph.Initialize(config));
@@ -1778,4 +1778,4 @@ TEST(CalculatorGraphBoundsTest, TimestampBoundsForInfrequentInput) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

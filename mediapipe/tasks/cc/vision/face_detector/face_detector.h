@@ -26,13 +26,13 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/image_processing_options.h"
 #include "mediapipe/tasks/cc/vision/core/running_mode.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace face_detector {
 
 using FaceDetectorResult =
-    ::mediapipe_v01013_based::tasks::components::containers::DetectionResult;
+    ::hand_tracking_mp_lean::tasks::components::containers::DetectionResult;
 
 // The options for configuring a mediapipe face detector task.
 struct FaceDetectorOptions {
@@ -73,7 +73,7 @@ class FaceDetector : core::BaseVisionTaskApi {
   // or streaming data. Face detector can be created with one of the following
   // three running modes:
   // 1) Image mode for detecting faces on single image inputs. Users
-  //    provide mediapipe_v01013_based::Image to the `Detect` method, and will receive the
+  //    provide hand_tracking_mp_lean::Image to the `Detect` method, and will receive the
   //    detected face detection results as the return value.
   // 2) Video mode for detecting faces on the decoded frames of a
   //    video. Users call `DetectForVideo` method, and will receive the detected
@@ -158,6 +158,6 @@ class FaceDetector : core::BaseVisionTaskApi {
 }  // namespace face_detector
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_FACE_DETECTOR_FACE_DETECTOR_H_

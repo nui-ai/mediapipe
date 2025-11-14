@@ -19,7 +19,7 @@ the hand, not the way NN model predicts joint rotations for it.
 #ifndef MEDIAPIPE_TASKS_CC_VISION_UTILS_GHUM_GHUM_HAND_TOPOLOGY_H_
 #define MEDIAPIPE_TASKS_CC_VISION_UTILS_GHUM_GHUM_HAND_TOPOLOGY_H_
 
-namespace mediapipe_v01013_based::tasks::vision::utils::ghum {
+namespace hand_tracking_mp_lean::tasks::vision::utils::ghum {
 
 // GHUM hand 16 joint names in order they are produced by the HandRig pipeline.
 enum class GhumHandJointName {
@@ -41,6 +41,6 @@ enum class GhumHandJointName {
   kThumb03,
 };
 
-}  // namespace mediapipe_v01013_based::tasks::vision::utils::ghum
+}  // namespace hand_tracking_mp_lean::tasks::vision::utils::ghum
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_UTILS_GHUM_GHUM_HAND_TOPOLOGY_H_

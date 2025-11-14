@@ -1,16 +1,16 @@
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/framework/calculator.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.proto";
+option java_package = "com.google.hand_tracking_mp_lean.proto";
 option java_outer_classname = "SwitchContainerProto";
 
 // Options for a switch-container directing traffic to one of several
 // contained subgraph or calculator nodes.
 message SwitchContainerOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional SwitchContainerOptions ext = 345967970;
   }
 

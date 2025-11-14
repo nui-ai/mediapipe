@@ -50,7 +50,7 @@ std::ostream& operator<<(std::ostream& out, const std::vector<Ts...>& v) {
 
 }  // namespace std
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 using LogSeverity = google::LogSeverity;
 const auto SetVLOGLevel = google::SetVLOGLevel;
 class LogEntry {
@@ -91,6 +91,6 @@ inline void AddLogSink(LogSink* destination) {
 inline void RemoveLogSink(LogSink* destination) {
   google::RemoveLogSink(destination);
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_PORT_LOGGING_H_

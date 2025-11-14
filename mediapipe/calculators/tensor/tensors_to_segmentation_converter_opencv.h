@@ -21,11 +21,11 @@
 #include "mediapipe/calculators/tensor/tensors_to_segmentation_calculator.pb.h"
 #include "mediapipe/calculators/tensor/tensors_to_segmentation_converter.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 // Creates OpenCV tensors-to-segmentation converter.
 absl::StatusOr<std::unique_ptr<TensorsToSegmentationConverter>>
 CreateOpenCvConverter(
-    const mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions& options);
-}  // namespace mediapipe_v01013_based
+    const hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions& options);
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_SEGMENTATION_CONVERTER_OPENCV_H_

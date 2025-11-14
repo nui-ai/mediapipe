@@ -16,7 +16,7 @@
 #include "mediapipe/framework/tool/name_util.h"
 #include "mediapipe/framework/tool/options_registry.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tool {
 
 namespace {
@@ -194,4 +194,4 @@ std::vector<absl::string_view> OptionsSyntaxUtil::StrSplitTags(
 }
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

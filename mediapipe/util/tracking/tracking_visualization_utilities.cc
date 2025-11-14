@@ -21,7 +21,7 @@
 #include "mediapipe/util/tracking/box_tracker.h"
 #include "mediapipe/util/tracking/tracking.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 void RenderState(const MotionBoxState& box_state, bool print_stats,
                  cv::Mat* frame) {
@@ -223,4 +223,4 @@ void RenderBox(const TimedBoxProto& box_proto, cv::Mat* mat) {
 #endif
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

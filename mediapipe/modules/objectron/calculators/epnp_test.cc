@@ -4,7 +4,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/tool/test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 using Eigen::AngleAxisf;
@@ -166,4 +166,4 @@ TEST_F(SolveEpnpTest, BadOutput3dPoints) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -31,7 +31,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "tensorflow/lite/delegates/xnnpack/xnnpack_delegate.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 class InferenceCalculatorXnnpackImpl
@@ -57,7 +57,7 @@ absl::Status InferenceCalculatorXnnpackImpl::UpdateContract(
     CalculatorContract* cc) {
   MP_RETURN_IF_ERROR(TensorContractCheck(cc));
 
-  const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
+  const auto& options = cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
   RET_CHECK(!options.model_path().empty() ^ kSideInModel(cc).IsConnected() ^ kSideInModelPath(cc).IsConnected())
       << "One of: model path in options, MODEL side packet, or MODEL_PATH side packet is required.";
 
@@ -88,7 +88,7 @@ InferenceCalculatorXnnpackImpl::CreateInferenceRunner(CalculatorContext* cc) {
   MP_ASSIGN_OR_RETURN(auto model_packet, GetModelAsPacket(cc));
   MP_ASSIGN_OR_RETURN(auto op_resolver_packet, GetOpResolverAsPacket(cc));
   const auto& calculator_opts =
-      cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
+      cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
   const int interpreter_num_threads = calculator_opts.cpu_num_thread();
   MP_ASSIGN_OR_RETURN(TfLiteDelegatePtr delegate, CreateDelegate(cc));
   return CreateInferenceInterpreterDelegateRunner(
@@ -101,15 +101,15 @@ InferenceCalculatorXnnpackImpl::CreateInferenceRunner(CalculatorContext* cc) {
 absl::StatusOr<TfLiteDelegatePtr>
 InferenceCalculatorXnnpackImpl::CreateDelegate(CalculatorContext* cc) {
   const auto& calculator_opts =
-      cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
+      cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
   auto opts_delegate = calculator_opts.delegate();
   if (!kDelegate(cc).IsEmpty()) {
-    const mediapipe_v01013_based::InferenceCalculatorOptions::Delegate&
+    const hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate&
         input_side_packet_delegate = kDelegate(cc).Get();
     RET_CHECK(
         input_side_packet_delegate.has_xnnpack() ||
         input_side_packet_delegate.delegate_case() ==
-            mediapipe_v01013_based::InferenceCalculatorOptions::Delegate::DELEGATE_NOT_SET)
+            hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate::DELEGATE_NOT_SET)
         << "inference_calculator_cpu only supports delegate input side packet "
         << "for TFLite, XNNPack";
     opts_delegate.MergeFrom(input_side_packet_delegate);
@@ -125,4 +125,4 @@ InferenceCalculatorXnnpackImpl::CreateDelegate(CalculatorContext* cc) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

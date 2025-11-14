@@ -18,7 +18,7 @@
 #include "mediapipe/gpu/egl_base.h"
 #include "mediapipe/gpu/egl_errors.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -230,4 +230,4 @@ absl::StatusOr<bool> EglSync::IsSignaled() {
   return status == EGL_SIGNALED_KHR;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

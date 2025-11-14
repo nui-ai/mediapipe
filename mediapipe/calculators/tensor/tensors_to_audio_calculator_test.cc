@@ -27,10 +27,10 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using Options = ::mediapipe_v01013_based::TensorsToAudioCalculatorOptions;
+using Options = ::hand_tracking_mp_lean::TensorsToAudioCalculatorOptions;
 
 class TensorsToAudioCalculatorFftTest : public ::testing::Test {
  protected:
@@ -177,4 +177,4 @@ TEST_F(TensorsToAudioCalculatorFftTest, TestDftTensorWithoutDCAndNyquist) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -20,7 +20,7 @@
 
 #endif  // defined(MEDIAPIPE_VLOG_V) || defined(MEDIAPIPE_VLOG_VMODULE)
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 void SetVLogOverrides() {
 #if defined(MEDIAPIPE_VLOG_V)
@@ -52,4 +52,4 @@ void SetVLogOverrides() {
 #endif  // defined(MEDIAPIPE_VLOG_VMODULE)
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

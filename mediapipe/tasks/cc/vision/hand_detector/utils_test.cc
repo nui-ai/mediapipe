@@ -13,14 +13,14 @@
 #include "mediapipe/tasks/cc/vision/utils/image_tensor_specs.h"
 #include "research/aimatter/api/metadata_utils.h"
 
-namespace mediapipe_v01013_based::tasks::vision::hand_detector {
+namespace hand_tracking_mp_lean::tasks::vision::hand_detector {
 namespace {
 
 namespace rapi = ::research::aimatter::api;
 
-using ::mediapipe_v01013_based::file::JoinPath;
-using ::mediapipe_v01013_based::tasks::core::ModelResources;
-using ::mediapipe_v01013_based::tasks::core::proto::ExternalFile;
+using ::hand_tracking_mp_lean::file::JoinPath;
+using ::hand_tracking_mp_lean::tasks::core::ModelResources;
+using ::hand_tracking_mp_lean::tasks::core::proto::ExternalFile;
 
 constexpr char kTestDataDirectory[] = "/mediapipe/tasks/testdata/vision/";
 constexpr char kTestModelResourcesTag[] = "test_model_resources";
@@ -44,7 +44,7 @@ TEST(Utils, ConfigureSsdAnchorsCalculator) {
       const auto metadata_fb,
       rapi::VerifyAndLoadMetadata<rapi::fb::FaceDetectorMetadata>(
           model, rapi::fb::FaceDetectorMetadataIdentifier()));
-  mediapipe_v01013_based::SsdAnchorsCalculatorOptions ssd_anchors_options;
+  hand_tracking_mp_lean::SsdAnchorsCalculatorOptions ssd_anchors_options;
   MP_ASSERT_OK(ConfigureSsdAnchorsCalculator(
       *BuildInputImageTensorSpecs(*model_resources), *metadata_fb,
       ssd_anchors_options));
@@ -54,7 +54,7 @@ TEST(Utils, ConfigureSsdAnchorsCalculator) {
 TEST(Utils, ConfigureTensorsToDetectionCalculator) {
   MP_ASSERT_OK_AND_ASSIGN(auto model_resources,
                           CreateModelResourcesForModel(kModelWithMetadataName));
-  mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions tensors_to_detections_options;
+  hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions tensors_to_detections_options;
   MP_ASSERT_OK(ConfigureTensorsToDetectionsCalculator(
       *BuildInputImageTensorSpecs(*model_resources), 2016, 0.1,
       tensors_to_detections_options));
@@ -66,4 +66,4 @@ TEST(Utils, ConfigureTensorsToDetectionCalculator) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::tasks::vision::hand_detector
+}  // namespace hand_tracking_mp_lean::tasks::vision::hand_detector

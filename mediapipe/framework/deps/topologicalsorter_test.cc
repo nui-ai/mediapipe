@@ -16,7 +16,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 TEST(TopologicalSorterTest, NoConnection) {
   TopologicalSorter sorter(3);
@@ -107,4 +107,4 @@ TEST(TopologicalSorterTest, Cycle) {
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

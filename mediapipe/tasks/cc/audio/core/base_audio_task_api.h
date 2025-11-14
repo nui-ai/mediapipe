@@ -28,7 +28,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/base_task_api.h"
 #include "mediapipe/tasks/cc/core/task_runner.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace audio {
 namespace core {
@@ -111,6 +111,6 @@ class BaseAudioTaskApi : public tasks::core::BaseTaskApi {
 }  // namespace core
 }  // namespace audio
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_AUDIO_CORE_BASE_AUDIO_TASK_API_H_

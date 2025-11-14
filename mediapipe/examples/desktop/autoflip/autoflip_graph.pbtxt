@@ -18,7 +18,7 @@ node {
   input_stream: "VIDEO_HEADER:video_header"
   output_stream: "FRAMES:video_frames_scaled"
   options: {
-    [mediapipe_v01013_based.ScaleImageCalculatorOptions.ext]: {
+    [hand_tracking_mp_lean.ScaleImageCalculatorOptions.ext]: {
       preserve_aspect_ratio: true
       output_format: SRGB
       target_width: 480
@@ -33,7 +33,7 @@ node {
   input_stream: "video_frames_scaled"
   output_stream: "video_frames_scaled_downsampled"
   options: {
-    [mediapipe_v01013_based.PacketThinnerCalculatorOptions.ext]: {
+    [hand_tracking_mp_lean.PacketThinnerCalculatorOptions.ext]: {
       thinner_type: ASYNC
       period: 200000
     }
@@ -53,7 +53,7 @@ node {
   input_stream: "VIDEO:video_frames_scaled"
   output_stream: "IS_SHOT_CHANGE:shot_change"
   options {
-    [mediapipe_v01013_based.autoflip.ShotBoundaryCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.autoflip.ShotBoundaryCalculatorOptions.ext] {
       min_shot_span: 0.2
       min_motion: 0.3
       window_size: 15
@@ -87,7 +87,7 @@ node {
   input_stream: "DETECTIONS:object_detections"
   output_stream: "REGIONS:object_regions"
   options {
-    [mediapipe_v01013_based.autoflip.LocalizationToRegionCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.autoflip.LocalizationToRegionCalculatorOptions.ext] {
       output_all_signals: true
     }
   }
@@ -101,7 +101,7 @@ node {
   input_stream: "object_regions"
   output_stream: "salient_regions"
   options {
-    [mediapipe_v01013_based.autoflip.SignalFusingCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.autoflip.SignalFusingCalculatorOptions.ext] {
       signal_settings {
         type { standard: FACE_CORE_LANDMARKS }
         min_score: 0.85
@@ -159,7 +159,7 @@ node {
   input_stream: "SHOT_BOUNDARIES:shot_change"
   output_stream: "CROPPED_FRAMES:cropped_frames"
   options: {
-    [mediapipe_v01013_based.autoflip.SceneCroppingCalculatorOptions.ext]: {
+    [hand_tracking_mp_lean.autoflip.SceneCroppingCalculatorOptions.ext]: {
       max_scene_size: 600
       key_frame_crop_options: {
         score_aggregation_type: CONSTANT
@@ -194,7 +194,7 @@ node {
   input_side_packet: "OUTPUT_FILE_PATH:output_video_path"
   input_side_packet: "AUDIO_FILE_PATH:audio_path"
   options: {
-    [mediapipe_v01013_based.OpenCvVideoEncoderCalculatorOptions.ext]: {
+    [hand_tracking_mp_lean.OpenCvVideoEncoderCalculatorOptions.ext]: {
       codec: "avc1"
       video_format: "mp4"
     }

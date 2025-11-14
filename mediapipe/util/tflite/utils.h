@@ -16,10 +16,10 @@
 
 #include "tensorflow/lite/c/common.h"
 
-namespace mediapipe_v01013_based::util::tflite {
+namespace hand_tracking_mp_lean::util::tflite {
 
 // Returns
 bool IsDynamicTensor(const TfLiteTensor& tensor);
-}  // namespace mediapipe_v01013_based::util::tflite
+}  // namespace hand_tracking_mp_lean::util::tflite
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_UTILS_H_

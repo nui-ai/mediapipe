@@ -6,7 +6,7 @@
 #include "absl/strings/string_view.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 void VlogLargeMessage(int verbose_level, absl::string_view message) {
 #if defined(MEDIAPIPE_MOBILE)
@@ -20,4 +20,4 @@ void VlogLargeMessage(int verbose_level, absl::string_view message) {
   VLOG(verbose_level) << message;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

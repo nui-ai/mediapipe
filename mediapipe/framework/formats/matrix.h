@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Define mediapipe_v01013_based::Matrix, a MediaPipe alias for an Eigen Matrix, and
+// Define hand_tracking_mp_lean::Matrix, a MediaPipe alias for an Eigen Matrix, and
 // the conversion functions between MatrixData proto and Matrix.
 //
 // This is the preferred format for processing chunks of
@@ -27,7 +27,7 @@
 #include "mediapipe/framework/formats/matrix_data.pb.h"
 #include "mediapipe/framework/port.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 typedef Eigen::MatrixXf Matrix;
 
@@ -44,7 +44,7 @@ std::string MatrixAsTextProto(const Matrix& matrix);
 // Produce a Matrix from a text format MatrixData proto representation.
 void MatrixFromTextProto(const std::string& text_proto, Matrix* matrix);
 #endif  // !defined(MEDIAPIPE_MOBILE) && !defined(MEDIAPIPE_LITE)
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 namespace Eigen {
 

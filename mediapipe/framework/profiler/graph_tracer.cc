@@ -25,7 +25,7 @@
 #include "mediapipe/framework/profiler/trace_builder.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 using EventType = GraphTrace::EventType;
@@ -152,4 +152,4 @@ Timestamp GraphTracer::GetOutputTimestamp(const CalculatorContext* context) {
   return Timestamp();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

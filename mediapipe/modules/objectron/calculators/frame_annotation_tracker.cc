@@ -21,7 +21,7 @@
 #include "mediapipe/modules/objectron/calculators/box_util.h"
 #include "mediapipe/util/tracking/box_tracker.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 void FrameAnnotationTracker::AddDetectionResult(
     const FrameAnnotation& frame_annotation) {
@@ -100,4 +100,4 @@ FrameAnnotation FrameAnnotationTracker::ConsolidateTrackingResult(
   return frame_annotation;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

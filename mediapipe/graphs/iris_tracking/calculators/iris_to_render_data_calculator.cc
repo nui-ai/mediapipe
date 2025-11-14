@@ -24,7 +24,7 @@
 #include "mediapipe/util/color.pb.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -161,7 +161,7 @@ absl::Status IrisToRenderDataCalculator::Process(CalculatorContext* cc) {
     return absl::OkStatus();
   }
   const auto& options =
-      cc->Options<::mediapipe_v01013_based::IrisToRenderDataCalculatorOptions>();
+      cc->Options<::hand_tracking_mp_lean::IrisToRenderDataCalculatorOptions>();
 
   const auto& iris_landmarks =
       cc->Inputs().Tag(kIrisTag).Get<NormalizedLandmarkList>();
@@ -315,4 +315,4 @@ RenderAnnotation* IrisToRenderDataCalculator::AddPointRenderData(
   return landmark_data_annotation;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

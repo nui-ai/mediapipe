@@ -17,7 +17,7 @@
 
 #include <type_traits>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // C++17 port of the C++20 `requires` expressions.
 // It allows easy inline test of properties of types in template code.
@@ -56,6 +56,6 @@ constexpr bool Requires(F) {
   return std::is_invocable_v<F, T...>;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_DEPS_REQUIRES_H_

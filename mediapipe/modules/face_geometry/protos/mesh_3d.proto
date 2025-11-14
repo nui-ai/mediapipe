@@ -14,9 +14,9 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based.face_geometry;
+package hand_tracking_mp_lean.face_geometry;
 
-option java_package = "com.google.mediapipe_v01013_based.modules.facegeometry";
+option java_package = "com.google.hand_tracking_mp_lean.modules.facegeometry";
 option java_outer_classname = "Mesh3dProto";
 
 message Mesh3d {

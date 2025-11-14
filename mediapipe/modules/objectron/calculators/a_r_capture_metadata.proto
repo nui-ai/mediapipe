@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 // Info about the camera characteristics used to capture images and depth data.
 // See developer.apple.com/documentation/avfoundation/avcameracalibrationdata

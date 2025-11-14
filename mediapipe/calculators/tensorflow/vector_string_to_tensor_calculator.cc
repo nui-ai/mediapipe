@@ -23,7 +23,7 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/types.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 auto& INPUT_1D = VectorStringToTensorCalculatorOptions::INPUT_1D;
@@ -135,4 +135,4 @@ absl::Status VectorStringToTensorCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

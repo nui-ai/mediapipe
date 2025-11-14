@@ -23,7 +23,7 @@ limitations under the License.
 #include "tensorflow/lite/kernels/kernel_util.h"
 #include "unsupported/Eigen/CXX11/Tensor"
 
-namespace mediapipe_v01013_based::tflite_operations {
+namespace hand_tracking_mp_lean::tflite_operations {
 namespace vision::batch_norm {
 namespace {
 
@@ -290,4 +290,4 @@ TfLiteRegistration* Register_FusedBatchNorm() {
   return &r;
 }
 
-}  // namespace mediapipe_v01013_based::tflite_operations
+}  // namespace hand_tracking_mp_lean::tflite_operations

@@ -29,7 +29,7 @@
 #include "mediapipe/framework/packet.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tensors_to_segmentation_utils {
 
 std::string ActivationTypeToString(
@@ -71,7 +71,7 @@ std::vector<float> MakeRedAlphaMatrix(const std::vector<float>& values) {
 // For GPU tests, the input tensor needs to be moved to GPU, using
 // TensorViewRequestor. After calculation, the output needs to be moved back
 // to CPU, using ToImageCalculator. The output is an ImageFrame.
-mediapipe_v01013_based::CalculatorGraphConfig CreateGraphConfigForTest(
+hand_tracking_mp_lean::CalculatorGraphConfig CreateGraphConfigForTest(
     bool test_gpu,
     const TensorsToSegmentationCalculatorOptions::Activation& activation,
     bool use_single_tensor) {
@@ -97,7 +97,7 @@ mediapipe_v01013_based::CalculatorGraphConfig CreateGraphConfigForTest(
       output_stream: "IMAGE_CPU:image_as_mask"
     }
   )pb";
-  return mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(
+  return hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(
       absl::Substitute(
           R"pb(
             input_stream: "$0"
@@ -135,4 +135,4 @@ absl::Status AddTensorInput(Tensor tensor, bool use_single_tensor,
 }
 
 }  // namespace tensors_to_segmentation_utils
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

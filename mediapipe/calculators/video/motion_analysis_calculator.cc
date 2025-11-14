@@ -38,7 +38,7 @@
 #include "mediapipe/util/tracking/motion_models.h"
 #include "mediapipe/util/tracking/region_flow.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kDownsampleTag[] = "DOWNSAMPLE";
 constexpr char kCsvFileTag[] = "CSV_FILE";
@@ -52,20 +52,20 @@ constexpr char kFlowTag[] = "FLOW";
 constexpr char kSelectionTag[] = "SELECTION";
 constexpr char kVideoTag[] = "VIDEO";
 
-using mediapipe_v01013_based::AffineAdapter;
-using mediapipe_v01013_based::CameraMotion;
-using mediapipe_v01013_based::FrameSelectionResult;
-using mediapipe_v01013_based::Homography;
-using mediapipe_v01013_based::HomographyAdapter;
-using mediapipe_v01013_based::LinearSimilarityModel;
-using mediapipe_v01013_based::MixtureHomography;
-using mediapipe_v01013_based::MixtureRowWeights;
-using mediapipe_v01013_based::MotionAnalysis;
-using mediapipe_v01013_based::ProjectViaFit;
-using mediapipe_v01013_based::RegionFlowComputationOptions;
-using mediapipe_v01013_based::RegionFlowFeatureList;
-using mediapipe_v01013_based::SalientPointFrame;
-using mediapipe_v01013_based::TranslationModel;
+using hand_tracking_mp_lean::AffineAdapter;
+using hand_tracking_mp_lean::CameraMotion;
+using hand_tracking_mp_lean::FrameSelectionResult;
+using hand_tracking_mp_lean::Homography;
+using hand_tracking_mp_lean::HomographyAdapter;
+using hand_tracking_mp_lean::LinearSimilarityModel;
+using hand_tracking_mp_lean::MixtureHomography;
+using hand_tracking_mp_lean::MixtureRowWeights;
+using hand_tracking_mp_lean::MotionAnalysis;
+using hand_tracking_mp_lean::ProjectViaFit;
+using hand_tracking_mp_lean::RegionFlowComputationOptions;
+using hand_tracking_mp_lean::RegionFlowFeatureList;
+using hand_tracking_mp_lean::SalientPointFrame;
+using hand_tracking_mp_lean::TranslationModel;
 
 const char kOptionsTag[] = "OPTIONS";
 
@@ -540,7 +540,7 @@ absl::Status MotionAnalysisCalculator::Process(CalculatorContext* cc) {
       selected_motions_.push_back(frame_selection_result->camera_motion());
       switch (options_.selection_analysis()) {
         case MotionAnalysisCalculatorOptions::NO_ANALYSIS_USE_SELECTION:
-          return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+          return hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
                  << "Should not reach this point!";
 
         case MotionAnalysisCalculatorOptions::ANALYSIS_FROM_FEATURES:
@@ -1006,4 +1006,4 @@ void MotionAnalysisCalculator::AppendCameraMotionsFromHomographies(
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

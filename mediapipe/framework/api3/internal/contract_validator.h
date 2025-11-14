@@ -34,7 +34,7 @@
 #include "mediapipe/framework/deps/registration.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 // Contract validator is used internally to verify that contract is defined
 // correctly - unique tags for fields of the same kind (e.g. Input) and
@@ -170,6 +170,6 @@ class ContractValidator {
 
 #endif
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_INTERNAL_CONTRACT_CONTRACT_VALIDATOR_H_

@@ -10,7 +10,7 @@
 #include "mediapipe/framework/port/any_proto.h"
 #include "mediapipe/framework/tool/type_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tool {
 
@@ -71,7 +71,7 @@ void GetNodeOptions(const CalculatorGraphConfig::Node& node_config, T* result) {
 #if defined(MEDIAPIPE_PROTO_LITE) && defined(MEDIAPIPE_PROTO_THIRD_PARTY)
   // protobuf::Any is unavailable with third_party/protobuf:protobuf-lite.
 #else
-  for (const mediapipe_v01013_based::protobuf::Any& options : node_config.node_options()) {
+  for (const hand_tracking_mp_lean::protobuf::Any& options : node_config.node_options()) {
     if (options.Is<T>()) {
       options.UnpackTo(result);
     }
@@ -84,7 +84,7 @@ void SetNodeOptions(CalculatorGraphConfig::Node& node_config, const T& value) {
 #if defined(MEDIAPIPE_PROTO_LITE) && defined(MEDIAPIPE_PROTO_THIRD_PARTY)
   // protobuf::Any is unavailable with third_party/protobuf:protobuf-lite.
 #else
-  for (mediapipe_v01013_based::protobuf::Any& options :
+  for (hand_tracking_mp_lean::protobuf::Any& options :
        *node_config.mutable_node_options()) {
     if (options.Is<T>()) {
       options.PackFrom(value);
@@ -152,7 +152,7 @@ class OptionsMap {
 #if defined(MEDIAPIPE_PROTO_LITE) && defined(MEDIAPIPE_PROTO_THIRD_PARTY)
     // protobuf::Any is unavailable with third_party/protobuf:protobuf-lite.
 #else
-    for (const mediapipe_v01013_based::protobuf::Any& options :
+    for (const hand_tracking_mp_lean::protobuf::Any& options :
          node_config_->node_options()) {
       if (options.Is<T>()) {
         return true;
@@ -199,6 +199,6 @@ class MutableOptionsMap : public OptionsMap {
 };
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_OPTIONS_MAP_H_

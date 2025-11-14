@@ -30,11 +30,11 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "pffft.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace {
 
-using Options = ::mediapipe_v01013_based::TensorsToAudioCalculatorOptions;
+using Options = ::hand_tracking_mp_lean::TensorsToAudioCalculatorOptions;
 
 std::vector<float> HannWindow(int window_size, bool sqrt_hann) {
   std::vector<float> hann_window(window_size);
@@ -99,8 +99,8 @@ bool IsValidFftSize(int size) {
 //     A pair of dc component and nyquist component.
 //
 // Outputs:
-//   AUDIO - mediapipe_v01013_based::Matrix
-//     The audio data represented as mediapipe_v01013_based::Matrix.
+//   AUDIO - hand_tracking_mp_lean::Matrix
+//     The audio data represented as hand_tracking_mp_lean::Matrix.
 //
 // Example:
 // node {
@@ -146,7 +146,7 @@ class TensorsToAudioCalculator : public Node {
 
 absl::Status TensorsToAudioCalculator::Open(CalculatorContext* cc) {
   const auto& options =
-      cc->Options<mediapipe_v01013_based::TensorsToAudioCalculatorOptions>();
+      cc->Options<hand_tracking_mp_lean::TensorsToAudioCalculatorOptions>();
   dft_tensor_format_ = options.dft_tensor_format();
   RET_CHECK(dft_tensor_format_ != Options::DFT_TENSOR_FORMAT_UNKNOWN)
       << "dft tensor format must be specified.";
@@ -257,4 +257,4 @@ absl::Status TensorsToAudioCalculator::Close(CalculatorContext* cc) {
 MEDIAPIPE_REGISTER_NODE(TensorsToAudioCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

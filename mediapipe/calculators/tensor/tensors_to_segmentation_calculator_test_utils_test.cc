@@ -19,10 +19,10 @@
 #include "mediapipe/calculators/tensor/tensors_to_segmentation_calculator.pb.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based::tensors_to_segmentation_utils {
+namespace hand_tracking_mp_lean::tensors_to_segmentation_utils {
 namespace {
 
-using Options = ::mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions;
+using Options = ::hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions;
 
 TEST(TensorsToSegmentationCalculatorTestUtilsTest,
      ActivationTypeToStringWorksCorrectly) {
@@ -47,4 +47,4 @@ TEST(TensorsToSegmentationCalculatorTestUtilsTest,
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::tensors_to_segmentation_utils
+}  // namespace hand_tracking_mp_lean::tensors_to_segmentation_utils

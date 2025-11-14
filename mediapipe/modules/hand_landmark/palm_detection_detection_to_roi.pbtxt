@@ -21,7 +21,7 @@ node {
   input_stream: "IMAGE_SIZE:image_size"
   output_stream: "NORM_RECT:raw_roi"
 #  options: {
-#    [mediapipe_v01013_based.DetectionsToRectsCalculatorOptions.ext] {
+#    [hand_tracking_mp_lean.DetectionsToRectsCalculatorOptions.ext] {
 #      rotation_vector_start_keypoint_index: 0  # Center of wrist.
 #      rotation_vector_end_keypoint_index: 2  # MCP of middle finger.
 #      rotation_vector_target_angle_degrees: 90
@@ -37,7 +37,7 @@ node {
   input_stream: "IMAGE_SIZE:image_size"
   output_stream: "roi"
   options: {
-    [mediapipe_v01013_based.RectTransformationCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.RectTransformationCalculatorOptions.ext] {
       scale_x: 2.6
       scale_y: 2.6
       shift_y: -0.5

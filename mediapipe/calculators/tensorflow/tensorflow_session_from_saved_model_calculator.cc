@@ -29,7 +29,7 @@
 #include "tensorflow/cc/saved_model/loader.h"
 #include "tensorflow/cc/saved_model/tag_constants.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -81,7 +81,7 @@ const std::string MaybeConvertSignatureToTag(
 
 // TensorFlowSessionFromSavedModelCalculator is a MediaPipe packet calculator
 // that loads a trained TensorFlow model exported via SavedModel's exporter and
-// returns a Packet containing a unique_ptr to a mediapipe_v01013_based::TensorFlowSession,
+// returns a Packet containing a unique_ptr to a hand_tracking_mp_lean::TensorFlowSession,
 // which in turn contains a TensorFlow Session ready for execution and a map
 // between tags and tensor names.
 //
@@ -176,4 +176,4 @@ class TensorFlowSessionFromSavedModelCalculator : public CalculatorBase {
 
 REGISTER_CALCULATOR(TensorFlowSessionFromSavedModelCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

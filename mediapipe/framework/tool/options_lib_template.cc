@@ -25,25 +25,25 @@ constexpr char kDescriptorContents[] =
 #include "{{DESCRIPTOR_INC_FILE_PATH}}"
     ;  // NOLINT(whitespace/semicolon)
 
-mediapipe_v01013_based::FieldData ReadFileDescriptorSet(const std::string& pb) {
-  mediapipe_v01013_based::FieldData result;
+hand_tracking_mp_lean::FieldData ReadFileDescriptorSet(const std::string& pb) {
+  hand_tracking_mp_lean::FieldData result;
   *result.mutable_message_value()->mutable_type_url() =
       "google::protobuf.FileDescriptorSet";
   *result.mutable_message_value()->mutable_value() = pb;
 
   // Force linking of the generated options protobuf.
-  mediapipe_v01013_based::proto_ns::LinkMessageReflection<
+  hand_tracking_mp_lean::proto_ns::LinkMessageReflection<
       MP_OPTION_TYPE_NS::MP_OPTION_TYPE_NAME>();
   return result;
 }
 
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 // The protobuf descriptor for an options message type.
 template <>
 const RegistrationToken tool::OptionsRegistry::registration_token<
     MP_OPTION_TYPE_NS::MP_OPTION_TYPE_NAME> =
     tool::OptionsRegistry::Register(ReadFileDescriptorSet(
         std::string(kDescriptorContents, sizeof(kDescriptorContents) - 1)));
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

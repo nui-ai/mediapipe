@@ -33,7 +33,7 @@ limitations under the License.
 #include "mediapipe/util/graph_builder_utils.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace interactive_segmenter {
@@ -45,9 +45,9 @@ namespace internal {
 class AddThicknessToRenderDataCalculator : public api2::Node {
  public:
   static constexpr api2::Input<Image> kImageIn{"IMAGE"};
-  static constexpr api2::Input<mediapipe_v01013_based::RenderData> kRenderDataIn{
+  static constexpr api2::Input<hand_tracking_mp_lean::RenderData> kRenderDataIn{
       "RENDER_DATA"};
-  static constexpr api2::Output<mediapipe_v01013_based::RenderData> kRenderDataOut{
+  static constexpr api2::Output<hand_tracking_mp_lean::RenderData> kRenderDataOut{
       "RENDER_DATA"};
 
   static constexpr int kModelInputTensorWidth = 512;
@@ -56,7 +56,7 @@ class AddThicknessToRenderDataCalculator : public api2::Node {
   MEDIAPIPE_NODE_CONTRACT(kImageIn, kRenderDataIn, kRenderDataOut);
 
   absl::Status Process(CalculatorContext* cc) final {
-    mediapipe_v01013_based::RenderData render_data = kRenderDataIn(cc).Get();
+    hand_tracking_mp_lean::RenderData render_data = kRenderDataIn(cc).Get();
     Image image = kImageIn(cc).Get();
     double thickness = std::max(
         std::max(image.width() / static_cast<double>(kModelInputTensorWidth),
@@ -77,7 +77,7 @@ class AddThicknessToRenderDataCalculator : public api2::Node {
 // moved to next line.
 // clang-format off
 MEDIAPIPE_REGISTER_NODE(
-    ::mediapipe_v01013_based::tasks::vision::interactive_segmenter::internal::AddThicknessToRenderDataCalculator);
+    ::hand_tracking_mp_lean::tasks::vision::interactive_segmenter::internal::AddThicknessToRenderDataCalculator);
 // clang-format on
 // NOLINTEND
 
@@ -86,12 +86,12 @@ MEDIAPIPE_REGISTER_NODE(
 namespace {
 
 using image_segmenter::proto::ImageSegmenterGraphOptions;
-using ::mediapipe_v01013_based::Image;
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
+using ::hand_tracking_mp_lean::Image;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
 
 constexpr absl::string_view kSegmentationTag{"SEGMENTATION"};
 constexpr absl::string_view kGroupedSegmentationTag{"GROUPED_SEGMENTATION"};
@@ -120,7 +120,7 @@ Source<> RoiToAlpha(Source<Image> image, Source<RenderData> roi, bool use_gpu,
   // Adds thickness to the render data so that the render data is scale
   // invariant to the input image size.
   auto& add_thickness = graph.AddNode(
-      "mediapipe_v01013_based::tasks::vision::interactive_segmenter::internal::"
+      "hand_tracking_mp_lean::tasks::vision::interactive_segmenter::internal::"
       "AddThicknessToRenderDataCalculator");
   image >> add_thickness.In(kImageTag);
   roi >> add_thickness.In(kRenderDataTag);
@@ -169,14 +169,14 @@ Source<> RoiToAlpha(Source<Image> image, Source<RenderData> roi, bool use_gpu,
 //     @Optional: rect covering the whole image is used if not specified.
 //
 // Outputs:
-//   CONFIDENCE_MASK - mediapipe_v01013_based::Image @Multiple
+//   CONFIDENCE_MASK - hand_tracking_mp_lean::Image @Multiple
 //     Confidence masks for individual category. Confidence mask of single
 //     category can be accessed by index based output stream.
-//   CONFIDENCE_MASKS - std::vector<mediapipe_v01013_based::Image> @Optional
+//   CONFIDENCE_MASKS - std::vector<hand_tracking_mp_lean::Image> @Optional
 //     The output confidence masks grouped in a vector.
-//   CATEGORY_MASK - mediapipe_v01013_based::Image @Optional
+//   CATEGORY_MASK - hand_tracking_mp_lean::Image @Optional
 //     Optional Category mask.
-//   IMAGE - mediapipe_v01013_based::Image
+//   IMAGE - hand_tracking_mp_lean::Image
 //     The image that image segmenter runs on.
 //
 // Example:
@@ -199,8 +199,8 @@ Source<> RoiToAlpha(Source<Image> image, Source<RenderData> roi, bool use_gpu,
 // }
 class InteractiveSegmenterGraph : public core::ModelTaskGraph {
  public:
-  absl::StatusOr<mediapipe_v01013_based::CalculatorGraphConfig> GetConfig(
-      mediapipe_v01013_based::SubgraphContext* sc) override {
+  absl::StatusOr<hand_tracking_mp_lean::CalculatorGraphConfig> GetConfig(
+      hand_tracking_mp_lean::SubgraphContext* sc) override {
     Graph graph;
     const auto& task_options = sc->Options<ImageSegmenterGraphOptions>();
     bool use_gpu =
@@ -270,10 +270,10 @@ class InteractiveSegmenterGraph : public core::ModelTaskGraph {
 // REGISTER_MEDIAPIPE_GRAPH argument has to fit on one line to work properly.
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe_v01013_based::tasks::vision::interactive_segmenter::InteractiveSegmenterGraph);
+  ::hand_tracking_mp_lean::tasks::vision::interactive_segmenter::InteractiveSegmenterGraph);
 // clang-format on
 
 }  // namespace interactive_segmenter
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

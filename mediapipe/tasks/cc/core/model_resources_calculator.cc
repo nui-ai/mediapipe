@@ -29,7 +29,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace core {
 
@@ -64,7 +64,7 @@ class ModelResourcesCalculator : public api2::Node {
   MEDIAPIPE_NODE_INTERFACE(ModelResourcesCalculator, kModel, kOpResolver,
                            kMetadataExtractor);
 
-  static absl::Status UpdateContract(mediapipe_v01013_based::CalculatorContract* cc) {
+  static absl::Status UpdateContract(hand_tracking_mp_lean::CalculatorContract* cc) {
     const auto& options = cc->Options<proto::ModelResourcesCalculatorOptions>();
     RET_CHECK(options.has_model_resources_tag() || options.has_model_file())
         << "ModelResourcesCalculatorOptions must specify at least one of "
@@ -133,4 +133,4 @@ MEDIAPIPE_REGISTER_NODE(ModelResourcesCalculator);
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

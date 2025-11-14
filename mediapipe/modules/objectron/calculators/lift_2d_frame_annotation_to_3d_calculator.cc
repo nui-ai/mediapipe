@@ -39,7 +39,7 @@ static int object_id = 0;
 inline int GetNextObjectId() { return ++object_id; }
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Lifted the 2D points in a tracked frame annotation to 3D.
 //
@@ -167,4 +167,4 @@ void Lift2DFrameAnnotationTo3DCalculator::AssignObjectIdAndTimestamp(
   annotation->set_timestamp(timestamp_us);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

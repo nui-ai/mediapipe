@@ -24,7 +24,7 @@
 #include "mediapipe/framework/packet.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // The GraphService API can be used to define extensions to a graph's execution
 // environment. These are, essentially, graph-level singletons, and are
@@ -137,6 +137,6 @@ class ServiceBinding {
   std::shared_ptr<T> service_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_GRAPH_SERVICE_H_

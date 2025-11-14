@@ -33,9 +33,9 @@
 // released when the C++ wrapper is released.
 - (void)testCorrectlyReleased {
   __weak id metalRes = nil;
-  std::weak_ptr<mediapipe_v01013_based::GpuResources> weakGpuRes;
+  std::weak_ptr<hand_tracking_mp_lean::GpuResources> weakGpuRes;
   @autoreleasepool {
-    auto maybeGpuRes = mediapipe_v01013_based::GpuResources::Create();
+    auto maybeGpuRes = hand_tracking_mp_lean::GpuResources::Create();
     XCTAssertTrue(maybeGpuRes.ok());
     weakGpuRes = *maybeGpuRes;
     metalRes = (**maybeGpuRes).metal_shared().resources();

@@ -40,20 +40,20 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/utils/image_utils.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace components {
 namespace processors {
 namespace {
 
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::file::JoinPath;
-using ::mediapipe_v01013_based::tasks::core::ModelResources;
-using ::mediapipe_v01013_based::tasks::core::TaskRunner;
-using ::mediapipe_v01013_based::tasks::vision::DecodeImageFromFile;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::file::JoinPath;
+using ::hand_tracking_mp_lean::tasks::core::ModelResources;
+using ::hand_tracking_mp_lean::tasks::core::TaskRunner;
+using ::hand_tracking_mp_lean::tasks::vision::DecodeImageFromFile;
 using ::testing::ContainerEq;
 using ::testing::HasSubstr;
 using ::testing::TestParamInfo;
@@ -238,7 +238,7 @@ TEST_F(ConfigureTest, SucceedsGpuOriginConventional) {
 
   proto::ImagePreprocessingGraphOptions options;
   MP_EXPECT_OK(ConfigureImagePreprocessingGraph(
-      *model_resources, true, mediapipe_v01013_based::GpuOrigin::CONVENTIONAL, &options));
+      *model_resources, true, hand_tracking_mp_lean::GpuOrigin::CONVENTIONAL, &options));
 
   EXPECT_THAT(options, EqualsProto(
                            R"pb(image_to_tensor_options {
@@ -360,4 +360,4 @@ INSTANTIATE_TEST_SUITE_P(
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

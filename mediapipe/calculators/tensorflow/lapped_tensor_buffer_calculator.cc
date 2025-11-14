@@ -27,7 +27,7 @@
 #include "tensorflow/core/framework/types.h"
 #include "tensorflow/core/lib/core/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 const char kBufferSize[] = "BUFFER_SIZE";
 const char kOverlap[] = "OVERLAP";
@@ -257,4 +257,4 @@ absl::Status LappedTensorBufferCalculator::ProcessBuffer(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

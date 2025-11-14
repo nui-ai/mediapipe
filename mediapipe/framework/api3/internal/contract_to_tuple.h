@@ -22,7 +22,7 @@
 
 #include "mediapipe/framework/api3/internal/dependent_false.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 // Defined only if ContractT can be brace constructed from {Fs...}.
 template <typename ContractT, typename... Fs>
@@ -208,6 +208,6 @@ auto ContractToFieldPtrTuple(ContractT& contract) {
         "Unsupported contract: the current limit is 20 fields per contract.");
 }
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_INTERNAL_CONTRACT_TO_TUPLE_H_

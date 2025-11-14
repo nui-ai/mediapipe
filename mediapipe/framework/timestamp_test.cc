@@ -21,7 +21,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 TEST(TimestampDeathTest, ConstructorDieOnSpecialValue) {
@@ -315,4 +315,4 @@ TEST(TimestampTest, DebugString) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

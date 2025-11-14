@@ -34,18 +34,18 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/model_task_graph.h"
 #include "mediapipe/tasks/cc/vision/pose_detector/proto/pose_detector_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace pose_detector {
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::Tensor;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::vision::pose_detector::proto::
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::Tensor;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::vision::pose_detector::proto::
     PoseDetectorGraphOptions;
 
 namespace {
@@ -72,7 +72,7 @@ struct PoseDetectionOuts {
 // TODO: Configuration detection related calculators in pose
 // detector with model metadata.
 void ConfigureSsdAnchorsCalculator(
-    mediapipe_v01013_based::SsdAnchorsCalculatorOptions* options) {
+    hand_tracking_mp_lean::SsdAnchorsCalculatorOptions* options) {
   // Derived from
   // mediapipe/modules/pose_detection/pose_detection_gpu.pbtxt
   options->set_num_layers(5);
@@ -95,7 +95,7 @@ void ConfigureSsdAnchorsCalculator(
 // detector with model metadata.
 void ConfigureTensorsToDetectionsCalculator(
     const PoseDetectorGraphOptions& tasks_options,
-    mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions* options) {
+    hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions* options) {
   // Derived from
   // mediapipe/modules/pose_detection/pose_detection_gpu.pbtxt
   options->set_num_classes(1);
@@ -117,19 +117,19 @@ void ConfigureTensorsToDetectionsCalculator(
 
 void ConfigureNonMaxSuppressionCalculator(
     const PoseDetectorGraphOptions& tasks_options,
-    mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions* options) {
+    hand_tracking_mp_lean::NonMaxSuppressionCalculatorOptions* options) {
   options->set_min_suppression_threshold(
       tasks_options.min_suppression_threshold());
   options->set_overlap_type(
-      mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
+      hand_tracking_mp_lean::NonMaxSuppressionCalculatorOptions::INTERSECTION_OVER_UNION);
   options->set_algorithm(
-      mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions::WEIGHTED);
+      hand_tracking_mp_lean::NonMaxSuppressionCalculatorOptions::WEIGHTED);
 }
 
 // TODO: Configuration detection related calculators in pose
 // detector with model metadata.
 void ConfigureDetectionsToRectsCalculator(
-    mediapipe_v01013_based::DetectionsToRectsCalculatorOptions* options) {
+    hand_tracking_mp_lean::DetectionsToRectsCalculatorOptions* options) {
   options->set_rotation_vector_start_keypoint_index(0);
   options->set_rotation_vector_end_keypoint_index(1);
   options->set_rotation_vector_target_angle(90);
@@ -139,14 +139,14 @@ void ConfigureDetectionsToRectsCalculator(
 // TODO: Configuration detection related calculators in pose
 // detector with model metadata.
 void ConfigureRectTransformationCalculator(
-    mediapipe_v01013_based::RectTransformationCalculatorOptions* options) {
+    hand_tracking_mp_lean::RectTransformationCalculatorOptions* options) {
   options->set_scale_x(1.25);
   options->set_scale_y(1.25);
   options->set_square_long(true);
 }
 
 void ConfigureAlignmentPointsRectsCalculator(
-    mediapipe_v01013_based::DetectionsToRectsCalculatorOptions* options) {
+    hand_tracking_mp_lean::DetectionsToRectsCalculatorOptions* options) {
   // Derived from
   // mediapipe/modules/pose_landmark/pose_detection_to_roi.pbtxt
   options->set_rotation_vector_start_keypoint_index(0);
@@ -250,7 +250,7 @@ class PoseDetectorGraph : public core::ModelTaskGraph {
              .mutable_image_to_tensor_options();
     image_to_tensor_options.set_keep_aspect_ratio(true);
     image_to_tensor_options.set_border_mode(
-        mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
+        hand_tracking_mp_lean::ImageToTensorCalculatorOptions::BORDER_ZERO);
     image_in >> preprocessing.In(kImageTag);
     norm_rect_in >> preprocessing.In(kNormRectTag);
     auto preprocessed_tensors = preprocessing.Out(kTensorsTag);
@@ -267,7 +267,7 @@ class PoseDetectorGraph : public core::ModelTaskGraph {
     // Generates a single side packet containing a vector of SSD anchors.
     auto& ssd_anchor = graph.AddNode("SsdAnchorsCalculator");
     ConfigureSsdAnchorsCalculator(
-        &ssd_anchor.GetOptions<mediapipe_v01013_based::SsdAnchorsCalculatorOptions>());
+        &ssd_anchor.GetOptions<hand_tracking_mp_lean::SsdAnchorsCalculatorOptions>());
     auto anchors = ssd_anchor.SideOut("");
 
     // Converts output tensors to Detections.
@@ -276,7 +276,7 @@ class PoseDetectorGraph : public core::ModelTaskGraph {
     ConfigureTensorsToDetectionsCalculator(
         subgraph_options,
         &tensors_to_detections
-             .GetOptions<mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions>());
+             .GetOptions<hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions>());
     model_output_tensors >> tensors_to_detections.In(kTensorsTag);
     anchors >> tensors_to_detections.SideIn(kAnchorsTag);
     auto detections = tensors_to_detections.Out(kDetectionsTag);
@@ -287,7 +287,7 @@ class PoseDetectorGraph : public core::ModelTaskGraph {
     ConfigureNonMaxSuppressionCalculator(
         subgraph_options,
         &non_maximum_suppression
-             .GetOptions<mediapipe_v01013_based::NonMaxSuppressionCalculatorOptions>());
+             .GetOptions<hand_tracking_mp_lean::NonMaxSuppressionCalculatorOptions>());
     detections >> non_maximum_suppression.In("");
     auto filtered_detections = non_maximum_suppression.Out("");
 
@@ -305,7 +305,7 @@ class PoseDetectorGraph : public core::ModelTaskGraph {
     auto& detection_to_rects = graph.AddNode("AlignmentPointsRectsCalculator");
     ConfigureAlignmentPointsRectsCalculator(
         &detection_to_rects
-             .GetOptions<mediapipe_v01013_based::DetectionsToRectsCalculatorOptions>());
+             .GetOptions<hand_tracking_mp_lean::DetectionsToRectsCalculatorOptions>());
     image_size >> detection_to_rects.In(kImageSizeTag);
     adjusted_detections >> detection_to_rects.In("DETECTIONS");
     auto pose_rects = detection_to_rects.Out("NORM_RECTS")
@@ -316,7 +316,7 @@ class PoseDetectorGraph : public core::ModelTaskGraph {
         graph.AddNode("RectTransformationCalculator");
     ConfigureRectTransformationCalculator(
         &pose_rect_transformation
-             .GetOptions<mediapipe_v01013_based::RectTransformationCalculatorOptions>());
+             .GetOptions<hand_tracking_mp_lean::RectTransformationCalculatorOptions>());
     image_size >> pose_rect_transformation.In(kImageSizeTag);
     pose_rects >> pose_rect_transformation.In("NORM_RECTS");
     auto expanded_pose_rects =
@@ -327,7 +327,7 @@ class PoseDetectorGraph : public core::ModelTaskGraph {
       auto& clip_detection_vector_size =
           graph.AddNode("ClipDetectionVectorSizeCalculator");
       clip_detection_vector_size
-          .GetOptions<mediapipe_v01013_based::ClipVectorSizeCalculatorOptions>()
+          .GetOptions<hand_tracking_mp_lean::ClipVectorSizeCalculatorOptions>()
           .set_max_vec_size(subgraph_options.num_poses());
       adjusted_detections >> clip_detection_vector_size.In("");
       adjusted_detections =
@@ -343,9 +343,9 @@ class PoseDetectorGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe_v01013_based::tasks::vision::pose_detector::PoseDetectorGraph);
+    ::hand_tracking_mp_lean::tasks::vision::pose_detector::PoseDetectorGraph);
 
 }  // namespace pose_detector
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -10,7 +10,7 @@
 #include "mediapipe/framework/api2/builder.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 
 namespace {
 
@@ -128,4 +128,4 @@ Stream<LandmarkList> SmoothLandmarksVisibility(Stream<LandmarkList> landmarks,
   return node.Out("FILTERED_LANDMARKS").Cast<LandmarkList>();
 }
 
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

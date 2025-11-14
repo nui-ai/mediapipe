@@ -19,7 +19,7 @@
 #include "mediapipe/framework/calculator_options.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -29,8 +29,8 @@ constexpr char kRectTag[] = "RECT";
 constexpr char kRectsTag[] = "RECTS";
 constexpr char kImageSizeTag[] = "IMAGE_SIZE";
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::Rect;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::Rect;
 
 // Wraps around an angle in radians to within -M_PI and M_PI.
 inline float NormalizeRadians(float angle) {
@@ -160,4 +160,4 @@ absl::Status RectTransformationCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

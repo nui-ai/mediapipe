@@ -17,7 +17,7 @@
 #include "absl/status/status.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 namespace {
 
 struct ContractType {};
@@ -36,4 +36,4 @@ TEST(HasUpdateContractTest, CanIdentifyUpdateContract) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3

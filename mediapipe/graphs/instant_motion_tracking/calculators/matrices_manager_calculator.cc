@@ -29,7 +29,7 @@
 #include "mediapipe/graphs/object_detection_3d/calculators/model_matrix.pb.h"
 #include "mediapipe/modules/objectron/calculators/box.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 using Matrix4fCM = Eigen::Matrix<float, 4, 4, Eigen::ColMajor>;
@@ -157,7 +157,7 @@ absl::Status MatricesManagerCalculator::GetContract(CalculatorContract* cc) {
 
   for (CollectionItemId id = cc->Outputs().BeginId("MATRICES");
        id < cc->Outputs().EndId("MATRICES"); ++id) {
-    cc->Outputs().Get(id).Set<mediapipe_v01013_based::TimedModelMatrixProtoList>();
+    cc->Outputs().Get(id).Set<hand_tracking_mp_lean::TimedModelMatrixProtoList>();
   }
   cc->InputSidePackets().Tag(kFOVSidePacketTag).Set<float>();
   cc->InputSidePackets().Tag(kAspectRatioSidePacketTag).Set<float>();
@@ -178,9 +178,9 @@ absl::Status MatricesManagerCalculator::Open(CalculatorContext* cc) {
 absl::Status MatricesManagerCalculator::Process(CalculatorContext* cc) {
   // Define each object's model matrices
   auto asset_matrices_gif =
-      std::make_unique<mediapipe_v01013_based::TimedModelMatrixProtoList>();
+      std::make_unique<hand_tracking_mp_lean::TimedModelMatrixProtoList>();
   auto asset_matrices_1 =
-      std::make_unique<mediapipe_v01013_based::TimedModelMatrixProtoList>();
+      std::make_unique<hand_tracking_mp_lean::TimedModelMatrixProtoList>();
   // Clear all model matrices
   asset_matrices_gif->clear_model_matrix();
   asset_matrices_1->clear_model_matrix();
@@ -216,7 +216,7 @@ absl::Status MatricesManagerCalculator::Process(CalculatorContext* cc) {
   int render_idx = 0;
   for (const Anchor& anchor : anchor_data) {
     const int id = anchor.sticker_id;
-    mediapipe_v01013_based::TimedModelMatrixProto* model_matrix;
+    hand_tracking_mp_lean::TimedModelMatrixProto* model_matrix;
     // Add model matrix to matrices list for defined object render ID
     if (render_data[render_idx] == 0) {  // GIF
       model_matrix = asset_matrices_gif->add_model_matrix();
@@ -392,4 +392,4 @@ DiagonalMatrix3f MatricesManagerCalculator::GetDefaultRenderScaleDiagonal(
                            scale_preset * user_scale_factor);
   return scaling;
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

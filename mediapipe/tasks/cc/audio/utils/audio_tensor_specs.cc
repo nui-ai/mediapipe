@@ -32,13 +32,13 @@ limitations under the License.
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace audio {
 namespace {
 
 using ::absl::StatusCode;
-using ::mediapipe_v01013_based::tasks::metadata::ModelMetadataExtractor;
+using ::hand_tracking_mp_lean::tasks::metadata::ModelMetadataExtractor;
 using ::tflite::AudioProperties;
 using ::tflite::ContentProperties;
 using ::tflite::ContentProperties_AudioProperties;
@@ -163,4 +163,4 @@ absl::StatusOr<AudioTensorSpecs> BuildInputAudioTensorSpecs(
 
 }  // namespace audio
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

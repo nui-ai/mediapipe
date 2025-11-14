@@ -21,7 +21,7 @@ limitations under the License.
 #include "absl/strings/string_view.h"
 #include "contrib/minizip/ioapi.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace metadata {
 
@@ -71,6 +71,6 @@ class ZipWritableMemFile {
 
 }  // namespace metadata
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_METADATA_UTILS_ZIP_MEM_FILE_H_

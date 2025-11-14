@@ -27,7 +27,7 @@ limitations under the License.
 #include "mediapipe/framework/formats/tensor.h"
 #include "stb_image.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 
@@ -95,7 +95,7 @@ absl::StatusOr<Image> CreateImageFromBuffer(ImageFormat::Format format,
   return Image(std::move(image_frame));
 }
 
-absl::StatusOr<Shape> GetImageLikeTensorShape(const mediapipe_v01013_based::Tensor& tensor) {
+absl::StatusOr<Shape> GetImageLikeTensorShape(const hand_tracking_mp_lean::Tensor& tensor) {
   int width = 0;
   int height = 0;
   int channels = 1;
@@ -127,4 +127,4 @@ absl::StatusOr<Shape> GetImageLikeTensorShape(const mediapipe_v01013_based::Tens
 
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

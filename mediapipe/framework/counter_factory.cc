@@ -20,7 +20,7 @@
 #include "absl/strings/string_view.h"
 #include "absl/synchronization/mutex.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 // Counter implementation when we're not using Flume.
@@ -68,7 +68,7 @@ void CounterSet::PrintCounters() ABSL_LOCKS_EXCLUDED(mu_) {
 
 Counter* CounterSet::Get(const std::string& name) ABSL_LOCKS_EXCLUDED(mu_) {
   absl::ReaderMutexLock lock(&mu_);
-  if (!mediapipe_v01013_based::ContainsKey(counters_, name)) {
+  if (!hand_tracking_mp_lean::ContainsKey(counters_, name)) {
     return nullptr;
   }
   return counters_[name].get();
@@ -88,4 +88,4 @@ Counter* BasicCounterFactory::GetCounter(const std::string& name) {
   return counter_set_.Emplace<BasicCounter>(name, name);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

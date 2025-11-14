@@ -37,7 +37,7 @@ limitations under the License.
 #include "tensorflow/lite/model_builder.h"
 #include "tensorflow/lite/tools/verifier.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace core {
 
@@ -140,11 +140,11 @@ class ModelResources {
   Verifier verifier_;
   // Error reporter that captures and prints to stderr low-level TFLite
   // error messages.
-  mediapipe_v01013_based::util::tflite::ErrorReporter error_reporter_;
+  hand_tracking_mp_lean::util::tflite::ErrorReporter error_reporter_;
 };
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_CORE_MODEL_RESOURCES_H_

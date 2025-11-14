@@ -31,7 +31,7 @@
 #include "tensorflow/core/framework/device_attributes.pb.h"
 #include "testing/base/public/gunit.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using ::testing::status::StatusIs;
 namespace {
@@ -183,7 +183,7 @@ TEST_F(TensorFlowSessionFromSavedModelGeneratorTest,
 TEST_F(TensorFlowSessionFromSavedModelGeneratorTest,
        ProducesPacketUsableByTensorFlowInferenceCalculator) {
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           absl::Substitute(R"(
       node {
         calculator: "TensorFlowInferenceCalculator"
@@ -279,4 +279,4 @@ TEST_F(TensorFlowSessionFromSavedModelGeneratorTest,
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

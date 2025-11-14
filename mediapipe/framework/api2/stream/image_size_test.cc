@@ -10,7 +10,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/gpu/gpu_buffer.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 namespace {
 
 TEST(GetImageSize, VerifyConfig) {
@@ -20,7 +20,7 @@ TEST(GetImageSize, VerifyConfig) {
   image_frame.SetName("image_frame");
   Stream<GpuBuffer> gpu_buffer = graph.In("GPU_BUFFER").Cast<GpuBuffer>();
   gpu_buffer.SetName("gpu_buffer");
-  Stream<mediapipe_v01013_based::Image> image = graph.In("IMAGE").Cast<mediapipe_v01013_based::Image>();
+  Stream<hand_tracking_mp_lean::Image> image = graph.In("IMAGE").Cast<hand_tracking_mp_lean::Image>();
   image.SetName("image");
 
   GetImageSize(image_frame, graph).SetName("image_frame_size");
@@ -29,7 +29,7 @@ TEST(GetImageSize, VerifyConfig) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "ImagePropertiesCalculator"
           input_stream: "IMAGE:image_frame"
@@ -54,4 +54,4 @@ TEST(GetImageSize, VerifyConfig) {
   MP_EXPECT_OK(calcualtor_graph.Initialize(graph.GetConfig()));
 }
 }  // namespace
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

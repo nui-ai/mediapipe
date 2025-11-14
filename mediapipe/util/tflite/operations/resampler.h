@@ -17,13 +17,13 @@
 
 #include "tensorflow/lite/kernels/kernel_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tflite_operations {
 
 // Register tfa.image.resampler custom operator implementation.
 TfLiteRegistration* RegisterResampler();
 
 }  // namespace tflite_operations
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_OPERATIONS_RESAMPLER_H_

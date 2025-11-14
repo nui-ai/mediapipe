@@ -26,7 +26,7 @@ limitations under the License.
 #include "mediapipe/framework/api2/port.h"
 #include "mediapipe/framework/calculator_framework.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 template <typename T>
@@ -42,8 +42,8 @@ class MergeToVectorCalculator : public Node {
     return absl::OkStatus();
   }
 
-  absl::Status Open(::mediapipe_v01013_based::CalculatorContext* cc) {
-    cc->SetOffset(::mediapipe_v01013_based::TimestampDiff(0));
+  absl::Status Open(::hand_tracking_mp_lean::CalculatorContext* cc) {
+    cc->SetOffset(::hand_tracking_mp_lean::TimestampDiff(0));
     return absl::OkStatus();
   }
 
@@ -61,6 +61,6 @@ class MergeToVectorCalculator : public Node {
 };
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_MERGE_TO_VECTOR_CALCULATOR_H_

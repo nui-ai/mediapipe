@@ -20,7 +20,7 @@
 
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Utility class to allow for iterating over various containers of Tensors
 // *without* making any deep-copies or keeping any memory alive. Essentially
@@ -64,6 +64,6 @@ TensorSpan MakeTensorSpan(const TensorInputStreamT& tensor_streams) {
   return TensorSpan(std::move(refs));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSOR_SPAN_H_

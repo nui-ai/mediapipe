@@ -43,28 +43,28 @@
 #include "mediapipe/gpu/gpu_service.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 namespace {
 
 AffineTransformation::BorderMode GetBorderMode(
-    mediapipe_v01013_based::WarpAffineCalculatorOptions::BorderMode border_mode) {
+    hand_tracking_mp_lean::WarpAffineCalculatorOptions::BorderMode border_mode) {
   switch (border_mode) {
-    case mediapipe_v01013_based::WarpAffineCalculatorOptions::BORDER_ZERO:
+    case hand_tracking_mp_lean::WarpAffineCalculatorOptions::BORDER_ZERO:
       return AffineTransformation::BorderMode::kZero;
-    case mediapipe_v01013_based::WarpAffineCalculatorOptions::BORDER_UNSPECIFIED:
-    case mediapipe_v01013_based::WarpAffineCalculatorOptions::BORDER_REPLICATE:
+    case hand_tracking_mp_lean::WarpAffineCalculatorOptions::BORDER_UNSPECIFIED:
+    case hand_tracking_mp_lean::WarpAffineCalculatorOptions::BORDER_REPLICATE:
       return AffineTransformation::BorderMode::kReplicate;
   }
 }
 
 AffineTransformation::Interpolation GetInterpolation(
-    mediapipe_v01013_based::WarpAffineCalculatorOptions::Interpolation interpolation) {
+    hand_tracking_mp_lean::WarpAffineCalculatorOptions::Interpolation interpolation) {
   switch (interpolation) {
-    case mediapipe_v01013_based::WarpAffineCalculatorOptions::INTER_UNSPECIFIED:
-    case mediapipe_v01013_based::WarpAffineCalculatorOptions::INTER_LINEAR:
+    case hand_tracking_mp_lean::WarpAffineCalculatorOptions::INTER_UNSPECIFIED:
+    case hand_tracking_mp_lean::WarpAffineCalculatorOptions::INTER_LINEAR:
       return AffineTransformation::Interpolation::kLinear;
-    case mediapipe_v01013_based::WarpAffineCalculatorOptions::INTER_CUBIC:
+    case hand_tracking_mp_lean::WarpAffineCalculatorOptions::INTER_CUBIC:
       return AffineTransformation::Interpolation::kCubic;
   }
 }
@@ -79,8 +79,8 @@ class WarpAffineRunnerHolder<ImageFrame> {
  public:
   using RunnerType = AffineTransformation::Runner<ImageFrame, ImageFrame>;
 
-  absl::Status Open(mediapipe_v01013_based::CalculatorContext& cc,
-                    const mediapipe_v01013_based::WarpAffineCalculatorOptions& options) {
+  absl::Status Open(hand_tracking_mp_lean::CalculatorContext& cc,
+                    const hand_tracking_mp_lean::WarpAffineCalculatorOptions& options) {
     interpolation_ = GetInterpolation(options.interpolation());
     return absl::OkStatus();
   }
@@ -103,16 +103,16 @@ class WarpAffineRunnerHolder<ImageFrame> {
 #if !MEDIAPIPE_DISABLE_GPU
 
 template <>
-class WarpAffineRunnerHolder<mediapipe_v01013_based::GpuBuffer> {
+class WarpAffineRunnerHolder<hand_tracking_mp_lean::GpuBuffer> {
  public:
   using RunnerType =
-      AffineTransformation::Runner<mediapipe_v01013_based::GpuBuffer,
-                                   std::unique_ptr<mediapipe_v01013_based::GpuBuffer>>;
+      AffineTransformation::Runner<hand_tracking_mp_lean::GpuBuffer,
+                                   std::unique_ptr<hand_tracking_mp_lean::GpuBuffer>>;
 
-  absl::Status Open(mediapipe_v01013_based::CalculatorContext& cc,
-                    const mediapipe_v01013_based::WarpAffineCalculatorOptions& options) {
+  absl::Status Open(hand_tracking_mp_lean::CalculatorContext& cc,
+                    const hand_tracking_mp_lean::WarpAffineCalculatorOptions& options) {
     gpu_origin_ = options.gpu_origin();
-    gl_helper_ = std::make_shared<mediapipe_v01013_based::GlCalculatorHelper>();
+    gl_helper_ = std::make_shared<hand_tracking_mp_lean::GlCalculatorHelper>();
     interpolation_ = GetInterpolation(options.interpolation());
     return gl_helper_->Open(&cc);
   }
@@ -127,8 +127,8 @@ class WarpAffineRunnerHolder<mediapipe_v01013_based::GpuBuffer> {
   }
 
  private:
-  mediapipe_v01013_based::GpuOrigin::Mode gpu_origin_;
-  std::shared_ptr<mediapipe_v01013_based::GlCalculatorHelper> gl_helper_;
+  hand_tracking_mp_lean::GpuOrigin::Mode gpu_origin_;
+  std::shared_ptr<hand_tracking_mp_lean::GlCalculatorHelper> gl_helper_;
   std::unique_ptr<RunnerType> runner_;
   AffineTransformation::Interpolation interpolation_;
 };
@@ -136,24 +136,24 @@ class WarpAffineRunnerHolder<mediapipe_v01013_based::GpuBuffer> {
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
 template <>
-class WarpAffineRunnerHolder<mediapipe_v01013_based::Image> {
+class WarpAffineRunnerHolder<hand_tracking_mp_lean::Image> {
  public:
   using RunnerType =
-      AffineTransformation::Runner<mediapipe_v01013_based::Image, mediapipe_v01013_based::Image>;
+      AffineTransformation::Runner<hand_tracking_mp_lean::Image, hand_tracking_mp_lean::Image>;
 
-  absl::Status Open(mediapipe_v01013_based::CalculatorContext& cc,
-                    const mediapipe_v01013_based::WarpAffineCalculatorOptions& options) {
+  absl::Status Open(hand_tracking_mp_lean::CalculatorContext& cc,
+                    const hand_tracking_mp_lean::WarpAffineCalculatorOptions& options) {
     return runner_.Open(cc, options);
   }
 
   absl::StatusOr<RunnerType*> GetRunner() { return &runner_; }
 
  private:
-  class Runner : public AffineTransformation::Runner<mediapipe_v01013_based::Image,
-                                                     mediapipe_v01013_based::Image> {
+  class Runner : public AffineTransformation::Runner<hand_tracking_mp_lean::Image,
+                                                     hand_tracking_mp_lean::Image> {
    public:
-    absl::Status Open(mediapipe_v01013_based::CalculatorContext& cc,
-                      const mediapipe_v01013_based::WarpAffineCalculatorOptions& options) {
+    absl::Status Open(hand_tracking_mp_lean::CalculatorContext& cc,
+                      const hand_tracking_mp_lean::WarpAffineCalculatorOptions& options) {
 #if !MEDIAPIPE_DISABLE_OPENCV
       MP_RETURN_IF_ERROR(cpu_holder_.Open(cc, options));
 #endif  // !MEDIAPIPE_DISABLE_OPENCV
@@ -168,8 +168,8 @@ class WarpAffineRunnerHolder<mediapipe_v01013_based::Image> {
       return absl::OkStatus();
     }
 
-    absl::StatusOr<mediapipe_v01013_based::Image> Run(
-        const mediapipe_v01013_based::Image& input, const std::array<float, 16>& matrix,
+    absl::StatusOr<hand_tracking_mp_lean::Image> Run(
+        const hand_tracking_mp_lean::Image& input, const std::array<float, 16>& matrix,
         const AffineTransformation::Size& size,
         AffineTransformation::BorderMode border_mode) override {
       if (input.UsesGpu()) {
@@ -181,7 +181,7 @@ class WarpAffineRunnerHolder<mediapipe_v01013_based::Image> {
         MP_ASSIGN_OR_RETURN(
             auto result,
             runner->Run(input.GetGpuBuffer(), matrix, size, border_mode));
-        return mediapipe_v01013_based::Image(*result);
+        return hand_tracking_mp_lean::Image(*result);
 #else
         return absl::UnavailableError("GPU support is disabled");
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -196,7 +196,7 @@ class WarpAffineRunnerHolder<mediapipe_v01013_based::Image> {
                                    [](uint8_t* data){});
       MP_ASSIGN_OR_RETURN(auto result,
                           runner->Run(image_frame, matrix, size, border_mode));
-      return mediapipe_v01013_based::Image(std::make_shared<ImageFrame>(std::move(result)));
+      return hand_tracking_mp_lean::Image(std::make_shared<ImageFrame>(std::move(result)));
 #else
       return absl::UnavailableError("OpenCV support is disabled");
 #endif  // !MEDIAPIPE_DISABLE_OPENCV
@@ -207,7 +207,7 @@ class WarpAffineRunnerHolder<mediapipe_v01013_based::Image> {
     WarpAffineRunnerHolder<ImageFrame> cpu_holder_;
 #endif  // !MEDIAPIPE_DISABLE_OPENCV
 #if !MEDIAPIPE_DISABLE_GPU
-    WarpAffineRunnerHolder<mediapipe_v01013_based::GpuBuffer> gpu_holder_;
+    WarpAffineRunnerHolder<hand_tracking_mp_lean::GpuBuffer> gpu_holder_;
     bool gpu_holder_initialized_ = false;
 #endif  // !MEDIAPIPE_DISABLE_GPU
   };
@@ -224,7 +224,7 @@ class WarpAffineNodeImpl
       CalculatorContract<WarpAffineNode<ImageT>>& cc) {
     if constexpr (std::is_same_v<ImageT, GpuBuffer> ||
                   std::is_same_v<ImageT, Image>) {
-      MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(
+      MP_RETURN_IF_ERROR(hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract(
           &cc.GetGenericContract(), /*request_gpu_as_optional=*/true));
     }
     return absl::OkStatus();
@@ -276,4 +276,4 @@ template class WarpAffineNodeImpl<GpuBuffer>;
 template class WarpAffineNodeImpl<Image>;
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3

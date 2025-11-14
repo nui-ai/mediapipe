@@ -45,7 +45,7 @@
 #include "tensorflow/lite/c/c_api_types.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using Interpreter = ::tflite::Interpreter;
 using InterpreterBuilder = ::tflite::InterpreterBuilder;
@@ -94,6 +94,6 @@ CreateInferenceInterpreterDelegateRunner(
     TfLiteDelegatePtr delegate,
     int interpreter_num_threads = 1);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_INFERENCE_INTERPRETER_DELEGATE_RUNNER_H_

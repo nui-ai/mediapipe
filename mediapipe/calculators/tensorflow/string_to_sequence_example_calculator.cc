@@ -35,7 +35,7 @@
 //   output_side_packet: "STRING:serialized_sequence_example"
 // }
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tf = ::tensorflow;
 namespace {
 constexpr char kString[] = "STRING";
@@ -72,7 +72,7 @@ absl::Status StringToSequenceExampleCalculator::Open(CalculatorContext* cc) {
     example->ParseFromString(string_value);
     cc->OutputSidePackets()
         .Tag(kSequenceExample)
-        .Set(mediapipe_v01013_based::Adopt(example.release()));
+        .Set(hand_tracking_mp_lean::Adopt(example.release()));
   }
   return absl::OkStatus();
 }
@@ -88,9 +88,9 @@ absl::Status StringToSequenceExampleCalculator::Close(CalculatorContext* cc) {
     auto string_value = absl::make_unique<std::string>();
     example.SerializeToString(string_value.get());
     cc->OutputSidePackets().Tag(kString).Set(
-        mediapipe_v01013_based::Adopt(string_value.release()));
+        hand_tracking_mp_lean::Adopt(string_value.release()));
   }
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

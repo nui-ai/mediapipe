@@ -23,7 +23,7 @@
 #include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/framework/calculator_framework.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 bool StartsWithTag(absl::string_view name, absl::string_view tag) {
@@ -61,4 +61,4 @@ bool HasOutput(const CalculatorGraphConfig::Node& node, absl::string_view tag) {
   return false;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

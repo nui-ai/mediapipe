@@ -17,7 +17,7 @@
 #include "mediapipe/framework/deps/file_path.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr double kWidth = 1280.0;
@@ -114,4 +114,4 @@ TEST(BoxTrackerTest, MovingBoxTest) {
 
 }  // namespace
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

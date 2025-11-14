@@ -20,7 +20,7 @@
 
 #include "mediapipe/framework/api3/internal/graph_builder.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 // SidePacket represents graph input side packet
 // (`CalculatorGraphConfig::input_side_packet`)
@@ -68,6 +68,6 @@ class /*ABSL_ATTRIBUTE_VIEW*/ SidePacket {
   friend class SideOutput;
 };
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_SIDE_PACKET_H_

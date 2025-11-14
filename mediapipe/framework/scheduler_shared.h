@@ -28,7 +28,7 @@
 #include "mediapipe/framework/deps/monotonic_clock.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace internal {
 
 // This is meant for testing purposes only.
@@ -54,8 +54,8 @@ struct SchedulerTimes {
 class SchedulerTimer {
  public:
   SchedulerTimer() {
-    clock_ = std::unique_ptr<mediapipe_v01013_based::Clock>(
-        mediapipe_v01013_based::MonotonicClock::CreateSynchronizedMonotonicClock());
+    clock_ = std::unique_ptr<hand_tracking_mp_lean::Clock>(
+        hand_tracking_mp_lean::MonotonicClock::CreateSynchronizedMonotonicClock());
   }
 
   // Called when starting the scheduler.
@@ -86,7 +86,7 @@ class SchedulerTimer {
 
  private:
   // Timer for measuring overhead.
-  std::unique_ptr<mediapipe_v01013_based::Clock> clock_;
+  std::unique_ptr<hand_tracking_mp_lean::Clock> clock_;
 
   // Time spent actually running nodes, in microseconds.
   std::atomic<int64_t> total_node_time_;
@@ -111,6 +111,6 @@ struct SchedulerShared {
 };
 
 }  // namespace internal
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_SCHEDULER_SHARED_H_

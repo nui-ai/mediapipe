@@ -24,7 +24,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/metadata/utils/zip_utils.h"
 #include "mediapipe/util/resource_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace core {
 
@@ -61,7 +61,7 @@ absl::Status ModelAssetBundleResources::ExtractFilesFromExternalFileProto() {
     // in a platform-specific location and returns the absolute path on success.
     MP_ASSIGN_OR_RETURN(
         std::string path_to_resource,
-        mediapipe_v01013_based::PathToResourceAsFile(model_asset_bundle_file_->file_name()));
+        hand_tracking_mp_lean::PathToResourceAsFile(model_asset_bundle_file_->file_name()));
     model_asset_bundle_file_->set_file_name(path_to_resource);
   }
   MP_ASSIGN_OR_RETURN(model_asset_bundle_file_handler_,
@@ -101,4 +101,4 @@ std::vector<std::string> ModelAssetBundleResources::ListFiles() const {
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

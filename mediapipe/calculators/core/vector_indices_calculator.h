@@ -21,7 +21,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 // Calculator that takes a vector and constructs an index range vector based on
 // the size of the input vector.
@@ -60,6 +60,6 @@ class VectorIndicesCalculator : public Node {
 };
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_VECTOR_INDICES_CALCULATOR_H_

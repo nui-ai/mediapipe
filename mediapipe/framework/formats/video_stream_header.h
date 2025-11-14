@@ -19,7 +19,7 @@
 
 #include "mediapipe/framework/formats/image_format.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // This defines the format of a video stream header.
 struct VideoHeader {
@@ -40,6 +40,6 @@ struct VideoHeader {
   double frame_rate = 0.0;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_VIDEO_STREAM_HEADER_H_

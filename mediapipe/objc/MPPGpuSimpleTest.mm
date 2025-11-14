@@ -37,7 +37,7 @@
 - (void)mediapipeGraph:(MPPGraph*)graph
     didOutputPixelBuffer:(CVPixelBufferRef)pixelBuffer
               fromStream:(const std::string&)streamName
-               timestamp:(const mediapipe_v01013_based::Timestamp&)timestamp {
+               timestamp:(const hand_tracking_mp_lean::Timestamp&)timestamp {
   NSLog(@"CALLBACK INVOKED");
   _outputPixelBuffer.reset(pixelBuffer);
 }
@@ -45,7 +45,7 @@
 - (void)testSimpleGpuGraph {
   // Graph setup.
   NSData* configData = [self testDataNamed:@"test_sobel.binarypb" extension:nil];
-  mediapipe_v01013_based::CalculatorGraphConfig config;
+  hand_tracking_mp_lean::CalculatorGraphConfig config;
   XCTAssertTrue(config.ParseFromArray([configData bytes], [configData length]));
   MPPGraph* mediapipeGraph = [[MPPGraph alloc] initWithGraphConfig:config];
   // We receive output by setting ourselves as the delegate.
@@ -61,7 +61,7 @@
   XCTAssertTrue([mediapipeGraph sendPixelBuffer:*_inputPixelBuffer
                                    intoStream:"input_video"
                                    packetType:MPPPacketTypePixelBuffer
-                                    timestamp:mediapipe_v01013_based::Timestamp(0)]);
+                                    timestamp:hand_tracking_mp_lean::Timestamp(0)]);
 
   // Shut down the graph.
   success = [mediapipeGraph closeAllInputStreamsWithError:&error];

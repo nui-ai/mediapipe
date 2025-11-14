@@ -14,7 +14,7 @@
 
 #include "mediapipe/util/frame_buffer/halide/common.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace frame_buffer {
 namespace halide {
 namespace common {
@@ -86,4 +86,4 @@ void rotate(Halide::Func input, Halide::Func result, Halide::Expr width,
 }  // namespace common
 }  // namespace halide
 }  // namespace frame_buffer
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

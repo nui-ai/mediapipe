@@ -23,7 +23,7 @@
 #include "mediapipe/util/frame_buffer/halide/yuv_rotate_halide.h"
 #include "mediapipe/util/frame_buffer/rgb_buffer.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace frame_buffer {
 
 YuvBuffer::YuvBuffer(uint8_t* y_plane, uint8_t* u_plane, uint8_t* v_plane,
@@ -149,4 +149,4 @@ bool YuvBuffer::Convert(bool halve, RgbBuffer* output) {
 }
 
 }  // namespace frame_buffer
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -32,7 +32,7 @@
 #include "mediapipe/framework/tool/tag_map.h"
 #include "mediapipe/framework/tool/tag_map_helper.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using tool::TagMap;
 
@@ -159,6 +159,6 @@ class TestContextBuilder {
   std::unique_ptr<CalculatorContext> context_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_PROFILER_TEST_CONTEXT_BUILDER_H_

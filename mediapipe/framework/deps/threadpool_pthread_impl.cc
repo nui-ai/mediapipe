@@ -25,7 +25,7 @@
 #include "mediapipe/framework/deps/threadpool.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class ThreadPool::WorkerThread {
  public:
@@ -201,4 +201,4 @@ std::string CreateThreadName(const std::string& prefix, int thread_id) {
 
 }  // namespace internal
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

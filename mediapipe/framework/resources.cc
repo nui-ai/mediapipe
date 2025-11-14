@@ -18,7 +18,7 @@
 #include "mediapipe/framework/tool/status_util.h"
 #include "mediapipe/util/resource_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -202,4 +202,4 @@ std::unique_ptr<Resources> CreateResourcesWithMapping(
                                                 std::move(mapping));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

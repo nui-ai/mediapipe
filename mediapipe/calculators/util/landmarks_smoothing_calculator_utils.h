@@ -22,17 +22,17 @@
 #include "mediapipe/util/filtering/one_euro_filter.h"
 #include "mediapipe/util/filtering/relative_velocity_filter.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace landmarks_smoothing {
 
 void NormalizedLandmarksToLandmarks(
-    const mediapipe_v01013_based::NormalizedLandmarkList& norm_landmarks,
+    const hand_tracking_mp_lean::NormalizedLandmarkList& norm_landmarks,
     const int image_width, const int image_height,
-    mediapipe_v01013_based::LandmarkList& landmarks);
+    hand_tracking_mp_lean::LandmarkList& landmarks);
 
 void LandmarksToNormalizedLandmarks(
-    const mediapipe_v01013_based::LandmarkList& landmarks, const int image_width,
-    const int image_height, mediapipe_v01013_based::NormalizedLandmarkList& norm_landmarks);
+    const hand_tracking_mp_lean::LandmarkList& landmarks, const int image_width,
+    const int image_height, hand_tracking_mp_lean::NormalizedLandmarkList& norm_landmarks);
 
 float GetObjectScale(const NormalizedRect& roi, const int image_width,
                      const int image_height);
@@ -46,14 +46,14 @@ class LandmarksFilter {
 
   virtual absl::Status Reset() { return absl::OkStatus(); }
 
-  virtual absl::Status Apply(const mediapipe_v01013_based::LandmarkList& in_landmarks,
+  virtual absl::Status Apply(const hand_tracking_mp_lean::LandmarkList& in_landmarks,
                              const absl::Duration& timestamp,
                              const absl::optional<float> object_scale_opt,
-                             mediapipe_v01013_based::LandmarkList& out_landmarks) = 0;
+                             hand_tracking_mp_lean::LandmarkList& out_landmarks) = 0;
 };
 
 absl::StatusOr<std::unique_ptr<LandmarksFilter>> InitializeLandmarksFilter(
-    const mediapipe_v01013_based::LandmarksSmoothingCalculatorOptions& options);
+    const hand_tracking_mp_lean::LandmarksSmoothingCalculatorOptions& options);
 
 class MultiLandmarkFilters {
  public:
@@ -61,7 +61,7 @@ class MultiLandmarkFilters {
 
   virtual absl::StatusOr<LandmarksFilter*> GetOrCreate(
       const int64_t tracking_id,
-      const mediapipe_v01013_based::LandmarksSmoothingCalculatorOptions& options);
+      const hand_tracking_mp_lean::LandmarksSmoothingCalculatorOptions& options);
 
   virtual void ClearUnused(const std::vector<int64_t>& tracking_ids);
 
@@ -72,6 +72,6 @@ class MultiLandmarkFilters {
 };
 
 }  // namespace landmarks_smoothing
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_LANDMARKS_SMOOTHING_CALCULATOR_UTILS_H_

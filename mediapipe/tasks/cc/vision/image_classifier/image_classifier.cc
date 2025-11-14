@@ -40,7 +40,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/vision_task_api_factory.h"
 #include "mediapipe/tasks/cc/vision/image_classifier/proto/image_classifier_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace image_classifier {
@@ -58,10 +58,10 @@ constexpr char kSubgraphTypeName[] =
     "mediapipe.tasks.vision.image_classifier.ImageClassifierGraph";
 constexpr int kMicroSecondsPerMilliSecond = 1000;
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::tasks::components::containers::ConvertToClassificationResult;
-using ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
-using ::mediapipe_v01013_based::tasks::core::PacketMap;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::tasks::components::containers::ConvertToClassificationResult;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::ClassificationResult;
+using ::hand_tracking_mp_lean::tasks::core::PacketMap;
 
 // Creates a MediaPipe graph config that contains a subgraph node of
 // type "ImageClassifierGraph". If the task is running in the live stream mode,
@@ -215,4 +215,4 @@ absl::Status ImageClassifier::ClassifyAsync(
 }  // namespace image_classifier
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

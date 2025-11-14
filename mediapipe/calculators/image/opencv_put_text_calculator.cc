@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_builder.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Takes in a string, draws the text string by cv::putText(), and outputs an
 // ImageFrame.
@@ -56,4 +56,4 @@ absl::Status OpenCvPutTextCalculator::Process(CalculatorContext* cc) {
 
 REGISTER_CALCULATOR(OpenCvPutTextCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -16,4 +16,4 @@
 
 #include "absl/synchronization/mutex.h"
 
-namespace mediapipe_v01013_based {}  // namespace mediapipe_v01013_based
+namespace hand_tracking_mp_lean {}  // namespace hand_tracking_mp_lean

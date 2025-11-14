@@ -24,7 +24,7 @@
 #include "mediapipe/framework/collection_item_id.h"
 #include "mediapipe/framework/output_stream_shard.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 absl::Status OutputStreamHandler::InitializeOutputStreamManagers(
     OutputStreamManager* flat_output_stream_managers) {
@@ -196,4 +196,4 @@ void OutputStreamHandler::PropagateOutputPackets(
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

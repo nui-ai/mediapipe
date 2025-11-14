@@ -17,7 +17,7 @@
 #include "absl/log/absl_check.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 cv::Mat ConvertTfliteTensorToCvMat(const TfLiteTensor& tensor) {
   // Check tensor is BxCxWxH (size = 4) and the batch size is one(data[0] = 1)
@@ -32,11 +32,11 @@ cv::Mat ConvertTfliteTensorToCvMat(const TfLiteTensor& tensor) {
   return cv::Mat(dims, sizes, type, reinterpret_cast<void*>(tensor.data.f));
 }
 
-cv::Mat ConvertTensorToCvMat(const mediapipe_v01013_based::Tensor& tensor) {
+cv::Mat ConvertTensorToCvMat(const hand_tracking_mp_lean::Tensor& tensor) {
   // Check tensor is BxCxWxH (size = 4) and the batch size is one(data[0] = 1)
   ABSL_CHECK(tensor.shape().dims.size() == 4 && tensor.shape().dims[0] == 1);
   ABSL_CHECK_EQ(
-      mediapipe_v01013_based::Tensor::ElementType::kFloat32 == tensor.element_type(), true)
+      hand_tracking_mp_lean::Tensor::ElementType::kFloat32 == tensor.element_type(), true)
       << "tensor type is not float";
 
   const size_t num_output_channels = tensor.shape().dims[3];
@@ -47,4 +47,4 @@ cv::Mat ConvertTensorToCvMat(const mediapipe_v01013_based::Tensor& tensor) {
   return cv::Mat(dims, sizes, type, const_cast<void*>(cpu_view.buffer<void>()));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -16,7 +16,7 @@
 
 #include <array>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 NormalizedLandmark AdjustLandmarkForLetterboxRemoval(
     const NormalizedLandmark& landmark,
@@ -52,4 +52,4 @@ NormalizedLandmarkList AdjustLandmarkListToLetterboxRemoval(
   return output_landmarks;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

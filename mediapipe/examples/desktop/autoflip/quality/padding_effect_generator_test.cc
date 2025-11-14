@@ -32,7 +32,7 @@ ABSL_FLAG(std::string, input_image, "", "The path to an input image.");
 ABSL_FLAG(std::string, output_folder, "",
           "The folder to output test result images.");
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 namespace {
 
@@ -52,10 +52,10 @@ void TestWithAspectRatio(const double aspect_ratio,
   const bool process_arbitrary_image =
       !absl::GetFlag(FLAGS_input_image).empty();
   if (!process_arbitrary_image) {
-    std::string test_image_path = mediapipe_v01013_based::file::JoinPath("./", kTestImage);
-    MP_ASSERT_OK(mediapipe_v01013_based::file::GetContents(test_image_path, &test_image));
+    std::string test_image_path = hand_tracking_mp_lean::file::JoinPath("./", kTestImage);
+    MP_ASSERT_OK(hand_tracking_mp_lean::file::GetContents(test_image_path, &test_image));
   } else {
-    MP_ASSERT_OK(mediapipe_v01013_based::file::GetContents(absl::GetFlag(FLAGS_input_image),
+    MP_ASSERT_OK(hand_tracking_mp_lean::file::GetContents(absl::GetFlag(FLAGS_input_image),
                                               &test_image));
   }
 
@@ -75,11 +75,11 @@ void TestWithAspectRatio(const double aspect_ratio,
       cv::cvtColor(decoded_mat, output_mat, cv::COLOR_BGR2RGB);
       break;
     case 4:
-      MP_ASSERT_OK(mediapipe_v01013_based::UnimplementedErrorBuilder(MEDIAPIPE_LOC)
+      MP_ASSERT_OK(hand_tracking_mp_lean::UnimplementedErrorBuilder(MEDIAPIPE_LOC)
                    << "4-channel image isn't supported yet");
       break;
     default:
-      MP_ASSERT_OK(mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+      MP_ASSERT_OK(hand_tracking_mp_lean::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
                    << "Unsupported number of channels: "
                    << decoded_mat.channels());
   }
@@ -104,11 +104,11 @@ void TestWithAspectRatio(const double aspect_ratio,
       cv::cvtColor(original_mat, input_mat, cv::COLOR_RGB2BGR);
       break;
     case 4:
-      MP_ASSERT_OK(mediapipe_v01013_based::UnimplementedErrorBuilder(MEDIAPIPE_LOC)
+      MP_ASSERT_OK(hand_tracking_mp_lean::UnimplementedErrorBuilder(MEDIAPIPE_LOC)
                    << "4-channel image isn't supported yet");
       break;
     default:
-      MP_ASSERT_OK(mediapipe_v01013_based::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
+      MP_ASSERT_OK(hand_tracking_mp_lean::FailedPreconditionErrorBuilder(MEDIAPIPE_LOC)
                    << "Unsupported number of channels: "
                    << original_mat.channels());
   }
@@ -123,7 +123,7 @@ void TestWithAspectRatio(const double aspect_ratio,
   // Check its JpegEncoder::write() in "imgcodecs/src/grfmt_jpeg.cpp" for more
   // info.
   if (!cv::imencode(".jpg", input_mat, encode_buffer, parameters)) {
-    MP_ASSERT_OK(mediapipe_v01013_based::InternalErrorBuilder(MEDIAPIPE_LOC)
+    MP_ASSERT_OK(hand_tracking_mp_lean::InternalErrorBuilder(MEDIAPIPE_LOC)
                  << "Fail to encode the image to be jpeg format.");
   }
 
@@ -131,13 +131,13 @@ void TestWithAspectRatio(const double aspect_ratio,
       reinterpret_cast<const char*>(&encode_buffer[0]), encode_buffer.size()));
 
   if (!process_arbitrary_image) {
-    std::string result_string_path = mediapipe_v01013_based::file::JoinPath(
+    std::string result_string_path = hand_tracking_mp_lean::file::JoinPath(
         "./", absl::StrCat(kResultImagePrefix, aspect_ratio,
                            background_color_in_rgb ? "_solid_background" : "",
                            ".jpg"));
     std::string result_image;
     MP_ASSERT_OK(
-        mediapipe_v01013_based::file::GetContents(result_string_path, &result_image));
+        hand_tracking_mp_lean::file::GetContents(result_string_path, &result_image));
     if (result_image != output_string) {
       // There may be slight differences due to the way the JPEG was encoded or
       // the OpenCV version used to generate the reference files. Compare
@@ -156,13 +156,13 @@ void TestWithAspectRatio(const double aspect_ratio,
       EXPECT_GT(cv::PSNR(result_mat, output_mat), 45.0);
     }
   } else {
-    std::string output_string_path = mediapipe_v01013_based::file::JoinPath(
+    std::string output_string_path = hand_tracking_mp_lean::file::JoinPath(
         absl::GetFlag(FLAGS_output_folder),
         absl::StrCat("result_", aspect_ratio,
                      background_color_in_rgb ? "_solid_background" : "",
                      ".jpg"));
     MP_ASSERT_OK(
-        mediapipe_v01013_based::file::SetContents(output_string_path, output_string));
+        hand_tracking_mp_lean::file::SetContents(output_string_path, output_string));
   }
 }
 
@@ -215,4 +215,4 @@ TEST(PaddingEffectGeneratorTest, ComputeOutputLocation) {
 }
 }  // namespace
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

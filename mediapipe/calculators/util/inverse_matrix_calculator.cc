@@ -24,7 +24,7 @@
 #include "mediapipe/framework/api3/calculator_context.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api3 {
 
 class InverseMatrixNodeImpl
@@ -59,4 +59,4 @@ class InverseMatrixNodeImpl
 };
 
 }  // namespace api3
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -45,17 +45,17 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/image_generator/proto/image_generator_graph_options.pb.h"
 #include "mediapipe/util/graph_builder_utils.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace image_generator {
 
 namespace {
 
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
 
 constexpr int kPluginsOutputSize = 512;
 constexpr absl::string_view kTensorsTag = "TENSORS";
@@ -109,7 +109,7 @@ class ConditionedImageGraphContainer : public core::ModelTaskGraph {
     auto select_condition_type = graph.In(kSelectTag).Cast<int>();
     auto& switch_container = graph.AddNode("SwitchContainer");
     auto& switch_options =
-        switch_container.GetOptions<mediapipe_v01013_based::SwitchContainerOptions>();
+        switch_container.GetOptions<hand_tracking_mp_lean::SwitchContainerOptions>();
     for (auto& control_plugin_graph_options :
          *graph_options.mutable_control_plugin_graphs_options()) {
       auto& node = *switch_options.add_contained_node();
@@ -128,7 +128,7 @@ class ConditionedImageGraphContainer : public core::ModelTaskGraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe_v01013_based::tasks::vision::image_generator::ConditionedImageGraphContainer); // NOLINT
+  ::hand_tracking_mp_lean::tasks::vision::image_generator::ConditionedImageGraphContainer); // NOLINT
 // clang-format on
 
 // A helper graph to convert condition image to Tensor using the control plugin
@@ -158,7 +158,7 @@ class ControlPluginGraph : public core::ModelTaskGraph {
     // Convert ImageFrame to Tensor.
     auto& image_to_tensor = graph.AddNode("ImageToTensorCalculator");
     auto& image_to_tensor_options =
-        image_to_tensor.GetOptions<mediapipe_v01013_based::ImageToTensorCalculatorOptions>();
+        image_to_tensor.GetOptions<hand_tracking_mp_lean::ImageToTensorCalculatorOptions>();
     image_to_tensor_options.set_output_tensor_width(kPluginsOutputSize);
     image_to_tensor_options.set_output_tensor_height(kPluginsOutputSize);
     image_to_tensor_options.mutable_output_tensor_float_range()->set_min(-1);
@@ -182,7 +182,7 @@ class ControlPluginGraph : public core::ModelTaskGraph {
     // The plugins model is not runnable on OpenGL. Error message:
     // TfLiteGpuDelegate Prepare: Batch size mismatch, expected 1 but got 64
     // Node number 67 (TfLiteGpuDelegate) failed to prepare.
-    plugins_inference.GetOptions<mediapipe_v01013_based::InferenceCalculatorOptions>()
+    plugins_inference.GetOptions<hand_tracking_mp_lean::InferenceCalculatorOptions>()
         .mutable_delegate()
         ->mutable_xnnpack();
     plugins_inference.Out(kTensorsTag).Cast<std::vector<Tensor>>() >>
@@ -192,7 +192,7 @@ class ControlPluginGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe_v01013_based::tasks::vision::image_generator::ControlPluginGraph);
+    ::hand_tracking_mp_lean::tasks::vision::image_generator::ControlPluginGraph);
 
 // A "mediapipe.tasks.vision.image_generator.ImageGeneratorGraph" performs image
 // generation from a text prompt, and a optional condition image.
@@ -290,7 +290,7 @@ class ImageGeneratorGraph : public core::ModelTaskGraph {
       // Add switch container for multiple control plugin graphs.
       auto& switch_container = graph.AddNode("SwitchContainer");
       auto& switch_options =
-          switch_container.GetOptions<mediapipe_v01013_based::SwitchContainerOptions>();
+          switch_container.GetOptions<hand_tracking_mp_lean::SwitchContainerOptions>();
       for (auto& control_plugin_graph_options :
            *subgraph_options.mutable_control_plugin_graphs_options()) {
         auto& node = *switch_options.add_contained_node();
@@ -319,9 +319,9 @@ class ImageGeneratorGraph : public core::ModelTaskGraph {
     if (inputs.show_result.has_value()) {
       *inputs.show_result >> stable_diff.In(kShowResultTag);
     }
-    mediapipe_v01013_based::StableDiffusionIterateCalculatorOptions& options =
+    hand_tracking_mp_lean::StableDiffusionIterateCalculatorOptions& options =
         stable_diff
-            .GetOptions<mediapipe_v01013_based::StableDiffusionIterateCalculatorOptions>();
+            .GetOptions<hand_tracking_mp_lean::StableDiffusionIterateCalculatorOptions>();
     if (subgraph_options.has_stable_diffusion_iterate_options()) {
       options = subgraph_options.stable_diffusion_iterate_options();
     } else {
@@ -358,7 +358,7 @@ class ImageGeneratorGraph : public core::ModelTaskGraph {
  private:
   absl::Status ParseLoraMetadataAndConfigOptions(
       absl::string_view contents,
-      mediapipe_v01013_based::StableDiffusionIterateCalculatorOptions& options) {
+      hand_tracking_mp_lean::StableDiffusionIterateCalculatorOptions& options) {
     std::vector<absl::string_view> lines =
         absl::StrSplit(contents, '\n', absl::SkipEmpty());
     for (const auto& line : lines) {
@@ -377,9 +377,9 @@ class ImageGeneratorGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe_v01013_based::tasks::vision::image_generator::ImageGeneratorGraph);
+    ::hand_tracking_mp_lean::tasks::vision::image_generator::ImageGeneratorGraph);
 
 }  // namespace image_generator
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

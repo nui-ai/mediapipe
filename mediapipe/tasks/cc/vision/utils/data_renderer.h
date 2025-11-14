@@ -28,13 +28,13 @@ limitations under the License.
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe_v01013_based::tasks::vision::utils {
+namespace hand_tracking_mp_lean::tasks::vision::utils {
 
 // Adds a node to the provided graph that renders the render_data_list on the
 // given image, and returns the rendered image.
 api2::builder::Stream<Image> Render(
     api2::builder::Stream<Image> image,
-    absl::Span<api2::builder::Stream<mediapipe_v01013_based::RenderData>> render_data_list,
+    absl::Span<api2::builder::Stream<hand_tracking_mp_lean::RenderData>> render_data_list,
     api2::builder::Graph& graph);
 
 // Adds a node to the provided graph that infers the render scale from the image
@@ -51,19 +51,19 @@ api2::builder::Stream<float> GetRenderScale(
 
 // Adds a node to the provided graph that gets the landmarks render data
 // according to the renderer_options.
-api2::builder::Stream<mediapipe_v01013_based::RenderData> RenderLandmarks(
-    api2::builder::Stream<mediapipe_v01013_based::NormalizedLandmarkList> landmarks,
+api2::builder::Stream<hand_tracking_mp_lean::RenderData> RenderLandmarks(
+    api2::builder::Stream<hand_tracking_mp_lean::NormalizedLandmarkList> landmarks,
     std::optional<api2::builder::Stream<float>> render_scale,
-    const mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions& renderer_options,
+    const hand_tracking_mp_lean::LandmarksToRenderDataCalculatorOptions& renderer_options,
     api2::builder::Graph& graph);
 
 // Adds a node to the provided graph that gets the rect render data according to
 // the renderer_options.
-api2::builder::Stream<mediapipe_v01013_based::RenderData> RenderRect(
+api2::builder::Stream<hand_tracking_mp_lean::RenderData> RenderRect(
     api2::builder::Stream<NormalizedRect> rect,
-    const mediapipe_v01013_based::RectToRenderDataCalculatorOptions& renderer_options,
+    const hand_tracking_mp_lean::RectToRenderDataCalculatorOptions& renderer_options,
     api2::builder::Graph& graph);
 
-}  // namespace mediapipe_v01013_based::tasks::vision::utils
+}  // namespace hand_tracking_mp_lean::tasks::vision::utils
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_UTILS_DATA_RENDERER_H_

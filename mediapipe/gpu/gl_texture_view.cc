@@ -1,6 +1,6 @@
 #include "mediapipe/gpu/gl_texture_view.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 void GlTextureView::Release() {
   DoneWriting();
@@ -20,4 +20,4 @@ void GlTextureView::DoneWriting() const {
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

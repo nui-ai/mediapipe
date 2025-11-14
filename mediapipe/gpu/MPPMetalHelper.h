@@ -31,25 +31,25 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init NS_UNAVAILABLE;
 
 /// Initialize. This initializer is recommended for calculators.
-- (instancetype)initWithCalculatorContext:(mediapipe_v01013_based::CalculatorContext *)cc;
+- (instancetype)initWithCalculatorContext:(hand_tracking_mp_lean::CalculatorContext *)cc;
 
 /// Initialize.
-- (instancetype)initWithGpuResources:(mediapipe_v01013_based::GpuResources *)gpuResources
+- (instancetype)initWithGpuResources:(hand_tracking_mp_lean::GpuResources *)gpuResources
     NS_DESIGNATED_INITIALIZER;
 
 /// Configures a calculator's contract for accessing GPU resources.
 /// Calculators should use this in GetContract.
-+ (absl::Status)updateContract:(mediapipe_v01013_based::CalculatorContract *)cc;
++ (absl::Status)updateContract:(hand_tracking_mp_lean::CalculatorContract *)cc;
 
 /// Deprecated initializer.
-- (instancetype)initWithSidePackets:(const mediapipe_v01013_based::PacketSet &)inputSidePackets;
+- (instancetype)initWithSidePackets:(const hand_tracking_mp_lean::PacketSet &)inputSidePackets;
 
 /// Deprecated initializer.
-- (instancetype)initWithGpuSharedData:(mediapipe_v01013_based::GpuSharedData *)gpuShared;
+- (instancetype)initWithGpuSharedData:(hand_tracking_mp_lean::GpuSharedData *)gpuShared;
 
 /// Configures a calculator's side packets for accessing GPU resources.
 /// Calculators should use this in FillExpectations.
-+ (absl::Status)setupInputSidePackets:(mediapipe_v01013_based::PacketTypeSet *)inputSidePackets;
++ (absl::Status)setupInputSidePackets:(hand_tracking_mp_lean::PacketTypeSet *)inputSidePackets;
 
 /// Get a metal command buffer.
 /// Calculators should use this method instead of getting a buffer from the
@@ -61,32 +61,32 @@ NS_ASSUME_NONNULL_BEGIN
 /// Creates a CVMetalTextureRef linked to the provided GpuBuffer.
 /// Ownership follows the copy rule, so the caller is responsible for
 /// releasing the CVMetalTextureRef.
-- (CVMetalTextureRef)copyCVMetalTextureWithGpuBuffer:(const mediapipe_v01013_based::GpuBuffer &)gpuBuffer;
+- (CVMetalTextureRef)copyCVMetalTextureWithGpuBuffer:(const hand_tracking_mp_lean::GpuBuffer &)gpuBuffer;
 
 /// Creates a CVMetalTextureRef linked to the provided GpuBuffer given a specific plane.
 /// Ownership follows the copy rule, so the caller is responsible for
 /// releasing the CVMetalTextureRef.
-- (CVMetalTextureRef)copyCVMetalTextureWithGpuBuffer:(const mediapipe_v01013_based::GpuBuffer &)gpuBuffer
+- (CVMetalTextureRef)copyCVMetalTextureWithGpuBuffer:(const hand_tracking_mp_lean::GpuBuffer &)gpuBuffer
                                                plane:(size_t)plane;
 
 /// Returns a MTLTexture linked to the provided GpuBuffer.
 /// A calculator can freely use it as a rendering source, but it should not
 /// use it as a rendering target if the GpuBuffer was provided as an input.
-- (id<MTLTexture>)metalTextureWithGpuBuffer:(const mediapipe_v01013_based::GpuBuffer &)gpuBuffer;
+- (id<MTLTexture>)metalTextureWithGpuBuffer:(const hand_tracking_mp_lean::GpuBuffer &)gpuBuffer;
 
 /// Returns a MTLTexture linked to the provided GpuBuffer given a specific plane.
 /// A calculator can freely use it as a rendering source, but it should not
 /// use it as a rendering target if the GpuBuffer was provided as an input.
-- (id<MTLTexture>)metalTextureWithGpuBuffer:(const mediapipe_v01013_based::GpuBuffer &)gpuBuffer
+- (id<MTLTexture>)metalTextureWithGpuBuffer:(const hand_tracking_mp_lean::GpuBuffer &)gpuBuffer
                                       plane:(size_t)plane;
 
 /// Obtains a new GpuBuffer to be used as an output destination.
-- (mediapipe_v01013_based::GpuBuffer)mediapipeGpuBufferWithWidth:(int)width height:(int)height;
+- (hand_tracking_mp_lean::GpuBuffer)mediapipeGpuBufferWithWidth:(int)width height:(int)height;
 
 /// Obtains a new GpuBuffer to be used as an output destination.
-- (mediapipe_v01013_based::GpuBuffer)mediapipeGpuBufferWithWidth:(int)width
+- (hand_tracking_mp_lean::GpuBuffer)mediapipeGpuBufferWithWidth:(int)width
                                              height:(int)height
-                                             format:(mediapipe_v01013_based::GpuBufferFormat)format;
+                                             format:(hand_tracking_mp_lean::GpuBufferFormat)format;
 
 /// Convenience method to load a Metal library stored as a bundle resource.
 - (id<MTLLibrary>)newLibraryWithResourceName:(NSString *)name error:(NSError *_Nullable *)error;

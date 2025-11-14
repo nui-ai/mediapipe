@@ -26,7 +26,7 @@
 #include "mediapipe/calculators/core/split_vector_calculator_core.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // A small façade over split_vector_calculator_core.* that encapsulates
 // initialization and processing logic for splitting vectors of inference
@@ -40,7 +40,7 @@ class InferenceOutputTensorSplitting {
   InferenceOutputTensorSplitting() = default;
 
   // Construct and initialize internal state from options.
-  explicit InferenceOutputTensorSplitting(const ::mediapipe_v01013_based::SplitVectorCalculatorOptions& options) {
+  explicit InferenceOutputTensorSplitting(const ::hand_tracking_mp_lean::SplitVectorCalculatorOptions& options) {
     // initialize with same option values as the original pipeline.
     // kind of overdoing it in reusing original pipeline code for a class only splitting four things.
     max_range_end_ = -1;
@@ -59,7 +59,7 @@ class InferenceOutputTensorSplitting {
       std::vector<std::unique_ptr<std::vector<T>>>* output_vectors,
       std::vector<T>* output_elements,
       std::unique_ptr<std::vector<T>>* combined_output) const {
-    return ::mediapipe_v01013_based::ProcessMovableElements<T>(
+    return ::hand_tracking_mp_lean::ProcessMovableElements<T>(
         input_vector, ranges_, max_range_end_, total_elements_, element_only_,
         combine_outputs_, output_vectors, output_elements, combined_output);
   }
@@ -71,8 +71,8 @@ class InferenceOutputTensorSplitting {
 
   // Static helper so callers don't need to include or call core directly.
   static absl::Status CheckRangesDontOverlap(
-      const ::mediapipe_v01013_based::SplitVectorCalculatorOptions& options) {
-    return ::mediapipe_v01013_based::CheckRangesDontOverlap(options);
+      const ::hand_tracking_mp_lean::SplitVectorCalculatorOptions& options) {
+    return ::hand_tracking_mp_lean::CheckRangesDontOverlap(options);
   }
 
  private:
@@ -83,6 +83,6 @@ class InferenceOutputTensorSplitting {
   bool combine_outputs_ = false;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_INFERENCE_OUTPUT_TENSOR_SPLITTING_H_

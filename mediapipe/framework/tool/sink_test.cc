@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/validate_type.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 class CountAndOutputSummarySidePacketInCloseCalculator : public CalculatorBase {
@@ -76,7 +76,7 @@ TEST(CallbackFromGeneratorTest, TestAddVectorSink) {
 
 TEST(CalculatorGraph, OutputSummarySidePacketInClose) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input_packets"
         node {
           calculator: "CountAndOutputSummarySidePacketInCloseCalculator"
@@ -182,7 +182,7 @@ TEST(CallbackTest, TestAddMultiStreamCallbackWithTimestampNotification) {
             }
           )";
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
 
   std::vector<int> sums;
 
@@ -208,4 +208,4 @@ TEST(CallbackTest, TestAddMultiStreamCallbackWithTimestampNotification) {
 #endif
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

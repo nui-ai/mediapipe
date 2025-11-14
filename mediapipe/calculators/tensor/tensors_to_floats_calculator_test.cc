@@ -24,16 +24,16 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-using mediapipe_v01013_based::ParseTextProtoOrDie;
-using Node = ::mediapipe_v01013_based::CalculatorGraphConfig::Node;
+using hand_tracking_mp_lean::ParseTextProtoOrDie;
+using Node = ::hand_tracking_mp_lean::CalculatorGraphConfig::Node;
 
 const float kErrorMargin = 1e-2f;
 
 class TensorsToFloatsCalculatorTest : public ::testing::Test {
  protected:
-  void BuildGraph(mediapipe_v01013_based::CalculatorRunner* runner,
+  void BuildGraph(hand_tracking_mp_lean::CalculatorRunner* runner,
                   const std::vector<float>& values) {
     auto tensors = absl::make_unique<std::vector<Tensor>>();
     tensors->emplace_back(
@@ -51,13 +51,13 @@ class TensorsToFloatsCalculatorTest : public ::testing::Test {
         runner->MutableInputs()->Tag("TENSORS").packets;
 
     input_stream_packets.push_back(
-        mediapipe_v01013_based::Adopt(tensors.release())
-            .At(mediapipe_v01013_based::Timestamp(stream_timestamp++)));
+        hand_tracking_mp_lean::Adopt(tensors.release())
+            .At(hand_tracking_mp_lean::Timestamp(stream_timestamp++)));
   }
 };
 
 TEST_F(TensorsToFloatsCalculatorTest, SingleValue) {
-  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  hand_tracking_mp_lean::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "TensorsToFloatsCalculator"
     input_stream: "TENSORS:tensors"
     output_stream: "FLOAT:float"
@@ -76,7 +76,7 @@ TEST_F(TensorsToFloatsCalculatorTest, SingleValue) {
 }
 
 TEST_F(TensorsToFloatsCalculatorTest, SingleValueAsVector) {
-  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  hand_tracking_mp_lean::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "TensorsToFloatsCalculator"
     input_stream: "TENSORS:tensors"
     output_stream: "FLOATS:floats"
@@ -95,7 +95,7 @@ TEST_F(TensorsToFloatsCalculatorTest, SingleValueAsVector) {
 }
 
 TEST_F(TensorsToFloatsCalculatorTest, FloatVector) {
-  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  hand_tracking_mp_lean::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "TensorsToFloatsCalculator"
     input_stream: "TENSORS:tensors"
     output_stream: "FLOATS:floats"
@@ -116,7 +116,7 @@ TEST_F(TensorsToFloatsCalculatorTest, FloatVector) {
 }
 
 TEST_F(TensorsToFloatsCalculatorTest, FloatVectorWithSigmoid) {
-  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
+  hand_tracking_mp_lean::CalculatorRunner runner(ParseTextProtoOrDie<Node>(R"pb(
     calculator: "TensorsToFloatsCalculator"
     input_stream: "TENSORS:tensors"
     output_stream: "FLOATS:floats"
@@ -141,4 +141,4 @@ TEST_F(TensorsToFloatsCalculatorTest, FloatVectorWithSigmoid) {
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

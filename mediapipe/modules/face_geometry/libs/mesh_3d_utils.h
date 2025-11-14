@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/statusor.h"
 #include "mediapipe/modules/face_geometry/protos/mesh_3d.pb.h"
 
-namespace mediapipe_v01013_based::face_geometry {
+namespace hand_tracking_mp_lean::face_geometry {
 
 enum class VertexComponent { POSITION, TEX_COORD };
 
@@ -46,6 +46,6 @@ absl::StatusOr<uint32_t> GetVertexComponentOffset(
 absl::StatusOr<uint32_t> GetVertexComponentSize(
     Mesh3d::VertexType vertex_type, VertexComponent vertex_component);
 
-}  // namespace mediapipe_v01013_based::face_geometry
+}  // namespace hand_tracking_mp_lean::face_geometry
 
 #endif  // MEDIAPIPE_FACE_GEOMETRY_LIBS_MESH_3D_UTILS_H_

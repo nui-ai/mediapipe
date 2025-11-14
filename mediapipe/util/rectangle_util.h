@@ -20,21 +20,21 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/port/rectangle.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Converts a NormalizedRect into a Rectangle_f.
-absl::StatusOr<Rectangle_f> ToRectangle(const mediapipe_v01013_based::NormalizedRect& input);
+absl::StatusOr<Rectangle_f> ToRectangle(const hand_tracking_mp_lean::NormalizedRect& input);
 
 // If the new_rect overlaps with any of the rectangles in
 // existing_rects, then return true. Otherwise, return false.
 absl::StatusOr<bool> DoesRectOverlap(
-    const mediapipe_v01013_based::NormalizedRect& new_rect,
-    absl::Span<const mediapipe_v01013_based::NormalizedRect> existing_rects,
+    const hand_tracking_mp_lean::NormalizedRect& new_rect,
+    absl::Span<const hand_tracking_mp_lean::NormalizedRect> existing_rects,
     float min_similarity_threshold);
 
 // Computes the Intersection over Union (IoU) between two rectangles.
 float CalculateIou(const Rectangle_f& rect1, const Rectangle_f& rect2);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_RECTANGLE_UTIL_H_

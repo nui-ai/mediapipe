@@ -22,7 +22,7 @@ limitations under the License.
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace metadata {
 
@@ -171,6 +171,6 @@ class ModelMetadataExtractor {
 
 }  // namespace metadata
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_METADATA_METADATA_EXTRACTOR_H_

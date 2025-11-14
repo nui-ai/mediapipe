@@ -45,7 +45,7 @@ limitations under the License.
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace core {
 namespace {
@@ -101,7 +101,7 @@ absl::StatusOr<std::unique_ptr<TaskRunner>> TaskRunner::Create(
     PacketsCallback packets_callback,
     std::shared_ptr<Executor> default_executor,
     std::optional<PacketMap> input_side_packets,
-    std::shared_ptr<::mediapipe_v01013_based::GpuResources> resources,
+    std::shared_ptr<::hand_tracking_mp_lean::GpuResources> resources,
     std::optional<ErrorFn> error_fn, bool disable_default_service) {
 #else
 absl::StatusOr<std::unique_ptr<TaskRunner>> TaskRunner::Create(
@@ -142,7 +142,7 @@ absl::Status TaskRunner::Initialize(
         MediaPipeTasksStatus::kRunnerInitializationError);
   }
   for (const auto& output : config.output_stream()) {
-    auto name = mediapipe_v01013_based::tool::ParseNameFromStream(output);
+    auto name = hand_tracking_mp_lean::tool::ParseNameFromStream(output);
     if (name.empty()) {
       return CreateStatusWithPayload(
           absl::StatusCode::kInvalidArgument,
@@ -172,7 +172,7 @@ absl::Status TaskRunner::Initialize(
         &config, &input_side_packets.value(),
         /*observe_timestamp_bounds=*/true);
   } else {
-    mediapipe_v01013_based::tool::AddMultiStreamCallback(
+    hand_tracking_mp_lean::tool::AddMultiStreamCallback(
         output_stream_names_,
         [this](const std::vector<Packet>& packets) {
           status_or_output_packets_ =
@@ -366,4 +366,4 @@ absl::Status TaskRunner::Restart() {
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

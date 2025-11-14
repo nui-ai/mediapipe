@@ -39,7 +39,7 @@ node {
   input_stream: "ENCODED:quantized_rgb_feature"
   output_stream: "FLOAT_VECTOR:rgb_feature_vector"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.DequantizeByteArrayCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.DequantizeByteArrayCalculatorOptions]: {
       max_quantized_value: 2
       min_quantized_value: -2
     }
@@ -51,7 +51,7 @@ node {
   input_stream: "ENCODED:quantized_audio_feature"
   output_stream: "FLOAT_VECTOR:audio_feature_vector"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.DequantizeByteArrayCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.DequantizeByteArrayCalculatorOptions]: {
       max_quantized_value: 2
       min_quantized_value: -2
     }
@@ -101,7 +101,7 @@ node {
   calculator: "TensorFlowSessionFromSavedModelCalculator"
   output_side_packet: "SESSION:session"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TensorFlowSessionFromSavedModelCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.TensorFlowSessionFromSavedModelCalculatorOptions]: {
       saved_model_path: "/tmp/mediapipe/saved_model"
     }
   }
@@ -114,7 +114,7 @@ node: {
   input_stream: "RGB_AND_AUDIO:lapped_feature_tensor"
   output_stream: "PREDICTIONS:prediction_tensor"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TensorFlowInferenceCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.TensorFlowInferenceCalculatorOptions]: {
       batch_size: 32
     }
   }
@@ -131,7 +131,7 @@ node {
   input_stream: "SCORES:prediction_vector"
   output_stream: "SUMMARY:annotation_summary"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TopKScoresCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.TopKScoresCalculatorOptions]: {
       top_k: 9
       label_map_path: "mediapipe/graphs/youtube8m/label_map.txt"
     }

@@ -33,12 +33,12 @@
 #include "mediapipe/framework/resources_service.h"
 #include "mediapipe/util/resources_test_util.h"
 
-namespace mediapipe_v01013_based::api2 {
+namespace hand_tracking_mp_lean::api2 {
 namespace {
 
-using ::mediapipe_v01013_based::Packet;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::SidePacket;
+using ::hand_tracking_mp_lean::Packet;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::SidePacket;
 
 TEST(ResourceProviderCalculatorTest, CanGetSingleResourceUsingOptions) {
   Graph graph;
@@ -139,7 +139,7 @@ TEST(ResourceProviderCalculatorTest, CanGetSingleResourceUsingSidePacket) {
 TEST(ResourceProviderCalculatorTest, CanGetMultipleResourcesUsingSidePackets) {
   constexpr int kNumResources = 3;
   absl::flat_hash_map<std::string, std::string> resources_in_memory;
-  std::map<std::string, mediapipe_v01013_based::Packet> resource_ids_side_packets;
+  std::map<std::string, hand_tracking_mp_lean::Packet> resource_ids_side_packets;
 
   Graph graph;
 
@@ -185,4 +185,4 @@ TEST(ResourceProviderCalculatorTest, CanGetMultipleResourcesUsingSidePackets) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api2
+}  // namespace hand_tracking_mp_lean::api2

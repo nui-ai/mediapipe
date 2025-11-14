@@ -3,11 +3,11 @@
 
 #include "absl/status/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Returns the error of the last called EGL function in the current thread.
 absl::Status GetEglError();
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_EGL_ERRORS_H_

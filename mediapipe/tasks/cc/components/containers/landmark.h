@@ -23,7 +23,7 @@ limitations under the License.
 
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe_v01013_based::tasks::components::containers {
+namespace hand_tracking_mp_lean::tasks::components::containers {
 inline constexpr float kLandmarkTolerance = 1e-6;
 
 // Landmark represents a point in 3D space with x, y, z coordinates. The
@@ -84,21 +84,21 @@ struct NormalizedLandmarks {
 };
 
 // Utility function to convert from Landmark proto to Landmark struct.
-Landmark ConvertToLandmark(const mediapipe_v01013_based::Landmark& proto);
+Landmark ConvertToLandmark(const hand_tracking_mp_lean::Landmark& proto);
 
 // Utility function to convert from NormalizedLandmark proto to
 // NormalizedLandmark struct.
 NormalizedLandmark ConvertToNormalizedLandmark(
-    const mediapipe_v01013_based::NormalizedLandmark& proto);
+    const hand_tracking_mp_lean::NormalizedLandmark& proto);
 
 // Utility function to convert from LandmarkList proto to Landmarks struct.
-Landmarks ConvertToLandmarks(const mediapipe_v01013_based::LandmarkList& proto);
+Landmarks ConvertToLandmarks(const hand_tracking_mp_lean::LandmarkList& proto);
 
 // Utility function to convert from NormalizedLandmarkList proto to
 // NormalizedLandmarks struct.
 NormalizedLandmarks ConvertToNormalizedLandmarks(
-    const mediapipe_v01013_based::NormalizedLandmarkList& proto);
+    const hand_tracking_mp_lean::NormalizedLandmarkList& proto);
 
-}  // namespace mediapipe_v01013_based::tasks::components::containers
+}  // namespace hand_tracking_mp_lean::tasks::components::containers
 
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_CONTAINERS_LANDMARK_H_

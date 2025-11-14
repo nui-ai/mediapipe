@@ -29,10 +29,10 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::CalculatorGraphConfig;
+using ::hand_tracking_mp_lean::CalculatorGraphConfig;
 using ::testing::ElementsAreArray;
 using ::testing::Not;
 using Tensors = std::vector<Tensor>;
@@ -387,4 +387,4 @@ TEST(FeedbackTensorsCalculatorTest, ChecksShape) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

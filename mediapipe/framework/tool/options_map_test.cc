@@ -23,7 +23,7 @@
 #include "mediapipe/framework/testdata/night_light_calculator.pb.h"
 #include "mediapipe/framework/testdata/proto3_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tool {
 namespace {
 
@@ -36,8 +36,8 @@ TEST(OptionsMapTest, QueryNotFound) {
       )pb");
   OptionsMap options;
   options.Initialize(node);
-  EXPECT_FALSE(options.Has<mediapipe_v01013_based::NightLightCalculatorOptions>());
-  EXPECT_FALSE(options.Has<mediapipe_v01013_based::Proto3Options>());
+  EXPECT_FALSE(options.Has<hand_tracking_mp_lean::NightLightCalculatorOptions>());
+  EXPECT_FALSE(options.Has<hand_tracking_mp_lean::Proto3Options>());
 }
 
 TEST(OptionsMapTest, Proto2QueryFound) {
@@ -56,9 +56,9 @@ TEST(OptionsMapTest, Proto2QueryFound) {
       )pb");
   OptionsMap options;
   options.Initialize(node);
-  EXPECT_TRUE(options.Has<mediapipe_v01013_based::NightLightCalculatorOptions>());
+  EXPECT_TRUE(options.Has<hand_tracking_mp_lean::NightLightCalculatorOptions>());
   EXPECT_EQ(
-      options.Get<mediapipe_v01013_based::NightLightCalculatorOptions>().base_timestamp()[0],
+      options.Get<hand_tracking_mp_lean::NightLightCalculatorOptions>().base_timestamp()[0],
       123);
 }
 
@@ -71,13 +71,13 @@ TEST(MutableOptionsMapTest, InsertProto2AndQueryFound) {
       )pb");
   MutableOptionsMap options;
   options.Initialize(node);
-  EXPECT_FALSE(options.Has<mediapipe_v01013_based::NightLightCalculatorOptions>());
-  mediapipe_v01013_based::NightLightCalculatorOptions night_light_options;
+  EXPECT_FALSE(options.Has<hand_tracking_mp_lean::NightLightCalculatorOptions>());
+  hand_tracking_mp_lean::NightLightCalculatorOptions night_light_options;
   night_light_options.add_base_timestamp(123);
   options.Set(night_light_options);
-  EXPECT_TRUE(options.Has<mediapipe_v01013_based::NightLightCalculatorOptions>());
+  EXPECT_TRUE(options.Has<hand_tracking_mp_lean::NightLightCalculatorOptions>());
   EXPECT_EQ(
-      options.Get<mediapipe_v01013_based::NightLightCalculatorOptions>().base_timestamp()[0],
+      options.Get<hand_tracking_mp_lean::NightLightCalculatorOptions>().base_timestamp()[0],
       123);
 }
 
@@ -93,8 +93,8 @@ TEST(OptionsMapTest, Proto3QueryFound) {
       )pb");
   OptionsMap options;
   options.Initialize(node);
-  EXPECT_TRUE(options.Has<mediapipe_v01013_based::Proto3Options>());
-  EXPECT_EQ(options.Get<mediapipe_v01013_based::Proto3Options>().test_value(), 123);
+  EXPECT_TRUE(options.Has<hand_tracking_mp_lean::Proto3Options>());
+  EXPECT_EQ(options.Get<hand_tracking_mp_lean::Proto3Options>().test_value(), 123);
 }
 
 TEST(MutableOptionsMapTest, InsertProto3AndQueryFound) {
@@ -106,12 +106,12 @@ TEST(MutableOptionsMapTest, InsertProto3AndQueryFound) {
       )pb");
   MutableOptionsMap options;
   options.Initialize(node);
-  EXPECT_FALSE(options.Has<mediapipe_v01013_based::Proto3Options>());
-  mediapipe_v01013_based::Proto3Options proto3_options;
+  EXPECT_FALSE(options.Has<hand_tracking_mp_lean::Proto3Options>());
+  hand_tracking_mp_lean::Proto3Options proto3_options;
   proto3_options.set_test_value(123);
   options.Set(proto3_options);
-  EXPECT_TRUE(options.Has<mediapipe_v01013_based::Proto3Options>());
-  EXPECT_EQ(options.Get<mediapipe_v01013_based::Proto3Options>().test_value(), 123);
+  EXPECT_TRUE(options.Has<hand_tracking_mp_lean::Proto3Options>());
+  EXPECT_EQ(options.Get<hand_tracking_mp_lean::Proto3Options>().test_value(), 123);
 }
 
 TEST(OptionsMapTest, BothProto2AndProto3QueriesFound) {
@@ -129,10 +129,10 @@ TEST(OptionsMapTest, BothProto2AndProto3QueriesFound) {
       )pb");
   OptionsMap options;
   options.Initialize(node);
-  EXPECT_TRUE(options.Has<mediapipe_v01013_based::Proto3Options>());
-  EXPECT_EQ(options.Get<mediapipe_v01013_based::Proto3Options>().test_value(), 123);
-  EXPECT_TRUE(options.Has<mediapipe_v01013_based::NightLightCalculatorOptions>());
-  EXPECT_EQ(options.Get<mediapipe_v01013_based::NightLightCalculatorOptions>().jitter(),
+  EXPECT_TRUE(options.Has<hand_tracking_mp_lean::Proto3Options>());
+  EXPECT_EQ(options.Get<hand_tracking_mp_lean::Proto3Options>().test_value(), 123);
+  EXPECT_TRUE(options.Has<hand_tracking_mp_lean::NightLightCalculatorOptions>());
+  EXPECT_EQ(options.Get<hand_tracking_mp_lean::NightLightCalculatorOptions>().jitter(),
             321);
 }
 
@@ -153,11 +153,11 @@ TEST(OptionsMapTest, PrefersOptionsOverNodeOptions) {
       )pb");
   OptionsMap options;
   options.Initialize(node);
-  EXPECT_TRUE(options.Has<mediapipe_v01013_based::NightLightCalculatorOptions>());
-  EXPECT_EQ(options.Get<mediapipe_v01013_based::NightLightCalculatorOptions>().jitter(),
+  EXPECT_TRUE(options.Has<hand_tracking_mp_lean::NightLightCalculatorOptions>());
+  EXPECT_EQ(options.Get<hand_tracking_mp_lean::NightLightCalculatorOptions>().jitter(),
             111);
 }
 
 }  // namespace
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

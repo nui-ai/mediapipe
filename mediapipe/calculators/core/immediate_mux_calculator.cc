@@ -20,7 +20,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // This Calculator multiplexes several input streams into a single output
 // stream, dropping input packets with timestamps older than the last output
@@ -74,7 +74,7 @@ absl::Status ImmediateMuxCalculator::GetContract(CalculatorContract* cc) {
   for (int i = 0; i < cc->Inputs().NumEntries(); ++i) {
     cc->Inputs().Index(i).SetSameAs(&cc->Outputs().Index(0));
   }
-  const auto& options = cc->Options<mediapipe_v01013_based::ImmediateMuxCalculatorOptions>();
+  const auto& options = cc->Options<hand_tracking_mp_lean::ImmediateMuxCalculatorOptions>();
   if (options.process_timestamp_bounds()) {
     cc->SetProcessTimestampBounds(true);
   }
@@ -82,7 +82,7 @@ absl::Status ImmediateMuxCalculator::GetContract(CalculatorContract* cc) {
 }
 
 absl::Status ImmediateMuxCalculator::Open(CalculatorContext* cc) {
-  const auto& options = cc->Options<mediapipe_v01013_based::ImmediateMuxCalculatorOptions>();
+  const auto& options = cc->Options<hand_tracking_mp_lean::ImmediateMuxCalculatorOptions>();
   process_timestamp_bounds_ = options.process_timestamp_bounds();
   if (!process_timestamp_bounds_) {
     cc->SetOffset(TimestampDiff(0));
@@ -137,4 +137,4 @@ absl::Status ImmediateMuxCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

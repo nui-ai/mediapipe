@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "tensorflow/core/framework/tensor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 Detection TensorToDetection(
     const ::tensorflow::TTypes<const float>::Vec& box, float score,
@@ -45,6 +45,6 @@ absl::Status TensorsToDetections(const ::tensorflow::Tensor& num_detections,
                                  float mask_threshold,
                                  const std::map<int, std::string>& label_map,
                                  std::vector<Detection>* detections);
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TENSORFLOW_UTIL_TENSOR_TO_DETECTION_H_

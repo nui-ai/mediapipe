@@ -41,7 +41,7 @@
 #include "absl/flags/parse.h"
 
 
-using namespace mediapipe_v01013_based;
+using namespace hand_tracking_mp_lean;
 
 constexpr char kInputStream[] = "image";
 constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";

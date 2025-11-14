@@ -2,7 +2,7 @@
 #include "mediapipe/calculators/util/rect_transformation_calculator.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class RectTransformation {
 
@@ -18,4 +18,4 @@ public:
   RectTransformationCalculatorOptions options_;
 };
 
-} // namespace mediapipe_v01013_based
+} // namespace hand_tracking_mp_lean

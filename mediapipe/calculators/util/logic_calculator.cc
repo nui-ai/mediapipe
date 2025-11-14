@@ -18,8 +18,8 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
-using mediapipe_v01013_based::LogicCalculatorOptions;
+namespace hand_tracking_mp_lean {
+using hand_tracking_mp_lean::LogicCalculatorOptions;
 
 // A calculator to compute logical functions of bool inputs.
 // With just one input, the output equals the input as expected.
@@ -102,4 +102,4 @@ class LogicCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(LogicCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

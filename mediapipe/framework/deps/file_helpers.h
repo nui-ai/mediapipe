@@ -20,7 +20,7 @@
 #include "absl/strings/match.h"
 #include "mediapipe/framework/deps/mmapped_file.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace file {
 absl::Status GetContents(absl::string_view file_name, std::string* output,
                          bool read_as_binary = true);
@@ -52,6 +52,6 @@ absl::Status IsDirectory(absl::string_view file_name);
 absl::Status RecursivelyCreateDir(absl::string_view path);
 
 }  // namespace file
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_DEPS_FILE_HELPERS_H_

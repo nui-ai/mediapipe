@@ -16,7 +16,7 @@
 #include "mediapipe/python/pybind/util.h"
 #include "pybind11/stl.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace python {
 
 namespace py = pybind11;
@@ -29,7 +29,7 @@ void ImageFrameSubmodule(pybind11::module* module) {
   options.disable_function_signatures();
 
   // ImageFormat
-  py::enum_<mediapipe_v01013_based::ImageFormat::Format> image_format(
+  py::enum_<hand_tracking_mp_lean::ImageFormat::Format> image_format(
       m, "ImageFormat",
       R"doc(An enum describing supported raw image formats.
 
@@ -55,15 +55,15 @@ void ImageFrameSubmodule(pybind11::module* module) {
   VEC32F2: Two floats per pixel.
 )doc");
 
-  image_format.value("SRGB", mediapipe_v01013_based::ImageFormat::SRGB)
-      .value("SRGBA", mediapipe_v01013_based::ImageFormat::SRGBA)
-      .value("SBGRA", mediapipe_v01013_based::ImageFormat::SBGRA)
-      .value("GRAY8", mediapipe_v01013_based::ImageFormat::GRAY8)
-      .value("GRAY16", mediapipe_v01013_based::ImageFormat::GRAY16)
-      .value("SRGB48", mediapipe_v01013_based::ImageFormat::SRGB48)
-      .value("SRGBA64", mediapipe_v01013_based::ImageFormat::SRGBA64)
-      .value("VEC32F1", mediapipe_v01013_based::ImageFormat::VEC32F1)
-      .value("VEC32F2", mediapipe_v01013_based::ImageFormat::VEC32F2)
+  image_format.value("SRGB", hand_tracking_mp_lean::ImageFormat::SRGB)
+      .value("SRGBA", hand_tracking_mp_lean::ImageFormat::SRGBA)
+      .value("SBGRA", hand_tracking_mp_lean::ImageFormat::SBGRA)
+      .value("GRAY8", hand_tracking_mp_lean::ImageFormat::GRAY8)
+      .value("GRAY16", hand_tracking_mp_lean::ImageFormat::GRAY16)
+      .value("SRGB48", hand_tracking_mp_lean::ImageFormat::SRGB48)
+      .value("SRGBA64", hand_tracking_mp_lean::ImageFormat::SRGBA64)
+      .value("VEC32F1", hand_tracking_mp_lean::ImageFormat::VEC32F1)
+      .value("VEC32F2", hand_tracking_mp_lean::ImageFormat::VEC32F2)
       .export_values();
 
   // ImageFrame
@@ -116,11 +116,11 @@ void ImageFrameSubmodule(pybind11::module* module) {
 
   image_frame
       .def(
-          py::init([](mediapipe_v01013_based::ImageFormat::Format format,
+          py::init([](hand_tracking_mp_lean::ImageFormat::Format format,
                       const py::array_t<uint8_t, py::array::c_style>& data) {
-            if (format != mediapipe_v01013_based::ImageFormat::GRAY8 &&
-                format != mediapipe_v01013_based::ImageFormat::SRGB &&
-                format != mediapipe_v01013_based::ImageFormat::SRGBA) {
+            if (format != hand_tracking_mp_lean::ImageFormat::GRAY8 &&
+                format != hand_tracking_mp_lean::ImageFormat::SRGB &&
+                format != hand_tracking_mp_lean::ImageFormat::SRGBA) {
               throw RaisePyError(PyExc_RuntimeError,
                                  "uint8 image data should be one of the GRAY8, "
                                  "SRGB, and SRGBA MediaPipe image formats.");
@@ -130,11 +130,11 @@ void ImageFrameSubmodule(pybind11::module* module) {
           R"doc(For uint8 data type, valid ImageFormat are GRAY8, SRGB, and SRGBA.)doc",
           py::arg("image_format"), py::arg("data").noconvert())
       .def(
-          py::init([](mediapipe_v01013_based::ImageFormat::Format format,
+          py::init([](hand_tracking_mp_lean::ImageFormat::Format format,
                       const py::array_t<uint16_t, py::array::c_style>& data) {
-            if (format != mediapipe_v01013_based::ImageFormat::GRAY16 &&
-                format != mediapipe_v01013_based::ImageFormat::SRGB48 &&
-                format != mediapipe_v01013_based::ImageFormat::SRGBA64) {
+            if (format != hand_tracking_mp_lean::ImageFormat::GRAY16 &&
+                format != hand_tracking_mp_lean::ImageFormat::SRGB48 &&
+                format != hand_tracking_mp_lean::ImageFormat::SRGBA64) {
               throw RaisePyError(
                   PyExc_RuntimeError,
                   "uint16 image data should be one of the GRAY16, "
@@ -145,10 +145,10 @@ void ImageFrameSubmodule(pybind11::module* module) {
           R"doc(For uint16 data type, valid ImageFormat are GRAY16, SRGB48, and SRGBA64.)doc",
           py::arg("image_format"), py::arg("data").noconvert())
       .def(
-          py::init([](mediapipe_v01013_based::ImageFormat::Format format,
+          py::init([](hand_tracking_mp_lean::ImageFormat::Format format,
                       const py::array_t<float, py::array::c_style>& data) {
-            if (format != mediapipe_v01013_based::ImageFormat::VEC32F1 &&
-                format != mediapipe_v01013_based::ImageFormat::VEC32F2) {
+            if (format != hand_tracking_mp_lean::ImageFormat::VEC32F1 &&
+                format != hand_tracking_mp_lean::ImageFormat::VEC32F2) {
               throw RaisePyError(
                   PyExc_RuntimeError,
                   "float image data should be either VEC32F1 or VEC32F2 "
@@ -256,8 +256,8 @@ void ImageFrameSubmodule(pybind11::module* module) {
 }
 
 }  // namespace python
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #include "mediapipe/framework/type_map.h"
-MEDIAPIPE_REGISTER_TYPE(mediapipe_v01013_based::ImageFrame, "::mediapipe_v01013_based::ImageFrame",
+MEDIAPIPE_REGISTER_TYPE(hand_tracking_mp_lean::ImageFrame, "::hand_tracking_mp_lean::ImageFrame",
                         nullptr, nullptr);

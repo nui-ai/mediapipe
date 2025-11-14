@@ -30,25 +30,25 @@
 #include "mediapipe/util/render_data.pb.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-typedef EndLoopCalculator<std::vector<::mediapipe_v01013_based::NormalizedRect>>
+typedef EndLoopCalculator<std::vector<::hand_tracking_mp_lean::NormalizedRect>>
     EndLoopNormalizedRectCalculator;
 REGISTER_CALCULATOR(EndLoopNormalizedRectCalculator);
 
-typedef EndLoopCalculator<std::vector<::mediapipe_v01013_based::NormalizedRect>>
+typedef EndLoopCalculator<std::vector<::hand_tracking_mp_lean::NormalizedRect>>
     DetectionHandRectsCollector;
 REGISTER_CALCULATOR(DetectionHandRectsCollector);
 
-typedef EndLoopCalculator<std::vector<::mediapipe_v01013_based::NormalizedRect>>
+typedef EndLoopCalculator<std::vector<::hand_tracking_mp_lean::NormalizedRect>>
     CollectAnticipatoryHandRects;
 REGISTER_CALCULATOR(CollectAnticipatoryHandRects);
 
-typedef EndLoopCalculator<std::vector<::mediapipe_v01013_based::LandmarkList>>
+typedef EndLoopCalculator<std::vector<::hand_tracking_mp_lean::LandmarkList>>
     CollectFinalWorldLandmarksOfHands;
 REGISTER_CALCULATOR(CollectFinalWorldLandmarksOfHands);
 
-typedef EndLoopCalculator<std::vector<::mediapipe_v01013_based::NormalizedLandmarkList>>
+typedef EndLoopCalculator<std::vector<::hand_tracking_mp_lean::NormalizedLandmarkList>>
     CollectFinalLandmarksOfHands;
 REGISTER_CALCULATOR(CollectFinalLandmarksOfHands);
 
@@ -58,11 +58,11 @@ REGISTER_CALCULATOR(EndLoopBooleanCalculator);
 typedef EndLoopCalculator<std::vector<float>> EndLoopFloatCalculator;
 REGISTER_CALCULATOR(EndLoopFloatCalculator);
 
-typedef EndLoopCalculator<std::vector<::mediapipe_v01013_based::RenderData>>
+typedef EndLoopCalculator<std::vector<::hand_tracking_mp_lean::RenderData>>
     EndLoopRenderDataCalculator;
 REGISTER_CALCULATOR(EndLoopRenderDataCalculator);
 
-typedef EndLoopCalculator<std::vector<::mediapipe_v01013_based::ClassificationList>>
+typedef EndLoopCalculator<std::vector<::hand_tracking_mp_lean::ClassificationList>>
     CollectHandednessClassifications;
 REGISTER_CALCULATOR(CollectHandednessClassifications);
 
@@ -70,7 +70,7 @@ typedef EndLoopCalculator<std::vector<TfLiteTensor>>
     EndLoopTfLiteTensorCalculator;
 REGISTER_CALCULATOR(EndLoopTfLiteTensorCalculator);
 
-typedef EndLoopCalculator<std::vector<::mediapipe_v01013_based::Detection>>
+typedef EndLoopCalculator<std::vector<::hand_tracking_mp_lean::Detection>>
     EndLoopDetectionCalculator;
 REGISTER_CALCULATOR(EndLoopDetectionCalculator);
 
@@ -86,7 +86,7 @@ REGISTER_CALCULATOR(EndLoopImageFrameCalculator);
 typedef EndLoopCalculator<std::vector<GpuBuffer>> EndLoopGpuBufferCalculator;
 REGISTER_CALCULATOR(EndLoopGpuBufferCalculator);
 
-typedef EndLoopCalculator<std::vector<::mediapipe_v01013_based::Image>>
+typedef EndLoopCalculator<std::vector<::hand_tracking_mp_lean::Image>>
     EndLoopImageCalculator;
 REGISTER_CALCULATOR(EndLoopImageCalculator);
 
@@ -98,4 +98,4 @@ typedef EndLoopCalculator<std::vector<std::pair<int, int>>>
     EndLoopImageSizeCalculator;
 REGISTER_CALCULATOR(EndLoopImageSizeCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

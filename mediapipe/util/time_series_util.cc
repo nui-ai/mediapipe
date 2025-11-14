@@ -25,7 +25,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/time_series_header.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace time_series_util {
 
 bool LogWarningIfTimestampIsInconsistent(const Timestamp& current_timestamp,
@@ -133,4 +133,4 @@ double SamplesToSeconds(int64_t num_samples, double sample_rate) {
 }
 
 }  // namespace time_series_util
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

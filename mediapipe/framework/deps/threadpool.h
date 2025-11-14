@@ -23,7 +23,7 @@
 #include "absl/synchronization/mutex.h"
 #include "mediapipe/framework/deps/thread_options.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // A thread pool consists of a set of threads that sit around waiting
 // for callbacks to appear on a queue.  When that happens, one of the
@@ -112,6 +112,6 @@ std::string CreateThreadName(const std::string& prefix, int thread_id);
 
 }  // namespace internal
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_DEPS_THREADPOOL_H_

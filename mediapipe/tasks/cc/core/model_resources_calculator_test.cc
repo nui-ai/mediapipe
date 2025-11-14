@@ -32,7 +32,7 @@ limitations under the License.
 #include "tensorflow/lite/core/api/op_resolver.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace core {
 namespace {
@@ -192,7 +192,7 @@ TEST_F(ModelResourcesCalculatorTest, GraphServiceNotAvailable) {
   ASSERT_FALSE(status.ok());
   EXPECT_THAT(status.message(),
               testing::HasSubstr(
-                  "Service \"mediapipe_v01013_based::tasks::ModelResourcesCacheService\", "
+                  "Service \"hand_tracking_mp_lean::tasks::ModelResourcesCacheService\", "
                   "required by node ModelResourcesCalculator, was not "
                   "provided and cannot be created"));
 }
@@ -251,4 +251,4 @@ TEST_F(ModelResourcesCalculatorTest, FallbackToCreateLocalModelResources) {
 
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -17,7 +17,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // A calculator that takes a packet of an input stream and converts it to an
@@ -37,9 +37,9 @@ class StreamToSidePacketCalculator : public Node {
 
   MEDIAPIPE_NODE_CONTRACT(kIn, kOut);
 
-  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override {
+  absl::Status Process(hand_tracking_mp_lean::CalculatorContext* cc) override {
     kOut(cc).Set(
-        kIn(cc).packet().As<AnyType>().At(mediapipe_v01013_based::Timestamp::Unset()));
+        kIn(cc).packet().As<AnyType>().At(hand_tracking_mp_lean::Timestamp::Unset()));
     return absl::OkStatus();
   }
 };
@@ -47,4 +47,4 @@ class StreamToSidePacketCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(StreamToSidePacketCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

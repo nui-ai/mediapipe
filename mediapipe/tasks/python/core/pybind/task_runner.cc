@@ -26,17 +26,17 @@
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
 #endif  // MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace python {
 
 namespace py = pybind11;
 
 namespace {
-using ::mediapipe_v01013_based::python::RaisePyErrorIfNotOk;
-using ::mediapipe_v01013_based::tasks::core::PacketMap;
-using ::mediapipe_v01013_based::tasks::core::PacketsCallback;
-using ::mediapipe_v01013_based::tasks::core::TaskRunner;
+using ::hand_tracking_mp_lean::python::RaisePyErrorIfNotOk;
+using ::hand_tracking_mp_lean::tasks::core::PacketMap;
+using ::hand_tracking_mp_lean::tasks::core::PacketsCallback;
+using ::hand_tracking_mp_lean::tasks::core::TaskRunner;
 }  // namespace
 
 // A mutex to guard the python callback function. Only one python callback can
@@ -80,7 +80,7 @@ mode) or not (synchronous mode).)doc");
         }
 
 #if !MEDIAPIPE_DISABLE_GPU
-        auto gpu_resources_ = mediapipe_v01013_based::GpuResources::Create();
+        auto gpu_resources_ = hand_tracking_mp_lean::GpuResources::Create();
         if (!gpu_resources_.ok()) {
           ABSL_LOG(INFO) << "GPU suport is not available: "
                          << gpu_resources_.status();
@@ -234,4 +234,4 @@ Raises:
 
 }  // namespace python
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

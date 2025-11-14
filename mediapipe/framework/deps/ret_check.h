@@ -19,38 +19,38 @@
 #include "mediapipe/framework/deps/status_builder.h"
 #include "mediapipe/framework/deps/status_macros.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 // Returns a StatusBuilder that corresponds to a `RET_CHECK` failure.
-mediapipe_v01013_based::StatusBuilder RetCheckFailSlowPath(
-    mediapipe_v01013_based::source_location location);
+hand_tracking_mp_lean::StatusBuilder RetCheckFailSlowPath(
+    hand_tracking_mp_lean::source_location location);
 
 // Returns a StatusBuilder that corresponds to a `RET_CHECK` failure.
-mediapipe_v01013_based::StatusBuilder RetCheckFailSlowPath(
-    mediapipe_v01013_based::source_location location, const char* condition);
+hand_tracking_mp_lean::StatusBuilder RetCheckFailSlowPath(
+    hand_tracking_mp_lean::source_location location, const char* condition);
 
 // Returns a StatusBuilder that corresponds to a `RET_CHECK` failure.
-mediapipe_v01013_based::StatusBuilder RetCheckFailSlowPath(
-    mediapipe_v01013_based::source_location location, const char* condition,
+hand_tracking_mp_lean::StatusBuilder RetCheckFailSlowPath(
+    hand_tracking_mp_lean::source_location location, const char* condition,
     const absl::Status& status);
 
 inline StatusBuilder RetCheckImpl(const absl::Status& status,
                                   const char* condition,
-                                  mediapipe_v01013_based::source_location location) {
+                                  hand_tracking_mp_lean::source_location location) {
   if (ABSL_PREDICT_TRUE(status.ok()))
-    return mediapipe_v01013_based::StatusBuilder(absl::OkStatus(), location);
+    return hand_tracking_mp_lean::StatusBuilder(absl::OkStatus(), location);
   return RetCheckFailSlowPath(location, condition, status);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #define RET_CHECK(cond)               \
   while (ABSL_PREDICT_FALSE(!(cond))) \
-  return mediapipe_v01013_based::RetCheckFailSlowPath(MEDIAPIPE_LOC, #cond)
+  return hand_tracking_mp_lean::RetCheckFailSlowPath(MEDIAPIPE_LOC, #cond)
 
 #define RET_CHECK_OK(status) \
-  MP_RETURN_IF_ERROR(mediapipe_v01013_based::RetCheckImpl((status), #status, MEDIAPIPE_LOC))
+  MP_RETURN_IF_ERROR(hand_tracking_mp_lean::RetCheckImpl((status), #status, MEDIAPIPE_LOC))
 
-#define RET_CHECK_FAIL() return mediapipe_v01013_based::RetCheckFailSlowPath(MEDIAPIPE_LOC)
+#define RET_CHECK_FAIL() return hand_tracking_mp_lean::RetCheckFailSlowPath(MEDIAPIPE_LOC)
 
 #define MEDIAPIPE_INTERNAL_RET_CHECK_OP(name, op, lhs, rhs) \
   RET_CHECK((lhs)op(rhs))

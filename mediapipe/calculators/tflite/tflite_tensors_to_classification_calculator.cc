@@ -33,7 +33,7 @@
 #include "mediapipe/framework/port/file_helpers.h"
 #endif
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Convert result TFLite tensors from classification models into MediaPipe
 // classifications.
@@ -68,7 +68,7 @@ class TfLiteTensorsToClassificationCalculator : public CalculatorBase {
   absl::Status Close(CalculatorContext* cc) override;
 
  private:
-  ::mediapipe_v01013_based::TfLiteTensorsToClassificationCalculatorOptions options_;
+  ::hand_tracking_mp_lean::TfLiteTensorsToClassificationCalculatorOptions options_;
   int top_k_ = 0;
   absl::node_hash_map<int, std::string> label_map_;
   bool label_map_loaded_ = false;
@@ -96,7 +96,7 @@ absl::Status TfLiteTensorsToClassificationCalculator::Open(
   cc->SetOffset(TimestampDiff(0));
 
   options_ = cc->Options<
-      ::mediapipe_v01013_based::TfLiteTensorsToClassificationCalculatorOptions>();
+      ::hand_tracking_mp_lean::TfLiteTensorsToClassificationCalculatorOptions>();
 
   top_k_ = options_.top_k();
   if (options_.has_label_map_path()) {
@@ -199,4 +199,4 @@ absl::Status TfLiteTensorsToClassificationCalculator::Close(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

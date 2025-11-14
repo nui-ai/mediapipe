@@ -56,7 +56,7 @@ constexpr char kTensorsTag[] = "TENSORS";
 constexpr char kTensorsGpuTag[] = "TENSORS_GPU";
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 #if MEDIAPIPE_TFLITE_GL_INFERENCE
 using ::tflite::gpu::gl::CreateReadWriteShaderStorageBuffer;
@@ -175,12 +175,12 @@ class TfLiteTensorsToDetectionsCalculator : public CalculatorBase {
   int num_coords_ = 0;
   std::set<int> ignore_classes_;
 
-  ::mediapipe_v01013_based::TfLiteTensorsToDetectionsCalculatorOptions options_;
+  ::hand_tracking_mp_lean::TfLiteTensorsToDetectionsCalculatorOptions options_;
   std::vector<Anchor> anchors_;
   bool side_packet_anchors_{};
 
 #if MEDIAPIPE_TFLITE_GL_INFERENCE
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
   std::unique_ptr<GPUData> gpu_data_;
 #elif MEDIAPIPE_TFLITE_METAL_INFERENCE
   MPPMetalHelper* gpu_helper_ = nullptr;
@@ -220,7 +220,7 @@ absl::Status TfLiteTensorsToDetectionsCalculator::GetContract(
 
   if (use_gpu) {
 #if MEDIAPIPE_TFLITE_GL_INFERENCE
-    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc));
+    MP_RETURN_IF_ERROR(hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract(cc));
 #elif MEDIAPIPE_TFLITE_METAL_INFERENCE
     MP_RETURN_IF_ERROR([MPPMetalHelper updateContract:cc]);
 #endif  // MEDIAPIPE_TFLITE_GL_INFERENCE
@@ -562,7 +562,7 @@ absl::Status TfLiteTensorsToDetectionsCalculator::LoadOptions(
     CalculatorContext* cc) {
   // Get calculator options specified in the graph.
   options_ =
-      cc->Options<::mediapipe_v01013_based::TfLiteTensorsToDetectionsCalculatorOptions>();
+      cc->Options<::hand_tracking_mp_lean::TfLiteTensorsToDetectionsCalculatorOptions>();
 
   num_classes_ = options_.num_classes();
   num_boxes_ = options_.num_boxes();
@@ -1159,4 +1159,4 @@ kernel void scoreKernel(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

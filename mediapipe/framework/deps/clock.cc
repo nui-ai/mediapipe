@@ -17,7 +17,7 @@
 #include "absl/log/absl_log.h"
 #include "absl/time/clock.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -52,4 +52,4 @@ Clock* Clock::RealClock() {
   return rtclock;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

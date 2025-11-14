@@ -33,7 +33,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/image_segmenter/proto/segmenter_options.pb.h"
 #include "mediapipe/util/label_map.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace image_segmenter {
@@ -56,10 +56,10 @@ constexpr char kSubgraphTypeName[] =
     "mediapipe.tasks.vision.image_segmenter.ImageSegmenterGraph";
 constexpr int kMicroSecondsPerMilliSecond = 1000;
 
-using ::mediapipe_v01013_based::CalculatorGraphConfig;
-using ::mediapipe_v01013_based::Image;
-using ::mediapipe_v01013_based::NormalizedRect;
-using ImageSegmenterGraphOptionsProto = ::mediapipe_v01013_based::tasks::vision::
+using ::hand_tracking_mp_lean::CalculatorGraphConfig;
+using ::hand_tracking_mp_lean::Image;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ImageSegmenterGraphOptionsProto = ::hand_tracking_mp_lean::tasks::vision::
     image_segmenter::proto::ImageSegmenterGraphOptions;
 
 // Creates a MediaPipe graph config that only contains a single subgraph node of
@@ -218,7 +218,7 @@ absl::StatusOr<std::unique_ptr<ImageSegmenter>> ImageSegmenter::Create(
 }
 
 absl::StatusOr<ImageSegmenterResult> ImageSegmenter::Segment(
-    mediapipe_v01013_based::Image image,
+    hand_tracking_mp_lean::Image image,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   return Segment(image, {
                             /*output_width=*/image.width(),
@@ -228,7 +228,7 @@ absl::StatusOr<ImageSegmenterResult> ImageSegmenter::Segment(
 }
 
 absl::StatusOr<ImageSegmenterResult> ImageSegmenter::Segment(
-    mediapipe_v01013_based::Image image, SegmentationOptions segmentation_options) {
+    hand_tracking_mp_lean::Image image, SegmentationOptions segmentation_options) {
   MP_RETURN_IF_ERROR(ValidateSegmentationOptions(segmentation_options));
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -243,7 +243,7 @@ absl::StatusOr<ImageSegmenterResult> ImageSegmenter::Segment(
   MP_ASSIGN_OR_RETURN(
       auto output_packets,
       ProcessImageData(
-          {{kImageInStreamName, mediapipe_v01013_based::MakePacket<Image>(std::move(image))},
+          {{kImageInStreamName, hand_tracking_mp_lean::MakePacket<Image>(std::move(image))},
            {kNormRectStreamName,
             MakePacket<NormalizedRect>(std::move(norm_rect))},
            {kOutputSizeStreamName,
@@ -265,7 +265,7 @@ absl::StatusOr<ImageSegmenterResult> ImageSegmenter::Segment(
 }
 
 absl::StatusOr<ImageSegmenterResult> ImageSegmenter::SegmentForVideo(
-    mediapipe_v01013_based::Image image, int64_t timestamp_ms,
+    hand_tracking_mp_lean::Image image, int64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   return SegmentForVideo(image, timestamp_ms,
                          {
@@ -276,7 +276,7 @@ absl::StatusOr<ImageSegmenterResult> ImageSegmenter::SegmentForVideo(
 }
 
 absl::StatusOr<ImageSegmenterResult> ImageSegmenter::SegmentForVideo(
-    mediapipe_v01013_based::Image image, int64_t timestamp_ms,
+    hand_tracking_mp_lean::Image image, int64_t timestamp_ms,
     SegmentationOptions segmentation_options) {
   MP_RETURN_IF_ERROR(ValidateSegmentationOptions(segmentation_options));
   if (image.UsesGpu()) {
@@ -359,4 +359,4 @@ absl::Status ImageSegmenter::SegmentAsync(
 }  // namespace image_segmenter
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -13,7 +13,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace {
 
@@ -75,7 +75,7 @@ TEST(PortTest, Abstract) {
 
 struct TestObject {};
 
-class MultiSideOutputCalculator : public mediapipe_v01013_based::api2::Node {
+class MultiSideOutputCalculator : public hand_tracking_mp_lean::api2::Node {
  public:
   static constexpr SideOutput<TestObject>::Multiple kSideOutput{"SIDE_OUTPUT"};
 
@@ -111,7 +111,7 @@ TEST(PortTest, MultiSideOutputPortsWorkInBuilderAndCalculator) {
 
   for (int i = 0; i < kNumOutputSidePackets; ++i) {
     MP_ASSERT_OK_AND_ASSIGN(
-        mediapipe_v01013_based::Packet packet,
+        hand_tracking_mp_lean::Packet packet,
         calculator_graph.GetOutputSidePacket(absl::StrCat("side", i)));
     EXPECT_FALSE(packet.IsEmpty());
     MP_EXPECT_OK(packet.ValidateAsType<TestObject>());
@@ -120,4 +120,4 @@ TEST(PortTest, MultiSideOutputPortsWorkInBuilderAndCalculator) {
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

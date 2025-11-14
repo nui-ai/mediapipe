@@ -25,13 +25,13 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/hand_topology.h"
 #include "mediapipe/tasks/cc/vision/utils/ghum/ghum_hand_topology.h"
 
-namespace mediapipe_v01013_based::tasks::vision::utils::ghum {
+namespace hand_tracking_mp_lean::tasks::vision::utils::ghum {
 
 namespace {
 
-using ::mediapipe_v01013_based::api2::SetJointsVisibilityCalculator;
-using ::mediapipe_v01013_based::api2::builder::Stream;
-using ::mediapipe_v01013_based::tasks::vision::hand_landmarker::HandLandmarkName;
+using ::hand_tracking_mp_lean::api2::SetJointsVisibilityCalculator;
+using ::hand_tracking_mp_lean::api2::builder::Stream;
+using ::hand_tracking_mp_lean::tasks::vision::hand_landmarker::HandLandmarkName;
 
 // Includes mapping for all 16 GHUM Hand joints.
 constexpr std::array<std::pair<GhumHandJointName, HandLandmarkName>, 16>
@@ -59,7 +59,7 @@ constexpr std::array<std::pair<GhumHandJointName, HandLandmarkName>, 16>
 Stream<JointList> SetGhumHandJointsVisibilityFromWorldLandmarks(
     Stream<JointList> ghum_hand_joints,
     Stream<LandmarkList> hand_world_landmarks,
-    mediapipe_v01013_based::api2::builder::Graph& graph) {
+    hand_tracking_mp_lean::api2::builder::Graph& graph) {
   auto& node = graph.AddNode("SetJointsVisibilityCalculator");
   auto& opts = node.GetOptions<SetJointsVisibilityCalculatorOptions>();
   for (const auto& pair : kGhumHandJointsToHandLandmarksMapping) {
@@ -77,4 +77,4 @@ Stream<JointList> SetGhumHandJointsVisibilityFromWorldLandmarks(
   return node[SetJointsVisibilityCalculator::kOutJoints];
 }
 
-}  // namespace mediapipe_v01013_based::tasks::vision::utils::ghum
+}  // namespace hand_tracking_mp_lean::tasks::vision::utils::ghum

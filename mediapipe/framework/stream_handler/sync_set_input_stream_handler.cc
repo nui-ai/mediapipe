@@ -30,7 +30,7 @@
 #include "mediapipe/framework/stream_handler/sync_set_input_stream_handler.pb.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 REGISTER_INPUT_STREAM_HANDLER(SyncSetInputStreamHandler);
 
@@ -40,7 +40,7 @@ void SyncSetInputStreamHandler::PrepareForRun(
     std::function<void(CalculatorContext*)> schedule_callback,
     std::function<void(absl::Status)> error_callback) {
   const auto& handler_options =
-      options_.GetExtension(mediapipe_v01013_based::SyncSetInputStreamHandlerOptions::ext);
+      options_.GetExtension(hand_tracking_mp_lean::SyncSetInputStreamHandlerOptions::ext);
   {
     absl::MutexLock lock(&mutex_);
     sync_sets_.clear();
@@ -55,7 +55,7 @@ void SyncSetInputStreamHandler::PrepareForRun(
         CollectionItemId id = input_stream_managers_.GetId(tag, index);
         ABSL_CHECK(id.IsValid())
             << "stream \"" << tag_index << "\" is not found.";
-        ABSL_CHECK(!mediapipe_v01013_based::ContainsKey(used_ids, id))
+        ABSL_CHECK(!hand_tracking_mp_lean::ContainsKey(used_ids, id))
             << "stream \"" << tag_index << "\" is in more than one sync set.";
         used_ids.insert(id);
         stream_ids.push_back(id);
@@ -65,7 +65,7 @@ void SyncSetInputStreamHandler::PrepareForRun(
     std::vector<CollectionItemId> remaining_ids;
     for (CollectionItemId id = input_stream_managers_.BeginId();
          id < input_stream_managers_.EndId(); ++id) {
-      if (!mediapipe_v01013_based::ContainsKey(used_ids, id)) {
+      if (!hand_tracking_mp_lean::ContainsKey(used_ids, id)) {
         remaining_ids.push_back(id);
       }
     }
@@ -147,4 +147,4 @@ int SyncSetInputStreamHandler::SyncSetCount() {
   return sync_sets_.size();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

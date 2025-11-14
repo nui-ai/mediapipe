@@ -17,7 +17,7 @@
 #include "mediapipe/calculators/util/thresholding_calculator.pb.h"
 #include "mediapipe/framework/calculator_framework.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace thresholding_calculator {
 
 absl::Status InitializeCalculator(const ThresholdingCalculatorOptions& options,
@@ -52,4 +52,4 @@ bool ProcessCalculator(double& threshold,
 }
 
 }  // namespace thresholding_calculator
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

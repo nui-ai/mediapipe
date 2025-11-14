@@ -15,9 +15,9 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe_v01013_based.tasks.components.containers.proto;
+package hand_tracking_mp_lean.tasks.components.containers.proto;
 
-option java_package = "com.google.mediapipe_v01013_based.tasks.components.containers.proto";
+option java_package = "com.google.hand_tracking_mp_lean.tasks.components.containers.proto";
 option java_outer_classname = "EmbeddingsProto";
 
 // Defines a dense floating-point embedding.

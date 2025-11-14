@@ -30,11 +30,11 @@
 #include "mediapipe/framework/port/point2.h"
 #include "mediapipe/framework/port/rectangle.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 class BoundingBox;
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class Location {
  public:
@@ -52,7 +52,7 @@ class Location {
   // Creates a location of type BOUNDING_BOX from bounding boxes in various
   // formats.
   static Location CreateBBoxLocation(const Rectangle_i& rect);
-  static Location CreateBBoxLocation(const ::mediapipe_v01013_based::BoundingBox& bbox);
+  static Location CreateBBoxLocation(const ::hand_tracking_mp_lean::BoundingBox& bbox);
   // Creates a location of type RELATIVE_BOUNDING_BOX, i.e. it is based on a
   // bounding box defined by its upper left corner (xmin, ymin) and its width
   // and height, all relative to the image dimensions.
@@ -115,7 +115,7 @@ class Location {
   // format is consistent with the location data type. E.g. if one requests a
   // rectangle, then the wrapped location data should be of type BOUNDING_BOX.
   // Accessor for location data type BOUNDING_BOX with two possible return types
-  // Rectangle_i and mediapipe.::mediapipe_v01013_based::BoundingBox.
+  // Rectangle_i and mediapipe.::hand_tracking_mp_lean::BoundingBox.
   template <typename T>
   T GetBBox() const;
   // Accessor for location data type RELATIVE_BOUNDING_BOX.
@@ -138,7 +138,7 @@ class Location {
   //      foreground. Thus, the equivalent rectangle and mask are a rectangle
   //      covering the full image.
   // The supported output types are the same as for GetBBox() above: Rectangle_i
-  // and mediapipe.::mediapipe_v01013_based::BoundingBox.
+  // and mediapipe.::hand_tracking_mp_lean::BoundingBox.
   template <typename T>
   T ConvertToBBox(int image_width, int image_height) const;
   Rectangle_f ConvertToRelativeBBox(int image_width, int image_height) const;
@@ -164,6 +164,6 @@ class Location {
   // The wrapped location data.
   LocationData location_data_;
 };
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_LOCATION_H_

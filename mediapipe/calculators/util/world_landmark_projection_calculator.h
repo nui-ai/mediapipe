@@ -21,7 +21,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 inline constexpr absl::string_view kWorldLandmarkProjectionNodeName =
     "WorldLandmarkProjectionCalculator";
@@ -46,18 +46,18 @@ struct WorldLandmarkProjectionNode : Node<kWorldLandmarkProjectionNodeName> {
   template <typename S>
   struct Contract {
     // A LandmarkList representing world landmarks in the rectangle.
-    Input<S, mediapipe_v01013_based::LandmarkList> input_landmarks{"LANDMARKS"};
+    Input<S, hand_tracking_mp_lean::LandmarkList> input_landmarks{"LANDMARKS"};
 
     // An NormalizedRect representing a normalized rectangle in image
     // coordinates.
-    Optional<Input<S, mediapipe_v01013_based::NormalizedRect>> input_rect{"NORM_RECT"};
+    Optional<Input<S, hand_tracking_mp_lean::NormalizedRect>> input_rect{"NORM_RECT"};
 
     // A LandmarkList representing world landmarks projected (rotated but not
     // scaled or translated) from the rectangle to original coordinates.
-    Output<S, mediapipe_v01013_based::LandmarkList> output_landmarks{"LANDMARKS"};
+    Output<S, hand_tracking_mp_lean::LandmarkList> output_landmarks{"LANDMARKS"};
   };
 };
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_WORLD_LANDMARK_PROJECTION_CALCULATOR_H_

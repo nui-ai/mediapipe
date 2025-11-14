@@ -27,11 +27,11 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 // Note: since this is a calculator template that can be included by other
 // source files, we do not place this in namespace api2 directly, but qualify
 // the api2 names below, to avoid changing the visible name of the class.
-// We cannot simply write "using mediapipe_v01013_based::api2" since it's a header file.
+// We cannot simply write "using hand_tracking_mp_lean::api2" since it's a header file.
 // This distinction will go away once api2 is finalized.
 
 // Concatenates several objects of type T or std::vector<T> following stream
@@ -54,7 +54,7 @@ class ConcatenateVectorCalculator : public api2::Node {
 
   absl::Status Open(CalculatorContext* cc) override {
     only_emit_if_all_present_ =
-        cc->Options<::mediapipe_v01013_based::ConcatenateVectorCalculatorOptions>()
+        cc->Options<::hand_tracking_mp_lean::ConcatenateVectorCalculatorOptions>()
             .only_emit_if_all_present();
     return absl::OkStatus();
   }
@@ -117,6 +117,6 @@ class ConcatenateVectorCalculator : public api2::Node {
   bool only_emit_if_all_present_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_CONCATENATE_VECTOR_CALCULATOR_H_

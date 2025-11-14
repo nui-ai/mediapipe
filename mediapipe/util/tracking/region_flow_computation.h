@@ -59,12 +59,12 @@
 #include "mediapipe/util/tracking/region_flow.pb.h"
 #include "mediapipe/util/tracking/region_flow_computation.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 class RegionFlowFeatureList;
 class RegionFlowFrame;
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 struct TrackedFeature;
 typedef std::vector<TrackedFeature> TrackedFeatureList;
@@ -456,6 +456,6 @@ class RegionFlowComputation {
   friend class MotionAnalysis;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_REGION_FLOW_COMPUTATION_H_

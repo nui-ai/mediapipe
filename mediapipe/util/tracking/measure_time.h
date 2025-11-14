@@ -41,9 +41,9 @@
 
 extern bool flags_measure_time;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 class MeasureTimeFilter;
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #define MEASURE_TIME \
   MEASURE_TIME_PRE_IMPL(flags_measure_time, __LINE__, __FILE__)
@@ -53,19 +53,19 @@ class MeasureTimeFilter;
   MEASURE_TIME_IMPL(show_output, line, file)
 
 #define MEASURE_TIME_IMPL(show_output, line, file)                      \
-  std::unique_ptr<mediapipe_v01013_based::ScopedWallTimer> scoped_wall_timer_##line; \
+  std::unique_ptr<hand_tracking_mp_lean::ScopedWallTimer> scoped_wall_timer_##line; \
   const bool activated##line = show_output;                             \
   if (activated##line) {                                                \
-    static mediapipe_v01013_based::ScopedWallTimer::Accumulator*                     \
+    static hand_tracking_mp_lean::ScopedWallTimer::Accumulator*                     \
         scoped_wall_timer_accum_##line =                                \
-            new mediapipe_v01013_based::ScopedWallTimer::Accumulator;                \
-    scoped_wall_timer_##line.reset(new mediapipe_v01013_based::ScopedWallTimer(      \
+            new hand_tracking_mp_lean::ScopedWallTimer::Accumulator;                \
+    scoped_wall_timer_##line.reset(new hand_tracking_mp_lean::ScopedWallTimer(      \
         file, line, show_output, scoped_wall_timer_accum_##line));      \
   }                                                                     \
   if (activated##line) /* NOLINT */                                     \
   scoped_wall_timer_##line->stream()
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class ScopedWallTimer {
  public:
@@ -165,6 +165,6 @@ class MeasureTimeFilter {
   std::vector<std::string> match_items_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_MEASURE_TIME_H_

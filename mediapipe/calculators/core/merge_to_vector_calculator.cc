@@ -18,19 +18,19 @@ limitations under the License.
 #include "mediapipe/framework/formats/detection.pb.h"
 #include "mediapipe/framework/formats/image.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
-typedef MergeToVectorCalculator<mediapipe_v01013_based::Image> MergeImagesToVectorCalculator;
+typedef MergeToVectorCalculator<hand_tracking_mp_lean::Image> MergeImagesToVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(MergeImagesToVectorCalculator);
 
-typedef MergeToVectorCalculator<mediapipe_v01013_based::GpuBuffer>
+typedef MergeToVectorCalculator<hand_tracking_mp_lean::GpuBuffer>
     MergeGpuBuffersToVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(MergeGpuBuffersToVectorCalculator);
 
-typedef MergeToVectorCalculator<mediapipe_v01013_based::Detection>
+typedef MergeToVectorCalculator<hand_tracking_mp_lean::Detection>
     MergeDetectionsToVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(MergeDetectionsToVectorCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

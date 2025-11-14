@@ -21,7 +21,7 @@
 //   void func() {}
 //     FILE* fp = fopen("data.txt", "r");
 //     if (fp == nullptr) return;
-//     auto fp_cleaner = mediapipe_v01013_based::MakeCleanup([fp] { fclose(fp); });
+//     auto fp_cleaner = hand_tracking_mp_lean::MakeCleanup([fp] { fclose(fp); });
 //     // No matter what, fclose(fp) will happen.
 //     DataObject d;
 //     while (ReadDataObject(fp, &d)) {
@@ -41,7 +41,7 @@
 
 #include "absl/base/attributes.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 template <typename F>
 class Cleanup {
@@ -100,6 +100,6 @@ ABSL_MUST_USE_RESULT Cleanup<DecayF> MakeCleanup(F&& f) {
   return Cleanup<DecayF>(std::forward<F>(f));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_DEPS_CLEANUP_H_

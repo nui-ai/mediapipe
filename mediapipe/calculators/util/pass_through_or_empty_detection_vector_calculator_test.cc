@@ -12,19 +12,19 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 CalculatorGraphConfig GetGraphConfig() {
-  mediapipe_v01013_based::api2::builder::Graph graph;
-  mediapipe_v01013_based::api2::builder::Stream<std::string> tick =
+  hand_tracking_mp_lean::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Stream<std::string> tick =
       graph.In("TICK").SetName("tick").Cast<std::string>();
-  mediapipe_v01013_based::api2::builder::Stream<std::vector<mediapipe_v01013_based::Detection>>
+  hand_tracking_mp_lean::api2::builder::Stream<std::vector<hand_tracking_mp_lean::Detection>>
       detections = graph.In("DETECTIONS")
                        .SetName("input_detections")
-                       .Cast<std::vector<mediapipe_v01013_based::Detection>>();
+                       .Cast<std::vector<hand_tracking_mp_lean::Detection>>();
 
-  mediapipe_v01013_based::api2::builder::Stream<std::vector<mediapipe_v01013_based::Detection>>
+  hand_tracking_mp_lean::api2::builder::Stream<std::vector<hand_tracking_mp_lean::Detection>>
       output_detections =
           PassThroughOrEmptyDetectionVector(detections, tick, graph);
   output_detections.SetName("output_detections");
@@ -35,17 +35,17 @@ CalculatorGraphConfig GetGraphConfig() {
 absl::Status SendTick(CalculatorGraph& graph, int at) {
   return graph.AddPacketToInputStream(
       "tick",
-      mediapipe_v01013_based::MakePacket<std::string>("tick").At(mediapipe_v01013_based::Timestamp(at)));
+      hand_tracking_mp_lean::MakePacket<std::string>("tick").At(hand_tracking_mp_lean::Timestamp(at)));
 }
 
 absl::Status SendDetections(CalculatorGraph& graph,
-                            std::vector<mediapipe_v01013_based::Detection> detections,
+                            std::vector<hand_tracking_mp_lean::Detection> detections,
                             int at) {
   return graph.AddPacketToInputStream(
       "input_detections",
-      mediapipe_v01013_based::MakePacket<std::vector<mediapipe_v01013_based::Detection>>(
+      hand_tracking_mp_lean::MakePacket<std::vector<hand_tracking_mp_lean::Detection>>(
           std::move(detections))
-          .At(mediapipe_v01013_based::Timestamp(at)));
+          .At(hand_tracking_mp_lean::Timestamp(at)));
 }
 
 TEST(PassThroughOrEmptyDetectionVectorCalculatorTest, PassThrough) {
@@ -59,17 +59,17 @@ TEST(PassThroughOrEmptyDetectionVectorCalculatorTest, PassThrough) {
   // Sending empty vector.
   MP_ASSERT_OK(SendTick(calculator_graph, /*at=*/1));
   MP_ASSERT_OK(SendDetections(calculator_graph,
-                              std::vector<mediapipe_v01013_based::Detection>{},
+                              std::vector<hand_tracking_mp_lean::Detection>{},
                               /*at=*/1));
   MP_ASSERT_OK(calculator_graph.WaitUntilIdle());
 
   ASSERT_EQ(output_packets.size(), 1);
   EXPECT_TRUE(
-      output_packets[0].Get<std::vector<mediapipe_v01013_based::Detection>>().empty());
+      output_packets[0].Get<std::vector<hand_tracking_mp_lean::Detection>>().empty());
 
   // Sending non empty vector.
   output_packets.clear();
-  mediapipe_v01013_based::Detection detection;
+  hand_tracking_mp_lean::Detection detection;
   detection.set_detection_id(1000);
 
   MP_ASSERT_OK(SendTick(calculator_graph, /*at=*/2));
@@ -87,7 +87,7 @@ TEST(PassThroughOrEmptyDetectionVectorCalculatorTest, OrEmptyVector) {
   CalculatorGraph calculator_graph(graph_config);
   MP_ASSERT_OK(calculator_graph.StartRun({}));
 
-  mediapipe_v01013_based::Detection detection;
+  hand_tracking_mp_lean::Detection detection;
   detection.set_detection_id(1000);
   MP_ASSERT_OK(SendTick(calculator_graph, /*at=*/1));
   MP_ASSERT_OK(SendDetections(calculator_graph, {detection}, /*at=*/1));
@@ -97,7 +97,7 @@ TEST(PassThroughOrEmptyDetectionVectorCalculatorTest, OrEmptyVector) {
   // This should trigger trigger calculator at 2, 3, 4 as detections are not
   // expected.
   MP_ASSERT_OK(SendDetections(calculator_graph,
-                              std::vector<mediapipe_v01013_based::Detection>{},
+                              std::vector<hand_tracking_mp_lean::Detection>{},
                               /*at=*/5));
   MP_ASSERT_OK(calculator_graph.WaitUntilIdle());
 
@@ -105,9 +105,9 @@ TEST(PassThroughOrEmptyDetectionVectorCalculatorTest, OrEmptyVector) {
 
   for (int i = 1; i < output_packets.size(); ++i) {
     EXPECT_TRUE(
-        output_packets[i].Get<std::vector<mediapipe_v01013_based::Detection>>().empty());
+        output_packets[i].Get<std::vector<hand_tracking_mp_lean::Detection>>().empty());
   }
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -17,7 +17,7 @@
 #include "absl/memory/memory.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 TEST(LowPassFilterTest, LowPassFilterBasicChecks) {
   auto filter = absl::make_unique<LowPassFilter>(1.0f);
@@ -33,4 +33,4 @@ TEST(LowPassFilterTest, LowPassFilterBasicChecks) {
   EXPECT_EQ(51.0f, filter->Apply(100.0f));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

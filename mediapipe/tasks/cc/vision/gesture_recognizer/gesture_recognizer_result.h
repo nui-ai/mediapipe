@@ -19,7 +19,7 @@ limitations under the License.
 #include "mediapipe/framework/formats/classification.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace gesture_recognizer {
@@ -29,18 +29,18 @@ namespace gesture_recognizer {
 struct GestureRecognizerResult {
   // Recognized hand gestures with sorted order such that the winning label is
   // the first item in the list.
-  std::vector<mediapipe_v01013_based::ClassificationList> gestures;
+  std::vector<hand_tracking_mp_lean::ClassificationList> gestures;
   // Classification of handedness.
-  std::vector<mediapipe_v01013_based::ClassificationList> handedness;
+  std::vector<hand_tracking_mp_lean::ClassificationList> handedness;
   // Detected hand landmarks in normalized image coordinates.
-  std::vector<mediapipe_v01013_based::NormalizedLandmarkList> hand_landmarks;
+  std::vector<hand_tracking_mp_lean::NormalizedLandmarkList> hand_landmarks;
   // Detected hand landmarks in world coordinates.
-  std::vector<mediapipe_v01013_based::LandmarkList> hand_world_landmarks;
+  std::vector<hand_tracking_mp_lean::LandmarkList> hand_world_landmarks;
 };
 
 }  // namespace gesture_recognizer
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_GESTURE_RECOGNIZER_GESTURE_RECOGNIZER_RESULT_H_

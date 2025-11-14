@@ -18,15 +18,15 @@
 #include "mediapipe/calculators/tensor/image_to_tensor_converter_frame_buffer.h"
 #endif
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 absl::Status InitConverterIfNecessary(
-    const mediapipe_v01013_based::Image& image,
-    const mediapipe_v01013_based::ImageToTensorCalculatorOptions& options,
-    const mediapipe_v01013_based::OutputTensorParams& params,
-    std::unique_ptr<mediapipe_v01013_based::ImageToTensorConverter>& gpu_converter,
-    std::unique_ptr<mediapipe_v01013_based::ImageToTensorConverter>& cpu_converter) {
+    const hand_tracking_mp_lean::Image& image,
+    const hand_tracking_mp_lean::ImageToTensorCalculatorOptions& options,
+    const hand_tracking_mp_lean::OutputTensorParams& params,
+    std::unique_ptr<hand_tracking_mp_lean::ImageToTensorConverter>& gpu_converter,
+    std::unique_ptr<hand_tracking_mp_lean::ImageToTensorConverter>& cpu_converter) {
   if (image.UsesGpu()) {
     if (!params.is_float_output) {
       return absl::UnimplementedError(
@@ -62,13 +62,13 @@ absl::Status InitConverterIfNecessary(
 namespace api2 {
 
 ImageToTensorCalculatorCore::ImageToTensorCalculatorCore(
-    const mediapipe_v01013_based::ImageToTensorCalculatorOptions& options,
+    const hand_tracking_mp_lean::ImageToTensorCalculatorOptions& options,
     int tensor_width,
     int tensor_height,
-    const mediapipe_v01013_based::OutputTensorParams& params,
-    std::unique_ptr<mediapipe_v01013_based::ImageToTensorConverter>& gpu_converter,
-    std::unique_ptr<mediapipe_v01013_based::ImageToTensorConverter>& cpu_converter,
-    mediapipe_v01013_based::MemoryManager* memory_manager)
+    const hand_tracking_mp_lean::OutputTensorParams& params,
+    std::unique_ptr<hand_tracking_mp_lean::ImageToTensorConverter>& gpu_converter,
+    std::unique_ptr<hand_tracking_mp_lean::ImageToTensorConverter>& cpu_converter,
+    hand_tracking_mp_lean::MemoryManager* memory_manager)
     : options_(options),
       tensor_width_(tensor_width),
       tensor_height_(tensor_height),
@@ -78,12 +78,12 @@ ImageToTensorCalculatorCore::ImageToTensorCalculatorCore(
       memory_manager_(memory_manager) {}
 
 absl::Status ImageToTensorCalculatorCore::Process(
-    const mediapipe_v01013_based::Image& image,
-    absl::optional<mediapipe_v01013_based::NormalizedRect> norm_rect,
+    const hand_tracking_mp_lean::Image& image,
+    absl::optional<hand_tracking_mp_lean::NormalizedRect> norm_rect,
     ImageToTensorCoreResult* result) {
 
   RotatedRect roi = GetRoi(image.width(), image.height(), norm_rect);
-  MP_ASSIGN_OR_RETURN(auto padding, mediapipe_v01013_based::PadRoi(tensor_width_, tensor_height_, options_.keep_aspect_ratio(), &roi));
+  MP_ASSIGN_OR_RETURN(auto padding, hand_tracking_mp_lean::PadRoi(tensor_width_, tensor_height_, options_.keep_aspect_ratio(), &roi));
   result->padding = padding;
   GetRotatedSubRectToRectTransformMatrix(
       roi, image.width(), image.height(), /*flip_horizontally=*/false, &result->matrix);
@@ -102,4 +102,4 @@ absl::Status ImageToTensorCalculatorCore::Process(
 }
 
 } // namespace api2
-} // namespace mediapipe_v01013_based
+} // namespace hand_tracking_mp_lean

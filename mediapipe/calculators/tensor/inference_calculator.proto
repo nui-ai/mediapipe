@@ -14,12 +14,12 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/framework/calculator_options.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.calculator.proto";
+option java_package = "com.google.hand_tracking_mp_lean.calculator.proto";
 option java_outer_classname = "InferenceCalculatorProto";
 
 // Full Example:
@@ -29,7 +29,7 @@ option java_outer_classname = "InferenceCalculatorProto";
 //   input_stream: "TENSOR_IN:image_tensors"
 //   output_stream: "TENSOR_OUT:result_tensors"
 //   options {
-//     [mediapipe_v01013_based.InferenceCalculatorOptions.ext] {
+//     [hand_tracking_mp_lean.InferenceCalculatorOptions.ext] {
 //       model_path: "model.tflite"
 //       try_mmap_model: true
 //       delegate { gpu {} }
@@ -37,7 +37,7 @@ option java_outer_classname = "InferenceCalculatorProto";
 //   }
 // }
 message InferenceCalculatorOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional InferenceCalculatorOptions ext = 336783863;
   }
 

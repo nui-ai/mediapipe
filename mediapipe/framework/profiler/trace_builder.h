@@ -20,7 +20,7 @@
 #include "mediapipe/framework/calculator_profile.pb.h"
 #include "mediapipe/framework/profiler/trace_buffer.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Builds a GraphTrace for a range of recent Timestamps.
 class TraceBuilder {
@@ -51,6 +51,6 @@ class TraceBuilder {
   std::unique_ptr<Impl> impl_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_PROFILER_TRACE_BUILDER_H_

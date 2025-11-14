@@ -37,7 +37,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/util/time_series_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Base class for testing Calculators that operate on TimeSeries inputs.
 // Subclasses that do not need a special options proto should inherit from
@@ -326,21 +326,21 @@ class TimeSeriesCalculatorTest : public ::testing::Test {
   void ExpectOutputHeaderEquals(const Proto& expected,
                                 const size_t output_index = 0) const {
     EXPECT_THAT(output(output_index).header.template Get<TimeSeriesHeader>(),
-                mediapipe_v01013_based::EqualsProto(expected));
+                hand_tracking_mp_lean::EqualsProto(expected));
   }
 
   void ExpectOutputHeaderEqualsInputHeader(
       const size_t input_index = 0, const size_t output_index = 0) const {
     EXPECT_THAT(
         output(output_index).header.template Get<TimeSeriesHeader>(),
-        mediapipe_v01013_based::EqualsProto(
+        hand_tracking_mp_lean::EqualsProto(
             input(input_index).header.template Get<TimeSeriesHeader>()));
   }
 
   void ExpectOutputHeaderEqualsInputHeader(
       const std::string& input_tag, const size_t output_index = 0) const {
     EXPECT_THAT(output(output_index).header.template Get<TimeSeriesHeader>(),
-                mediapipe_v01013_based::EqualsProto(
+                hand_tracking_mp_lean::EqualsProto(
                     input(input_tag).header.template Get<TimeSeriesHeader>()));
   }
 
@@ -348,14 +348,14 @@ class TimeSeriesCalculatorTest : public ::testing::Test {
       const size_t input_index, const std::string& output_tag) const {
     EXPECT_THAT(
         output(output_tag).header.template Get<TimeSeriesHeader>(),
-        mediapipe_v01013_based::EqualsProto(
+        hand_tracking_mp_lean::EqualsProto(
             input(input_index).header.template Get<TimeSeriesHeader>()));
   }
 
   void ExpectOutputHeaderEqualsInputHeader(
       const std::string& input_tag, const std::string& output_tag) const {
     EXPECT_THAT(output(output_tag).header.template Get<TimeSeriesHeader>(),
-                mediapipe_v01013_based::EqualsProto(
+                hand_tracking_mp_lean::EqualsProto(
                     input(input_tag).header.template Get<TimeSeriesHeader>()));
   }
 
@@ -458,7 +458,7 @@ class MultiStreamTimeSeriesCalculatorTest
   void ExpectOutputHeaderEquals(const StringOrProto& expected) const {
     EXPECT_THAT(
         this->output().header.template Get<MultiStreamTimeSeriesHeader>(),
-        mediapipe_v01013_based::EqualsProto(expected));
+        hand_tracking_mp_lean::EqualsProto(expected));
   }
 
   void ExpectOutputHeaderEqualsInputHeader() const {
@@ -519,6 +519,6 @@ class BasicTimeSeriesCalculatorTestBase
   }
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TIME_SERIES_TEST_UTIL_H_

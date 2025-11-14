@@ -15,7 +15,7 @@
 #include "mediapipe/calculators/tensor/image_to_tensor_calculator_core.h"
 #include "mediapipe/liberated/liberated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
   class HeadCalculator : public CalculatorBase {
 
@@ -62,7 +62,7 @@ namespace mediapipe_v01013_based {
       absl::Status Process(CalculatorContext* cc) override {
 
         static constexpr api2::Input<api2::OneOf<Image, ImageFrame>>::Optional kIn{"IMAGE"};
-        std::shared_ptr<const mediapipe_v01013_based::Image> image;
+        std::shared_ptr<const hand_tracking_mp_lean::Image> image;
         MP_ASSIGN_OR_RETURN(image, GetInputImage(kIn(cc)));
 
         absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> resultOrStatus = liberated_->Process(image, max_hands_to_track);

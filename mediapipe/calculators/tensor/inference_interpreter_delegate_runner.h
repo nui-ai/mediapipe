@@ -26,7 +26,7 @@
 #include "tensorflow/lite/c/c_api_types.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Creates inference runner which run inference using newly initialized
 // interpreter and provided `delegate`.
@@ -48,10 +48,10 @@ CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
     api2::Packet<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
     int interpreter_num_threads,
-    const mediapipe_v01013_based::InferenceCalculatorOptions::InputOutputConfig*
+    const hand_tracking_mp_lean::InferenceCalculatorOptions::InputOutputConfig*
         input_output_config = nullptr,
     bool enable_zero_copy_tensor_io = false);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_INFERENCE_INTERPRETER_DELEGATE_RUNNER_H_

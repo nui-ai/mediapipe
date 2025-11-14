@@ -23,7 +23,7 @@
 #include "tensorflow/core/example/example.pb.h"
 #include "tensorflow/core/example/feature.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 const char kId[] = "id";
@@ -81,7 +81,7 @@ class UnpackYt8mSequenceExampleCalculator : public CalculatorBase {
     if (cc->OutputSidePackets().HasTag(kLappedTensorBufferCalculatorOptions)) {
       cc->OutputSidePackets()
           .Tag(kLappedTensorBufferCalculatorOptions)
-          .Set<::mediapipe_v01013_based::LappedTensorBufferCalculatorOptions>();
+          .Set<::hand_tracking_mp_lean::LappedTensorBufferCalculatorOptions>();
     }
     if (cc->OutputSidePackets().HasTag(kSegmentSize)) {
       cc->OutputSidePackets().Tag(kSegmentSize).Set<int>();
@@ -134,7 +134,7 @@ class UnpackYt8mSequenceExampleCalculator : public CalculatorBase {
       if (cc->OutputSidePackets().HasTag(
               kLappedTensorBufferCalculatorOptions)) {
         auto lapped_tensor_buffer_calculator_options = absl::make_unique<
-            ::mediapipe_v01013_based::LappedTensorBufferCalculatorOptions>();
+            ::hand_tracking_mp_lean::LappedTensorBufferCalculatorOptions>();
         lapped_tensor_buffer_calculator_options->set_add_batch_dim_to_tensors(
             true);
         lapped_tensor_buffer_calculator_options->set_buffer_size(segment_size);
@@ -159,7 +159,7 @@ class UnpackYt8mSequenceExampleCalculator : public CalculatorBase {
 
   absl::Status Process(CalculatorContext* cc) override {
     if (current_index_ >= feature_list_length_) {
-      return mediapipe_v01013_based::tool::StatusStop();
+      return hand_tracking_mp_lean::tool::StatusStop();
     }
     const tensorflow::SequenceExample& sequence_example =
         cc->InputSidePackets()
@@ -192,4 +192,4 @@ class UnpackYt8mSequenceExampleCalculator : public CalculatorBase {
 
 REGISTER_CALCULATOR(UnpackYt8mSequenceExampleCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

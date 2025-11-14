@@ -22,7 +22,7 @@
 #include "tensorflow/lite/delegates/gpu/gl/gl_program.h"
 #include "tensorflow/lite/delegates/gpu/gl/gl_texture.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 
 // Helper class for converting Android and Linux Tensors from OpenGL ES >=3.1
@@ -50,6 +50,6 @@ class SsboToTextureConverter {
 };
 
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_IMAGE_SEGMENTER_CALCULATORS_SSBO_TO_TEXTURE_CONVERTER_H_

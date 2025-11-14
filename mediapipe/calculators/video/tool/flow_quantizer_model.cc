@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/type_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Uniform normalization to 0-255.
 uint8_t FlowQuantizerModel::Apply(const float val, const int channel) const {
@@ -76,4 +76,4 @@ void FlowQuantizerModel::Init() {
     model_.add_max_value(-std::numeric_limits<float>::max());
   }
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

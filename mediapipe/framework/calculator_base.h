@@ -30,9 +30,9 @@
 #include "mediapipe/framework/shared_calculator_state.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-// SOFT DEPRECATION: use mediapipe_v01013_based::api2::NodeIntf/Impl instead.
+// SOFT DEPRECATION: use hand_tracking_mp_lean::api2::NodeIntf/Impl instead.
 //
 // Experimental: CalculatorBase will eventually replace Calculator as the
 // base class of leaf (non-subgraph) nodes in a CalculatorGraph.
@@ -210,16 +210,16 @@ constexpr bool CalculatorHasGetContract(...) {
 // of CalculatorBase.
 template <class T, class Enable = void>
 class CalculatorBaseFactoryFor : public CalculatorBaseFactory {
-  static_assert(std::is_base_of<mediapipe_v01013_based::CalculatorBase, T>::value,
+  static_assert(std::is_base_of<hand_tracking_mp_lean::CalculatorBase, T>::value,
                 "Classes registered with REGISTER_CALCULATOR must be "
-                "subclasses of mediapipe_v01013_based::CalculatorBase.");
+                "subclasses of hand_tracking_mp_lean::CalculatorBase.");
 };
 
 template <class T>
 class CalculatorBaseFactoryFor<
     T,
-    typename std::enable_if<std::is_base_of<mediapipe_v01013_based::CalculatorBase, T>{} &&
-                            !std::is_base_of<mediapipe_v01013_based::api2::Node, T>{}>::type>
+    typename std::enable_if<std::is_base_of<hand_tracking_mp_lean::CalculatorBase, T>{} &&
+                            !std::is_base_of<hand_tracking_mp_lean::api2::Node, T>{}>::type>
     : public CalculatorBaseFactory {
  public:
   static_assert(CalculatorHasGetContract<T>(nullptr),
@@ -245,6 +245,6 @@ class CalculatorBaseFactoryFor<
 using CalculatorBaseRegistry =
     GlobalFactoryRegistry<std::unique_ptr<internal::CalculatorBaseFactory>>;
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_CALCULATOR_BASE_H_

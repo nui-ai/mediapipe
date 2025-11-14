@@ -26,7 +26,7 @@
 #include "mediapipe/framework/resources.h"
 #include "mediapipe/framework/resources_service.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 CalculatorState::CalculatorState(
     const std::string& node_name, int node_id,
@@ -79,4 +79,4 @@ CounterFactory* CalculatorState::GetCounterFactory() {
   return counter_factory_;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

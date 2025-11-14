@@ -35,7 +35,7 @@
 #include "mediapipe/framework/tool/sink.h"
 #include "mediapipe/util/packet_test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -223,13 +223,13 @@ class SleepCalculator : public CalculatorBase {
     cc->Outputs().Tag(kPacketTag).SetSameAs(&cc->Inputs().Tag(kPacketTag));
     cc->InputSidePackets().Tag(kSleepTimeTag).Set<int64_t>();
     cc->InputSidePackets().Tag(kWarmupTimeTag).Set<int64_t>();
-    cc->InputSidePackets().Tag(kClockTag).Set<mediapipe_v01013_based::Clock*>();
+    cc->InputSidePackets().Tag(kClockTag).Set<hand_tracking_mp_lean::Clock*>();
     cc->SetTimestampOffset(0);
     return absl::OkStatus();
   }
 
   absl::Status Open(CalculatorContext* cc) final {
-    clock_ = cc->InputSidePackets().Tag(kClockTag).Get<mediapipe_v01013_based::Clock*>();
+    clock_ = cc->InputSidePackets().Tag(kClockTag).Get<hand_tracking_mp_lean::Clock*>();
     return absl::OkStatus();
   }
 
@@ -247,7 +247,7 @@ class SleepCalculator : public CalculatorBase {
   }
 
  private:
-  ::mediapipe_v01013_based::Clock* clock_ = nullptr;
+  ::hand_tracking_mp_lean::Clock* clock_ = nullptr;
   int packet_count = 0;
 };
 REGISTER_CALCULATOR(SleepCalculator);
@@ -341,7 +341,7 @@ class FlowLimiterCalculatorTest : public testing::Test {
   }
 
   // Initialize the test clock to follow wall time.
-  void SetUpRealClock() { clock_ = mediapipe_v01013_based::Clock::RealClock(); }
+  void SetUpRealClock() { clock_ = hand_tracking_mp_lean::Clock::RealClock(); }
 
   // Create a few mediapipe input Packets holding ints.
   void SetUpInputData() {
@@ -352,7 +352,7 @@ class FlowLimiterCalculatorTest : public testing::Test {
 
  protected:
   CalculatorGraph graph_;
-  mediapipe_v01013_based::Clock* clock_;
+  hand_tracking_mp_lean::Clock* clock_;
   std::shared_ptr<SimulationClock> simulation_clock_;
   std::vector<Packet> input_packets_;
   std::vector<Packet> out_1_packets_;
@@ -378,7 +378,7 @@ TEST_F(FlowLimiterCalculatorTest, FinishedTimestamps) {
       {"warmup_time", MakePacket<int64_t>(22000)},
       {"sleep_time", MakePacket<int64_t>(22000)},
       {"drop_timesamps", MakePacket<bool>(false)},
-      {"clock", MakePacket<mediapipe_v01013_based::Clock*>(clock_)},
+      {"clock", MakePacket<hand_tracking_mp_lean::Clock*>(clock_)},
   };
 
   // Start the graph.
@@ -450,7 +450,7 @@ TEST_F(FlowLimiterCalculatorTest, FinishedLost) {
       {"warmup_time", MakePacket<int64_t>(22000)},
       {"sleep_time", MakePacket<int64_t>(22000)},
       {"drop_timesamps", MakePacket<bool>(true)},
-      {"clock", MakePacket<mediapipe_v01013_based::Clock*>(clock_)},
+      {"clock", MakePacket<hand_tracking_mp_lean::Clock*>(clock_)},
   };
 
   // Start the graph.
@@ -514,7 +514,7 @@ TEST_F(FlowLimiterCalculatorTest, FinishedDelayed) {
       {"warmup_time", MakePacket<int64_t>(500000)},
       {"sleep_time", MakePacket<int64_t>(22000)},
       {"drop_timesamps", MakePacket<bool>(false)},
-      {"clock", MakePacket<mediapipe_v01013_based::Clock*>(clock_)},
+      {"clock", MakePacket<hand_tracking_mp_lean::Clock*>(clock_)},
   };
 
   // Start the graph.
@@ -609,7 +609,7 @@ TEST_F(FlowLimiterCalculatorTest, TwoInputStreams) {
       {"warmup_time", MakePacket<int64_t>(22000)},
       {"sleep_time", MakePacket<int64_t>(22000)},
       {"drop_timesamps", MakePacket<bool>(true)},
-      {"clock", MakePacket<mediapipe_v01013_based::Clock*>(clock_)},
+      {"clock", MakePacket<hand_tracking_mp_lean::Clock*>(clock_)},
   };
 
   // Start the graph.
@@ -718,7 +718,7 @@ TEST_F(FlowLimiterCalculatorTest, ZeroQueue) {
       {"warmup_time", MakePacket<int64_t>(12000)},
       {"sleep_time", MakePacket<int64_t>(12000)},
       {"drop_timesamps", MakePacket<bool>(true)},
-      {"clock", MakePacket<mediapipe_v01013_based::Clock*>(clock_)},
+      {"clock", MakePacket<hand_tracking_mp_lean::Clock*>(clock_)},
   };
 
   // Start the graph.
@@ -866,7 +866,7 @@ TEST_F(FlowLimiterCalculatorTest, AuxiliaryInputs) {
       // Fake processing duration in microseconds.
       {"sleep_time", MakePacket<int64_t>(22000)},
       // The SimulationClock to count virtual elapsed time.
-      {"clock", MakePacket<mediapipe_v01013_based::Clock*>(clock_)},
+      {"clock", MakePacket<hand_tracking_mp_lean::Clock*>(clock_)},
   };
 
   // Start the graph.
@@ -981,4 +981,4 @@ TEST_F(FlowLimiterCalculatorTest, AuxiliaryInputs) {
 }
 
 }  // anonymous namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

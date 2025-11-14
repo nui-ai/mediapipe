@@ -27,7 +27,7 @@
 #include "mediapipe/util/label_map.pb.h"
 #include "mediapipe/util/str_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 absl::StatusOr<proto_ns::Map<int64_t, LabelMapItem>> BuildLabelMapFromFiles(
     absl::string_view labels_file_contents,
@@ -36,7 +36,7 @@ absl::StatusOr<proto_ns::Map<int64_t, LabelMapItem>> BuildLabelMapFromFiles(
     return absl::InvalidArgumentError("Expected non-empty labels file.");
   }
   std::vector<absl::string_view> labels;
-  mediapipe_v01013_based::ForEachLine(
+  hand_tracking_mp_lean::ForEachLine(
       labels_file_contents,
       [&labels](absl::string_view line) { labels.push_back(line); });
   if (!labels.empty() && labels.back().empty()) {
@@ -53,7 +53,7 @@ absl::StatusOr<proto_ns::Map<int64_t, LabelMapItem>> BuildLabelMapFromFiles(
 
   if (!display_names_file_contents.empty()) {
     std::vector<absl::string_view> display_names;
-    mediapipe_v01013_based::ForEachLine(display_names_file_contents,
+    hand_tracking_mp_lean::ForEachLine(display_names_file_contents,
                            [&display_names](absl::string_view line) {
                              display_names.push_back(line);
                            });
@@ -76,4 +76,4 @@ absl::StatusOr<proto_ns::Map<int64_t, LabelMapItem>> BuildLabelMapFromFiles(
   return label_map;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

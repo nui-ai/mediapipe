@@ -26,7 +26,7 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 void FillImageFrameRGBA(ImageFrame& image, uint8_t r, uint8_t g, uint8_t b,
@@ -251,4 +251,4 @@ TEST_F(GpuBufferTest, CopiesShareConversions) {
 }
 
 }  // anonymous namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

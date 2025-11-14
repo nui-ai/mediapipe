@@ -29,7 +29,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr char kTag[] = "";
@@ -241,4 +241,4 @@ TEST(CalculatorRunner, MultiTagTestInvalidStreamTagCrashes) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

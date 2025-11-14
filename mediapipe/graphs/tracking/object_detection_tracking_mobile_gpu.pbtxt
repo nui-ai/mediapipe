@@ -15,7 +15,7 @@ node {
   input_stream: "DATA:input_video"
   output_stream: "DATA:throttled_input_video"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.PacketResamplerCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.PacketResamplerCalculatorOptions] {
       frame_rate: 0.5
     }
   }

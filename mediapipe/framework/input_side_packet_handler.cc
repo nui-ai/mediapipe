@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/status_builder.h"
 #include "mediapipe/framework/tool/fill_packet_set.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 absl::Status InputSidePacketHandler::PrepareForRun(
     const PacketTypeSet* input_side_packet_types,
@@ -62,12 +62,12 @@ absl::Status InputSidePacketHandler::SetInternal(CollectionItemId id,
   Packet& side_packet = input_side_packets_->Get(id);
 
   if (!side_packet.IsEmpty()) {
-    return mediapipe_v01013_based::AlreadyExistsErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::AlreadyExistsErrorBuilder(MEDIAPIPE_LOC)
            << "Input side packet with id " << id << " was already set.";
   }
   absl::Status result = input_side_packet_types_->Get(id).Validate(packet);
   if (!result.ok()) {
-    return mediapipe_v01013_based::StatusBuilder(result, MEDIAPIPE_LOC).SetPrepend()
+    return hand_tracking_mp_lean::StatusBuilder(result, MEDIAPIPE_LOC).SetPrepend()
            << absl::StrCat(
                   "Packet type mismatch on calculator input side packet with "
                   "id ",
@@ -87,4 +87,4 @@ void InputSidePacketHandler::TriggerErrorCallback(
   error_callback_(status);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

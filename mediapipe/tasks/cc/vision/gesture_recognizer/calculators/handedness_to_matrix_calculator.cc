@@ -29,18 +29,18 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/gesture_recognizer/handedness_util.h"
 
 // TODO Update to use API2
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 namespace {
 
-using ::mediapipe_v01013_based::tasks::vision::gesture_recognizer::GetRightHandScore;
+using ::hand_tracking_mp_lean::tasks::vision::gesture_recognizer::GetRightHandScore;
 
 constexpr char kHandednessTag[] = "HANDEDNESS";
 constexpr char kHandednessMatrixTag[] = "HANDEDNESS_MATRIX";
 
 absl::StatusOr<std::unique_ptr<Matrix>> HandednessToMatrix(
-    const mediapipe_v01013_based::ClassificationList& classification_list) {
+    const hand_tracking_mp_lean::ClassificationList& classification_list) {
   // Feature value is the probability that the hand is a right hand.
   MP_ASSIGN_OR_RETURN(float score, GetRightHandScore(classification_list));
   auto matrix = Matrix(1, 1);
@@ -68,7 +68,7 @@ absl::StatusOr<std::unique_ptr<Matrix>> HandednessToMatrix(
 class HandednessToMatrixCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
-    cc->Inputs().Tag(kHandednessTag).Set<mediapipe_v01013_based::ClassificationList>();
+    cc->Inputs().Tag(kHandednessTag).Set<hand_tracking_mp_lean::ClassificationList>();
     cc->Outputs().Tag(kHandednessMatrixTag).Set<Matrix>();
     return absl::OkStatus();
   }
@@ -90,7 +90,7 @@ absl::Status HandednessToMatrixCalculator::Process(CalculatorContext* cc) {
     return absl::OkStatus();
   }
   auto handedness =
-      cc->Inputs().Tag(kHandednessTag).Get<mediapipe_v01013_based::ClassificationList>();
+      cc->Inputs().Tag(kHandednessTag).Get<hand_tracking_mp_lean::ClassificationList>();
 
   MP_ASSIGN_OR_RETURN(auto handedness_matrix, HandednessToMatrix(handedness));
   cc->Outputs()
@@ -100,4 +100,4 @@ absl::Status HandednessToMatrixCalculator::Process(CalculatorContext* cc) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

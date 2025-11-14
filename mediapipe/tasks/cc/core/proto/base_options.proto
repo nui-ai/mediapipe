@@ -15,13 +15,13 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe_v01013_based.tasks.core.proto;
+package hand_tracking_mp_lean.tasks.core.proto;
 
 import "mediapipe/gpu/gpu_origin.proto";
 import "mediapipe/tasks/cc/core/proto/acceleration.proto";
 import "mediapipe/tasks/cc/core/proto/external_file.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.tasks.core.proto";
+option java_package = "com.google.hand_tracking_mp_lean.tasks.core.proto";
 option java_outer_classname = "BaseOptionsProto";
 
 // Base options for mediapipe tasks.
@@ -43,5 +43,5 @@ message BaseOptions {
   optional Acceleration acceleration = 3;
 
   // Gpu origin for calculators with gpu supported.
-  optional mediapipe_v01013_based.GpuOrigin.Mode gpu_origin = 4 [default = TOP_LEFT];
+  optional hand_tracking_mp_lean.GpuOrigin.Mode gpu_origin = 4 [default = TOP_LEFT];
 }

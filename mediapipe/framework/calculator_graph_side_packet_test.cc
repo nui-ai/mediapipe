@@ -30,7 +30,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -177,7 +177,7 @@ class SidePacketToStreamPacketCalculator : public CalculatorBase {
   }
 
   absl::Status Process(CalculatorContext* cc) final {
-    return mediapipe_v01013_based::tool::StatusStop();
+    return hand_tracking_mp_lean::tool::StatusStop();
   }
 };
 REGISTER_CALCULATOR(SidePacketToStreamPacketCalculator);
@@ -204,7 +204,7 @@ REGISTER_PACKET_GENERATOR(Uint64PacketGenerator);
 TEST(CalculatorGraph, OutputSidePacketInProcess) {
   const int64_t offset = 100;
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "offset"
         node {
           calculator: "OutputSidePacketInProcessCalculator"
@@ -274,7 +274,7 @@ REGISTER_PACKET_GENERATOR(PassThroughGenerator);
 
 TEST(CalculatorGraph, SharePacketGeneratorGraph) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: 'CountingSourceCalculator'
           output_stream: 'count1'
@@ -402,7 +402,7 @@ TEST(CalculatorGraph, SharePacketGeneratorGraph) {
 TEST(CalculatorGraph, OutputSidePacketAlreadySet) {
   const int64_t offset = 100;
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "offset"
         node {
           calculator: "OutputSidePacketInProcessCalculator"
@@ -429,7 +429,7 @@ TEST(CalculatorGraph, OutputSidePacketAlreadySet) {
 TEST(CalculatorGraph, OutputSidePacketWithTimestamp) {
   const int64_t offset = 100;
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "offset"
         node {
           calculator: "OutputSidePacketWithTimestampCalculator"
@@ -455,7 +455,7 @@ TEST(CalculatorGraph, OutputSidePacketWithTimestamp) {
 TEST(CalculatorGraph, OutputSidePacketConsumedBySourceNode) {
   const int max_count = 10;
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "max_count"
         node {
           calculator: "OutputSidePacketInProcessCalculator"
@@ -548,7 +548,7 @@ TEST(CalculatorGraph, SourceLayerInversion) {
   // Set num_threads to 1 to force sequential execution for deterministic
   // outputs.
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         num_threads: 1
         node {
           calculator: "CountingSourceCalculator"
@@ -596,7 +596,7 @@ TEST(CalculatorGraph, SourceLayerInversion) {
 // streams and no output streams.
 TEST(CalculatorGraph, PacketGeneratorLikeCalculators) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "IntegerOutputSidePacketCalculator"
           output_side_packet: "one"
@@ -643,7 +643,7 @@ TEST(CalculatorGraph, PacketGeneratorLikeCalculators) {
 
 TEST(CalculatorGraph, OutputSummarySidePacketInClose) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input_packets"
         node {
           calculator: "CountAndOutputSummarySidePacketInCloseCalculator"
@@ -684,7 +684,7 @@ TEST(CalculatorGraph, OutputSummarySidePacketInClose) {
 
 TEST(CalculatorGraph, GetOutputSidePacket) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input_packets"
         node {
           calculator: "CountAndOutputSummarySidePacketInCloseCalculator"
@@ -791,7 +791,7 @@ bool Equals(Packet p1, Packet p2) {
 
 TEST(CalculatorGraph, OutputSidePacketCached) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "OutputSidePacketCachedCalculator"
           output_side_packet: "model"
@@ -825,7 +825,7 @@ TEST(CalculatorGraph, OutputSidePacketCached) {
 TEST(CalculatorGraph, GeneratorAfterCalculatorOpen) {
   CalculatorGraph graph;
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_side_packet: "offset"
         node {
           calculator: "OutputSidePacketInOpenCalculator"
@@ -859,7 +859,7 @@ TEST(CalculatorGraph, GeneratorAfterCalculatorOpen) {
 TEST(CalculatorGraph, GeneratorAfterCalculatorProcess) {
   CalculatorGraph graph;
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "offset"
         node {
           calculator: "OutputSidePacketInProcessCalculator"
@@ -900,7 +900,7 @@ TEST(CalculatorGraph, GeneratorAfterCalculatorProcess) {
 TEST(CalculatorGraph, GetOutputSidePacketAfterCalculatorIsOpened) {
   CalculatorGraph graph;
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "IntegerOutputSidePacketCalculator"
           output_side_packet: "offset"
@@ -916,4 +916,4 @@ TEST(CalculatorGraph, GetOutputSidePacketAfterCalculatorIsOpened) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -21,7 +21,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/classification_result.h"
 #include "mediapipe/tasks/cc/components/containers/landmark.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
@@ -38,13 +38,13 @@ struct HandLandmarkerResult {
 };
 
 HandLandmarkerResult ConvertToHandLandmarkerResult(
-    const std::vector<mediapipe_v01013_based::ClassificationList>& handedness_proto,
-    const std::vector<mediapipe_v01013_based::NormalizedLandmarkList>& hand_landmarks_proto,
-    const std::vector<mediapipe_v01013_based::LandmarkList>& hand_world_landmarks_proto);
+    const std::vector<hand_tracking_mp_lean::ClassificationList>& handedness_proto,
+    const std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>& hand_landmarks_proto,
+    const std::vector<hand_tracking_mp_lean::LandmarkList>& hand_world_landmarks_proto);
 
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_HAND_LANDMARKER_HAND_LANDMARKER_RESULT_H_

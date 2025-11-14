@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 typedef Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
@@ -102,12 +102,12 @@ absl::StatusOr<Tensor> ConvertImageFrameToTensorOnCpu(
   const int width = image_frame.Width();
   const int channels = image_frame.NumberOfChannels();
   const int channels_preserved = std::min(channels, max_num_channels);
-  const mediapipe_v01013_based::ImageFormat::Format format = image_frame.Format();
+  const hand_tracking_mp_lean::ImageFormat::Format format = image_frame.Format();
 
-  if (!(format == mediapipe_v01013_based::ImageFormat::SRGBA ||
-        format == mediapipe_v01013_based::ImageFormat::SRGB ||
-        format == mediapipe_v01013_based::ImageFormat::GRAY8 ||
-        format == mediapipe_v01013_based::ImageFormat::VEC32F1))
+  if (!(format == hand_tracking_mp_lean::ImageFormat::SRGBA ||
+        format == hand_tracking_mp_lean::ImageFormat::SRGB ||
+        format == hand_tracking_mp_lean::ImageFormat::GRAY8 ||
+        format == hand_tracking_mp_lean::ImageFormat::VEC32F1))
     RET_CHECK_FAIL() << "Unsupported CPU input format.";
 
   Tensor output_tensor(Tensor::ElementType::kFloat32,
@@ -146,4 +146,4 @@ absl::StatusOr<Tensor> ConvertMatrixToTensorOnCpu(
   return output_tensor;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

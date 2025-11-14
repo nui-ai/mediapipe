@@ -17,7 +17,7 @@
 #include "mediapipe/framework/port/canonical_errors.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // Attach the header from a stream or side input to another stream.
@@ -81,4 +81,4 @@ class AddHeaderCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(AddHeaderCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

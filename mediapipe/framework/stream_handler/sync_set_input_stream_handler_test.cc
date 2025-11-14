@@ -32,7 +32,7 @@
 
 using RandomEngine = std::mt19937_64;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -325,4 +325,4 @@ TEST(SyncSetInputStreamHandlerTest, OrdinaryOperation) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

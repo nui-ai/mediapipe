@@ -8,7 +8,7 @@
 #endif  // MEDIAPIPE_USE_WEBGPU
 #endif  // __EMSCRIPTEN__
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 bool IsWebGpuAvailable() {
 #ifdef __EMSCRIPTEN__
@@ -25,4 +25,4 @@ bool IsWebGpuAvailable() {
 #endif  // __EMSCRIPTEN__
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/canonical_errors.h"
 #include "mediapipe/framework/profiler/profiler_resource_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 StatusOr<std::string> GetDefaultTraceLogDirectory() {
   // Get the Documents directory. iOS apps can write files to this directory.
@@ -44,4 +44,4 @@ StatusOr<std::string> GetDefaultTraceLogDirectory() {
   return trace_log_directory;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -26,7 +26,7 @@ constexpr int kSecondsToMicroseconds = 1000000;
 
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 // A MediaPipe calculator that computes the frequency (in Hertz) of incoming
 // packet streams. The frequency of packets is computed over a time window
 // that is configured in options. There must be one output stream corresponding
@@ -214,4 +214,4 @@ absl::Status PacketFrequencyCalculator::OutputPacketFrequency(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

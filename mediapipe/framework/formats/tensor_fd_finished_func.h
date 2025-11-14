@@ -6,7 +6,7 @@
 
 #include "mediapipe/framework/formats/shared_fd.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 // Funcs below to be used by Tensor::SetWritingFinishedFD and
 // Tensor::SetReadingFinishedFunc.
 class FdFinishedFunc {
@@ -31,6 +31,6 @@ class MultipleFdsFinishedFunc {
   std::vector<SharedFd> fds_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_TENSOR_FD_FINISHED_FUNC_H_

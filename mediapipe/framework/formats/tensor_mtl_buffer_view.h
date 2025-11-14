@@ -31,7 +31,7 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/port.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 class MtlBufferView : public Tensor::View {
  public:
   // The command buffer status is checked for completeness if GPU-to-CPU
@@ -55,6 +55,6 @@ class MtlBufferView : public Tensor::View {
   id<MTLBuffer> buffer_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_TENSOR_MTL_BUFFER_VIEW_H_

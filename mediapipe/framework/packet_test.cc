@@ -34,7 +34,7 @@
 #include "mediapipe/framework/port/statusor.h"
 #include "mediapipe/framework/type_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 class MyClassBase {
@@ -151,8 +151,8 @@ struct UnregisteredPairStruct {
   std::string first;
   bool second;
 };
-MEDIAPIPE_REGISTER_TYPE(mediapipe_v01013_based::RegisteredPairStruct,
-                        "::mediapipe_v01013_based::RegisteredPairStruct", nullptr, nullptr);
+MEDIAPIPE_REGISTER_TYPE(hand_tracking_mp_lean::RegisteredPairStruct,
+                        "::hand_tracking_mp_lean::RegisteredPairStruct", nullptr, nullptr);
 MEDIAPIPE_REGISTER_TYPE(int, "int", nullptr, nullptr);
 MEDIAPIPE_REGISTER_TYPE(float, "float", nullptr, nullptr);
 constexpr bool kHaveUnregisteredTypeNames = MEDIAPIPE_HAS_RTTI;
@@ -162,46 +162,46 @@ TEST(PacketTest, TypeRegistrationDebugString) {
   RegisteredPairStruct s{1, 3.5};
   Packet packet = MakePacket<RegisteredPairStruct>(s);
   EXPECT_EQ(packet.DebugString(),
-            "mediapipe_v01013_based::Packet with timestamp: Timestamp::Unset() and type: "
-            "::mediapipe_v01013_based::RegisteredPairStruct");
+            "hand_tracking_mp_lean::Packet with timestamp: Timestamp::Unset() and type: "
+            "::hand_tracking_mp_lean::RegisteredPairStruct");
 
   // Unregistered type.
   UnregisteredPairStruct u{"s", true};
   Packet packet2 = MakePacket<UnregisteredPairStruct>(u);
   std::string expected_type_name =
       (kHaveUnregisteredTypeNames)
-          ? "mediapipe_v01013_based::(anonymous namespace)::UnregisteredPairStruct"
+          ? "hand_tracking_mp_lean::(anonymous namespace)::UnregisteredPairStruct"
           : "<unknown>";
   EXPECT_EQ(packet2.DebugString(),
-            "mediapipe_v01013_based::Packet with timestamp: Timestamp::Unset() and type: " +
+            "hand_tracking_mp_lean::Packet with timestamp: Timestamp::Unset() and type: " +
                 expected_type_name);
 }
 
 TEST(PacketTest, ReturnGenericProtobufMessage) {
-  std::unique_ptr<::mediapipe_v01013_based::PacketTestProto> proto_ptr(
-      new ::mediapipe_v01013_based::PacketTestProto);
+  std::unique_ptr<::hand_tracking_mp_lean::PacketTestProto> proto_ptr(
+      new ::hand_tracking_mp_lean::PacketTestProto);
   proto_ptr->add_x(123);
   Packet packet = Adopt(static_cast<proto_ns::Message*>(proto_ptr.release()));
-  EXPECT_EQ(123, dynamic_cast<const ::mediapipe_v01013_based::PacketTestProto&>(
+  EXPECT_EQ(123, dynamic_cast<const ::hand_tracking_mp_lean::PacketTestProto&>(
                      packet.Get<proto_ns::Message>())
                      .x(0));
 }
 
 TEST(PacketTest, TryWrongProtobufMessageSubType) {
-  std::unique_ptr<::mediapipe_v01013_based::PacketTestProto> proto_ptr(
-      new ::mediapipe_v01013_based::PacketTestProto);
+  std::unique_ptr<::hand_tracking_mp_lean::PacketTestProto> proto_ptr(
+      new ::hand_tracking_mp_lean::PacketTestProto);
   proto_ptr->add_x(123);
   Packet packet = Adopt(proto_ptr.release());
-  EXPECT_FALSE(packet.ValidateAsType<::mediapipe_v01013_based::SimpleProto>().ok());
-  EXPECT_TRUE(packet.ValidateAsType<::mediapipe_v01013_based::PacketTestProto>().ok());
+  EXPECT_FALSE(packet.ValidateAsType<::hand_tracking_mp_lean::SimpleProto>().ok());
+  EXPECT_TRUE(packet.ValidateAsType<::hand_tracking_mp_lean::PacketTestProto>().ok());
 }
 
 TEST(PacketTest, GetProtoBase) {
-  std::unique_ptr<::mediapipe_v01013_based::PacketTestProto> proto_ptr(
-      new ::mediapipe_v01013_based::PacketTestProto);
+  std::unique_ptr<::hand_tracking_mp_lean::PacketTestProto> proto_ptr(
+      new ::hand_tracking_mp_lean::PacketTestProto);
   proto_ptr->add_x(123);
   Packet packet = Adopt(proto_ptr.release());
-  ::mediapipe_v01013_based::PacketTestProto proto_copy;
+  ::hand_tracking_mp_lean::PacketTestProto proto_copy;
   proto_copy.CheckTypeAndMergeFrom(packet.GetProtoMessageLite());
   EXPECT_EQ(123, proto_copy.x(0));
   // If not a protocol buffer type, crashes.
@@ -211,7 +211,7 @@ TEST(PacketTest, GetProtoBase) {
 }
 
 TEST(PacketTest, ValidateAsProtoMessageLite) {
-  auto proto_ptr = absl::make_unique<::mediapipe_v01013_based::PacketTestProto>();
+  auto proto_ptr = absl::make_unique<::hand_tracking_mp_lean::PacketTestProto>();
   proto_ptr->add_x(123);
   Packet packet = Adopt(proto_ptr.release());
   MP_EXPECT_OK(packet.ValidateAsProtoMessageLite());
@@ -221,12 +221,12 @@ TEST(PacketTest, ValidateAsProtoMessageLite) {
 }
 
 TEST(PacketTest, GetVectorOfProtos) {
-  std::vector<mediapipe_v01013_based::PacketTestProto> protos(2);
+  std::vector<hand_tracking_mp_lean::PacketTestProto> protos(2);
   protos[0].add_x(123);
   protos[1].add_x(456);
   // Normally we'd move here, but we copy to use the protos for comparison.
   const Packet packet =
-      MakePacket<std::vector<mediapipe_v01013_based::PacketTestProto>>(protos);
+      MakePacket<std::vector<hand_tracking_mp_lean::PacketTestProto>>(protos);
   auto maybe_proto_ptrs = packet.GetVectorOfProtoMessageLitePtrs();
   EXPECT_THAT(maybe_proto_ptrs,
               IsOkAndHolds(testing::Pointwise(EqualsProto(), protos)));
@@ -509,14 +509,14 @@ TEST(PacketTest, TestConsumeOrCopyBoundedArray) {
 
 TEST(PacketTest, MessageHolderRegistration) {
   using testing::Contains;
-  Packet packet = MakePacket<mediapipe_v01013_based::SimpleProto>();
-  ASSERT_EQ(mediapipe_v01013_based::SimpleProto{}.GetTypeName(), "mediapipe.SimpleProto");
+  Packet packet = MakePacket<hand_tracking_mp_lean::SimpleProto>();
+  ASSERT_EQ(hand_tracking_mp_lean::SimpleProto{}.GetTypeName(), "mediapipe.SimpleProto");
   EXPECT_THAT(packet_internal::MessageHolderRegistry::GetRegisteredNames(),
               Contains("mediapipe.SimpleProto"));
 }
 
 TEST(PacketTest, PacketFromSerializedProto) {
-  mediapipe_v01013_based::SimpleProto original;
+  hand_tracking_mp_lean::SimpleProto original;
   original.add_value("foo");
   std::string serialized = original.SerializeAsString();
 
@@ -524,8 +524,8 @@ TEST(PacketTest, PacketFromSerializedProto) {
       "mediapipe.SimpleProto", serialized);
   MP_ASSERT_OK(maybe_packet);
   Packet packet = maybe_packet.value();
-  MP_EXPECT_OK(packet.ValidateAsType<::mediapipe_v01013_based::SimpleProto>());
-  EXPECT_FALSE(packet.ValidateAsType<::mediapipe_v01013_based::PacketTestProto>().ok());
+  MP_EXPECT_OK(packet.ValidateAsType<::hand_tracking_mp_lean::SimpleProto>());
+  EXPECT_FALSE(packet.ValidateAsType<::hand_tracking_mp_lean::PacketTestProto>().ok());
 }
 
 TEST(PacketTest, Share) {
@@ -560,4 +560,4 @@ TEST(PacketTest, SharedPtrWithPacketOwnership) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

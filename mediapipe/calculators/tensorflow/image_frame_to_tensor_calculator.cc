@@ -25,7 +25,7 @@
 #include "tensorflow/core/framework/tensor_shape.h"
 #include "tensorflow/core/framework/types.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tf = tensorflow;
 
@@ -35,8 +35,8 @@ namespace {
 std::unique_ptr<tf::Tensor> ImageFrameToNormalizedTensor(
     // const ImageFrame& image_frame, float mean, float stddev) {
     const ImageFrame& image_frame,
-    const mediapipe_v01013_based::proto_ns::RepeatedField<float>& mean,
-    const mediapipe_v01013_based::proto_ns::RepeatedField<float>& stddev) {
+    const hand_tracking_mp_lean::proto_ns::RepeatedField<float>& mean,
+    const hand_tracking_mp_lean::proto_ns::RepeatedField<float>& stddev) {
   const int cols = image_frame.Width();
   const int rows = image_frame.Height();
   const int channels = image_frame.NumberOfChannels();
@@ -203,4 +203,4 @@ absl::Status ImageFrameToTensorCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

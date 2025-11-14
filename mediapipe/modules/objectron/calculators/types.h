@@ -19,7 +19,7 @@
 
 #include "Eigen/Geometry"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using Eigen::Map;
 using Eigen::Vector2f;
@@ -51,6 +51,6 @@ struct SuperPoint {
   bool rendered;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_MODULES_OBJECTRON_CALCULATORS_TYPES_H_

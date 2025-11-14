@@ -20,7 +20,7 @@
 #include "HalideBuffer.h"
 #include "HalideRuntime.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace frame_buffer {
 class RgbBuffer;
 
@@ -155,6 +155,6 @@ class YuvBuffer {
 };
 
 }  // namespace frame_buffer
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_FRAME_BUFFER_YUV_BUFFER_H_

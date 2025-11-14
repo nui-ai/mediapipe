@@ -28,8 +28,8 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-using mediapipe_v01013_based::ImageFrame;
-using mediapipe_v01013_based::PacketTypeSet;
+using hand_tracking_mp_lean::ImageFrame;
+using hand_tracking_mp_lean::PacketTypeSet;
 
 constexpr char kDetectedBorders[] = "DETECTED_BORDERS";
 constexpr int kMinBorderDistance = 5;
@@ -37,7 +37,7 @@ constexpr int kKMeansClusterCount = 4;
 constexpr int kMaxPixelsToProcess = 300000;
 constexpr char kVideoInputTag[] = "VIDEO";
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 
 namespace {
@@ -65,9 +65,9 @@ class BorderDetectionCalculator : public CalculatorBase {
   BorderDetectionCalculator& operator=(const BorderDetectionCalculator&) =
       delete;
 
-  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc);
-  absl::Status Open(mediapipe_v01013_based::CalculatorContext* cc) override;
-  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override;
+  static absl::Status GetContract(hand_tracking_mp_lean::CalculatorContract* cc);
+  absl::Status Open(hand_tracking_mp_lean::CalculatorContext* cc) override;
+  absl::Status Process(hand_tracking_mp_lean::CalculatorContext* cc) override;
 
  private:
   // Given a color and image direction, check to see if a border of that color
@@ -94,7 +94,7 @@ class BorderDetectionCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(BorderDetectionCalculator);
 
-absl::Status BorderDetectionCalculator::Open(mediapipe_v01013_based::CalculatorContext* cc) {
+absl::Status BorderDetectionCalculator::Open(hand_tracking_mp_lean::CalculatorContext* cc) {
   options_ = cc->Options<BorderDetectionCalculatorOptions>();
   RET_CHECK_LT(options_.vertical_search_distance(), 0.5)
       << "Search distance must be less than half the full image.";
@@ -118,14 +118,14 @@ absl::Status BorderDetectionCalculator::SetAndCheckInputs(
 }
 
 absl::Status BorderDetectionCalculator::Process(
-    mediapipe_v01013_based::CalculatorContext* cc) {
+    hand_tracking_mp_lean::CalculatorContext* cc) {
   if (!cc->Inputs().HasTag(kVideoInputTag) ||
       cc->Inputs().Tag(kVideoInputTag).Value().IsEmpty()) {
-    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "Input tag VIDEO not set or empty at timestamp: "
            << cc->InputTimestamp().Value();
   }
-  cv::Mat frame = mediapipe_v01013_based::formats::MatView(
+  cv::Mat frame = hand_tracking_mp_lean::formats::MatView(
       &cc->Inputs().Tag(kVideoInputTag).Get<ImageFrame>());
   MP_RETURN_IF_ERROR(SetAndCheckInputs(frame));
 
@@ -288,11 +288,11 @@ void BorderDetectionCalculator::DetectBorder(
 }
 
 absl::Status BorderDetectionCalculator::GetContract(
-    mediapipe_v01013_based::CalculatorContract* cc) {
+    hand_tracking_mp_lean::CalculatorContract* cc) {
   cc->Inputs().Tag(kVideoInputTag).Set<ImageFrame>();
   cc->Outputs().Tag(kDetectedBorders).Set<StaticFeatures>();
   return absl::OkStatus();
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

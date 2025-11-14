@@ -1,5 +1,5 @@
 // This file defines a typed Packet type. It fully interoperates with the older
-// mediapipe_v01013_based::Packet; creating an api::Packet<T> that refers to an existing
+// hand_tracking_mp_lean::Packet; creating an api::Packet<T> that refers to an existing
 // Packet (or vice versa) is cheap, just like copying a Packet. Ownership of
 // the payload is shared. Consider this as a typed view into the same data.
 //
@@ -30,11 +30,11 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
-using Timestamp = mediapipe_v01013_based::Timestamp;
-using HolderBase = mediapipe_v01013_based::packet_internal::HolderBase;
+using Timestamp = hand_tracking_mp_lean::Timestamp;
+using HolderBase = hand_tracking_mp_lean::packet_internal::HolderBase;
 
 template <typename T>
 class Packet;
@@ -90,8 +90,8 @@ class PacketBase {
   absl::StatusOr<std::shared_ptr<const T>> Share() const;
 
   // Conversion to old Packet type.
-  operator mediapipe_v01013_based::Packet() const& { return ToOldPacket(*this); }
-  operator mediapipe_v01013_based::Packet() && { return ToOldPacket(std::move(*this)); }
+  operator hand_tracking_mp_lean::Packet() const& { return ToOldPacket(*this); }
+  operator hand_tracking_mp_lean::Packet() && { return ToOldPacket(std::move(*this)); }
 
   // DEPRECATED
   //
@@ -106,7 +106,7 @@ class PacketBase {
       "SharedPtrWithPacket instead to get a shared_ptr<T> if applicable.")
   absl::StatusOr<std::unique_ptr<T>> Consume() {
     // Using the implementation in the old Packet for now.
-    mediapipe_v01013_based::Packet old =
+    hand_tracking_mp_lean::Packet old =
         packet_internal::Create(std::move(payload_), timestamp_);
     auto result = old.Consume<T>();
     if (!result.ok())
@@ -123,16 +123,16 @@ class PacketBase {
 
   template <typename T>
   friend PacketBase PacketBaseAdopting(const T* ptr);
-  friend PacketBase FromOldPacket(const mediapipe_v01013_based::Packet& op);
-  friend PacketBase FromOldPacket(mediapipe_v01013_based::Packet&& op);
-  friend mediapipe_v01013_based::Packet ToOldPacket(const PacketBase& p);
-  friend mediapipe_v01013_based::Packet ToOldPacket(PacketBase&& p);
+  friend PacketBase FromOldPacket(const hand_tracking_mp_lean::Packet& op);
+  friend PacketBase FromOldPacket(hand_tracking_mp_lean::Packet&& op);
+  friend hand_tracking_mp_lean::Packet ToOldPacket(const PacketBase& p);
+  friend hand_tracking_mp_lean::Packet ToOldPacket(PacketBase&& p);
 };
 
-PacketBase FromOldPacket(const mediapipe_v01013_based::Packet& op);
-PacketBase FromOldPacket(mediapipe_v01013_based::Packet&& op);
-mediapipe_v01013_based::Packet ToOldPacket(const PacketBase& p);
-mediapipe_v01013_based::Packet ToOldPacket(PacketBase&& p);
+PacketBase FromOldPacket(const hand_tracking_mp_lean::Packet& op);
+PacketBase FromOldPacket(hand_tracking_mp_lean::Packet&& op);
+hand_tracking_mp_lean::Packet ToOldPacket(const PacketBase& p);
+hand_tracking_mp_lean::Packet ToOldPacket(PacketBase&& p);
 
 template <typename T>
 inline const T& PacketBase::Get() const {
@@ -209,7 +209,7 @@ inline void CheckCompatibleType(const HolderBase& holder,
 }
 
 // TODO: remove usage of internal::Generic and simply use AnyType.
-using Generic = ::mediapipe_v01013_based::api2::AnyType;
+using Generic = ::hand_tracking_mp_lean::api2::AnyType;
 
 template <class V, class U>
 struct IsCompatibleType : std::false_type {};
@@ -563,6 +563,6 @@ Packet<T> PacketAdopting(std::unique_ptr<T> ptr) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_PACKET_H_

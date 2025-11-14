@@ -10,7 +10,7 @@
 #include "absl/status/statusor.h"
 #include "absl/time/time.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 template <typename T>
 class WebGpuAsyncFuture {
@@ -71,6 +71,6 @@ absl::Status GetTexture2dData(const wgpu::Device& device,
                               uint8_t* dst);
 #endif  // __EMSCRIPTEN__
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_WEBGPU_WEBGPU_UTILS_H_

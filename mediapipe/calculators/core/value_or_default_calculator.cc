@@ -1,7 +1,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr char kInputValueTag[] = "IN";
@@ -29,14 +29,14 @@ constexpr char kIndicationTag[] = "FLAG";
 // instead of a side-packet, so it will enable using standard calculators
 // instead of creating a new packet-generators. It will also allow a dynamic
 // default value.
-class ValueOrDefaultCalculator : public mediapipe_v01013_based::CalculatorBase {
+class ValueOrDefaultCalculator : public hand_tracking_mp_lean::CalculatorBase {
  public:
   ValueOrDefaultCalculator() {}
 
   ValueOrDefaultCalculator(const ValueOrDefaultCalculator&) = delete;
   ValueOrDefaultCalculator& operator=(const ValueOrDefaultCalculator&) = delete;
 
-  static mediapipe_v01013_based::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc) {
+  static hand_tracking_mp_lean::Status GetContract(hand_tracking_mp_lean::CalculatorContract* cc) {
     cc->Inputs().Tag(kInputValueTag).SetAny();
     cc->Inputs().Tag(kTickerTag).SetAny();
     cc->Outputs().Tag(kOutputTag).SetSameAs(&cc->Inputs().Tag(kInputValueTag));
@@ -44,24 +44,24 @@ class ValueOrDefaultCalculator : public mediapipe_v01013_based::CalculatorBase {
     cc->InputSidePackets().Index(0).SetSameAs(
         &cc->Inputs().Tag(kInputValueTag));
 
-    return mediapipe_v01013_based::OkStatus();
+    return hand_tracking_mp_lean::OkStatus();
   }
 
-  mediapipe_v01013_based::Status Open(mediapipe_v01013_based::CalculatorContext* cc) override {
+  hand_tracking_mp_lean::Status Open(hand_tracking_mp_lean::CalculatorContext* cc) override {
     if (!cc->Inputs().Tag(kInputValueTag).Header().IsEmpty()) {
       cc->Outputs()
           .Tag(kOutputTag)
           .SetHeader(cc->Inputs().Tag(kInputValueTag).Header());
     }
     default_ = cc->InputSidePackets().Index(0);
-    cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
-    return mediapipe_v01013_based::OkStatus();
+    cc->SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
+    return hand_tracking_mp_lean::OkStatus();
   }
 
-  mediapipe_v01013_based::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override {
+  hand_tracking_mp_lean::Status Process(hand_tracking_mp_lean::CalculatorContext* cc) override {
     // Output according to the TICK signal.
     if (cc->Inputs().Tag(kTickerTag).IsEmpty()) {
-      return mediapipe_v01013_based::OkStatus();
+      return hand_tracking_mp_lean::OkStatus();
     }
     if (!cc->Inputs().Tag(kInputValueTag).IsEmpty()) {
       // Output the input as is:
@@ -77,14 +77,14 @@ class ValueOrDefaultCalculator : public mediapipe_v01013_based::CalculatorBase {
           .Tag(kIndicationTag)
           .Add(new bool(true), cc->InputTimestamp());
     }
-    return mediapipe_v01013_based::OkStatus();
+    return hand_tracking_mp_lean::OkStatus();
   }
 
  private:
   // The default value to replicate every time there is no new value.
-  mediapipe_v01013_based::Packet default_;
+  hand_tracking_mp_lean::Packet default_;
 };
 
 REGISTER_CALCULATOR(ValueOrDefaultCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

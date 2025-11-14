@@ -42,7 +42,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/utils/image_utils.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
@@ -50,15 +50,15 @@ namespace {
 
 using ::file::Defaults;
 using ::file::GetTextProto;
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::file::JoinPath;
-using ::mediapipe_v01013_based::tasks::core::TaskRunner;
-using ::mediapipe_v01013_based::tasks::vision::DecodeImageFromFile;
-using ::mediapipe_v01013_based::tasks::vision::hand_landmarker::proto::
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::file::JoinPath;
+using ::hand_tracking_mp_lean::tasks::core::TaskRunner;
+using ::hand_tracking_mp_lean::tasks::vision::DecodeImageFromFile;
+using ::hand_tracking_mp_lean::tasks::vision::hand_landmarker::proto::
     HandLandmarksDetectorGraphOptions;
 using ::testing::ElementsAreArray;
 using ::testing::EqualsProto;
@@ -469,4 +469,4 @@ INSTANTIATE_TEST_SUITE_P(
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

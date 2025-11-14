@@ -37,12 +37,12 @@
 #include "mediapipe/framework/tool/subgraph_expansion.h"
 #include "mediapipe/framework/tool/test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace {
 
-using mediapipe_v01013_based::Detection;
-using mediapipe_v01013_based::InferenceCalculatorOptions_Delegate;
+using hand_tracking_mp_lean::Detection;
+using hand_tracking_mp_lean::InferenceCalculatorOptions_Delegate;
 using testing::ElementsAre;
 using testing::EqualsProto;
 using testing::proto::Approximately;
@@ -92,9 +92,9 @@ const std::vector<Param>& GetParams() {
 
 class InferenceCalculatorTest : public testing::TestWithParam<Param> {
  protected:
-  void SetDelegateForParam(mediapipe_v01013_based::CalculatorGraphConfig_Node* node) {
+  void SetDelegateForParam(hand_tracking_mp_lean::CalculatorGraphConfig_Node* node) {
     auto options_map = tool::MutableOptionsMap().Initialize(*node);
-    auto options = options_map.Get<mediapipe_v01013_based::InferenceCalculatorOptions>();
+    auto options = options_map.Get<hand_tracking_mp_lean::InferenceCalculatorOptions>();
     *options.mutable_delegate() = GetParam().delegate;
     options_map.Set(options);
   }
@@ -132,9 +132,9 @@ TEST_P(InferenceCalculatorTest, TestFaceDetection) {
   }
   ASSERT_EQ(found, 1);
 
-  std::vector<mediapipe_v01013_based::Packet> detection_packets;
+  std::vector<hand_tracking_mp_lean::Packet> detection_packets;
   tool::AddVectorSink("detections", &config, &detection_packets);
-  std::vector<mediapipe_v01013_based::Packet> rendering_packets;
+  std::vector<hand_tracking_mp_lean::Packet> rendering_packets;
   tool::AddVectorSink("rendering", &config, &rendering_packets);
 
   // Load test image.
@@ -188,4 +188,4 @@ INSTANTIATE_TEST_SUITE_P(Implementation, InferenceCalculatorTest,
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

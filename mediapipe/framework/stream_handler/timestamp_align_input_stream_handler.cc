@@ -33,18 +33,18 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/validate_name.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 REGISTER_INPUT_STREAM_HANDLER(TimestampAlignInputStreamHandler);
 
 TimestampAlignInputStreamHandler::TimestampAlignInputStreamHandler(
     std::shared_ptr<tool::TagMap> tag_map, CalculatorContextManager* cc_manager,
-    const mediapipe_v01013_based::MediaPipeOptions& options, bool calculator_run_in_parallel)
+    const hand_tracking_mp_lean::MediaPipeOptions& options, bool calculator_run_in_parallel)
     : InputStreamHandler(std::move(tag_map), cc_manager, options,
                          calculator_run_in_parallel),
       timestamp_offsets_(input_stream_managers_.NumEntries()) {
   const auto& handler_options = options.GetExtension(
-      mediapipe_v01013_based::TimestampAlignInputStreamHandlerOptions::ext);
+      hand_tracking_mp_lean::TimestampAlignInputStreamHandlerOptions::ext);
   std::string tag;
   int index;
   MEDIAPIPE_CHECK_OK(tool::ParseTagIndex(
@@ -183,4 +183,4 @@ void TimestampAlignInputStreamHandler::FillInputSet(
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

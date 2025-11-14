@@ -35,7 +35,7 @@
 #include "mediapipe/framework/thread_pool_executor.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -126,7 +126,7 @@ class GeneratorScheduler {
   // PacketGenerators (those not run at initialize time due to missing
   // dependencies).
   GeneratorScheduler(const ValidatedGraphConfig* validated_graph,
-                     mediapipe_v01013_based::Executor* executor,
+                     hand_tracking_mp_lean::Executor* executor,
                      const std::vector<int>& non_base_generators, bool initial);
 
   // Run a PacketGenerator on a given executor on the provided input
@@ -161,7 +161,7 @@ class GeneratorScheduler {
   void RunApplicationThreadTasks() ABSL_LOCKS_EXCLUDED(app_thread_mutex_);
 
   const ValidatedGraphConfig* const validated_graph_;
-  mediapipe_v01013_based::Executor* executor_;
+  hand_tracking_mp_lean::Executor* executor_;
 
   mutable absl::Mutex mutex_;
   // The number of pending tasks.
@@ -182,7 +182,7 @@ class GeneratorScheduler {
 };
 
 GeneratorScheduler::GeneratorScheduler(
-    const ValidatedGraphConfig* validated_graph, mediapipe_v01013_based::Executor* executor,
+    const ValidatedGraphConfig* validated_graph, hand_tracking_mp_lean::Executor* executor,
     const std::vector<int>& non_base_generators, bool initial)
     : validated_graph_(validated_graph),
       executor_(executor),
@@ -357,7 +357,7 @@ void GeneratorScheduler::RunApplicationThreadTasks() {
 PacketGeneratorGraph::~PacketGeneratorGraph() {}
 
 absl::Status PacketGeneratorGraph::Initialize(
-    const ValidatedGraphConfig* validated_graph, mediapipe_v01013_based::Executor* executor,
+    const ValidatedGraphConfig* validated_graph, hand_tracking_mp_lean::Executor* executor,
     const std::map<std::string, Packet>& input_side_packets) {
   validated_graph_ = validated_graph;
   executor_ = executor;
@@ -418,4 +418,4 @@ absl::Status PacketGeneratorGraph::ExecuteGenerators(
   return scheduler.GetNonScheduledGenerators(non_scheduled_generators);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

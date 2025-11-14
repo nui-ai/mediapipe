@@ -29,7 +29,7 @@ node {
   input_stream: "DETECTIONS:output_detections"
   output_stream: "RENDER_DATA:render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.DetectionsToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.DetectionsToRenderDataCalculatorOptions] {
       thickness: 4.0
       color { r: 0 g: 255 b: 0 }
     }
@@ -53,7 +53,7 @@ node {
   input_stream: "VIDEO_PRESTREAM:input_video_header"
   input_side_packet: "OUTPUT_FILE_PATH:output_video_path"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.OpenCvVideoEncoderCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.OpenCvVideoEncoderCalculatorOptions]: {
       codec: "avc1"
       video_format: "mp4"
     }

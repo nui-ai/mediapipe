@@ -34,7 +34,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 namespace {
 
@@ -259,11 +259,11 @@ void AddDetectionFrameSize(const cv::Rect_<float>& position, const int64_t time,
                            const int width, const int height,
                            CalculatorRunner* runner,
                            const AddDetectionFlags& flags = {}) {
-  auto detections = std::make_unique<std::vector<mediapipe_v01013_based::Detection>>();
+  auto detections = std::make_unique<std::vector<hand_tracking_mp_lean::Detection>>();
   if (position.width > 0 && position.height > 0) {
-    mediapipe_v01013_based::Detection detection;
+    hand_tracking_mp_lean::Detection detection;
     detection.mutable_location_data()->set_format(
-        mediapipe_v01013_based::LocationData::RELATIVE_BOUNDING_BOX);
+        hand_tracking_mp_lean::LocationData::RELATIVE_BOUNDING_BOX);
     detection.mutable_location_data()
         ->mutable_relative_bounding_box()
         ->set_height(position.height);
@@ -291,7 +291,7 @@ void AddDetectionFrameSize(const cv::Rect_<float>& position, const int64_t time,
     runner->MutableInputs()
         ->Tag(kAnimateZoomTag)
         .packets.push_back(
-            mediapipe_v01013_based::MakePacket<bool>(flags.animated_zoom.value())
+            hand_tracking_mp_lean::MakePacket<bool>(flags.animated_zoom.value())
                 .At(Timestamp(time)));
   }
 
@@ -299,7 +299,7 @@ void AddDetectionFrameSize(const cv::Rect_<float>& position, const int64_t time,
     runner->MutableInputs()
         ->Tag(kMaxZoomFactorPctTag)
         .packets.push_back(
-            mediapipe_v01013_based::MakePacket<int>(flags.max_zoom_factor_percent.value())
+            hand_tracking_mp_lean::MakePacket<int>(flags.max_zoom_factor_percent.value())
                 .At(Timestamp(time)));
   }
 
@@ -307,7 +307,7 @@ void AddDetectionFrameSize(const cv::Rect_<float>& position, const int64_t time,
     runner->MutableInputs()
         ->Tag(kScaleFactorPctTag)
         .packets.push_back(
-            mediapipe_v01013_based::MakePacket<int>(flags.scale_factor_percent.value())
+            hand_tracking_mp_lean::MakePacket<int>(flags.scale_factor_percent.value())
                 .At(Timestamp(time)));
   }
 }
@@ -324,7 +324,7 @@ void CheckCropRectFloats(const float x_center, const float y_center,
   ASSERT_GT(output.Tag("NORMALIZED_CROP_RECT").packets.size(), frame_number);
   auto float_rect = output.Tag("NORMALIZED_CROP_RECT")
                         .packets[frame_number]
-                        .Get<mediapipe_v01013_based::NormalizedRect>();
+                        .Get<hand_tracking_mp_lean::NormalizedRect>();
 
   EXPECT_FLOAT_EQ(float_rect.x_center(), x_center);
   EXPECT_FLOAT_EQ(float_rect.y_center(), y_center);
@@ -336,7 +336,7 @@ void CheckCropRect(const int x_center, const int y_center, const int width,
                    const int height, const int frame_number,
                    const std::vector<Packet>& output_packets) {
   ASSERT_GT(output_packets.size(), frame_number);
-  const auto& rect = output_packets[frame_number].Get<mediapipe_v01013_based::Rect>();
+  const auto& rect = output_packets[frame_number].Get<hand_tracking_mp_lean::Rect>();
   EXPECT_EQ(rect.x_center(), x_center);
   EXPECT_EQ(rect.y_center(), y_center);
   EXPECT_EQ(rect.width(), width);
@@ -401,7 +401,7 @@ TEST(ContentZoomingCalculatorTest, PanConfig) {
 }
 
 TEST(ContentZoomingCalculatorTest, PanConfigWithCache) {
-  mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType cache;
+  hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType cache;
   auto config = ParseTextProtoOrDie<CalculatorGraphConfig::Node>(kConfigD);
   config.add_input_side_packet("STATE_CACHE:state_cache");
   auto* options = config.mutable_options()->MutableExtension(
@@ -413,7 +413,7 @@ TEST(ContentZoomingCalculatorTest, PanConfigWithCache) {
   {
     auto runner = ::absl::make_unique<CalculatorRunner>(config);
     runner->MutableSidePackets()->Tag(kStateCacheTag) = MakePacket<
-        mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
+        hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
     AddDetection(cv::Rect_<float>(.4, .5, .1, .1), 0, runner.get());
     MP_ASSERT_OK(runner->Run());
     CheckCropRect(450, 550, 111, 111, 0,
@@ -422,7 +422,7 @@ TEST(ContentZoomingCalculatorTest, PanConfigWithCache) {
   {
     auto runner = ::absl::make_unique<CalculatorRunner>(config);
     runner->MutableSidePackets()->Tag(kStateCacheTag) = MakePacket<
-        mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
+        hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
     AddDetection(cv::Rect_<float>(.45, .55, .15, .15), 1000000, runner.get());
     MP_ASSERT_OK(runner->Run());
     CheckCropRect(483, 550, 111, 111, 0,
@@ -432,7 +432,7 @@ TEST(ContentZoomingCalculatorTest, PanConfigWithCache) {
   {
     auto runner = ::absl::make_unique<CalculatorRunner>(config);
     runner->MutableSidePackets()->Tag(kStateCacheTag) = MakePacket<
-        mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType*>(nullptr);
+        hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType*>(nullptr);
     AddDetection(cv::Rect_<float>(.45, .55, .15, .15), 2000000, runner.get());
     MP_ASSERT_OK(runner->Run());
     CheckCropRect(525, 625, 166, 166, 0,  // Without a cache, state was lost.
@@ -477,7 +477,7 @@ TEST(ContentZoomingCalculatorTest, ZoomConfig) {
 }
 
 TEST(ContentZoomingCalculatorTest, ZoomConfigWithCache) {
-  mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType cache;
+  hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType cache;
   auto config = ParseTextProtoOrDie<CalculatorGraphConfig::Node>(kConfigD);
   config.add_input_side_packet("STATE_CACHE:state_cache");
   auto* options = config.mutable_options()->MutableExtension(
@@ -489,7 +489,7 @@ TEST(ContentZoomingCalculatorTest, ZoomConfigWithCache) {
   {
     auto runner = ::absl::make_unique<CalculatorRunner>(config);
     runner->MutableSidePackets()->Tag(kStateCacheTag) = MakePacket<
-        mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
+        hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
     AddDetection(cv::Rect_<float>(.4, .5, .1, .1), 0, runner.get());
     MP_ASSERT_OK(runner->Run());
     CheckCropRect(450, 550, 111, 111, 0,
@@ -498,7 +498,7 @@ TEST(ContentZoomingCalculatorTest, ZoomConfigWithCache) {
   {
     auto runner = ::absl::make_unique<CalculatorRunner>(config);
     runner->MutableSidePackets()->Tag(kStateCacheTag) = MakePacket<
-        mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
+        hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
     AddDetection(cv::Rect_<float>(.45, .55, .15, .15), 1000000, runner.get());
     MP_ASSERT_OK(runner->Run());
     CheckCropRect(450, 550, 138, 138, 0,
@@ -508,7 +508,7 @@ TEST(ContentZoomingCalculatorTest, ZoomConfigWithCache) {
   {
     auto runner = ::absl::make_unique<CalculatorRunner>(config);
     runner->MutableSidePackets()->Tag(kStateCacheTag) = MakePacket<
-        mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType*>(nullptr);
+        hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType*>(nullptr);
     AddDetection(cv::Rect_<float>(.45, .55, .15, .15), 2000000, runner.get());
     MP_ASSERT_OK(runner->Run());
     CheckCropRect(525, 625, 166, 166, 0,  // Without a cache, state was lost.
@@ -750,13 +750,13 @@ TEST(ContentZoomingCalculatorTest, ResolutionChangeStationary) {
 }
 
 TEST(ContentZoomingCalculatorTest, ResolutionChangeStationaryWithCache) {
-  mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType cache;
+  hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType cache;
   auto config = ParseTextProtoOrDie<CalculatorGraphConfig::Node>(kConfigD);
   config.add_input_side_packet("STATE_CACHE:state_cache");
   {
     auto runner = ::absl::make_unique<CalculatorRunner>(config);
     runner->MutableSidePackets()->Tag(kStateCacheTag) = MakePacket<
-        mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
+        hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
     AddDetectionFrameSize(cv::Rect_<float>(.4, .4, .2, .2), 0, 1000, 1000,
                           runner.get());
     MP_ASSERT_OK(runner->Run());
@@ -766,7 +766,7 @@ TEST(ContentZoomingCalculatorTest, ResolutionChangeStationaryWithCache) {
   {
     auto runner = ::absl::make_unique<CalculatorRunner>(config);
     runner->MutableSidePackets()->Tag(kStateCacheTag) = MakePacket<
-        mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
+        hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
     AddDetectionFrameSize(cv::Rect_<float>(.4, .4, .2, .2), 1, 500, 500,
                           runner.get());
     MP_ASSERT_OK(runner->Run());
@@ -794,13 +794,13 @@ TEST(ContentZoomingCalculatorTest, ResolutionChangeZooming) {
 }
 
 TEST(ContentZoomingCalculatorTest, ResolutionChangeZoomingWithCache) {
-  mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType cache;
+  hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType cache;
   auto config = ParseTextProtoOrDie<CalculatorGraphConfig::Node>(kConfigD);
   config.add_input_side_packet("STATE_CACHE:state_cache");
   {
     auto runner = ::absl::make_unique<CalculatorRunner>(config);
     runner->MutableSidePackets()->Tag(kStateCacheTag) = MakePacket<
-        mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
+        hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
     AddDetectionFrameSize(cv::Rect_<float>(.1, .1, .8, .8), 0, 1000, 1000,
                           runner.get());
     MP_ASSERT_OK(runner->Run());
@@ -811,7 +811,7 @@ TEST(ContentZoomingCalculatorTest, ResolutionChangeZoomingWithCache) {
   {
     auto runner = ::absl::make_unique<CalculatorRunner>(config);
     runner->MutableSidePackets()->Tag(kStateCacheTag) = MakePacket<
-        mediapipe_v01013_based::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
+        hand_tracking_mp_lean::autoflip::ContentZoomingCalculatorStateCacheType*>(&cache);
     AddDetectionFrameSize(cv::Rect_<float>(.4, .4, .2, .2), 1000000, 1000, 1000,
                           runner.get());
     AddDetectionFrameSize(cv::Rect_<float>(.4, .4, .2, .2), 2000000, 500, 500,
@@ -1049,7 +1049,7 @@ TEST(ContentZoomingCalculatorTest, ProvidesZeroSizeFirstRectWithoutDetections) {
   const std::vector<Packet>& output_packets =
       runner->Outputs().Tag(kFirstCropRectTag).packets;
   ASSERT_EQ(output_packets.size(), 1);
-  const auto& rect = output_packets[0].Get<mediapipe_v01013_based::NormalizedRect>();
+  const auto& rect = output_packets[0].Get<hand_tracking_mp_lean::NormalizedRect>();
   EXPECT_EQ(rect.x_center(), 0);
   EXPECT_EQ(rect.y_center(), 0);
   EXPECT_EQ(rect.width(), 0);
@@ -1074,13 +1074,13 @@ TEST(ContentZoomingCalculatorTest, ProvidesConstantFirstRect) {
   const std::vector<Packet>& output_packets =
       runner->Outputs().Tag(kFirstCropRectTag).packets;
   ASSERT_EQ(output_packets.size(), 4);
-  const auto& first_rect = output_packets[0].Get<mediapipe_v01013_based::NormalizedRect>();
+  const auto& first_rect = output_packets[0].Get<hand_tracking_mp_lean::NormalizedRect>();
   EXPECT_NEAR(first_rect.x_center(), 0.5, 0.05);
   EXPECT_NEAR(first_rect.y_center(), 0.5, 0.05);
   EXPECT_NEAR(first_rect.width(), 0.222, 0.05);
   EXPECT_NEAR(first_rect.height(), 0.222, 0.05);
   for (int i = 1; i < 4; ++i) {
-    const auto& rect = output_packets[i].Get<mediapipe_v01013_based::NormalizedRect>();
+    const auto& rect = output_packets[i].Get<hand_tracking_mp_lean::NormalizedRect>();
     EXPECT_EQ(first_rect.x_center(), rect.x_center());
     EXPECT_EQ(first_rect.y_center(), rect.y_center());
     EXPECT_EQ(first_rect.width(), rect.width());
@@ -1113,7 +1113,7 @@ TEST(ContentZoomingCalculatorTest, InitialEmptyDetectionDefaultsToNoCrop) {
   int width = 1000;
   int height = 1000;
 
-  auto empty_detections = std::make_unique<std::vector<mediapipe_v01013_based::Detection>>();
+  auto empty_detections = std::make_unique<std::vector<hand_tracking_mp_lean::Detection>>();
   runner->MutableInputs()
       ->Tag("DETECTIONS")
       .packets.push_back(Adopt(empty_detections.release()).At(Timestamp(time)));
@@ -1131,4 +1131,4 @@ TEST(ContentZoomingCalculatorTest, InitialEmptyDetectionDefaultsToNoCrop) {
 }  // namespace
 }  // namespace autoflip
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

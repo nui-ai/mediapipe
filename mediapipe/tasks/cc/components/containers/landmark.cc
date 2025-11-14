@@ -20,9 +20,9 @@ limitations under the License.
 
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe_v01013_based::tasks::components::containers {
+namespace hand_tracking_mp_lean::tasks::components::containers {
 
-Landmark ConvertToLandmark(const mediapipe_v01013_based::Landmark& proto) {
+Landmark ConvertToLandmark(const hand_tracking_mp_lean::Landmark& proto) {
   return {/*x=*/proto.x(), /*y=*/proto.y(), /*z=*/proto.z(),
           /*visibility=*/proto.has_visibility()
               ? std::optional<float>(proto.visibility())
@@ -33,7 +33,7 @@ Landmark ConvertToLandmark(const mediapipe_v01013_based::Landmark& proto) {
 }
 
 NormalizedLandmark ConvertToNormalizedLandmark(
-    const mediapipe_v01013_based::NormalizedLandmark& proto) {
+    const hand_tracking_mp_lean::NormalizedLandmark& proto) {
   return {/*x=*/proto.x(), /*y=*/proto.y(), /*z=*/proto.z(),
           /*visibility=*/proto.has_visibility()
               ? std::optional<float>(proto.visibility())
@@ -43,7 +43,7 @@ NormalizedLandmark ConvertToNormalizedLandmark(
               : std::nullopt};
 }
 
-Landmarks ConvertToLandmarks(const mediapipe_v01013_based::LandmarkList& proto) {
+Landmarks ConvertToLandmarks(const hand_tracking_mp_lean::LandmarkList& proto) {
   Landmarks landmarks;
   landmarks.landmarks.reserve(proto.landmark_size());
   for (const auto& landmark : proto.landmark()) {
@@ -53,7 +53,7 @@ Landmarks ConvertToLandmarks(const mediapipe_v01013_based::LandmarkList& proto) 
 }
 
 NormalizedLandmarks ConvertToNormalizedLandmarks(
-    const mediapipe_v01013_based::NormalizedLandmarkList& proto) {
+    const hand_tracking_mp_lean::NormalizedLandmarkList& proto) {
   NormalizedLandmarks landmarks;
   landmarks.landmarks.reserve(proto.landmark_size());
   for (const auto& landmark : proto.landmark()) {
@@ -62,4 +62,4 @@ NormalizedLandmarks ConvertToNormalizedLandmarks(
   return landmarks;
 }
 
-}  // namespace mediapipe_v01013_based::tasks::components::containers
+}  // namespace hand_tracking_mp_lean::tasks::components::containers

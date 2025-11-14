@@ -26,7 +26,7 @@
 #include "pybind11/gil.h"
 #include "pybind11/pybind11.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace python {
 
 namespace py = pybind11;
@@ -101,9 +101,9 @@ inline std::string TimestampValueString(const Timestamp& timestamp) {
 }
 
 // Reads a CalculatorGraphConfig from a file. If failed, raises a PyError.
-inline ::mediapipe_v01013_based::CalculatorGraphConfig ReadCalculatorGraphConfigFromFile(
+inline ::hand_tracking_mp_lean::CalculatorGraphConfig ReadCalculatorGraphConfigFromFile(
     const std::string& file_name) {
-  ::mediapipe_v01013_based::CalculatorGraphConfig graph_config_proto;
+  ::hand_tracking_mp_lean::CalculatorGraphConfig graph_config_proto;
   auto status = file::Exists(file_name);
   if (!status.ok()) {
     throw RaisePyError(PyExc_FileNotFoundError, status.message().data());
@@ -121,6 +121,6 @@ inline ::mediapipe_v01013_based::CalculatorGraphConfig ReadCalculatorGraphConfig
 }
 
 }  // namespace python
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_PYTHON_PYBIND_UTIL_H_

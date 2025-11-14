@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/tool/options_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class PacketReservoir {
  public:
@@ -143,7 +143,7 @@ class PacketResamplerCalculator : public CalculatorBase {
   //
   // Virtual to allow injection of testing strategies.
   virtual std::unique_ptr<class PacketResamplerStrategy> GetSamplingStrategy(
-      const mediapipe_v01013_based::PacketResamplerCalculatorOptions& options);
+      const hand_tracking_mp_lean::PacketResamplerCalculatorOptions& options);
 
  private:
   // Updates the frame rate of the calculator.
@@ -151,7 +151,7 @@ class PacketResamplerCalculator : public CalculatorBase {
   // This updates the metadata of the frame rate of the calculator moving
   // forward. All already processed packets will be ignored.
   absl::Status UpdateFrameRate(
-      const mediapipe_v01013_based::PacketResamplerCalculatorOptions& resampler_options,
+      const hand_tracking_mp_lean::PacketResamplerCalculatorOptions& resampler_options,
       double frame_rate);
 
   std::unique_ptr<class PacketResamplerStrategy> strategy_;
@@ -397,5 +397,5 @@ class NoJitterStrategy : public PacketResamplerStrategy {
   Timestamp base_timestamp_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 #endif  // MEDIAPIPE_CALCULATORS_CORE_PACKET_RESAMPLER_CALCULATOR_H_

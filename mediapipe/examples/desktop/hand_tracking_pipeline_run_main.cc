@@ -82,7 +82,7 @@ std::string GetProjectRootedPath(const std::string& filename) {
 }
 
 // helper function to read the output reference data from file
-bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013_based::PipelineOutputData>& out) {
+bool ReadReferenceData(const std::string& filename, std::vector<hand_tracking_mp_lean::PipelineOutputData>& out) {
     std::ifstream input(filename, std::ios::binary);
     if (!input.is_open()) {
         ABSL_LOG(ERROR) << "Failed to open reference file: " << filename;
@@ -92,7 +92,7 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013
     bool clean_eof = false;
     int msg_count = 0;
     while (true) {
-        mediapipe_v01013_based::PipelineOutputData msg;
+        hand_tracking_mp_lean::PipelineOutputData msg;
         std::streampos pos = input.tellg();
         if (!google::protobuf::util::ParseDelimitedFromZeroCopyStream(&msg, &zero_copy_input, &clean_eof)) {
             if (msg_count == 0) {
@@ -129,7 +129,7 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013
 absl::Status RunPipelineWithDiffing() {
   // Load reference data if a path to a reference data file has been provided as a program argument
   bool diffing = false;
-  std::vector<mediapipe_v01013_based::PipelineOutputData> reference_data;
+  std::vector<hand_tracking_mp_lean::PipelineOutputData> reference_data;
   if (absl::GetFlag(FLAGS_reference_data_path).empty()) {
     ABSL_LOG(WARNING) << "no reference data file path provided";
   } else {
@@ -147,7 +147,7 @@ absl::Status RunPipelineWithDiffing() {
     // "hand_rects_from_palm_detections"
   };
 
-  auto status_or_op = mediapipe_v01013_based::HandsPipelineOperator::Create(GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)), graph_output_streams_names);
+  auto status_or_op = hand_tracking_mp_lean::HandsPipelineOperator::Create(GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)), graph_output_streams_names);
   if (!status_or_op.ok()) {
       std::cerr << "Failed to create HandsPipelineOperator: " << status_or_op.status().message() << std::endl;
       return status_or_op.status();
@@ -193,7 +193,7 @@ absl::Status RunPipelineWithDiffing() {
 
     size_t frame_timestamp_us = (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
     MP_RETURN_IF_ERROR(pipeline_operator->push_image(input_frame, frame_timestamp_us));
-    mediapipe_v01013_based::PipelineOutputData stream_data_msg;
+    hand_tracking_mp_lean::PipelineOutputData stream_data_msg;
     MP_RETURN_IF_ERROR(pipeline_operator->wait_for_output(&stream_data_msg, i));
 
     // write the current frame output to file

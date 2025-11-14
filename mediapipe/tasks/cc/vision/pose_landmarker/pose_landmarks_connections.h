@@ -18,7 +18,7 @@ limitations under the License.
 
 #include <array>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace pose_landmarker {
@@ -64,6 +64,6 @@ inline constexpr std::array<std::array<int, 2>, 35> kPoseLandmarksConnections{{
 }  // namespace pose_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_POSE_LANDMARKER_POSE_LANDMARKS_CONNECTIONS_H_

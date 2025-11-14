@@ -21,7 +21,7 @@
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Given a path to a resource, this function attempts to provide an absolute
 // path with which it can be accessed as a file.
@@ -55,6 +55,6 @@ ABSL_DEPRECATED(
 absl::Status GetResourceContents(const std::string& path, std::string* output,
                                  bool read_as_binary = true);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_RESOURCE_UTIL_H_

@@ -35,7 +35,7 @@
 
 using ::testing::proto::Partially;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -181,7 +181,7 @@ class GraphProfilerTestPeer : public testing::Test {
 
   void InitializeProfilerWithGraphConfig(const std::string& raw_graph_config) {
     auto graph_config = CreateGraphConfig(raw_graph_config);
-    mediapipe_v01013_based::ValidatedGraphConfig validated_graph;
+    hand_tracking_mp_lean::ValidatedGraphConfig validated_graph;
     QCHECK_OK(validated_graph.Initialize(graph_config));
     profiler_.Initialize(validated_graph);
     QCHECK_OK(profiler_.Start(nullptr));
@@ -485,7 +485,7 @@ TEST_F(GraphProfilerTestPeer, InitializeMultipleProfilers) {
     std::shared_ptr<ProfilingContext> profiler =
         std::make_shared<ProfilingContext>();
     auto graph_config = CreateGraphConfig(raw_graph_config);
-    mediapipe_v01013_based::ValidatedGraphConfig validated_graph;
+    hand_tracking_mp_lean::ValidatedGraphConfig validated_graph;
     QCHECK_OK(validated_graph.Initialize(graph_config));
     profiler->Initialize(validated_graph);
 
@@ -506,7 +506,7 @@ TEST_F(GraphProfilerTestPeer, PauseResumeReset) {
       input_stream: "input_stream"
       output_stream: "output_stream"
     })");
-  std::shared_ptr<mediapipe_v01013_based::SimulationClock> simulation_clock(
+  std::shared_ptr<hand_tracking_mp_lean::SimulationClock> simulation_clock(
       new SimulationClock());
   simulation_clock->ThreadStart();
   profiler_.SetClock(simulation_clock);
@@ -597,7 +597,7 @@ TEST_F(GraphProfilerTestPeer, AddPacketInfoUsingPacketTimestamp) {
 // Tests that AddPacketInfo() uses profiler's clock when
 // use_packet_timestamp_for_added_packet is false.
 TEST_F(GraphProfilerTestPeer, AddPacketInfoUsingProfilerClock) {
-  std::shared_ptr<mediapipe_v01013_based::SimulationClock> simulation_clock(
+  std::shared_ptr<hand_tracking_mp_lean::SimulationClock> simulation_clock(
       new SimulationClock());
   simulation_clock->ThreadStart();
 
@@ -687,7 +687,7 @@ TEST_F(GraphProfilerTestPeer, SetOpenRuntime) {
       input_stream: "input_stream"
       output_stream: "output_stream"
     })");
-  std::shared_ptr<mediapipe_v01013_based::SimulationClock> simulation_clock(
+  std::shared_ptr<hand_tracking_mp_lean::SimulationClock> simulation_clock(
       new SimulationClock());
   simulation_clock->ThreadStart();
   profiler_.SetClock(simulation_clock);
@@ -737,7 +737,7 @@ TEST_F(GraphProfilerTestPeer, SetOpenRuntimeWithStreamLatency) {
       input_stream: "stream_0"
       input_stream: "stream_1"
     })");
-  std::shared_ptr<mediapipe_v01013_based::SimulationClock> simulation_clock(
+  std::shared_ptr<hand_tracking_mp_lean::SimulationClock> simulation_clock(
       new SimulationClock());
   simulation_clock->ThreadStart();
   profiler_.SetClock(simulation_clock);
@@ -807,7 +807,7 @@ TEST_F(GraphProfilerTestPeer, SetCloseRuntime) {
       input_stream: "input_stream"
       output_stream: "output_stream"
     })");
-  std::shared_ptr<mediapipe_v01013_based::SimulationClock> simulation_clock(
+  std::shared_ptr<hand_tracking_mp_lean::SimulationClock> simulation_clock(
       new SimulationClock());
   simulation_clock->ThreadStart();
   profiler_.SetClock(simulation_clock);
@@ -858,7 +858,7 @@ TEST_F(GraphProfilerTestPeer, SetCloseRuntimeWithStreamLatency) {
       name: "consumer_calc"
       input_stream: "output_stream"
     })");
-  std::shared_ptr<mediapipe_v01013_based::SimulationClock> simulation_clock(
+  std::shared_ptr<hand_tracking_mp_lean::SimulationClock> simulation_clock(
       new SimulationClock());
   simulation_clock->ThreadStart();
   profiler_.SetClock(simulation_clock);
@@ -1034,7 +1034,7 @@ TEST_F(GraphProfilerTestPeer, AddProcessSample) {
       input_stream: "input_stream"
       output_stream: "output_stream"
     })");
-  std::shared_ptr<mediapipe_v01013_based::SimulationClock> simulation_clock(
+  std::shared_ptr<hand_tracking_mp_lean::SimulationClock> simulation_clock(
       new SimulationClock());
   simulation_clock->ThreadStart();
   profiler_.SetClock(simulation_clock);
@@ -1087,7 +1087,7 @@ TEST_F(GraphProfilerTestPeer, AddProcessSampleWithStreamLatency) {
       input_stream: "stream_0"
       input_stream: "stream_1"
     })");
-  std::shared_ptr<mediapipe_v01013_based::SimulationClock> simulation_clock(
+  std::shared_ptr<hand_tracking_mp_lean::SimulationClock> simulation_clock(
       new SimulationClock());
   simulation_clock->ThreadStart();
   profiler_.SetClock(simulation_clock);
@@ -1189,7 +1189,7 @@ TEST_F(GraphProfilerTestPeer, AddProcessSampleWithStreamLatency) {
 // Without the GraphProfiler::profiler_mutex_ this test should
 // fail with --config=tsan with message
 // "WARNING: ThreadSanitizer: data race in
-// mediapipe_v01013_based::ProcessProfile::set_total"
+// hand_tracking_mp_lean::ProcessProfile::set_total"
 TEST(GraphProfilerTest, ParallelReads) {
   // A graph that processes a certain number of packets before finishing.
   CalculatorGraphConfig config;
@@ -1386,7 +1386,7 @@ TEST_F(GraphProfilerTestPeer, ExecutorRunEarly) {
       input_stream: "input_stream"
     })");
 
-  mediapipe_v01013_based::ValidatedGraphConfig validated_graph;
+  hand_tracking_mp_lean::ValidatedGraphConfig validated_graph;
   MP_ASSERT_OK(validated_graph.Initialize(graph_config));
   profiler_.Initialize(validated_graph);
 
@@ -1425,7 +1425,7 @@ TEST_F(GraphProfilerTestPeer, ExecutorRunLate) {
       input_stream: "input_stream"
     })");
 
-  mediapipe_v01013_based::ValidatedGraphConfig validated_graph;
+  hand_tracking_mp_lean::ValidatedGraphConfig validated_graph;
   MP_ASSERT_OK(validated_graph.Initialize(graph_config));
   profiler_.Initialize(validated_graph);
 
@@ -1445,4 +1445,4 @@ TEST_F(GraphProfilerTestPeer, ExecutorRunLate) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

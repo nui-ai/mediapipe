@@ -7,7 +7,7 @@
 #include "mediapipe/framework/formats/body_rig.pb.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 
 namespace {}  // namespace
 
@@ -24,4 +24,4 @@ Stream<JointList> ConvertTensorToJointsAtIndex(Stream<Tensor> tensor,
   return to_joints[TensorToJointsCalculator::kOutJoints];
 }
 
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

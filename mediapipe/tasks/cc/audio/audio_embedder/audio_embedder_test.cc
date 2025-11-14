@@ -38,14 +38,14 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/embedding_result.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace audio {
 namespace audio_embedder {
 namespace {
 
 using ::absl::StatusOr;
-using ::mediapipe_v01013_based::file::JoinPath;
+using ::hand_tracking_mp_lean::file::JoinPath;
 using ::testing::HasSubstr;
 using ::testing::Optional;
 
@@ -264,4 +264,4 @@ TEST_F(EmbedAsyncTest, SucceedsWithDifferentAudios) {
 }  // namespace audio_embedder
 }  // namespace audio
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

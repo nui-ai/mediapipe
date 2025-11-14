@@ -50,19 +50,19 @@ limitations under the License.
 #endif  // TASK_SEGMENTATION_USE_GL_POSTPROCESSING
 
 // TODO: consolidate TensorToSegmentationCalculator.
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace {
 
-using ::mediapipe_v01013_based::Image;
-using ::mediapipe_v01013_based::ImageFrameSharedPtr;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Node;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::tasks::TensorsToSegmentationCalculatorOptions;
-using ::mediapipe_v01013_based::tasks::vision::GetImageLikeTensorShape;
-using ::mediapipe_v01013_based::tasks::vision::Shape;
-using ::mediapipe_v01013_based::tasks::vision::image_segmenter::proto::SegmenterOptions;
+using ::hand_tracking_mp_lean::Image;
+using ::hand_tracking_mp_lean::ImageFrameSharedPtr;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Node;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::tasks::TensorsToSegmentationCalculatorOptions;
+using ::hand_tracking_mp_lean::tasks::vision::GetImageLikeTensorShape;
+using ::hand_tracking_mp_lean::tasks::vision::Shape;
+using ::hand_tracking_mp_lean::tasks::vision::image_segmenter::proto::SegmenterOptions;
 
 constexpr uint8_t kUnLabeledPixelValue = 255;
 
@@ -121,7 +121,7 @@ Image ProcessForCategoryMaskCpu(const Shape& input_shape,
 
   // Fill in the maximum category in the category mask image.
   cv::Mat category_mask_mat_view =
-      mediapipe_v01013_based::formats::MatView(image_frame_ptr.get());
+      hand_tracking_mp_lean::formats::MatView(image_frame_ptr.get());
   const int input_channels = input_shape.channels;
   category_mask_mat_view.forEach<uint8_t>([&tensors_buffer, &input_shape,
                                            &width_scale, &height_scale,
@@ -204,7 +204,7 @@ std::vector<Image> ProcessForConfidenceMaskCpu(const Shape& input_shape,
   for (int i = 0; i < input_shape.channels; ++i) {
     confidence_masks.push_back(Image(std::make_shared<ImageFrame>(
         ImageFormat::VEC32F1, input_shape.width, input_shape.height, 1)));
-    confidence_mask_mats.push_back(mediapipe_v01013_based::formats::MatView(
+    confidence_mask_mats.push_back(hand_tracking_mp_lean::formats::MatView(
         confidence_masks.back().GetImageFrameSharedPtr().get()));
   }
 
@@ -234,7 +234,7 @@ std::vector<Image> ProcessForConfidenceMaskCpu(const Shape& input_shape,
     ImageFrameSharedPtr image_frame_ptr = std::make_shared<ImageFrame>(
         ImageFormat::VEC32F1, output_shape.width, output_shape.height, 1);
     cv::Mat resized_mask_mat_view =
-        mediapipe_v01013_based::formats::MatView(image_frame_ptr.get());
+        hand_tracking_mp_lean::formats::MatView(image_frame_ptr.get());
     cv::resize(confidence_mask_mats[i], resized_mask_mat_view,
                resized_mask_mat_view.size(), 0, 0, cv::INTER_LINEAR);
     resized_confidence_masks.push_back(Image(image_frame_ptr));
@@ -327,7 +327,7 @@ absl::Status TensorsToSegmentationCalculator::UpdateContract(
 }
 
 absl::Status TensorsToSegmentationCalculator::Open(
-    mediapipe_v01013_based::CalculatorContext* cc) {
+    hand_tracking_mp_lean::CalculatorContext* cc) {
   options_ = cc->Options<TensorsToSegmentationCalculatorOptions>();
   // TODO: remove deprecated output type support.
   if (options_.segmenter_options().has_output_type()) {
@@ -350,7 +350,7 @@ absl::Status TensorsToSegmentationCalculator::Open(
 }
 
 absl::Status TensorsToSegmentationCalculator::Process(
-    mediapipe_v01013_based::CalculatorContext* cc) {
+    hand_tracking_mp_lean::CalculatorContext* cc) {
   const auto& input_tensors = kTensorsIn(cc).Get();
   if (input_tensors.size() != 1 && input_tensors.size() != 2) {
     return absl::InvalidArgumentError(
@@ -491,7 +491,7 @@ std::vector<Image> TensorsToSegmentationCalculator::GetSegmentationResultCpu(
   }
 }
 
-MEDIAPIPE_REGISTER_NODE(::mediapipe_v01013_based::tasks::TensorsToSegmentationCalculator);
+MEDIAPIPE_REGISTER_NODE(::hand_tracking_mp_lean::tasks::TensorsToSegmentationCalculator);
 
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

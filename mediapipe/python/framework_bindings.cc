@@ -25,7 +25,7 @@
 #include "mediapipe/python/pybind/validated_graph_config.h"
 #include "mediapipe/tasks/python/core/pybind/task_runner.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace python {
 
 PYBIND11_MODULE(_framework_bindings, m) {
@@ -47,4 +47,4 @@ PYBIND11_MODULE(_framework_bindings, m) {
 }
 
 }  // namespace python
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

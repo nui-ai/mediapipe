@@ -27,7 +27,7 @@
 #include "mediapipe/framework/tool/status_util.h"
 #include "tensorflow/core/framework/tensor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tf = ::tensorflow;
 
@@ -70,4 +70,4 @@ class GraphTensorsPacketGenerator : public PacketGenerator {
 };
 REGISTER_PACKET_GENERATOR(GraphTensorsPacketGenerator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

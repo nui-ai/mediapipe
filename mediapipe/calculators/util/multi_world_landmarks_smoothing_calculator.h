@@ -19,7 +19,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // A calculator to smooth landmarks over time.
@@ -56,12 +56,12 @@ namespace api2 {
 //
 class MultiWorldLandmarksSmoothingCalculator : public NodeIntf {
  public:
-  static constexpr Input<std::vector<mediapipe_v01013_based::LandmarkList>> kInLandmarks{
+  static constexpr Input<std::vector<hand_tracking_mp_lean::LandmarkList>> kInLandmarks{
       "LANDMARKS"};
   static constexpr Input<std::vector<int64_t>> kTrackingIds{"TRACKING_IDS"};
   static constexpr Input<std::vector<Rect>>::Optional kObjectScaleRoi{
       "OBJECT_SCALE_ROI"};
-  static constexpr Output<std::vector<mediapipe_v01013_based::LandmarkList>> kOutLandmarks{
+  static constexpr Output<std::vector<hand_tracking_mp_lean::LandmarkList>> kOutLandmarks{
       "FILTERED_LANDMARKS"};
 
   MEDIAPIPE_NODE_INTERFACE(MultiWorldLandmarksSmoothingCalculator, kInLandmarks,
@@ -69,6 +69,6 @@ class MultiWorldLandmarksSmoothingCalculator : public NodeIntf {
 };
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_MULTI_WORLD_LANDMARKS_SMOOTHING_CALCULATOR_H_

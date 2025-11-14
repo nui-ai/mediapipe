@@ -2,7 +2,7 @@
 
 constexpr float kMinVelocity = 0.5;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 
 namespace {
@@ -323,4 +323,4 @@ absl::Status KinematicPathSolver::UpdateMinMaxLocation(const int min_location,
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -41,7 +41,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/object_detector/proto/object_detector_options.pb.h"
 #include "tensorflow/lite/core/api/op_resolver.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace {
@@ -57,8 +57,8 @@ constexpr char kSubgraphTypeName[] =
     "mediapipe.tasks.vision.ObjectDetectorGraph";
 constexpr int kMicroSecondsPerMilliSecond = 1000;
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::tasks::components::containers::ConvertToDetectionResult;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::tasks::components::containers::ConvertToDetectionResult;
 using ObjectDetectorOptionsProto =
     object_detector::proto::ObjectDetectorOptions;
 
@@ -163,7 +163,7 @@ absl::StatusOr<std::unique_ptr<ObjectDetector>> ObjectDetector::Create(
 }
 
 absl::StatusOr<ObjectDetectorResult> ObjectDetector::Detect(
-    mediapipe_v01013_based::Image image,
+    hand_tracking_mp_lean::Image image,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -187,7 +187,7 @@ absl::StatusOr<ObjectDetectorResult> ObjectDetector::Detect(
 }
 
 absl::StatusOr<ObjectDetectorResult> ObjectDetector::DetectForVideo(
-    mediapipe_v01013_based::Image image, int64_t timestamp_ms,
+    hand_tracking_mp_lean::Image image, int64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -237,4 +237,4 @@ absl::Status ObjectDetector::DetectAsync(
 
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -22,7 +22,7 @@
 #include "mediapipe/framework/collection_item_id.h"
 #include "mediapipe/framework/input_stream_handler.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 void BarrierInputStreamHandler::PrepareForRun(
     std::function<void()> headers_ready_callback,
@@ -78,4 +78,4 @@ void BarrierInputStreamHandler::FillInputSet(Timestamp input_timestamp,
 
 REGISTER_INPUT_STREAM_HANDLER(BarrierInputStreamHandler);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

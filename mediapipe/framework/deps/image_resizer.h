@@ -17,7 +17,7 @@
 
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class ImageResizer {
  public:
@@ -30,6 +30,6 @@ class ImageResizer {
   }
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_DEPS_IMAGE_RESIZER_H_

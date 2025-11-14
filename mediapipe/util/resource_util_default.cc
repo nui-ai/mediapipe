@@ -24,10 +24,10 @@ ABSL_FLAG(
     "The absolute path to the resource directory."
     "If specified, resource_root_dir will be prepended to the original path.");
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-using mediapipe_v01013_based::file::GetContents;
-using mediapipe_v01013_based::file::JoinPath;
+using hand_tracking_mp_lean::file::GetContents;
+using hand_tracking_mp_lean::file::JoinPath;
 
 namespace internal {
 
@@ -53,4 +53,4 @@ absl::StatusOr<std::string> PathToResourceAsFile(const std::string& path,
   return JoinPath(absl::GetFlag(FLAGS_resource_root_dir), path);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

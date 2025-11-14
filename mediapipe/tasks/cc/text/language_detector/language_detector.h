@@ -26,7 +26,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/base_options.h"
 #include "mediapipe/tasks/cc/core/base_task_api.h"
 
-namespace mediapipe_v01013_based::tasks::text::language_detector {
+namespace hand_tracking_mp_lean::tasks::text::language_detector {
 
 // A language code and its probability.
 struct LanguageDetectorPrediction {
@@ -79,6 +79,6 @@ class LanguageDetector : core::BaseTaskApi {
   absl::Status Close() { return runner_->Close(); }
 };
 
-}  // namespace mediapipe_v01013_based::tasks::text::language_detector
+}  // namespace hand_tracking_mp_lean::tasks::text::language_detector
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_LANGUAGE_DETECTOR_LANGUAGE_DETECTOR_H_

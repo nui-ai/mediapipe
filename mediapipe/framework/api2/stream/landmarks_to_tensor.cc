@@ -10,11 +10,11 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 
 namespace {
 
-using ::mediapipe_v01013_based::api2::LandmarksToTensorCalculator;
+using ::hand_tracking_mp_lean::api2::LandmarksToTensorCalculator;
 
 template <typename LandmarkListType>
 Stream<std::vector<Tensor>> InternalConvertToTensor(
@@ -61,4 +61,4 @@ Stream<std::vector<Tensor>> ConvertNormalizedLandmarksToTensor(
                                  flatten, graph);
 }
 
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

@@ -28,14 +28,14 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-using mediapipe_v01013_based::CalculatorGraphConfig;
-using mediapipe_v01013_based::CalculatorRunner;
-using mediapipe_v01013_based::ImageFormat;
-using mediapipe_v01013_based::ImageFrame;
-using mediapipe_v01013_based::Packet;
-using mediapipe_v01013_based::PacketTypeSet;
+using hand_tracking_mp_lean::CalculatorGraphConfig;
+using hand_tracking_mp_lean::CalculatorRunner;
+using hand_tracking_mp_lean::ImageFormat;
+using hand_tracking_mp_lean::ImageFrame;
+using hand_tracking_mp_lean::Packet;
+using hand_tracking_mp_lean::PacketTypeSet;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 namespace {
 
@@ -78,7 +78,7 @@ TEST(BorderDetectionCalculatorTest, NoBorderTest) {
 
   auto input_frame = ::absl::make_unique<ImageFrame>(
       ImageFormat::SRGB, kTestFrameWidth, kTestFrameHeight);
-  cv::Mat input_mat = mediapipe_v01013_based::formats::MatView(input_frame.get());
+  cv::Mat input_mat = hand_tracking_mp_lean::formats::MatView(input_frame.get());
   input_mat.setTo(cv::Scalar(0, 0, 0));
   runner->MutableInputs()->Tag(kVideoTag).packets.push_back(
       Adopt(input_frame.release()).At(Timestamp::PostStream()));
@@ -109,7 +109,7 @@ TEST(BorderDetectionCalculatorTest, TopBorderTest) {
 
   auto input_frame = ::absl::make_unique<ImageFrame>(
       ImageFormat::SRGB, kTestFrameWidth, kTestFrameHeight);
-  cv::Mat input_mat = mediapipe_v01013_based::formats::MatView(input_frame.get());
+  cv::Mat input_mat = hand_tracking_mp_lean::formats::MatView(input_frame.get());
   input_mat.setTo(cv::Scalar(0, 0, 0));
   cv::Mat sub_image =
       input_mat(cv::Rect(0, 0, kTestFrameWidth, kTopBorderHeight));
@@ -149,7 +149,7 @@ TEST(BorderDetectionCalculatorTest, TopBorderPadTest) {
 
   auto input_frame = ::absl::make_unique<ImageFrame>(
       ImageFormat::SRGB, kTestFrameWidth, kTestFrameHeight);
-  cv::Mat input_mat = mediapipe_v01013_based::formats::MatView(input_frame.get());
+  cv::Mat input_mat = hand_tracking_mp_lean::formats::MatView(input_frame.get());
   input_mat.setTo(cv::Scalar(0, 0, 0));
   cv::Mat sub_image =
       input_mat(cv::Rect(0, 0, kTestFrameWidth, kTopBorderHeight));
@@ -190,7 +190,7 @@ TEST(BorderDetectionCalculatorTest, BottomBorderTest) {
 
   auto input_frame = ::absl::make_unique<ImageFrame>(
       ImageFormat::SRGB, kTestFrameWidth, kTestFrameHeight);
-  cv::Mat input_mat = mediapipe_v01013_based::formats::MatView(input_frame.get());
+  cv::Mat input_mat = hand_tracking_mp_lean::formats::MatView(input_frame.get());
   input_mat.setTo(cv::Scalar(0, 0, 0));
   cv::Mat bottom_image =
       input_mat(cv::Rect(0, kTestFrameHeight - kBottomBorderHeight,
@@ -228,7 +228,7 @@ TEST(BorderDetectionCalculatorTest, TopBottomBorderTest) {
 
   auto input_frame = ::absl::make_unique<ImageFrame>(
       ImageFormat::SRGB, kTestFrameWidth, kTestFrameHeight);
-  cv::Mat input_mat = mediapipe_v01013_based::formats::MatView(input_frame.get());
+  cv::Mat input_mat = hand_tracking_mp_lean::formats::MatView(input_frame.get());
   input_mat.setTo(cv::Scalar(0, 0, 0));
   cv::Mat top_image =
       input_mat(cv::Rect(0, 0, kTestFrameWidth, kTopBorderHeight));
@@ -281,7 +281,7 @@ TEST(BorderDetectionCalculatorTest, TopBottomBorderTestAspect2) {
 
   auto input_frame = ::absl::make_unique<ImageFrame>(
       ImageFormat::SRGB, kTestFrameWidthTall, kTestFrameHeightTall);
-  cv::Mat input_mat = mediapipe_v01013_based::formats::MatView(input_frame.get());
+  cv::Mat input_mat = hand_tracking_mp_lean::formats::MatView(input_frame.get());
   input_mat.setTo(cv::Scalar(0, 0, 0));
   cv::Mat top_image =
       input_mat(cv::Rect(0, 0, kTestFrameWidthTall, kTopBorderHeight));
@@ -336,7 +336,7 @@ TEST(BorderDetectionCalculatorTest, DominantColor) {
 
   auto input_frame = ::absl::make_unique<ImageFrame>(
       ImageFormat::SRGB, kTestFrameWidth, kTestFrameHeight);
-  cv::Mat input_mat = mediapipe_v01013_based::formats::MatView(input_frame.get());
+  cv::Mat input_mat = hand_tracking_mp_lean::formats::MatView(input_frame.get());
   input_mat.setTo(cv::Scalar(0, 0, 0));
 
   cv::Mat sub_image = input_mat(cv::Rect(
@@ -377,7 +377,7 @@ void BM_Large(benchmark::State& state) {
 
     auto input_frame = ::absl::make_unique<ImageFrame>(
         ImageFormat::SRGB, kTestFrameLargeWidth, kTestFrameLargeHeight);
-    cv::Mat input_mat = mediapipe_v01013_based::formats::MatView(input_frame.get());
+    cv::Mat input_mat = hand_tracking_mp_lean::formats::MatView(input_frame.get());
     input_mat.setTo(cv::Scalar(0, 0, 0));
     cv::Mat sub_image =
         input_mat(cv::Rect(0, 0, kTestFrameLargeWidth, kTopBorderHeight));
@@ -393,4 +393,4 @@ BENCHMARK(BM_Large);
 
 }  // namespace
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

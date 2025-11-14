@@ -35,7 +35,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class InputStreamHandler;
 
@@ -175,5 +175,5 @@ class OutputStreamPollerImpl : public GraphOutputStream {
 };
 
 }  // namespace internal
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 #endif  // MEDIAPIPE_FRAMEWORK_GRAPH_OUTPUT_STREAM_H_

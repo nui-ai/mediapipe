@@ -17,12 +17,12 @@
 #include "mediapipe/framework/graph_service.h"
 #include "mediapipe/framework/memory_manager.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Graph service to request pooled buffer objects.
 inline constexpr GraphService<MemoryManager> kMemoryManagerService(
     "MemoryManagerService", GraphServiceBase::kDisallowDefaultInitialization);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_MEMORY_MANAGER_SERVICE_H_

@@ -16,7 +16,7 @@
 
 #include <utility>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 RegistrationToken::RegistrationToken(std::function<void()> unregisterer)
     : unregister_function_(std::move(unregisterer)) {}
 
@@ -86,4 +86,4 @@ void Unregister::Reset(RegistrationToken token) {
   token_ = std::move(token);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

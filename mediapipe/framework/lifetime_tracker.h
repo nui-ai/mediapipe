@@ -20,7 +20,7 @@
 #include "absl/memory/memory.h"
 #include "absl/synchronization/mutex.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // This class can be used to create objects whose lifetime is tracked by a
 // counter. This is useful for testing.
@@ -74,6 +74,6 @@ class LifetimeTracker {
   int live_count_ ABSL_GUARDED_BY(mutex_) = 0;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_LIFETIME_TRACKER_H_

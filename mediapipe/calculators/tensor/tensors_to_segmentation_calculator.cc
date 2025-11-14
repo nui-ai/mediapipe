@@ -49,17 +49,17 @@
 #endif  // !MEDIAPIPE_DISABLE_OPENCV
 
 namespace {
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Node;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::tensors_to_segmentation_utils::CanUseGpu;
-using ::mediapipe_v01013_based::tensors_to_segmentation_utils::GetHwcFromDims;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Node;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::tensors_to_segmentation_utils::CanUseGpu;
+using ::hand_tracking_mp_lean::tensors_to_segmentation_utils::GetHwcFromDims;
 
 constexpr int kWorkgroupSize = 8;  // Block size for GPU shader.
 enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, NUM_ATTRIBUTES };
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Converts Tensors from a tflite segmentation model to an image mask.
 //
@@ -151,7 +151,7 @@ class TensorsToSegmentationCalculator : public Node {
     return absl::OkStatus();
   }
 
-  mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions options_;
+  hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions options_;
   std::unique_ptr<TensorsToSegmentationConverter> cpu_converter_;
   std::unique_ptr<TensorsToSegmentationConverter> gpu_converter_;
 };
@@ -164,7 +164,7 @@ absl::Status TensorsToSegmentationCalculator::UpdateContract(
       << "Either TENSOR or TENSORS must be connected";
   if (CanUseGpu()) {
 #if !MEDIAPIPE_DISABLE_GPU
-    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(
+    MP_RETURN_IF_ERROR(hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract(
         cc, /*request_gpu_as_optional=*/true));
 #if MEDIAPIPE_METAL_ENABLED
     MP_RETURN_IF_ERROR([MPPMetalHelper updateContract:cc]);
@@ -204,7 +204,7 @@ absl::Status TensorsToSegmentationCalculator::Process(CalculatorContext* cc) {
     RET_CHECK(input_tensor->element_type() == Tensor::ElementType::kFloat32);
     MP_ASSIGN_OR_RETURN(auto hwc, GetHwcFromDims(input_tensor->shape().dims));
     int tensor_channels = std::get<2>(hwc);
-    using Options = ::mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions;
+    using Options = ::hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions;
     switch (options_.activation()) {
       case Options::NONE:
         RET_CHECK_EQ(tensor_channels, 1);
@@ -258,9 +258,9 @@ absl::Status TensorsToSegmentationCalculator::Process(CalculatorContext* cc) {
 absl::Status TensorsToSegmentationCalculator::LoadOptions(
     CalculatorContext* cc) {
   // Get calculator options specified in the graph.
-  options_ = cc->Options<mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions>();
+  options_ = cc->Options<hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions>();
 
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

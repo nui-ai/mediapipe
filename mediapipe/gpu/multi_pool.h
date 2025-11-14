@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/util/resource_cache.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 struct MultiPoolOptions {
   // Keep this many buffers allocated for a given frame size.
@@ -85,7 +85,7 @@ class MultiPool {
   std::shared_ptr<SimplePool> RequestPool(const Spec& spec);
 
   absl::Mutex mutex_;
-  mediapipe_v01013_based::ResourceCache<Spec, std::shared_ptr<SimplePool>> cache_
+  hand_tracking_mp_lean::ResourceCache<Spec, std::shared_ptr<SimplePool>> cache_
       ABSL_GUARDED_BY(mutex_);
   SimplePoolFactory create_simple_pool_ = DefaultMakeSimplePool;
   MultiPoolOptions options_;
@@ -123,6 +123,6 @@ absl::StatusOr<Item> MultiPool<SimplePool, Spec, Item>::Get(const Spec& spec) {
   return Item(std::move(item));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_MULTI_POOL_H_

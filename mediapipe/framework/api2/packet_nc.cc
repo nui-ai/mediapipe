@@ -2,7 +2,7 @@
 
 #include "mediapipe/framework/api2/packet.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace {
 
@@ -42,4 +42,4 @@ bool ShareWrongPacketType() {
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

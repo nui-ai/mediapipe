@@ -18,7 +18,7 @@
 #include "absl/time/time.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 SimulationClock::~SimulationClock() {
   ThreadStart();
@@ -74,4 +74,4 @@ void SimulationClock::TryAdvanceTime() {
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -27,10 +27,10 @@ limitations under the License.
 
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe_v01013_based::tflite_operations {
+namespace hand_tracking_mp_lean::tflite_operations {
 
 TfLiteRegistration* Register_KmeansEmbeddingLookup();
 
-}  // namespace mediapipe_v01013_based::tflite_operations
+}  // namespace hand_tracking_mp_lean::tflite_operations
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_LANGUAGE_DETECTOR_CUSTOM_OPS_KMEANS_EMBEDDING_LOOKUP_H_

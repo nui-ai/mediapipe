@@ -24,18 +24,18 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::Rect;
-using ::mediapipe_v01013_based::landmarks_smoothing::GetObjectScale;
-using ::mediapipe_v01013_based::landmarks_smoothing::InitializeLandmarksFilter;
-using ::mediapipe_v01013_based::landmarks_smoothing::LandmarksFilter;
-using ::mediapipe_v01013_based::landmarks_smoothing::LandmarksToNormalizedLandmarks;
-using ::mediapipe_v01013_based::landmarks_smoothing::NormalizedLandmarksToLandmarks;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::Rect;
+using ::hand_tracking_mp_lean::landmarks_smoothing::GetObjectScale;
+using ::hand_tracking_mp_lean::landmarks_smoothing::InitializeLandmarksFilter;
+using ::hand_tracking_mp_lean::landmarks_smoothing::LandmarksFilter;
+using ::hand_tracking_mp_lean::landmarks_smoothing::LandmarksToNormalizedLandmarks;
+using ::hand_tracking_mp_lean::landmarks_smoothing::NormalizedLandmarksToLandmarks;
 
 }  // namespace
 
@@ -114,4 +114,4 @@ class LandmarksSmoothingCalculatorImpl
 MEDIAPIPE_NODE_IMPLEMENTATION(LandmarksSmoothingCalculatorImpl);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

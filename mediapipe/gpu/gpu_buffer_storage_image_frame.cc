@@ -22,7 +22,7 @@ limitations under the License.
 #include "mediapipe/framework/formats/frame_buffer.h"
 #include "mediapipe/framework/formats/image_frame.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -69,4 +69,4 @@ std::shared_ptr<FrameBuffer> GpuBufferStorageImageFrame::GetWriteView(
   return ImageFrameToFrameBuffer(image_frame_);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

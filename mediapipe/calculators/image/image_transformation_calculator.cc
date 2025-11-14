@@ -44,9 +44,9 @@ typedef int DimensionsPacketType[];
 typedef int DimensionsPacketType[2];
 #endif  // __ANDROID__
 
-#define DEFAULT_SCALE_MODE mediapipe_v01013_based::ScaleMode_Mode_STRETCH
+#define DEFAULT_SCALE_MODE hand_tracking_mp_lean::ScaleMode_Mode_STRETCH
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 #if !MEDIAPIPE_DISABLE_GPU
 
@@ -60,44 +60,44 @@ constexpr char kImageFrameTag[] = "IMAGE";
 constexpr char kGpuBufferTag[] = "IMAGE_GPU";
 constexpr char kVideoPrestreamTag[] = "VIDEO_PRESTREAM";
 
-int RotationModeToDegrees(mediapipe_v01013_based::RotationMode_Mode rotation) {
+int RotationModeToDegrees(hand_tracking_mp_lean::RotationMode_Mode rotation) {
   switch (rotation) {
-    case mediapipe_v01013_based::RotationMode::UNKNOWN:
-    case mediapipe_v01013_based::RotationMode::ROTATION_0:
+    case hand_tracking_mp_lean::RotationMode::UNKNOWN:
+    case hand_tracking_mp_lean::RotationMode::ROTATION_0:
       return 0;
-    case mediapipe_v01013_based::RotationMode::ROTATION_90:
+    case hand_tracking_mp_lean::RotationMode::ROTATION_90:
       return 90;
-    case mediapipe_v01013_based::RotationMode::ROTATION_180:
+    case hand_tracking_mp_lean::RotationMode::ROTATION_180:
       return 180;
-    case mediapipe_v01013_based::RotationMode::ROTATION_270:
+    case hand_tracking_mp_lean::RotationMode::ROTATION_270:
       return 270;
   }
 }
-mediapipe_v01013_based::RotationMode_Mode DegreesToRotationMode(int degrees) {
+hand_tracking_mp_lean::RotationMode_Mode DegreesToRotationMode(int degrees) {
   switch (degrees) {
     case 0:
-      return mediapipe_v01013_based::RotationMode::ROTATION_0;
+      return hand_tracking_mp_lean::RotationMode::ROTATION_0;
     case 90:
-      return mediapipe_v01013_based::RotationMode::ROTATION_90;
+      return hand_tracking_mp_lean::RotationMode::ROTATION_90;
     case 180:
-      return mediapipe_v01013_based::RotationMode::ROTATION_180;
+      return hand_tracking_mp_lean::RotationMode::ROTATION_180;
     case 270:
-      return mediapipe_v01013_based::RotationMode::ROTATION_270;
+      return hand_tracking_mp_lean::RotationMode::ROTATION_270;
     default:
-      return mediapipe_v01013_based::RotationMode::UNKNOWN;
+      return hand_tracking_mp_lean::RotationMode::UNKNOWN;
   }
 }
-mediapipe_v01013_based::ScaleMode_Mode ParseScaleMode(
-    mediapipe_v01013_based::ScaleMode_Mode scale_mode,
-    mediapipe_v01013_based::ScaleMode_Mode default_mode) {
+hand_tracking_mp_lean::ScaleMode_Mode ParseScaleMode(
+    hand_tracking_mp_lean::ScaleMode_Mode scale_mode,
+    hand_tracking_mp_lean::ScaleMode_Mode default_mode) {
   switch (scale_mode) {
-    case mediapipe_v01013_based::ScaleMode::DEFAULT:
+    case hand_tracking_mp_lean::ScaleMode::DEFAULT:
       return default_mode;
-    case mediapipe_v01013_based::ScaleMode::STRETCH:
+    case hand_tracking_mp_lean::ScaleMode::STRETCH:
       return scale_mode;
-    case mediapipe_v01013_based::ScaleMode::FIT:
+    case hand_tracking_mp_lean::ScaleMode::FIT:
       return scale_mode;
-    case mediapipe_v01013_based::ScaleMode::FILL_AND_CROP:
+    case hand_tracking_mp_lean::ScaleMode::FILL_AND_CROP:
       return scale_mode;
     default:
       return default_mode;
@@ -203,8 +203,8 @@ class ImageTransformationCalculator : public CalculatorBase {
   ImageTransformationCalculatorOptions options_;
   int output_width_ = 0;
   int output_height_ = 0;
-  mediapipe_v01013_based::RotationMode_Mode rotation_;
-  mediapipe_v01013_based::ScaleMode_Mode scale_mode_;
+  hand_tracking_mp_lean::RotationMode_Mode rotation_;
+  hand_tracking_mp_lean::ScaleMode_Mode scale_mode_;
   bool flip_horizontally_ = false;
   bool flip_vertically_ = false;
 
@@ -269,8 +269,8 @@ absl::Status ImageTransformationCalculator::GetContract(
            "dimensions of the frames (OUTPUT_DIMENSIONS and ROTATION_DEGREES) "
            "need to be constant for every frame, meaning they can only be "
            "provided in the calculator options or side packets.";
-    cc->Inputs().Tag(kVideoPrestreamTag).Set<mediapipe_v01013_based::VideoHeader>();
-    cc->Outputs().Tag(kVideoPrestreamTag).Set<mediapipe_v01013_based::VideoHeader>();
+    cc->Inputs().Tag(kVideoPrestreamTag).Set<hand_tracking_mp_lean::VideoHeader>();
+    cc->Outputs().Tag(kVideoPrestreamTag).Set<hand_tracking_mp_lean::VideoHeader>();
   }
 
   if (cc->InputSidePackets().HasTag("OUTPUT_DIMENSIONS")) {
@@ -372,15 +372,15 @@ absl::Status ImageTransformationCalculator::Process(CalculatorContext* cc) {
   if (cc->Inputs().HasTag(kVideoPrestreamTag) &&
       !cc->Inputs().Tag(kVideoPrestreamTag).IsEmpty() &&
       cc->Outputs().HasTag(kVideoPrestreamTag)) {
-    mediapipe_v01013_based::VideoHeader header =
-        cc->Inputs().Tag(kVideoPrestreamTag).Get<mediapipe_v01013_based::VideoHeader>();
+    hand_tracking_mp_lean::VideoHeader header =
+        cc->Inputs().Tag(kVideoPrestreamTag).Get<hand_tracking_mp_lean::VideoHeader>();
     // Update the header's width and height if needed.
     ComputeOutputDimensions(header.width, header.height, &header.width,
                             &header.height);
     cc->Outputs()
         .Tag(kVideoPrestreamTag)
-        .AddPacket(mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::VideoHeader>(header).At(
-            mediapipe_v01013_based::Timestamp::PreStream()));
+        .AddPacket(hand_tracking_mp_lean::MakePacket<hand_tracking_mp_lean::VideoHeader>(header).At(
+            hand_tracking_mp_lean::Timestamp::PreStream()));
   }
 
   // Override values if specified so.
@@ -453,7 +453,7 @@ absl::Status ImageTransformationCalculator::Close(CalculatorContext* cc) {
 
 absl::Status ImageTransformationCalculator::RenderCpu(CalculatorContext* cc) {
   cv::Mat input_mat;
-  mediapipe_v01013_based::ImageFormat::Format format;
+  hand_tracking_mp_lean::ImageFormat::Format format;
 
   const auto& input = cc->Inputs().Tag(kImageFrameTag).Get<ImageFrame>();
   input_mat = formats::MatView(&input);
@@ -469,7 +469,7 @@ absl::Status ImageTransformationCalculator::RenderCpu(CalculatorContext* cc) {
   int opencv_interpolation_mode = cv::INTER_LINEAR;
   if (output_width_ > 0 && output_height_ > 0) {
     cv::Mat scaled_mat;
-    if (scale_mode_ == mediapipe_v01013_based::ScaleMode::STRETCH) {
+    if (scale_mode_ == hand_tracking_mp_lean::ScaleMode::STRETCH) {
       if (interpolation_mode_ == ImageTransformationCalculatorOptions::LINEAR) {
         // Use INTER_AREA for downscaling if interpolation mode is set to
         // LINEAR.
@@ -503,7 +503,7 @@ absl::Status ImageTransformationCalculator::RenderCpu(CalculatorContext* cc) {
         opencv_interpolation_mode = cv::INTER_NEAREST;
       }
 
-      if (scale_mode_ == mediapipe_v01013_based::ScaleMode::FIT) {
+      if (scale_mode_ == hand_tracking_mp_lean::ScaleMode::FIT) {
         cv::Mat intermediate_mat;
         cv::resize(input_mat, intermediate_mat,
                    cv::Size(target_width, target_height), 0, 0,
@@ -545,17 +545,17 @@ absl::Status ImageTransformationCalculator::RenderCpu(CalculatorContext* cc) {
     cv::warpAffine(input_mat, rotated_mat, rotation_mat, rotated_size);
   } else {
     switch (rotation_) {
-      case mediapipe_v01013_based::RotationMode::UNKNOWN:
-      case mediapipe_v01013_based::RotationMode::ROTATION_0:
+      case hand_tracking_mp_lean::RotationMode::UNKNOWN:
+      case hand_tracking_mp_lean::RotationMode::ROTATION_0:
         rotated_mat = input_mat;
         break;
-      case mediapipe_v01013_based::RotationMode::ROTATION_90:
+      case hand_tracking_mp_lean::RotationMode::ROTATION_90:
         cv::rotate(input_mat, rotated_mat, cv::ROTATE_90_COUNTERCLOCKWISE);
         break;
-      case mediapipe_v01013_based::RotationMode::ROTATION_180:
+      case hand_tracking_mp_lean::RotationMode::ROTATION_180:
         cv::rotate(input_mat, rotated_mat, cv::ROTATE_180);
         break;
-      case mediapipe_v01013_based::RotationMode::ROTATION_270:
+      case hand_tracking_mp_lean::RotationMode::ROTATION_270:
         cv::rotate(input_mat, rotated_mat, cv::ROTATE_90_CLOCKWISE);
         break;
     }
@@ -592,7 +592,7 @@ absl::Status ImageTransformationCalculator::RenderGpu(CalculatorContext* cc) {
   ComputeOutputDimensions(input_width, input_height, &output_width,
                           &output_height);
 
-  if (scale_mode_ == mediapipe_v01013_based::ScaleMode::FILL_AND_CROP) {
+  if (scale_mode_ == hand_tracking_mp_lean::ScaleMode::FILL_AND_CROP) {
     const float scale =
         std::min(static_cast<float>(output_width_) / input_width,
                  static_cast<float>(output_height_) / input_height);
@@ -618,7 +618,7 @@ absl::Status ImageTransformationCalculator::RenderGpu(CalculatorContext* cc) {
     if (!yuv_renderer_) {
       yuv_renderer_ = absl::make_unique<QuadRenderer>();
       MP_RETURN_IF_ERROR(
-          yuv_renderer_->GlSetup(::mediapipe_v01013_based::kYUV2TexToRGBFragmentShader,
+          yuv_renderer_->GlSetup(::hand_tracking_mp_lean::kYUV2TexToRGBFragmentShader,
                                  {"video_frame_y", "video_frame_uv"}));
     }
     renderer = yuv_renderer_.get();
@@ -632,7 +632,7 @@ absl::Status ImageTransformationCalculator::RenderGpu(CalculatorContext* cc) {
       if (!ext_rgb_renderer_) {
         ext_rgb_renderer_ = absl::make_unique<QuadRenderer>();
         MP_RETURN_IF_ERROR(ext_rgb_renderer_->GlSetup(
-            ::mediapipe_v01013_based::kBasicTexturedFragmentShaderOES, {"video_frame"}));
+            ::hand_tracking_mp_lean::kBasicTexturedFragmentShaderOES, {"video_frame"}));
       }
       renderer = ext_rgb_renderer_.get();
     } else  // NOLINT(readability/braces)
@@ -647,17 +647,17 @@ absl::Status ImageTransformationCalculator::RenderGpu(CalculatorContext* cc) {
   }
   RET_CHECK(renderer) << "Unsupported input texture type";
 
-  mediapipe_v01013_based::FrameScaleMode scale_mode = mediapipe_v01013_based::FrameScaleModeFromProto(
-      scale_mode_, mediapipe_v01013_based::FrameScaleMode::kStretch);
-  mediapipe_v01013_based::FrameRotation rotation =
-      mediapipe_v01013_based::FrameRotationFromDegrees(RotationModeToDegrees(rotation_));
+  hand_tracking_mp_lean::FrameScaleMode scale_mode = hand_tracking_mp_lean::FrameScaleModeFromProto(
+      scale_mode_, hand_tracking_mp_lean::FrameScaleMode::kStretch);
+  hand_tracking_mp_lean::FrameRotation rotation =
+      hand_tracking_mp_lean::FrameRotationFromDegrees(RotationModeToDegrees(rotation_));
 
   auto dst = gpu_helper_.CreateDestinationTexture(output_width, output_height,
                                                   input.format());
 
   gpu_helper_.BindFramebuffer(dst);
 
-  if (scale_mode_ == mediapipe_v01013_based::ScaleMode::FIT) {
+  if (scale_mode_ == hand_tracking_mp_lean::ScaleMode::FIT) {
     // In kFit scale mode, the rendered quad does not fill the whole
     // framebuffer, so clear it beforehand.
     glClearColor(padding_color_[0] / 255.0f, padding_color_[1] / 255.0f,
@@ -698,8 +698,8 @@ void ImageTransformationCalculator::ComputeOutputDimensions(
   if (output_width_ > 0 && output_height_ > 0) {
     *output_width = output_width_;
     *output_height = output_height_;
-  } else if (rotation_ == mediapipe_v01013_based::RotationMode::ROTATION_90 ||
-             rotation_ == mediapipe_v01013_based::RotationMode::ROTATION_270) {
+  } else if (rotation_ == hand_tracking_mp_lean::RotationMode::ROTATION_90 ||
+             rotation_ == hand_tracking_mp_lean::RotationMode::ROTATION_270) {
     *output_width = input_height;
     *output_height = input_width;
   } else {
@@ -712,9 +712,9 @@ void ImageTransformationCalculator::ComputeOutputLetterboxPadding(
     int input_width, int input_height, int output_width, int output_height,
     std::array<float, 4>* padding) {
   padding->fill(0.f);
-  if (scale_mode_ == mediapipe_v01013_based::ScaleMode::FIT) {
-    if (rotation_ == mediapipe_v01013_based::RotationMode::ROTATION_90 ||
-        rotation_ == mediapipe_v01013_based::RotationMode::ROTATION_270) {
+  if (scale_mode_ == hand_tracking_mp_lean::ScaleMode::FIT) {
+    if (rotation_ == hand_tracking_mp_lean::RotationMode::ROTATION_90 ||
+        rotation_ == hand_tracking_mp_lean::RotationMode::ROTATION_270) {
       std::swap(input_width, input_height);
     }
     const float input_aspect_ratio =
@@ -733,4 +733,4 @@ void ImageTransformationCalculator::ComputeOutputLetterboxPadding(
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

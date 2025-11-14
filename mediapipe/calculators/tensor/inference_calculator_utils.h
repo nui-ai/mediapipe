@@ -31,7 +31,7 @@
 
 ABSL_DECLARE_FLAG(int, xnnpack_default_num_threads);
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Returns number of threads to configure XNNPACK delegate with.
 // Returns user provided value if specified. Otherwise, tries to choose optimal
@@ -39,7 +39,7 @@ namespace mediapipe_v01013_based {
 // setting the --xnnpack_default_num_threads flag.
 int GetXnnpackNumThreads(
     bool opts_has_delegate,
-    const mediapipe_v01013_based::InferenceCalculatorOptions::Delegate& opts_delegate);
+    const hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate& opts_delegate);
 
 absl::Status CopyCpuInputIntoTfLiteTensor(const Tensor& input_tensor,
                                           TfLiteTensor& tflite_tensor);
@@ -47,7 +47,7 @@ absl::Status CopyCpuInputIntoTfLiteTensor(const Tensor& input_tensor,
 absl::Status CopyTfLiteTensorIntoCpuOutput(const TfLiteTensor& tflite_tensor,
                                            Tensor& output_tensor);
 
-// Converts TfLiteTensor to mediapipe_v01013_based::Tensor, returns InvalidArgumentError if
+// Converts TfLiteTensor to hand_tracking_mp_lean::Tensor, returns InvalidArgumentError if
 // the type is not supported.
 absl::StatusOr<Tensor> ConvertTfLiteTensorToTensor(
     const TfLiteTensor& tflite_tensor);
@@ -88,6 +88,6 @@ absl::StatusOr<Tensor> CreateTensorWithTfLiteTensorSpecs(
 absl::Status TensorDimsAndTypeEqual(const Tensor& mp_tensor,
                                     const TfLiteTensor& tflite_tensor);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_INFERENCE_CALCULATOR_UTILS_H_

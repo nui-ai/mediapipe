@@ -24,10 +24,10 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using DistanceEstimationMode =
-    mediapipe_v01013_based::RelativeVelocityFilter::DistanceEstimationMode;
+    hand_tracking_mp_lean::RelativeVelocityFilter::DistanceEstimationMode;
 
 absl::Duration DurationFromNanos(int64_t nanos) {
   return absl::FromChrono(std::chrono::nanoseconds{nanos});
@@ -292,4 +292,4 @@ TEST(RelativeVelocityFilterTest, TestOtherFilterModeIsTranslationInvariant) {
   TestTranslationInvariance(DistanceEstimationMode::kForceCurrentScale);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

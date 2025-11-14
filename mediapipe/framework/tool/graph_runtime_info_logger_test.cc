@@ -21,11 +21,11 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based::tool {
+namespace hand_tracking_mp_lean::tool {
 namespace {
 
 TEST(GraphRuntimeInfoLoggerTest, ShouldCaptureRuntimeInfo) {
-  mediapipe_v01013_based::GraphRuntimeInfoConfig config;
+  hand_tracking_mp_lean::GraphRuntimeInfoConfig config;
   config.set_enable_graph_runtime_info(true);
 
   absl::Notification callback_called;
@@ -39,4 +39,4 @@ TEST(GraphRuntimeInfoLoggerTest, ShouldCaptureRuntimeInfo) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::tool
+}  // namespace hand_tracking_mp_lean::tool

@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace reporter {
 
 const LazyRE2 kValidColumnRegex = {"^[a-zA-Z0-9_?*]+$"};
@@ -96,13 +96,13 @@ absl::btree_map<std::string,
 // Holds calculator traces that have an output trace with a provided stream ID
 // and Packet timestamp.
 typedef std::map<std::pair<int64_t, int32_t>,
-                 const mediapipe_v01013_based::GraphTrace::CalculatorTrace*>
+                 const hand_tracking_mp_lean::GraphTrace::CalculatorTrace*>
     PacketKeyToCalcTrace;
 
 // Use this to locate the calculator trace with the start time for a given
 // node its thread_id and its packet timestamp.
 typedef std::map<std::pair<int64_t, std::pair<int32_t, int32_t>>,
-                 const mediapipe_v01013_based::GraphTrace::CalculatorTrace*>
+                 const hand_tracking_mp_lean::GraphTrace::CalculatorTrace*>
     TimestampNodeIdToCalcTrace;
 
 // Maps node IDs to names.
@@ -112,8 +112,8 @@ Reporter::Reporter() { MEDIAPIPE_CHECK_OK(set_columns({"*"})); }
 
 int64_t RecursePacketStartTime(
     const PacketKeyToCalcTrace& output_trace_lookup,
-    const mediapipe_v01013_based::GraphProfile& profile,
-    const mediapipe_v01013_based::GraphTrace::CalculatorTrace& trace,
+    const hand_tracking_mp_lean::GraphProfile& profile,
+    const hand_tracking_mp_lean::GraphTrace::CalculatorTrace& trace,
     std::vector<int32_t>* visited_calculators) {
   int64_t child_start_time =
       trace.has_start_time() ? trace.start_time() : trace.finish_time();
@@ -142,8 +142,8 @@ int64_t RecursePacketStartTime(
 
 int64_t CalculateInputLatency(
     const PacketKeyToCalcTrace& output_trace_lookup,
-    const mediapipe_v01013_based::GraphProfile& profile,
-    const mediapipe_v01013_based::GraphTrace::CalculatorTrace& trace) {
+    const hand_tracking_mp_lean::GraphProfile& profile,
+    const hand_tracking_mp_lean::GraphTrace::CalculatorTrace& trace) {
   // Track visited calculators to detect loops.
   std::vector<int> visited_calculators;
 
@@ -158,7 +158,7 @@ int64_t CalculateInputLatency(
   return result;
 }
 
-void CacheNodeNameLookup(const mediapipe_v01013_based::GraphProfile& profile,
+void CacheNodeNameLookup(const hand_tracking_mp_lean::GraphProfile& profile,
                          NameLookup* result) {
   for (const auto& graph_trace : profile.graph_trace()) {
     int key = 0;
@@ -169,12 +169,12 @@ void CacheNodeNameLookup(const mediapipe_v01013_based::GraphProfile& profile,
   }
 }
 
-void CacheOutputTraceLookup(const mediapipe_v01013_based::GraphProfile& profile,
+void CacheOutputTraceLookup(const hand_tracking_mp_lean::GraphProfile& profile,
                             PacketKeyToCalcTrace* output_trace_lookup,
                             TimestampNodeIdToCalcTrace* start_time_lookup) {
   for (const auto& graph_trace : profile.graph_trace()) {
     for (const auto& calc_trace : graph_trace.calculator_trace()) {
-      if (calc_trace.event_type() != mediapipe_v01013_based::GraphTrace_EventType_PROCESS) {
+      if (calc_trace.event_type() != hand_tracking_mp_lean::GraphTrace_EventType_PROCESS) {
         continue;
       }
       if (calc_trace.has_start_time() && !calc_trace.has_finish_time()) {
@@ -214,7 +214,7 @@ void CompleteCalculatorData(
   }
 }
 
-void Reporter::Accumulate(const mediapipe_v01013_based::GraphProfile& profile) {
+void Reporter::Accumulate(const hand_tracking_mp_lean::GraphProfile& profile) {
   // Cache nodeID to its string name.
   NameLookup name_lookup;
   CacheNodeNameLookup(profile, &name_lookup);
@@ -238,7 +238,7 @@ void Reporter::Accumulate(const mediapipe_v01013_based::GraphProfile& profile) {
 
   for (const auto& graph_trace : profile.graph_trace()) {
     for (const auto& calc_trace : graph_trace.calculator_trace()) {
-      if (calc_trace.event_type() != mediapipe_v01013_based::GraphTrace_EventType_PROCESS) {
+      if (calc_trace.event_type() != hand_tracking_mp_lean::GraphTrace_EventType_PROCESS) {
         continue;
       }
 
@@ -444,4 +444,4 @@ std::unique_ptr<Report> Reporter::Report() {
 }
 
 }  // namespace reporter
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

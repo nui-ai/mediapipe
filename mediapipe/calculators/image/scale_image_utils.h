@@ -20,7 +20,7 @@
 
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace scale_image {
 
 // Given a width and height and min and max aspect ratios, determine the
@@ -61,6 +61,6 @@ absl::Status FindOutputDimensions(int input_width, int input_height,  //
                                   int* output_width, int* output_height);
 
 }  // namespace scale_image
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_IMAGE_SCALE_IMAGE_UTILS_H_

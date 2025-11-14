@@ -34,15 +34,15 @@
 #include "mediapipe/gpu/gpu_origin_utils.h"
 #include "mediapipe/gpu/shader_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
-using mediapipe_v01013_based::GlCalculatorHelper;
-using mediapipe_v01013_based::GlhCreateProgram;
-using mediapipe_v01013_based::GlTexture;
-using mediapipe_v01013_based::GpuBuffer;
-using mediapipe_v01013_based::GpuOrigin;
+using hand_tracking_mp_lean::GlCalculatorHelper;
+using hand_tracking_mp_lean::GlhCreateProgram;
+using hand_tracking_mp_lean::GlTexture;
+using hand_tracking_mp_lean::GpuBuffer;
+using hand_tracking_mp_lean::GpuOrigin;
 
 #ifdef __APPLE__
 #define GL_CLAMP_TO_BORDER_MAY_BE_SUPPORTED 0
@@ -50,7 +50,7 @@ using mediapipe_v01013_based::GpuOrigin;
 #define GL_CLAMP_TO_BORDER_MAY_BE_SUPPORTED 1
 #endif  //  __APPLE__
 
-bool IsGlClampToBorderSupported(const mediapipe_v01013_based::GlContext& gl_context) {
+bool IsGlClampToBorderSupported(const hand_tracking_mp_lean::GlContext& gl_context) {
   return gl_context.gl_major_version() > 3 ||
          (gl_context.gl_major_version() == 3 &&
           gl_context.gl_minor_version() >= 2);
@@ -189,7 +189,7 @@ class GlTextureWarpAffineRunner
       };
 
       const std::string vert_src =
-          absl::StrCat(mediapipe_v01013_based::kMediaPipeVertexShaderPreamble, kVertShader);
+          absl::StrCat(hand_tracking_mp_lean::kMediaPipeVertexShaderPreamble, kVertShader);
 
       std::string interpolation_def;
       switch (interpolation_) {
@@ -203,7 +203,7 @@ class GlTextureWarpAffineRunner
       }
 
       const std::string frag_src =
-          absl::StrCat(mediapipe_v01013_based::kMediaPipeFragmentShaderPreamble,
+          absl::StrCat(hand_tracking_mp_lean::kMediaPipeFragmentShaderPreamble,
                        interpolation_def, kFragShader);
 
       MP_ASSIGN_OR_RETURN(program_, create_fn(vert_src, frag_src));
@@ -213,7 +213,7 @@ class GlTextureWarpAffineRunner
           #define CUSTOM_ZERO_BORDER_MODE
         )";
         const std::string frag_custom_zero_src = absl::StrCat(
-            mediapipe_v01013_based::kMediaPipeFragmentShaderPreamble,
+            hand_tracking_mp_lean::kMediaPipeFragmentShaderPreamble,
             custom_zero_border_mode_def, interpolation_def, kFragShader);
         return create_fn(vert_src, frag_custom_zero_src);
       };
@@ -233,13 +233,13 @@ class GlTextureWarpAffineRunner
 
       // vbo 0
       glBindBuffer(GL_ARRAY_BUFFER, vbo_[0]);
-      glBufferData(GL_ARRAY_BUFFER, sizeof(mediapipe_v01013_based::kBasicSquareVertices),
-                   mediapipe_v01013_based::kBasicSquareVertices, GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(hand_tracking_mp_lean::kBasicSquareVertices),
+                   hand_tracking_mp_lean::kBasicSquareVertices, GL_STATIC_DRAW);
 
       // vbo 1
       glBindBuffer(GL_ARRAY_BUFFER, vbo_[1]);
-      glBufferData(GL_ARRAY_BUFFER, sizeof(mediapipe_v01013_based::kBasicTextureVertices),
-                   mediapipe_v01013_based::kBasicTextureVertices, GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(hand_tracking_mp_lean::kBasicTextureVertices),
+                   hand_tracking_mp_lean::kBasicTextureVertices, GL_STATIC_DRAW);
 
       glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -319,7 +319,7 @@ class GlTextureWarpAffineRunner
     // uniforms
     Eigen::Matrix<float, 4, 4, Eigen::RowMajor> eigen_mat(matrix.data());
     MP_ASSIGN_OR_RETURN(bool is_matrix_vertical_flip_needed,
-                        mediapipe_v01013_based::IsGpuOriginAtBottom(gpu_origin_));
+                        hand_tracking_mp_lean::IsGpuOriginAtBottom(gpu_origin_));
     if (is_matrix_vertical_flip_needed) {
       // @matrix describes affine transformation in terms of TOP LEFT origin, so
       // in some cases/on some platforms an extra flipping should be done before
@@ -426,4 +426,4 @@ CreateAffineTransformationGlRunner(
   return runner;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

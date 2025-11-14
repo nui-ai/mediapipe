@@ -28,7 +28,7 @@
 #include "mediapipe/framework/executor.h"
 #include "mediapipe/framework/scheduler_shared.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class CalculatorNode;
 
@@ -175,6 +175,6 @@ class SchedulerQueue : public TaskQueue {
 };
 
 }  // namespace internal
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_SCHEDULER_QUEUE_H_

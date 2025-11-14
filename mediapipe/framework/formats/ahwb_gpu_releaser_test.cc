@@ -13,7 +13,7 @@
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 class ReleaseTracker {};
@@ -157,6 +157,6 @@ TEST(AhwbGpuReleaserTest,
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TENSOR_USE_AHWB

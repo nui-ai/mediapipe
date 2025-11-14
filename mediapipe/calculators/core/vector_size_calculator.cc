@@ -17,16 +17,16 @@
 #include "mediapipe/framework/formats/classification.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 using LandmarkListVectorSizeCalculator =
-    VectorSizeCalculator<mediapipe_v01013_based::LandmarkList>;
+    VectorSizeCalculator<hand_tracking_mp_lean::LandmarkList>;
 REGISTER_CALCULATOR(LandmarkListVectorSizeCalculator);
 
 using ClassificationListVectorSizeCalculator =
-    VectorSizeCalculator<mediapipe_v01013_based::ClassificationList>;
+    VectorSizeCalculator<hand_tracking_mp_lean::ClassificationList>;
 REGISTER_CALCULATOR(ClassificationListVectorSizeCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

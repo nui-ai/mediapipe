@@ -11,7 +11,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 namespace {
 
 TEST(ConvertTensorToJoints, ConvertTensorToJoints) {
@@ -71,4 +71,4 @@ TEST(ConvertTensorToJointsAtIndex, ConvertTensorToJointsAtIndex) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

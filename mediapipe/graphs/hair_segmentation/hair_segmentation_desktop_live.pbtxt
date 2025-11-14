@@ -40,7 +40,7 @@ node: {
   input_stream: "IMAGE:throttled_input_video"
   output_stream: "IMAGE:transformed_input_video"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.ImageTransformationCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.ImageTransformationCalculatorOptions] {
       output_width: 512
       output_height: 512
     }
@@ -89,7 +89,7 @@ node {
   input_stream: "IMAGE:mask_embedded_input_video"
   output_stream: "TENSORS:image_tensor"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TfLiteConverterCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.TfLiteConverterCalculatorOptions] {
       zero_center: false
       max_num_channels: 4
     }
@@ -102,7 +102,7 @@ node {
   calculator: "TfLiteCustomOpResolverCalculator"
   output_side_packet: "op_resolver"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TfLiteCustomOpResolverCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.TfLiteCustomOpResolverCalculatorOptions] {
       use_gpu: false
     }
   }
@@ -117,7 +117,7 @@ node {
   output_stream: "TENSORS:segmentation_tensor"
   input_side_packet: "CUSTOM_OP_RESOLVER:op_resolver"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TfLiteInferenceCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.TfLiteInferenceCalculatorOptions] {
       model_path: "mediapipe/models/hair_segmentation.tflite"
       use_gpu: false
     }
@@ -134,7 +134,7 @@ node {
   input_stream: "PREV_MASK:previous_hair_mask"
   output_stream: "MASK:hair_mask"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.TfLiteTensorsToSegmentationCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.TfLiteTensorsToSegmentationCalculatorOptions] {
       tensor_width: 512
       tensor_height: 512
       tensor_channels: 2
@@ -151,7 +151,7 @@ node {
   input_stream: "MASK:hair_mask"
   output_stream: "IMAGE:output_video"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.RecolorCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.RecolorCalculatorOptions] {
       color { r: 0 g: 0 b: 255 }
       mask_channel: RED
     }

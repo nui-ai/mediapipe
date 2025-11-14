@@ -22,7 +22,7 @@ node {
   input_stream: "IMAGE_SIZE:image_size"
   output_stream: "NORM_RECT:initial_roi"
   options: {
-    [mediapipe_v01013_based.DetectionsToRectsCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.DetectionsToRectsCalculatorOptions.ext] {
       rotation_vector_start_keypoint_index: 0  # Left eye.
       rotation_vector_end_keypoint_index: 1  # Right eye.
       rotation_vector_target_angle_degrees: 0
@@ -38,7 +38,7 @@ node {
   input_stream: "IMAGE_SIZE:image_size"
   output_stream: "roi"
   options: {
-    [mediapipe_v01013_based.RectTransformationCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.RectTransformationCalculatorOptions.ext] {
       scale_x: 1.5
       scale_y: 1.5
       square_long: true

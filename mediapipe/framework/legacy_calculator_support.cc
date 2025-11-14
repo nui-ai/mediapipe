@@ -14,7 +14,7 @@
 
 #include "mediapipe/framework/legacy_calculator_support.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 template <>
 thread_local CalculatorContext*
@@ -23,4 +23,4 @@ template <>
 thread_local CalculatorContract*
     LegacyCalculatorSupport::Scoped<CalculatorContract>::current_ = nullptr;
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

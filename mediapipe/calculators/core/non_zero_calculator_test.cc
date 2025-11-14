@@ -22,7 +22,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/validate_type.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class NonZeroCalculatorTest : public ::testing::Test {
  protected:
@@ -90,4 +90,4 @@ TEST_F(NonZeroCalculatorTest, SwitchesBetweenNonZeroAndZeroOutput) {
               ::testing::ElementsAre(true, false, true, false, true));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

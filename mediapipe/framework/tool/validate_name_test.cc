@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -206,8 +206,8 @@ TEST(ValidateNameTest, ParseTagIndexName) {
                             "mieko_harada");
   TestPassParseTagIndexName("A1:100:mieko1", "A1", 100, "mieko1");
   TestPassParseTagIndexName(
-      absl::StrCat("A1:", mediapipe_v01013_based::internal::kMaxCollectionItemId, ":mieko1"),
-      "A1", mediapipe_v01013_based::internal::kMaxCollectionItemId, "mieko1");
+      absl::StrCat("A1:", hand_tracking_mp_lean::internal::kMaxCollectionItemId, ":mieko1"),
+      "A1", hand_tracking_mp_lean::internal::kMaxCollectionItemId, "mieko1");
 
   // Failure cases.
   TestFailParseTagIndexName("");    // Empty name.
@@ -244,7 +244,7 @@ TEST(ValidateNameTest, ParseTagIndexName) {
   TestFailParseTagIndexName("A:01:name");  // Leading zero.
   TestFailParseTagIndexName("A:00:name");  // Leading zero.
   TestFailParseTagIndexName(
-      absl::StrCat("A:", mediapipe_v01013_based::internal::kMaxCollectionItemId + 1,
+      absl::StrCat("A:", hand_tracking_mp_lean::internal::kMaxCollectionItemId + 1,
                    ":a"));  // Too large an index.
   // Extra field
   TestFailParseTagIndexName("A:1:a:");   // extra field.
@@ -472,4 +472,4 @@ TEST(ValidateNameTest, GetTagAndNameInfo) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

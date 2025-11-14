@@ -39,7 +39,7 @@ limitations under the License.
 #include "mediapipe/util/color.pb.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace interactive_segmenter {
@@ -65,11 +65,11 @@ constexpr absl::string_view kSubgraphTypeName{
 
 using components::containers::NormalizedKeypoint;
 
-using ::mediapipe_v01013_based::CalculatorGraphConfig;
-using ::mediapipe_v01013_based::Image;
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::tasks::vision::image_segmenter::ImageSegmenterResult;
-using ImageSegmenterGraphOptionsProto = ::mediapipe_v01013_based::tasks::vision::
+using ::hand_tracking_mp_lean::CalculatorGraphConfig;
+using ::hand_tracking_mp_lean::Image;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::tasks::vision::image_segmenter::ImageSegmenterResult;
+using ImageSegmenterGraphOptionsProto = ::hand_tracking_mp_lean::tasks::vision::
     image_segmenter::proto::ImageSegmenterGraphOptions;
 
 // Creates a MediaPipe graph config that only contains a single subgraph node of
@@ -178,7 +178,7 @@ InteractiveSegmenter::Create(
 }
 
 absl::StatusOr<ImageSegmenterResult> InteractiveSegmenter::Segment(
-    mediapipe_v01013_based::Image image, const RegionOfInterest& roi,
+    hand_tracking_mp_lean::Image image, const RegionOfInterest& roi,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -194,9 +194,9 @@ absl::StatusOr<ImageSegmenterResult> InteractiveSegmenter::Segment(
   MP_ASSIGN_OR_RETURN(
       auto output_packets,
       ProcessImageData(
-          {{kImageInStreamName, mediapipe_v01013_based::MakePacket<Image>(std::move(image))},
+          {{kImageInStreamName, hand_tracking_mp_lean::MakePacket<Image>(std::move(image))},
            {kRoiStreamName,
-            mediapipe_v01013_based::MakePacket<RenderData>(std::move(roi_as_render_data))},
+            hand_tracking_mp_lean::MakePacket<RenderData>(std::move(roi_as_render_data))},
            {kNormRectStreamName,
             MakePacket<NormalizedRect>(std::move(norm_rect))}}));
   std::optional<std::vector<Image>> confidence_masks;
@@ -216,4 +216,4 @@ absl::StatusOr<ImageSegmenterResult> InteractiveSegmenter::Segment(
 }  // namespace interactive_segmenter
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

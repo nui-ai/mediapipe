@@ -19,7 +19,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/custom_ops/sentencepiece/config_generated.h"
 #include "mediapipe/tasks/cc/text/custom_ops/sentencepiece/utils.h"
 
-namespace mediapipe_v01013_based::tflite_operations::sentencepiece {
+namespace hand_tracking_mp_lean::tflite_operations::sentencepiece {
 
 // A trie node specifies a node in the tree, either an intermediate node or
 // a leaf node.
@@ -106,6 +106,6 @@ void DoubleArrayTrie::IteratePrefixMatches(const utils::string_view& input,
   }
 }
 
-}  // namespace mediapipe_v01013_based::tflite_operations::sentencepiece
+}  // namespace hand_tracking_mp_lean::tflite_operations::sentencepiece
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_CUSTOM_OPS_SENTENCEPIECE_DOUBLE_ARRAY_TRIE_H_

@@ -20,11 +20,11 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/proto/classifications.pb.h"
 
 // Specialized EndLoopCalculator for Tasks specific types.
-namespace mediapipe_v01013_based::tasks {
+namespace hand_tracking_mp_lean::tasks {
 
 typedef EndLoopCalculator<
     std::vector<components::containers::proto::ClassificationResult>>
     EndLoopClassificationResultCalculator;
-REGISTER_CALCULATOR(::mediapipe_v01013_based::tasks::EndLoopClassificationResultCalculator);
+REGISTER_CALCULATOR(::hand_tracking_mp_lean::tasks::EndLoopClassificationResultCalculator);
 
-}  // namespace mediapipe_v01013_based::tasks
+}  // namespace hand_tracking_mp_lean::tasks

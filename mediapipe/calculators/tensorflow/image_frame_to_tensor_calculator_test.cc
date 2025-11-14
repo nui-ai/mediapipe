@@ -25,7 +25,7 @@
 #include "tensorflow/core/framework/tensor_shape.h"
 #include "tensorflow/core/framework/types.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tf = tensorflow;
 using RandomEngine = std::mt19937_64;
@@ -482,4 +482,4 @@ TEST_F(ImageFrameToTensorCalculatorTest, FixedRGBFrameWithRepeatMeanAndStddev) {
   EXPECT_EQ(actual[1], 0.0f);             // (128 - 128) / 128
   EXPECT_EQ(actual[2], 127.0f / 128.0f);  // (255 - 128) / 128
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

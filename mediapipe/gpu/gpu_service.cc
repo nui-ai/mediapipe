@@ -14,9 +14,9 @@
 
 #include "mediapipe/gpu/gpu_service.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 const GraphService<GpuResources> kGpuService(
     "kGpuService", GraphServiceBase::kAllowDefaultInitialization);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

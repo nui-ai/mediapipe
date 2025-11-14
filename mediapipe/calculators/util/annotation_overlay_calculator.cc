@@ -41,7 +41,7 @@
 #include "mediapipe/gpu/shader_util.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -61,7 +61,7 @@ size_t RoundUp(size_t n, size_t m) { return ((n + m - 1) / m) * m; }  // NOLINT
 constexpr uchar kAnnotationBackgroundColor = 2;  // Grayscale value.
 
 // Future Image type.
-inline bool HasImageTag(mediapipe_v01013_based::CalculatorContext* cc) {
+inline bool HasImageTag(hand_tracking_mp_lean::CalculatorContext* cc) {
   return cc->Inputs().HasTag(kImageTag);
 }
 }  // namespace
@@ -171,7 +171,7 @@ class AnnotationOverlayCalculator : public CalculatorBase {
   bool use_gpu_ = false;
   bool gpu_initialized_ = false;
 #if !MEDIAPIPE_DISABLE_GPU
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
   GLuint program_ = 0;
   GLuint image_mat_tex_ = 0;  // Overlay drawing image for GPU.
   int width_ = 0;
@@ -199,7 +199,7 @@ absl::Status AnnotationOverlayCalculator::GetContract(CalculatorContract* cc) {
   // Input image to render onto copy of. Should be same type as output.
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Inputs().HasTag(kGpuBufferTag)) {
-    cc->Inputs().Tag(kGpuBufferTag).Set<mediapipe_v01013_based::GpuBuffer>();
+    cc->Inputs().Tag(kGpuBufferTag).Set<hand_tracking_mp_lean::GpuBuffer>();
     RET_CHECK(cc->Outputs().HasTag(kGpuBufferTag));
     use_gpu = true;
   }
@@ -210,7 +210,7 @@ absl::Status AnnotationOverlayCalculator::GetContract(CalculatorContract* cc) {
   }
 
   if (cc->Inputs().HasTag(kImageTag)) {
-    cc->Inputs().Tag(kImageTag).Set<mediapipe_v01013_based::Image>();
+    cc->Inputs().Tag(kImageTag).Set<hand_tracking_mp_lean::Image>();
     RET_CHECK(cc->Outputs().HasTag(kImageTag));
 #if !MEDIAPIPE_DISABLE_GPU
     use_gpu = true;  // Prepare GPU resources because images can come in on GPU.
@@ -233,19 +233,19 @@ absl::Status AnnotationOverlayCalculator::GetContract(CalculatorContract* cc) {
   // Rendered image. Should be same type as input.
 #if !MEDIAPIPE_DISABLE_GPU
   if (cc->Outputs().HasTag(kGpuBufferTag)) {
-    cc->Outputs().Tag(kGpuBufferTag).Set<mediapipe_v01013_based::GpuBuffer>();
+    cc->Outputs().Tag(kGpuBufferTag).Set<hand_tracking_mp_lean::GpuBuffer>();
   }
 #endif  // !MEDIAPIPE_DISABLE_GPU
   if (cc->Outputs().HasTag(kImageFrameTag)) {
     cc->Outputs().Tag(kImageFrameTag).Set<ImageFrame>();
   }
   if (cc->Outputs().HasTag(kImageTag)) {
-    cc->Outputs().Tag(kImageTag).Set<mediapipe_v01013_based::Image>();
+    cc->Outputs().Tag(kImageTag).Set<hand_tracking_mp_lean::Image>();
   }
 
   if (use_gpu) {
 #if !MEDIAPIPE_DISABLE_GPU
-    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc));
+    MP_RETURN_IF_ERROR(hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract(cc));
 #endif  // !MEDIAPIPE_DISABLE_GPU
   }
 
@@ -311,7 +311,7 @@ absl::Status AnnotationOverlayCalculator::Process(CalculatorContext* cc) {
     return absl::OkStatus();
   }
   if (HasImageTag(cc)) {
-    use_gpu_ = cc->Inputs().Tag(kImageTag).Get<mediapipe_v01013_based::Image>().UsesGpu();
+    use_gpu_ = cc->Inputs().Tag(kImageTag).Get<hand_tracking_mp_lean::Image>().UsesGpu();
   }
 
   // Initialize render target, drawn with OpenCV.
@@ -323,19 +323,19 @@ absl::Status AnnotationOverlayCalculator::Process(CalculatorContext* cc) {
       MP_RETURN_IF_ERROR(
           gpu_helper_.RunInGlContext([this, cc]() -> absl::Status {
             if (HasImageTag(cc)) {
-              return GlSetup<mediapipe_v01013_based::Image, kImageTag>(cc);
+              return GlSetup<hand_tracking_mp_lean::Image, kImageTag>(cc);
             }
-            return GlSetup<mediapipe_v01013_based::GpuBuffer, kGpuBufferTag>(cc);
+            return GlSetup<hand_tracking_mp_lean::GpuBuffer, kGpuBufferTag>(cc);
           }));
       gpu_initialized_ = true;
     }
     if (HasImageTag(cc)) {
       MP_RETURN_IF_ERROR(
-          (CreateRenderTargetGpu<mediapipe_v01013_based::Image, kImageTag>(cc, image_mat)));
+          (CreateRenderTargetGpu<hand_tracking_mp_lean::Image, kImageTag>(cc, image_mat)));
     }
     if (cc->Inputs().HasTag(kGpuBufferTag)) {
       MP_RETURN_IF_ERROR(
-          (CreateRenderTargetGpu<mediapipe_v01013_based::GpuBuffer, kGpuBufferTag>(
+          (CreateRenderTargetGpu<hand_tracking_mp_lean::GpuBuffer, kGpuBufferTag>(
               cc, image_mat)));
     }
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -384,9 +384,9 @@ absl::Status AnnotationOverlayCalculator::Process(CalculatorContext* cc) {
     MP_RETURN_IF_ERROR(
         gpu_helper_.RunInGlContext([this, cc, image_mat_ptr]() -> absl::Status {
           if (HasImageTag(cc)) {
-            return RenderToGpu<mediapipe_v01013_based::Image, kImageTag>(cc, image_mat_ptr);
+            return RenderToGpu<hand_tracking_mp_lean::Image, kImageTag>(cc, image_mat_ptr);
           }
-          return RenderToGpu<mediapipe_v01013_based::GpuBuffer, kGpuBufferTag>(
+          return RenderToGpu<hand_tracking_mp_lean::GpuBuffer, kGpuBufferTag>(
               cc, image_mat_ptr);
         }));
 #endif  // !MEDIAPIPE_DISABLE_GPU
@@ -429,7 +429,7 @@ absl::Status AnnotationOverlayCalculator::RenderToCpu(
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
   if (HasImageTag(cc)) {
-    auto out = std::make_unique<mediapipe_v01013_based::Image>(std::move(output_frame));
+    auto out = std::make_unique<hand_tracking_mp_lean::Image>(std::move(output_frame));
     cc->Outputs().Tag(kImageTag).Add(out.release(), cc->InputTimestamp());
   }
   if (cc->Outputs().HasTag(kImageFrameTag)) {
@@ -451,7 +451,7 @@ absl::Status AnnotationOverlayCalculator::RenderToGpu(CalculatorContext* cc,
 
   auto output_texture = gpu_helper_.CreateDestinationTexture(
       input_texture.width(), input_texture.height(),
-      mediapipe_v01013_based::GpuBufferFormat::kBGRA32);
+      hand_tracking_mp_lean::GpuBufferFormat::kBGRA32);
 
   // Upload render target to GPU.
   {
@@ -544,7 +544,7 @@ absl::Status AnnotationOverlayCalculator::CreateRenderTargetCpuImage(
     ImageFormat::Format* target_format) {
   if (image_frame_available_) {
     const auto& input_frame =
-        cc->Inputs().Tag(kImageTag).Get<mediapipe_v01013_based::Image>();
+        cc->Inputs().Tag(kImageTag).Get<hand_tracking_mp_lean::Image>();
 
     int target_mat_type;
     switch (input_frame.image_format()) {
@@ -593,10 +593,10 @@ absl::Status AnnotationOverlayCalculator::CreateRenderTargetGpu(
 #if !MEDIAPIPE_DISABLE_GPU
   if (image_frame_available_) {
     const auto& input_frame = cc->Inputs().Tag(Tag).Get<Type>();
-    const mediapipe_v01013_based::ImageFormat::Format format =
-        mediapipe_v01013_based::ImageFormatForGpuBufferFormat(input_frame.format());
-    if (format != mediapipe_v01013_based::ImageFormat::SRGBA &&
-        format != mediapipe_v01013_based::ImageFormat::SRGB)
+    const hand_tracking_mp_lean::ImageFormat::Format format =
+        hand_tracking_mp_lean::ImageFormatForGpuBufferFormat(input_frame.format());
+    if (format != hand_tracking_mp_lean::ImageFormat::SRGBA &&
+        format != hand_tracking_mp_lean::ImageFormat::SRGB)
       RET_CHECK_FAIL() << "Unsupported GPU input format: " << format;
     image_mat =
         absl::make_unique<cv::Mat>(height_canvas_, width_canvas_, CV_8UC3);
@@ -723,10 +723,10 @@ absl::Status AnnotationOverlayCalculator::GlSetup(CalculatorContext* cc) {
   }
 
   const std::string frag_src = absl::StrCat(
-      mediapipe_v01013_based::kMediaPipeFragmentShaderPreamble, defines, kFragSrcBody);
+      hand_tracking_mp_lean::kMediaPipeFragmentShaderPreamble, defines, kFragSrcBody);
 
   // Create shader program and set parameters
-  mediapipe_v01013_based::GlhCreateProgram(mediapipe_v01013_based::kBasicVertexShader, frag_src.c_str(),
+  hand_tracking_mp_lean::GlhCreateProgram(hand_tracking_mp_lean::kBasicVertexShader, frag_src.c_str(),
                               NUM_ATTRIBUTES, (const GLchar**)&attr_name[0],
                               attr_location, &program_);
   RET_CHECK(program_) << "Problem initializing the program.";
@@ -771,4 +771,4 @@ absl::Status AnnotationOverlayCalculator::GlSetup(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

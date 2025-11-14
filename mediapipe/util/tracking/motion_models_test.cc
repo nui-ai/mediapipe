@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/vector.h"
 #include "mediapipe/util/tracking/motion_estimation.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 static const float kArrayFloat[] = {1, 2, 3, 4, 5, 6, 7, 8};
@@ -44,16 +44,16 @@ void CheckFromArrayAndGetParameter(const char* model_zero_string,
   typedef ModelAdapter<Model> Adapter;
 
   EXPECT_THAT(Adapter::FromFloatPointer(kArrayFloat, false),
-              mediapipe_v01013_based::EqualsProto(model_zero));
+              hand_tracking_mp_lean::EqualsProto(model_zero));
 
   EXPECT_THAT(Adapter::FromFloatPointer(kArrayFloat, true),
-              mediapipe_v01013_based::EqualsProto(model_identity));
+              hand_tracking_mp_lean::EqualsProto(model_identity));
 
   EXPECT_THAT(Adapter::FromDoublePointer(kArrayDouble, false),
-              mediapipe_v01013_based::EqualsProto(model_zero));
+              hand_tracking_mp_lean::EqualsProto(model_zero));
 
   EXPECT_THAT(Adapter::FromDoublePointer(kArrayDouble, true),
-              mediapipe_v01013_based::EqualsProto(model_identity));
+              hand_tracking_mp_lean::EqualsProto(model_identity));
 
   ASSERT_LE(Adapter::NumParameters(), 8);
   for (int i = 0; i < Adapter::NumParameters(); ++i) {
@@ -259,8 +259,8 @@ void CheckToFromAffine(const char* model_string, const char* affine_string) {
   ASSERT_TRUE(proto_ns::TextFormat::ParseFromString(affine_string, &affine));
 
   typedef ModelAdapter<Model> Adapter;
-  EXPECT_THAT(Adapter::ToAffine(model), mediapipe_v01013_based::EqualsProto(affine));
-  EXPECT_THAT(Adapter::FromAffine(affine), mediapipe_v01013_based::EqualsProto(model));
+  EXPECT_THAT(Adapter::ToAffine(model), hand_tracking_mp_lean::EqualsProto(affine));
+  EXPECT_THAT(Adapter::FromAffine(affine), hand_tracking_mp_lean::EqualsProto(model));
 }
 
 TEST_F(MotionModelsTest, ToFromAffine) {
@@ -331,4 +331,4 @@ TEST_F(MotionModelsTest, ProjectModels) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

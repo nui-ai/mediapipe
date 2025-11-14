@@ -23,10 +23,10 @@ limitations under the License.
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
+using ::hand_tracking_mp_lean::NormalizedRect;
 using ::testing::ElementsAre;
 using ::testing::EqualsProto;
 
@@ -353,4 +353,4 @@ TEST_F(HandAssociationCalculatorTest, NormRectAssocSingleInputStream) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

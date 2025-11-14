@@ -140,8 +140,8 @@ void ReverseRGB(cv::Scalar* color) {
 }
 }  // namespace
 
-namespace mediapipe_v01013_based {
-void DrawPose(const mediapipe_v01013_based::NormalizedLandmarkList& pose, bool flip_y,
+namespace hand_tracking_mp_lean {
+void DrawPose(const hand_tracking_mp_lean::NormalizedLandmarkList& pose, bool flip_y,
               cv::Mat* image) {
   const int target_width = image->cols;
   const int target_height = image->rows;
@@ -198,7 +198,7 @@ void DrawPose(const mediapipe_v01013_based::NormalizedLandmarkList& pose, bool f
   }
 }
 
-void DrawFace(const mediapipe_v01013_based::NormalizedLandmarkList& face,
+void DrawFace(const hand_tracking_mp_lean::NormalizedLandmarkList& face,
               const std::pair<int, int>& image_size, const cv::Mat& affine,
               bool flip_y, bool draw_nose, int color_style, bool reverse_color,
               int draw_line_width, cv::Mat* image) {
@@ -325,4 +325,4 @@ void DrawFace(const mediapipe_v01013_based::NormalizedLandmarkList& face,
     }
   }
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

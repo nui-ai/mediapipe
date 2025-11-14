@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/util/sequence/media_sequence_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace mediasequence {
 
 namespace {
@@ -405,24 +405,24 @@ int GetBBoxSize(const std::string& prefix,
   return GetBBoxXMinSize(prefix, sequence);
 }
 
-std::vector<::mediapipe_v01013_based::Location> GetBBoxAt(
+std::vector<::hand_tracking_mp_lean::Location> GetBBoxAt(
     const std::string& prefix, const tensorflow::SequenceExample& sequence,
     int index) {
-  std::vector<::mediapipe_v01013_based::Location> bboxes;
+  std::vector<::hand_tracking_mp_lean::Location> bboxes;
   const auto& xmins = GetBBoxXMinAt(prefix, sequence, index);
   const auto& ymins = GetBBoxYMinAt(prefix, sequence, index);
   const auto& xmaxs = GetBBoxXMaxAt(prefix, sequence, index);
   const auto& ymaxs = GetBBoxYMaxAt(prefix, sequence, index);
   bboxes.reserve(xmins.size());
   for (int i = 0; i < xmins.size(); ++i) {
-    bboxes.push_back(::mediapipe_v01013_based::Location::CreateRelativeBBoxLocation(
+    bboxes.push_back(::hand_tracking_mp_lean::Location::CreateRelativeBBoxLocation(
         xmins[i], ymins[i], xmaxs[i] - xmins[i], ymaxs[i] - ymins[i]));
   }
   return bboxes;
 }
 
 void AddBBox(const std::string& prefix,
-             const std::vector<::mediapipe_v01013_based::Location>& bboxes,
+             const std::vector<::hand_tracking_mp_lean::Location>& bboxes,
              tensorflow::SequenceExample* sequence) {
   ::std::vector<float> xmins;
   ::std::vector<float> ymins;
@@ -527,7 +527,7 @@ void Clear3dPoint(const std::string& prefix,
   ClearBBox3dPointZ(prefix, sequence);
 }
 
-std::unique_ptr<mediapipe_v01013_based::Matrix> GetAudioFromFeatureAt(
+std::unique_ptr<hand_tracking_mp_lean::Matrix> GetAudioFromFeatureAt(
     const std::string& prefix, const tensorflow::SequenceExample& sequence,
     int index) {
   const auto& flat_data = GetFeatureFloatsAt(prefix, sequence, index);
@@ -539,21 +539,21 @@ std::unique_ptr<mediapipe_v01013_based::Matrix> GetAudioFromFeatureAt(
       << "The data size is not a multiple of the number of channels: "
       << flat_data.size() << " % " << num_channels << " = "
       << flat_data.size() % num_channels << " for sequence index " << index;
-  auto output = absl::make_unique<mediapipe_v01013_based::Matrix>(
+  auto output = absl::make_unique<hand_tracking_mp_lean::Matrix>(
       num_channels, flat_data.size() / num_channels);
   std::copy(flat_data.begin(), flat_data.end(), output->data());
   return output;
 }
 
 void AddAudioAsFeature(const std::string& prefix,
-                       const mediapipe_v01013_based::Matrix& audio,
+                       const hand_tracking_mp_lean::Matrix& audio,
                        tensorflow::SequenceExample* sequence) {
   auto* value_list =
       MutableFeatureList(merge_prefix(prefix, kFeatureFloatsKey), sequence)
           ->add_feature()
           ->mutable_float_list()
           ->mutable_value();
-  mediapipe_v01013_based::proto_ns::RepeatedField<float>(
+  hand_tracking_mp_lean::proto_ns::RepeatedField<float>(
       audio.data(), audio.data() + audio.rows() * audio.cols())
       .Swap(value_list);
 }
@@ -575,4 +575,4 @@ absl::Status ReconcileMetadata(bool reconcile_bbox_annotations,
 }
 
 }  // namespace mediasequence
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

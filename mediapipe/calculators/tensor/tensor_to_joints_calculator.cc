@@ -22,7 +22,7 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace {
 
@@ -32,7 +32,7 @@ constexpr int kRotation6dSize = 6;
 }  // namespace
 
 class TensorToJointsCalculatorImpl
-    : public mediapipe_v01013_based::api2::NodeImpl<TensorToJointsCalculator> {
+    : public hand_tracking_mp_lean::api2::NodeImpl<TensorToJointsCalculator> {
  public:
   absl::Status Open(CalculatorContext* cc) override {
     const auto& options = cc->Options<TensorToJointsCalculatorOptions>();
@@ -81,4 +81,4 @@ class TensorToJointsCalculatorImpl
 MEDIAPIPE_NODE_IMPLEMENTATION(TensorToJointsCalculatorImpl);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -21,7 +21,7 @@
 #include "absl/synchronization/mutex.h"
 #include "absl/time/time.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // This state, which contains the "guts" of MonotonicClockImpl, is separate
 // from the class instance so that it can be shared to implement a
@@ -227,4 +227,4 @@ MonotonicClock* MonotonicClockAccess::CreateMonotonicClock(State* state) {
   return clock;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

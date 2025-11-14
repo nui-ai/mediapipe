@@ -17,7 +17,7 @@
 
 #include "mediapipe/framework/port/core_proto_inc.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace protobuf {
 
 #if !defined(MEDIAPIPE_PROTO_LITE) || !defined(MEDIAPIPE_PROTO_THIRD_PARTY)
@@ -41,6 +41,6 @@ class Any {
 #endif
 
 }  // namespace protobuf
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_PORT_ANY_PROTO_H_

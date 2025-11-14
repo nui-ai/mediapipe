@@ -29,19 +29,19 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/model_task_graph.h"
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_blendshapes_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
 
 namespace {
 
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::LandmarksToTensorCalculator;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Stream;
-using ::mediapipe_v01013_based::tasks::vision::face_landmarker::proto::
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::LandmarksToTensorCalculator;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Stream;
+using ::hand_tracking_mp_lean::tasks::vision::face_landmarker::proto::
     FaceBlendshapesGraphOptions;
 
 constexpr char kLandmarksTag[] = "LANDMARKS";
@@ -318,9 +318,9 @@ class FaceBlendshapesGraph : public core::ModelTaskGraph {
 };
 
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe_v01013_based::tasks::vision::face_landmarker::FaceBlendshapesGraph);
+    ::hand_tracking_mp_lean::tasks::vision::face_landmarker::FaceBlendshapesGraph);
 
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

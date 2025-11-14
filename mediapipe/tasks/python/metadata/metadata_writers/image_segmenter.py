@@ -120,7 +120,7 @@ class MetadataWriter(metadata_writer.MetadataWriterBase):
   ) -> "MetadataWriter":
     """Creates MetadataWriter to write the metadata for image segmenter.
 
-    The parameters required in this method are mandatory when using mediapipe_v01013_based
+    The parameters required in this method are mandatory when using hand_tracking_mp_lean
     Tasks.
 
     Example usage:

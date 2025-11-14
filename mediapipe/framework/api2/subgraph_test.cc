@@ -10,7 +10,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/subgraph_expansion.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace test {
 
@@ -45,7 +45,7 @@ class FooBarImpl2 : public SubgraphImpl<FooBar2, FooBarImpl2> {
 TEST(SubgraphTest, SubgraphConfig) {
   CalculatorGraphConfig subgraph = FooBarImpl1().GetConfig({}).value();
   const CalculatorGraphConfig expected_graph =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:__stream_0"
         output_stream: "OUT:__stream_2"
         node {
@@ -65,7 +65,7 @@ TEST(SubgraphTest, SubgraphConfig) {
 TEST(SubgraphTest, TypedSubgraphConfig) {
   CalculatorGraphConfig subgraph = FooBarImpl2().GetConfig({}).value();
   const CalculatorGraphConfig expected_graph =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:__stream_0"
         output_stream: "OUT:__stream_2"
         node {
@@ -96,7 +96,7 @@ TEST(SubgraphTest, ProtoApiConfig) {
   bar->add_output_stream("OUT:__stream_2");
 
   const CalculatorGraphConfig expected_graph =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:__stream_0"
         output_stream: "OUT:__stream_2"
         node {
@@ -115,7 +115,7 @@ TEST(SubgraphTest, ProtoApiConfig) {
 
 TEST(SubgraphTest, ExpandSubgraphs) {
   CalculatorGraphConfig supergraph =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           name: "simple_source"
           calculator: "SomeSourceCalculator"
@@ -128,7 +128,7 @@ TEST(SubgraphTest, ExpandSubgraphs) {
         }
       )pb");
   const CalculatorGraphConfig expected_graph =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           name: "simple_source"
           calculator: "SomeSourceCalculator"
@@ -153,4 +153,4 @@ TEST(SubgraphTest, ExpandSubgraphs) {
 
 }  // namespace test
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

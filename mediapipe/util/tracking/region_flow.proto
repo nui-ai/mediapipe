@@ -14,9 +14,9 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
-option java_package = "com.google.mediapipe_v01013_based.tracking";
+option java_package = "com.google.hand_tracking_mp_lean.tracking";
 option java_multiple_files = true;
 
 // Captures additional information about a RegionFlowFeature's

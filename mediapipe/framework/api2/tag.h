@@ -5,7 +5,7 @@
 
 #include "mediapipe/framework/api2/const_str.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // This template is used to define a separate type for each tag.
@@ -61,12 +61,12 @@ constexpr auto tag_build(S) {
 #define MPP_TAG(s)                                      \
   ([] {                                                 \
     struct S {                                          \
-      const ::mediapipe_v01013_based::api2::const_str tag{s};        \
+      const ::hand_tracking_mp_lean::api2::const_str tag{s};        \
     };                                                  \
-    return ::mediapipe_v01013_based::api2::internal::tag_build(S()); \
+    return ::hand_tracking_mp_lean::api2::internal::tag_build(S()); \
   }())
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_TAG_H_

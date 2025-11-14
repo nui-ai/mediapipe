@@ -21,7 +21,7 @@
 
 #include "absl/log/absl_log.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 DeletingFile::DeletingFile(DeletingFile&& other)
     : path_(std::move(other.path_)),
@@ -49,4 +49,4 @@ DeletingFile::~DeletingFile() {
 
 const std::string& DeletingFile::Path() const { return path_; }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

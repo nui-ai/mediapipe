@@ -23,15 +23,15 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #include "mediapipe/gpu/gpu_origin.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 absl::StatusOr<std::unique_ptr<AffineTransformation::Runner<
-    mediapipe_v01013_based::GpuBuffer, std::unique_ptr<mediapipe_v01013_based::GpuBuffer>>>>
+    hand_tracking_mp_lean::GpuBuffer, std::unique_ptr<hand_tracking_mp_lean::GpuBuffer>>>>
 CreateAffineTransformationGlRunner(
-    std::shared_ptr<mediapipe_v01013_based::GlCalculatorHelper> gl_helper,
-    mediapipe_v01013_based::GpuOrigin::Mode gpu_origin,
+    std::shared_ptr<hand_tracking_mp_lean::GlCalculatorHelper> gl_helper,
+    hand_tracking_mp_lean::GpuOrigin::Mode gpu_origin,
     AffineTransformation::Interpolation interpolation);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_IMAGE_AFFINE_TRANSFORMATION_RUNNER_GL_H_

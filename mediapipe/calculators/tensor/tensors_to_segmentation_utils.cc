@@ -31,7 +31,7 @@ namespace {
 enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, NUM_ATTRIBUTES };
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tensors_to_segmentation_utils {
 
 int NumGroups(int size, int group_size) {
@@ -111,4 +111,4 @@ void GlRender() {
 }
 
 }  // namespace tensors_to_segmentation_utils
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -43,7 +43,7 @@
 #include "mediapipe/framework/tool/simulation_clock_executor.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using PacketInfoMap =
     ShardedMap<std::string, std::list<std::pair<int64_t, PacketInfo>>>;
@@ -122,7 +122,7 @@ TEST_F(GraphTracerTest, EmptyTrace) {
 
   // Validate the GraphTrace data.
   EXPECT_THAT(GetTrace(),
-              EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<GraphTrace>(R"pb(
+              EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<GraphTrace>(R"pb(
                 base_time: 0
                 base_timestamp: 0
                 stream_name: ""
@@ -145,7 +145,7 @@ TEST_F(GraphTracerTest, CalculatorTrace) {
 
   // Validate the GraphTrace data.
   EXPECT_THAT(
-      GetTrace(), EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<GraphTrace>(R"pb(
+      GetTrace(), EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<GraphTrace>(R"pb(
         base_time: 1608911100000000
         base_timestamp: 1608911100000000
         stream_name: ""
@@ -226,7 +226,7 @@ TEST_F(GraphTracerTest, GraphTrace) {
 
   // Validate the GraphTrace data.
   EXPECT_THAT(
-      GetTrace(), EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<GraphTrace>(R"pb(
+      GetTrace(), EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<GraphTrace>(R"pb(
         base_time: 1608911100000000
         base_timestamp: 1608911100000000
         stream_name: ""
@@ -426,7 +426,7 @@ class GraphTracerE2ETest : public ::testing::Test {
     MP_ASSERT_OK(graph_.SetExecutor("", executor));
   }
 
-  void SetUpRealClock() { clock_ = mediapipe_v01013_based::Clock::RealClock(); }
+  void SetUpRealClock() { clock_ = hand_tracking_mp_lean::Clock::RealClock(); }
 
   static Packet PacketAt(int64_t ts) {
     return Adopt(new int64_t(999)).At(Timestamp(ts));
@@ -598,7 +598,7 @@ class GraphTracerE2ETest : public ::testing::Test {
 
   CalculatorGraphConfig graph_config_;
   CalculatorGraph graph_;
-  mediapipe_v01013_based::Clock* clock_;
+  hand_tracking_mp_lean::Clock* clock_;
   std::shared_ptr<SimulationClock> simulation_clock_;
 };
 
@@ -629,7 +629,7 @@ TEST_F(GraphTracerE2ETest, PassThroughGraphProfile) {
   MP_EXPECT_OK(graph_.profiler()->GetCalculatorProfiles(&profiles));
   EXPECT_EQ(1, profiles.size());
   CalculatorProfile expected =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorProfile>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorProfile>(R"pb(
         name: "LambdaCalculator"
         open_runtime: 0
         close_runtime: 0
@@ -659,7 +659,7 @@ TEST_F(GraphTracerE2ETest, DemuxGraphLog) {
                                       absl::InfiniteFuture(), &trace);
   GraphTrace node_timestamps = NodeTimestamps(trace);
   EXPECT_THAT(node_timestamps,
-              EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<GraphTrace>(R"pb(
+              EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<GraphTrace>(R"pb(
                 calculator_trace { node_id: 1 input_timestamp: 10000 }
                 calculator_trace { node_id: 2 input_timestamp: 10000 }
                 calculator_trace { node_id: 3 input_timestamp: 10000 }
@@ -816,7 +816,7 @@ TEST_F(GraphTracerE2ETest, DemuxGraphLog) {
   StripDataIds(&trace_2);
   EXPECT_THAT(
       trace_2,
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<GraphTrace>(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<GraphTrace>(
           R"pb(
             base_time: 1544086800000000
             base_timestamp: 10000
@@ -1047,7 +1047,7 @@ TEST_F(GraphTracerE2ETest, DemuxGraphLogFiles) {
     StripDataIds(&trace);
   }
   EXPECT_THAT(profile_2,
-              EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<GraphProfile>(R"pb(
+              EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<GraphProfile>(R"pb(
                 graph_trace {
                   base_time: 1544086800000000
                   base_timestamp: 0
@@ -1244,7 +1244,7 @@ TEST_F(GraphTracerE2ETest, DisableLoggingToDisk) {
   graph_config_.mutable_profiler_config()->set_trace_log_disabled(true);
   RunDemuxInFlightGraph();
   EXPECT_TRUE(absl::IsNotFound(
-      mediapipe_v01013_based::file::Exists(absl::StrCat(log_path, 0, ".binarypb"))));
+      hand_tracking_mp_lean::file::Exists(absl::StrCat(log_path, 0, ".binarypb"))));
 }
 
 TEST_F(GraphTracerE2ETest, LoggingHappensWithDefaultPath) {
@@ -1252,7 +1252,7 @@ TEST_F(GraphTracerE2ETest, LoggingHappensWithDefaultPath) {
   SetUpDemuxInFlightGraph();
   graph_config_.mutable_profiler_config()->set_trace_log_disabled(false);
   RunDemuxInFlightGraph();
-  MP_EXPECT_OK(mediapipe_v01013_based::file::Exists(log_path));
+  MP_EXPECT_OK(hand_tracking_mp_lean::file::Exists(log_path));
 }
 
 TEST_F(GraphTracerE2ETest, GpuTaskTrace) {
@@ -1294,7 +1294,7 @@ TEST_F(GraphTracerE2ETest, GpuTaskTrace) {
                       &trace_1);
   EXPECT_THAT(
       trace_1,
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<GraphTrace>(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<GraphTrace>(
           R"pb(
             base_time: 1100
             base_timestamp: 1000
@@ -1331,7 +1331,7 @@ TEST_F(GraphTracerE2ETest, GpuTaskTrace) {
                     &trace_2);
   EXPECT_THAT(
       trace_2,
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<GraphTrace>(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<GraphTrace>(
           R"pb(
             base_time: 1100
             base_timestamp: 1000
@@ -1433,4 +1433,4 @@ TEST(TraceBuilderTest, EventDataIsExtracted) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

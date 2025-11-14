@@ -28,7 +28,7 @@
 #include "mediapipe/util/frame_buffer/halide/rgb_yuv_halide.h"
 #include "mediapipe/util/frame_buffer/yuv_buffer.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace frame_buffer {
 
 RgbBuffer::RgbBuffer(uint8_t* data, int width, int height, bool alpha)
@@ -137,4 +137,4 @@ void RgbBuffer::Initialize(uint8_t* data, int width, int height, bool alpha) {
 }
 
 }  // namespace frame_buffer
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

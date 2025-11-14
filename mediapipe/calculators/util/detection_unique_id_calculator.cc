@@ -16,7 +16,7 @@
 #include "mediapipe/framework/formats/detection.pb.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -64,7 +64,7 @@ class DetectionUniqueIdCalculator : public CalculatorBase {
   }
 
   absl::Status Open(CalculatorContext* cc) override {
-    cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
+    cc->SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
     return absl::OkStatus();
   }
   absl::Status Process(CalculatorContext* cc) override;
@@ -106,4 +106,4 @@ absl::Status DetectionUniqueIdCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

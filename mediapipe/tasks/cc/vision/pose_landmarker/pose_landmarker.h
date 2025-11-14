@@ -29,7 +29,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/running_mode.h"
 #include "mediapipe/tasks/cc/vision/pose_landmarker/pose_landmarker_result.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace pose_landmarker {
@@ -101,7 +101,7 @@ class PoseLandmarker : tasks::vision::core::BaseVisionTaskApi {
   // or streaming data. Pose landmarker can be created with one of the following
   // three running modes:
   // 1) Image mode for detecting pose landmarks on single image inputs. Users
-  //    provide mediapipe_v01013_based::Image to the `Detect` method, and will receive the
+  //    provide hand_tracking_mp_lean::Image to the `Detect` method, and will receive the
   //    detected pose landmarks results as the return value.
   // 2) Video mode for detecting pose landmarks on the decoded frames of a
   //    video. Users call `DetectForVideo` method, and will receive the detected
@@ -189,6 +189,6 @@ class PoseLandmarker : tasks::vision::core::BaseVisionTaskApi {
 }  // namespace pose_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_POSE_LANDMARKER_POSE_LANDMARKER_H_

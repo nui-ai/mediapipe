@@ -36,58 +36,58 @@
   // unnecessary ObjC runtime information. See
   // https://medium.com/@dmaclach/objective-c-encoding-and-you-866624cc02de for
   // details.
-  std::unique_ptr<mediapipe_v01013_based::CalculatorGraph> _graph;
+  std::unique_ptr<hand_tracking_mp_lean::CalculatorGraph> _graph;
   /// Input side packets that will be added to the graph when it is started.
-  std::map<std::string, mediapipe_v01013_based::Packet> _inputSidePackets;
+  std::map<std::string, hand_tracking_mp_lean::Packet> _inputSidePackets;
   /// Packet headers that will be added to the graph when it is started.
-  std::map<std::string, mediapipe_v01013_based::Packet> _streamHeaders;
+  std::map<std::string, hand_tracking_mp_lean::Packet> _streamHeaders;
   /// Service packets to be added to the graph when it is started.
-  std::map<const mediapipe_v01013_based::GraphServiceBase*, mediapipe_v01013_based::Packet>
+  std::map<const hand_tracking_mp_lean::GraphServiceBase*, hand_tracking_mp_lean::Packet>
       _servicePackets;
 
   /// Number of frames currently being processed by the graph.
   std::atomic<int32_t> _framesInFlight;
   /// Used as a sequential timestamp for MediaPipe.
-  mediapipe_v01013_based::Timestamp _frameTimestamp;
+  hand_tracking_mp_lean::Timestamp _frameTimestamp;
   int64_t _frameNumber;
 
   // Graph config modified to expose requested output streams.
-  mediapipe_v01013_based::CalculatorGraphConfig _config;
+  hand_tracking_mp_lean::CalculatorGraphConfig _config;
 
   // Tracks whether the graph has been started and is currently running.
   BOOL _started;
 }
 
 - (instancetype)initWithGraphConfig:
-    (const mediapipe_v01013_based::CalculatorGraphConfig&)config {
+    (const hand_tracking_mp_lean::CalculatorGraphConfig&)config {
   self = [super init];
   if (self) {
     // Turn on Cocoa multithreading, since MediaPipe uses threads.
     // Not needed on iOS, but we may want to have OS X clients in the future.
     [[[NSThread alloc] init] start];
-    _graph = absl::make_unique<mediapipe_v01013_based::CalculatorGraph>();
+    _graph = absl::make_unique<hand_tracking_mp_lean::CalculatorGraph>();
     _config = config;
   }
   return self;
 }
 
-- (mediapipe_v01013_based::ProfilingContext*)getProfiler {
+- (hand_tracking_mp_lean::ProfilingContext*)getProfiler {
   return _graph->profiler();
 }
 
-- (mediapipe_v01013_based::CalculatorGraph::GraphInputStreamAddMode)packetAddMode {
+- (hand_tracking_mp_lean::CalculatorGraph::GraphInputStreamAddMode)packetAddMode {
   return _graph->GetGraphInputStreamAddMode();
 }
 
 - (void)setPacketAddMode:
-    (mediapipe_v01013_based::CalculatorGraph::GraphInputStreamAddMode)mode {
+    (hand_tracking_mp_lean::CalculatorGraph::GraphInputStreamAddMode)mode {
   _graph->SetGraphInputStreamAddMode(mode);
 }
 
 - (void)addFrameOutputStream:(const std::string&)outputStreamName
             outputPacketType:(MPPPacketType)packetType {
   std::string callbackInputName;
-  mediapipe_v01013_based::tool::AddCallbackCalculator(outputStreamName, &_config,
+  hand_tracking_mp_lean::tool::AddCallbackCalculator(outputStreamName, &_config,
                                          &callbackInputName,
                                          /*use_std_function=*/true);
   // No matter what ownership qualifiers are put on the pointer,
@@ -95,9 +95,9 @@
   // MPPGraph*. That is why we use void* instead.
   void* wrapperVoid = (__bridge void*)self;
   _inputSidePackets[callbackInputName] =
-      mediapipe_v01013_based::MakePacket<std::function<void(const mediapipe_v01013_based::Packet&)>>(
+      hand_tracking_mp_lean::MakePacket<std::function<void(const hand_tracking_mp_lean::Packet&)>>(
           [wrapperVoid, outputStreamName,
-           packetType](const mediapipe_v01013_based::Packet& packet) {
+           packetType](const hand_tracking_mp_lean::Packet& packet) {
             CallFrameDelegate(wrapperVoid, outputStreamName, packetType,
                               packet);
           });
@@ -113,7 +113,7 @@
 /// receives the graph's output.
 void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
                        MPPPacketType packetType,
-                       const mediapipe_v01013_based::Packet& packet) {
+                       const hand_tracking_mp_lean::Packet& packet) {
   MPPGraph* wrapper = (__bridge MPPGraph*)wrapperVoid;
   @autoreleasepool {
     if (packetType == MPPPacketTypeRaw) {
@@ -122,11 +122,11 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
                             fromStream:streamName];
     } else if (packetType == MPPPacketTypeImageFrame) {
       wrapper->_framesInFlight--;
-      const auto& frame = packet.Get<mediapipe_v01013_based::ImageFrame>();
-      mediapipe_v01013_based::ImageFormat::Format format = frame.Format();
+      const auto& frame = packet.Get<hand_tracking_mp_lean::ImageFrame>();
+      hand_tracking_mp_lean::ImageFormat::Format format = frame.Format();
 
-      if (format == mediapipe_v01013_based::ImageFormat::SRGBA ||
-          format == mediapipe_v01013_based::ImageFormat::GRAY8) {
+      if (format == hand_tracking_mp_lean::ImageFormat::SRGBA ||
+          format == hand_tracking_mp_lean::ImageFormat::GRAY8) {
         CVPixelBufferRef pixelBuffer;
         // If kCVPixelFormatType_32RGBA does not work, it returns
         // kCVReturnInvalidPixelFormat.
@@ -143,7 +143,7 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
         // Note: we have to throw away const here, but we should not overwrite
         // the packet data.
         vImage_Buffer vSource = vImageForImageFrame(frame);
-        if (format == mediapipe_v01013_based::ImageFormat::SRGBA) {
+        if (format == hand_tracking_mp_lean::ImageFormat::SRGBA) {
           // Swap R and B channels.
           const uint8_t permuteMap[4] = {2, 1, 0, 3};
           vImage_Error __unused vError = vImagePermuteChannels_ARGB8888(
@@ -187,9 +187,9 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
       CVPixelBufferRef pixelBuffer;
       if (packetType == MPPPacketTypePixelBuffer)
         pixelBuffer =
-            mediapipe_v01013_based::GetCVPixelBufferRef(packet.Get<mediapipe_v01013_based::GpuBuffer>());
+            hand_tracking_mp_lean::GetCVPixelBufferRef(packet.Get<hand_tracking_mp_lean::GpuBuffer>());
       else
-        pixelBuffer = packet.Get<mediapipe_v01013_based::Image>().GetCVPixelBufferRef();
+        pixelBuffer = packet.Get<hand_tracking_mp_lean::Image>().GetCVPixelBufferRef();
       if ([wrapper.delegate
               respondsToSelector:@selector
               (mediapipeGraph:didOutputPixelBuffer:fromStream:timestamp:)]) {
@@ -211,29 +211,29 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
   }
 }
 
-- (void)setHeaderPacket:(const mediapipe_v01013_based::Packet&)packet
+- (void)setHeaderPacket:(const hand_tracking_mp_lean::Packet&)packet
               forStream:(const std::string&)streamName {
   _GTMDevAssert(!_started, @"%@ must be called before the graph is started",
                 NSStringFromSelector(_cmd));
   _streamHeaders[streamName] = packet;
 }
 
-- (void)setSidePacket:(const mediapipe_v01013_based::Packet&)packet
+- (void)setSidePacket:(const hand_tracking_mp_lean::Packet&)packet
                 named:(const std::string&)name {
   _GTMDevAssert(!_started, @"%@ must be called before the graph is started",
                 NSStringFromSelector(_cmd));
   _inputSidePackets[name] = packet;
 }
 
-- (void)setServicePacket:(mediapipe_v01013_based::Packet&)packet
-              forService:(const mediapipe_v01013_based::GraphServiceBase&)service {
+- (void)setServicePacket:(hand_tracking_mp_lean::Packet&)packet
+              forService:(const hand_tracking_mp_lean::GraphServiceBase&)service {
   _GTMDevAssert(!_started, @"%@ must be called before the graph is started",
                 NSStringFromSelector(_cmd));
   _servicePackets[&service] = std::move(packet);
 }
 
 - (void)addSidePackets:
-    (const std::map<std::string, mediapipe_v01013_based::Packet>&)extraSidePackets {
+    (const std::map<std::string, hand_tracking_mp_lean::Packet>&)extraSidePackets {
   _GTMDevAssert(!_started, @"%@ must be called before the graph is started",
                 NSStringFromSelector(_cmd));
   _inputSidePackets.insert(extraSidePackets.begin(), extraSidePackets.end());
@@ -310,7 +310,7 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
   return status.ok();
 }
 
-- (BOOL)movePacket:(mediapipe_v01013_based::Packet&&)packet
+- (BOOL)movePacket:(hand_tracking_mp_lean::Packet&&)packet
         intoStream:(const std::string&)streamName
              error:(NSError**)error {
   absl::Status status =
@@ -319,7 +319,7 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
   return status.ok();
 }
 
-- (BOOL)sendPacket:(const mediapipe_v01013_based::Packet&)packet
+- (BOOL)sendPacket:(const hand_tracking_mp_lean::Packet&)packet
         intoStream:(const std::string&)streamName
              error:(NSError**)error {
   absl::Status status = _graph->AddPacketToInputStream(streamName, packet);
@@ -336,29 +336,29 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
   return status.ok();
 }
 
-- (mediapipe_v01013_based::Packet)packetWithPixelBuffer:(CVPixelBufferRef)imageBuffer
+- (hand_tracking_mp_lean::Packet)packetWithPixelBuffer:(CVPixelBufferRef)imageBuffer
                                 packetType:(MPPPacketType)packetType {
-  mediapipe_v01013_based::Packet packet;
+  hand_tracking_mp_lean::Packet packet;
   if (packetType == MPPPacketTypeImageFrame ||
       packetType == MPPPacketTypeImageFrameBGRANoSwap) {
     auto frame = CreateImageFrameForCVPixelBuffer(
         imageBuffer, /* canOverwrite = */ false,
         /* bgrAsRgb = */ packetType == MPPPacketTypeImageFrameBGRANoSwap);
-    packet = mediapipe_v01013_based::Adopt(frame.release());
+    packet = hand_tracking_mp_lean::Adopt(frame.release());
 #if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
   } else if (packetType == MPPPacketTypePixelBuffer) {
-    packet = mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::GpuBuffer>(imageBuffer);
+    packet = hand_tracking_mp_lean::MakePacket<hand_tracking_mp_lean::GpuBuffer>(imageBuffer);
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
   } else if (packetType == MPPPacketTypeImage) {
 #if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
     // GPU
-    packet = mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::Image>(imageBuffer);
+    packet = hand_tracking_mp_lean::MakePacket<hand_tracking_mp_lean::Image>(imageBuffer);
 #else
     // CPU
     auto frame = CreateImageFrameForCVPixelBuffer(imageBuffer,
                                                   /* canOverwrite = */ false,
                                                   /* bgrAsRgb = */ false);
-    packet = mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::Image>(std::move(frame));
+    packet = hand_tracking_mp_lean::MakePacket<hand_tracking_mp_lean::Image>(std::move(frame));
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
   } else {
     _GTMDevLog(@"unsupported packet type: %d", packetType);
@@ -366,7 +366,7 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
   return packet;
 }
 
-- (mediapipe_v01013_based::Packet)imagePacketWithPixelBuffer:(CVPixelBufferRef)pixelBuffer {
+- (hand_tracking_mp_lean::Packet)imagePacketWithPixelBuffer:(CVPixelBufferRef)pixelBuffer {
   return [self packetWithPixelBuffer:(pixelBuffer)
                           packetType:(MPPPacketTypeImage)];
 }
@@ -374,7 +374,7 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
 - (BOOL)sendPixelBuffer:(CVPixelBufferRef)imageBuffer
              intoStream:(const std::string&)inputName
              packetType:(MPPPacketType)packetType
-              timestamp:(const mediapipe_v01013_based::Timestamp&)timestamp
+              timestamp:(const hand_tracking_mp_lean::Timestamp&)timestamp
          allowOverwrite:(BOOL)allowOverwrite {
   NSError* error;
   bool success = [self sendPixelBuffer:imageBuffer
@@ -392,11 +392,11 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
 - (BOOL)sendPixelBuffer:(CVPixelBufferRef)imageBuffer
              intoStream:(const std::string&)inputName
              packetType:(MPPPacketType)packetType
-              timestamp:(const mediapipe_v01013_based::Timestamp&)timestamp
+              timestamp:(const hand_tracking_mp_lean::Timestamp&)timestamp
          allowOverwrite:(BOOL)allowOverwrite
                   error:(NSError**)error {
   if (_maxFramesInFlight && _framesInFlight >= _maxFramesInFlight) return NO;
-  mediapipe_v01013_based::Packet packet =
+  hand_tracking_mp_lean::Packet packet =
       [self packetWithPixelBuffer:imageBuffer packetType:packetType];
   BOOL success;
   if (allowOverwrite) {
@@ -414,7 +414,7 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
 - (BOOL)sendPixelBuffer:(CVPixelBufferRef)imageBuffer
              intoStream:(const std::string&)inputName
              packetType:(MPPPacketType)packetType
-              timestamp:(const mediapipe_v01013_based::Timestamp&)timestamp {
+              timestamp:(const hand_tracking_mp_lean::Timestamp&)timestamp {
   return [self sendPixelBuffer:imageBuffer
                     intoStream:inputName
                     packetType:packetType
@@ -425,10 +425,10 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
 - (BOOL)sendPixelBuffer:(CVPixelBufferRef)imageBuffer
              intoStream:(const std::string&)inputName
              packetType:(MPPPacketType)packetType {
-  _GTMDevAssert(_frameTimestamp < mediapipe_v01013_based::Timestamp::Done(),
+  _GTMDevAssert(_frameTimestamp < hand_tracking_mp_lean::Timestamp::Done(),
                 @"Trying to send frame after stream is done.");
-  if (_frameTimestamp < mediapipe_v01013_based::Timestamp::Min()) {
-    _frameTimestamp = mediapipe_v01013_based::Timestamp::Min();
+  if (_frameTimestamp < hand_tracking_mp_lean::Timestamp::Min()) {
+    _frameTimestamp = hand_tracking_mp_lean::Timestamp::Min();
   } else {
     _frameTimestamp++;
   }
@@ -439,7 +439,7 @@ void CallFrameDelegate(void* wrapperVoid, const std::string& streamName,
 }
 
 - (void)debugPrintGlInfo {
-  std::shared_ptr<mediapipe_v01013_based::GpuResources> gpu_resources =
+  std::shared_ptr<hand_tracking_mp_lean::GpuResources> gpu_resources =
       _graph->GetGpuResources();
   if (!gpu_resources) {
     NSLog(@"GPU not set up.");

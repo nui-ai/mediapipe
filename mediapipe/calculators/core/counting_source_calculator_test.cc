@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using ::testing::TestWithParam;
 
@@ -284,4 +284,4 @@ INSTANTIATE_TEST_SUITE_P(
       return info.param.test_name;
     });
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

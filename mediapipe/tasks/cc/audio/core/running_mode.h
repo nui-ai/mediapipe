@@ -18,7 +18,7 @@ limitations under the License.
 
 #include <string>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace audio {
 namespace core {
@@ -46,6 +46,6 @@ inline std::string GetRunningModeName(RunningMode mode) {
 }  // namespace core
 }  // namespace audio
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_AUDIO_CORE_RUNNING_MODE_H_

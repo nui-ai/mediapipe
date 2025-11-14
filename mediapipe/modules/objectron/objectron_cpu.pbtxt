@@ -60,7 +60,7 @@ node {
   input_stream: "prev_box_rects_from_landmarks"
   output_stream: "gated_prev_box_rects_from_landmarks"
   options: {
-    [mediapipe_v01013_based.GateCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.GateCalculatorOptions.ext] {
       allow: true
     }
   }
@@ -85,7 +85,7 @@ node {
   output_stream: "detection_image"
 
   options: {
-    [mediapipe_v01013_based.GateCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.GateCalculatorOptions.ext] {
       empty_packets_as_allow: true
     }
   }
@@ -123,7 +123,7 @@ node {
   input_stream: "IMAGE_SIZE:image_size"
   output_stream: "NORM_RECTS:box_rects_from_detections"
   options: {
-    [mediapipe_v01013_based.DetectionsToRectsCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.DetectionsToRectsCalculatorOptions.ext] {
       output_zero_rect_for_empty_detections: false
     }
   }
@@ -139,7 +139,7 @@ node {
   input_stream: "gated_prev_box_rects_from_landmarks"
   output_stream: "multi_box_rects"
   options: {
-    [mediapipe_v01013_based.AssociationCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.AssociationCalculatorOptions.ext] {
       min_similarity_threshold: 0.2
     }
   }
@@ -192,7 +192,7 @@ node {
   input_stream: "FRAME_ANNOTATION:box_annotations"
   output_stream: "LIFTED_FRAME_ANNOTATION:detected_objects"
   options: {
-    [mediapipe_v01013_based.Lift2DFrameAnnotationTo3DCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.Lift2DFrameAnnotationTo3DCalculatorOptions.ext] {
       normalized_focal_x: 1.0
       normalized_focal_y: 1.0
     }

@@ -24,7 +24,7 @@ limitations under the License.
 
 #include "mediapipe/tasks/cc/text/custom_ops/sentencepiece/encoder_config_generated.h"
 
-namespace mediapipe_v01013_based::tflite_operations::sentencepiece {
+namespace hand_tracking_mp_lean::tflite_operations::sentencepiece {
 
 enum class EncoderResultType { SUCCESS = 0, WRONG_CONFIG = 1 };
 
@@ -41,6 +41,6 @@ std::tuple<std::string, std::vector<int>> NormalizeString(
 EncoderResult EncodeString(const std::string& string, const void* config_buffer,
                            bool add_bos, bool add_eos, bool reverse);
 
-}  // namespace mediapipe_v01013_based::tflite_operations::sentencepiece
+}  // namespace hand_tracking_mp_lean::tflite_operations::sentencepiece
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_CUSTOM_OPS_SENTENCEPIECE_OPTIMIZED_ENCODER_H_

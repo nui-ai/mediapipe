@@ -24,13 +24,13 @@ limitations under the License.
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/tasks/cc/components/containers/embedding_result.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace components {
 namespace utils {
 namespace {
 
-using ::mediapipe_v01013_based::tasks::components::containers::Embedding;
+using ::hand_tracking_mp_lean::tasks::components::containers::Embedding;
 using ::testing::HasSubstr;
 
 // Helper function to generate float Embedding.
@@ -106,4 +106,4 @@ TEST(CosineSimilarity, SucceedsWithQuantizedEntries) {
 }  // namespace utils
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

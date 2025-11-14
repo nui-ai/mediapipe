@@ -26,7 +26,7 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #include "mediapipe/gpu/gpu_service.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 GlCalculatorHelper::GlCalculatorHelper() {}
 
@@ -89,7 +89,7 @@ absl::Status GlCalculatorHelper::SetupInputSidePackets(
          "from a GetContract method, call GlCalculatorHelper::UpdateContract "
          "instead.";
   auto id = input_side_packets->GetId(kGpuSharedTagName, 0);
-  RET_CHECK(id.IsValid()) << "A " << mediapipe_v01013_based::kGpuSharedTagName
+  RET_CHECK(id.IsValid()) << "A " << hand_tracking_mp_lean::kGpuSharedTagName
                           << " input side packet is required here.";
   input_side_packets->Get(id).Set<GpuSharedData*>();
   return absl::OkStatus();
@@ -233,7 +233,7 @@ GlTexture GlCalculatorHelper::CreateDestinationTexture(GpuBuffer& gpu_buffer) {
 }
 
 GlTexture GlCalculatorHelper::CreateSourceTexture(
-    const mediapipe_v01013_based::Image& image) {
+    const hand_tracking_mp_lean::Image& image) {
   return CreateSourceTexture(image.GetGpuBuffer());
 }
 
@@ -254,11 +254,11 @@ std::unique_ptr<GpuBuffer> GlTexture::GetFrame<GpuBuffer>() const {
 }
 
 template <>
-std::unique_ptr<mediapipe_v01013_based::Image> GlTexture::GetFrame<mediapipe_v01013_based::Image>()
+std::unique_ptr<hand_tracking_mp_lean::Image> GlTexture::GetFrame<hand_tracking_mp_lean::Image>()
     const {
   std::unique_ptr<GpuBuffer> buf = GetFrame<GpuBuffer>();
-  auto output = absl::make_unique<mediapipe_v01013_based::Image>(*buf);
+  auto output = absl::make_unique<hand_tracking_mp_lean::Image>(*buf);
   return output;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

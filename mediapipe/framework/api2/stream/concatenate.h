@@ -10,7 +10,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 
 namespace internal_stream_concatenate {
 
@@ -18,9 +18,9 @@ namespace internal_stream_concatenate {
 // a specific type (T).
 template <class T>
 GenericNode& AddConcatenateVectorNode(Graph& graph) {
-  if constexpr (std::is_same_v<T, mediapipe_v01013_based::LandmarkList>) {
+  if constexpr (std::is_same_v<T, hand_tracking_mp_lean::LandmarkList>) {
     return graph.AddNode("ConcatenateLandmarkListCalculator");
-  } else if constexpr (std::is_same_v<T, mediapipe_v01013_based::JointList>) {
+  } else if constexpr (std::is_same_v<T, hand_tracking_mp_lean::JointList>) {
     return graph.AddNode("ConcatenateJointListCalculator");
   } else if constexpr (std::is_same_v<T, std::vector<Tensor>>) {
     return graph.AddNode("ConcatenateTensorVectorCalculator");
@@ -42,7 +42,7 @@ Stream<PayloadT> Concatenate(StreamsT& streams,
 
   auto& concatenator_opts =
       concatenator
-          .template GetOptions<mediapipe_v01013_based::ConcatenateVectorCalculatorOptions>();
+          .template GetOptions<hand_tracking_mp_lean::ConcatenateVectorCalculatorOptions>();
   concatenator_opts.set_only_emit_if_all_present(only_emit_if_all_present);
 
   return concatenator.Out("").template Cast<PayloadT>();
@@ -64,6 +64,6 @@ Stream<PayloadT> ConcatenateIfAllPresent(StreamsT& streams, Graph& graph) {
       streams, /*only_emit_if_all_present=*/true, graph);
 }
 
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_STREAM_CONCATENATE_H_

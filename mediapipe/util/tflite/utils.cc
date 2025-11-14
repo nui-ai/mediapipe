@@ -2,7 +2,7 @@
 
 #include "tensorflow/lite/c/common.h"
 
-namespace mediapipe_v01013_based::util::tflite {
+namespace hand_tracking_mp_lean::util::tflite {
 
 bool IsDynamicTensor(const TfLiteTensor& tensor) {
   for (int i = 0; i < tensor.dims->size; ++i) {
@@ -12,4 +12,4 @@ bool IsDynamicTensor(const TfLiteTensor& tensor) {
   }
   return false;
 }
-}  // namespace mediapipe_v01013_based::util::tflite
+}  // namespace hand_tracking_mp_lean::util::tflite

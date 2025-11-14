@@ -21,7 +21,7 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/gpu/gpu_buffer.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Pure abstract interface to implement a GPU-based Tensor converter.
 class TensorConverterGpu {
@@ -32,6 +32,6 @@ class TensorConverterGpu {
   virtual Tensor Convert(const GpuBuffer& input) = 0;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSOR_CONVERTER_H_

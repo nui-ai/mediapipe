@@ -23,16 +23,16 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 typedef CollectionHasMinSizeCalculator<
-    std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>
+    std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>>
     NormalizedLandmarkListVectorHasMinSizeCalculator;
 REGISTER_CALCULATOR(NormalizedLandmarkListVectorHasMinSizeCalculator);
 
 typedef CollectionHasMinSizeCalculator<
-    std::vector<mediapipe_v01013_based::ClassificationList>>
+    std::vector<hand_tracking_mp_lean::ClassificationList>>
     ClassificationListVectorHasMinSizeCalculator;
 REGISTER_CALCULATOR(ClassificationListVectorHasMinSizeCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

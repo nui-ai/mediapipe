@@ -31,7 +31,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/sink.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using ::testing::ElementsAre;
 using ::testing::Eq;
@@ -866,4 +866,4 @@ TEST_F(PreviousLoopbackCalculatorDelayBehaviorTest,
 }
 
 }  // anonymous namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -29,16 +29,16 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/pose_landmarker/pose_topology.h"
 #include "mediapipe/tasks/cc/vision/utils/ghum/ghum_topology.h"
 
-namespace mediapipe_v01013_based::tasks::vision::utils::ghum {
+namespace hand_tracking_mp_lean::tasks::vision::utils::ghum {
 
 namespace {
 
-using ::mediapipe_v01013_based::api2::CombineJointsCalculator;
-using ::mediapipe_v01013_based::api2::SetJointsVisibilityCalculator;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::SidePacket;
-using ::mediapipe_v01013_based::api2::builder::Stream;
-using ::mediapipe_v01013_based::tasks::vision::pose_landmarker::PoseLandmarkName;
+using ::hand_tracking_mp_lean::api2::CombineJointsCalculator;
+using ::hand_tracking_mp_lean::api2::SetJointsVisibilityCalculator;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::SidePacket;
+using ::hand_tracking_mp_lean::api2::builder::Stream;
+using ::hand_tracking_mp_lean::tasks::vision::pose_landmarker::PoseLandmarkName;
 
 }  // namespace
 
@@ -181,4 +181,4 @@ std::vector<std::array<float, 6>> GetGhumRestingJointRotationsSubset(
   return res;
 }
 
-}  // namespace mediapipe_v01013_based::tasks::vision::utils::ghum
+}  // namespace hand_tracking_mp_lean::tasks::vision::utils::ghum

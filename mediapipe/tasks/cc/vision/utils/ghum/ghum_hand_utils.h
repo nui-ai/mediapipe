@@ -23,16 +23,16 @@ Hand model and hand landmarks.
 #include "mediapipe/framework/formats/body_rig.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe_v01013_based::tasks::vision::utils::ghum {
+namespace hand_tracking_mp_lean::tasks::vision::utils::ghum {
 
 // Sets visibility of 16 GHUM hand joints from 21 hand world landmarks.
-mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::JointList>
+hand_tracking_mp_lean::api2::builder::Stream<hand_tracking_mp_lean::JointList>
 SetGhumHandJointsVisibilityFromWorldLandmarks(
-    mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::JointList> ghum_hand_joints,
-    mediapipe_v01013_based::api2::builder::Stream<mediapipe_v01013_based::LandmarkList>
+    hand_tracking_mp_lean::api2::builder::Stream<hand_tracking_mp_lean::JointList> ghum_hand_joints,
+    hand_tracking_mp_lean::api2::builder::Stream<hand_tracking_mp_lean::LandmarkList>
         hand_world_landmarks,
-    mediapipe_v01013_based::api2::builder::Graph& graph);
+    hand_tracking_mp_lean::api2::builder::Graph& graph);
 
-}  // namespace mediapipe_v01013_based::tasks::vision::utils::ghum
+}  // namespace hand_tracking_mp_lean::tasks::vision::utils::ghum
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_UTILS_GHUM_GHUM_HAND_UTILS_H_

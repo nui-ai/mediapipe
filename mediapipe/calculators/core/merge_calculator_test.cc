@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 // Checks that the calculator fails if no input streams are provided.
@@ -138,4 +138,4 @@ TEST(MediaPipeDetectionToSoapboxDetectionCalculatorTest,
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

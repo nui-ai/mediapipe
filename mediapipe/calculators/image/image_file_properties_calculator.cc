@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/canonical_errors.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -136,10 +136,10 @@ class ImageFilePropertiesCalculator : public CalculatorBase {
     }
     if (cc->Outputs().NumEntries() != 0) {
       RET_CHECK(cc->Outputs().NumEntries() == 1);
-      cc->Outputs().Index(0).Set<::mediapipe_v01013_based::ImageFileProperties>();
+      cc->Outputs().Index(0).Set<::hand_tracking_mp_lean::ImageFileProperties>();
     } else {
       RET_CHECK(cc->OutputSidePackets().NumEntries() == 1);
-      cc->OutputSidePackets().Index(0).Set<::mediapipe_v01013_based::ImageFileProperties>();
+      cc->OutputSidePackets().Index(0).Set<::hand_tracking_mp_lean::ImageFileProperties>();
     }
 
     return absl::OkStatus();
@@ -180,7 +180,7 @@ class ImageFilePropertiesCalculator : public CalculatorBase {
       } else {
         cc->OutputSidePackets().Index(0).Set(
             MakePacket<ImageFileProperties>(properties_)
-                .At(mediapipe_v01013_based::Timestamp::Unset()));
+                .At(hand_tracking_mp_lean::Timestamp::Unset()));
       }
     }
 
@@ -193,4 +193,4 @@ class ImageFilePropertiesCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(ImageFilePropertiesCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

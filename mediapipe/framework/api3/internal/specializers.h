@@ -15,7 +15,7 @@
 #ifndef MEDIAPIPE_FRAMEWORK_API3_INTERNAL_SPECIALIZERS_H_
 #define MEDIAPIPE_FRAMEWORK_API3_INTERNAL_SPECIALIZERS_H_
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 // Specializers used by MediaPipe framework internally.
 //
@@ -69,6 +69,6 @@ struct GraphGeneratorSpecializer {};
 // `Graph::AddNode<...>()`
 struct GraphNodeSpecializer {};
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_INTERNAL_SPECIALIZERS_H_

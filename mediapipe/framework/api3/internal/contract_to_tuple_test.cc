@@ -22,7 +22,7 @@
 #include "mediapipe/framework/api3/internal/specializers.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based::api3::internal_contract_to_tuple {
+namespace hand_tracking_mp_lean::api3::internal_contract_to_tuple {
 namespace {
 
 template <typename S>
@@ -84,4 +84,4 @@ TEST(ContractToTupleTest, CanGetMinFieldPtrTuple) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api3::internal_contract_to_tuple
+}  // namespace hand_tracking_mp_lean::api3::internal_contract_to_tuple

@@ -22,7 +22,7 @@
 #include "tensorflow/lite/kernels/padding.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tflite_operations {
 namespace {
 
@@ -329,4 +329,4 @@ TfLiteRegistration* RegisterTransformTensorBilinearV2() {
 }
 
 }  // namespace tflite_operations
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -19,7 +19,7 @@
 
 #include <cstdint>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class Counter {
  public:
@@ -31,6 +31,6 @@ class Counter {
   virtual int64_t Get() = 0;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_COUNTER_H_

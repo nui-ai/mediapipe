@@ -2,7 +2,7 @@
 
 #include "mediapipe/framework/tool/switch_container.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tool {
 
 std::string ChannelTag(const std::string& tag, int channel) {
@@ -63,7 +63,7 @@ int GetChannelIndex(const CalculatorContext& cc, int previous_index) {
   Packet select_packet;
   Packet enable_packet;
   if (cc.InputTimestamp() == Timestamp::Unstarted()) {
-    auto& options = cc.Options<mediapipe_v01013_based::SwitchContainerOptions>();
+    auto& options = cc.Options<hand_tracking_mp_lean::SwitchContainerOptions>();
     if (options.has_enable()) {
       result = options.enable() ? 1 : 0;
     }
@@ -94,4 +94,4 @@ int GetChannelIndex(const CalculatorContext& cc, int previous_index) {
 }
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

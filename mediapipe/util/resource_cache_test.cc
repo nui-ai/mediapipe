@@ -23,7 +23,7 @@
     EXPECT_GE((high), (value));          \
   } while (0)
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 using ::testing::_;
@@ -147,4 +147,4 @@ TEST(ResourceCacheTest, EvictWithScrub) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -35,21 +35,21 @@ limitations under the License.
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace components {
 namespace processors {
 
 namespace {
 
-using ::mediapipe_v01013_based::Tensor;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::GenericNode;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
-using ::mediapipe_v01013_based::tasks::core::ModelResources;
+using ::hand_tracking_mp_lean::Tensor;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::GenericNode;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::EmbeddingResult;
+using ::hand_tracking_mp_lean::tasks::core::ModelResources;
 
 constexpr char kTensorsTag[] = "TENSORS";
 constexpr char kEmbeddingsTag[] = "EMBEDDINGS";
@@ -192,10 +192,10 @@ absl::Status ConfigureEmbeddingPostprocessingGraph(
 // The recommended way of using this graph is through the GraphBuilder API using
 // the 'ConfigureEmbeddingPostprocessingGraph()' function. See header file for
 // more details.
-class EmbeddingPostprocessingGraph : public mediapipe_v01013_based::Subgraph {
+class EmbeddingPostprocessingGraph : public hand_tracking_mp_lean::Subgraph {
  public:
-  absl::StatusOr<mediapipe_v01013_based::CalculatorGraphConfig> GetConfig(
-      mediapipe_v01013_based::SubgraphContext* sc) override {
+  absl::StatusOr<hand_tracking_mp_lean::CalculatorGraphConfig> GetConfig(
+      hand_tracking_mp_lean::SubgraphContext* sc) override {
     Graph graph;
     MP_ASSIGN_OR_RETURN(
         auto output_streams,
@@ -212,12 +212,12 @@ class EmbeddingPostprocessingGraph : public mediapipe_v01013_based::Subgraph {
  private:
   // Adds an on-device embedding postprocessing graph into the provided
   // builder::Graph instance. The embedding postprocessing graph takes tensors
-  // (std::vector<mediapipe_v01013_based::Tensor>) as input and returns one output stream
+  // (std::vector<hand_tracking_mp_lean::Tensor>) as input and returns one output stream
   // containing the output embedding results (EmbeddingResult).
   //
   // options: the on-device EmbeddingPostprocessingGraphOptions
-  // tensors_in: (std::vector<mediapipe_v01013_based::Tensor>) tensors to postprocess.
-  // timestamps_in: (std::vector<mediapipe_v01013_based::Timestamp>) optional collection of
+  // tensors_in: (std::vector<hand_tracking_mp_lean::Tensor>) tensors to postprocess.
+  // timestamps_in: (std::vector<hand_tracking_mp_lean::Timestamp>) optional collection of
   //   timestamps that should be used to aggregate embedding results.
   // graph: the mediapipe builder::Graph instance to be updated.
   absl::StatusOr<EmbeddingPostprocessingOutputStreams>
@@ -239,7 +239,7 @@ class EmbeddingPostprocessingGraph : public mediapipe_v01013_based::Subgraph {
     GenericNode& tensors_to_embeddings_node =
         graph.AddNode("TensorsToEmbeddingsCalculator");
     tensors_to_embeddings_node
-        .GetOptions<mediapipe_v01013_based::TensorsToEmbeddingsCalculatorOptions>()
+        .GetOptions<hand_tracking_mp_lean::TensorsToEmbeddingsCalculatorOptions>()
         .CopyFrom(options.tensors_to_embeddings_options());
     dequantized_tensors >> tensors_to_embeddings_node.In(kTensorsTag);
 
@@ -259,9 +259,9 @@ class EmbeddingPostprocessingGraph : public mediapipe_v01013_based::Subgraph {
   }
 };
 REGISTER_MEDIAPIPE_GRAPH(
-    ::mediapipe_v01013_based::tasks::components::processors::EmbeddingPostprocessingGraph);
+    ::hand_tracking_mp_lean::tasks::components::processors::EmbeddingPostprocessingGraph);
 
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

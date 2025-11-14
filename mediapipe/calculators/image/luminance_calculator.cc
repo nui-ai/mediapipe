@@ -20,7 +20,7 @@
 
 enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, NUM_ATTRIBUTES };
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Converts RGB images into luminance images, still stored in RGB format.
 // See GlSimpleCalculatorBase for inputs, outputs and input side packets.
@@ -147,4 +147,4 @@ absl::Status LuminanceCalculator::GlTeardown() {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include <memory>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // A calculator for converting Tensors from regression models into landmarks.
@@ -85,7 +85,7 @@ class ExtractWorldLandmarks : public Node {
  private:
   absl::Status LoadOptions(CalculatorContext* cc);
   std::unique_ptr<TensorsToWorldLandmarksCore> core_;
-  ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions options_;
+  ::hand_tracking_mp_lean::TensorsToLandmarksCalculatorOptions options_;
 };
 MEDIAPIPE_REGISTER_NODE(ExtractWorldLandmarks);
 
@@ -126,9 +126,9 @@ absl::Status ExtractWorldLandmarks::Process(CalculatorContext* cc) {
 
 absl::Status ExtractWorldLandmarks::LoadOptions(CalculatorContext* cc) {
   // Get calculator options specified in the graph.
-  options_ = cc->Options<::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions>();
+  options_ = cc->Options<::hand_tracking_mp_lean::TensorsToLandmarksCalculatorOptions>();
   // num_landmarks is not required anymore; default of core is 21.
   return absl::OkStatus();
 }
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

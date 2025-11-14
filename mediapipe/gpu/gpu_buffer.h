@@ -45,7 +45,7 @@
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 #endif  // MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // This class wraps a platform-specific buffer of GPU data.
 // An instance of GpuBuffer acts as an opaque reference to the underlying
@@ -218,6 +218,6 @@ inline GpuBuffer& GpuBuffer::operator=(std::nullptr_t other) {
 CVPixelBufferRef GetCVPixelBufferRef(const GpuBuffer& buffer);
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GPU_BUFFER_H_

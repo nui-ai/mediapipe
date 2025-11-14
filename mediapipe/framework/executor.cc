@@ -14,10 +14,10 @@
 
 #include "mediapipe/framework/executor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 TaskQueue::~TaskQueue() {}
 
 Executor::~Executor() {}
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -15,12 +15,12 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-class NoOp : public mediapipe_v01013_based::api2::Node {
+class NoOp : public hand_tracking_mp_lean::api2::Node {
  public:
-  static constexpr mediapipe_v01013_based::api2::Input<int>::Optional kInputNotNeeded{"NN"};
-  static constexpr mediapipe_v01013_based::api2::Output<int>::Optional kOutputNotNeeded{
+  static constexpr hand_tracking_mp_lean::api2::Input<int>::Optional kInputNotNeeded{"NN"};
+  static constexpr hand_tracking_mp_lean::api2::Output<int>::Optional kOutputNotNeeded{
       "NN"};
   MEDIAPIPE_NODE_CONTRACT(kInputNotNeeded, kOutputNotNeeded);
   absl::Status Process(CalculatorContext* cc) override {
@@ -117,8 +117,8 @@ TEST(ValidatedGraphConfigTest, InitializeSubgraphHardcoded) {
                   "AlwaysCalculatorASubgraph", "CalculatorA")));
 }
 
-const mediapipe_v01013_based::GraphService<std::string> kStringTestService{
-    "mediapipe_v01013_based::StringTestService"};
+const hand_tracking_mp_lean::GraphService<std::string> kStringTestService{
+    "hand_tracking_mp_lean::StringTestService"};
 
 class TestServiceSubgraph : public Subgraph {
   absl::StatusOr<CalculatorGraphConfig> GetConfig(
@@ -164,4 +164,4 @@ TEST(ValidatedGraphConfigTest, InitializeSubgraphWithServiceCalculatorB) {
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

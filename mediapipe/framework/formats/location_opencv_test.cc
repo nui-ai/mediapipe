@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/rectangle.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // 7x3x1 test mask pattern containing the following region types: bordering left
 // and right edges, multiple and single pixel lengths, multiple and single
@@ -164,4 +164,4 @@ TEST(LocationOpenCvTest, GetCvMask) {
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

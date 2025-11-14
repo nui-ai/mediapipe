@@ -25,7 +25,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/vision_task_api_factory.h"
 #include "mediapipe/tasks/cc/vision/face_detector/proto/face_detector_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace face_detector {
@@ -33,7 +33,7 @@ namespace face_detector {
 namespace {
 
 using FaceDetectorGraphOptionsProto =
-    ::mediapipe_v01013_based::tasks::vision::face_detector::proto::FaceDetectorGraphOptions;
+    ::hand_tracking_mp_lean::tasks::vision::face_detector::proto::FaceDetectorGraphOptions;
 
 constexpr char kFaceDetectorGraphTypeName[] =
     "mediapipe.tasks.vision.face_detector.FaceDetectorGraph";
@@ -120,7 +120,7 @@ absl::StatusOr<std::unique_ptr<FaceDetector>> FaceDetector::Create(
               status_or_packets.value()[kDetectionsStreamName];
           result_callback(
               components::containers::ConvertToDetectionResult(
-                  detections_packet.Get<std::vector<mediapipe_v01013_based::Detection>>()),
+                  detections_packet.Get<std::vector<hand_tracking_mp_lean::Detection>>()),
               image_packet.Get<Image>(),
               detections_packet.Timestamp().Value() /
                   kMicroSecondsPerMilliSecond);
@@ -138,7 +138,7 @@ absl::StatusOr<std::unique_ptr<FaceDetector>> FaceDetector::Create(
 }
 
 absl::StatusOr<FaceDetectorResult> FaceDetector::Detect(
-    mediapipe_v01013_based::Image image,
+    hand_tracking_mp_lean::Image image,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   MP_ASSIGN_OR_RETURN(NormalizedRect norm_rect,
                       ConvertToNormalizedRect(image_processing_options, image,
@@ -154,11 +154,11 @@ absl::StatusOr<FaceDetectorResult> FaceDetector::Detect(
   }
   return components::containers::ConvertToDetectionResult(
       output_packets[kDetectionsStreamName]
-          .Get<std::vector<mediapipe_v01013_based::Detection>>());
+          .Get<std::vector<hand_tracking_mp_lean::Detection>>());
 }
 
 absl::StatusOr<FaceDetectorResult> FaceDetector::DetectForVideo(
-    mediapipe_v01013_based::Image image, uint64_t timestamp_ms,
+    hand_tracking_mp_lean::Image image, uint64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   MP_ASSIGN_OR_RETURN(NormalizedRect norm_rect,
                       ConvertToNormalizedRect(image_processing_options, image,
@@ -177,11 +177,11 @@ absl::StatusOr<FaceDetectorResult> FaceDetector::DetectForVideo(
   }
   return components::containers::ConvertToDetectionResult(
       output_packets[kDetectionsStreamName]
-          .Get<std::vector<mediapipe_v01013_based::Detection>>());
+          .Get<std::vector<hand_tracking_mp_lean::Detection>>());
 }
 
 absl::Status FaceDetector::DetectAsync(
-    mediapipe_v01013_based::Image image, uint64_t timestamp_ms,
+    hand_tracking_mp_lean::Image image, uint64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   MP_ASSIGN_OR_RETURN(NormalizedRect norm_rect,
                       ConvertToNormalizedRect(image_processing_options, image,
@@ -198,4 +198,4 @@ absl::Status FaceDetector::DetectAsync(
 }  // namespace face_detector
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

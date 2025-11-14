@@ -34,10 +34,10 @@ limitations under the License.
 #include "mediapipe/tasks/cc/common.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe_v01013_based::tasks::text::language_detector {
+namespace hand_tracking_mp_lean::tasks::text::language_detector {
 namespace {
 
-using ::mediapipe_v01013_based::file::JoinPath;
+using ::hand_tracking_mp_lean::file::JoinPath;
 using ::testing::HasSubstr;
 using ::testing::Optional;
 
@@ -160,4 +160,4 @@ TEST_F(LanguageDetectorTest, TestDenyList) {
       kTolerance));
 }
 
-}  // namespace mediapipe_v01013_based::tasks::text::language_detector
+}  // namespace hand_tracking_mp_lean::tasks::text::language_detector

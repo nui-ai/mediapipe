@@ -23,14 +23,14 @@ limitations under the License.
 #include "mediapipe/tasks/cc/common.h"
 #include "mediapipe/tasks/cc/components/containers/embedding_result.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace components {
 namespace utils {
 
 namespace {
 
-using ::mediapipe_v01013_based::tasks::components::containers::Embedding;
+using ::hand_tracking_mp_lean::tasks::components::containers::Embedding;
 
 template <typename T>
 absl::StatusOr<double> ComputeCosineSimilarity(const T& u, const T& v,
@@ -105,4 +105,4 @@ absl::StatusOr<double> CosineSimilarity(const Embedding& u,
 }  // namespace utils
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

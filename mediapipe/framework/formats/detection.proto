@@ -20,11 +20,11 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/framework/formats/location_data.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.formats.proto";
+option java_package = "com.google.hand_tracking_mp_lean.formats.proto";
 option java_outer_classname = "DetectionProto";
 
 message Detection {

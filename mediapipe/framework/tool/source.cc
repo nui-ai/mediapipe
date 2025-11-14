@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/tool/source.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tool {
 
@@ -133,4 +133,4 @@ class SidePacketsToStreamsCalculator : public CalculatorBase {
 REGISTER_CALCULATOR(SidePacketsToStreamsCalculator);
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

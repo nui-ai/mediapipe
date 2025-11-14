@@ -12,7 +12,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 
 struct OneEuroFilterConfig {
   float min_cutoff;
@@ -32,8 +32,8 @@ struct OneEuroFilterConfig {
 //
 // NOTE: one-euro filter is exposed only. Other filter options can be exposed
 //   on demand.
-Stream<mediapipe_v01013_based::NormalizedLandmarkList> SmoothLandmarks(
-    Stream<mediapipe_v01013_based::NormalizedLandmarkList> landmarks,
+Stream<hand_tracking_mp_lean::NormalizedLandmarkList> SmoothLandmarks(
+    Stream<hand_tracking_mp_lean::NormalizedLandmarkList> landmarks,
     Stream<std::pair<int, int>> image_size,
     std::optional<Stream<NormalizedRect>> scale_roi,
     const OneEuroFilterConfig& config, Graph& graph);
@@ -49,8 +49,8 @@ Stream<mediapipe_v01013_based::NormalizedLandmarkList> SmoothLandmarks(
 //
 // NOTE: one-euro filter is exposed only. Other filter options can be exposed
 //   on demand.
-Stream<mediapipe_v01013_based::LandmarkList> SmoothLandmarks(
-    Stream<mediapipe_v01013_based::LandmarkList> landmarks,
+Stream<hand_tracking_mp_lean::LandmarkList> SmoothLandmarks(
+    Stream<hand_tracking_mp_lean::LandmarkList> landmarks,
     std::optional<Stream<NormalizedRect>> scale_roi,
     const OneEuroFilterConfig& config, Graph& graph);
 
@@ -67,12 +67,12 @@ Stream<mediapipe_v01013_based::LandmarkList> SmoothLandmarks(
 //
 // NOTE: one-euro filter is exposed only. Other filter options can be exposed
 //   on demand.
-Stream<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>> SmoothMultiLandmarks(
-    Stream<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>> landmarks,
+Stream<std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>> SmoothMultiLandmarks(
+    Stream<std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>> landmarks,
     Stream<std::vector<int64_t>> tracking_ids,
     Stream<std::pair<int, int>> image_size,
     std::optional<Stream<std::vector<NormalizedRect>>> scale_roi,
-    const mediapipe_v01013_based::LandmarksSmoothingCalculatorOptions& config, Graph& graph);
+    const hand_tracking_mp_lean::LandmarksSmoothingCalculatorOptions& config, Graph& graph);
 
 // Updates graph to smooth absolute landmarks and returns resulting stream.
 //
@@ -86,11 +86,11 @@ Stream<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>> SmoothMultiL
 //
 // NOTE: one-euro filter is exposed only. Other filter options can be exposed
 //   on demand.
-Stream<std::vector<mediapipe_v01013_based::LandmarkList>> SmoothMultiWorldLandmarks(
-    Stream<std::vector<mediapipe_v01013_based::LandmarkList>> landmarks,
+Stream<std::vector<hand_tracking_mp_lean::LandmarkList>> SmoothMultiWorldLandmarks(
+    Stream<std::vector<hand_tracking_mp_lean::LandmarkList>> landmarks,
     Stream<std::vector<int64_t>> tracking_ids,
-    std::optional<Stream<std::vector<mediapipe_v01013_based::Rect>>> scale_roi,
-    const mediapipe_v01013_based::LandmarksSmoothingCalculatorOptions& config, Graph& graph);
+    std::optional<Stream<std::vector<hand_tracking_mp_lean::Rect>>> scale_roi,
+    const hand_tracking_mp_lean::LandmarksSmoothingCalculatorOptions& config, Graph& graph);
 
 // Updates graph to smooth visibility of landmarks.
 //
@@ -99,8 +99,8 @@ Stream<std::vector<mediapipe_v01013_based::LandmarkList>> SmoothMultiWorldLandma
 // @graph - graph to update.
 //
 // Returns: normalized landmarks containing smoothed visibility.
-Stream<mediapipe_v01013_based::NormalizedLandmarkList> SmoothLandmarksVisibility(
-    Stream<mediapipe_v01013_based::NormalizedLandmarkList> landmarks,
+Stream<hand_tracking_mp_lean::NormalizedLandmarkList> SmoothLandmarksVisibility(
+    Stream<hand_tracking_mp_lean::NormalizedLandmarkList> landmarks,
     float low_pass_filter_alpha, Graph& graph);
 
 // Updates graph to smooth visibility of landmarks.
@@ -110,10 +110,10 @@ Stream<mediapipe_v01013_based::NormalizedLandmarkList> SmoothLandmarksVisibility
 // @graph - graph to update.
 //
 // Returns: absolute landmarks containing smoothed visibility.
-Stream<mediapipe_v01013_based::LandmarkList> SmoothLandmarksVisibility(
-    Stream<mediapipe_v01013_based::LandmarkList> landmarks, float low_pass_filter_alpha,
-    mediapipe_v01013_based::api2::builder::Graph& graph);
+Stream<hand_tracking_mp_lean::LandmarkList> SmoothLandmarksVisibility(
+    Stream<hand_tracking_mp_lean::LandmarkList> landmarks, float low_pass_filter_alpha,
+    hand_tracking_mp_lean::api2::builder::Graph& graph);
 
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_STREAM_SMOOTHING_H_

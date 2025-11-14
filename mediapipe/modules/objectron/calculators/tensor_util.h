@@ -19,13 +19,13 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Converts a single channel tflite tensor to a grayscale image
 cv::Mat ConvertTfliteTensorToCvMat(const TfLiteTensor& tensor);
 
 // Converts a single channel tensor to grayscale image
-cv::Mat ConvertTensorToCvMat(const mediapipe_v01013_based::Tensor& tensor);
-}  // namespace mediapipe_v01013_based
+cv::Mat ConvertTensorToCvMat(const hand_tracking_mp_lean::Tensor& tensor);
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_MODULES_OBJECTRON_CALCULATORS_TENSOR_UTIL_H_

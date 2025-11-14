@@ -19,7 +19,7 @@
 
 #include "mediapipe/framework/calculator.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tool {
 // Get an unused InputSidePacket name which is (or starts with)
@@ -90,10 +90,10 @@ std::string CatStream(const std::pair<std::string, int>& tag_index,
                       const std::string& name);
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
-namespace mediapipe_v01013_based {
-using mediapipe_v01013_based::tool::CanonicalNodeName;
-}  // namespace mediapipe_v01013_based
+namespace hand_tracking_mp_lean {
+using hand_tracking_mp_lean::tool::CanonicalNodeName;
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_NAME_UTIL_H_

@@ -28,7 +28,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe_v01013_based::formats {
+namespace hand_tracking_mp_lean::formats {
 namespace {
 
 // Maps the Tensor element type to OpenCV Mat type.
@@ -113,4 +113,4 @@ absl::StatusOr<cv::Mat> MatView(const Tensor& tensor,
                  mat_steps.data());
 }
 
-}  // namespace mediapipe_v01013_based::formats
+}  // namespace hand_tracking_mp_lean::formats

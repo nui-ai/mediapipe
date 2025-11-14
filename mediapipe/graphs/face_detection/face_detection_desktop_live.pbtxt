@@ -42,7 +42,7 @@ node {
   input_stream: "DETECTIONS:face_detections"
   output_stream: "RENDER_DATA:render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.DetectionsToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.DetectionsToRenderDataCalculatorOptions] {
       thickness: 4.0
       color { r: 255 g: 0 b: 0 }
     }

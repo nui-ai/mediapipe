@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/statusor.h"
 #include "mediapipe/modules/face_geometry/protos/mesh_3d.pb.h"
 
-namespace mediapipe_v01013_based::face_geometry {
+namespace hand_tracking_mp_lean::face_geometry {
 namespace {
 
 bool HasVertexComponentVertexPT(VertexComponent vertex_component) {
@@ -100,4 +100,4 @@ absl::StatusOr<uint32_t> GetVertexComponentSize(
   }
 }
 
-}  // namespace mediapipe_v01013_based::face_geometry
+}  // namespace hand_tracking_mp_lean::face_geometry

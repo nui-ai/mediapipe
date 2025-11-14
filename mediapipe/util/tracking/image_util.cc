@@ -22,7 +22,7 @@
 #include "mediapipe/util/tracking/motion_models.h"
 #include "mediapipe/util/tracking/region_flow.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Returns median of the L1 color distance between img_1 and img_2
 float FrameDifferenceMedian(const cv::Mat& img_1, const cv::Mat& img_2) {
@@ -114,4 +114,4 @@ void RenderSaliency(const SalientPointFrame& salient_points,
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

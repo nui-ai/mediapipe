@@ -26,12 +26,12 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/tasks/cc/components/containers/proto/embeddings.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::EmbeddingResult;
 using ::testing::HasSubstr;
-using Node = ::mediapipe_v01013_based::CalculatorGraphConfig::Node;
+using Node = ::hand_tracking_mp_lean::CalculatorGraphConfig::Node;
 
 // Builds the graph and feeds inputs.
 void BuildGraph(CalculatorRunner* runner,
@@ -273,4 +273,4 @@ TEST(TensorsToEmbeddingsCalculatorTest,
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

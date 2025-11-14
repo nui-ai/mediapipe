@@ -23,13 +23,13 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace test {
 
 // Returns the packet values for a vector of Packets.
 template <typename T>
-std::vector<T> PacketValues(const std::vector<mediapipe_v01013_based::Packet>& packets) {
+std::vector<T> PacketValues(const std::vector<hand_tracking_mp_lean::Packet>& packets) {
   std::vector<T> result;
   for (const auto& packet : packets) {
     result.push_back(packet.Get<T>());
@@ -138,13 +138,13 @@ TEST(NodeTest, GetContract) {
   // with what you have in the graph, then you let the calculator fill it in
   // with what it expects, and then you see if they match.
   const CalculatorGraphConfig::Node node_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         calculator: "Foo"
         input_stream: "BASE:base"
         input_stream: "SCALE:scale"
         output_stream: "OUT:out"
       )pb");
-  mediapipe_v01013_based::CalculatorContract contract;
+  hand_tracking_mp_lean::CalculatorContract contract;
   MP_EXPECT_OK(contract.Initialize(node_config));
   MP_EXPECT_OK(Foo::Contract::GetContract(&contract));
   MP_EXPECT_OK(ValidatePacketTypeSet(contract.Inputs()));
@@ -153,14 +153,14 @@ TEST(NodeTest, GetContract) {
 
 TEST(NodeTest, GetContractMulti) {
   const CalculatorGraphConfig::Node node_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig::Node>(R"pb(
         calculator: "Baz"
         input_stream: "DATA:0:b"
         input_stream: "DATA:1:c"
         output_stream: "DATA:0:d"
         output_stream: "DATA:1:e"
       )pb");
-  mediapipe_v01013_based::CalculatorContract contract;
+  hand_tracking_mp_lean::CalculatorContract contract;
   MP_EXPECT_OK(contract.Initialize(node_config));
   MP_EXPECT_OK(Baz::Contract::GetContract(&contract));
   MP_EXPECT_OK(ValidatePacketTypeSet(contract.Inputs()));
@@ -173,7 +173,7 @@ TEST(NodeTest, CreateByName) {
 
 void RunFooCalculatorInGraph(const std::string& foo_name) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           absl::Substitute(R"(
         input_stream: "base"
         input_stream: "scale"
@@ -186,15 +186,15 @@ void RunFooCalculatorInGraph(const std::string& foo_name) {
         }
       )",
                            foo_name));
-  std::vector<mediapipe_v01013_based::Packet> out_packets;
+  std::vector<hand_tracking_mp_lean::Packet> out_packets;
   tool::AddVectorSink("out", &config, &out_packets);
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   MP_EXPECT_OK(graph.Initialize(config, {}));
   MP_EXPECT_OK(graph.StartRun({}));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "base", mediapipe_v01013_based::MakePacket<int>(10).At(Timestamp(1))));
+      "base", hand_tracking_mp_lean::MakePacket<int>(10).At(Timestamp(1))));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "scale", mediapipe_v01013_based::MakePacket<float>(2.0).At(Timestamp(1))));
+      "scale", hand_tracking_mp_lean::MakePacket<float>(2.0).At(Timestamp(1))));
   MP_EXPECT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   EXPECT_THAT(PacketValues<float>(out_packets), testing::ElementsAre(20.0));
@@ -210,7 +210,7 @@ TEST(NodeTest, RunInGraph5) { RunFooCalculatorInGraph("Foo5"); }
 
 TEST(NodeTest, OptionalStream) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "base"
         input_side_packet: "bias"
         output_stream: "out"
@@ -221,13 +221,13 @@ TEST(NodeTest, OptionalStream) {
           output_stream: "OUT:out"
         }
       )pb");
-  std::vector<mediapipe_v01013_based::Packet> out_packets;
+  std::vector<hand_tracking_mp_lean::Packet> out_packets;
   tool::AddVectorSink("out", &config, &out_packets);
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   MP_EXPECT_OK(graph.Initialize(config, {}));
-  MP_EXPECT_OK(graph.StartRun({{"bias", mediapipe_v01013_based::MakePacket<float>(30.0)}}));
+  MP_EXPECT_OK(graph.StartRun({{"bias", hand_tracking_mp_lean::MakePacket<float>(30.0)}}));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "base", mediapipe_v01013_based::MakePacket<int>(10).At(Timestamp(1))));
+      "base", hand_tracking_mp_lean::MakePacket<int>(10).At(Timestamp(1))));
   MP_EXPECT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   EXPECT_THAT(PacketValues<float>(out_packets), testing::ElementsAre(40.0));
@@ -235,7 +235,7 @@ TEST(NodeTest, OptionalStream) {
 
 TEST(NodeTest, DynamicTypes) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "in"
         output_stream: "out"
         node {
@@ -249,13 +249,13 @@ TEST(NodeTest, DynamicTypes) {
           output_stream: "OUT:out"
         }
       )pb");
-  std::vector<mediapipe_v01013_based::Packet> out_packets;
+  std::vector<hand_tracking_mp_lean::Packet> out_packets;
   tool::AddVectorSink("out", &config, &out_packets);
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   MP_EXPECT_OK(graph.Initialize(config, {}));
   MP_EXPECT_OK(graph.StartRun({}));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe_v01013_based::MakePacket<int>(10).At(Timestamp(1))));
+      "in", hand_tracking_mp_lean::MakePacket<int>(10).At(Timestamp(1))));
   MP_EXPECT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   EXPECT_THAT(PacketValues<int>(out_packets), testing::ElementsAre(10));
@@ -263,7 +263,7 @@ TEST(NodeTest, DynamicTypes) {
 
 TEST(NodeTest, MultiPort) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "in0"
         input_stream: "in1"
         output_stream: "out0"
@@ -286,21 +286,21 @@ TEST(NodeTest, MultiPort) {
           output_stream: "OUT:out1"
         }
       )pb");
-  std::vector<mediapipe_v01013_based::Packet> out0_packets;
-  std::vector<mediapipe_v01013_based::Packet> out1_packets;
+  std::vector<hand_tracking_mp_lean::Packet> out0_packets;
+  std::vector<hand_tracking_mp_lean::Packet> out1_packets;
   tool::AddVectorSink("out0", &config, &out0_packets);
   tool::AddVectorSink("out1", &config, &out1_packets);
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   MP_EXPECT_OK(graph.Initialize(config, {}));
   MP_EXPECT_OK(graph.StartRun({}));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "in0", mediapipe_v01013_based::MakePacket<int>(10).At(Timestamp(1))));
+      "in0", hand_tracking_mp_lean::MakePacket<int>(10).At(Timestamp(1))));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "in1", mediapipe_v01013_based::MakePacket<int>(5).At(Timestamp(1))));
+      "in1", hand_tracking_mp_lean::MakePacket<int>(5).At(Timestamp(1))));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "in0", mediapipe_v01013_based::MakePacket<int>(15).At(Timestamp(2))));
+      "in0", hand_tracking_mp_lean::MakePacket<int>(15).At(Timestamp(2))));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "in1", mediapipe_v01013_based::MakePacket<int>(7).At(Timestamp(2))));
+      "in1", hand_tracking_mp_lean::MakePacket<int>(7).At(Timestamp(2))));
   MP_EXPECT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   std::vector<int> out0_values;
@@ -331,7 +331,7 @@ MEDIAPIPE_REGISTER_NODE(SideFallback);
 
 TEST(NodeTest, SideFallbackWithStream) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "in"
         input_stream: "factor"
         output_stream: "out"
@@ -343,18 +343,18 @@ TEST(NodeTest, SideFallbackWithStream) {
         }
       )pb");
   std::vector<int> outputs;
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   MP_EXPECT_OK(graph.Initialize(config, {}));
   MP_EXPECT_OK(
-      graph.ObserveOutputStream("out", [&outputs](const mediapipe_v01013_based::Packet& p) {
+      graph.ObserveOutputStream("out", [&outputs](const hand_tracking_mp_lean::Packet& p) {
         outputs.push_back(p.Get<int>());
         return absl::OkStatus();
       }));
   MP_EXPECT_OK(graph.StartRun({}));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe_v01013_based::MakePacket<int>(10).At(Timestamp(0))));
+      "in", hand_tracking_mp_lean::MakePacket<int>(10).At(Timestamp(0))));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "factor", mediapipe_v01013_based::MakePacket<int>(2).At(Timestamp(0))));
+      "factor", hand_tracking_mp_lean::MakePacket<int>(2).At(Timestamp(0))));
   MP_EXPECT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   EXPECT_EQ(outputs, std::vector<int>{20});
@@ -362,7 +362,7 @@ TEST(NodeTest, SideFallbackWithStream) {
 
 TEST(NodeTest, SideFallbackWithSide) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "in"
         input_side_packet: "factor"
         output_stream: "out"
@@ -374,16 +374,16 @@ TEST(NodeTest, SideFallbackWithSide) {
         }
       )pb");
   std::vector<int> outputs;
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   MP_EXPECT_OK(graph.Initialize(config, {}));
   MP_EXPECT_OK(
-      graph.ObserveOutputStream("out", [&outputs](const mediapipe_v01013_based::Packet& p) {
+      graph.ObserveOutputStream("out", [&outputs](const hand_tracking_mp_lean::Packet& p) {
         outputs.push_back(p.Get<int>());
         return absl::OkStatus();
       }));
-  MP_EXPECT_OK(graph.StartRun({{"factor", mediapipe_v01013_based::MakePacket<int>(2)}}));
+  MP_EXPECT_OK(graph.StartRun({{"factor", hand_tracking_mp_lean::MakePacket<int>(2)}}));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe_v01013_based::MakePacket<int>(10).At(Timestamp(0))));
+      "in", hand_tracking_mp_lean::MakePacket<int>(10).At(Timestamp(0))));
   MP_EXPECT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   EXPECT_EQ(outputs, std::vector<int>{20});
@@ -391,7 +391,7 @@ TEST(NodeTest, SideFallbackWithSide) {
 
 TEST(NodeTest, SideFallbackWithNone) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "in"
         output_stream: "out"
         node {
@@ -401,14 +401,14 @@ TEST(NodeTest, SideFallbackWithNone) {
         }
       )pb");
   std::vector<int> outputs;
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   auto status = graph.Initialize(config, {});
   EXPECT_THAT(status.message(), testing::HasSubstr("must be connected"));
 }
 
 TEST(NodeTest, SideFallbackWithBoth) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "in"
         input_stream: "factor"
         input_side_packet: "factor_side"
@@ -422,14 +422,14 @@ TEST(NodeTest, SideFallbackWithBoth) {
         }
       )pb");
   std::vector<int> outputs;
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   auto status = graph.Initialize(config, {});
   EXPECT_THAT(status.message(), testing::HasSubstr("not both"));
 }
 
 TEST(NodeTest, OneOf) {
   CalculatorGraphConfig config =
-      ::mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      ::hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "in"
         output_stream: "out"
         node {
@@ -438,15 +438,15 @@ TEST(NodeTest, OneOf) {
           output_stream: "OUT:out"
         }
       )pb");
-  std::vector<mediapipe_v01013_based::Packet> out_packets;
+  std::vector<hand_tracking_mp_lean::Packet> out_packets;
   tool::AddVectorSink("out", &config, &out_packets);
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   MP_EXPECT_OK(graph.Initialize(config, {}));
   MP_EXPECT_OK(graph.StartRun({}));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe_v01013_based::MakePacket<int>(10).At(Timestamp(1))));
+      "in", hand_tracking_mp_lean::MakePacket<int>(10).At(Timestamp(1))));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "in", mediapipe_v01013_based::MakePacket<float>(5.0).At(Timestamp(2))));
+      "in", hand_tracking_mp_lean::MakePacket<float>(5.0).At(Timestamp(2))));
   MP_EXPECT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
   EXPECT_THAT(PacketValues<float>(out_packets), testing::ElementsAre(10, 5.0));
@@ -490,7 +490,7 @@ MEDIAPIPE_REGISTER_NODE(ListIntPackets);
 
 TEST(NodeTest, DefaultTimestampChange0) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "a"
         input_stream: "b"
         output_stream: "out"
@@ -511,15 +511,15 @@ TEST(NodeTest, DefaultTimestampChange0) {
           output_stream: "STR:out"
         }
       )pb");
-  std::vector<mediapipe_v01013_based::Packet> out_packets;
+  std::vector<hand_tracking_mp_lean::Packet> out_packets;
   tool::AddVectorSink("out", &config, &out_packets);
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   MP_EXPECT_OK(graph.Initialize(config, {}));
   MP_EXPECT_OK(graph.StartRun({}));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "a", mediapipe_v01013_based::MakePacket<int>(10).At(Timestamp(2))));
+      "a", hand_tracking_mp_lean::MakePacket<int>(10).At(Timestamp(2))));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "b", mediapipe_v01013_based::MakePacket<int>(10).At(Timestamp(2))));
+      "b", hand_tracking_mp_lean::MakePacket<int>(10).At(Timestamp(2))));
   MP_EXPECT_OK(graph.WaitUntilIdle());
   // The packet sent to a should have been dropped, but the timestamp bound
   // should be forwarded by IntForwarder, and ListIntPackets should have run.
@@ -547,7 +547,7 @@ MEDIAPIPE_REGISTER_NODE(ConsumerNode);
 
 TEST(NodeTest, ConsumeInputs) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "int"
         input_stream: "any"
         input_stream: "num"
@@ -558,15 +558,15 @@ TEST(NodeTest, ConsumeInputs) {
           input_stream: "NUM:num"
         }
       )pb");
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   MP_EXPECT_OK(graph.Initialize(config, {}));
   MP_EXPECT_OK(graph.StartRun({}));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "int", mediapipe_v01013_based::MakePacket<int>(10).At(Timestamp(0))));
+      "int", hand_tracking_mp_lean::MakePacket<int>(10).At(Timestamp(0))));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "any", mediapipe_v01013_based::MakePacket<float>(10).At(Timestamp(0))));
+      "any", hand_tracking_mp_lean::MakePacket<float>(10).At(Timestamp(0))));
   MP_EXPECT_OK(graph.AddPacketToInputStream(
-      "num", mediapipe_v01013_based::MakePacket<int>(10).At(Timestamp(0))));
+      "num", hand_tracking_mp_lean::MakePacket<int>(10).At(Timestamp(0))));
   MP_EXPECT_OK(graph.CloseAllPacketSources());
   MP_EXPECT_OK(graph.WaitUntilDone());
 }
@@ -702,7 +702,7 @@ TEST_P(SidePacketConnectionTestSuite, SidePacketConnectionTest) {
   producer.GetOptions<SidePacketConnectionTestOptions>() = options;
   auto& consumer = builder.AddNode("SidePacktConsumerNode");
   consumer.GetOptions<SidePacketConnectionTestOptions>() = options;
-  std::map<std::string, mediapipe_v01013_based::Packet> side_packets;
+  std::map<std::string, hand_tracking_mp_lean::Packet> side_packets;
   if (graph_side_in) {
     builder.SideIn("").SetName("side_in") >>
         consumer.SideIn(graph_connect_first_port ? "SIDE_IN_1" : "SIDE_IN_2");
@@ -729,4 +729,4 @@ TEST_P(SidePacketConnectionTestSuite, SidePacketConnectionTest) {
 
 }  // namespace test
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

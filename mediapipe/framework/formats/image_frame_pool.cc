@@ -16,7 +16,7 @@
 
 #include "absl/synchronization/mutex.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 ImageFramePool::ImageFramePool(int width, int height,
                                ImageFormat::Format format, int keep_count)
@@ -85,4 +85,4 @@ void ImageFramePool::TrimAvailable(
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

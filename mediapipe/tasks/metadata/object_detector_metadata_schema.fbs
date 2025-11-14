@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace mediapipe_v01013_based.tasks;
+namespace hand_tracking_mp_lean.tasks;
 
 // ObjectDetectorOptions.min_parser_version indicates the minimum necessary
 // object detector metadata parser version to fully understand all fields in a

@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace scale_image {
 
 namespace {
@@ -193,4 +193,4 @@ absl::Status FindOutputDimensions(int input_width,             //
 }
 
 }  // namespace scale_image
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

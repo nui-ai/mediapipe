@@ -10,13 +10,13 @@
 #include "mediapipe/framework/api2/builder.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::api2::builder::GenericNode;
-using ::mediapipe_v01013_based::api2::builder::Graph;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::api2::builder::GenericNode;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
 
 template <typename TransformeeT>
 Stream<TransformeeT> InternalScaleAndShift(
@@ -25,7 +25,7 @@ Stream<TransformeeT> InternalScaleAndShift(
     std::optional<float> shift_y, bool square_long, Graph& graph) {
   auto& node = graph.AddNode("RectTransformationCalculator");
   auto& node_opts =
-      node.GetOptions<mediapipe_v01013_based::RectTransformationCalculatorOptions>();
+      node.GetOptions<hand_tracking_mp_lean::RectTransformationCalculatorOptions>();
   node_opts.set_scale_x(scale_x_factor);
   node_opts.set_scale_y(scale_y_factor);
   if (shift_x) {
@@ -105,4 +105,4 @@ Stream<NormalizedRect> ScaleAndShift(Stream<NormalizedRect> rect,
                                shift_x, shift_y, /*square_long=*/false, graph);
 }
 
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

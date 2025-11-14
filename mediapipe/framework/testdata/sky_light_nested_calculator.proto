@@ -18,7 +18,7 @@
 
 syntax = "proto3";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 // A proto3 calculator options with nested field for testing.
 message SkyLightNestedCalculatorOptions {

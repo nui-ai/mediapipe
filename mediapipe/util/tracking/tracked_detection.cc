@@ -16,11 +16,11 @@
 
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
+using ::hand_tracking_mp_lean::NormalizedRect;
 
 // Struct for carrying boundary information.
 struct NormalizedRectBounds {
@@ -143,4 +143,4 @@ std::array<Vector2_f, 4> TrackedDetection::GetCorners(
   return ComputeCorners(bounding_box_, center, image_width, image_height);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

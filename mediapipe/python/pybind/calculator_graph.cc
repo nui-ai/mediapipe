@@ -34,7 +34,7 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace python {
 
 // A mutex to guard the output stream observer python callback function.
@@ -60,7 +60,7 @@ void CalculatorGraphSubmodule(pybind11::module* module) {
                                        "MediaPipe calculator graph module.");
 
   using GraphInputStreamAddMode =
-      mediapipe_v01013_based::CalculatorGraph::GraphInputStreamAddMode;
+      hand_tracking_mp_lean::CalculatorGraph::GraphInputStreamAddMode;
 
   py::enum_<GraphInputStreamAddMode>(m, "GraphInputStreamAddMode")
       .value("WAIT_TILL_NOT_FULL", GraphInputStreamAddMode::WAIT_TILL_NOT_FULL)
@@ -508,4 +508,4 @@ void CalculatorGraphSubmodule(pybind11::module* module) {
 }
 
 }  // namespace python
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

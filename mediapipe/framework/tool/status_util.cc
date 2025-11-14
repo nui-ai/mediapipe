@@ -22,7 +22,7 @@
 #include "absl/strings/string_view.h"
 #include "mediapipe/framework/deps/no_destructor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tool {
 
 absl::Status StatusInvalid(absl::string_view message) {
@@ -35,7 +35,7 @@ absl::Status StatusFail(absl::string_view message) {
 
 const absl::Status& StatusStop() {
   static const NoDestructor<absl::Status> kStatusStop(
-      absl::StatusCode::kOutOfRange, "mediapipe_v01013_based::tool::StatusStop()");
+      absl::StatusCode::kOutOfRange, "hand_tracking_mp_lean::tool::StatusStop()");
   return *kStatusStop;
 }
 
@@ -71,4 +71,4 @@ absl::Status CombinedStatus(absl::string_view general_comment,
 }
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -64,11 +64,11 @@
 
 @end
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 MetalSharedResources::MetalSharedResources() {
   resources_ = [[MPPMetalSharedResources alloc] init];
 }
 MetalSharedResources::~MetalSharedResources() {}
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -14,7 +14,7 @@ node {
   calculator: "ConstantSidePacketCalculator"
   output_side_packet: "PACKET:num_hands"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.ConstantSidePacketCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.ConstantSidePacketCalculatorOptions]: {
       packet { int_value: 2 }
     }
   }

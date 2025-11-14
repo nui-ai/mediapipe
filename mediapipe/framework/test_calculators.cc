@@ -33,7 +33,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/test_calculators.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kOutTag[] = "OUT";
 constexpr char kClockTag[] = "CLOCK";
@@ -265,7 +265,7 @@ class StdDevCalculator : public CalculatorBase {
 
   absl::Status Close(CalculatorContext* cc) final {
     cc->Outputs().Index(0).Add(
-        new int(mediapipe_v01013_based::MathUtil::SafeRound<int, double>(
+        new int(hand_tracking_mp_lean::MathUtil::SafeRound<int, double>(
             sqrt(cummulative_variance_ / count_) * 100.0)),
         Timestamp::PostStream());
     return absl::OkStatus();
@@ -715,13 +715,13 @@ REGISTER_CALCULATOR(MultiplyIntCalculator);
 class ForwardNestedPacketOrEmitBoundUpdateCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
-    cc->Inputs().Index(0).Set<mediapipe_v01013_based::Packet>();
+    cc->Inputs().Index(0).Set<hand_tracking_mp_lean::Packet>();
     cc->Outputs().Index(0).SetAny();
     return absl::OkStatus();
   }
 
   absl::Status Process(CalculatorContext* cc) override {
-    const auto& nested_packet = cc->Inputs().Index(0).Get<mediapipe_v01013_based::Packet>();
+    const auto& nested_packet = cc->Inputs().Index(0).Get<hand_tracking_mp_lean::Packet>();
     if (!nested_packet.IsEmpty()) {
       cc->Outputs().Index(0).AddPacket(nested_packet);
     } else {
@@ -752,11 +752,11 @@ class TimestampBoundReceiverCalculator : public CalculatorBase {
       // in the upstream calculator.
       const Timestamp bound = cc->InputTimestamp() + 1;
       cc->Outputs().Index(0).AddPacket(
-          mediapipe_v01013_based::MakePacket<Timestamp>(bound).At(bound));
+          hand_tracking_mp_lean::MakePacket<Timestamp>(bound).At(bound));
     }
     return absl::OkStatus();
   }
 };
 REGISTER_CALCULATOR(TimestampBoundReceiverCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

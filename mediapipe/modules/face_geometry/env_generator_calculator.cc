@@ -19,7 +19,7 @@
 #include "mediapipe/modules/face_geometry/libs/validation_utils.h"
 #include "mediapipe/modules/face_geometry/protos/environment.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 static constexpr char kEnvironmentTag[] = "ENVIRONMENT";
@@ -48,7 +48,7 @@ class EnvGeneratorCalculator : public CalculatorBase {
   }
 
   absl::Status Open(CalculatorContext* cc) override {
-    cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
+    cc->SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
 
     const face_geometry::Environment& environment =
         cc->Options<FaceGeometryEnvGeneratorCalculatorOptions>().environment();
@@ -58,7 +58,7 @@ class EnvGeneratorCalculator : public CalculatorBase {
 
     cc->OutputSidePackets()
         .Tag(kEnvironmentTag)
-        .Set(mediapipe_v01013_based::MakePacket<face_geometry::Environment>(environment));
+        .Set(hand_tracking_mp_lean::MakePacket<face_geometry::Environment>(environment));
 
     return absl::OkStatus();
   }
@@ -78,4 +78,4 @@ using FaceGeometryEnvGeneratorCalculator = EnvGeneratorCalculator;
 
 REGISTER_CALCULATOR(FaceGeometryEnvGeneratorCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

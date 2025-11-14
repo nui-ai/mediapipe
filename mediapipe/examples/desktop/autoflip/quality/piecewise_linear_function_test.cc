@@ -23,7 +23,7 @@
 
 namespace {
 
-using mediapipe_v01013_based::autoflip::PiecewiseLinearFunction;
+using hand_tracking_mp_lean::autoflip::PiecewiseLinearFunction;
 
 // It should be OK to pass a spec that's out of order as it gets sorted.
 TEST(PiecewiseLinearFunctionTest, ReordersSpec) {

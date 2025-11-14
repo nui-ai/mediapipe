@@ -28,7 +28,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/tag_map_helper.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -61,7 +61,7 @@ class OutputStreamManagerTest : public ::testing::Test {
     output_stream_manager_->ResetShard(&output_stream_shard_);
 
     std::shared_ptr<tool::TagMap> tag_map = tool::CreateTagMap(1).value();
-    absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::InputStreamHandler>>
+    absl::StatusOr<std::unique_ptr<hand_tracking_mp_lean::InputStreamHandler>>
         status_or_handler = InputStreamHandlerRegistry::CreateByName(
             "DefaultInputStreamHandler", tag_map, /*cc_manager=*/nullptr,
             MediaPipeOptions(), /*calculator_run_in_parallel=*/false);
@@ -707,4 +707,4 @@ TEST_F(OutputStreamManagerTest, ShouldReportNumPacketsAdded) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

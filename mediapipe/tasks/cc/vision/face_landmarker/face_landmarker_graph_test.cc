@@ -44,7 +44,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/utils/image_utils.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace face_landmarker {
@@ -52,15 +52,15 @@ namespace {
 
 using ::file::Defaults;
 using ::file::GetTextProto;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::file::JoinPath;
-using ::mediapipe_v01013_based::tasks::core::TaskRunner;
-using ::mediapipe_v01013_based::tasks::vision::DecodeImageFromFile;
-using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::FaceGeometry;
-using ::mediapipe_v01013_based::tasks::vision::face_landmarker::proto::
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::file::JoinPath;
+using ::hand_tracking_mp_lean::tasks::core::TaskRunner;
+using ::hand_tracking_mp_lean::tasks::vision::DecodeImageFromFile;
+using ::hand_tracking_mp_lean::tasks::vision::face_geometry::proto::FaceGeometry;
+using ::hand_tracking_mp_lean::tasks::vision::face_landmarker::proto::
     FaceLandmarkerGraphOptions;
 using ::testing::EqualsProto;
 using ::testing::Pointwise;
@@ -180,7 +180,7 @@ absl::StatusOr<std::unique_ptr<TaskRunner>> CreateFaceLandmarkerGraphTaskRunner(
 absl::StatusOr<CalculatorGraphConfig> ExpandConfig(
     const std::string& config_str) {
   auto config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(config_str);
   CalculatorGraph graph;
   MP_RETURN_IF_ERROR(graph.Initialize(config));
   return graph.Config();
@@ -402,4 +402,4 @@ INSTANTIATE_TEST_SUITE_P(
 }  // namespace face_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

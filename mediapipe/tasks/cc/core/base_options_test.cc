@@ -17,7 +17,7 @@ constexpr char kTestModelBundlePath[] =
 constexpr char kCachedModelDir[] = "/data/local/tmp";
 constexpr char kModelToken[] = "dummy_model_token";
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace core {
 namespace {
@@ -87,4 +87,4 @@ TEST(DelegateOptionsDeathTest, FailWrongDelegateOptionsType) {
 }  // namespace
 }  // namespace core
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

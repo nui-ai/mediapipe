@@ -43,7 +43,7 @@
 #include "mediapipe/framework/port/file_helpers.h"
 #endif
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // Convert result tensors from classification models into MediaPipe
@@ -76,7 +76,7 @@ absl::Status ExtractHandednessClassification::Open(CalculatorContext* cc) {
     std::string string_path;
     MP_ASSIGN_OR_RETURN(string_path,
                         PathToResourceAsFile(options.label_map_path()));
-    MP_ASSIGN_OR_RETURN(std::unique_ptr<mediapipe_v01013_based::Resource> label_map,
+    MP_ASSIGN_OR_RETURN(std::unique_ptr<hand_tracking_mp_lean::Resource> label_map,
                         cc->GetResources().Get(string_path));
     proto_ns::Map<int64_t, LabelMapItem> temp_label_map;
     MP_ASSIGN_OR_RETURN(
@@ -140,4 +140,4 @@ ExtractHandednessClassification::GetLabelMap(CalculatorContext* cc) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

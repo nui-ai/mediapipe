@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"  // NOLINT
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 typedef ConcatenateVectorCalculator<int> TestConcatenateIntVectorCalculator;
 MEDIAPIPE_REGISTER_NODE(TestConcatenateIntVectorCalculator);
@@ -564,4 +564,4 @@ TEST(TestConcatenateUniqueIntVectorCalculatorTest, OneEmptyStreamNoOutput) {
   EXPECT_EQ(0, outputs.size());
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

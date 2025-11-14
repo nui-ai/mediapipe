@@ -20,15 +20,15 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "absl/status/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 absl::Status OutputTensorsToWorldLandmarks(const std::vector<Tensor>& input_tensors, LandmarkList* output_landmarks);
 
 class TensorsToWorldLandmarksCore {
  public:
-  explicit TensorsToWorldLandmarksCore(::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
-                                       ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
+  explicit TensorsToWorldLandmarksCore(::hand_tracking_mp_lean::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
+                                       ::hand_tracking_mp_lean::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
                                        int num_landmarks = 21);
 
   absl::Status Process(
@@ -37,12 +37,12 @@ class TensorsToWorldLandmarksCore {
 
  private:
   int num_landmarks_;
-  ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation visibility_activation_;  // not used
-  ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation presence_activation_;  // not used
+  ::hand_tracking_mp_lean::TensorsToLandmarksCalculatorOptions::Activation visibility_activation_;  // not used
+  ::hand_tracking_mp_lean::TensorsToLandmarksCalculatorOptions::Activation presence_activation_;  // not used
 };
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_WORLD LANDMARKS_CALCULATOR_CORE_H_
 

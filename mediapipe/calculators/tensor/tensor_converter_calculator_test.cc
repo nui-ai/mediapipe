@@ -37,7 +37,7 @@
 #include "mediapipe/framework/port/status_matchers.h"  // NOLINT
 #include "mediapipe/framework/tool/validate_type.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 using RandomEngine = std::mt19937_64;
 using ::testing::HasSubstr;
 const uint32_t kSeed = 1234;
@@ -83,7 +83,7 @@ TEST_F(TensorConverterCalculatorTest, RandomMatrixColMajor) {
 
     // Run the calculator and verify that one output is generated.
     CalculatorGraphConfig graph_config =
-        mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+        hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
           input_stream: "matrix"
           node {
             calculator: "TensorConverterCalculator"
@@ -145,7 +145,7 @@ TEST_F(TensorConverterCalculatorTest, RandomMatrixRowMajor) {
 
     // Run the calculator and verify that one output is generated.
     CalculatorGraphConfig graph_config =
-        mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+        hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
           input_stream: "matrix"
           node {
             calculator: "TensorConverterCalculator"
@@ -204,7 +204,7 @@ TEST_F(TensorConverterCalculatorTest, CustomDivAndSub) {
   CalculatorGraph graph;
   // Run the calculator and verify that one output is generated.
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input_image"
         node {
           calculator: "TensorConverterCalculator"
@@ -229,7 +229,7 @@ TEST_F(TensorConverterCalculatorTest, CustomDivAndSub) {
   MP_ASSERT_OK(graph.Initialize(graph_config));
   MP_ASSERT_OK(graph.StartRun({}));
   auto input_image = std::make_unique<ImageFrame>(ImageFormat::GRAY8, 1, 1);
-  cv::Mat mat = mediapipe_v01013_based::formats::MatView(input_image.get());
+  cv::Mat mat = hand_tracking_mp_lean::formats::MatView(input_image.get());
   mat.at<uint8_t>(0, 0) = 200;
   MP_ASSERT_OK(graph.AddPacketToInputStream(
       "input_image", Adopt(input_image.release()).At(Timestamp(0))));
@@ -260,7 +260,7 @@ TEST_F(TensorConverterCalculatorTest, SetOutputRange) {
   for (std::pair<float, float> range : range_values) {
     CalculatorGraph graph;
     CalculatorGraphConfig graph_config =
-        mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(absl::Substitute(
+        hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(absl::Substitute(
             R"pb(
               input_stream: "input_image"
               node {
@@ -283,7 +283,7 @@ TEST_F(TensorConverterCalculatorTest, SetOutputRange) {
     MP_ASSERT_OK(graph.Initialize(graph_config));
     MP_ASSERT_OK(graph.StartRun({}));
     auto input_image = std::make_unique<ImageFrame>(ImageFormat::GRAY8, 1, 1);
-    cv::Mat mat = mediapipe_v01013_based::formats::MatView(input_image.get());
+    cv::Mat mat = hand_tracking_mp_lean::formats::MatView(input_image.get());
     mat.at<uint8_t>(0, 0) = 200;
     MP_ASSERT_OK(graph.AddPacketToInputStream(
         "input_image", Adopt(input_image.release()).At(Timestamp(0))));
@@ -319,7 +319,7 @@ TEST_F(TensorConverterCalculatorTest,
        ShouldConvertImageWithDefaultOutputRange) {
   CalculatorGraph graph;
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "input_image"
             node {
@@ -340,7 +340,7 @@ TEST_F(TensorConverterCalculatorTest,
   MP_ASSERT_OK(graph.Initialize(graph_config));
   MP_ASSERT_OK(graph.StartRun({}));
   auto input_image = std::make_unique<ImageFrame>(ImageFormat::GRAY8, 1, 1);
-  cv::Mat mat = mediapipe_v01013_based::formats::MatView(input_image.get());
+  cv::Mat mat = hand_tracking_mp_lean::formats::MatView(input_image.get());
   mat.at<uint8_t>(0, 0) = 200;
   MP_ASSERT_OK(graph.AddPacketToInputStream(
       "input_image", Adopt(input_image.release()).At(Timestamp(0))));
@@ -373,7 +373,7 @@ TEST_F(TensorConverterCalculatorTest,
 TEST_F(TensorConverterCalculatorTest, FlipVertically) {
   CalculatorGraph graph;
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input_image"
         node {
           calculator: "TensorConverterCalculator"
@@ -394,7 +394,7 @@ TEST_F(TensorConverterCalculatorTest, FlipVertically) {
   MP_ASSERT_OK(graph.Initialize(graph_config));
   MP_ASSERT_OK(graph.StartRun({}));
   auto input_image = std::make_unique<ImageFrame>(ImageFormat::GRAY8, 1, 2);
-  cv::Mat mat = mediapipe_v01013_based::formats::MatView(input_image.get());
+  cv::Mat mat = hand_tracking_mp_lean::formats::MatView(input_image.get());
   constexpr uint8_t kY0Value = 100;
   constexpr uint8_t kY1Value = 200;
   mat.at<uint8_t>(0, 0) = kY0Value;
@@ -428,7 +428,7 @@ TEST_F(TensorConverterCalculatorTest,
        CannotSpecifyBothFlipVerticallyAndGpuOrigin) {
   CalculatorGraph graph;
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input_image"
         node {
           calculator: "TensorConverterCalculator"
@@ -462,7 +462,7 @@ TEST_F(TensorConverterCalculatorTest,
 TEST_F(TensorConverterCalculatorTest, GpuOriginIsIgnoredWithCpuImage) {
   CalculatorGraph graph;
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input_image"
         node {
           calculator: "TensorConverterCalculator"
@@ -483,7 +483,7 @@ TEST_F(TensorConverterCalculatorTest, GpuOriginIsIgnoredWithCpuImage) {
   MP_ASSERT_OK(graph.Initialize(graph_config));
   MP_ASSERT_OK(graph.StartRun({}));
   auto input_image = std::make_unique<ImageFrame>(ImageFormat::GRAY8, 1, 2);
-  cv::Mat mat = mediapipe_v01013_based::formats::MatView(input_image.get());
+  cv::Mat mat = hand_tracking_mp_lean::formats::MatView(input_image.get());
   constexpr uint8_t kY0Value = 100;
   constexpr uint8_t kY1Value = 200;
   mat.at<uint8_t>(0, 0) = kY0Value;
@@ -513,4 +513,4 @@ TEST_F(TensorConverterCalculatorTest, GpuOriginIsIgnoredWithCpuImage) {
   MP_ASSERT_OK(graph.WaitUntilDone());
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

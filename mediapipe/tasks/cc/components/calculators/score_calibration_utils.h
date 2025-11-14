@@ -20,7 +20,7 @@
 #include "mediapipe/tasks/cc/components/calculators/score_calibration_calculator.pb.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 
 // Populates ScoreCalibrationCalculatorOptions given a TFLite Metadata score
@@ -33,6 +33,6 @@ absl::Status ConfigureScoreCalibration(
     ScoreCalibrationCalculatorOptions* options);
 
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_CALCULATORS_SCORE_CALIBRATION_UTILS_H_

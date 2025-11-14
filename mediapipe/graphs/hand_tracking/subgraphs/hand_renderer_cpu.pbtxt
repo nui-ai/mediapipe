@@ -28,7 +28,7 @@ node {
   input_stream: "DETECTIONS:palm_detections"
   output_stream: "RENDER_DATA:detection_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.DetectionsToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.DetectionsToRenderDataCalculatorOptions] {
       thickness: 4.0
       color { r: 0 g: 255 b: 0 }
     }
@@ -41,7 +41,7 @@ node {
   input_stream: "NORM_RECTS:multi_hand_rects"
   output_stream: "RENDER_DATA:multi_hand_rects_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.RectToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.RectToRenderDataCalculatorOptions] {
       filled: false
       color { r: 255 g: 0 b: 0 }
       thickness: 4.0
@@ -55,7 +55,7 @@ node {
   input_stream: "NORM_RECTS:multi_palm_rects"
   output_stream: "RENDER_DATA:multi_palm_rects_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.RectToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.RectToRenderDataCalculatorOptions] {
       filled: false
       color { r: 125 g: 0 b: 122 }
       thickness: 4.0
@@ -80,7 +80,7 @@ node {
   input_stream: "NORM_LANDMARKS:single_hand_landmarks"
   output_stream: "RENDER_DATA:single_hand_landmark_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.LandmarksToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.LandmarksToRenderDataCalculatorOptions] {
       landmark_connections: 0
       landmark_connections: 1
       landmark_connections: 1
@@ -146,7 +146,7 @@ node {
   input_stream: "ITERABLE:multi_handedness"
   output_stream: "disallow_handedness_rendering"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.CollectionHasMinSizeCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.CollectionHasMinSizeCalculatorOptions] {
       min_size: 2
     }
   }
@@ -158,7 +158,7 @@ node {
   input_stream: "DISALLOW:disallow_handedness_rendering"
   output_stream: "allowed_multi_handedness"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.GateCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.GateCalculatorOptions] {
       empty_packets_as_allow: false
     }
   }
@@ -169,7 +169,7 @@ node {
   input_stream: "allowed_multi_handedness"
   output_stream: "handedness"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.SplitVectorCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.SplitVectorCalculatorOptions] {
       ranges: { begin: 0 end: 1 }
       element_only: true
     }
@@ -182,7 +182,7 @@ node {
   input_stream: "CLASSIFICATIONS:handedness"
   output_stream: "RENDER_DATA:handedness_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.LabelsToRenderDataCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.LabelsToRenderDataCalculatorOptions]: {
       color { r: 255 g: 0 b: 0 }
       thickness: 10.0
       font_height_px: 50

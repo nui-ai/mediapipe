@@ -7,11 +7,11 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 namespace {
 
 TEST(ThresholdTest, IsOverThresholdTest) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<float> score = graph.In("SCORE").Cast<float>();
   Stream<bool> flag = IsOverThreshold(score, /*threshold=*/0.5f, graph);
@@ -19,7 +19,7 @@ TEST(ThresholdTest, IsOverThresholdTest) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "ThresholdingCalculator"
           input_stream: "FLOAT:__stream_0"
@@ -36,4 +36,4 @@ TEST(ThresholdTest, IsOverThresholdTest) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

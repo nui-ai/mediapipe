@@ -15,7 +15,7 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe_v01013_based.tasks.vision.pose_landmarker.proto;
+package hand_tracking_mp_lean.tasks.vision.pose_landmarker.proto;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/framework/calculator_options.proto";
@@ -23,11 +23,11 @@ import "mediapipe/tasks/cc/core/proto/base_options.proto";
 import "mediapipe/tasks/cc/vision/pose_detector/proto/pose_detector_graph_options.proto";
 import "mediapipe/tasks/cc/vision/pose_landmarker/proto/pose_landmarks_detector_graph_options.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.tasks.vision.poselandmarker.proto";
+option java_package = "com.google.hand_tracking_mp_lean.tasks.vision.poselandmarker.proto";
 option java_outer_classname = "PoseLandmarkerGraphOptionsProto";
 
 message PoseLandmarkerGraphOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional PoseLandmarkerGraphOptions ext = 516587230;
   }
   // Base options for configuring Task library, such as specifying the TfLite

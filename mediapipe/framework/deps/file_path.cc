@@ -16,7 +16,7 @@
 
 #include "absl/strings/str_cat.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace file {
 
 // 40% of the time in JoinPath() is from calls with 2 arguments, so we
@@ -117,4 +117,4 @@ absl::string_view Extension(absl::string_view path) {
 }
 
 }  // namespace file
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -115,7 +115,7 @@ class PacketLatencyCalculator : public CalculatorBase {
   PacketLatencyCalculatorOptions options_;
 
   // Clock object.
-  std::shared_ptr<::mediapipe_v01013_based::Clock> clock_;
+  std::shared_ptr<::hand_tracking_mp_lean::Clock> clock_;
 
   // Clock time when the first reference packet was received.
   int64_t first_process_time_usec_ = -1;
@@ -157,7 +157,7 @@ absl::Status PacketLatencyCalculator::GetContract(CalculatorContract* cc) {
   if (cc->InputSidePackets().HasTag(kClockTag)) {
     cc->InputSidePackets()
         .Tag(kClockTag)
-        .Set<std::shared_ptr<::mediapipe_v01013_based::Clock>>();
+        .Set<std::shared_ptr<::hand_tracking_mp_lean::Clock>>();
   }
 
   return absl::OkStatus();
@@ -218,10 +218,10 @@ absl::Status PacketLatencyCalculator::Open(CalculatorContext* cc) {
   if (cc->InputSidePackets().HasTag(kClockTag)) {
     clock_ = cc->InputSidePackets()
                  .Tag(kClockTag)
-                 .Get<std::shared_ptr<::mediapipe_v01013_based::Clock>>();
+                 .Get<std::shared_ptr<::hand_tracking_mp_lean::Clock>>();
   } else {
-    clock_ = std::shared_ptr<::mediapipe_v01013_based::Clock>(
-        ::mediapipe_v01013_based::MonotonicClock::CreateSynchronizedMonotonicClock());
+    clock_ = std::shared_ptr<::hand_tracking_mp_lean::Clock>(
+        ::hand_tracking_mp_lean::MonotonicClock::CreateSynchronizedMonotonicClock());
   }
 
   return absl::OkStatus();
@@ -295,4 +295,4 @@ absl::Status PacketLatencyCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

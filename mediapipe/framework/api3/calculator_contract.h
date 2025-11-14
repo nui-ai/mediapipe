@@ -29,7 +29,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/graph_service.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 // Calculator contract specialized for a specific node.
 //
@@ -48,7 +48,7 @@ class CalculatorContract
     : public NodeT::template Contract<ContractSpecializer> {
  public:
   explicit CalculatorContract(
-      mediapipe_v01013_based::CalculatorContract& generic_contract,
+      hand_tracking_mp_lean::CalculatorContract& generic_contract,
       absl::AnyInvocable<void(absl::Status)> store_status)
       : generic_contract_(generic_contract) {
     using BaseContractT =
@@ -88,7 +88,7 @@ class CalculatorContract
   // - `CalculatorGraph` requires client to set corresponding service object and
   //   otherwise fails, unless request is made optional
   //   (`GraphServiceRequest::Optional()`).
-  mediapipe_v01013_based::CalculatorContract::GraphServiceRequest& UseService(
+  hand_tracking_mp_lean::CalculatorContract::GraphServiceRequest& UseService(
       const GraphServiceBase& service) {
     return generic_contract_.UseService(service);
   }
@@ -149,12 +149,12 @@ class CalculatorContract
     return generic_contract_.GetTimestampOffset();
   }
 
-  mediapipe_v01013_based::CalculatorContract& GetGenericContract() {
+  hand_tracking_mp_lean::CalculatorContract& GetGenericContract() {
     return generic_contract_;
   }
 
  private:
-  mediapipe_v01013_based::CalculatorContract& generic_contract_;
+  hand_tracking_mp_lean::CalculatorContract& generic_contract_;
 };
 
 // +----------------------------------------------------------------------+
@@ -211,9 +211,9 @@ class Options<ContractSpecializer, ProtoT> {
   friend void internal_port::SetCalculatorContract(V& v, CC& contract);
 
   // Not owned, set by the framework.
-  mediapipe_v01013_based::CalculatorContract* contract_ = nullptr;
+  hand_tracking_mp_lean::CalculatorContract* contract_ = nullptr;
 };
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_CALCULATOR_CONTRACT_H_

@@ -4,7 +4,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based::util::tflite {
+namespace hand_tracking_mp_lean::util::tflite {
 namespace {
 
 TEST(ErrorReporterTest, ReportNoErrors) {
@@ -52,4 +52,4 @@ TEST(ErrorReporterTest, VeryLongErrorIsTruncated) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::util::tflite
+}  // namespace hand_tracking_mp_lean::util::tflite

@@ -22,7 +22,7 @@
 #include "mediapipe/util/tracking/tracked_detection.h"
 #include "mediapipe/util/tracking/tracked_detection_manager_config.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Class for managing detections.
 // The detections are from either server side or a mobile detector and are
@@ -43,7 +43,7 @@ class TrackedDetectionManager {
   // detection. Returns the IDs of the detections that are removed due to
   // duplication.
   std::vector<int> UpdateDetectionLocation(
-      int id, const ::mediapipe_v01013_based::NormalizedRect& bounding_box,
+      int id, const ::hand_tracking_mp_lean::NormalizedRect& bounding_box,
       int64_t timestamp);
 
   // Removes detections that are not updated after |timestamp|. Returns the IDs
@@ -72,7 +72,7 @@ class TrackedDetectionManager {
     return detections_;
   }
 
-  void SetConfig(const mediapipe_v01013_based::TrackedDetectionManagerConfig& config) {
+  void SetConfig(const hand_tracking_mp_lean::TrackedDetectionManagerConfig& config) {
     config_ = config;
   }
 
@@ -84,9 +84,9 @@ class TrackedDetectionManager {
 
   absl::node_hash_map<int, std::unique_ptr<TrackedDetection>> detections_;
 
-  mediapipe_v01013_based::TrackedDetectionManagerConfig config_;
+  hand_tracking_mp_lean::TrackedDetectionManagerConfig config_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_DETECTION_MANAGER_H_

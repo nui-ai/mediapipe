@@ -30,7 +30,7 @@
 #include "mediapipe/modules/objectron/calculators/box.h"
 #include "mediapipe/util/color.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -212,4 +212,4 @@ AnnotationsToModelMatricesCalculator::GetModelMatricesForAnnotations(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

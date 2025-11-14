@@ -21,7 +21,7 @@
 
 #if HAS_EGL
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // This is used to pass an EGLSurface to a GlSurfaceSinkCalculator.
 struct EglSurfaceHolder {
@@ -55,7 +55,7 @@ struct EglSurfaceHolder {
   bool update_presentation_time = false;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // HAS_EGL
 #endif  // MEDIAPIPE_GPU_EGL_SURFACE_HOLDER_H_

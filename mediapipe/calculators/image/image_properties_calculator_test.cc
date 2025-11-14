@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 TEST(ImagePropertiesCalculatorTest, GetImageProperties) {
   auto image_frame =
@@ -156,4 +156,4 @@ TEST(ImagePropertiesCalculatorTest, GetImageFramePropertiesGPU) {
   MP_ASSERT_OK(graph.WaitUntilDone());
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

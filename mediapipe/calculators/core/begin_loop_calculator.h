@@ -25,7 +25,7 @@
 #include "mediapipe/framework/packet.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Calculator for implementing loops on iterable collections inside a MediaPipe
 // graph. Assume InputIterT is an iterable for type InputT, and OutputIterT is
@@ -210,6 +210,6 @@ class BeginLoopCalculator : public CalculatorBase {
   Timestamp loop_internal_timestamp_ = Timestamp(0);
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_BEGIN_LOOP_CALCULATOR_H_

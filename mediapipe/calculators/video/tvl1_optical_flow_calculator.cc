@@ -21,7 +21,7 @@
 #include "mediapipe/framework/formats/motion/optical_flow_field.h"
 #include "mediapipe/framework/port/opencv_video_inc.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr char kBackwardFlowTag[] = "BACKWARD_FLOW";
@@ -194,4 +194,4 @@ absl::Status Tvl1OpticalFlowCalculator::CalculateOpticalFlow(
 
 REGISTER_CALCULATOR(Tvl1OpticalFlowCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

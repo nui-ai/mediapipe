@@ -11,7 +11,7 @@
 #include "absl/strings/string_view.h"
 #include "mediapipe/framework/resources.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 class InMemoryResources : public Resources {
@@ -40,4 +40,4 @@ std::unique_ptr<Resources> CreateInMemoryResources(
   return std::make_unique<InMemoryResources>(std::move(resources));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

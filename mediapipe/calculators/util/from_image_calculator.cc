@@ -27,7 +27,7 @@
 #include "mediapipe/gpu/gl_calculator_helper.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 constexpr char kImageFrameTag[] = "IMAGE_CPU";
@@ -73,13 +73,13 @@ class FromImageCalculator : public CalculatorBase {
   bool gpu_output_ = false;
   bool gpu_initialized_ = false;
 #if !MEDIAPIPE_DISABLE_GPU
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
 #endif  // !MEDIAPIPE_DISABLE_GPU
 };
 REGISTER_CALCULATOR(FromImageCalculator);
 
 absl::Status FromImageCalculator::GetContract(CalculatorContract* cc) {
-  cc->Inputs().Tag(kImageTag).Set<mediapipe_v01013_based::Image>();
+  cc->Inputs().Tag(kImageTag).Set<hand_tracking_mp_lean::Image>();
 
   bool gpu_output = false;
 
@@ -90,19 +90,19 @@ absl::Status FromImageCalculator::GetContract(CalculatorContract* cc) {
 
   if (cc->Outputs().HasTag(kGpuBufferTag)) {
 #if !MEDIAPIPE_DISABLE_GPU
-    cc->Outputs().Tag(kGpuBufferTag).Set<mediapipe_v01013_based::GpuBuffer>();
+    cc->Outputs().Tag(kGpuBufferTag).Set<hand_tracking_mp_lean::GpuBuffer>();
     gpu_output = true;
 #else
     RET_CHECK_FAIL() << "GPU is disabled. Cannot use IMAGE_GPU stream.";
 #endif  // !MEDIAPIPE_DISABLE_GPU
   }
   if (cc->Outputs().HasTag(kImageFrameTag)) {
-    cc->Outputs().Tag(kImageFrameTag).Set<mediapipe_v01013_based::ImageFrame>();
+    cc->Outputs().Tag(kImageFrameTag).Set<hand_tracking_mp_lean::ImageFrame>();
   }
 
   if (gpu_output) {
 #if !MEDIAPIPE_DISABLE_GPU
-    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc));
+    MP_RETURN_IF_ERROR(hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract(cc));
 #endif  // !MEDIAPIPE_DISABLE_GPU
   }
 
@@ -132,7 +132,7 @@ absl::Status FromImageCalculator::Open(CalculatorContext* cc) {
 
 absl::Status FromImageCalculator::Process(CalculatorContext* cc) {
   if (check_image_source_) {
-    auto& input = cc->Inputs().Tag(kImageTag).Get<mediapipe_v01013_based::Image>();
+    auto& input = cc->Inputs().Tag(kImageTag).Get<hand_tracking_mp_lean::Image>();
     cc->Outputs()
         .Tag(kSourceOnGpuTag)
         .AddPacket(MakePacket<bool>(input.UsesGpu()).At(cc->InputTimestamp()));
@@ -141,10 +141,10 @@ absl::Status FromImageCalculator::Process(CalculatorContext* cc) {
   if (gpu_output_) {
 #if !MEDIAPIPE_DISABLE_GPU
     MP_RETURN_IF_ERROR(gpu_helper_.RunInGlContext([&cc]() -> absl::Status {
-      auto& input = cc->Inputs().Tag(kImageTag).Get<mediapipe_v01013_based::Image>();
+      auto& input = cc->Inputs().Tag(kImageTag).Get<hand_tracking_mp_lean::Image>();
       // Unwrap texture pointer; shallow copy.
       auto output =
-          std::make_unique<mediapipe_v01013_based::GpuBuffer>(input.GetGpuBuffer());
+          std::make_unique<hand_tracking_mp_lean::GpuBuffer>(input.GetGpuBuffer());
       cc->Outputs()
           .Tag(kGpuBufferTag)
           .Add(output.release(), cc->InputTimestamp());
@@ -153,15 +153,15 @@ absl::Status FromImageCalculator::Process(CalculatorContext* cc) {
 #endif  // !MEDIAPIPE_DISABLE_GPU
   } else {
     // The input Image.
-    auto& input = cc->Inputs().Tag(kImageTag).Get<mediapipe_v01013_based::Image>();
+    auto& input = cc->Inputs().Tag(kImageTag).Get<hand_tracking_mp_lean::Image>();
     // Make a copy of the input packet to co-own the input Image.
     Packet* packet_copy_ptr = new Packet(cc->Inputs().Tag(kImageTag).Value());
     // Create an output ImageFrame that points to the same pixel data as the
     // input Image and also owns the packet copy. As a result, the output
     // ImageFrame indirectly co-owns the input Image. This ensures a correct
     // life span of the shared pixel data.
-    std::unique_ptr<mediapipe_v01013_based::ImageFrame> output =
-        std::make_unique<mediapipe_v01013_based::ImageFrame>(
+    std::unique_ptr<hand_tracking_mp_lean::ImageFrame> output =
+        std::make_unique<hand_tracking_mp_lean::ImageFrame>(
             input.image_format(), input.width(), input.height(), input.step(),
             const_cast<uint8_t*>(input.GetImageFrameSharedPtr()->PixelData()),
             [packet_copy_ptr](uint8_t*) { delete packet_copy_ptr; });
@@ -177,4 +177,4 @@ absl::Status FromImageCalculator::Close(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

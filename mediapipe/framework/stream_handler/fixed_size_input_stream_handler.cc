@@ -32,15 +32,15 @@
 #include "mediapipe/framework/stream_handler/fixed_size_input_stream_handler.pb.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 FixedSizeInputStreamHandler::FixedSizeInputStreamHandler(
     std::shared_ptr<tool::TagMap> tag_map, CalculatorContextManager* cc_manager,
-    const mediapipe_v01013_based::MediaPipeOptions& options, bool calculator_run_in_parallel)
+    const hand_tracking_mp_lean::MediaPipeOptions& options, bool calculator_run_in_parallel)
     : DefaultInputStreamHandler(std::move(tag_map), cc_manager, options,
                                 calculator_run_in_parallel) {
   const auto& ext =
-      options.GetExtension(mediapipe_v01013_based::FixedSizeInputStreamHandlerOptions::ext);
+      options.GetExtension(hand_tracking_mp_lean::FixedSizeInputStreamHandlerOptions::ext);
   trigger_queue_size_ = ext.trigger_queue_size();
   target_queue_size_ = ext.target_queue_size();
   fixed_min_size_ = ext.fixed_min_size();
@@ -193,4 +193,4 @@ void FixedSizeInputStreamHandler::FillInputSet(Timestamp input_timestamp,
 
 REGISTER_INPUT_STREAM_HANDLER(FixedSizeInputStreamHandler);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -30,7 +30,7 @@ extern "C" void halide_error(void*, const char* message) {
   ABSL_LOG(ERROR) << "Halide Error: " << message;
 }
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace frame_buffer {
 namespace {
 
@@ -699,4 +699,4 @@ TEST(RgbBufferTest, PaddedRgbaToFloat) {
 
 }  // namespace
 }  // namespace frame_buffer
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -27,7 +27,7 @@
 #include "mediapipe/calculators/util/world_landmark_projection_calculator_core.h"
 #include "mediapipe/modules/hand_landmark/calculators/hand_landmarks_to_rect_calculator_core.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
  class DetectionsToOrientedRects;  // forward declaration hack that will ultimately be unnecessary
 
  struct ImageHandTrackingAndInferenceResult {
@@ -49,7 +49,7 @@ namespace mediapipe_v01013_based {
   HandTrackingCore(HandTrackingCore&&) = default;
   HandTrackingCore& operator=(HandTrackingCore&&) = default;
 
-  [[nodiscard]] absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Process(std::shared_ptr<const mediapipe_v01013_based::Image> image, uint32_t max_hands_to_track);
+  [[nodiscard]] absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Process(std::shared_ptr<const hand_tracking_mp_lean::Image> image, uint32_t max_hands_to_track);
 
  private:
 

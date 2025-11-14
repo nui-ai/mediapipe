@@ -16,7 +16,7 @@
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 static const char my_graph[] =
@@ -30,4 +30,4 @@ TEST(DataAsCString, CanDecodeCalculatorGraphConfig) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -102,7 +102,7 @@ std::string GetProjectRootedPath(const std::string& filename) {
 }
 
 // helper function to read the reference output data from file c style (we could just have used cpp)
-bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013_based::PipelineOutputData>& out) {
+bool ReadReferenceData(const std::string& filename, std::vector<hand_tracking_mp_lean::PipelineOutputData>& out) {
     std::ifstream input(filename, std::ios::binary);
     if (!input.is_open()) {
         std::cerr << "Failed to open reference file: " << filename << std::endl;
@@ -112,7 +112,7 @@ bool ReadReferenceData(const std::string& filename, std::vector<mediapipe_v01013
     bool clean_eof = false;
     int msg_count = 0;
     while (true) {
-        mediapipe_v01013_based::PipelineOutputData msg;
+        hand_tracking_mp_lean::PipelineOutputData msg;
         std::streampos pos = input.tellg();
         if (!google::protobuf::util::ParseDelimitedFromZeroCopyStream(&msg, &zero_copy_input, &clean_eof)) {
             if (msg_count == 0) {
@@ -142,7 +142,7 @@ int main(int argc, char** argv) {
     ValidateProjectRootDirectoryOrExit();
 
     // load the reference output data (we could just read it using cpp)
-    std::vector<mediapipe_v01013_based::PipelineOutputData> reference_data;
+    std::vector<hand_tracking_mp_lean::PipelineOutputData> reference_data;
     ReadReferenceData(GetProjectRootedPath(kReferenceProtoFilename), reference_data);
 
     // output stream names as single string for c api simplicity
@@ -212,7 +212,7 @@ int main(int argc, char** argv) {
             break;
         }
 
-        mediapipe_v01013_based::PipelineOutputData stream_data_msg;
+        hand_tracking_mp_lean::PipelineOutputData stream_data_msg;
         if (!stream_data_msg.ParseFromArray(output_data, output_size)) {
             std::cerr << "Failed to parse PipelineOutputData from C API output" << std::endl;
             free(output_data);

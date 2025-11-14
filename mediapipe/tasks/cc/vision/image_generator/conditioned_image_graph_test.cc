@@ -33,20 +33,20 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/image_segmenter/proto/image_segmenter_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/utils/image_utils.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace image_generator {
 
 namespace {
 
-using ::mediapipe_v01013_based::Image;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::core::TaskRunner;
-using ::mediapipe_v01013_based::tasks::vision::DecodeImageFromFile;
+using ::hand_tracking_mp_lean::Image;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::core::TaskRunner;
+using ::hand_tracking_mp_lean::tasks::vision::DecodeImageFromFile;
 
 constexpr char kTestDataDirectory[] = "/mediapipe/tasks/testdata/vision/";
 constexpr char kFaceLandmarkerModel[] = "face_landmarker_v2.task";
@@ -144,4 +144,4 @@ TEST(ConditionedImageGraphTest, SucceedsEdgeConditionType) {
 }  // namespace image_generator
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

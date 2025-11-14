@@ -27,10 +27,10 @@
 #include "mediapipe/tasks/cc/components/calculators/classification_aggregation_calculator.pb.h"
 #include "mediapipe/tasks/cc/components/containers/proto/classifications.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
-using ::mediapipe_v01013_based::tasks::components::containers::proto::ClassificationResult;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::ClassificationResult;
 
 // Aggregates ClassificationLists into either a ClassificationResult object
 // representing the classification results aggregated by classifier head, or
@@ -221,4 +221,4 @@ ClassificationAggregationCalculator::ConvertToTimestampedClassificationResults(
 MEDIAPIPE_REGISTER_NODE(ClassificationAggregationCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

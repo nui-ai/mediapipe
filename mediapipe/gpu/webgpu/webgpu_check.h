@@ -9,12 +9,12 @@
 // that indicates whether we can _build_ WebGPU code. The choice of whether to
 // actually use WebGPU is made at runtime by checking IsWebGpuAvailable.
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Returns true if WebGPU is available to MediaPipe and can be used.
 // This requires a WebGPU device to be set up; see auto_setup_webgpu.
 bool IsWebGpuAvailable();
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_WEBGPU_WEBGPU_CHECK_H_

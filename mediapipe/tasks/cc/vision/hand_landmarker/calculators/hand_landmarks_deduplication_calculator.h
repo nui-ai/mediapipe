@@ -23,7 +23,7 @@ limitations under the License.
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/tasks/cc/vision/utils/landmarks_duplicates_finder.h"
 
-namespace mediapipe_v01013_based::api2 {
+namespace hand_tracking_mp_lean::api2 {
 
 // Create a DuplicatesFinder dedicated for finding hand duplications.
 std::unique_ptr<tasks::vision::utils::DuplicatesFinder>
@@ -68,30 +68,30 @@ CreateHandDuplicatesFinder(bool start_from_the_end = false);
 // }
 class HandLandmarksDeduplicationCalculator : public Node {
  public:
-  constexpr static Input<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>
+  constexpr static Input<std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>>
       kInLandmarks{"MULTI_LANDMARKS"};
-  constexpr static Input<std::vector<mediapipe_v01013_based::NormalizedRect>>::Optional
+  constexpr static Input<std::vector<hand_tracking_mp_lean::NormalizedRect>>::Optional
       kInRois{"MULTI_ROIS"};
-  constexpr static Input<std::vector<mediapipe_v01013_based::LandmarkList>>::Optional
+  constexpr static Input<std::vector<hand_tracking_mp_lean::LandmarkList>>::Optional
       kInWorldLandmarks{"MULTI_WORLD_LANDMARKS"};
-  constexpr static Input<std::vector<mediapipe_v01013_based::ClassificationList>>::Optional
+  constexpr static Input<std::vector<hand_tracking_mp_lean::ClassificationList>>::Optional
       kInClassifications{"MULTI_CLASSIFICATIONS"};
   constexpr static Input<std::pair<int, int>> kInSize{"IMAGE_SIZE"};
 
-  constexpr static Output<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>
+  constexpr static Output<std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>>
       kOutLandmarks{"MULTI_LANDMARKS"};
-  constexpr static Output<std::vector<mediapipe_v01013_based::NormalizedRect>>::Optional
+  constexpr static Output<std::vector<hand_tracking_mp_lean::NormalizedRect>>::Optional
       kOutRois{"MULTI_ROIS"};
-  constexpr static Output<std::vector<mediapipe_v01013_based::LandmarkList>>::Optional
+  constexpr static Output<std::vector<hand_tracking_mp_lean::LandmarkList>>::Optional
       kOutWorldLandmarks{"MULTI_WORLD_LANDMARKS"};
-  constexpr static Output<std::vector<mediapipe_v01013_based::ClassificationList>>::Optional
+  constexpr static Output<std::vector<hand_tracking_mp_lean::ClassificationList>>::Optional
       kOutClassifications{"MULTI_CLASSIFICATIONS"};
   MEDIAPIPE_NODE_CONTRACT(kInLandmarks, kInRois, kInWorldLandmarks,
                           kInClassifications, kInSize, kOutLandmarks, kOutRois,
                           kOutWorldLandmarks, kOutClassifications);
-  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override;
+  absl::Status Process(hand_tracking_mp_lean::CalculatorContext* cc) override;
 };
 
-}  // namespace mediapipe_v01013_based::api2
+}  // namespace hand_tracking_mp_lean::api2
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_HAND_LANDMARKER_CALCULATORS_HAND_LANDMARKS_DEDUPLICATION_CALCULATOR_H_

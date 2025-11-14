@@ -16,7 +16,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/calculators/util/thresholding_calculator_core.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kThresholdTag[] = "THRESHOLD";
 constexpr char kRejectTag[] = "REJECT";
@@ -97,7 +97,7 @@ absl::Status HandPresenceGating::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
 
   const auto& options =
-      cc->Options<::mediapipe_v01013_based::ThresholdingCalculatorOptions>();
+      cc->Options<::hand_tracking_mp_lean::ThresholdingCalculatorOptions>();
 
   // Using the core function to initialize the calculator
   MP_RETURN_IF_ERROR(thresholding_calculator::InitializeCalculator(
@@ -152,4 +152,4 @@ absl::Status HandPresenceGating::Process(CalculatorContext* cc) {
 
   return absl::OkStatus();
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

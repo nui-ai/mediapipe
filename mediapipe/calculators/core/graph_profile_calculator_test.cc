@@ -36,12 +36,12 @@
 // Tests for GraphProfileCalculator.
 using testing::ElementsAre;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr char kClockTag[] = "CLOCK";
 
-using mediapipe_v01013_based::Clock;
+using hand_tracking_mp_lean::Clock;
 
 // A Calculator with a fixed Process call latency.
 class SleepCalculator : public CalculatorBase {
@@ -64,7 +64,7 @@ class SleepCalculator : public CalculatorBase {
     cc->Outputs().Index(0).AddPacket(cc->Inputs().Index(0).Value());
     return absl::OkStatus();
   }
-  std::shared_ptr<::mediapipe_v01013_based::Clock> clock_ = nullptr;
+  std::shared_ptr<::hand_tracking_mp_lean::Clock> clock_ = nullptr;
 };
 REGISTER_CALCULATOR(SleepCalculator);
 
@@ -128,7 +128,7 @@ class GraphProfileCalculatorTest : public ::testing::Test {
     executor->GetClock()->ThreadStart();
     MP_ASSERT_OK(graph.StartRun({
         {"sync_clock",
-         Adopt(new std::shared_ptr<::mediapipe_v01013_based::Clock>(executor->GetClock()))},
+         Adopt(new std::shared_ptr<::hand_tracking_mp_lean::Clock>(executor->GetClock()))},
     }));
 
     // Send each packet to the graph in the specified order.
@@ -176,7 +176,7 @@ TEST_F(GraphProfileCalculatorTest, GraphProfile) {
               ElementsAre(10000, 40000));
 
   GraphProfile expected_profile =
-      mediapipe_v01013_based::ParseTextProtoOrDie<GraphProfile>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<GraphProfile>(R"pb(
         calculator_profiles {
           name: "GraphProfileCalculator"
           open_runtime: 0
@@ -205,8 +205,8 @@ TEST_F(GraphProfileCalculatorTest, GraphProfile) {
   ASSERT_EQ(output_packets.size(), 2);
   EXPECT_TRUE(output_packets[0].Get<GraphProfile>().has_config());
   EXPECT_THAT(output_packets[1].Get<GraphProfile>(),
-              mediapipe_v01013_based::EqualsProto(expected_profile));
+              hand_tracking_mp_lean::EqualsProto(expected_profile));
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

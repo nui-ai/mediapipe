@@ -43,25 +43,25 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_stylizer/proto/face_stylizer_graph_options.pb.h"
 #include "mediapipe/util/graph_builder_utils.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace face_stylizer {
 
 namespace {
 
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::TensorsToImageCalculatorOptions;
-using ::mediapipe_v01013_based::tasks::core::ModelAssetBundleResources;
-using ::mediapipe_v01013_based::tasks::core::ModelResources;
-using ::mediapipe_v01013_based::tasks::core::proto::ExternalFile;
-using ::mediapipe_v01013_based::tasks::metadata::SetExternalFile;
-using ::mediapipe_v01013_based::tasks::vision::face_landmarker::proto::
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::TensorsToImageCalculatorOptions;
+using ::hand_tracking_mp_lean::tasks::core::ModelAssetBundleResources;
+using ::hand_tracking_mp_lean::tasks::core::ModelResources;
+using ::hand_tracking_mp_lean::tasks::core::proto::ExternalFile;
+using ::hand_tracking_mp_lean::tasks::metadata::SetExternalFile;
+using ::hand_tracking_mp_lean::tasks::vision::face_landmarker::proto::
     FaceLandmarkerGraphOptions;
-using ::mediapipe_v01013_based::tasks::vision::face_stylizer::proto::
+using ::hand_tracking_mp_lean::tasks::vision::face_stylizer::proto::
     FaceStylizerGraphOptions;
 
 constexpr char kDetectionTag[] = "DETECTION";
@@ -136,7 +136,7 @@ absl::Status SetSubTaskBaseOptions(const ModelAssetBundleResources& resources,
 }
 
 void ConfigureSplitNormalizedLandmarkListVectorCalculator(
-    mediapipe_v01013_based::SplitVectorCalculatorOptions* options) {
+    hand_tracking_mp_lean::SplitVectorCalculatorOptions* options) {
   auto* vector_range = options->add_ranges();
   vector_range->set_begin(0);
   vector_range->set_end(1);
@@ -162,7 +162,7 @@ void ConfigureLandmarksToDetectionCalculator(
 void ConfigureTensorsToImageCalculator(
     const ImageToTensorCalculatorOptions& image_to_tensor_options,
     TensorsToImageCalculatorOptions* tensors_to_image_options) {
-  tensors_to_image_options->set_gpu_origin(mediapipe_v01013_based::GpuOrigin_Mode_TOP_LEFT);
+  tensors_to_image_options->set_gpu_origin(hand_tracking_mp_lean::GpuOrigin_Mode_TOP_LEFT);
   if (image_to_tensor_options.has_output_tensor_float_range()) {
     auto* mutable_range =
         tensors_to_image_options->mutable_input_tensor_float_range();
@@ -192,9 +192,9 @@ void ConfigureTensorsToImageCalculator(
 //     @Optional: rect covering the whole image is used if not specified.
 //
 // Outputs:
-//   STYLIZED_IMAGE - mediapipe_v01013_based::Image
+//   STYLIZED_IMAGE - hand_tracking_mp_lean::Image
 //     The face stylization output image.
-//   FACE_ALIGNMENT - mediapipe_v01013_based::Image
+//   FACE_ALIGNMENT - hand_tracking_mp_lean::Image
 //     The aligned face image that is fed to the face stylization model to
 //     perform stylization. Also useful for preparing face stylization training
 //     data.
@@ -202,7 +202,7 @@ void ConfigureTensorsToImageCalculator(
 //     An std::array<float, 16> representing a 4x4 row-major-order matrix that
 //     maps a point on the input image to a point on the output image, and
 //     can be used to reverse the mapping by inverting the matrix.
-//   IMAGE - mediapipe_v01013_based::Image
+//   IMAGE - hand_tracking_mp_lean::Image
 //     The input image that the face landmarker runs on and has the pixel data
 //     stored on the target storage (CPU vs GPU).
 //
@@ -242,7 +242,7 @@ class FaceStylizerGraph : public core::ModelTaskGraph {
           *model_asset_bundle_resources,
           sc->MutableOptions<FaceStylizerGraphOptions>(),
           output_stylized ? face_stylizer_external_file.get() : nullptr,
-          !sc->Service(::mediapipe_v01013_based::tasks::core::kModelResourcesCacheService)
+          !sc->Service(::hand_tracking_mp_lean::tasks::core::kModelResourcesCacheService)
                .IsAvailable()));
     } else if (output_stylized) {
       return CreateStatusWithPayload(
@@ -324,7 +324,7 @@ class FaceStylizerGraph : public core::ModelTaskGraph {
         graph.AddNode("SplitNormalizedLandmarkListVectorCalculator");
     ConfigureSplitNormalizedLandmarkListVectorCalculator(
         &split_face_landmark_list
-             .GetOptions<mediapipe_v01013_based::SplitVectorCalculatorOptions>());
+             .GetOptions<hand_tracking_mp_lean::SplitVectorCalculatorOptions>());
     face_landmark_lists >> split_face_landmark_list.In("");
     auto face_landmarks = split_face_landmark_list.Out("");
 
@@ -365,7 +365,7 @@ class FaceStylizerGraph : public core::ModelTaskGraph {
           task_options.face_alignment_size());
       image_to_tensor_options.set_keep_aspect_ratio(true);
       image_to_tensor_options.set_border_mode(
-          mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
+          hand_tracking_mp_lean::ImageToTensorCalculatorOptions::BORDER_ZERO);
       image_in >> image_to_tensor.In(kImageTag);
       face_rect >> image_to_tensor.In(kNormRectTag);
       auto face_alignment_image = image_to_tensor.Out(kTensorsTag);
@@ -405,7 +405,7 @@ class FaceStylizerGraph : public core::ModelTaskGraph {
              .mutable_image_to_tensor_options();
     image_to_tensor_options.set_keep_aspect_ratio(true);
     image_to_tensor_options.set_border_mode(
-        mediapipe_v01013_based::ImageToTensorCalculatorOptions::BORDER_ZERO);
+        hand_tracking_mp_lean::ImageToTensorCalculatorOptions::BORDER_ZERO);
     image_in >> preprocessing.In(kImageTag);
     face_rect >> preprocessing.In(kNormRectTag);
     auto preprocessed_tensors = preprocessing.Out(kTensorsTag);
@@ -427,7 +427,7 @@ class FaceStylizerGraph : public core::ModelTaskGraph {
     auto tensor_image = tensors_to_image.Out(kImageTag);
 
     auto& image_converter = graph.AddNode("ImageCloneCalculator");
-    image_converter.GetOptions<mediapipe_v01013_based::ImageCloneCalculatorOptions>()
+    image_converter.GetOptions<hand_tracking_mp_lean::ImageCloneCalculatorOptions>()
         .set_output_on_gpu(false);
     tensor_image >> image_converter.In("");
     stylized = image_converter.Out("").Cast<Image>();
@@ -452,10 +452,10 @@ class FaceStylizerGraph : public core::ModelTaskGraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe_v01013_based::tasks::vision::face_stylizer::FaceStylizerGraph);  // NOLINT
+  ::hand_tracking_mp_lean::tasks::vision::face_stylizer::FaceStylizerGraph);  // NOLINT
 // clang-format on
 
 }  // namespace face_stylizer
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

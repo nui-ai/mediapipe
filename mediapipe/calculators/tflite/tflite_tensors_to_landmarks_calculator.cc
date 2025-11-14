@@ -19,18 +19,18 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
 inline float Sigmoid(float value) { return 1.0f / (1.0f + std::exp(-value)); }
 
 float ApplyActivation(
-    ::mediapipe_v01013_based::TfLiteTensorsToLandmarksCalculatorOptions::Activation
+    ::hand_tracking_mp_lean::TfLiteTensorsToLandmarksCalculatorOptions::Activation
         activation,
     float value) {
   switch (activation) {
-    case ::mediapipe_v01013_based::TfLiteTensorsToLandmarksCalculatorOptions::SIGMOID:
+    case ::hand_tracking_mp_lean::TfLiteTensorsToLandmarksCalculatorOptions::SIGMOID:
       return Sigmoid(value);
       break;
     default:
@@ -101,7 +101,7 @@ class TfLiteTensorsToLandmarksCalculator : public CalculatorBase {
   bool flip_vertically_ = false;
   bool flip_horizontally_ = false;
 
-  ::mediapipe_v01013_based::TfLiteTensorsToLandmarksCalculatorOptions options_;
+  ::hand_tracking_mp_lean::TfLiteTensorsToLandmarksCalculatorOptions options_;
 };
 REGISTER_CALCULATOR(TfLiteTensorsToLandmarksCalculator);
 
@@ -275,9 +275,9 @@ absl::Status TfLiteTensorsToLandmarksCalculator::LoadOptions(
     CalculatorContext* cc) {
   // Get calculator options specified in the graph.
   options_ =
-      cc->Options<::mediapipe_v01013_based::TfLiteTensorsToLandmarksCalculatorOptions>();
+      cc->Options<::hand_tracking_mp_lean::TfLiteTensorsToLandmarksCalculatorOptions>();
   num_landmarks_ = options_.num_landmarks();
 
   return absl::OkStatus();
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

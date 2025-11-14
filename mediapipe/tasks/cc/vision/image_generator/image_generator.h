@@ -30,7 +30,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/image_generator/image_generator_result.h"
 #include "mediapipe/tasks/cc/vision/image_segmenter/image_segmenter.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace image_generator {
@@ -158,6 +158,6 @@ class ImageGenerator : tasks::vision::core::BaseVisionTaskApi {
 }  // namespace image_generator
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_IMAGE_GENERATOR_IMAGE_GENERATOR_H_

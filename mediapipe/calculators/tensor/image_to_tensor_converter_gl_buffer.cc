@@ -44,7 +44,7 @@
 #include "tensorflow/lite/delegates/gpu/gl/request_gpu_info.h"
 #include "tensorflow/lite/delegates/gpu/gl/variable.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -63,7 +63,7 @@ class SubRectExtractorGl {
       tflite::gpu::gl::GlBuffer* destination);
 
   static absl::StatusOr<SubRectExtractorGl> Create(
-      const mediapipe_v01013_based::GlContext& gl_context, bool input_starts_at_bottom,
+      const hand_tracking_mp_lean::GlContext& gl_context, bool input_starts_at_bottom,
       BorderMode border_mode);
 
  private:
@@ -209,7 +209,7 @@ absl::Status SubRectExtractorGl::ExtractSubRectToBuffer(
 }
 
 absl::StatusOr<SubRectExtractorGl> SubRectExtractorGl::Create(
-    const mediapipe_v01013_based::GlContext& gl_context, bool input_starts_at_bottom,
+    const hand_tracking_mp_lean::GlContext& gl_context, bool input_starts_at_bottom,
     BorderMode border_mode) {
   bool use_custom_zero_border = border_mode == BorderMode::kZero &&
                                 !IsGlClampToBorderSupported(gl_context);
@@ -264,14 +264,14 @@ class ImageToTensorGlBufferConverter : public ImageToTensorConverter {
     });
   }
 
-  absl::Status Convert(const mediapipe_v01013_based::Image& input, const RotatedRect& roi,
+  absl::Status Convert(const hand_tracking_mp_lean::Image& input, const RotatedRect& roi,
                        float range_min, float range_max,
                        int tensor_buffer_offset,
                        Tensor& output_tensor) override {
-    if (input.format() != mediapipe_v01013_based::GpuBufferFormat::kBGRA32 &&
-        input.format() != mediapipe_v01013_based::GpuBufferFormat::kRGBAHalf64 &&
-        input.format() != mediapipe_v01013_based::GpuBufferFormat::kRGBAFloat128 &&
-        input.format() != mediapipe_v01013_based::GpuBufferFormat::kRGB24) {
+    if (input.format() != hand_tracking_mp_lean::GpuBufferFormat::kBGRA32 &&
+        input.format() != hand_tracking_mp_lean::GpuBufferFormat::kRGBAHalf64 &&
+        input.format() != hand_tracking_mp_lean::GpuBufferFormat::kRGBAFloat128 &&
+        input.format() != hand_tracking_mp_lean::GpuBufferFormat::kRGB24) {
       return InvalidArgumentError(absl::StrCat(
           "Unsupported format: ", static_cast<uint32_t>(input.format())));
     }
@@ -339,7 +339,7 @@ class ImageToTensorGlBufferConverter : public ImageToTensorConverter {
 
   std::unique_ptr<tflite::gpu::gl::CommandQueue> command_queue_;
   std::unique_ptr<SubRectExtractorGl> extractor_;
-  mediapipe_v01013_based::GlCalculatorHelper gl_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gl_helper_;
 };
 
 }  // namespace
@@ -354,6 +354,6 @@ CreateImageToGlBufferTensorConverter(CalculatorContext* cc,
   return result;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31

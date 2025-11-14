@@ -18,12 +18,12 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-mediapipe_v01013_based::NormalizedLandmarkList vec_to_lms(
+hand_tracking_mp_lean::NormalizedLandmarkList vec_to_lms(
     const std::vector<std::pair<float, float>>& inp) {
-  mediapipe_v01013_based::NormalizedLandmarkList ret;
+  hand_tracking_mp_lean::NormalizedLandmarkList ret;
   for (const auto& it : inp) {
     auto new_lm = ret.add_landmark();
     new_lm->set_x(it.first);
@@ -33,7 +33,7 @@ mediapipe_v01013_based::NormalizedLandmarkList vec_to_lms(
 }
 
 std::vector<std::pair<float, float>> lms_to_vec(
-    const mediapipe_v01013_based::NormalizedLandmarkList& lst) {
+    const hand_tracking_mp_lean::NormalizedLandmarkList& lst) {
   std::vector<std::pair<float, float>> ret;
   for (const auto& lm : lst.landmark()) {
     ret.push_back({lm.x(), lm.y()});
@@ -150,4 +150,4 @@ TEST(RefineLandmarksFromHeatmapTest, Border) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

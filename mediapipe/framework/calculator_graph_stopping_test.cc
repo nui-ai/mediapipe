@@ -31,29 +31,29 @@
 #include "mediapipe/framework/tool/sink.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe_v01013_based {}
+namespace hand_tracking_mp_lean {}
 
 namespace testing_ns {
-using mediapipe_v01013_based::CalculatorBase;
-using mediapipe_v01013_based::CalculatorContext;
-using mediapipe_v01013_based::CalculatorContract;
-using mediapipe_v01013_based::CalculatorGraphConfig;
-using mediapipe_v01013_based::GetFromUniquePtr;
-using mediapipe_v01013_based::InputStreamShardSet;
-using mediapipe_v01013_based::MakePacket;
-using mediapipe_v01013_based::OutputStreamShardSet;
-using mediapipe_v01013_based::Timestamp;
-namespace proto_ns = mediapipe_v01013_based::proto_ns;
+using hand_tracking_mp_lean::CalculatorBase;
+using hand_tracking_mp_lean::CalculatorContext;
+using hand_tracking_mp_lean::CalculatorContract;
+using hand_tracking_mp_lean::CalculatorGraphConfig;
+using hand_tracking_mp_lean::GetFromUniquePtr;
+using hand_tracking_mp_lean::InputStreamShardSet;
+using hand_tracking_mp_lean::MakePacket;
+using hand_tracking_mp_lean::OutputStreamShardSet;
+using hand_tracking_mp_lean::Timestamp;
+namespace proto_ns = hand_tracking_mp_lean::proto_ns;
 
 constexpr char kEventTag[] = "EVENT";
 constexpr char kOutTag[] = "OUT";
 
-using mediapipe_v01013_based::CalculatorGraph;
-using mediapipe_v01013_based::Packet;
+using hand_tracking_mp_lean::CalculatorGraph;
+using hand_tracking_mp_lean::Packet;
 
-class InfiniteSequenceCalculator : public mediapipe_v01013_based::CalculatorBase {
+class InfiniteSequenceCalculator : public hand_tracking_mp_lean::CalculatorBase {
  public:
-  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc) {
+  static absl::Status GetContract(hand_tracking_mp_lean::CalculatorContract* cc) {
     cc->Outputs().Tag(kOutTag).Set<int>();
     cc->Outputs().Tag(kEventTag).Set<int>();
     return absl::OkStatus();
@@ -78,7 +78,7 @@ class InfiniteSequenceCalculator : public mediapipe_v01013_based::CalculatorBase
 };
 REGISTER_CALCULATOR(::testing_ns::InfiniteSequenceCalculator);
 
-class StoppingPassThroughCalculator : public mediapipe_v01013_based::CalculatorBase {
+class StoppingPassThroughCalculator : public hand_tracking_mp_lean::CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
     for (int i = 0; i < cc->Inputs().NumEntries(""); ++i) {
@@ -99,7 +99,7 @@ class StoppingPassThroughCalculator : public mediapipe_v01013_based::CalculatorB
       }
     }
     return (++count_ <= max_count_) ? absl::OkStatus()
-                                    : mediapipe_v01013_based::tool::StatusStop();
+                                    : hand_tracking_mp_lean::tool::StatusStop();
   }
   absl::Status Close(CalculatorContext* cc) override {
     cc->Outputs().Tag(kEventTag).AddPacket(MakePacket<int>(2).At(Timestamp(2)));

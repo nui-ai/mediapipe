@@ -32,7 +32,7 @@
 #include "mediapipe/framework/port/statusor.h"
 #include "mediapipe/framework/tool/validate_name.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tool {
 
 // Holds the information needed for tag/index retrieval for stream and
@@ -65,7 +65,7 @@ class TagMap {
   // Create a TagMap from a TagAndNameInfo.
   // TODO: Migrate callers and delete this method.
   ABSL_DEPRECATED(
-      "Use mediapipe_v01013_based::tool::TagMap::Create(tag_index_names) instead.")
+      "Use hand_tracking_mp_lean::tool::TagMap::Create(tag_index_names) instead.")
   static absl::StatusOr<std::shared_ptr<TagMap>> Create(
       const TagAndNameInfo& info) {
     std::shared_ptr<TagMap> output(new TagMap());
@@ -137,6 +137,6 @@ inline bool operator==(const TagMap::TagData& d1, const TagMap::TagData& d2) {
 }
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_TAG_MAP_H_

@@ -7,7 +7,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/tool/proto_util_lite.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tool {
 
 namespace {
@@ -226,4 +226,4 @@ const Descriptor* FieldDescriptor::message_type() const {
 }
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

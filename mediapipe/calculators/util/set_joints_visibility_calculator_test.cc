@@ -28,11 +28,11 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace {
 
-using Node = ::mediapipe_v01013_based::CalculatorGraphConfig::Node;
+using Node = ::hand_tracking_mp_lean::CalculatorGraphConfig::Node;
 
 struct SetJointsVisibilityTestCase {
   std::string test_name;
@@ -49,7 +49,7 @@ TEST_P(SetJointsVisibilityTest, SetJointsVisibilityTest) {
   const SetJointsVisibilityTestCase& tc = GetParam();
 
   // Prepare graph.
-  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(absl::Substitute(
+  hand_tracking_mp_lean::CalculatorRunner runner(ParseTextProtoOrDie<Node>(absl::Substitute(
       R"(
       calculator: "SetJointsVisibilityCalculator"
       input_stream: "JOINTS:joints"
@@ -85,11 +85,11 @@ TEST_P(SetJointsVisibilityTest, SetJointsVisibilityTest) {
 
   // Send joints and landmarks to the graph.
   runner.MutableInputs()->Tag("JOINTS").packets.push_back(
-      MakePacket<JointList>(std::move(in_joints)).At(mediapipe_v01013_based::Timestamp(0)));
+      MakePacket<JointList>(std::move(in_joints)).At(hand_tracking_mp_lean::Timestamp(0)));
   runner.MutableInputs()
       ->Tag("LANDMARKS")
       .packets.push_back(MakePacket<LandmarkList>(std::move(landmarks))
-                             .At(mediapipe_v01013_based::Timestamp(0)));
+                             .At(hand_tracking_mp_lean::Timestamp(0)));
 
   // Run the graph.
   MP_ASSERT_OK(runner.Run());
@@ -152,4 +152,4 @@ INSTANTIATE_TEST_SUITE_P(
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

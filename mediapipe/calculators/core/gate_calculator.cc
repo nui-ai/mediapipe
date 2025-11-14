@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/util/header_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -150,7 +150,7 @@ class GateCalculator : public CalculatorBase {
     cc->SetOffset(TimestampDiff(0));
     num_data_streams_ = cc->Inputs().NumEntries("");
 
-    const auto& options = cc->Options<::mediapipe_v01013_based::GateCalculatorOptions>();
+    const auto& options = cc->Options<::hand_tracking_mp_lean::GateCalculatorOptions>();
     last_gate_state_ = options.initial_gate_state();
 
     RET_CHECK_OK(CopyInputHeadersToOutputs(cc->Inputs(), &cc->Outputs()));
@@ -234,4 +234,4 @@ class GateCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(GateCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

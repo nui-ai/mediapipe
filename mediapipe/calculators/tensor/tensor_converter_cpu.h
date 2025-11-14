@@ -24,7 +24,7 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/memory_manager.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Converts an ImageFrame to a vector of Tensors.
 // @flip_vertically enables to flip the image during conversion.
@@ -61,6 +61,6 @@ absl::Status NormalizeFloatImage(const ImageFrame& image_frame,
 absl::Status CopyMatrixToTensor(const Matrix& matrix, bool is_row_major_matrix,
                                 float* tensor_ptr);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSOR_CONVERTER_CPU_H_

@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/rectangle.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // A subclass of AssociationCalculator<T> for Detection. Example:
 // node {
@@ -35,27 +35,27 @@ namespace mediapipe_v01013_based {
 //     }
 // }
 class AssociationDetectionCalculator
-    : public AssociationCalculator<::mediapipe_v01013_based::Detection> {
+    : public AssociationCalculator<::hand_tracking_mp_lean::Detection> {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
-    return AssociationCalculator<::mediapipe_v01013_based::Detection>::GetContract(cc);
+    return AssociationCalculator<::hand_tracking_mp_lean::Detection>::GetContract(cc);
   }
 
   absl::Status Open(CalculatorContext* cc) override {
-    return AssociationCalculator<::mediapipe_v01013_based::Detection>::Open(cc);
+    return AssociationCalculator<::hand_tracking_mp_lean::Detection>::Open(cc);
   }
 
   absl::Status Process(CalculatorContext* cc) override {
-    return AssociationCalculator<::mediapipe_v01013_based::Detection>::Process(cc);
+    return AssociationCalculator<::hand_tracking_mp_lean::Detection>::Process(cc);
   }
 
   absl::Status Close(CalculatorContext* cc) override {
-    return AssociationCalculator<::mediapipe_v01013_based::Detection>::Close(cc);
+    return AssociationCalculator<::hand_tracking_mp_lean::Detection>::Close(cc);
   }
 
  protected:
   absl::StatusOr<Rectangle_f> GetRectangle(
-      const ::mediapipe_v01013_based::Detection& input) override {
+      const ::hand_tracking_mp_lean::Detection& input) override {
     if (!input.has_location_data()) {
       return absl::InternalError("Missing location_data in Detection");
     }
@@ -63,15 +63,15 @@ class AssociationDetectionCalculator
     return location.GetRelativeBBox();
   }
 
-  std::pair<bool, int> GetId(const ::mediapipe_v01013_based::Detection& input) override {
+  std::pair<bool, int> GetId(const ::hand_tracking_mp_lean::Detection& input) override {
     return {input.has_detection_id(), input.detection_id()};
   }
 
-  void SetId(::mediapipe_v01013_based::Detection* input, int id) override {
+  void SetId(::hand_tracking_mp_lean::Detection* input, int id) override {
     input->set_detection_id(id);
   }
 };
 
 REGISTER_CALCULATOR(AssociationDetectionCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

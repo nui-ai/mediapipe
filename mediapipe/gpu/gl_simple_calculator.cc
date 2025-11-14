@@ -14,7 +14,7 @@
 
 #include "mediapipe/gpu/gl_simple_calculator.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // static
 absl::Status GlSimpleCalculator::GetContract(CalculatorContract* cc) {
@@ -28,7 +28,7 @@ absl::Status GlSimpleCalculator::GetContract(CalculatorContract* cc) {
 absl::Status GlSimpleCalculator::Open(CalculatorContext* cc) {
   // Inform the framework that we always output at the same timestamp
   // as we receive a packet at.
-  cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
+  cc->SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
 
   // Let the helper access the GL context information.
   return helper_.Open(cc);
@@ -77,4 +77,4 @@ absl::Status GlSimpleCalculator::Close(CalculatorContext* cc) {
   return RunInGlContext([this]() -> absl::Status { return GlTeardown(); });
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

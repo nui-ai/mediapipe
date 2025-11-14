@@ -36,7 +36,7 @@ ABSL_FLAG(std::vector<std::string>, cols, {"*"},
 ABSL_FLAG(bool, compact, false,
           "if true, then don't print unnecessary whitespace.");
 
-using mediapipe_v01013_based::reporter::Reporter;
+using hand_tracking_mp_lean::reporter::Reporter;
 
 // The command line utility to mine trace files of useful statistics to
 // determine bottlenecks and performance of a graph.
@@ -54,9 +54,9 @@ int main(int argc, char** argv) {
   const auto& flags_logfiles = absl::GetFlag(FLAGS_logfiles);
   for (const auto& file_name : flags_logfiles) {
     std::ifstream ifs(file_name.c_str(), std::ifstream::in);
-    mediapipe_v01013_based::proto_ns::io::IstreamInputStream isis(&ifs);
-    mediapipe_v01013_based::proto_ns::io::CodedInputStream coded_input_stream(&isis);
-    mediapipe_v01013_based::GraphProfile proto;
+    hand_tracking_mp_lean::proto_ns::io::IstreamInputStream isis(&ifs);
+    hand_tracking_mp_lean::proto_ns::io::CodedInputStream coded_input_stream(&isis);
+    hand_tracking_mp_lean::GraphProfile proto;
     if (!proto.ParseFromCodedStream(&coded_input_stream)) {
       std::cerr << "Failed to parse proto.\n";
     } else {

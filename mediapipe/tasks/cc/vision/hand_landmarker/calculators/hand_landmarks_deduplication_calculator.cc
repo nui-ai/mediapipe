@@ -38,16 +38,16 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/utils/landmarks_duplicates_finder.h"
 #include "mediapipe/tasks/cc/vision/utils/landmarks_utils.h"
 
-namespace mediapipe_v01013_based::api2 {
+namespace hand_tracking_mp_lean::api2 {
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::components::containers::RectF;
-using ::mediapipe_v01013_based::tasks::vision::utils::CalculateIOU;
-using ::mediapipe_v01013_based::tasks::vision::utils::DuplicatesFinder;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::components::containers::RectF;
+using ::hand_tracking_mp_lean::tasks::vision::utils::CalculateIOU;
+using ::hand_tracking_mp_lean::tasks::vision::utils::DuplicatesFinder;
 
 float Distance(const NormalizedLandmark& lm_a, const NormalizedLandmark& lm_b,
                int width, int height) {
@@ -246,7 +246,7 @@ std::unique_ptr<DuplicatesFinder> CreateHandDuplicatesFinder(
 }
 
 absl::Status HandLandmarksDeduplicationCalculator::Process(
-    mediapipe_v01013_based::CalculatorContext* cc) {
+    hand_tracking_mp_lean::CalculatorContext* cc) {
   if (kInLandmarks(cc).IsEmpty()) return absl::OkStatus();
   if (kInSize(cc).IsEmpty()) return absl::OkStatus();
 
@@ -309,4 +309,4 @@ absl::Status HandLandmarksDeduplicationCalculator::Process(
 }
 MEDIAPIPE_REGISTER_NODE(HandLandmarksDeduplicationCalculator);
 
-}  // namespace mediapipe_v01013_based::api2
+}  // namespace hand_tracking_mp_lean::api2

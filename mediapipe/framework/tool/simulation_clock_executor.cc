@@ -16,7 +16,7 @@
 
 #include "mediapipe/framework/tool/simulation_clock.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 SimulationClockExecutor::SimulationClockExecutor(int num_threads)
     : clock_(new SimulationClock()), executor_(num_threads) {}
@@ -34,4 +34,4 @@ std::shared_ptr<SimulationClock> SimulationClockExecutor::GetClock() {
   return clock_;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

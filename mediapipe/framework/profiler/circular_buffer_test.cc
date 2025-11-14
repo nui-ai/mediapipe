@@ -27,7 +27,7 @@ class CircularBufferTest : public ::testing::Test {
 };
 
 TEST_F(CircularBufferTest, SequentialWriteAndRead) {
-  mediapipe_v01013_based::CircularBuffer<std::string> my_buffer(100);
+  hand_tracking_mp_lean::CircularBuffer<std::string> my_buffer(100);
   my_buffer.push_back("one");
   my_buffer.push_back("two");
   my_buffer.push_back("three");
@@ -48,12 +48,12 @@ TEST_F(CircularBufferTest, SequentialWriteAndRead) {
 }
 
 TEST_F(CircularBufferTest, ParallelWriteAndRead) {
-  mediapipe_v01013_based::CircularBuffer<std::string> buffer(100);
+  hand_tracking_mp_lean::CircularBuffer<std::string> buffer(100);
   auto first = buffer.begin();
   std::atomic_int read_sum(0);
   std::atomic_int read_count(0);
   {
-    mediapipe_v01013_based::ThreadPool pool(12);
+    hand_tracking_mp_lean::ThreadPool pool(12);
     pool.StartWorkers();
 
     // Start 6 writers.
@@ -90,7 +90,7 @@ TEST_F(CircularBufferTest, ParallelWriteAndRead) {
 }
 
 TEST_F(CircularBufferTest, SequentialGetWraps) {
-  mediapipe_v01013_based::CircularBuffer<int> buffer(3);
+  hand_tracking_mp_lean::CircularBuffer<int> buffer(3);
   buffer.push_back(2);
   ASSERT_EQ(2, buffer.Get(0));
   ASSERT_EQ(*buffer.begin(), buffer.Get(0));

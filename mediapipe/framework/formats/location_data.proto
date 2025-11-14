@@ -19,11 +19,11 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/framework/formats/annotation/rasterization.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.formats.proto";
+option java_package = "com.google.hand_tracking_mp_lean.formats.proto";
 option java_outer_classname = "LocationDataProto";
 
 message LocationData {
@@ -75,7 +75,7 @@ message LocationData {
     optional int32 width = 1;
     optional int32 height = 2;
     // A rasterization-like format for storing the mask.
-    optional mediapipe_v01013_based.Rasterization rasterization = 3;
+    optional hand_tracking_mp_lean.Rasterization rasterization = 3;
   }
   optional BinaryMask mask = 4;
 

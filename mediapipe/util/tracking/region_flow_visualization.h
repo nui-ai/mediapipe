@@ -31,7 +31,7 @@
 #include "mediapipe/util/tracking/motion_models.h"
 #include "mediapipe/util/tracking/region_flow.pb.h"  // NOLINT
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 typedef RegionFlowFrame::RegionFlow RegionFlow;
 typedef std::vector<RegionFlowFeature*> RegionFlowFeatureView;
@@ -74,5 +74,5 @@ void VisualizeLongFeatureStream(const LongFeatureStream& stream,
                                 int max_points_per_track, float scale_x,
                                 float scale_y, cv::Mat* output);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 #endif  // MEDIAPIPE_UTIL_TRACKING_REGION_FLOW_VISUALIZATION_H_

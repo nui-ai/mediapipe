@@ -19,7 +19,7 @@
 #include "mediapipe/framework/port/source_location.h"
 #include "mediapipe/framework/port/status_builder.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 absl::Status OutputSidePacketImpl::Initialize(const std::string& name,
                                               const PacketType* packet_type) {
@@ -49,24 +49,24 @@ void OutputSidePacketImpl::AddMirror(
 
 absl::Status OutputSidePacketImpl::SetInternal(const Packet& packet) {
   if (initialized_) {
-    return mediapipe_v01013_based::AlreadyExistsErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::AlreadyExistsErrorBuilder(MEDIAPIPE_LOC)
            << "Output side packet \"" << name_ << "\" was already set.";
   }
 
   if (packet.IsEmpty()) {
-    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "Empty packet set on output side packet \"" << name_ << "\".";
   }
 
   if (packet.Timestamp() != Timestamp::Unset()) {
-    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "Output side packet \"" << name_ << "\" has a timestamp "
            << packet.Timestamp().DebugString() << ".";
   }
 
   absl::Status result = packet_type_->Validate(packet);
   if (!result.ok()) {
-    return mediapipe_v01013_based::StatusBuilder(result, MEDIAPIPE_LOC).SetPrepend()
+    return hand_tracking_mp_lean::StatusBuilder(result, MEDIAPIPE_LOC).SetPrepend()
            << absl::StrCat(
                   "Packet type mismatch on calculator output side packet \"",
                   name_, "\": ");
@@ -86,4 +86,4 @@ void OutputSidePacketImpl::TriggerErrorCallback(
   error_callback_(status);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

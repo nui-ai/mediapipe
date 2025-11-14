@@ -21,7 +21,7 @@
 
 #ifndef MEDIAPIPE_FRAMEWORK_DEPS_MMAPPED_FILE_H_
 #define MEDIAPIPE_FRAMEWORK_DEPS_MMAPPED_FILE_H_
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace file {
 class MemoryMappedFile {
  public:
@@ -47,5 +47,5 @@ class MemoryMappedFile {
   size_t length_;
 };
 }  // namespace file
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 #endif  // MEDIAPIPE_FRAMEWORK_DEPS_MMAPPED_FILE_H_

@@ -17,7 +17,7 @@
 #include "mediapipe/gpu/webgpu/webgpu_service.h"
 #include "mediapipe/gpu/webgpu/webgpu_texture_view.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 static wgpu::Texture CreateTexture(const wgpu::Device& device, uint32_t width,
                                    uint32_t height, GpuBufferFormat format,
@@ -132,4 +132,4 @@ static auto kWebGpuBufferPoolRegistration = [] {
       .RegisterFactory<WebGpuTextureBuffer>(GetWebGpuTextureBufferFromPool);
 }();
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

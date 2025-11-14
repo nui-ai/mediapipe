@@ -43,7 +43,7 @@
 #include "mediapipe/modules/face_geometry/protos/mesh_3d.pb.h"
 #include "mediapipe/util/resource_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 static constexpr char kEnvironmentTag[] = "ENVIRONMENT";
@@ -92,7 +92,7 @@ static constexpr char kMultiFaceGeometryTag[] = "MULTI_FACE_GEOMETRY";
 class EffectRendererCalculator : public CalculatorBase {
  public:
   static absl::Status GetContract(CalculatorContract* cc) {
-    MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc))
+    MP_RETURN_IF_ERROR(hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract(cc))
         << "Failed to update contract for the GPU helper!";
 
     cc->InputSidePackets()
@@ -104,11 +104,11 @@ class EffectRendererCalculator : public CalculatorBase {
         .Set<std::vector<face_geometry::FaceGeometry>>();
     cc->Outputs().Tag(kImageGpuTag).Set<GpuBuffer>();
 
-    return mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc);
+    return hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract(cc);
   }
 
   absl::Status Open(CalculatorContext* cc) override {
-    cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
+    cc->SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
 
     MP_RETURN_IF_ERROR(gpu_helper_.Open(cc))
         << "Failed to open the GPU helper!";
@@ -193,7 +193,7 @@ class EffectRendererCalculator : public CalculatorBase {
 
       cc->Outputs()
           .Tag(kImageGpuTag)
-          .AddPacket(mediapipe_v01013_based::Adopt<GpuBuffer>(output_gpu_buffer.release())
+          .AddPacket(hand_tracking_mp_lean::Adopt<GpuBuffer>(output_gpu_buffer.release())
                          .At(cc->InputTimestamp()));
 
       output_gl_texture.Release();
@@ -210,7 +210,7 @@ class EffectRendererCalculator : public CalculatorBase {
  private:
   static absl::StatusOr<ImageFrame> ReadTextureFromFile(
       CalculatorContext* cc, const std::string& texture_path) {
-    MP_ASSIGN_OR_RETURN(std::unique_ptr<mediapipe_v01013_based::Resource> texture_blob,
+    MP_ASSIGN_OR_RETURN(std::unique_ptr<hand_tracking_mp_lean::Resource> texture_blob,
                         ReadContentBlobFromFile(cc, texture_path),
                         _ << "Failed to read texture blob from file!");
 
@@ -254,7 +254,7 @@ class EffectRendererCalculator : public CalculatorBase {
 
   static absl::StatusOr<face_geometry::Mesh3d> ReadMesh3dFromFile(
       CalculatorContext* cc, const std::string& mesh_3d_path) {
-    MP_ASSIGN_OR_RETURN(std::unique_ptr<mediapipe_v01013_based::Resource> mesh_3d_blob,
+    MP_ASSIGN_OR_RETURN(std::unique_ptr<hand_tracking_mp_lean::Resource> mesh_3d_blob,
                         ReadContentBlobFromFile(cc, mesh_3d_path),
                         _ << "Failed to read mesh 3D blob from file!");
     absl::string_view mesh_str = mesh_3d_blob->ToStringView();
@@ -266,18 +266,18 @@ class EffectRendererCalculator : public CalculatorBase {
     return mesh_3d;
   }
 
-  static absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Resource>>
+  static absl::StatusOr<std::unique_ptr<hand_tracking_mp_lean::Resource>>
   ReadContentBlobFromFile(CalculatorContext* cc,
                           const std::string& unresolved_path) {
     MP_ASSIGN_OR_RETURN(
         std::string resolved_path,
-        mediapipe_v01013_based::PathToResourceAsFile(unresolved_path),
+        hand_tracking_mp_lean::PathToResourceAsFile(unresolved_path),
         _ << "Failed to resolve path! Path = " << unresolved_path);
 
     return cc->GetResources().Get(resolved_path);
   }
 
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
   std::unique_ptr<face_geometry::EffectRenderer> effect_renderer_;
 };
 
@@ -287,4 +287,4 @@ using FaceGeometryEffectRendererCalculator = EffectRendererCalculator;
 
 REGISTER_CALCULATOR(FaceGeometryEffectRendererCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

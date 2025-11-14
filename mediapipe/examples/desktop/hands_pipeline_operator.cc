@@ -8,7 +8,7 @@
 #include "mediapipe/framework/port/file_helpers.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 /// class operating a MediaPipe pipeline from cpp code.
 /// this was not implemented in mediapipe v0.10.13 itself.
@@ -17,14 +17,14 @@ absl::StatusOr<std::unique_ptr<HandsPipelineOperator>> HandsPipelineOperator::Cr
     const std::vector<std::string>& output_streams) {
 
   std::string graph_content;
-  absl::Status status = mediapipe_v01013_based::file::GetContents(graph_file_path, &graph_content);
+  absl::Status status = hand_tracking_mp_lean::file::GetContents(graph_file_path, &graph_content);
   if (!status.ok()) {
     return absl::InvalidArgumentError(
         absl::StrCat("Failed to read graph file: ", graph_file_path, " - ", status.message()));
   } else ABSL_LOG(INFO) << "Read graph file: " << graph_file_path;
 
   CalculatorGraphConfig config;
-  if (!mediapipe_v01013_based::ParseTextProto<CalculatorGraphConfig>(graph_content, &config)) {
+  if (!hand_tracking_mp_lean::ParseTextProto<CalculatorGraphConfig>(graph_content, &config)) {
     return absl::InvalidArgumentError(
         absl::StrCat("Failed to parse graph file: ", graph_file_path));
   } else ABSL_LOG(INFO) << "Successfully parsed graph file " << graph_file_path;
@@ -112,4 +112,4 @@ absl::Status HandsPipelineOperator::finalize() {
   return graph_.WaitUntilDone();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

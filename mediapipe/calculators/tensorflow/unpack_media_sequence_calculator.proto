@@ -14,14 +14,14 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/calculators/core/packet_resampler_calculator.proto";
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/util/audio_decoder.proto";
 
 message UnpackMediaSequenceCalculatorOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional UnpackMediaSequenceCalculatorOptions ext = 244411537;
   }
 

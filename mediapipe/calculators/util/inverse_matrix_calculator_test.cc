@@ -12,12 +12,12 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 void RunTest(const std::array<float, 16>& matrix,
              const std::array<float, 16>& expected_inverse_matrix) {
-  auto graph_config = mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+  auto graph_config = hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
       R"pb(
         input_stream: "matrix"
         node {
@@ -149,4 +149,4 @@ TEST(InverseMatrixCalculatorTest, CheckPrecision) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

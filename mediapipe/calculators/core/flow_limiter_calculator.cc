@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/util/header_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kFinishedTag[] = "FINISHED";
 constexpr char kAllowTag[] = "ALLOW";
@@ -264,4 +264,4 @@ class FlowLimiterCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(FlowLimiterCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

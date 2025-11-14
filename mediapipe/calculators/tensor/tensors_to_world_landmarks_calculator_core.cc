@@ -16,7 +16,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include <cmath>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 absl::Status OutputTensorsToWorldLandmarks(
@@ -52,8 +52,8 @@ absl::Status OutputTensorsToWorldLandmarks(
 }
 
 TensorsToWorldLandmarksCore::TensorsToWorldLandmarksCore(
-    ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
-    ::mediapipe_v01013_based::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
+    ::hand_tracking_mp_lean::TensorsToLandmarksCalculatorOptions::Activation visibility_activation,
+    ::hand_tracking_mp_lean::TensorsToLandmarksCalculatorOptions::Activation presence_activation,
     int num_landmarks)
     : num_landmarks_(num_landmarks),
       visibility_activation_(visibility_activation),
@@ -68,4 +68,4 @@ absl::Status TensorsToWorldLandmarksCore::Process(
 
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

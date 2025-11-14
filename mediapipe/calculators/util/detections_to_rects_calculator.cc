@@ -26,7 +26,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -38,8 +38,8 @@ constexpr char kNormRectTag[] = "NORM_RECT";
 constexpr char kRectsTag[] = "RECTS";
 constexpr char kNormRectsTag[] = "NORM_RECTS";
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::Rect;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::Rect;
 
 constexpr float kMinFloat = std::numeric_limits<float>::lowest();
 constexpr float kMaxFloat = std::numeric_limits<float>::max();
@@ -200,4 +200,4 @@ DetectionSpec PalmDetectionToHandRectStage1::GetDetectionSpec(
 
 REGISTER_CALCULATOR(PalmDetectionToHandRectStage1);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

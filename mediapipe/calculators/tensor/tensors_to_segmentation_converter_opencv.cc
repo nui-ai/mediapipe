@@ -33,10 +33,10 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::tensors_to_segmentation_utils::GetHwcFromDims;
+using ::hand_tracking_mp_lean::tensors_to_segmentation_utils::GetHwcFromDims;
 
 class TensorsToSegmentationOpenCvConverter
     : public TensorsToSegmentationConverter {
@@ -78,9 +78,9 @@ TensorsToSegmentationOpenCvConverter::Convert(const Tensor& input_tensor,
   if (tensor_channels == 2) {
     MP_RETURN_IF_ERROR(ApplyActivation<cv::Vec2f>(tensor_mat, &small_mask_mat));
   } else if (tensor_channels == 1) {
-    RET_CHECK(mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions::SOFTMAX !=
+    RET_CHECK(hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions::SOFTMAX !=
               options_.activation());  // Requires 2 channels.
-    if (mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions::NONE ==
+    if (hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions::NONE ==
         options_.activation())  // Pass-through optimization.
       tensor_mat.copyTo(small_mask_mat);
     else
@@ -106,7 +106,7 @@ absl::Status TensorsToSegmentationOpenCvConverter::ApplyActivation(
     cv::Mat& tensor_mat, cv::Mat* small_mask_mat) {
   // Configure activation function.
   const int output_layer_index = options_.output_layer_index();
-  using Options = ::mediapipe_v01013_based::TensorsToSegmentationCalculatorOptions;
+  using Options = ::hand_tracking_mp_lean::TensorsToSegmentationCalculatorOptions;
   const auto activation_fn = [&](const cv::Vec2f& mask_value) {
     float new_mask_value = 0;
     // TODO consider moving switch out of the loop,
@@ -158,4 +158,4 @@ CreateOpenCvConverter(const TensorsToSegmentationCalculatorOptions& options) {
   return converter;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

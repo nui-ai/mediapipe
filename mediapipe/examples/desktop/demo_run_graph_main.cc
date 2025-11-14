@@ -44,17 +44,17 @@ ABSL_FLAG(std::string, output_video_path, "",
 
 absl::Status RunMPPGraph() {
   std::string calculator_graph_config_contents;
-  MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
+  MP_RETURN_IF_ERROR(hand_tracking_mp_lean::file::GetContents(
       absl::GetFlag(FLAGS_calculator_graph_config_file),
       &calculator_graph_config_contents));
   ABSL_LOG(INFO) << "Get calculator graph config contents: "
                  << calculator_graph_config_contents;
-  mediapipe_v01013_based::CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(
+  hand_tracking_mp_lean::CalculatorGraphConfig config =
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(
           calculator_graph_config_contents);
 
   ABSL_LOG(INFO) << "Initialize the calculator graph.";
-  mediapipe_v01013_based::CalculatorGraph graph;
+  hand_tracking_mp_lean::CalculatorGraph graph;
   MP_RETURN_IF_ERROR(graph.Initialize(config));
 
   ABSL_LOG(INFO) << "Initialize the camera or load the video.";
@@ -79,7 +79,7 @@ absl::Status RunMPPGraph() {
   }
 
   ABSL_LOG(INFO) << "Start running the calculator graph.";
-  MP_ASSIGN_OR_RETURN(mediapipe_v01013_based::OutputStreamPoller poller,
+  MP_ASSIGN_OR_RETURN(hand_tracking_mp_lean::OutputStreamPoller poller,
                       graph.AddOutputStreamPoller(kOutputStream));
   MP_RETURN_IF_ERROR(graph.StartRun({}));
 
@@ -104,32 +104,32 @@ absl::Status RunMPPGraph() {
     }
 
     // Wrap Mat into an ImageFrame.
-    auto input_frame = absl::make_unique<mediapipe_v01013_based::ImageFrame>(
-        mediapipe_v01013_based::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
-        mediapipe_v01013_based::ImageFrame::kDefaultAlignmentBoundary);
-    cv::Mat input_frame_mat = mediapipe_v01013_based::formats::MatView(input_frame.get());
+    auto input_frame = absl::make_unique<hand_tracking_mp_lean::ImageFrame>(
+        hand_tracking_mp_lean::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
+        hand_tracking_mp_lean::ImageFrame::kDefaultAlignmentBoundary);
+    cv::Mat input_frame_mat = hand_tracking_mp_lean::formats::MatView(input_frame.get());
     camera_frame.copyTo(input_frame_mat);
 
     // Send image packet into the graph.
     size_t frame_timestamp_us =
         (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
     MP_RETURN_IF_ERROR(graph.AddPacketToInputStream(
-        kInputStream, mediapipe_v01013_based::Adopt(input_frame.release())
-                          .At(mediapipe_v01013_based::Timestamp(frame_timestamp_us))));
+        kInputStream, hand_tracking_mp_lean::Adopt(input_frame.release())
+                          .At(hand_tracking_mp_lean::Timestamp(frame_timestamp_us))));
 
     // Get the graph result packet, or stop if that fails.
-    mediapipe_v01013_based::Packet packet;
+    hand_tracking_mp_lean::Packet packet;
     if (!poller.Next(&packet)) break;
-    auto& output_frame = packet.Get<mediapipe_v01013_based::ImageFrame>();
+    auto& output_frame = packet.Get<hand_tracking_mp_lean::ImageFrame>();
 
     // Convert back to opencv for display or saving.
-    cv::Mat output_frame_mat = mediapipe_v01013_based::formats::MatView(&output_frame);
+    cv::Mat output_frame_mat = hand_tracking_mp_lean::formats::MatView(&output_frame);
     cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
     if (save_video) {
       if (!writer.isOpened()) {
         ABSL_LOG(INFO) << "Prepare video writer.";
         writer.open(absl::GetFlag(FLAGS_output_video_path),
-                    mediapipe_v01013_based::fourcc('a', 'v', 'c', '1'),  // .mp4
+                    hand_tracking_mp_lean::fourcc('a', 'v', 'c', '1'),  // .mp4
                     capture.get(cv::CAP_PROP_FPS), output_frame_mat.size());
         RET_CHECK(writer.isOpened());
       }

@@ -28,7 +28,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr char kNormRectsTag[] = "NORM_RECTS";
@@ -39,8 +39,8 @@ constexpr char kImageSizeTag[] = "IMAGE_SIZE";
 constexpr char kRectTag[] = "RECT";
 constexpr char kDetectionTag[] = "DETECTION";
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::Rect;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::Rect;
 
 MATCHER_P4(RectEq, x_center, y_center, width, height, "") {
   return testing::Value(arg.x_center(), testing::Eq(x_center)) &&
@@ -434,4 +434,4 @@ TEST(DetectionsToRectsCalculatorTest, WrongInputToNormalizedRect) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

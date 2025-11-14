@@ -25,7 +25,7 @@ limitations under the License.
 #include "tensorflow/lite/kernels/kernel_util.h"
 #include "tensorflow/lite/string_util.h"
 
-namespace mediapipe_v01013_based::tflite_operations {
+namespace hand_tracking_mp_lean::tflite_operations {
 
 namespace ngram_op {
 
@@ -34,11 +34,11 @@ namespace {
 using ::flexbuffers::GetRoot;
 using ::flexbuffers::Map;
 using ::flexbuffers::TypedVector;
-using ::mediapipe_v01013_based::tasks::text::language_detector::custom_ops::
+using ::hand_tracking_mp_lean::tasks::text::language_detector::custom_ops::
     LowercaseUnicodeStr;
-using ::mediapipe_v01013_based::tasks::text::language_detector::custom_ops::Tokenize;
-using ::mediapipe_v01013_based::tasks::text::language_detector::custom_ops::TokenizedOutput;
-using ::mediapipe_v01013_based::tasks::text::language_detector::custom_ops::hash::
+using ::hand_tracking_mp_lean::tasks::text::language_detector::custom_ops::Tokenize;
+using ::hand_tracking_mp_lean::tasks::text::language_detector::custom_ops::TokenizedOutput;
+using ::hand_tracking_mp_lean::tasks::text::language_detector::custom_ops::hash::
     MurmurHash64WithSeed;
 using ::tflite::GetString;
 using ::tflite::StringRef;
@@ -261,4 +261,4 @@ TfLiteRegistration* Register_NGRAM_HASH() {
   return &r;
 }
 
-}  // namespace mediapipe_v01013_based::tflite_operations
+}  // namespace hand_tracking_mp_lean::tflite_operations

@@ -17,7 +17,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/resources.h"
 
-namespace mediapipe_v01013_based::api2 {
+namespace hand_tracking_mp_lean::api2 {
 
     absl::Status DetectionModelProvider::Open(CalculatorContext* cc) {
         // Always load the fixed model file, ignore side packets and options.

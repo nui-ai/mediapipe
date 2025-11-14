@@ -45,7 +45,7 @@ ABSL_FLAG(int, xnnpack_default_num_threads, 0,
 #include "mediapipe/util/cpu_util.h"
 #endif  // !__EMSCRIPTEN__ || __EMSCRIPTEN_PTHREADS__
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 int GetXnnpackDefaultNumThreads() {
@@ -234,7 +234,7 @@ absl::Status CopyTfLiteTensorToTensor<char>(const TfLiteTensor& tflite_tensor,
 
 int GetXnnpackNumThreads(
     bool opts_has_delegate,
-    const mediapipe_v01013_based::InferenceCalculatorOptions::Delegate& opts_delegate) {
+    const hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate& opts_delegate) {
   static constexpr int kDefaultNumThreads = -1;
   if (opts_has_delegate && opts_delegate.has_xnnpack() &&
       opts_delegate.xnnpack().num_threads() != kDefaultNumThreads) {
@@ -485,4 +485,4 @@ absl::Status TensorDimsAndTypeEqual(const Tensor& mp_tensor,
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

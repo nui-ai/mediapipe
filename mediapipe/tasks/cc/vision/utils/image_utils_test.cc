@@ -26,10 +26,10 @@ limitations under the License.
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based::tasks::vision::utils {
+namespace hand_tracking_mp_lean::tasks::vision::utils {
 namespace {
 
-using ::mediapipe_v01013_based::Tensor;
+using ::hand_tracking_mp_lean::Tensor;
 
 TEST(ImageUtilsTest, FailedImageFromBuffer) {
   constexpr int width = 1;
@@ -76,4 +76,4 @@ INSTANTIATE_TEST_SUITE_P(ImageUtilsTests, ImageUtilsParamTest,
                          testing::Values(ImageFormat::SRGB, ImageFormat::SRGBA,
                                          ImageFormat::SBGRA));
 }  // namespace
-}  // namespace mediapipe_v01013_based::tasks::vision::utils
+}  // namespace hand_tracking_mp_lean::tasks::vision::utils

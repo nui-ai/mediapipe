@@ -16,7 +16,7 @@
 
 #include <utility>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace internal {
 
 void DelegatingExecutor::Schedule(std::function<void()> task) {
@@ -24,4 +24,4 @@ void DelegatingExecutor::Schedule(std::function<void()> task) {
 }
 
 }  // namespace internal
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -15,13 +15,13 @@ limitations under the License.
 
 syntax = "proto3";
 
-package mediapipe_v01013_based.tasks.vision.image_generator.proto;
+package hand_tracking_mp_lean.tasks.vision.image_generator.proto;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/tasks/cc/core/proto/base_options.proto";
 import "mediapipe/tasks/cc/vision/image_generator/proto/conditioned_image_graph_options.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.tasks.vision.imagegenerator.proto";
+option java_package = "com.google.hand_tracking_mp_lean.tasks.vision.imagegenerator.proto";
 option java_outer_classname = "ControlPluginGraphOptionsProto";
 
 message ControlPluginGraphOptions {

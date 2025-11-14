@@ -23,7 +23,7 @@
 #include "absl/time/time.h"
 #include "mediapipe/framework/deps/clock.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // A Clock that simulates the passage of time as quickly as possible.
 // Parallel threads can call Sleep() and be woken in the proper order.
@@ -36,7 +36,7 @@ namespace mediapipe_v01013_based {
 // to continue until all earlier threads have finished or entered Sleep.
 // The result is a single well-defined order of events.  Any desired
 // order of events can be defined by adjusting the precise sleep times.
-class SimulationClock : public mediapipe_v01013_based::Clock {
+class SimulationClock : public hand_tracking_mp_lean::Clock {
  public:
   SimulationClock() {}
   ~SimulationClock() override;
@@ -76,6 +76,6 @@ class SimulationClock : public mediapipe_v01013_based::Clock {
   int num_running_ ABSL_GUARDED_BY(time_mutex_) = 0;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_SIMULATION_CLOCK_H_

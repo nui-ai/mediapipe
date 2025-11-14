@@ -29,7 +29,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/pose_detector/proto/pose_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/pose_landmarker/proto/pose_landmarks_detector_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
@@ -40,7 +40,7 @@ namespace holistic_landmarker {
 // Function should update provided graph with node/nodes that accept image
 // stream and produce stream of detections.
 using PoseDetectionFn = std::function<
-    absl::StatusOr<api2::builder::Stream<std::vector<mediapipe_v01013_based::Detection>>>(
+    absl::StatusOr<api2::builder::Stream<std::vector<hand_tracking_mp_lean::Detection>>>(
         api2::builder::Stream<Image>, api2::builder::Graph&)>;
 
 struct HolisticPoseTrackingRequest {
@@ -50,16 +50,16 @@ struct HolisticPoseTrackingRequest {
 };
 
 struct HolisticPoseTrackingOutput {
-  std::optional<api2::builder::Stream<mediapipe_v01013_based::NormalizedLandmarkList>>
+  std::optional<api2::builder::Stream<hand_tracking_mp_lean::NormalizedLandmarkList>>
       landmarks;
-  std::optional<api2::builder::Stream<mediapipe_v01013_based::LandmarkList>> world_landmarks;
+  std::optional<api2::builder::Stream<hand_tracking_mp_lean::LandmarkList>> world_landmarks;
   std::optional<api2::builder::Stream<Image>> segmentation_mask;
 
   struct DebugOutput {
-    api2::builder::Stream<mediapipe_v01013_based::NormalizedLandmarkList>
+    api2::builder::Stream<hand_tracking_mp_lean::NormalizedLandmarkList>
         auxiliary_landmarks;
     api2::builder::Stream<NormalizedRect> roi_from_landmarks;
-    api2::builder::Stream<std::vector<mediapipe_v01013_based::Detection>> detections;
+    api2::builder::Stream<std::vector<hand_tracking_mp_lean::Detection>> detections;
   };
 
   DebugOutput debug_output;
@@ -105,6 +105,6 @@ absl::StatusOr<HolisticPoseTrackingOutput> TrackHolisticPose(
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_HOLISTIC_LANDMARKER_HOLISTIC_POSE_TRACKING_H_

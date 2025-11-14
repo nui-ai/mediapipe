@@ -13,7 +13,7 @@
 #include "mediapipe/gpu/gl_base.h"
 #include "mediapipe/gpu/gl_context.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -77,12 +77,12 @@ std::unique_ptr<GlOverride> OverrideGlTexParameterfv(
 template std::unique_ptr<GlOverride> OverrideGlTexParameterfv<4>(
     GLenum name, std::array<GLfloat, 4> values);
 
-bool IsGlClampToBorderSupported(const mediapipe_v01013_based::GlContext& gl_context) {
+bool IsGlClampToBorderSupported(const hand_tracking_mp_lean::GlContext& gl_context) {
   return gl_context.gl_major_version() > 3 ||
          (gl_context.gl_major_version() == 3 &&
           gl_context.gl_minor_version() >= 2);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_30

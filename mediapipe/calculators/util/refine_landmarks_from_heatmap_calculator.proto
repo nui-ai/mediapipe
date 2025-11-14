@@ -14,12 +14,12 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/framework/calculator.proto";
 
 message RefineLandmarksFromHeatmapCalculatorOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional RefineLandmarksFromHeatmapCalculatorOptions ext = 362281653;
   }
   optional int32 kernel_size = 1 [default = 9];

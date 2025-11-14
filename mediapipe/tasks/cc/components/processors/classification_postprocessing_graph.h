@@ -22,7 +22,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/model_resources.h"
 #include "mediapipe/tasks/cc/metadata/metadata_extractor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace components {
 namespace processors {
@@ -71,11 +71,11 @@ absl::Status ConfigureTensorsToClassificationCalculator(
     const proto::ClassifierOptions& options,
     const metadata::ModelMetadataExtractor& metadata_extractor,
     int tensor_index,
-    mediapipe_v01013_based::TensorsToClassificationCalculatorOptions* calculator_options);
+    hand_tracking_mp_lean::TensorsToClassificationCalculatorOptions* calculator_options);
 
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_PROCESSORS_CLASSIFICATION_POSTPROCESSING_GRAPH_H_

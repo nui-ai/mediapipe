@@ -23,7 +23,7 @@
 #include "mediapipe/framework/formats/motion/optical_flow_field.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class FlowQuantizerModel {
  public:
@@ -43,6 +43,6 @@ class FlowQuantizerModel {
  private:
   QuantizerModelData model_;
 };
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_VIDEO_TOOL_FLOW_QUANTIZER_MODEL_H_

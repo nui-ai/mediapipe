@@ -22,7 +22,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/custom_ops/sentencepiece/encoder_config_generated.h"
 #include "mediapipe/tasks/cc/text/custom_ops/sentencepiece/utils.h"
 
-namespace mediapipe_v01013_based::tflite_operations::sentencepiece {
+namespace hand_tracking_mp_lean::tflite_operations::sentencepiece {
 namespace {
 
 const char kSpaceSymbol[] = "\xe2\x96\x81";
@@ -233,4 +233,4 @@ EncoderResult EncodeString(const std::string& string, const void* config_buffer,
                                 add_eos, reverse);
 }
 
-}  // namespace mediapipe_v01013_based::tflite_operations::sentencepiece
+}  // namespace hand_tracking_mp_lean::tflite_operations::sentencepiece

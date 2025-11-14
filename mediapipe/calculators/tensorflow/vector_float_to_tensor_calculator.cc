@@ -27,7 +27,7 @@
 #include "tensorflow/core/framework/tensor_shape.h"
 #include "tensorflow/core/framework/types.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 auto& INPUT_1D = VectorFloatToTensorCalculatorOptions::INPUT_1D;
@@ -162,4 +162,4 @@ absl::Status VectorFloatToTensorCalculator::Process(CalculatorContext* cc) {
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

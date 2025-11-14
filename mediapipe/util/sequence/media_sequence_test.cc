@@ -26,7 +26,7 @@
 #include "tensorflow/core/example/example.pb.h"
 #include "tensorflow/core/example/feature.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace mediasequence {
 namespace {
 
@@ -1261,4 +1261,4 @@ TEST(MediaSequenceTest, ReconcileMetadataRegionAnnotations) {
 }
 }  // namespace
 }  // namespace mediasequence
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

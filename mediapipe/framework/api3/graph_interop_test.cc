@@ -32,7 +32,7 @@
 #include "mediapipe/framework/testdata/night_light_calculator.pb.h"
 #include "mediapipe/framework/testdata/sky_light_calculator.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 TEST(GraphInteropTest, CanInteropWithApi2) {
@@ -69,7 +69,7 @@ TEST(GraphInteropTest, CanInteropWithApi2) {
   api2_foo_side_out->SetName("side_out").ConnectTo(api2_graph.SideOut(0));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "Foo"
           input_stream: "INPUT:in"
@@ -111,7 +111,7 @@ TEST(GraphInteropTest, CanInteropWithApi2AndUtilityFunctions) {
   api2_foo_side_out.SetName("side_out").ConnectTo(api2_graph.SideOut(0));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "Foo"
           input_stream: "INPUT:in"
@@ -128,4 +128,4 @@ TEST(GraphInteropTest, CanInteropWithApi2AndUtilityFunctions) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -27,7 +27,7 @@
 #include "mediapipe/framework/input_stream_handler.h"
 #include "mediapipe/framework/stream_handler/default_input_stream_handler.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Input stream handler that limits each input queue to a maximum of
 // target_queue_size packets, discarding older packets as needed.  When a
@@ -103,6 +103,6 @@ class FixedSizeInputStreamHandler : public DefaultInputStreamHandler {
   absl::Mutex erase_mutex_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_STREAM_HANDLER_FIXED_SIZE_INPUT_STREAM_HANDLER_H_

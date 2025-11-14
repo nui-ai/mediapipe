@@ -17,7 +17,7 @@
 
 namespace {
 
-using ::mediapipe_v01013_based::frame_buffer::halide::common::rotate;
+using ::hand_tracking_mp_lean::frame_buffer::halide::common::rotate;
 
 class GrayRotate : public Halide::Generator<GrayRotate> {
  public:

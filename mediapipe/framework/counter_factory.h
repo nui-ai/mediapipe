@@ -28,7 +28,7 @@
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/port/map_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Holds a map of counter names to counter unique_ptrs.
 // This class is thread safe.
@@ -92,6 +92,6 @@ class BasicCounterFactory : public CounterFactory {
   Counter* GetCounter(const std::string& name) override;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_COUNTER_FACTORY_H_

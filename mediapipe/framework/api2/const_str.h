@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // This class stores a constant string that can be inspected at compile time
@@ -38,6 +38,6 @@ class const_str {
 };
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_CONST_STR_H_

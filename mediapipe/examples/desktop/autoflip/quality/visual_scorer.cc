@@ -31,7 +31,7 @@
 // Weight threshold for computing a value.
 constexpr float kEpsilon = 0.0001;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 namespace {
 
@@ -68,7 +68,7 @@ absl::Status VisualScorer::CalculateScore(const cv::Mat& image,
                            region.location_normalized().width() * image.cols,
                            region.location_normalized().height() * image.rows);
   } else {
-    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "Unset region location.";
   }
 
@@ -90,7 +90,7 @@ absl::Status VisualScorer::CalculateScore(const cv::Mat& image,
   float sharpness_score_result = 0.0;
   if (options_.sharpness_weight() > kEpsilon) {
     // TODO: implement a sharpness score or remove this code block.
-    return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
            << "sharpness scorer is not yet implemented, please set weight to "
               "0.0";
   }
@@ -180,4 +180,4 @@ absl::Status VisualScorer::CalculateColorfulness(const cv::Mat& image,
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

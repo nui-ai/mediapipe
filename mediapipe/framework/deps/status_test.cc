@@ -17,7 +17,7 @@
 #include "mediapipe/framework/deps/status_matchers.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 TEST(Status, OK) {
   EXPECT_EQ(OkStatus().code(), absl::StatusCode::kOk);
@@ -95,4 +95,4 @@ TEST(Status, EqualsDifferentMessage) {
   ASSERT_NE(a, b);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -22,7 +22,7 @@
 #include "mediapipe/framework/tool/options_syntax_util.h"
 #include "mediapipe/framework/tool/proto_util_lite.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tool {
 
 using options_field_util::FieldPath;
@@ -119,4 +119,4 @@ absl::Status DefineGraphOptions(const CalculatorGraphConfig::Node& parent_node,
 }
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

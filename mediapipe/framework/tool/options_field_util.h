@@ -12,7 +12,7 @@
 #include "mediapipe/framework/tool/field_data.pb.h"
 #include "mediapipe/framework/tool/options_registry.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tool {
 
@@ -88,6 +88,6 @@ std::string ParseTypeUrl(absl::string_view type_url);
 
 }  // namespace options_field_util
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_OPTIONS_FIELD_UTIL_H_

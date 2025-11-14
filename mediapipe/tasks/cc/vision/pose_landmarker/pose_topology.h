@@ -13,7 +13,7 @@ limitations under the License.
 #ifndef MEDIAPIPE_TASKS_CC_VISION_POSE_LANDMARKER_POSE_TOPOLOGY_H_
 #define MEDIAPIPE_TASKS_CC_VISION_POSE_LANDMARKER_POSE_TOPOLOGY_H_
 
-namespace mediapipe_v01013_based::tasks::vision::pose_landmarker {
+namespace hand_tracking_mp_lean::tasks::vision::pose_landmarker {
 
 inline constexpr int kNumPoseLandmarks = 33;
 
@@ -54,6 +54,6 @@ enum class PoseLandmarkName {
   kRightFootIndex,
 };
 
-}  // namespace mediapipe_v01013_based::tasks::vision::pose_landmarker
+}  // namespace hand_tracking_mp_lean::tasks::vision::pose_landmarker
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_POSE_LANDMARKER_POSE_TOPOLOGY_H_

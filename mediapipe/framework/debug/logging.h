@@ -21,12 +21,12 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/port/opencv_core_inc.h"
 
-namespace mediapipe_v01013_based::debug {
+namespace hand_tracking_mp_lean::debug {
 
 // Logs the given channel (=last dimension) of the float tensor as a color or
 // ASCII image, depending on terminal capabilities. The values are clamped to
 // [min_range, max_range].
-void LogTensorChannel(const mediapipe_v01013_based::Tensor& tensor, int channel,
+void LogTensorChannel(const hand_tracking_mp_lean::Tensor& tensor, int channel,
                       absl::string_view name = "tensor", float min_range = 0.0f,
                       float max_range = 1.0f);
 
@@ -36,13 +36,13 @@ void LogTensorChannel(const mediapipe_v01013_based::Tensor& tensor, int channel,
 // grayscale image, two-channel and three-channel tensors are printed as a color
 // image, and a tensor with more channels is averaged over all channels and
 // printed as a grayscale image.
-void LogTensor(const mediapipe_v01013_based::Tensor& tensor,
+void LogTensor(const hand_tracking_mp_lean::Tensor& tensor,
                absl::string_view name = "tensor", float min_range = 0.0f,
                float max_range = 1.0f);
 
 // Logs the given image as a color or ASCII image, depending on terminal
 // capabilities.
-void LogImage(const mediapipe_v01013_based::ImageFrame& image,
+void LogImage(const hand_tracking_mp_lean::ImageFrame& image,
               absl::string_view name = "image");
 
 // Logs the given mat as a color or ASCII image, depending on terminal
@@ -54,6 +54,6 @@ void LogMat(const cv::Mat& mat, absl::string_view name = "mat");
 void LogHalideBuffer(Halide::Runtime::Buffer<const uint8_t> buffer,
                      absl::string_view name = "buffer");
 
-}  // namespace mediapipe_v01013_based::debug
+}  // namespace hand_tracking_mp_lean::debug
 
 #endif  // MEDIAPIPE_FRAMEWORK_DEBUG_LOGGING_H_

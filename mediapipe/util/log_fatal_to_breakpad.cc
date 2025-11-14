@@ -6,7 +6,7 @@
 #include "absl/log/log_sink_registry.h"
 #import "googlemac/iPhone/Shared/GoogleIOSBreakpad/Classes/GoogleBreakpadController.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 NSString* MakeNSString(absl::string_view str) {
   return [[NSString alloc] initWithBytes:str.data()
@@ -46,4 +46,4 @@ static const auto kRegisterLogSink = [] {
   return true;
 }();
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

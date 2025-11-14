@@ -16,7 +16,7 @@ node {
   input_stream: "hand_landmarks_from_pose"
   output_stream: "pose_wrist_landmark"
   options: {
-    [mediapipe_v01013_based.SplitVectorCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.SplitVectorCalculatorOptions.ext] {
       ranges: { begin: 0 end: 1 }
     }
   }
@@ -37,7 +37,7 @@ node {
   input_stream: "FLOAT:wrist_visibility_score"
   output_stream: "FLAG:wrist_visibility"
   options: {
-    [mediapipe_v01013_based.ThresholdingCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.ThresholdingCalculatorOptions.ext] {
       threshold: 0.1
     }
   }

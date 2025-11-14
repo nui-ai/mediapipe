@@ -40,23 +40,23 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_blendshapes_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/face_landmarker/proto/face_landmarks_detector_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
 
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::api2::builder::ConvertDetectionsToRectUsingKeypoints;
-using ::mediapipe_v01013_based::api2::builder::ConvertDetectionToRect;
-using ::mediapipe_v01013_based::api2::builder::ConvertLandmarksToDetection;
-using ::mediapipe_v01013_based::api2::builder::GetImageSize;
-using ::mediapipe_v01013_based::api2::builder::GetLoopbackData;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Scale;
-using ::mediapipe_v01013_based::api2::builder::ScaleAndMakeSquare;
-using ::mediapipe_v01013_based::api2::builder::Stream;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::api2::builder::ConvertDetectionsToRectUsingKeypoints;
+using ::hand_tracking_mp_lean::api2::builder::ConvertDetectionToRect;
+using ::hand_tracking_mp_lean::api2::builder::ConvertLandmarksToDetection;
+using ::hand_tracking_mp_lean::api2::builder::GetImageSize;
+using ::hand_tracking_mp_lean::api2::builder::GetLoopbackData;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Scale;
+using ::hand_tracking_mp_lean::api2::builder::ScaleAndMakeSquare;
+using ::hand_tracking_mp_lean::api2::builder::Stream;
 
 struct FaceLandmarksResult {
   std::optional<Stream<NormalizedLandmarkList>> landmarks;
@@ -86,7 +86,7 @@ absl::Status ValidateGraphOptions(
 Stream<NormalizedRect> GetFaceRoiFromPoseFaceLandmarks(
     Stream<NormalizedLandmarkList> pose_face_landmarks,
     Stream<std::pair<int, int>> image_size, Graph& graph) {
-  Stream<mediapipe_v01013_based::Detection> detection =
+  Stream<hand_tracking_mp_lean::Detection> detection =
       ConvertLandmarksToDetection(pose_face_landmarks, graph);
 
   // Refer the pose face landmarks indices here:
@@ -105,7 +105,7 @@ Stream<NormalizedRect> GetFaceRoiFromPoseFaceLandmarks(
 Stream<NormalizedRect> GetFaceRoiFromFaceLandmarks(
     Stream<NormalizedLandmarkList> face_landmarks,
     Stream<std::pair<int, int>> image_size, Graph& graph) {
-  Stream<mediapipe_v01013_based::Detection> detection =
+  Stream<hand_tracking_mp_lean::Detection> detection =
       ConvertLandmarksToDetection(face_landmarks, graph);
 
   Stream<NormalizedRect> rect = ConvertDetectionToRect(
@@ -258,4 +258,4 @@ absl::StatusOr<HolisticFaceTrackingOutput> TrackHolisticFace(
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

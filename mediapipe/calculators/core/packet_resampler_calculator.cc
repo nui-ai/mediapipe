@@ -40,7 +40,7 @@ std::unique_ptr<RandomBase> CreateSecureRandom(const std::string& seed) {
 
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 REGISTER_CALCULATOR(PacketResamplerCalculator);
 namespace {
@@ -730,4 +730,4 @@ absl::Status NoJitterStrategy::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

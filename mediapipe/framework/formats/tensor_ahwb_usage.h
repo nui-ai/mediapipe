@@ -7,7 +7,7 @@
 
 #include "absl/functional/any_invocable.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Holds AHWB on-complete function and release callbacks. This is used
 // to manage resources and perform synchronization when using AHWB with of
@@ -46,6 +46,6 @@ void EraseCompletedUsages(std::list<TensorAhwbUsage>& ahwb_usages);
 // Returns true if the usages are incomplete.
 bool HasIncompleteUsages(const std::list<TensorAhwbUsage>& ahwb_usages);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_TENSOR_AHWB_USAGE_H_

@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace internal {
 
@@ -74,7 +74,7 @@ class PacketMatcher : public testing::MatcherInterface<const Packet&> {
 
  private:
   static std::string ExpectedTypeName() {
-    return ::mediapipe_v01013_based::Demangle(typeid(PayloadType).name());
+    return ::hand_tracking_mp_lean::Demangle(typeid(PayloadType).name());
   }
 
   const testing::Matcher<const PayloadType&> inner_matcher_;
@@ -171,11 +171,11 @@ std::vector<testing::Matcher<Packet>> PacketMatchers(
   return result;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
-namespace mediapipe_v01013_based {
-using mediapipe_v01013_based::PacketContains;
-using mediapipe_v01013_based::PacketContainsTimestampAndPayload;
-}  // namespace mediapipe_v01013_based
+namespace hand_tracking_mp_lean {
+using hand_tracking_mp_lean::PacketContains;
+using hand_tracking_mp_lean::PacketContainsTimestampAndPayload;
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_PACKET_TEST_UTIL_H_

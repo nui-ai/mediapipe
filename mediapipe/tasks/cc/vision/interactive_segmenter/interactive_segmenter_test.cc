@@ -48,17 +48,17 @@ limitations under the License.
 #include "tensorflow/lite/test_util.h"
 #include "testing/base/public/gmock.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace interactive_segmenter {
 namespace {
 
-using ::mediapipe_v01013_based::Image;
-using ::mediapipe_v01013_based::file::JoinPath;
-using ::mediapipe_v01013_based::tasks::components::containers::NormalizedKeypoint;
-using ::mediapipe_v01013_based::tasks::components::containers::RectF;
-using ::mediapipe_v01013_based::tasks::vision::core::ImageProcessingOptions;
+using ::hand_tracking_mp_lean::Image;
+using ::hand_tracking_mp_lean::file::JoinPath;
+using ::hand_tracking_mp_lean::tasks::components::containers::NormalizedKeypoint;
+using ::hand_tracking_mp_lean::tasks::components::containers::RectF;
+using ::hand_tracking_mp_lean::tasks::vision::core::ImageProcessingOptions;
 using ::testing::HasSubstr;
 using ::testing::Optional;
 using ::testing::SizeIs;
@@ -241,7 +241,7 @@ TEST_P(SucceedSegmentationWithRoi, SucceedsWithCategoryMask) {
   EXPECT_TRUE(result.category_mask.has_value());
   EXPECT_FALSE(result.confidence_masks.has_value());
 
-  cv::Mat actual_mask = mediapipe_v01013_based::formats::MatView(
+  cv::Mat actual_mask = hand_tracking_mp_lean::formats::MatView(
       result.category_mask->GetImageFrameSharedPtr().get());
 
   cv::Mat expected_mask =
@@ -253,7 +253,7 @@ TEST_P(SucceedSegmentationWithRoi, SucceedsWithCategoryMask) {
 
   cv::Mat visualized_mask;
   actual_mask.convertTo(visualized_mask, CV_8UC1, /*alpha=*/255);
-  ImageFrame visualized_image(mediapipe_v01013_based::ImageFormat::GRAY8,
+  ImageFrame visualized_image(hand_tracking_mp_lean::ImageFormat::GRAY8,
                               visualized_mask.cols, visualized_mask.rows,
                               visualized_mask.step, visualized_mask.data,
                               [visualized_mask](uint8_t[]) {});
@@ -286,13 +286,13 @@ TEST_P(SucceedSegmentationWithRoi, SucceedsWithConfidenceMask) {
   cv::Mat expected_mask_float;
   expected_mask.convertTo(expected_mask_float, CV_32FC1, 1 / 255.f);
 
-  cv::Mat actual_mask = mediapipe_v01013_based::formats::MatView(
+  cv::Mat actual_mask = hand_tracking_mp_lean::formats::MatView(
       result.confidence_masks->at(1).GetImageFrameSharedPtr().get());
   EXPECT_THAT(actual_mask, SimilarToFloatMask(expected_mask_float,
                                               params.similarity_threshold));
   cv::Mat visualized_mask;
   actual_mask.convertTo(visualized_mask, CV_8UC1, /*alpha=*/255);
-  ImageFrame visualized_image(mediapipe_v01013_based::ImageFormat::GRAY8,
+  ImageFrame visualized_image(hand_tracking_mp_lean::ImageFormat::GRAY8,
                               visualized_mask.cols, visualized_mask.rows,
                               visualized_mask.step, visualized_mask.data,
                               [visualized_mask](uint8_t[]) {});
@@ -388,4 +388,4 @@ TEST_F(ImageModeTest, FailsWithRegionOfInterest) {
 }  // namespace interactive_segmenter
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

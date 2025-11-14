@@ -32,7 +32,7 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 RotatedRect GetRoi(int input_width, int input_height,
                    const absl::optional<NormalizedRect> norm_rect) {
@@ -227,14 +227,14 @@ void GetTransposedRotatedSubRectToRectTransformMatrix(
 }
 
 BorderMode GetBorderMode(
-    const mediapipe_v01013_based::ImageToTensorCalculatorOptions::BorderMode& mode) {
+    const hand_tracking_mp_lean::ImageToTensorCalculatorOptions::BorderMode& mode) {
   switch (mode) {
-    case mediapipe_v01013_based::
+    case hand_tracking_mp_lean::
         ImageToTensorCalculatorOptions_BorderMode_BORDER_UNSPECIFIED:
       return BorderMode::kReplicate;
-    case mediapipe_v01013_based::ImageToTensorCalculatorOptions_BorderMode_BORDER_ZERO:
+    case hand_tracking_mp_lean::ImageToTensorCalculatorOptions_BorderMode_BORDER_ZERO:
       return BorderMode::kZero;
-    case mediapipe_v01013_based::ImageToTensorCalculatorOptions_BorderMode_BORDER_REPLICATE:
+    case hand_tracking_mp_lean::ImageToTensorCalculatorOptions_BorderMode_BORDER_REPLICATE:
       return BorderMode::kReplicate;
   }
 }
@@ -255,7 +255,7 @@ Tensor::ElementType GetOutputTensorType(bool uses_gpu,
   return Tensor::ElementType::kFloat32;
 }
 
-int GetNumOutputChannels(const mediapipe_v01013_based::Image& image) {
+int GetNumOutputChannels(const hand_tracking_mp_lean::Image& image) {
 #if !MEDIAPIPE_DISABLE_GPU
 #if MEDIAPIPE_METAL_ENABLED
   if (image.UsesGpu()) {
@@ -280,10 +280,10 @@ absl::StatusOr<std::shared_ptr<const Image>> GetInputImage(
       [&image_packet](const Image&) {
         return image_packet.Share<Image>();
       },
-      [&image_packet](const mediapipe_v01013_based::ImageFrame&) -> absl::StatusOr<std::shared_ptr<const Image>> {
+      [&image_packet](const hand_tracking_mp_lean::ImageFrame&) -> absl::StatusOr<std::shared_ptr<const Image>> {
         MP_ASSIGN_OR_RETURN(
-            std::shared_ptr<const mediapipe_v01013_based::ImageFrame> image_frame,
-            image_packet.Share<mediapipe_v01013_based::ImageFrame>());
+            std::shared_ptr<const hand_tracking_mp_lean::ImageFrame> image_frame,
+            image_packet.Share<hand_tracking_mp_lean::ImageFrame>());
         return std::make_shared<const Image>(
             std::const_pointer_cast<ImageFrame>(
                 std::move(image_frame)));
@@ -291,12 +291,12 @@ absl::StatusOr<std::shared_ptr<const Image>> GetInputImage(
 }
 
 #if !MEDIAPIPE_DISABLE_GPU
-absl::StatusOr<std::shared_ptr<const mediapipe_v01013_based::Image>> GetInputImage(
-    const api2::Packet<mediapipe_v01013_based::GpuBuffer>& image_gpu_packet) {
+absl::StatusOr<std::shared_ptr<const hand_tracking_mp_lean::Image>> GetInputImage(
+    const api2::Packet<hand_tracking_mp_lean::GpuBuffer>& image_gpu_packet) {
   // A shallow copy is okay since the resulting 'image' object is local in
   // Process(), and thus never outlives 'input'.
-  return std::make_shared<const mediapipe_v01013_based::Image>(image_gpu_packet.Get());
+  return std::make_shared<const hand_tracking_mp_lean::Image>(image_gpu_packet.Get());
 }
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

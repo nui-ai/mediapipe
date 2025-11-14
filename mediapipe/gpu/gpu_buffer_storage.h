@@ -12,7 +12,7 @@
 #include "mediapipe/framework/tool/type_util.h"
 #include "mediapipe/gpu/gpu_buffer_format.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace internal {
 
 template <class... T>
@@ -258,6 +258,6 @@ std::shared_ptr<internal::GpuBufferStorage> AsGpuBufferStorage();
 #endif  // !MEDIAPIPE_DISABLE_GPU && MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 
 }  // namespace internal
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GPU_BUFFER_STORAGE_H_

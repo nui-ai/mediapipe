@@ -31,17 +31,17 @@
 //    // specify them directly.
 //    MEDIAPIPE_REGISTER_TYPE(
 //        ::namespace::Type, "::namespace::Type",
-//        ::mediapipe_v01013_based::SerializeUsingGenericFn<::namespace::Type>,
-//        ::mediapipe_v01013_based::DeserializeUsingGenericFn<::namespace::Type>);
+//        ::hand_tracking_mp_lean::SerializeUsingGenericFn<::namespace::Type>,
+//        ::hand_tracking_mp_lean::DeserializeUsingGenericFn<::namespace::Type>);
 //
 //    // If your type is serialized by converting it to an easily serializable
 //    // type (such as a proto) use a proxy.
 //    // See mediapipe/framework/formats/location.cc for more
 //    details. MEDIAPIPE_REGISTER_TYPE_WITH_PROXY(
-//        mediapipe_v01013_based::Location, "mediapipe_v01013_based::Location",
-//        ::mediapipe_v01013_based::SerializeUsingGenericFn<Location WITH_MEDIAPIPE_PROXY
+//        hand_tracking_mp_lean::Location, "hand_tracking_mp_lean::Location",
+//        ::hand_tracking_mp_lean::SerializeUsingGenericFn<Location WITH_MEDIAPIPE_PROXY
 //        LocationData>,
-//        ::mediapipe_v01013_based::DeserializeUsingGenericFn<Location WITH_MEDIAPIPE_PROXY
+//        ::hand_tracking_mp_lean::DeserializeUsingGenericFn<Location WITH_MEDIAPIPE_PROXY
 //        LocationData>, LocationToLocationData, LocationFromLocationData);
 //
 // Inspect type:
@@ -72,7 +72,7 @@
 #include "mediapipe/framework/tool/status_util.h"
 #include "mediapipe/framework/tool/type_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace packet_internal {
 class HolderBase;
@@ -256,7 +256,7 @@ DEFINE_MEDIAPIPE_TYPE_MAP(PacketTypeStringToMediaPipeTypeData, std::string)
 //     Even std types should have their names start with "::std".
 //     Only basic types such as "int" can be left bare.  Remember to
 //     include full namespaces for template arguments.  For example
-//     "::map<std::string,mediapipe_v01013_based::Packet>".
+//     "::map<std::string,hand_tracking_mp_lean::Packet>".
 //
 // Examples:
 //   Prefers an additional macro to define a type that contains comma(s) in
@@ -266,8 +266,8 @@ DEFINE_MEDIAPIPE_TYPE_MAP(PacketTypeStringToMediaPipeTypeData, std::string)
 //
 //   #define MY_MAP_TYPE ::std::map<std::string, int>
 //   MEDIAPIPE_REGISTER_TYPE(MY_MAP_TYPE, "::std::map<std::string,int>",
-//                         ::mediapipe_v01013_based::SerializeUsingGenericFn<MY_MAP_TYPE>,
-//                         ::mediapipe_v01013_based::DeserializeUsingGenericFn<MY_MAP_TYPE>);
+//                         ::hand_tracking_mp_lean::SerializeUsingGenericFn<MY_MAP_TYPE>,
+//                         ::hand_tracking_mp_lean::DeserializeUsingGenericFn<MY_MAP_TYPE>);
 //   #undef MY_MAP_TYPE
 //
 //   MEDIAPIPE_REGISTER_TYPE(
@@ -275,20 +275,20 @@ DEFINE_MEDIAPIPE_TYPE_MAP(PacketTypeStringToMediaPipeTypeData, std::string)
 //
 #define MEDIAPIPE_REGISTER_TYPE(type, type_name, serialize_fn, deserialize_fn) \
   SET_MEDIAPIPE_TYPE_MAP_VALUE(                                                \
-      mediapipe_v01013_based::PacketTypeIdToMediaPipeTypeData,                              \
-      mediapipe_v01013_based::TypeId::Of<                                                   \
-          mediapipe_v01013_based::type_map_internal::ReflectType<void(type*)>::Type>()      \
+      hand_tracking_mp_lean::PacketTypeIdToMediaPipeTypeData,                              \
+      hand_tracking_mp_lean::TypeId::Of<                                                   \
+          hand_tracking_mp_lean::type_map_internal::ReflectType<void(type*)>::Type>()      \
           .hash_code(),                                                        \
-      (mediapipe_v01013_based::MediaPipeTypeData{                                           \
-          mediapipe_v01013_based::TypeId::Of<                                               \
-              mediapipe_v01013_based::type_map_internal::ReflectType<void(type*)>::Type>()  \
+      (hand_tracking_mp_lean::MediaPipeTypeData{                                           \
+          hand_tracking_mp_lean::TypeId::Of<                                               \
+              hand_tracking_mp_lean::type_map_internal::ReflectType<void(type*)>::Type>()  \
               .hash_code(),                                                    \
           type_name, serialize_fn, deserialize_fn}));                          \
   SET_MEDIAPIPE_TYPE_MAP_VALUE(                                                \
-      mediapipe_v01013_based::PacketTypeStringToMediaPipeTypeData, type_name,               \
-      (mediapipe_v01013_based::MediaPipeTypeData{                                           \
-          mediapipe_v01013_based::TypeId::Of<                                               \
-              mediapipe_v01013_based::type_map_internal::ReflectType<void(type*)>::Type>()  \
+      hand_tracking_mp_lean::PacketTypeStringToMediaPipeTypeData, type_name,               \
+      (hand_tracking_mp_lean::MediaPipeTypeData{                                           \
+          hand_tracking_mp_lean::TypeId::Of<                                               \
+              hand_tracking_mp_lean::type_map_internal::ReflectType<void(type*)>::Type>()  \
               .hash_code(),                                                    \
           type_name, serialize_fn, deserialize_fn}));
 // End define MEDIAPIPE_REGISTER_TYPE.
@@ -317,9 +317,9 @@ DEFINE_MEDIAPIPE_TYPE_MAP(PacketTypeStringToMediaPipeTypeData, std::string)
 //
 //   MEDIAPIPE_REGISTER_TYPE_WITH_PROXY(
 //      ClassType, "ClassTypeName",
-//      ::mediapipe_v01013_based::SerializeUsingGenericFn<ClassType WITH_MEDIAPIPE_PROXY
+//      ::hand_tracking_mp_lean::SerializeUsingGenericFn<ClassType WITH_MEDIAPIPE_PROXY
 //      ProxyType>,
-//      ::mediapipe_v01013_based::DeserializeUsingGenericFn<ClassType WITH_MEDIAPIPE_PROXY
+//      ::hand_tracking_mp_lean::DeserializeUsingGenericFn<ClassType WITH_MEDIAPIPE_PROXY
 //      ProxyType>, ToProxyFn, FromProxyFn);
 //
 // Example 2: register type with string proxy.
@@ -344,22 +344,22 @@ DEFINE_MEDIAPIPE_TYPE_MAP(PacketTypeStringToMediaPipeTypeData, std::string)
 #define MEDIAPIPE_REGISTER_TYPE_WITH_PROXY(                                    \
     type, type_name, serialize_fn, deserialize_fn, to_proxy_fn, from_proxy_fn) \
   SET_MEDIAPIPE_TYPE_MAP_VALUE(                                                \
-      mediapipe_v01013_based::PacketTypeIdToMediaPipeTypeData,                              \
-      mediapipe_v01013_based::tool::GetTypeHash<                                            \
-          mediapipe_v01013_based::type_map_internal::ReflectType<void(type*)>::Type>(),     \
-      (mediapipe_v01013_based::MediaPipeTypeData{                                           \
-          mediapipe_v01013_based::tool::GetTypeHash<                                        \
-              mediapipe_v01013_based::type_map_internal::ReflectType<void(type*)>::Type>(), \
+      hand_tracking_mp_lean::PacketTypeIdToMediaPipeTypeData,                              \
+      hand_tracking_mp_lean::tool::GetTypeHash<                                            \
+          hand_tracking_mp_lean::type_map_internal::ReflectType<void(type*)>::Type>(),     \
+      (hand_tracking_mp_lean::MediaPipeTypeData{                                           \
+          hand_tracking_mp_lean::tool::GetTypeHash<                                        \
+              hand_tracking_mp_lean::type_map_internal::ReflectType<void(type*)>::Type>(), \
           type_name,                                                           \
           std::bind(&serialize_fn, to_proxy_fn, std::placeholders::_1,         \
                     std::placeholders::_2),                                    \
           std::bind(&deserialize_fn, from_proxy_fn, std::placeholders::_1,     \
                     std::placeholders::_2)}));                                 \
   SET_MEDIAPIPE_TYPE_MAP_VALUE(                                                \
-      mediapipe_v01013_based::PacketTypeStringToMediaPipeTypeData, type_name,               \
-      (mediapipe_v01013_based::MediaPipeTypeData{                                           \
-          mediapipe_v01013_based::tool::GetTypeHash<                                        \
-              mediapipe_v01013_based::type_map_internal::ReflectType<void(type*)>::Type>(), \
+      hand_tracking_mp_lean::PacketTypeStringToMediaPipeTypeData, type_name,               \
+      (hand_tracking_mp_lean::MediaPipeTypeData{                                           \
+          hand_tracking_mp_lean::tool::GetTypeHash<                                        \
+              hand_tracking_mp_lean::type_map_internal::ReflectType<void(type*)>::Type>(), \
           type_name,                                                           \
           std::bind(&serialize_fn, to_proxy_fn, std::placeholders::_1,         \
                     std::placeholders::_2),                                    \
@@ -417,6 +417,6 @@ inline bool SerializeFunctionsAreRegistered(const std::string& type_string) {
   return mediapipe_type_data && mediapipe_type_data->serialize_fn &&
          mediapipe_type_data->deserialize_fn;
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TYPE_MAP_H_

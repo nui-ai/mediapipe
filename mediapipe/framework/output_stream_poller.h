@@ -20,7 +20,7 @@
 #include "absl/log/absl_check.h"
 #include "mediapipe/framework/graph_output_stream.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // The public interface of output stream poller.
 class OutputStreamPoller {
@@ -74,6 +74,6 @@ class OutputStreamPoller {
   friend class CalculatorGraph;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_OUTPUT_STREAM_POLLER_H_

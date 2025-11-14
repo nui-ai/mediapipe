@@ -30,7 +30,7 @@ limitations under the License.
 #include "sentencepiece/src/sentencepiece_processor.h"  // from @com_google_sentencepiece
 #include "tensorflow/core/platform/env.h"
 
-namespace mediapipe_v01013_based::tflite_operations::sentencepiece {
+namespace hand_tracking_mp_lean::tflite_operations::sentencepiece {
 
 namespace internal {
 
@@ -57,7 +57,7 @@ absl::Status StdReadFileToString(const std::string& filepath,
 
 namespace {
 
-using ::mediapipe_v01013_based::file::JoinPath;
+using ::hand_tracking_mp_lean::file::JoinPath;
 
 static char kConfigFilePath[] =
     "/mediapipe/tasks/cc/text/custom_ops/"
@@ -168,4 +168,4 @@ TEST(OptimizedEncoder, ConfigConverter) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::tflite_operations::sentencepiece
+}  // namespace hand_tracking_mp_lean::tflite_operations::sentencepiece

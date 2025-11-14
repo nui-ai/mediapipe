@@ -45,7 +45,7 @@ limitations under the License.
 #include "tensorflow/lite/c/common.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
@@ -54,14 +54,14 @@ namespace {
 
 using ::file::Defaults;
 using ::file::GetTextProto;
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::file::JoinPath;
-using ::mediapipe_v01013_based::tasks::core::TaskRunner;
-using ::mediapipe_v01013_based::tasks::vision::hand_landmarker::proto::
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::file::JoinPath;
+using ::hand_tracking_mp_lean::tasks::core::TaskRunner;
+using ::hand_tracking_mp_lean::tasks::vision::hand_landmarker::proto::
     HandLandmarkerGraphOptions;
 using ::testing::EqualsProto;
 using ::testing::proto::Approximately;
@@ -207,4 +207,4 @@ TEST_F(HandLandmarkerTest, SucceedsWithRotation) {
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

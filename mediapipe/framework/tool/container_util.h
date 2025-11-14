@@ -3,7 +3,7 @@
 
 #include "mediapipe/framework/calculator_framework.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tool {
 
 // Returns a tag name for one of the demux output channels.
@@ -26,6 +26,6 @@ void Relay(const InputStreamShard& input, OutputStreamShard* output);
 int GetChannelIndex(const CalculatorContext& cc, int previous_index);
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_CONTAINER_UTIL_H_

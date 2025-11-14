@@ -34,7 +34,7 @@
 #include "mediapipe/framework/timestamp.h"
 #include "mediapipe/framework/tool/status_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace internal {
 
@@ -543,4 +543,4 @@ internal::SchedulerTimes Scheduler::GetSchedulerTimes() {
 }
 
 }  // namespace internal
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

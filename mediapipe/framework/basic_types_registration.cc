@@ -6,12 +6,12 @@
 
 #define MEDIAPIPE_REGISTER_GENERIC_TYPE(type)                              \
   MEDIAPIPE_REGISTER_TYPE(                                                 \
-      mediapipe_v01013_based::type_map_internal::ReflectType<void(type*)>::Type, #type, \
+      hand_tracking_mp_lean::type_map_internal::ReflectType<void(type*)>::Type, #type, \
       nullptr, nullptr)
 
 #define MEDIAPIPE_REGISTER_GENERIC_TYPE_WITH_NAME(type, name)             \
   MEDIAPIPE_REGISTER_TYPE(                                                \
-      mediapipe_v01013_based::type_map_internal::ReflectType<void(type*)>::Type, name, \
+      hand_tracking_mp_lean::type_map_internal::ReflectType<void(type*)>::Type, name, \
       nullptr, nullptr)
 
 // Note: we cannot define a type which type hash id is already in the map.

@@ -20,9 +20,9 @@ limitations under the License.
 
 #include "mediapipe/tasks/cc/components/containers/rect.h"
 
-namespace mediapipe_v01013_based::tasks::vision::utils {
+namespace hand_tracking_mp_lean::tasks::vision::utils {
 
-using ::mediapipe_v01013_based::tasks::components::containers::RectF;
+using ::hand_tracking_mp_lean::tasks::components::containers::RectF;
 
 float CalculateArea(const RectF& rect) {
   return (rect.right - rect.left) * (rect.bottom - rect.top);
@@ -47,4 +47,4 @@ float CalculateIOU(const RectF& a, const RectF& b) {
   return intersection_area / (area_a + area_b - intersection_area);
 }
 
-}  // namespace mediapipe_v01013_based::tasks::vision::utils
+}  // namespace hand_tracking_mp_lean::tasks::vision::utils

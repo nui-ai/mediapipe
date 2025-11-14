@@ -18,7 +18,7 @@
 #include "mediapipe/framework/collection.h"
 #include "mediapipe/framework/packet.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // A PacketSet is used to hold a collection of Packets accessed either
 // by index or by tag name.
@@ -44,6 +44,6 @@ typedef internal::Collection<InputStreamShard> InputStreamShardSet;
 class OutputStreamShard;
 typedef internal::Collection<OutputStreamShard> OutputStreamShardSet;
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_PACKET_SET_H_

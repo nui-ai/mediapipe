@@ -27,15 +27,15 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::ParseTextProtoOrDie;
+using ::hand_tracking_mp_lean::ParseTextProtoOrDie;
 using ::testing::HasSubstr;
 using ::testing::TestParamInfo;
 using ::testing::TestWithParam;
 using ::testing::Values;
-using Node = ::mediapipe_v01013_based::CalculatorGraphConfig::Node;
+using Node = ::hand_tracking_mp_lean::CalculatorGraphConfig::Node;
 
 // Builds the graph and feeds inputs.
 void BuildGraph(CalculatorRunner* runner, std::vector<float> scores,
@@ -52,7 +52,7 @@ void BuildGraph(CalculatorRunner* runner, std::vector<float> scores,
   }
   auto& input_scores_packets = runner->MutableInputs()->Tag("SCORES").packets;
   input_scores_packets.push_back(
-      mediapipe_v01013_based::Adopt(scores_tensors.release()).At(mediapipe_v01013_based::Timestamp(0)));
+      hand_tracking_mp_lean::Adopt(scores_tensors.release()).At(hand_tracking_mp_lean::Timestamp(0)));
 
   if (indices.has_value()) {
     auto indices_tensors = std::make_unique<std::vector<Tensor>>();
@@ -67,8 +67,8 @@ void BuildGraph(CalculatorRunner* runner, std::vector<float> scores,
     }
     auto& input_indices_packets =
         runner->MutableInputs()->Tag("INDICES").packets;
-    input_indices_packets.push_back(mediapipe_v01013_based::Adopt(indices_tensors.release())
-                                        .At(mediapipe_v01013_based::Timestamp(0)));
+    input_indices_packets.push_back(hand_tracking_mp_lean::Adopt(indices_tensors.release())
+                                        .At(hand_tracking_mp_lean::Timestamp(0)));
   }
 }
 
@@ -306,4 +306,4 @@ TEST(ScoreCalibrationCalculatorTest, FailsWithOutOfBoundsIndex) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

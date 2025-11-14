@@ -12,24 +12,24 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "tensorflow/lite/c/common.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 
 namespace internal_get_vector_item {
 
 // Helper function that adds a node to a graph, that is capable of getting item
 // from a vector of type (T).
 template <class T>
-mediapipe_v01013_based::api2::builder::GenericNode& AddGetVectorItemNode(
-    mediapipe_v01013_based::api2::builder::Graph& graph) {
-  if constexpr (std::is_same_v<T, mediapipe_v01013_based::NormalizedLandmarkList>) {
+hand_tracking_mp_lean::api2::builder::GenericNode& AddGetVectorItemNode(
+    hand_tracking_mp_lean::api2::builder::Graph& graph) {
+  if constexpr (std::is_same_v<T, hand_tracking_mp_lean::NormalizedLandmarkList>) {
     return graph.AddNode("GetNormalizedLandmarkListVectorItemCalculator");
-  } else if constexpr (std::is_same_v<T, mediapipe_v01013_based::LandmarkList>) {
+  } else if constexpr (std::is_same_v<T, hand_tracking_mp_lean::LandmarkList>) {
     return graph.AddNode("GetLandmarkListVectorItemCalculator");
-  } else if constexpr (std::is_same_v<T, mediapipe_v01013_based::ClassificationList>) {
+  } else if constexpr (std::is_same_v<T, hand_tracking_mp_lean::ClassificationList>) {
     return graph.AddNode("GetClassificationListVectorItemCalculator");
-  } else if constexpr (std::is_same_v<T, mediapipe_v01013_based::NormalizedRect>) {
+  } else if constexpr (std::is_same_v<T, hand_tracking_mp_lean::NormalizedRect>) {
     return graph.AddNode("GetNormalizedRectVectorItemCalculator");
-  } else if constexpr (std::is_same_v<T, mediapipe_v01013_based::Rect>) {
+  } else if constexpr (std::is_same_v<T, hand_tracking_mp_lean::Rect>) {
     return graph.AddNode("GetRectVectorItemCalculator");
   } else {
     static_assert(
@@ -54,13 +54,13 @@ mediapipe_v01013_based::api2::builder::GenericNode& AddGetVectorItemNode(
 // ```
 template <typename T>
 Stream<T> GetItem(Stream<std::vector<T>> items, Stream<int> idx,
-                  mediapipe_v01013_based::api2::builder::Graph& graph) {
+                  hand_tracking_mp_lean::api2::builder::Graph& graph) {
   auto& getter = internal_get_vector_item::AddGetVectorItemNode<T>(graph);
   items.ConnectTo(getter.In("VECTOR"));
   idx.ConnectTo(getter.In("INDEX"));
   return getter.Out("ITEM").template Cast<T>();
 }
 
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_STREAM_GET_VECTOR_ITEM_H_

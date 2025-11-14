@@ -25,7 +25,7 @@
 #include "mediapipe/framework/demangle.h"
 #include "mediapipe/framework/port.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // An identifier for a type. This class is lightweight and is meant to be passed
 // by value.
@@ -146,6 +146,6 @@ size_t GetTypeHash() {
 }
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_TYPE_UTIL_H_

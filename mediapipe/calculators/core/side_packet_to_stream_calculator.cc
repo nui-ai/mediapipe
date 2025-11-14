@@ -23,10 +23,10 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-using mediapipe_v01013_based::PacketTypeSet;
-using mediapipe_v01013_based::Timestamp;
+using hand_tracking_mp_lean::PacketTypeSet;
+using hand_tracking_mp_lean::Timestamp;
 
 namespace {
 
@@ -181,7 +181,7 @@ absl::Status SidePacketToStreamCalculator::Process(CalculatorContext* cc) {
     return absl::OkStatus();
   }
 
-  return mediapipe_v01013_based::tool::StatusStop();
+  return hand_tracking_mp_lean::tool::StatusStop();
 }
 
 absl::Status SidePacketToStreamCalculator::Close(CalculatorContext* cc) {
@@ -206,4 +206,4 @@ absl::Status SidePacketToStreamCalculator::Close(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

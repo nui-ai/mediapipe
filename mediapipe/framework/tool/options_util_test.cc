@@ -29,10 +29,10 @@
 #include "mediapipe/framework/tool/options_registry.h"
 #include "mediapipe/framework/tool/options_syntax_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using FieldType = ::mediapipe_v01013_based::proto_ns::FieldDescriptorProto::Type;
+using FieldType = ::hand_tracking_mp_lean::proto_ns::FieldDescriptorProto::Type;
 using ::testing::HasSubstr;
 
 // Assigns the value from a StatusOr if avialable.
@@ -620,4 +620,4 @@ TEST_F(OptionsFieldUtilTest, MergeFieldValuesProtobuf) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -9,7 +9,7 @@
 #include "research/aimatter/api/internal/blaze_face/anchor_ssd_decoder.h"
 #include "util/task/contrib/status_macros/ret_check.h"
 
-namespace mediapipe_v01013_based::tasks::vision::hand_detector {
+namespace hand_tracking_mp_lean::tasks::vision::hand_detector {
 
 namespace rapi = ::research::aimatter::api;
 
@@ -23,7 +23,7 @@ constexpr int kCoordsNum =
 absl::Status ConfigureSsdAnchorsCalculator(
     const ImageTensorSpecs& image_tensor_specs,
     const research::aimatter::api::fb::FaceDetectorMetadata& metadata_fb,
-    mediapipe_v01013_based::SsdAnchorsCalculatorOptions& options) {
+    hand_tracking_mp_lean::SsdAnchorsCalculatorOptions& options) {
   options.Clear();
   const auto& output_spec_fb = *metadata_fb.output_spec();
   RET_CHECK(output_spec_fb.v1() == nullptr && output_spec_fb.v2() != nullptr)
@@ -53,7 +53,7 @@ absl::Status ConfigureSsdAnchorsCalculator(
 absl::Status ConfigureTensorsToDetectionsCalculator(
     const ImageTensorSpecs& image_tensor_specs, int num_boxes,
     float min_detection_confidence,
-    mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions& options) {
+    hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions& options) {
   options.Clear();
   const int tensor_height = image_tensor_specs.image_height;
   const int tensor_width = image_tensor_specs.image_width;
@@ -65,7 +65,7 @@ absl::Status ConfigureTensorsToDetectionsCalculator(
   options.set_num_keypoints(kPalmKeypointNum);
   options.set_num_values_per_keypoint(kKeypointCoordsNum);
   options.set_sigmoid_score(true);
-  options.set_box_format(mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::XYWH);
+  options.set_box_format(hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::XYWH);
   options.set_min_score_thresh(min_detection_confidence);
   options.set_x_scale(tensor_width);
   options.set_y_scale(tensor_height);
@@ -74,4 +74,4 @@ absl::Status ConfigureTensorsToDetectionsCalculator(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based::tasks::vision::hand_detector
+}  // namespace hand_tracking_mp_lean::tasks::vision::hand_detector

@@ -17,9 +17,9 @@
 #include <cstdint>
 
 @implementation MPPTimestampConverter {
-  mediapipe_v01013_based::Timestamp _mediapipeTimestamp;
-  mediapipe_v01013_based::Timestamp _lastTimestamp;
-  mediapipe_v01013_based::TimestampDiff _timestampOffset;
+  hand_tracking_mp_lean::Timestamp _mediapipeTimestamp;
+  hand_tracking_mp_lean::Timestamp _lastTimestamp;
+  hand_tracking_mp_lean::TimestampDiff _timestampOffset;
 }
 
 - (instancetype)init {
@@ -31,17 +31,17 @@
 }
 
 - (void)reset {
-  _mediapipeTimestamp = mediapipe_v01013_based::Timestamp::Min();
+  _mediapipeTimestamp = hand_tracking_mp_lean::Timestamp::Min();
   _lastTimestamp = _mediapipeTimestamp;
   _timestampOffset = 0;
 }
 
-- (mediapipe_v01013_based::Timestamp)timestampForMediaTime:(CMTime)mediaTime {
+- (hand_tracking_mp_lean::Timestamp)timestampForMediaTime:(CMTime)mediaTime {
   Float64 sampleSeconds =
       CMTIME_IS_VALID(mediaTime) ? CMTimeGetSeconds(mediaTime) : 0;
   const int64_t sampleUsec =
-      sampleSeconds * mediapipe_v01013_based::Timestamp::kTimestampUnitsPerSecond;
-  _mediapipeTimestamp = mediapipe_v01013_based::Timestamp(sampleUsec) + _timestampOffset;
+      sampleSeconds * hand_tracking_mp_lean::Timestamp::kTimestampUnitsPerSecond;
+  _mediapipeTimestamp = hand_tracking_mp_lean::Timestamp(sampleUsec) + _timestampOffset;
   if (_mediapipeTimestamp <= _lastTimestamp) {
     _timestampOffset =
         _timestampOffset + _lastTimestamp + 1 - _mediapipeTimestamp;

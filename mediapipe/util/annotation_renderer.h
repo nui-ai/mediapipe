@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/util/render_data.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // The renderer library for rendering data on images.
 //
@@ -143,6 +143,6 @@ class AnnotationRenderer {
   // See SetScaleFactor(float)
   float scale_factor_ = 1.0;
 };
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_ANNOTATION_RENDERER_H_

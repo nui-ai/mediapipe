@@ -39,19 +39,19 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/image_generator/proto/image_generator_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/image_segmenter/proto/image_segmenter_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace image_generator {
 namespace {
 
-using ImageGeneratorGraphOptionsProto = ::mediapipe_v01013_based::tasks::vision::
+using ImageGeneratorGraphOptionsProto = ::hand_tracking_mp_lean::tasks::vision::
     image_generator::proto::ImageGeneratorGraphOptions;
-using ConditionedImageGraphOptionsProto = ::mediapipe_v01013_based::tasks::vision::
+using ConditionedImageGraphOptionsProto = ::hand_tracking_mp_lean::tasks::vision::
     image_generator::proto::ConditionedImageGraphOptions;
-using ControlPluginGraphOptionsProto = ::mediapipe_v01013_based::tasks::vision::
+using ControlPluginGraphOptionsProto = ::hand_tracking_mp_lean::tasks::vision::
     image_generator::proto::ControlPluginGraphOptions;
-using FaceLandmarkerGraphOptionsProto = ::mediapipe_v01013_based::tasks::vision::
+using FaceLandmarkerGraphOptionsProto = ::hand_tracking_mp_lean::tasks::vision::
     face_landmarker::proto::FaceLandmarkerGraphOptions;
 
 constexpr absl::string_view kImageTag = "IMAGE";
@@ -233,7 +233,7 @@ ConvertImageGeneratorGraphOptionsProto(
   switch (image_generator_options->model_type) {
     case ImageGeneratorOptions::ModelType::SD_1:
       options_proto.mutable_stable_diffusion_iterate_options()->set_model_type(
-          mediapipe_v01013_based::StableDiffusionIterateCalculatorOptions::SD_1);
+          hand_tracking_mp_lean::StableDiffusionIterateCalculatorOptions::SD_1);
       break;
     default:
       return absl::InvalidArgumentError(
@@ -409,4 +409,4 @@ absl::StatusOr<ImageGeneratorResult> ImageGenerator::RunIterations(
 }  // namespace image_generator
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -23,7 +23,7 @@
 #include "mediapipe/framework/formats/frame_buffer.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace frame_buffer {
 
 // Creation helpers.
@@ -135,6 +135,6 @@ absl::StatusOr<FrameBuffer::Dimension> GetUvPlaneDimension(
 FrameBuffer::Dimension GetCropDimension(int x0, int x1, int y0, int y1);
 
 }  // namespace frame_buffer
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_FRAME_BUFFER_FRAME_BUFFER_UTIL_H_

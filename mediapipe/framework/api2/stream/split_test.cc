@@ -14,19 +14,19 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 namespace {
 
 TEST(SplitTest, SplitToRanges2Ranges) {
   Graph graph;
-  Stream<std::vector<mediapipe_v01013_based::Tensor>> tensors =
-      graph.In("TENSORS").Cast<std::vector<mediapipe_v01013_based::Tensor>>();
-  std::vector<Stream<std::vector<mediapipe_v01013_based::Tensor>>> result =
+  Stream<std::vector<hand_tracking_mp_lean::Tensor>> tensors =
+      graph.In("TENSORS").Cast<std::vector<hand_tracking_mp_lean::Tensor>>();
+  std::vector<Stream<std::vector<hand_tracking_mp_lean::Tensor>>> result =
       SplitToRanges(tensors, {{0, 1}, {1, 2}}, graph);
   EXPECT_EQ(result.size(), 2);
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitTensorVectorCalculator"
           input_stream: "__stream_0"
@@ -48,13 +48,13 @@ TEST(SplitTest, SplitToRanges2Ranges) {
 
 TEST(SplitTest, Split2Items) {
   Graph graph;
-  Stream<std::vector<mediapipe_v01013_based::Tensor>> tensors =
-      graph.In("TENSORS").Cast<std::vector<mediapipe_v01013_based::Tensor>>();
-  std::vector<Stream<mediapipe_v01013_based::Tensor>> result = Split(tensors, {0, 1}, graph);
+  Stream<std::vector<hand_tracking_mp_lean::Tensor>> tensors =
+      graph.In("TENSORS").Cast<std::vector<hand_tracking_mp_lean::Tensor>>();
+  std::vector<Stream<hand_tracking_mp_lean::Tensor>> result = Split(tensors, {0, 1}, graph);
   EXPECT_EQ(result.size(), 2);
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitTensorVectorCalculator"
           input_stream: "__stream_0"
@@ -83,7 +83,7 @@ TEST(SplitTest, Split2Uint64tItems) {
   EXPECT_EQ(result.size(), 2);
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitUint64tVectorCalculator"
           input_stream: "__stream_0"
@@ -113,7 +113,7 @@ TEST(SplitTest, SplitToRanges5Ranges) {
   EXPECT_EQ(result.size(), 5);
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitNormalizedRectVectorCalculator"
           input_stream: "__stream_0"
@@ -148,7 +148,7 @@ TEST(SplitTest, Split5Items) {
   EXPECT_EQ(result.size(), 5);
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitNormalizedRectVectorCalculator"
           input_stream: "__stream_0"
@@ -185,7 +185,7 @@ TEST(SplitTest, SplitPassingVectorIndices) {
   EXPECT_EQ(second_split_result.size(), 2);
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitNormalizedRectVectorCalculator"
           input_stream: "__stream_0"
@@ -216,7 +216,7 @@ TEST(SplitTest, SplitToRangesPassingVectorRanges) {
   EXPECT_EQ(second_split_result.size(), 2);
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitNormalizedRectVectorCalculator"
           input_stream: "__stream_0"
@@ -246,7 +246,7 @@ TEST(SplitTest, SplitToRangesNormalizedLandmarkList) {
   EXPECT_EQ(second_split_result.size(), 2);
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitNormalizedLandmarkListCalculator"
           input_stream: "__stream_0"
@@ -275,7 +275,7 @@ TEST(SplitTest, SplitNormalizedLandmarkList) {
   EXPECT_EQ(second_split_result.size(), 2);
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitNormalizedLandmarkListCalculator"
           input_stream: "__stream_0"
@@ -298,14 +298,14 @@ TEST(SplitTest, SplitNormalizedLandmarkList) {
 
 TEST(SplitTest, SplitAndCombineRanges) {
   Graph graph;
-  Stream<std::vector<mediapipe_v01013_based::Tensor>> tensors =
-      graph.In("TENSORS").Cast<std::vector<mediapipe_v01013_based::Tensor>>();
-  Stream<std::vector<mediapipe_v01013_based::Tensor>> result =
+  Stream<std::vector<hand_tracking_mp_lean::Tensor>> tensors =
+      graph.In("TENSORS").Cast<std::vector<hand_tracking_mp_lean::Tensor>>();
+  Stream<std::vector<hand_tracking_mp_lean::Tensor>> result =
       SplitAndCombine(tensors, {{0, 1}, {2, 5}, {70, 75}}, graph);
   result.SetName("tensors_split_and_combined");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitTensorVectorCalculator"
           input_stream: "__stream_0"
@@ -328,14 +328,14 @@ TEST(SplitTest, SplitAndCombineRanges) {
 
 TEST(SplitTest, SplitAndCombineIndividualIndices) {
   Graph graph;
-  Stream<std::vector<mediapipe_v01013_based::Tensor>> tensors =
-      graph.In("TENSORS").Cast<std::vector<mediapipe_v01013_based::Tensor>>();
-  Stream<std::vector<mediapipe_v01013_based::Tensor>> result =
+  Stream<std::vector<hand_tracking_mp_lean::Tensor>> tensors =
+      graph.In("TENSORS").Cast<std::vector<hand_tracking_mp_lean::Tensor>>();
+  Stream<std::vector<hand_tracking_mp_lean::Tensor>> result =
       SplitAndCombine(tensors, {0, 2, 70, 100}, graph);
   result.SetName("tensors_split_and_combined");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitTensorVectorCalculator"
           input_stream: "__stream_0"
@@ -365,7 +365,7 @@ TEST(SplitTest, SplitAndCombineLandmarkList) {
   landmark_list.SetName("landmark_list");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitLandmarkListCalculator"
           input_stream: "__stream_0"
@@ -393,7 +393,7 @@ TEST(SplitTest, SplitAndCombineLandmarkListIndividualIndices) {
   landmark_list.SetName("landmark_list");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitLandmarkListCalculator"
           input_stream: "__stream_0"
@@ -421,7 +421,7 @@ TEST(SplitTest, SplitAndCombineJointList) {
   joint_list.SetName("joint_list");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitJointListCalculator"
           input_stream: "__stream_0"
@@ -449,7 +449,7 @@ TEST(SplitTest, SplitAndCombineJointListIndividualIndices) {
   joint_list.SetName("joint_list");
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SplitJointListCalculator"
           input_stream: "__stream_0"
@@ -470,4 +470,4 @@ TEST(SplitTest, SplitAndCombineJointListIndividualIndices) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

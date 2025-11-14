@@ -20,7 +20,7 @@ input_stream: "ROI:roi"
 output_stream: "DETECTIONS:detections"
 
 graph_options: {
-  [type.googleapis.com/mediapipe_v01013_based.FaceDetectionOptions] {}
+  [type.googleapis.com/hand_tracking_mp_lean.FaceDetectionOptions] {}
 }
 
 node {
@@ -29,7 +29,7 @@ node {
   input_stream: "ROI:roi"
   output_stream: "DETECTIONS:detections"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.FaceDetectionOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.FaceDetectionOptions] {
       gpu_origin: TOP_LEFT
       delegate: { gpu { use_advanced_gpu_api: true } }
     }

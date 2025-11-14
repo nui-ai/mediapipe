@@ -18,7 +18,7 @@
 #include "absl/synchronization/mutex.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace internal {
 
@@ -223,4 +223,4 @@ bool OutputStreamPollerImpl::Next(Packet* packet) {
 }
 
 }  // namespace internal
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

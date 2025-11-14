@@ -26,7 +26,7 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/tensor_testutil.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tf = ::tensorflow;
 namespace {
@@ -352,4 +352,4 @@ TEST_F(ObjectDetectionTensorsToDetectionsCalculatorTest,
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

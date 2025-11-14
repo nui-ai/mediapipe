@@ -14,26 +14,26 @@
 
 #include "mediapipe/framework/deps/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-mediapipe_v01013_based::StatusBuilder RetCheckFailSlowPath(
-    mediapipe_v01013_based::source_location location) {
+hand_tracking_mp_lean::StatusBuilder RetCheckFailSlowPath(
+    hand_tracking_mp_lean::source_location location) {
   // TODO Implement LogWithStackTrace().
-  return mediapipe_v01013_based::InternalErrorBuilder(location)
+  return hand_tracking_mp_lean::InternalErrorBuilder(location)
          << "RET_CHECK failure (" << location.file_name() << ":"
          << location.line() << ") ";
 }
 
-mediapipe_v01013_based::StatusBuilder RetCheckFailSlowPath(
-    mediapipe_v01013_based::source_location location, const char* condition) {
-  return mediapipe_v01013_based::RetCheckFailSlowPath(location) << condition;
+hand_tracking_mp_lean::StatusBuilder RetCheckFailSlowPath(
+    hand_tracking_mp_lean::source_location location, const char* condition) {
+  return hand_tracking_mp_lean::RetCheckFailSlowPath(location) << condition;
 }
 
-mediapipe_v01013_based::StatusBuilder RetCheckFailSlowPath(
-    mediapipe_v01013_based::source_location location, const char* condition,
+hand_tracking_mp_lean::StatusBuilder RetCheckFailSlowPath(
+    hand_tracking_mp_lean::source_location location, const char* condition,
     const absl::Status& status) {
-  return mediapipe_v01013_based::RetCheckFailSlowPath(location)
+  return hand_tracking_mp_lean::RetCheckFailSlowPath(location)
          << condition << " returned " << status << " ";
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

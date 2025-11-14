@@ -37,7 +37,7 @@
 #endif  // ANDROID
 #include "tensorflow/lite/delegates/xnnpack/xnnpack_delegate.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 class InferenceCalculatorCpuImpl
@@ -62,7 +62,7 @@ class InferenceCalculatorCpuImpl
 
 absl::Status InferenceCalculatorCpuImpl::UpdateContract(
     CalculatorContract* cc) {
-  const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
+  const auto& options = cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
   RET_CHECK(!options.model_path().empty() ^ kSideInModel(cc).IsConnected() ^ kSideInModelPath(cc).IsConnected())
       << "One of: model path in options, MODEL side packet, or MODEL_PATH side packet is required.";
 
@@ -76,7 +76,7 @@ absl::Status InferenceCalculatorCpuImpl::Open(CalculatorContext* cc) {
   ABSL_LOG(INFO) << "starting InferenceCalculatorCpuImpl";
 
   MP_ASSIGN_OR_RETURN(auto model_packet, GetModelAsPacket(cc));
-  auto op_resolver = std::make_unique<mediapipe_v01013_based::CpuOpResolver>();
+  auto op_resolver = std::make_unique<hand_tracking_mp_lean::CpuOpResolver>();
 
   auto xnnpack_opts = TfLiteXNNPackDelegateOptionsDefault();
   xnnpack_opts.num_threads = 1;
@@ -117,4 +117,4 @@ absl::Status InferenceCalculatorCpuImpl::Close(CalculatorContext* cc) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

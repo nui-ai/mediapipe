@@ -13,7 +13,7 @@ node: {
   output_stream: "IMAGE:transformed_input_video_cpu"
   output_stream: "LETTERBOX_PADDING:letterbox_padding"
   options: {
-    [mediapipe_v01013_based.ImageTransformationCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.ImageTransformationCalculatorOptions.ext] {
       output_width: 192
       output_height: 192
       scale_mode: FIT
@@ -37,7 +37,7 @@ node {
   input_stream: "TENSORS:image_tensor"
   output_stream: "TENSORS:detection_tensors"
   options: {
-    [mediapipe_v01013_based.TfLiteInferenceCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.TfLiteInferenceCalculatorOptions.ext] {
       model_path: "mediapipe/modules/face_detection/face_detection_full_range_sparse.tflite"
     }
   }
@@ -49,7 +49,7 @@ node {
   calculator: "SsdAnchorsCalculator"
   output_side_packet: "anchors"
   options: {
-    [mediapipe_v01013_based.SsdAnchorsCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.SsdAnchorsCalculatorOptions.ext] {
       num_layers: 1
       min_scale: 0.1484375
       max_scale: 0.75
@@ -74,7 +74,7 @@ node {
   input_side_packet: "ANCHORS:anchors"
   output_stream: "DETECTIONS:detections"
   options: {
-    [mediapipe_v01013_based.TfLiteTensorsToDetectionsCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.TfLiteTensorsToDetectionsCalculatorOptions.ext] {
       num_classes: 1
       num_boxes: 2304
       num_coords: 16
@@ -100,7 +100,7 @@ node {
   input_stream: "detections"
   output_stream: "filtered_detections"
   options: {
-    [mediapipe_v01013_based.NonMaxSuppressionCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.NonMaxSuppressionCalculatorOptions.ext] {
       min_suppression_threshold: 0.3
       overlap_type: INTERSECTION_OVER_UNION
       algorithm: WEIGHTED

@@ -18,7 +18,7 @@
 #include "absl/log/absl_log.h"
 #include "absl/strings/str_cat.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 StreamingBuffer::StreamingBuffer(
     const std::vector<TaggedType>& data_configuration, int overlap)
@@ -148,4 +148,4 @@ void StreamingBuffer::DiscardData(const std::vector<std::string>& tags,
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

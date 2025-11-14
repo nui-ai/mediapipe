@@ -21,7 +21,7 @@
 #include "absl/time/time.h"
 #include "mediapipe/util/filtering/low_pass_filter.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // This filter keeps track (on a window of specified size) of
 // value changes over time, which as result gives us velocity of how value
@@ -85,6 +85,6 @@ class RelativeVelocityFilter {
   DistanceEstimationMode distance_mode_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_FILTERING_RELATIVE_VELOCITY_FILTER_H_

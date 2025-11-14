@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/subgraph.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tool {
 
@@ -81,6 +81,6 @@ CalculatorGraphConfig MakeSingleNodeGraph(
     CalculatorGraphConfig::Node subgraph_node);
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_SUBGRAPH_EXPANSION_H_

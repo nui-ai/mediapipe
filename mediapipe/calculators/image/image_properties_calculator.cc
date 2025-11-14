@@ -21,14 +21,14 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #endif  // !MEDIAPIPE_DISABLE_GPU
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 #if MEDIAPIPE_DISABLE_GPU
-// Just a placeholder to not have to depend on mediapipe_v01013_based::GpuBuffer.
+// Just a placeholder to not have to depend on hand_tracking_mp_lean::GpuBuffer.
 using GpuBuffer = AnyType;
 #else
-using GpuBuffer = mediapipe_v01013_based::GpuBuffer;
+using GpuBuffer = hand_tracking_mp_lean::GpuBuffer;
 #endif  // MEDIAPIPE_DISABLE_GPU
 
 // Extracts image properties from the input image and outputs the properties.
@@ -52,12 +52,12 @@ using GpuBuffer = mediapipe_v01013_based::GpuBuffer;
 class ImageSize : public Node {
  public:
   static constexpr Input<
-      OneOf<mediapipe_v01013_based::Image, mediapipe_v01013_based::ImageFrame>>::Optional kIn{"IMAGE"};
+      OneOf<hand_tracking_mp_lean::Image, hand_tracking_mp_lean::ImageFrame>>::Optional kIn{"IMAGE"};
   // IMAGE_CPU, dedicated to ImageFrame input, is only needed in some top-level
   // graphs for the Python Solution APIs to figure out the type of input stream
   // without running into ambiguities from IMAGE.
   // TODO: Remove IMAGE_CPU once Python Solution APIs adopt Image.
-  static constexpr Input<mediapipe_v01013_based::ImageFrame>::Optional kInCpu{"IMAGE_CPU"};
+  static constexpr Input<hand_tracking_mp_lean::ImageFrame>::Optional kInCpu{"IMAGE_CPU"};
   static constexpr Input<GpuBuffer>::Optional kInGpu{"IMAGE_GPU"};
   static constexpr Output<std::pair<int, int>> kOut{"SIZE"};
 
@@ -78,11 +78,11 @@ class ImageSize : public Node {
 
     if (kIn(cc).IsConnected()) {
       kIn(cc).Visit(
-          [&size](const mediapipe_v01013_based::Image& value) {
+          [&size](const hand_tracking_mp_lean::Image& value) {
             size.first = value.width();
             size.second = value.height();
           },
-          [&size](const mediapipe_v01013_based::ImageFrame& value) {
+          [&size](const hand_tracking_mp_lean::ImageFrame& value) {
             size.first = value.Width();
             size.second = value.Height();
           });
@@ -109,4 +109,4 @@ class ImageSize : public Node {
 MEDIAPIPE_REGISTER_NODE(ImageSize);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

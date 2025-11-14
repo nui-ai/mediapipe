@@ -6,11 +6,11 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 namespace {
 
 TEST(Merge, VerifyConfig) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<int> input_a = graph.In("INPUT_A").Cast<int>();
   Stream<int> input_b = graph.In("INPUT_B").Cast<int>();
@@ -19,7 +19,7 @@ TEST(Merge, VerifyConfig) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "MergeCalculator"
           input_stream: "__stream_0"
@@ -32,4 +32,4 @@ TEST(Merge, VerifyConfig) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

@@ -15,7 +15,7 @@ node {
   input_stream: "DETECTIONS:detections"
   output_stream: "RENDER_DATA:render_data"
   options: {
-    [mediapipe_v01013_based.DetectionsToRenderDataCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.DetectionsToRenderDataCalculatorOptions.ext] {
       thickness: 4.0
       color { r: 255 g: 0 b: 0 }
     }

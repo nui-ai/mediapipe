@@ -33,7 +33,7 @@
 #include "mediapipe/framework/testdata/night_light_calculator.pb.h"
 #include "mediapipe/framework/testdata/sky_light_calculator.pb.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 namespace {
 
 struct Image {};
@@ -86,7 +86,7 @@ TEST(GenericGraphTest, CanBuildGenericGraph) {
   graph.out.Set(bar_out.SetName("out"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -155,7 +155,7 @@ TEST(GenericGraphTest, CanBuildGraphDefiningAndSettingExecutors) {
   graph.out.Add(bar2_out.SetName("out2"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_side_packet: "SIDE:side"
         input_stream: "IN:base"
         output_stream: "OUT:0:out1"
@@ -211,7 +211,7 @@ TEST(BuilderTest, BuildGraphSettingInputAndOutputStreamHandlers) {
   auto& foo = graph.AddNode<FooNode>();
   auto& foo_ish_opts =
       foo.SetLegacyInputStreamHandler("FixedSizeInputStreamHandler")
-          .GetOptions<mediapipe_v01013_based::FixedSizeInputStreamHandlerOptions>();
+          .GetOptions<hand_tracking_mp_lean::FixedSizeInputStreamHandlerOptions>();
   foo_ish_opts.set_target_queue_size(2);
   foo_ish_opts.set_trigger_queue_size(3);
   foo_ish_opts.set_fixed_min_size(true);
@@ -229,7 +229,7 @@ TEST(BuilderTest, BuildGraphSettingInputAndOutputStreamHandlers) {
   graph.out.Set(bar_out.SetName("out"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -286,7 +286,7 @@ TEST(GenericGraphTest, BuildGraphSettingSourceLayer) {
   graph.out.Set(bar_out.SetName("out"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -367,7 +367,7 @@ TEST(GenericGraphTest, CanUseBackEdges) {
   graph.out.Set(detections.SetName("detections"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "PreviousLoopbackCalculator"
           input_stream: "LOOP:detections"
@@ -444,7 +444,7 @@ TEST(GenericGraphTest, CanUseBackEdgesWithRepeated) {
   graph.out.Set(output_data.SetName("out_data"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SomeBackEdgeCalculator"
           input_stream: "DATA:0:in_data"
@@ -504,7 +504,7 @@ TEST(GenericGraphTest, CanUseBackEdgesWithRepeatedAndNoTag) {
   graph.out.Set(output_data.SetName("out_data"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "SomeBackEdgeNoInputTagsCalculator"
           input_stream: "in_data"
@@ -567,7 +567,7 @@ TEST(GenericGraphTest, FanOut) {
   graph.out.Set(out.SetName("out"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         output_stream: "OUT:out"
         node {
@@ -593,7 +593,7 @@ struct FloatGenerator : Node<kFloatGeneratorName> {
   struct Contract {
     SideInput<S, float> side_in{"IN"};
     SideOutput<S, float> side_out{"OUT"};
-    Options<S, mediapipe_v01013_based::GeneratorOptions> options;
+    Options<S, hand_tracking_mp_lean::GeneratorOptions> options;
   };
 };
 
@@ -618,7 +618,7 @@ TEST(GenericGraphTest, CanAddLegacyPacketGenerator) {
   graph.side_out.Set(side_out);
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_side_packet: "IN:__side_packet_0"
         output_side_packet: "OUT:__side_packet_1"
         packet_generator {
@@ -669,7 +669,7 @@ TEST(GenericGraphTest, CanAddLegacyPacketGeneratorWithRepeatedFields) {
   graph.side_out.Add(side_out1);
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_side_packet: "IN:0:__side_packet_0"
         input_side_packet: "IN:1:__side_packet_1"
         output_side_packet: "OUT:0:__side_packet_2"
@@ -723,7 +723,7 @@ TEST(GenericGraphTest, SupportsEmptyTags) {
   graph.out_two.Set(y.SetName("y"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "A:a"
         input_stream: "B:b"
         input_stream: "C:c"
@@ -750,7 +750,7 @@ struct SkyLightProto3Node : Node<kSkyLightProto3NodeName> {
     SideInput<S, float> side{"SIDE"};
     Output<S, float> out{"OUT"};
 
-    Options<S, mediapipe_v01013_based::SkyLightCalculatorOptions> options;
+    Options<S, hand_tracking_mp_lean::SkyLightCalculatorOptions> options;
   };
 };
 
@@ -779,7 +779,7 @@ TEST(GetOptionsTest, CanAddProto3Options) {
   graph.out.Set(foo_out.SetName("out"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -807,7 +807,7 @@ struct NightLightProto2Node : Node<kNightLightProto3NodeName> {
     SideInput<S, float> side{"SIDE"};
     Output<S, float> out{"OUT"};
 
-    Options<S, mediapipe_v01013_based::NightLightCalculatorOptions> options;
+    Options<S, hand_tracking_mp_lean::NightLightCalculatorOptions> options;
   };
 };
 
@@ -829,7 +829,7 @@ TEST(GetOptionsTest, CanAddProto2Options) {
   graph.out.Set(foo_out.SetName("out"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -855,8 +855,8 @@ struct Proto2And3Node : Node<kProto2And3NodeName> {
     SideInput<S, float> side{"SIDE"};
     Output<S, float> out{"OUT"};
 
-    Options<S, mediapipe_v01013_based::SkyLightCalculatorOptions> proto3_options;
-    Options<S, mediapipe_v01013_based::NightLightCalculatorOptions> proto2_options;
+    Options<S, hand_tracking_mp_lean::SkyLightCalculatorOptions> proto3_options;
+    Options<S, hand_tracking_mp_lean::NightLightCalculatorOptions> proto2_options;
   };
 };
 
@@ -878,7 +878,7 @@ TEST(GetOptionsTest, AddBothProto23Options) {
   graph.out.Set(foo_out.SetName("out"));
 
   CalculatorGraphConfig expected_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "IN:base"
         input_side_packet: "SIDE:side"
         output_stream: "OUT:out"
@@ -992,7 +992,7 @@ TEST(GraphTest, CanAccessGraphInputsOutputs) {
   MP_ASSERT_OK_AND_ASSIGN(auto config, graph.GetConfig());
   EXPECT_THAT(
       config,
-      EqualsProto(ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(R"pb(
+      EqualsProto(ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(R"pb(
         node {
           calculator: "ImageToTensorForTensor"
           input_stream: "IMAGE:__stream_0"
@@ -1047,7 +1047,7 @@ TEST(GraphTest, CanAddNodesByContract) {
   MP_ASSERT_OK_AND_ASSIGN(auto config, graph.GetConfig());
   EXPECT_THAT(
       config,
-      EqualsProto(ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(R"pb(
+      EqualsProto(ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(R"pb(
         node {
           calculator: "ImageToTensorForTensor"
           input_stream: "IMAGE:__stream_0"
@@ -1122,7 +1122,7 @@ TEST(GraphTest, CanUseUtilityFunctionsAndTemplateType) {
   MP_ASSERT_OK_AND_ASSIGN(auto config, graph.GetConfig());
   EXPECT_THAT(
       config,
-      EqualsProto(ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(R"pb(
+      EqualsProto(ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(R"pb(
         node {
           calculator: "ImageToTensorForBuffer"
           input_stream: "IMAGE:__stream_0"
@@ -1191,7 +1191,7 @@ TEST(GraphTest, CanUseWithEveryFieldContract) {
   MP_ASSERT_OK_AND_ASSIGN(auto config, graph.GetConfig());
   EXPECT_THAT(
       config,
-      EqualsProto(ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(R"pb(
+      EqualsProto(ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(R"pb(
         input_stream: "IN:__stream_0"
         input_stream: "OPTIONAL_IN:__stream_1"
         input_stream: "REPEATED_IN:0:__stream_2"
@@ -1278,7 +1278,7 @@ TEST(GraphTest, CanSetEveryFieldNames) {
   MP_ASSERT_OK_AND_ASSIGN(auto config, graph.GetConfig());
   EXPECT_THAT(
       config,
-      EqualsProto(ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig>(R"pb(
+      EqualsProto(ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig>(R"pb(
         input_stream: "IN:in"
         input_stream: "OPTIONAL_IN:optional_in"
         input_stream: "REPEATED_IN:0:repeated_in0"
@@ -1320,4 +1320,4 @@ TEST(GraphTest, CanSetEveryFieldNames) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3

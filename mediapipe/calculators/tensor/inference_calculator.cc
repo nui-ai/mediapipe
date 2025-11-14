@@ -42,7 +42,7 @@
 #include "tensorflow/lite/core/api/op_resolver.h"
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 class InferenceCalculatorSelectorImpl
@@ -68,7 +68,7 @@ class InferenceCalculatorSelectorImpl
   absl::StatusOr<CalculatorGraphConfig> GetConfig(
       const CalculatorGraphConfig::Node& subgraph_node) override {
     const auto& options =
-        Subgraph::GetOptions<mediapipe_v01013_based::InferenceCalculatorOptions>(
+        Subgraph::GetOptions<hand_tracking_mp_lean::InferenceCalculatorOptions>(
             subgraph_node);
     std::vector<absl::string_view> impls;
 
@@ -83,7 +83,7 @@ class InferenceCalculatorSelectorImpl
         (options.has_delegate() && options.delegate().has_gpu());
     if (should_use_gpu) {
       const auto& api = options.delegate().gpu().api();
-      using Gpu = ::mediapipe_v01013_based::InferenceCalculatorOptions::Delegate::Gpu;
+      using Gpu = ::hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate::Gpu;
 #if MEDIAPIPE_METAL_ENABLED
       impls.emplace_back("Metal");
 #endif
@@ -143,7 +143,7 @@ absl::Status InferenceCalculator::TensorContractCheck(CalculatorContract* cc) {
 
 absl::StatusOr<Packet<TfLiteModelPtr>> InferenceCalculator::GetModelAsPacket(
     CalculatorContext* cc) {
-  const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
+  const auto& options = cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
 
   // First check if model is provided via MODEL_PATH side packet
   if (kSideInModelPath(cc).IsConnected() && !kSideInModelPath(cc).IsEmpty()) {
@@ -181,7 +181,7 @@ absl::StatusOr<Packet<TfLiteModelPtr>> InferenceCalculator::GetModelAsPacket(
 absl::StatusOr<TfLiteModelWithResource>
 InferenceCalculator::GetModelPacketWithResource(
     CalculatorContext* cc, std::optional<MMapMode> mmap_mode) {
-  const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
+  const auto& options = cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
 
   // First check if model is provided via MODEL_PATH side packet
   if (kSideInModelPath(cc).IsConnected() && !kSideInModelPath(cc).IsEmpty()) {
@@ -223,7 +223,7 @@ InferenceCalculator::GetOpResolverAsPacket(CalculatorContext* cc) {
 
   // If no op resolver is provided via side packet, determine it based on options
   // similar to TfLiteCustomOpResolverCalculator
-  const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
+  const auto& options = cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
 
   std::unique_ptr<tflite::ops::builtin::BuiltinOpResolver> op_resolver;
 
@@ -233,9 +233,9 @@ InferenceCalculator::GetOpResolverAsPacket(CalculatorContext* cc) {
       options.has_delegate() && options.delegate().has_gpu();
 
   if (should_use_gpu) {
-    op_resolver = std::make_unique<mediapipe_v01013_based::OpResolver>();
+    op_resolver = std::make_unique<hand_tracking_mp_lean::OpResolver>();
   } else {
-    op_resolver = std::make_unique<mediapipe_v01013_based::CpuOpResolver>();
+    op_resolver = std::make_unique<hand_tracking_mp_lean::CpuOpResolver>();
   }
 
   return PacketAdopting<tflite::OpResolver>(std::move(op_resolver));
@@ -243,7 +243,7 @@ InferenceCalculator::GetOpResolverAsPacket(CalculatorContext* cc) {
 
 void InferenceCalculator::WarnFeedbackTensorsUnsupported(
     CalculatorContract* cc) {
-  const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
+  const auto& options = cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
   if (options.has_input_output_config() &&
       !options.input_output_config().feedback_tensor_links().empty()) {
     ABSL_LOG(WARNING)
@@ -254,4 +254,4 @@ void InferenceCalculator::WarnFeedbackTensorsUnsupported(
 }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

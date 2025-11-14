@@ -14,7 +14,7 @@ node {
   output_stream: "TENSORS:image_tensor"
   output_stream: "LETTERBOX_PADDING:letterbox_padding"
   options {
-    [mediapipe_v01013_based.ImageToTensorCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.ImageToTensorCalculatorOptions.ext] {
       output_tensor_width: 300
       output_tensor_height: 300
       keep_aspect_ratio: false
@@ -34,7 +34,7 @@ node {
   input_stream: "TENSORS:image_tensor"
   output_stream: "TENSORS:detection_tensors"
   options: {
-    [mediapipe_v01013_based.InferenceCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.InferenceCalculatorOptions.ext] {
       model_path: "mediapipe/modules/objectron/object_detection_ssd_mobilenetv2_oidv4_fp16.tflite"
       delegate { xnnpack {} }
     }
@@ -47,7 +47,7 @@ node {
   calculator: "SsdAnchorsCalculator"
   output_side_packet: "anchors"
   options: {
-    [mediapipe_v01013_based.SsdAnchorsCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.SsdAnchorsCalculatorOptions.ext] {
       num_layers: 6
       min_scale: 0.2
       max_scale: 0.95
@@ -80,7 +80,7 @@ node {
   input_side_packet: "ANCHORS:anchors"
   output_stream: "DETECTIONS:all_detections"
   options: {
-    [mediapipe_v01013_based.TensorsToDetectionsCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.TensorsToDetectionsCalculatorOptions.ext] {
       num_classes: 24
       num_boxes: 1917
       num_coords: 4
@@ -103,7 +103,7 @@ node {
   input_stream: "all_detections"
   output_stream: "labeled_detections"
   options: {
-    [mediapipe_v01013_based.DetectionLabelIdToTextCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.DetectionLabelIdToTextCalculatorOptions.ext] {
       label_map_path: "mediapipe/modules/objectron/object_detection_oidv4_labelmap.txt"
     }
   }
@@ -124,7 +124,7 @@ node {
   input_stream: "filtered_detections"
   output_stream: "detections"
   options: {
-    [mediapipe_v01013_based.NonMaxSuppressionCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.NonMaxSuppressionCalculatorOptions.ext] {
       min_suppression_threshold: 0.5
       max_num_detections: 100
       overlap_type: INTERSECTION_OVER_UNION

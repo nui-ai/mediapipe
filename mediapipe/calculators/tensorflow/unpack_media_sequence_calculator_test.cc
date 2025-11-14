@@ -34,11 +34,11 @@
 #include "mediapipe/util/sequence/media_sequence.h"
 #include "tensorflow/core/example/example.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 namespace tf = ::tensorflow;
-namespace mpms = mediapipe_v01013_based::mediasequence;
+namespace mpms = hand_tracking_mp_lean::mediasequence;
 
 constexpr char kImageFrameRateTag[] = "IMAGE_FRAME_RATE";
 constexpr char kEncodedMediaStartTimestampTag[] =
@@ -285,7 +285,7 @@ TEST_F(UnpackMediaSequenceCalculatorTest, UnpacksBBoxes) {
 
   for (int i = 0; i < bboxes.size(); ++i) {
     const auto& output_vector =
-        output_packets[i].Get<std::vector<::mediapipe_v01013_based::Location>>();
+        output_packets[i].Get<std::vector<::hand_tracking_mp_lean::Location>>();
     for (int j = 0; j < bboxes[i].size(); ++j) {
       ASSERT_EQ(output_vector[j].GetRelativeBBox(),
                 bboxes[i][j].GetRelativeBBox());
@@ -319,7 +319,7 @@ TEST_F(UnpackMediaSequenceCalculatorTest, UnpacksPrefixedBBoxes) {
 
   for (int i = 0; i < bboxes.size(); ++i) {
     const auto& output_vector =
-        output_packets[i].Get<std::vector<::mediapipe_v01013_based::Location>>();
+        output_packets[i].Get<std::vector<::hand_tracking_mp_lean::Location>>();
     for (int j = 0; j < bboxes[i].size(); ++j) {
       ASSERT_EQ(output_vector[j].GetRelativeBBox(),
                 bboxes[i][j].GetRelativeBBox());
@@ -728,4 +728,4 @@ TEST_F(UnpackMediaSequenceCalculatorTest, DoesNotCrashOnMissingFrames) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

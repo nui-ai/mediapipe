@@ -31,7 +31,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/resources.h"
 
-namespace mediapipe_v01013_based::api2 {
+namespace hand_tracking_mp_lean::api2 {
 
 absl::StatusOr<std::unique_ptr<Resource>> ResourceProviderCalculator::LoadModelFromPath(
     const std::string& file_path, bool use_mmap, bool mlock) {
@@ -107,4 +107,4 @@ absl::Status ResourceProviderCalculator::Open(CalculatorContext* cc) {
 
 MEDIAPIPE_REGISTER_NODE(ResourceProviderCalculator)
 
-}  // namespace mediapipe_v01013_based::api2
+}  // namespace hand_tracking_mp_lean::api2

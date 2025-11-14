@@ -34,9 +34,9 @@
 #include "third_party/OpenCV/core/hal/interface.h"
 #include "third_party/OpenCV/core/mat.hpp"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-using ::mediapipe_v01013_based::formats::MatView;
+using ::hand_tracking_mp_lean::formats::MatView;
 using ::testing::TestWithParam;
 
 constexpr float kMaxColorDifference = 1.0;
@@ -372,4 +372,4 @@ TEST(MaskOverlayCalculatorTest, NoMaskInputFails) {
                testing::HasSubstr("mask input stream must be present")));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

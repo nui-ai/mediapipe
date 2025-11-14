@@ -38,7 +38,7 @@
 #include "mediapipe/modules/face_geometry/protos/face_geometry.pb.h"
 #include "mediapipe/modules/face_geometry/protos/mesh_3d.pb.h"
 
-namespace mediapipe_v01013_based::face_geometry {
+namespace hand_tracking_mp_lean::face_geometry {
 namespace {
 
 struct RenderableMesh3d {
@@ -732,4 +732,4 @@ absl::StatusOr<std::unique_ptr<EffectRenderer>> CreateEffectRenderer(
   return result;
 }
 
-}  // namespace mediapipe_v01013_based::face_geometry
+}  // namespace hand_tracking_mp_lean::face_geometry

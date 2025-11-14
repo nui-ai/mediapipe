@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/file_helpers.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kContentsTag[] = "CONTENTS";
 constexpr char kFileSuffixTag[] = "FILE_SUFFIX";
@@ -48,7 +48,7 @@ class LocalFilePatternContentsCalculator : public CalculatorBase {
   }
 
   absl::Status Open(CalculatorContext* cc) override {
-    MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::MatchFileTypeInDirectory(
+    MP_RETURN_IF_ERROR(hand_tracking_mp_lean::file::MatchFileTypeInDirectory(
         cc->InputSidePackets().Tag(kFileDirectoryTag).Get<std::string>(),
         cc->InputSidePackets().Tag(kFileSuffixTag).Get<std::string>(),
         &filenames_));
@@ -60,7 +60,7 @@ class LocalFilePatternContentsCalculator : public CalculatorBase {
     if (current_output_ < filenames_.size()) {
       auto contents = absl::make_unique<std::string>();
       ABSL_LOG(INFO) << filenames_[current_output_];
-      MP_RETURN_IF_ERROR(mediapipe_v01013_based::file::GetContents(
+      MP_RETURN_IF_ERROR(hand_tracking_mp_lean::file::GetContents(
           filenames_[current_output_], contents.get()));
       ++current_output_;
       cc->Outputs()
@@ -79,4 +79,4 @@ class LocalFilePatternContentsCalculator : public CalculatorBase {
 
 REGISTER_CALCULATOR(LocalFilePatternContentsCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -33,7 +33,7 @@
 #include "mediapipe/framework/tool/node_chain_subgraph.pb.h"
 #include "mediapipe/framework/tool/subgraph_expansion.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 // A Calculator that outputs thrice the value of its input packet (an int).
@@ -98,7 +98,7 @@ CalculatorGraphConfig SubnodeContainerExample(const std::string& options = "") {
     }
   )pb";
 
-  return mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+  return hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
       absl::StrReplaceAll(config, {{"$options", options}}));
 }
 
@@ -106,7 +106,7 @@ CalculatorGraphConfig SubnodeContainerExample(const std::string& options = "") {
 // Note that the side-input and side-output tags supplied to the container node,
 // must match the side-input and side-output tags required by the subnodes.
 CalculatorGraphConfig SideSubnodeContainerExample() {
-  return mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+  return hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
     input_side_packet: "foo"
     input_side_packet: "enable"
     output_side_packet: "output_bar"
@@ -245,7 +245,7 @@ TEST(SwitchContainerTest, ApplyToSubnodes) {
   EXPECT_TRUE(SubgraphRegistry::IsRegistered("SwitchContainer"));
   CalculatorGraphConfig supergraph = SubnodeContainerExample();
   CalculatorGraphConfig expected_graph =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           name: "switchcontainer__PacketSequencerCalculator"
           calculator: "PacketSequencerCalculator"
@@ -303,7 +303,7 @@ TEST(SwitchContainerTest, ApplyToSubnodes) {
       )pb");
   expected_graph = OrderNodes(expected_graph, {5, 0, 1, 4, 2, 3});
   MP_EXPECT_OK(tool::ExpandSubgraphs(&supergraph));
-  EXPECT_THAT(supergraph, mediapipe_v01013_based::EqualsProto(expected_graph));
+  EXPECT_THAT(supergraph, hand_tracking_mp_lean::EqualsProto(expected_graph));
 }
 
 // Shows the SwitchContainer container runs with a pair of simple subnodes.
@@ -323,7 +323,7 @@ TEST(SwitchContainerTest, ValidateInputStreamHandler) {
   *supergraph.mutable_input_stream_handler()->mutable_input_stream_handler() =
       "DefaultInputStreamHandler";
   MP_ASSERT_OK(graph.Initialize(supergraph, {}));
-  CalculatorGraphConfig expected_graph = mediapipe_v01013_based::ParseTextProtoOrDie<
+  CalculatorGraphConfig expected_graph = hand_tracking_mp_lean::ParseTextProtoOrDie<
       CalculatorGraphConfig>(R"pb(
     node {
       name: "switchcontainer__SwitchDemuxCalculator"
@@ -377,7 +377,7 @@ TEST(SwitchContainerTest, ValidateInputStreamHandler) {
     input_side_packet: "enable"
     output_side_packet: "output_bar"
   )pb");
-  EXPECT_THAT(graph.Config(), mediapipe_v01013_based::EqualsProto(expected_graph));
+  EXPECT_THAT(graph.Config(), hand_tracking_mp_lean::EqualsProto(expected_graph));
 }
 
 TEST(SwitchContainerTest, RunsWithInputStreamHandler) {
@@ -394,7 +394,7 @@ TEST(SwitchContainerTest, ApplyToSideSubnodes) {
   EXPECT_TRUE(SubgraphRegistry::IsRegistered("SwitchContainer"));
   CalculatorGraphConfig supergraph = SideSubnodeContainerExample();
   CalculatorGraphConfig expected_graph =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_side_packet: "foo"
         input_side_packet: "enable"
         output_side_packet: "output_bar"
@@ -442,7 +442,7 @@ TEST(SwitchContainerTest, ApplyToSideSubnodes) {
       )pb");
   expected_graph = OrderNodes(expected_graph, {4, 0, 3, 1, 2});
   MP_EXPECT_OK(tool::ExpandSubgraphs(&supergraph));
-  EXPECT_THAT(supergraph, mediapipe_v01013_based::EqualsProto(expected_graph));
+  EXPECT_THAT(supergraph, hand_tracking_mp_lean::EqualsProto(expected_graph));
 }
 
 // Shows the SwitchContainer container runs with a pair of simple subnodes.
@@ -457,7 +457,7 @@ TEST(SwitchContainerTest, RunWithSideSubnodes) {
 TEST(SwitchContainerTest, ValidateSideInputs) {
   EXPECT_TRUE(SubgraphRegistry::IsRegistered("SwitchContainer"));
   CalculatorGraphConfig supergraph =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_side_packet: "foo"
         input_side_packet: "enable"
         output_side_packet: "output_bar"
@@ -490,4 +490,4 @@ TEST(SwitchContainerTest, ValidateSideInputs) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

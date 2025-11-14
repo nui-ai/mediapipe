@@ -28,7 +28,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 namespace {
 
@@ -193,4 +193,4 @@ class LandmarksRefinementNodeImpl
   int n_refined_landmarks_ = 0;
 };
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3

@@ -224,7 +224,7 @@ class MetadataWriter(metadata_writer.MetadataWriterBase):
 
     This method create a metadata writer for the models with postprocessing [1].
 
-    The parameters required in this method are mandatory when using mediapipe_v01013_based
+    The parameters required in this method are mandatory when using hand_tracking_mp_lean
     Tasks.
 
     Example usage:
@@ -279,7 +279,7 @@ class MetadataWriter(metadata_writer.MetadataWriterBase):
     This method create a metadata writer for the models without postprocessing
     [1].
 
-    The parameters required in this method are mandatory when using mediapipe_v01013_based
+    The parameters required in this method are mandatory when using hand_tracking_mp_lean
     Tasks.
 
     Example usage:

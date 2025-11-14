@@ -27,11 +27,11 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/util/rectangle_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
   // helper function for the below
   static inline absl::StatusOr<Rectangle_f> RectangleFromNormalizedRect(
-      const ::mediapipe_v01013_based::NormalizedRect& input) {
+      const ::hand_tracking_mp_lean::NormalizedRect& input) {
     if (!input.has_x_center() || !input.has_y_center() || !input.has_width() ||
         !input.has_height()) {
       return absl::InternalError("Missing dimensions in NormalizedRect.");
@@ -50,7 +50,7 @@ namespace mediapipe_v01013_based {
     ABSL_LOG(INFO) << "filter-merging hand rectangles is adding hand rectangle " << new_normalized_rect.ShortDebugString();
 
     // check IoU of the new rect with the each rect of the list, transforming them from NormalizedRect to Rect for the IoU checking
-    MP_ASSIGN_OR_RETURN(Rectangle_f new_rectangle, ::mediapipe_v01013_based::RectangleFromNormalizedRect(new_normalized_rect));
+    MP_ASSIGN_OR_RETURN(Rectangle_f new_rectangle, ::hand_tracking_mp_lean::RectangleFromNormalizedRect(new_normalized_rect));
     for (auto uit = normalized_rects->begin(); uit != normalized_rects->end();) {
       MP_ASSIGN_OR_RETURN(Rectangle_f rect, RectangleFromNormalizedRect(*uit));
 
@@ -133,7 +133,7 @@ namespace mediapipe_v01013_based {
     return result_set;
   }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_ASSOCIATION_CALCULATOR_CORE_H_
 

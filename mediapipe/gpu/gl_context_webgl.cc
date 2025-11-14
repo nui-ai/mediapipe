@@ -27,7 +27,7 @@
 #if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // TODO: Handle webGL "context lost" and "context restored" events.
 GlContext::StatusOrGlContext GlContext::Create(std::nullptr_t nullp,
@@ -89,7 +89,7 @@ absl::Status GlContext::CreateContextInternal(
   // Check for failure
   if (context_handle <= 0) {
     ABSL_LOG(INFO) << "Couldn't create webGL " << webgl_version << " context.";
-    return ::mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return ::hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "emscripten_webgl_create_context() returned error "
            << context_handle;
   } else {
@@ -177,6 +177,6 @@ bool GlContext::IsCurrent() const {
   return HasContext() && (emscripten_webgl_get_current_context() == context_);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // defined(__EMSCRIPTEN__)

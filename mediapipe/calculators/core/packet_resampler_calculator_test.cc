@@ -29,7 +29,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using ::testing::ElementsAre;
 namespace {
@@ -167,7 +167,7 @@ class ReproducibleResamplerCalculatorForTesting
 
  protected:
   std::unique_ptr<class PacketResamplerStrategy> GetSamplingStrategy(
-      const mediapipe_v01013_based::PacketResamplerCalculatorOptions& Options) {
+      const hand_tracking_mp_lean::PacketResamplerCalculatorOptions& Options) {
     return absl::make_unique<
         ReproducibleJitterWithReflectionStrategyForTesting>(this);
   }
@@ -900,4 +900,4 @@ TEST(PacketResamplerCalculatorTest, OptionsSidePacket) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

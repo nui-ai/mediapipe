@@ -39,7 +39,7 @@
 //       }
 //     }
 //   }
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kEncodedTag[] = "ENCODED";
 constexpr char kFloatVectorTag[] = "FLOAT_VECTOR";
@@ -54,7 +54,7 @@ class QuantizeFloatVectorCalculator : public CalculatorBase {
 
   absl::Status Open(CalculatorContext* cc) final {
     const auto options =
-        cc->Options<::mediapipe_v01013_based::QuantizeFloatVectorCalculatorOptions>();
+        cc->Options<::hand_tracking_mp_lean::QuantizeFloatVectorCalculatorOptions>();
     if (!options.has_max_quantized_value() ||
         !options.has_min_quantized_value()) {
       return absl::InvalidArgumentError(
@@ -104,4 +104,4 @@ class QuantizeFloatVectorCalculator : public CalculatorBase {
 
 REGISTER_CALCULATOR(QuantizeFloatVectorCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

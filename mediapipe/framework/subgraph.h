@@ -35,7 +35,7 @@
 #include "mediapipe/framework/tool/calculator_graph_template.pb.h"
 #include "mediapipe/framework/tool/options_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class SubgraphContext {
  public:
@@ -166,7 +166,7 @@ class Subgraph {
 using SubgraphRegistry = GlobalFactoryRegistry<std::unique_ptr<Subgraph>>;
 
 #define REGISTER_MEDIAPIPE_GRAPH(name)                             \
-  REGISTER_FACTORY_FUNCTION_QUALIFIED(mediapipe_v01013_based::SubgraphRegistry, \
+  REGISTER_FACTORY_FUNCTION_QUALIFIED(hand_tracking_mp_lean::SubgraphRegistry, \
                                       subgraph_registration, name, \
                                       std::make_unique<name>)
 
@@ -236,6 +236,6 @@ class GraphRegistry {
   mutable FunctionRegistry<std::unique_ptr<Subgraph>>* global_factories_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_SUBGRAPH_H_

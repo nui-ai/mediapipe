@@ -29,7 +29,7 @@
 #include "mediapipe/framework/port/status_builder.h"
 #include "mediapipe/framework/port/status_macros.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tool {
 #define MEDIAPIPE_NAME_REGEX "[a-z_][a-z0-9_]*"
 #define MEDIAPIPE_NUMBER_REGEX "(0|[1-9][0-9]*)"
@@ -79,7 +79,7 @@ absl::Status SetFromTagAndNameInfo(
     }
   } else {
     if (info.names.size() != info.tags.size()) {
-      return mediapipe_v01013_based::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
+      return hand_tracking_mp_lean::InvalidArgumentErrorBuilder(MEDIAPIPE_LOC)
              << "Number of tags " << info.names.size()
              << " does not match the number of tags " << info.tags.size();
     }
@@ -252,4 +252,4 @@ absl::Status ParseTagIndex(const std::string& tag_index, std::string* tag,
 #undef MEDIAPIPE_TAG_INDEX_REGEX
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

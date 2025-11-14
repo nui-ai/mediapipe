@@ -22,7 +22,7 @@
 #include "mediapipe/framework/collection_item_id.h"
 #include "mediapipe/framework/input_stream_handler.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // In EarlyCloseInputStreamHandler, a node is "ready" if:
 // - any stream is done (need to call Close() in this case), or
@@ -79,4 +79,4 @@ void EarlyCloseInputStreamHandler::FillInputSet(
 
 REGISTER_INPUT_STREAM_HANDLER(EarlyCloseInputStreamHandler);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

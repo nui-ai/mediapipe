@@ -24,7 +24,7 @@
 
 #include "mediapipe/gpu/gl_calculator_helper.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Convert an input image (GpuBuffer or ImageFrame) to ImageFrame.
 //
@@ -117,4 +117,4 @@ absl::Status GpuBufferToImageFrameCalculator::Process(CalculatorContext* cc) {
                       "Input packets must be ImageFrame or GpuBuffer.");
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

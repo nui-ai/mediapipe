@@ -18,7 +18,7 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Generates unique view id at compile-time using FILE and LINE.
 #define TENSOR_UNIQUE_VIEW_TYPE_ID()                       \
@@ -60,6 +60,6 @@ struct TypeInList<T, TypeList<TOther, Ts...>>
                              1 + TypeInList<T, TypeList<Ts...>>::value> {};
 
 }  // namespace tensor_internal
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_TENSOR_INTERNAL_H_

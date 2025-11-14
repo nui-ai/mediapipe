@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/util/tracking/motion_models.proto";
 import "mediapipe/util/tracking/region_flow.proto";

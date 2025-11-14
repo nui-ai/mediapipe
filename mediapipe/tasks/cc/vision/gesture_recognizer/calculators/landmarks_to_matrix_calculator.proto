@@ -15,13 +15,13 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 import "mediapipe/framework/calculator.proto";
 
 // Options for LandmarksToMatrixCalculator.
 message LandmarksToMatrixCalculatorOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional LandmarksToMatrixCalculatorOptions ext = 473345607;
   }
 

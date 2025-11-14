@@ -23,7 +23,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Calculator for completing the processing of loops on iterable collections
 // inside a MediaPipe graph. The EndLoopCalculator collects all input packets
@@ -101,6 +101,6 @@ class EndLoopCalculator : public CalculatorBase {
   std::unique_ptr<IterableT> input_stream_collection_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_END_LOOP_CALCULATOR_H_

@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 using ::testing::ElementsAre;
@@ -65,7 +65,7 @@ TEST(FilterDetectionsCalculatorTest, TestFilterDetectionsScore) {
   std::vector<Detection> output_detections;
   MP_EXPECT_OK(RunScoreGraph(input_detections, &output_detections));
 
-  EXPECT_THAT(output_detections, ElementsAre(mediapipe_v01013_based::EqualsProto(d2)));
+  EXPECT_THAT(output_detections, ElementsAre(hand_tracking_mp_lean::EqualsProto(d2)));
 }
 
 TEST(FilterDetectionsCalculatorTest, TestFilterDetectionsScoreMultiple) {
@@ -83,8 +83,8 @@ TEST(FilterDetectionsCalculatorTest, TestFilterDetectionsScoreMultiple) {
   std::vector<Detection> output_detections;
   MP_EXPECT_OK(RunScoreGraph(input_detections, &output_detections));
 
-  EXPECT_THAT(output_detections, ElementsAre(mediapipe_v01013_based::EqualsProto(d3),
-                                             mediapipe_v01013_based::EqualsProto(d4)));
+  EXPECT_THAT(output_detections, ElementsAre(hand_tracking_mp_lean::EqualsProto(d3),
+                                             hand_tracking_mp_lean::EqualsProto(d4)));
 }
 
 TEST(FilterDetectionsCalculatorTest, TestFilterDetectionsEmpty) {
@@ -150,10 +150,10 @@ TEST(FilterDetectionsCalculatorTest, TestFilterDetectionsMinSize) {
   std::vector<Detection> output_detections;
   MP_EXPECT_OK(RunSizeGraph(input_detections, {100, 100}, &output_detections));
 
-  EXPECT_THAT(output_detections, ElementsAre(mediapipe_v01013_based::EqualsProto(d1),
-                                             mediapipe_v01013_based::EqualsProto(d3),
-                                             mediapipe_v01013_based::EqualsProto(d5)));
+  EXPECT_THAT(output_detections, ElementsAre(hand_tracking_mp_lean::EqualsProto(d1),
+                                             hand_tracking_mp_lean::EqualsProto(d3),
+                                             hand_tracking_mp_lean::EqualsProto(d5)));
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

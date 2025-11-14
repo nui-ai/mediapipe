@@ -25,12 +25,12 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Extracts configuration from options and initializes the calculator's state
 template <typename T>
 absl::Status InitializeSplitVectorCalculator(
-    const ::mediapipe_v01013_based::SplitVectorCalculatorOptions& options,
+    const ::hand_tracking_mp_lean::SplitVectorCalculatorOptions& options,
     std::vector<std::pair<int32_t, int32_t>>* ranges,
     int32_t* max_range_end,
     int32_t* total_elements,
@@ -52,7 +52,7 @@ absl::Status InitializeSplitVectorCalculator(
 
 // Check that ranges don't overlap (used when elements can't be copied or when using combine_outputs)
 inline absl::Status CheckRangesDontOverlap(
-    const ::mediapipe_v01013_based::SplitVectorCalculatorOptions& options) {
+    const ::hand_tracking_mp_lean::SplitVectorCalculatorOptions& options) {
   for (int i = 0; i < options.ranges_size() - 1; ++i) {
     for (int j = i + 1; j < options.ranges_size(); ++j) {
       const auto& range_0 = options.ranges(i);
@@ -168,6 +168,6 @@ absl::Status ProcessMovableElements(
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_SPLIT_VECTOR_CALCULATOR_CORE_H_

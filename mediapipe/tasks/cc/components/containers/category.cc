@@ -20,9 +20,9 @@ limitations under the License.
 
 #include "mediapipe/framework/formats/classification.pb.h"
 
-namespace mediapipe_v01013_based::tasks::components::containers {
+namespace hand_tracking_mp_lean::tasks::components::containers {
 
-Category ConvertToCategory(const mediapipe_v01013_based::Classification& proto) {
+Category ConvertToCategory(const hand_tracking_mp_lean::Classification& proto) {
   Category category;
   category.index = proto.index();
   category.score = proto.score();
@@ -35,4 +35,4 @@ Category ConvertToCategory(const mediapipe_v01013_based::Classification& proto) 
   return category;
 }
 
-}  // namespace mediapipe_v01013_based::tasks::components::containers
+}  // namespace hand_tracking_mp_lean::tasks::components::containers

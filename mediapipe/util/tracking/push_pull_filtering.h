@@ -39,7 +39,7 @@
 #include "mediapipe/util/tracking/image_util.h"
 #include "mediapipe/util/tracking/push_pull_filtering.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 const float kBilateralEps = 1e-6f;
 
@@ -1293,6 +1293,6 @@ void PushPullFiltering<C, FilterWeightMultiplier>::PushUpSampling(
   }  // end mip map levels.
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_PUSH_PULL_FILTERING_H_

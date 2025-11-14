@@ -31,14 +31,14 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/face_geometry_graph_options.pb.h"
 #include "mediapipe/util/graph_builder_utils.h"
 
-namespace mediapipe_v01013_based::tasks::vision::face_geometry {
+namespace hand_tracking_mp_lean::tasks::vision::face_geometry {
 namespace {
 
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::SidePacket;
-using ::mediapipe_v01013_based::api2::builder::Stream;
-using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::Environment;
-using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::FaceGeometry;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::SidePacket;
+using ::hand_tracking_mp_lean::api2::builder::Stream;
+using ::hand_tracking_mp_lean::tasks::vision::face_geometry::proto::Environment;
+using ::hand_tracking_mp_lean::tasks::vision::face_geometry::proto::FaceGeometry;
 
 constexpr char kMultiFaceLandmarksTag[] = "MULTI_FACE_LANDMARKS";
 constexpr char kMultiFaceGeometryTag[] = "MULTI_FACE_GEOMETRY";
@@ -55,7 +55,7 @@ struct FaceGeometryOuts {
 };
 
 void ConfigureSplitNormalizedLandmarkListCalculator(
-    mediapipe_v01013_based::SplitVectorCalculatorOptions& options) {
+    hand_tracking_mp_lean::SplitVectorCalculatorOptions& options) {
   auto& range = *options.add_ranges();
   // Extract the first 468 face landmarks, excluding iris;
   range.set_begin(0);
@@ -166,7 +166,7 @@ class FaceGeometryFromLandmarksGraph : public Subgraph {
         graph.AddNode("SplitNormalizedLandmarkListCalculator");
     ConfigureSplitNormalizedLandmarkListCalculator(
         split_landmark_list
-            .GetOptions<mediapipe_v01013_based::SplitVectorCalculatorOptions>());
+            .GetOptions<hand_tracking_mp_lean::SplitVectorCalculatorOptions>());
     single_face_landmarks >> split_landmark_list.In("");
     auto single_face_landmarks_no_iris = split_landmark_list.Out("");
 
@@ -199,7 +199,7 @@ class FaceGeometryFromLandmarksGraph : public Subgraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe_v01013_based::tasks::vision::face_geometry::FaceGeometryFromLandmarksGraph); // NOLINT
+  ::hand_tracking_mp_lean::tasks::vision::face_geometry::FaceGeometryFromLandmarksGraph); // NOLINT
 // clang-format on
 
-}  // namespace mediapipe_v01013_based::tasks::vision::face_geometry
+}  // namespace hand_tracking_mp_lean::tasks::vision::face_geometry

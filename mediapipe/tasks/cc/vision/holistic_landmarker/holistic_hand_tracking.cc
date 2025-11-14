@@ -38,24 +38,24 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarks_detector_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_roi_refinement_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
 
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::api2::AlignHandToPoseInWorldCalculator;
-using ::mediapipe_v01013_based::api2::builder::ConvertLandmarksToDetection;
-using ::mediapipe_v01013_based::api2::builder::GetImageSize;
-using ::mediapipe_v01013_based::api2::builder::GetLoopbackData;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::IsOverThreshold;
-using ::mediapipe_v01013_based::api2::builder::ScaleAndShiftAndMakeSquareLong;
-using ::mediapipe_v01013_based::api2::builder::SplitAndCombine;
-using ::mediapipe_v01013_based::api2::builder::Stream;
-using ::mediapipe_v01013_based::tasks::components::utils::AllowIf;
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::api2::AlignHandToPoseInWorldCalculator;
+using ::hand_tracking_mp_lean::api2::builder::ConvertLandmarksToDetection;
+using ::hand_tracking_mp_lean::api2::builder::GetImageSize;
+using ::hand_tracking_mp_lean::api2::builder::GetLoopbackData;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::IsOverThreshold;
+using ::hand_tracking_mp_lean::api2::builder::ScaleAndShiftAndMakeSquareLong;
+using ::hand_tracking_mp_lean::api2::builder::SplitAndCombine;
+using ::hand_tracking_mp_lean::api2::builder::Stream;
+using ::hand_tracking_mp_lean::tasks::components::utils::AllowIf;
 
 struct HandLandmarksResult {
   std::optional<Stream<NormalizedLandmarkList>> landmarks;
@@ -270,4 +270,4 @@ absl::StatusOr<HolisticHandTrackingOutput> TrackHolisticHand(
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -47,7 +47,7 @@
 #include "mediapipe/framework/port/file_helpers.h"
 #endif
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kFrameAlignmentTag[] = "FRAME_ALIGNMENT";
 constexpr char kOutputIndexFilenameTag[] = "OUTPUT_INDEX_FILENAME";
@@ -402,11 +402,11 @@ absl::Status BoxDetectorCalculator::Process(CalculatorContext* cc) {
 absl::Status BoxDetectorCalculator::Close(CalculatorContext* cc) {
   if (write_index_) {
     BoxDetectorIndex index = box_detector_->ObtainBoxDetectorIndex();
-    MEDIAPIPE_CHECK_OK(mediapipe_v01013_based::file::SetContents(
+    MEDIAPIPE_CHECK_OK(hand_tracking_mp_lean::file::SetContents(
         cc->InputSidePackets().Tag(kOutputIndexFilenameTag).Get<std::string>(),
         index.SerializeAsString()));
   }
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

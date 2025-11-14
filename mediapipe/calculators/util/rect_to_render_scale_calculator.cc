@@ -16,7 +16,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -24,7 +24,7 @@ constexpr char kNormRectTag[] = "NORM_RECT";
 constexpr char kImageSizeTag[] = "IMAGE_SIZE";
 constexpr char kRenderScaleTag[] = "RENDER_SCALE";
 
-using ::mediapipe_v01013_based::NormalizedRect;
+using ::hand_tracking_mp_lean::NormalizedRect;
 
 }  // namespace
 
@@ -124,4 +124,4 @@ absl::Status RectToRenderScaleCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

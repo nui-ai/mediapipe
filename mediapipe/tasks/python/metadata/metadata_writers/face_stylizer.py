@@ -71,7 +71,7 @@ class MetadataWriter:
   ) -> "MetadataWriter":
     """Creates MetadataWriter to write the metadata for face stylizer.
 
-    The parameters required in this method are mandatory when using mediapipe_v01013_based
+    The parameters required in this method are mandatory when using hand_tracking_mp_lean
     Tasks.
 
     Note that only the output TFLite is used for deployment. The output JSON

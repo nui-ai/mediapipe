@@ -29,10 +29,10 @@
 #include "mediapipe/util/tracking/tracked_detection_manager.h"
 #include "mediapipe/util/tracking/tracking.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
+using ::hand_tracking_mp_lean::NormalizedRect;
 
 constexpr int kDetectionUpdateTimeOutMS = 5000;
 constexpr char kDetectionsTag[] = "DETECTIONS";
@@ -47,7 +47,7 @@ void MoveIds(std::vector<int>* dst, std::vector<int> src) {
               std::make_move_iterator(src.end()));
 }
 
-int64_t GetInputTimestampMs(::mediapipe_v01013_based::CalculatorContext* cc) {
+int64_t GetInputTimestampMs(::hand_tracking_mp_lean::CalculatorContext* cc) {
   return cc->InputTimestamp().Microseconds() / 1000;  // 1 ms = 1000 us.
 }
 
@@ -197,8 +197,8 @@ absl::Status TrackedDetectionManagerCalculator::GetContract(
 }
 
 absl::Status TrackedDetectionManagerCalculator::Open(CalculatorContext* cc) {
-  mediapipe_v01013_based::TrackedDetectionManagerCalculatorOptions options =
-      cc->Options<mediapipe_v01013_based::TrackedDetectionManagerCalculatorOptions>();
+  hand_tracking_mp_lean::TrackedDetectionManagerCalculatorOptions options =
+      cc->Options<hand_tracking_mp_lean::TrackedDetectionManagerCalculatorOptions>();
   tracked_detection_manager_.SetConfig(
       options.tracked_detection_manager_options());
   return absl::OkStatus();
@@ -256,7 +256,7 @@ absl::Status TrackedDetectionManagerCalculator::Process(CalculatorContext* cc) {
         // timestamp.
         cc->Outputs()
             .Tag(kCancelObjectIdTag)
-            .AddPacket(mediapipe_v01013_based::MakePacket<int>(box_id).At(timestamp++));
+            .AddPacket(hand_tracking_mp_lean::MakePacket<int>(box_id).At(timestamp++));
       }
     }
 
@@ -333,4 +333,4 @@ void TrackedDetectionManagerCalculator::AddDetections(
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

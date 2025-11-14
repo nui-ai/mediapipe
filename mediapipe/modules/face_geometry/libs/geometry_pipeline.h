@@ -24,7 +24,7 @@
 #include "mediapipe/modules/face_geometry/protos/face_geometry.pb.h"
 #include "mediapipe/modules/face_geometry/protos/geometry_pipeline_metadata.pb.h"
 
-namespace mediapipe_v01013_based::face_geometry {
+namespace hand_tracking_mp_lean::face_geometry {
 
 // Encapsulates a stateless estimator of facial geometry in a Metric space based
 // on the normalized face landmarks in the Screen space.
@@ -62,6 +62,6 @@ class GeometryPipeline {
 absl::StatusOr<std::unique_ptr<GeometryPipeline>> CreateGeometryPipeline(
     const Environment& environment, const GeometryPipelineMetadata& metadata);
 
-}  // namespace mediapipe_v01013_based::face_geometry
+}  // namespace hand_tracking_mp_lean::face_geometry
 
 #endif  // MEDIAPIPE_FACE_GEOMETRY_LIBS_GEOMETRY_PIPELINE_H_

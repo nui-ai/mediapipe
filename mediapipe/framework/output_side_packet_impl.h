@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class OutputSidePacketImpl : public OutputSidePacket {
  public:
@@ -85,6 +85,6 @@ class OutputSidePacketImpl : public OutputSidePacket {
   std::vector<Mirror> mirrors_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_OUTPUT_SIDE_PACKET_IMPL_H_

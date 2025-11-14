@@ -38,17 +38,17 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/pose_landmarker/proto/pose_landmarker_graph_options.pb.h"
 #include "mediapipe/tasks/cc/vision/pose_landmarker/proto/pose_landmarks_detector_graph_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace pose_landmarker {
 
 namespace {
 
-using PoseLandmarkerGraphOptionsProto = ::mediapipe_v01013_based::tasks::vision::
+using PoseLandmarkerGraphOptionsProto = ::hand_tracking_mp_lean::tasks::vision::
     pose_landmarker::proto::PoseLandmarkerGraphOptions;
 
-using ::mediapipe_v01013_based::NormalizedRect;
+using ::hand_tracking_mp_lean::NormalizedRect;
 
 constexpr char kPoseLandmarkerGraphTypeName[] =
     "mediapipe.tasks.vision.pose_landmarker.PoseLandmarkerGraph";
@@ -195,7 +195,7 @@ absl::StatusOr<std::unique_ptr<PoseLandmarker>> PoseLandmarker::Create(
 }
 
 absl::StatusOr<PoseLandmarkerResult> PoseLandmarker::Detect(
-    mediapipe_v01013_based::Image image,
+    hand_tracking_mp_lean::Image image,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -225,14 +225,14 @@ absl::StatusOr<PoseLandmarkerResult> PoseLandmarker::Detect(
       segmentation_mask,
       /* pose_landmarks= */
       output_packets[kNormLandmarksStreamName]
-          .Get<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>(),
+          .Get<std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>>(),
       /* pose_world_landmarks */
       output_packets[kPoseWorldLandmarksStreamName]
-          .Get<std::vector<mediapipe_v01013_based::LandmarkList>>());
+          .Get<std::vector<hand_tracking_mp_lean::LandmarkList>>());
 }
 
 absl::StatusOr<PoseLandmarkerResult> PoseLandmarker::DetectForVideo(
-    mediapipe_v01013_based::Image image, int64_t timestamp_ms,
+    hand_tracking_mp_lean::Image image, int64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -265,14 +265,14 @@ absl::StatusOr<PoseLandmarkerResult> PoseLandmarker::DetectForVideo(
       segmentation_mask,
       /* pose_landmarks= */
       output_packets[kNormLandmarksStreamName]
-          .Get<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>(),
+          .Get<std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>>(),
       /* pose_world_landmarks */
       output_packets[kPoseWorldLandmarksStreamName]
-          .Get<std::vector<mediapipe_v01013_based::LandmarkList>>());
+          .Get<std::vector<hand_tracking_mp_lean::LandmarkList>>());
 }
 
 absl::Status PoseLandmarker::DetectAsync(
-    mediapipe_v01013_based::Image image, int64_t timestamp_ms,
+    hand_tracking_mp_lean::Image image, int64_t timestamp_ms,
     std::optional<core::ImageProcessingOptions> image_processing_options) {
   if (image.UsesGpu()) {
     return CreateStatusWithPayload(
@@ -295,4 +295,4 @@ absl::Status PoseLandmarker::DetectAsync(
 }  // namespace pose_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

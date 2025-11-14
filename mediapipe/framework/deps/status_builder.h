@@ -26,7 +26,7 @@
 #include "mediapipe/framework/deps/source_location.h"
 #include "mediapipe/framework/deps/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class ABSL_MUST_USE_RESULT StatusBuilder {
  public:
@@ -40,13 +40,13 @@ class ABSL_MUST_USE_RESULT StatusBuilder {
   // enabled, it will use `location` as the location from which the log message
   // occurs.  A typical user will call this with `MEDIAPIPE_LOC`.
   StatusBuilder(const absl::Status& original_status,
-                mediapipe_v01013_based::source_location location)
+                hand_tracking_mp_lean::source_location location)
       : impl_(original_status.ok()
                   ? nullptr
                   : std::make_unique<Impl>(original_status, location)) {}
 
   StatusBuilder(absl::Status&& original_status,
-                mediapipe_v01013_based::source_location location)
+                hand_tracking_mp_lean::source_location location)
       : impl_(original_status.ok()
                   ? nullptr
                   : std::make_unique<Impl>(std::move(original_status),
@@ -55,7 +55,7 @@ class ABSL_MUST_USE_RESULT StatusBuilder {
   // Creates a `StatusBuilder` from a mediapipe status code.  If logging is
   // enabled, it will use `location` as the location from which the log message
   // occurs.  A typical user will call this with `MEDIAPIPE_LOC`.
-  StatusBuilder(absl::StatusCode code, mediapipe_v01013_based::source_location location)
+  StatusBuilder(absl::StatusCode code, hand_tracking_mp_lean::source_location location)
       : impl_(code == absl::StatusCode::kOk
                   ? nullptr
                   : std::make_unique<Impl>(absl::Status(code, ""), location)) {}
@@ -101,8 +101,8 @@ class ABSL_MUST_USE_RESULT StatusBuilder {
       kPrepend,
     };
 
-    Impl(const absl::Status& status, mediapipe_v01013_based::source_location location);
-    Impl(absl::Status&& status, mediapipe_v01013_based::source_location location);
+    Impl(const absl::Status& status, hand_tracking_mp_lean::source_location location);
+    Impl(absl::Status&& status, hand_tracking_mp_lean::source_location location);
     Impl(const Impl&);
     Impl& operator=(const Impl&);
 
@@ -111,7 +111,7 @@ class ABSL_MUST_USE_RESULT StatusBuilder {
     // The status that the result will be based on.
     absl::Status status;
     // The source location to record if this file is logged.
-    mediapipe_v01013_based::source_location location;
+    hand_tracking_mp_lean::source_location location;
     // Logging disabled if true.
     bool no_logging = false;
     // The additional messages added with `<<`.  This is nullptr when status_ is
@@ -127,42 +127,42 @@ class ABSL_MUST_USE_RESULT StatusBuilder {
 };
 
 inline StatusBuilder AlreadyExistsErrorBuilder(
-    mediapipe_v01013_based::source_location location) {
+    hand_tracking_mp_lean::source_location location) {
   return StatusBuilder(absl::StatusCode::kAlreadyExists, location);
 }
 
 inline StatusBuilder FailedPreconditionErrorBuilder(
-    mediapipe_v01013_based::source_location location) {
+    hand_tracking_mp_lean::source_location location) {
   return StatusBuilder(absl::StatusCode::kFailedPrecondition, location);
 }
 
-inline StatusBuilder InternalErrorBuilder(mediapipe_v01013_based::source_location location) {
+inline StatusBuilder InternalErrorBuilder(hand_tracking_mp_lean::source_location location) {
   return StatusBuilder(absl::StatusCode::kInternal, location);
 }
 
 inline StatusBuilder InvalidArgumentErrorBuilder(
-    mediapipe_v01013_based::source_location location) {
+    hand_tracking_mp_lean::source_location location) {
   return StatusBuilder(absl::StatusCode::kInvalidArgument, location);
 }
 
-inline StatusBuilder NotFoundErrorBuilder(mediapipe_v01013_based::source_location location) {
+inline StatusBuilder NotFoundErrorBuilder(hand_tracking_mp_lean::source_location location) {
   return StatusBuilder(absl::StatusCode::kNotFound, location);
 }
 
 inline StatusBuilder UnavailableErrorBuilder(
-    mediapipe_v01013_based::source_location location) {
+    hand_tracking_mp_lean::source_location location) {
   return StatusBuilder(absl::StatusCode::kUnavailable, location);
 }
 
 inline StatusBuilder UnimplementedErrorBuilder(
-    mediapipe_v01013_based::source_location location) {
+    hand_tracking_mp_lean::source_location location) {
   return StatusBuilder(absl::StatusCode::kUnimplemented, location);
 }
 
-inline StatusBuilder UnknownErrorBuilder(mediapipe_v01013_based::source_location location) {
+inline StatusBuilder UnknownErrorBuilder(hand_tracking_mp_lean::source_location location) {
   return StatusBuilder(absl::StatusCode::kUnknown, location);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_DEPS_STATUS_BUILDER_H_

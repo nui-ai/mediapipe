@@ -61,20 +61,20 @@ TfLiteRegistration* Register_DETECTION_POSTPROCESS();
 }  // namespace ops
 }  // namespace tflite
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace {
 
-using ::mediapipe_v01013_based::file::JoinPath;
-using ::mediapipe_v01013_based::tasks::components::containers::ConvertToDetectionResult;
-using ::mediapipe_v01013_based::tasks::components::containers::Detection;
-using ::mediapipe_v01013_based::tasks::components::containers::DetectionResult;
-using ::mediapipe_v01013_based::tasks::components::containers::RectF;
-using ::mediapipe_v01013_based::tasks::vision::core::ImageProcessingOptions;
+using ::hand_tracking_mp_lean::file::JoinPath;
+using ::hand_tracking_mp_lean::tasks::components::containers::ConvertToDetectionResult;
+using ::hand_tracking_mp_lean::tasks::components::containers::Detection;
+using ::hand_tracking_mp_lean::tasks::components::containers::DetectionResult;
+using ::hand_tracking_mp_lean::tasks::components::containers::RectF;
+using ::hand_tracking_mp_lean::tasks::vision::core::ImageProcessingOptions;
 using ::testing::HasSubstr;
 using ::testing::Optional;
-using DetectionProto = mediapipe_v01013_based::Detection;
+using DetectionProto = hand_tracking_mp_lean::Detection;
 
 constexpr absl::string_view kTestDataDirectory{
     "/mediapipe/tasks/testdata/vision/"};
@@ -848,4 +848,4 @@ TEST_F(LiveStreamModeTest, Succeeds) {
 }  // namespace
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

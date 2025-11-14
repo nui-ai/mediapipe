@@ -10,18 +10,18 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 using ::testing::HasSubstr;
 using ::testing::status::StatusIs;
 
-mediapipe_v01013_based::ImageFrame GetInputFrame(
+hand_tracking_mp_lean::ImageFrame GetInputFrame(
     const int width, const int height, const int channel,
-    const mediapipe_v01013_based::ImageFormat::Format image_format) {
+    const hand_tracking_mp_lean::ImageFormat::Format image_format) {
   const int total_size = width * height * channel;
 
-  mediapipe_v01013_based::ImageFrame input_frame(image_format, width, height,
+  hand_tracking_mp_lean::ImageFrame input_frame(image_format, width, height,
                                     /*alignment_boundary =*/1);
   uint8_t* pixel_data = input_frame.MutablePixelData();
   for (int i = 0; i < total_size; ++i) {
@@ -31,8 +31,8 @@ mediapipe_v01013_based::ImageFrame GetInputFrame(
   return input_frame;
 }
 
-mediapipe_v01013_based::CalculatorGraphConfig::Node GetTestingGraphNode() {
-  return ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(
+hand_tracking_mp_lean::CalculatorGraphConfig::Node GetTestingGraphNode() {
+  return ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig::Node>(
       R"pb(
         calculator: "ScaleImageCalculator"
         input_stream: "input_frames"
@@ -51,31 +51,31 @@ mediapipe_v01013_based::CalculatorGraphConfig::Node GetTestingGraphNode() {
 
 TEST(ScaleImageCalculatorTest, ScaleRegualrSize) {
   auto calculator_node = GetTestingGraphNode();
-  mediapipe_v01013_based::CalculatorRunner runner(calculator_node);
+  hand_tracking_mp_lean::CalculatorRunner runner(calculator_node);
 
   // Vertical 9:16 720P input frame
-  auto input_frame = GetInputFrame(720, 1280, 3, mediapipe_v01013_based::ImageFormat::SRGB);
+  auto input_frame = GetInputFrame(720, 1280, 3, hand_tracking_mp_lean::ImageFormat::SRGB);
   auto input_frame_packet =
-      mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::ImageFrame>(std::move(input_frame));
+      hand_tracking_mp_lean::MakePacket<hand_tracking_mp_lean::ImageFrame>(std::move(input_frame));
   runner.MutableInputs()->Index(0).packets.push_back(
-      input_frame_packet.At(mediapipe_v01013_based::Timestamp(1)));
+      input_frame_packet.At(hand_tracking_mp_lean::Timestamp(1)));
   MP_ASSERT_OK(runner.Run());
 }
 
 TEST(ScaleImageCalculatorTest, ScaleOddSize) {
   auto calculator_node = GetTestingGraphNode();
-  mediapipe_v01013_based::CalculatorRunner runner(calculator_node);
+  hand_tracking_mp_lean::CalculatorRunner runner(calculator_node);
 
   // 1 x 512 input frame
-  auto input_frame = GetInputFrame(1, 512, 3, mediapipe_v01013_based::ImageFormat::SRGB);
+  auto input_frame = GetInputFrame(1, 512, 3, hand_tracking_mp_lean::ImageFormat::SRGB);
   auto input_frame_packet =
-      mediapipe_v01013_based::MakePacket<mediapipe_v01013_based::ImageFrame>(std::move(input_frame));
+      hand_tracking_mp_lean::MakePacket<hand_tracking_mp_lean::ImageFrame>(std::move(input_frame));
   runner.MutableInputs()->Index(0).packets.push_back(
-      input_frame_packet.At(mediapipe_v01013_based::Timestamp(1)));
+      input_frame_packet.At(hand_tracking_mp_lean::Timestamp(1)));
   ASSERT_THAT(runner.Run(),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Image frame is empty before rescaling.")));
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

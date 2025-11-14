@@ -22,7 +22,7 @@
 #include "mediapipe/framework/mediapipe_options.pb.h"
 #include "mediapipe/framework/stream_handler.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace builder {
 
@@ -164,8 +164,8 @@ class DestinationImpl</*IsSide=*/true, T> {
 
 template <bool IsSide, typename T>
 using SourceImplBase =
-    std::conditional_t<IsSide, mediapipe_v01013_based::api3::SidePacket<T>,
-                       mediapipe_v01013_based::api3::Stream<T>>;
+    std::conditional_t<IsSide, hand_tracking_mp_lean::api3::SidePacket<T>,
+                       hand_tracking_mp_lean::api3::Stream<T>>;
 
 template <bool IsSide, typename T>
 class SourceImpl : public SourceImplBase<IsSide, T> {
@@ -573,7 +573,7 @@ class PacketGenerator {
   friend class Graph;
 };
 
-class Graph : public mediapipe_v01013_based::api3::GenericGraph {
+class Graph : public hand_tracking_mp_lean::api3::GenericGraph {
  public:
   Graph() = default;
   ~Graph() = default;
@@ -584,7 +584,7 @@ class Graph : public mediapipe_v01013_based::api3::GenericGraph {
   Graph& operator=(const Graph&) = delete;
 
   void SetType(std::string type) {
-    mediapipe_v01013_based::api3::GenericGraph::graph_.SetType(std::move(type));
+    hand_tracking_mp_lean::api3::GenericGraph::graph_.SetType(std::move(type));
   }
 
   // Creates a node of a specific type. Should be used for calculators whose
@@ -592,7 +592,7 @@ class Graph : public mediapipe_v01013_based::api3::GenericGraph {
   template <class Calc>
   Node<Calc>& AddNode() {
     auto node = std::make_unique<Node<Calc>>(
-        mediapipe_v01013_based::api3::GenericGraph::graph_.AddNode(
+        hand_tracking_mp_lean::api3::GenericGraph::graph_.AddNode(
             FunctionRegistry<NodeBase>::GetLookupName(Calc::kCalculatorName)));
     auto node_p = node.get();
     api2_nodes_.emplace_back(std::move(node));
@@ -605,7 +605,7 @@ class Graph : public mediapipe_v01013_based::api3::GenericGraph {
   template <class Calc>
   Node<Calc>& AddNode(absl::string_view type) {
     auto node = std::make_unique<Node<Calc>>(
-        mediapipe_v01013_based::api3::GenericGraph::graph_.AddNode(
+        hand_tracking_mp_lean::api3::GenericGraph::graph_.AddNode(
             std::string(type.data(), type.size())));
     auto node_p = node.get();
     api2_nodes_.emplace_back(std::move(node));
@@ -617,7 +617,7 @@ class Graph : public mediapipe_v01013_based::api3::GenericGraph {
   // `type` is a calculator type-name with dot-separated namespaces.
   GenericNode& AddNode(absl::string_view type) {
     auto node = std::make_unique<GenericNode>(
-        mediapipe_v01013_based::api3::GenericGraph::graph_.AddNode(
+        hand_tracking_mp_lean::api3::GenericGraph::graph_.AddNode(
             std::string(type.data(), type.size())));
     auto node_p = node.get();
     api2_nodes_.emplace_back(std::move(node));
@@ -627,7 +627,7 @@ class Graph : public mediapipe_v01013_based::api3::GenericGraph {
   // For legacy PacketGenerators.
   PacketGenerator& AddPacketGenerator(absl::string_view type) {
     auto node = std::make_unique<PacketGenerator>(
-        mediapipe_v01013_based::api3::GenericGraph::graph_.AddPacketGenerator(
+        hand_tracking_mp_lean::api3::GenericGraph::graph_.AddPacketGenerator(
             std::string(type.data(), type.size())));
     auto node_p = node.get();
     api2_packet_gens_.emplace_back(std::move(node));
@@ -635,27 +635,27 @@ class Graph : public mediapipe_v01013_based::api3::GenericGraph {
   }
 
   Executor& AddExecutor(absl::string_view type) {
-    return mediapipe_v01013_based::api3::GenericGraph::graph_.AddExecutor(type);
+    return hand_tracking_mp_lean::api3::GenericGraph::graph_.AddExecutor(type);
   }
 
   // Graph ports, non-typed.
   MultiSource<> In(absl::string_view graph_input) {
-    return MultiSource<>(mediapipe_v01013_based::api3::GenericGraph::graph_.In(graph_input));
+    return MultiSource<>(hand_tracking_mp_lean::api3::GenericGraph::graph_.In(graph_input));
   }
 
   MultiDestination<> Out(absl::string_view graph_output) {
     return MultiDestination<>(
-        mediapipe_v01013_based::api3::GenericGraph::graph_.Out(graph_output));
+        hand_tracking_mp_lean::api3::GenericGraph::graph_.Out(graph_output));
   }
 
   MultiSideSource<> SideIn(absl::string_view graph_input) {
     return MultiSideSource<>(
-        mediapipe_v01013_based::api3::GenericGraph::graph_.SideIn(graph_input));
+        hand_tracking_mp_lean::api3::GenericGraph::graph_.SideIn(graph_input));
   }
 
   MultiSideDestination<> SideOut(absl::string_view graph_output) {
     return MultiSideDestination<>(
-        mediapipe_v01013_based::api3::GenericGraph::graph_.SideOut(graph_output));
+        hand_tracking_mp_lean::api3::GenericGraph::graph_.SideOut(graph_output));
   }
 
   // Convenience methods for accessing purely index-based ports.
@@ -694,28 +694,28 @@ class Graph : public mediapipe_v01013_based::api3::GenericGraph {
     using PayloadT =
         typename PortCommon<B, T, kIsOptional, kIsMultiple>::PayloadT;
     if constexpr (std::is_same_v<B, OutputBase>) {
-      auto base = mediapipe_v01013_based::api3::GenericGraph::graph_.Out(port.Tag());
+      auto base = hand_tracking_mp_lean::api3::GenericGraph::graph_.Out(port.Tag());
       if constexpr (kIsMultiple) {
         return MultiDestination<PayloadT>(base);
       } else {
         return Destination<PayloadT>(base);
       }
     } else if constexpr (std::is_same_v<B, InputBase>) {
-      auto base = mediapipe_v01013_based::api3::GenericGraph::graph_.In(port.Tag());
+      auto base = hand_tracking_mp_lean::api3::GenericGraph::graph_.In(port.Tag());
       if constexpr (kIsMultiple) {
         return MultiSource<PayloadT>(base);
       } else {
         return Source<PayloadT>(base);
       }
     } else if constexpr (std::is_same_v<B, SideOutputBase>) {
-      auto base = mediapipe_v01013_based::api3::GenericGraph::graph_.SideOut(port.Tag());
+      auto base = hand_tracking_mp_lean::api3::GenericGraph::graph_.SideOut(port.Tag());
       if constexpr (kIsMultiple) {
         return MultiSideDestination<PayloadT>(base);
       } else {
         return SideDestination<PayloadT>(base);
       }
     } else if constexpr (std::is_same_v<B, SideInputBase>) {
-      auto base = mediapipe_v01013_based::api3::GenericGraph::graph_.SideIn(port.Tag());
+      auto base = hand_tracking_mp_lean::api3::GenericGraph::graph_.SideIn(port.Tag());
       if constexpr (kIsMultiple) {
         return MultiSideSource<PayloadT>(base);
       } else {
@@ -729,7 +729,7 @@ class Graph : public mediapipe_v01013_based::api3::GenericGraph {
   // Returns the graph config. This can be used to instantiate and run the
   // graph.
   CalculatorGraphConfig GetConfig() {
-    auto config = mediapipe_v01013_based::api3::GenericGraph::graph_.GetConfig();
+    auto config = hand_tracking_mp_lean::api3::GenericGraph::graph_.GetConfig();
     ABSL_CHECK_OK(config);
     return std::move(config).value();
   }
@@ -742,6 +742,6 @@ class Graph : public mediapipe_v01013_based::api3::GenericGraph {
 
 }  // namespace builder
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_BUILDER_H_

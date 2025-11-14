@@ -23,7 +23,7 @@
 #include "mediapipe/framework/graph_runtime_info.pb.h"
 #include "mediapipe/framework/port/threadpool.h"
 
-namespace mediapipe_v01013_based::tool {
+namespace hand_tracking_mp_lean::tool {
 
 // Periodically collects the graph runtime info and output it to LOG(INFO).
 class GraphRuntimeInfoLogger {
@@ -33,7 +33,7 @@ class GraphRuntimeInfoLogger {
 
   // Starts the collector in the background. Can be called only once.
   absl::Status StartInBackground(
-      const mediapipe_v01013_based::GraphRuntimeInfoConfig& config,
+      const hand_tracking_mp_lean::GraphRuntimeInfoConfig& config,
       absl::AnyInvocable<absl::StatusOr<GraphRuntimeInfo>()>
           get_runtime_info_fn);
 
@@ -46,6 +46,6 @@ class GraphRuntimeInfoLogger {
   ThreadPool thread_pool_;
 };
 
-}  // namespace mediapipe_v01013_based::tool
+}  // namespace hand_tracking_mp_lean::tool
 
 #endif  // MEDIAPIPE_FRAMEWORK_TOOL_GRAPH_RUNTIME_INFO_LOGGER_H_

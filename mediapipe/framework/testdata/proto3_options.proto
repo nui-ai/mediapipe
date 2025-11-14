@@ -18,7 +18,7 @@
 
 syntax = "proto3";
 
-package mediapipe_v01013_based;
+package hand_tracking_mp_lean;
 
 message Proto3Options {
   double test_value = 1;

@@ -19,7 +19,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 using ::testing::ElementsAre;
@@ -30,7 +30,7 @@ using ::testing::ElementsAre;
 // MuxInputStreamHandler should fail when running this test.
 TEST(MuxInputStreamHandlerTest, AtomicAccessToControlAndDataStreams) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input"
         node {
           calculator: "RoundRobinDemuxCalculator"
@@ -160,7 +160,7 @@ absl::Status SendInput(GateAndMuxGraphInput in, CalculatorGraph& graph) {
 
 TEST(MuxInputStreamHandlerTest, BasicMuxing) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(kGateAndMuxGraph);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(kGateAndMuxGraph);
   std::vector<Packet> output_packets;
   tool::AddVectorSink("output", &config, &output_packets);
 
@@ -210,7 +210,7 @@ TEST(MuxInputStreamHandlerTest, BasicMuxing) {
 
 TEST(MuxInputStreamHandlerTest, MuxingNonEmptyInputs) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(kGateAndMuxGraph);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(kGateAndMuxGraph);
   std::vector<Packet> output_packets;
   tool::AddVectorSink("output", &config, &output_packets);
 
@@ -260,7 +260,7 @@ TEST(MuxInputStreamHandlerTest, MuxingNonEmptyInputs) {
 
 TEST(MuxInputStreamHandlerTest, MuxingAllTimestampBoundUpdates) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(kGateAndMuxGraph);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(kGateAndMuxGraph);
   std::vector<Packet> output_packets;
   tool::AddVectorSink("output", &config, &output_packets);
 
@@ -307,7 +307,7 @@ TEST(MuxInputStreamHandlerTest, MuxingAllTimestampBoundUpdates) {
 
 TEST(MuxInputStreamHandlerTest, MuxingSlectedTimestampBoundUpdates) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(kGateAndMuxGraph);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(kGateAndMuxGraph);
   std::vector<Packet> output_packets;
   tool::AddVectorSink("output", &config, &output_packets);
 
@@ -354,7 +354,7 @@ TEST(MuxInputStreamHandlerTest, MuxingSlectedTimestampBoundUpdates) {
 
 TEST(MuxInputStreamHandlerTest, MuxingSometimesTimestampBoundUpdates) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(kGateAndMuxGraph);
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(kGateAndMuxGraph);
   std::vector<Packet> output_packets;
   tool::AddVectorSink("output", &config, &output_packets);
 
@@ -436,7 +436,7 @@ MATCHER_P2(Pair, m1, m2, "") {
 TEST(MuxInputStreamHandlerTest,
      TimestampBoundUpdateWhenControlPacketEarlierThanDataPacket) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input0"
         input_stream: "input1"
         input_stream: "select"
@@ -520,7 +520,7 @@ TEST(MuxInputStreamHandlerTest,
 TEST(MuxInputStreamHandlerTest,
      TimestampBoundUpdateWhenControlPacketEarlierThanDataPacketPacketsAtOnce) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input0"
         input_stream: "input1"
         input_stream: "select"
@@ -576,7 +576,7 @@ TEST(MuxInputStreamHandlerTest,
 TEST(MuxInputStreamHandlerTest,
      TimestampBoundUpdateTriggersTimestampBoundUpdate) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input0"
         input_stream: "input1"
         input_stream: "select"
@@ -647,7 +647,7 @@ TEST(MuxInputStreamHandlerTest,
 
 TEST(MuxInputStreamHandlerTest, RemovesUnusedDataStreamPackets) {
   CalculatorGraphConfig config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         input_stream: "input0"
         input_stream: "input1"
         input_stream: "select"
@@ -682,4 +682,4 @@ TEST(MuxInputStreamHandlerTest, RemovesUnusedDataStreamPackets) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

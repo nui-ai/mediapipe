@@ -16,7 +16,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 template <int border>
 void TestCopyBorder(cv::Mat* full_size) {
@@ -90,4 +90,4 @@ TEST(PushPullFilteringTest, CopyBorderSmallFrame) {
   TestCopyBorder<4>(&full_size);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

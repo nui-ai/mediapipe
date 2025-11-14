@@ -17,7 +17,7 @@
 
 #include "HalideRuntime.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace frame_buffer {
 namespace common {
 
@@ -27,6 +27,6 @@ bool crop_buffer(int x0, int y0, int x1, int y1, halide_buffer_t* buffer);
 
 }  // namespace common
 }  // namespace frame_buffer
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_FRAME_BUFFER_BUFFER_COMMON_H_

@@ -28,7 +28,7 @@ node {
   input_stream: "DETECTIONS:detections"
   output_stream: "RENDER_DATA:detections_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.DetectionsToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.DetectionsToRenderDataCalculatorOptions] {
       thickness: 4.0
       color { r: 0 g: 255 b: 0 }
     }
@@ -52,7 +52,7 @@ node {
   input_stream: "NORM_LANDMARKS:face_landmarks"
   output_stream: "RENDER_DATA:landmarks_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.LandmarksToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.LandmarksToRenderDataCalculatorOptions] {
       landmark_color { r: 255 g: 0 b: 0 }
       connection_color { r: 0 g: 255 b: 0 }
       thickness: 2
@@ -77,7 +77,7 @@ node {
   input_stream: "NORM_RECTS:rects"
   output_stream: "RENDER_DATA:rects_render_data"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.RectToRenderDataCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.RectToRenderDataCalculatorOptions] {
       filled: false
       color { r: 255 g: 0 b: 0 }
       thickness: 4.0

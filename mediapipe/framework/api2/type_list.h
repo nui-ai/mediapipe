@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace types {
 
@@ -131,6 +131,6 @@ auto enumerate(List<Args...> a)
 
 }  // namespace types
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_API2_TYPE_LIST_H_

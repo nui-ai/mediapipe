@@ -32,7 +32,7 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #include "mediapipe/gpu/graph_support.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class GlTexture;
 class GpuResources;
@@ -123,7 +123,7 @@ class GlCalculatorHelper {
   // TODO: rename this; the use of "Create" makes this sound more expensive than
   // it is.
   GlTexture CreateSourceTexture(const GpuBuffer& pixel_buffer);
-  GlTexture CreateSourceTexture(const mediapipe_v01013_based::Image& image);
+  GlTexture CreateSourceTexture(const hand_tracking_mp_lean::Image& image);
 
   // Gives read access to a plane of a planar buffer.
   // The plane index is zero-based. The number of planes depends on the
@@ -287,6 +287,6 @@ bool HasTagOrIndex(T* collection, const std::string& tag, int index) {
                                 : index < collection->NumEntries();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GL_CALCULATOR_HELPER_H_

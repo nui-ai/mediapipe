@@ -15,20 +15,20 @@ limitations under the License.
 
 syntax = "proto3";
 
-package mediapipe_v01013_based.tasks.vision.holistic_landmarker.proto;
+package hand_tracking_mp_lean.tasks.vision.holistic_landmarker.proto;
 
 import "mediapipe/framework/formats/classification.proto";
 import "mediapipe/framework/formats/landmark.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.tasks.vision.holisticlandmarker";
+option java_package = "com.google.hand_tracking_mp_lean.tasks.vision.holisticlandmarker";
 option java_outer_classname = "HolisticResultProto";
 
 message HolisticResult {
-  mediapipe_v01013_based.NormalizedLandmarkList pose_landmarks = 1;
-  mediapipe_v01013_based.LandmarkList pose_world_landmarks = 7;
-  mediapipe_v01013_based.NormalizedLandmarkList left_hand_landmarks = 2;
-  mediapipe_v01013_based.NormalizedLandmarkList right_hand_landmarks = 3;
-  mediapipe_v01013_based.NormalizedLandmarkList face_landmarks = 4;
-  mediapipe_v01013_based.ClassificationList face_blendshapes = 6;
-  mediapipe_v01013_based.NormalizedLandmarkList auxiliary_landmarks = 5;
+  hand_tracking_mp_lean.NormalizedLandmarkList pose_landmarks = 1;
+  hand_tracking_mp_lean.LandmarkList pose_world_landmarks = 7;
+  hand_tracking_mp_lean.NormalizedLandmarkList left_hand_landmarks = 2;
+  hand_tracking_mp_lean.NormalizedLandmarkList right_hand_landmarks = 3;
+  hand_tracking_mp_lean.NormalizedLandmarkList face_landmarks = 4;
+  hand_tracking_mp_lean.ClassificationList face_blendshapes = 6;
+  hand_tracking_mp_lean.NormalizedLandmarkList auxiliary_landmarks = 5;
 }

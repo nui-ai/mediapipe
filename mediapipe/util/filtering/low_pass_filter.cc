@@ -17,7 +17,7 @@
 #include "absl/log/absl_log.h"
 #include "absl/memory/memory.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 LowPassFilter::LowPassFilter(float alpha) : initialized_{false} {
   SetAlpha(alpha);
@@ -55,4 +55,4 @@ void LowPassFilter::SetAlpha(float alpha) {
   alpha_ = alpha;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

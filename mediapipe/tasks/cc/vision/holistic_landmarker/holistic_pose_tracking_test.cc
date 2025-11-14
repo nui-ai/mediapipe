@@ -55,7 +55,7 @@ limitations under the License.
 #include "mediapipe/util/render_data.pb.h"
 #include "testing/base/public/googletest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace holistic_landmarker {
@@ -64,11 +64,11 @@ namespace {
 
 using ::file::Defaults;
 using ::file::GetTextProto;
-using ::mediapipe_v01013_based::Image;
-using ::mediapipe_v01013_based::api2::builder::GetImageSize;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Stream;
-using ::mediapipe_v01013_based::tasks::core::TaskRunner;
+using ::hand_tracking_mp_lean::Image;
+using ::hand_tracking_mp_lean::api2::builder::GetImageSize;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Stream;
+using ::hand_tracking_mp_lean::tasks::core::TaskRunner;
 using ::testing::proto::Approximately;
 using ::testing::proto::Partially;
 
@@ -90,8 +90,8 @@ std::string GetFilePath(absl::string_view filename) {
   return file::JoinPath("./", kTestDataDirectory, filename);
 }
 
-mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions GetPoseRendererOptions() {
-  mediapipe_v01013_based::LandmarksToRenderDataCalculatorOptions renderer_options;
+hand_tracking_mp_lean::LandmarksToRenderDataCalculatorOptions GetPoseRendererOptions() {
+  hand_tracking_mp_lean::LandmarksToRenderDataCalculatorOptions renderer_options;
   for (const auto& connection : pose_landmarker::kPoseLandmarksConnections) {
     renderer_options.add_landmark_connections(connection[0]);
     renderer_options.add_landmark_connections(connection[1]);
@@ -136,10 +136,10 @@ absl::StatusOr<std::unique_ptr<tasks::core::TaskRunner>> CreateTaskRunner() {
       utils::GetRenderScale(image_size, result.debug_output.roi_from_landmarks,
                             0.0001, graph),
       GetPoseRendererOptions(), graph);
-  std::vector<Stream<mediapipe_v01013_based::RenderData>> render_list = {render_data};
+  std::vector<Stream<hand_tracking_mp_lean::RenderData>> render_list = {render_data};
   auto rendered_image =
       utils::Render(
-          image, absl::Span<Stream<mediapipe_v01013_based::RenderData>>(render_list), graph)
+          image, absl::Span<Stream<hand_tracking_mp_lean::RenderData>>(render_list), graph)
           .SetName(kRenderedImageOutStream);
 
   rendered_image >> graph.Out("RENDERED_IMAGE");
@@ -241,4 +241,4 @@ TEST_F(HolisticPoseTrackingTest, SmokeTest) {
 }  // namespace holistic_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

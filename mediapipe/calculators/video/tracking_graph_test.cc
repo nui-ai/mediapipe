@@ -39,7 +39,7 @@
 #include "mediapipe/util/tracking/box_tracker.pb.h"
 #include "mediapipe/util/tracking/tracking.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 using ::testing::FloatNear;
 using ::testing::Test;
@@ -64,7 +64,7 @@ class TrackingGraphTest : public Test {
   TrackingGraphTest() {}
 
   void SetUp() override {
-    test_dir_ = mediapipe_v01013_based::GetTestDataDir(kTestPackageRoot);
+    test_dir_ = hand_tracking_mp_lean::GetTestDataDir(kTestPackageRoot);
     const auto graph_path = file::JoinPath(test_dir_, "tracker.binarypb");
     ASSERT_TRUE(LoadBinaryTestGraph(graph_path, &config_));
 
@@ -79,9 +79,9 @@ class TrackingGraphTest : public Test {
     translation_step_y_ = kTranslationStep / static_cast<float>(img_height);
 
     // Creat new configure and packet dump vector to store output.
-    mediapipe_v01013_based::CalculatorGraphConfig config_copy = config_;
-    mediapipe_v01013_based::tool::AddVectorSink("boxes", &config_copy, &output_packets_);
-    mediapipe_v01013_based::tool::AddVectorSink("ra_boxes", &config_copy,
+    hand_tracking_mp_lean::CalculatorGraphConfig config_copy = config_;
+    hand_tracking_mp_lean::tool::AddVectorSink("boxes", &config_copy, &output_packets_);
+    hand_tracking_mp_lean::tool::AddVectorSink("ra_boxes", &config_copy,
                                    &random_access_results_packets_);
 
     // Initialize graph
@@ -91,8 +91,8 @@ class TrackingGraphTest : public Test {
         file::JoinPath(test_dir_, "parallel_tracker.binarypb");
     CalculatorGraphConfig parallel_config;
     ASSERT_TRUE(LoadBinaryTestGraph(parallel_graph_path, &parallel_config));
-    mediapipe_v01013_based::tool::AddVectorSink("boxes", &parallel_config, &output_packets_);
-    mediapipe_v01013_based::tool::AddVectorSink("ra_boxes", &parallel_config,
+    hand_tracking_mp_lean::tool::AddVectorSink("boxes", &parallel_config, &output_packets_);
+    hand_tracking_mp_lean::tool::AddVectorSink("ra_boxes", &parallel_config,
                                    &random_access_results_packets_);
     MP_ASSERT_OK(parallel_graph_.Initialize(parallel_config));
   }
@@ -112,8 +112,8 @@ class TrackingGraphTest : public Test {
       const std::vector<bool>& reacquisition) const;
 
   void RunGraphWithSidePacketsAndInputs(
-      const std::map<std::string, mediapipe_v01013_based::Packet>& side_packets,
-      const mediapipe_v01013_based::Packet& start_pos_packet);
+      const std::map<std::string, hand_tracking_mp_lean::Packet>& side_packets,
+      const hand_tracking_mp_lean::Packet& start_pos_packet);
 
   // Utility functions used to judge if a given quad or box is near to the
   // groundtruth location at a given frame.
@@ -140,8 +140,8 @@ class TrackingGraphTest : public Test {
   std::string test_dir_;
   cv::Mat original_image_;
   std::vector<Packet> input_frames_packets_;
-  std::vector<mediapipe_v01013_based::Packet> output_packets_;
-  std::vector<mediapipe_v01013_based::Packet> random_access_results_packets_;
+  std::vector<hand_tracking_mp_lean::Packet> output_packets_;
+  std::vector<hand_tracking_mp_lean::Packet> random_access_results_packets_;
   float translation_step_x_;  // normalized translation step in x direction
   float translation_step_y_;  // normalized translation step in y direction
   static constexpr float kInitialBoxHalfWidthNormalized = 0.25f;
@@ -278,8 +278,8 @@ void TrackingGraphTest::CreateInputFramesFromOriginalImage(
 }
 
 void TrackingGraphTest::RunGraphWithSidePacketsAndInputs(
-    const std::map<std::string, mediapipe_v01013_based::Packet>& side_packets,
-    const mediapipe_v01013_based::Packet& start_pos_packet) {
+    const std::map<std::string, hand_tracking_mp_lean::Packet>& side_packets,
+    const hand_tracking_mp_lean::Packet& start_pos_packet) {
   // Start running the graph
   MP_EXPECT_OK(graph_.StartRun(side_packets));
 
@@ -316,12 +316,12 @@ TrackingGraphTest::CreateRandomAccessTrackingBoxList(
 
 TEST_F(TrackingGraphTest, BasicBoxTrackingSanityCheck) {
   // Create input side packets.
-  std::map<std::string, mediapipe_v01013_based::Packet> side_packets;
+  std::map<std::string, hand_tracking_mp_lean::Packet> side_packets;
   side_packets.insert(std::make_pair("analysis_downsample_factor",
-                                     mediapipe_v01013_based::MakePacket<float>(1.0f)));
+                                     hand_tracking_mp_lean::MakePacket<float>(1.0f)));
   side_packets.insert(std::make_pair(
       "calculator_options",
-      mediapipe_v01013_based::MakePacket<CalculatorOptions>(CalculatorOptions())));
+      hand_tracking_mp_lean::MakePacket<CalculatorOptions>(CalculatorOptions())));
 
   // Run the graph with input side packets, start_pos, and input image frames.
   Timestamp start_box_time = input_frames_packets_[0].Timestamp();
@@ -351,9 +351,9 @@ TEST_F(TrackingGraphTest, BasicBoxTrackingSanityCheck) {
 
 TEST_F(TrackingGraphTest, BasicQuadTrackingSanityCheck) {
   // Create input side packets.
-  std::map<std::string, mediapipe_v01013_based::Packet> side_packets;
+  std::map<std::string, hand_tracking_mp_lean::Packet> side_packets;
   side_packets.insert(std::make_pair("analysis_downsample_factor",
-                                     mediapipe_v01013_based::MakePacket<float>(1.0f)));
+                                     hand_tracking_mp_lean::MakePacket<float>(1.0f)));
   CalculatorOptions calculator_options;
   calculator_options.MutableExtension(BoxTrackerCalculatorOptions::ext)
       ->mutable_tracker_options()
@@ -362,7 +362,7 @@ TEST_F(TrackingGraphTest, BasicQuadTrackingSanityCheck) {
           TrackStepOptions::TRACKING_DEGREE_OBJECT_PERSPECTIVE);
   side_packets.insert(std::make_pair(
       "calculator_options",
-      mediapipe_v01013_based::MakePacket<CalculatorOptions>(calculator_options)));
+      hand_tracking_mp_lean::MakePacket<CalculatorOptions>(calculator_options)));
 
   Timestamp start_box_time = input_frames_packets_[0].Timestamp();
   // Box id 0 use quad tracking with 8DoF homography transform.
@@ -396,9 +396,9 @@ TEST_F(TrackingGraphTest, BasicQuadTrackingSanityCheck) {
 
 TEST_F(TrackingGraphTest, TestRandomAccessTrackingResults) {
   // Create input side packets.
-  std::map<std::string, mediapipe_v01013_based::Packet> side_packets;
+  std::map<std::string, hand_tracking_mp_lean::Packet> side_packets;
   side_packets.insert(std::make_pair("analysis_downsample_factor",
-                                     mediapipe_v01013_based::MakePacket<float>(1.0f)));
+                                     hand_tracking_mp_lean::MakePacket<float>(1.0f)));
   CalculatorOptions calculator_options;
   calculator_options.MutableExtension(BoxTrackerCalculatorOptions::ext)
       ->mutable_tracker_options()
@@ -407,7 +407,7 @@ TEST_F(TrackingGraphTest, TestRandomAccessTrackingResults) {
           TrackStepOptions::TRACKING_DEGREE_OBJECT_PERSPECTIVE);
   side_packets.insert(std::make_pair(
       "calculator_options",
-      mediapipe_v01013_based::MakePacket<CalculatorOptions>(calculator_options)));
+      hand_tracking_mp_lean::MakePacket<CalculatorOptions>(calculator_options)));
 
   ASSERT_GT(input_frames_packets_.size(), 2);  // at least 3 frames
   ASSERT_TRUE(input_frames_packets_[2].Timestamp() -
@@ -513,9 +513,9 @@ TEST_F(TrackingGraphTest, TestRandomAccessTrackingResults) {
 // outside of cache.
 TEST_F(TrackingGraphTest, TestRandomAccessTrackingTimestamps) {
   // Create input side packets.
-  std::map<std::string, mediapipe_v01013_based::Packet> side_packets;
+  std::map<std::string, hand_tracking_mp_lean::Packet> side_packets;
   side_packets.insert(std::make_pair("analysis_downsample_factor",
-                                     mediapipe_v01013_based::MakePacket<float>(1.0f)));
+                                     hand_tracking_mp_lean::MakePacket<float>(1.0f)));
   CalculatorOptions calculator_options;
   calculator_options.MutableExtension(BoxTrackerCalculatorOptions::ext)
       ->mutable_tracker_options()
@@ -528,7 +528,7 @@ TEST_F(TrackingGraphTest, TestRandomAccessTrackingTimestamps) {
       ->set_streaming_track_data_cache_size(input_frames_packets_.size() - 1);
   side_packets.insert(std::make_pair(
       "calculator_options",
-      mediapipe_v01013_based::MakePacket<CalculatorOptions>(calculator_options)));
+      hand_tracking_mp_lean::MakePacket<CalculatorOptions>(calculator_options)));
 
   // Set up random access boxes
   const int num_frames = input_frames_packets_.size();
@@ -580,9 +580,9 @@ TEST_F(TrackingGraphTest, TestRandomAccessTrackingTimestamps) {
 
 TEST_F(TrackingGraphTest, TestTransitionFramesForReacquisition) {
   // Create input side packets.
-  std::map<std::string, mediapipe_v01013_based::Packet> side_packets;
+  std::map<std::string, hand_tracking_mp_lean::Packet> side_packets;
   side_packets.insert(std::make_pair("analysis_downsample_factor",
-                                     mediapipe_v01013_based::MakePacket<float>(1.0f)));
+                                     hand_tracking_mp_lean::MakePacket<float>(1.0f)));
   CalculatorOptions calculator_options;
   calculator_options.MutableExtension(BoxTrackerCalculatorOptions::ext)
       ->mutable_tracker_options()
@@ -595,7 +595,7 @@ TEST_F(TrackingGraphTest, TestTransitionFramesForReacquisition) {
 
   side_packets.insert(std::make_pair(
       "calculator_options",
-      mediapipe_v01013_based::MakePacket<CalculatorOptions>(calculator_options)));
+      hand_tracking_mp_lean::MakePacket<CalculatorOptions>(calculator_options)));
 
   Timestamp start_box_time = input_frames_packets_[0].Timestamp();
   // Box id 0 use quad tracking with 8DoF homography transform.
@@ -685,4 +685,4 @@ TEST_F(TrackingGraphTest, TestTransitionFramesForReacquisition) {
 // TODO: Add test for reacquisition.
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

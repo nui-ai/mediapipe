@@ -30,7 +30,7 @@
 #include "mediapipe/framework/tool/tag_map.h"
 #include "mediapipe/framework/tool/tag_map_helper.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -85,7 +85,7 @@ class ImmediateInputStreamHandlerTest : public ::testing::Test {
         /*output_tag_map=*/tool::CreateTagMap({"output_a"}).value(),
         /*calculator_run_in_parallel=*/false);
 
-    absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::InputStreamHandler>>
+    absl::StatusOr<std::unique_ptr<hand_tracking_mp_lean::InputStreamHandler>>
         status_or_handler = InputStreamHandlerRegistry::CreateByName(
             "ImmediateInputStreamHandler", input_tag_map, &cc_manager_,
             MediaPipeOptions(),
@@ -124,10 +124,10 @@ class ImmediateInputStreamHandlerTest : public ::testing::Test {
       const std::map<std::string, std::string>& expected_values) {
     for (const auto& name_and_id : name_to_id_) {
       const InputStream& input_stream = input_set.Get(name_and_id.second);
-      if (mediapipe_v01013_based::ContainsKey(expected_values, name_and_id.first)) {
+      if (hand_tracking_mp_lean::ContainsKey(expected_values, name_and_id.first)) {
         ASSERT_FALSE(input_stream.Value().IsEmpty());
         EXPECT_EQ(input_stream.Value().Get<std::string>(),
-                  mediapipe_v01013_based::FindOrDie(expected_values, name_and_id.first));
+                  hand_tracking_mp_lean::FindOrDie(expected_values, name_and_id.first));
       } else {
         EXPECT_TRUE(input_stream.Value().IsEmpty());
       }
@@ -721,4 +721,4 @@ TEST_F(ImmediateInputStreamHandlerTest, SimulateProcessNode) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

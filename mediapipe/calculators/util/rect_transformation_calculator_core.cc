@@ -46,7 +46,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
   inline float RectTransformation::NormalizeRadians(float angle) {
     return angle - 2 * M_PI * std::floor((angle - (-M_PI)) / (2 * M_PI));

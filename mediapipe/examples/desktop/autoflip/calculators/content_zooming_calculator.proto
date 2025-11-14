@@ -14,14 +14,14 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based.autoflip;
+package hand_tracking_mp_lean.autoflip;
 
 import "mediapipe/examples/desktop/autoflip/quality/kinematic_path_solver.proto";
 import "mediapipe/framework/calculator.proto";
 
 // NextTag: 22
 message ContentZoomingCalculatorOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional ContentZoomingCalculatorOptions ext = 313091992;
   }
   // Amount the only required area should fill the image.  When set to 1,

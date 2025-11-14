@@ -22,15 +22,15 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/framework/port/statusor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 class RefineLandmarksFromHeatmapCalculator : public NodeIntf {
  public:
-  static constexpr Input<mediapipe_v01013_based::NormalizedLandmarkList> kInLandmarks{
+  static constexpr Input<hand_tracking_mp_lean::NormalizedLandmarkList> kInLandmarks{
       "NORM_LANDMARKS"};
   static constexpr Input<std::vector<Tensor>> kInTensors{"TENSORS"};
-  static constexpr Output<mediapipe_v01013_based::NormalizedLandmarkList> kOutLandmarks{
+  static constexpr Output<hand_tracking_mp_lean::NormalizedLandmarkList> kOutLandmarks{
       "NORM_LANDMARKS"};
 
   MEDIAPIPE_NODE_INTERFACE(RefineLandmarksFromHeatmapCalculator, kInLandmarks,
@@ -40,12 +40,12 @@ class RefineLandmarksFromHeatmapCalculator : public NodeIntf {
 }  // namespace api2
 
 // Exposed for testing.
-absl::StatusOr<mediapipe_v01013_based::NormalizedLandmarkList> RefineLandmarksFromHeatMap(
-    const mediapipe_v01013_based::NormalizedLandmarkList& in_lms,
+absl::StatusOr<hand_tracking_mp_lean::NormalizedLandmarkList> RefineLandmarksFromHeatMap(
+    const hand_tracking_mp_lean::NormalizedLandmarkList& in_lms,
     const float* heatmap_raw_data, const std::vector<int>& heatmap_dims,
     int kernel_size, float min_confidence_to_refine, bool refine_presence,
     bool refine_visibility);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_REFINE_LANDMARKS_FROM_HEATMAP_CALCULATOR_H_

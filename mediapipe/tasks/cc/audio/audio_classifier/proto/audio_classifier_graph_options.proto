@@ -15,18 +15,18 @@ limitations under the License.
 
 syntax = "proto2";
 
-package mediapipe_v01013_based.tasks.audio.audio_classifier.proto;
+package hand_tracking_mp_lean.tasks.audio.audio_classifier.proto;
 
 import "mediapipe/framework/calculator.proto";
 import "mediapipe/framework/calculator_options.proto";
 import "mediapipe/tasks/cc/components/processors/proto/classifier_options.proto";
 import "mediapipe/tasks/cc/core/proto/base_options.proto";
 
-option java_package = "com.google.mediapipe_v01013_based.tasks.audio.audioclassifier.proto";
+option java_package = "com.google.hand_tracking_mp_lean.tasks.audio.audioclassifier.proto";
 option java_outer_classname = "AudioClassifierGraphOptionsProto";
 
 message AudioClassifierGraphOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional AudioClassifierGraphOptions ext = 451755788;
   }
   // Base options for configuring MediaPipe Tasks, such as specifying the TfLite

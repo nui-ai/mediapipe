@@ -62,7 +62,7 @@
 #include "mediapipe/framework/tool/graph_runtime_info_logger.h"
 #endif  // !defined(__EMSCRIPTEN__)
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 #if !MEDIAPIPE_DISABLE_GPU
 class GpuResources;
@@ -83,20 +83,20 @@ typedef absl::StatusOr<OutputStreamPoller> StatusOrPoller;
 //
 //   #include "mediapipe/framework/calculator_framework.h"
 //
-//   mediapipe_v01013_based::CalculatorGraphConfig config;
-//   MP_RETURN_IF_ERROR(mediapipe_v01013_based::tool::ParseGraphFromString(kGraphStr,
-//   &config)); mediapipe_v01013_based::CalculatorGraph graph;
+//   hand_tracking_mp_lean::CalculatorGraphConfig config;
+//   MP_RETURN_IF_ERROR(hand_tracking_mp_lean::tool::ParseGraphFromString(kGraphStr,
+//   &config)); hand_tracking_mp_lean::CalculatorGraph graph;
 //   MP_RETURN_IF_ERROR(graph.Initialize(config));
 //
-//   std::map<std::string, mediapipe_v01013_based::Packet> extra_side_packets;
-//   extra_side_packets["video_id"] = mediapipe_v01013_based::MakePacket<std::string>(
+//   std::map<std::string, hand_tracking_mp_lean::Packet> extra_side_packets;
+//   extra_side_packets["video_id"] = hand_tracking_mp_lean::MakePacket<std::string>(
 //       "3edb9503834e9b42");
 //   MP_RETURN_IF_ERROR(graph.Run(extra_side_packets));
 //
 //   // Run again (demonstrating the asynchronous StartRun call with more
 //   // concise initializer list syntax).
 //   MP_RETURN_IF_ERROR(graph.StartRun(
-//       {{"video_id", mediapipe_v01013_based::MakePacket<std::string>("Ex-uGhDzue4")}}));
+//       {{"video_id", hand_tracking_mp_lean::MakePacket<std::string>("Ex-uGhDzue4")}}));
 //   // See mediapipe/framework/graph_runner.h for an interface
 //   // to insert and extract packets from a graph as it runs.
 //   // Once it is done using the graph, close its streams and wait till done.
@@ -781,6 +781,6 @@ class CalculatorGraph {
 #endif  // !defined(__EMSCRIPTEN__)
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_CALCULATOR_GRAPH_H_

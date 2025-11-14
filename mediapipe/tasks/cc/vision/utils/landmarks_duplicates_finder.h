@@ -22,7 +22,7 @@ limitations under the License.
 #include "absl/status/statusor.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-namespace mediapipe_v01013_based::tasks::vision::utils {
+namespace hand_tracking_mp_lean::tasks::vision::utils {
 
 class DuplicatesFinder {
  public:
@@ -31,10 +31,10 @@ class DuplicatesFinder {
   // contain different enough (depending on the implementation) landmark lists
   // only.
   virtual absl::StatusOr<absl::flat_hash_set<int>> FindDuplicates(
-      const std::vector<mediapipe_v01013_based::NormalizedLandmarkList>& multi_landmarks,
+      const std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>& multi_landmarks,
       int input_width, int input_height) = 0;
 };
 
-}  // namespace mediapipe_v01013_based::tasks::vision::utils
+}  // namespace hand_tracking_mp_lean::tasks::vision::utils
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_UTILS_LANDMARKS_DUPLICATES_FINDER_H_

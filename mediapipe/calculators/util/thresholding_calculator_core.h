@@ -17,7 +17,7 @@
 
 #include "absl/status/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class ThresholdingCalculatorOptions;
 
@@ -38,6 +38,6 @@ bool ProcessCalculator(double& threshold,
                       float input_float_value);
 
 }  // namespace thresholding_calculator
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_THRESHOLDING_CALCULATOR_CORE_H_

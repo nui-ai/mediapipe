@@ -35,7 +35,7 @@
 #include "mediapipe/modules/face_geometry/protos/geometry_pipeline_metadata.pb.h"
 #include "mediapipe/util/resource_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 static constexpr char kEnvironmentTag[] = "ENVIRONMENT";
@@ -91,7 +91,7 @@ class GeometryPipelineCalculator : public CalculatorBase {
   }
 
   absl::Status Open(CalculatorContext* cc) override {
-    cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
+    cc->SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
 
     const auto& options = cc->Options<FaceGeometryPipelineCalculatorOptions>();
 
@@ -149,7 +149,7 @@ class GeometryPipelineCalculator : public CalculatorBase {
 
     cc->Outputs()
         .Tag(kMultiFaceGeometryTag)
-        .AddPacket(mediapipe_v01013_based::Adopt<std::vector<face_geometry::FaceGeometry>>(
+        .AddPacket(hand_tracking_mp_lean::Adopt<std::vector<face_geometry::FaceGeometry>>(
                        multi_face_geometry.release())
                        .At(cc->InputTimestamp()));
 
@@ -164,7 +164,7 @@ class GeometryPipelineCalculator : public CalculatorBase {
   static absl::StatusOr<face_geometry::GeometryPipelineMetadata>
   ReadMetadataFromFile(CalculatorContext* cc,
                        const std::string& metadata_path) {
-    MP_ASSIGN_OR_RETURN(std::unique_ptr<mediapipe_v01013_based::Resource> metadata_blob,
+    MP_ASSIGN_OR_RETURN(std::unique_ptr<hand_tracking_mp_lean::Resource> metadata_blob,
                         ReadContentBlobFromFile(cc, metadata_path),
                         _ << "Failed to read a metadata blob from file!");
 
@@ -176,12 +176,12 @@ class GeometryPipelineCalculator : public CalculatorBase {
     return metadata;
   }
 
-  static absl::StatusOr<std::unique_ptr<mediapipe_v01013_based::Resource>>
+  static absl::StatusOr<std::unique_ptr<hand_tracking_mp_lean::Resource>>
   ReadContentBlobFromFile(CalculatorContext* cc,
                           const std::string& unresolved_path) {
     MP_ASSIGN_OR_RETURN(
         std::string resolved_path,
-        mediapipe_v01013_based::PathToResourceAsFile(unresolved_path),
+        hand_tracking_mp_lean::PathToResourceAsFile(unresolved_path),
         _ << "Failed to resolve path! Path = " << unresolved_path);
     return cc->GetResources().Get(resolved_path);
   }
@@ -195,4 +195,4 @@ using FaceGeometryPipelineCalculator = GeometryPipelineCalculator;
 
 REGISTER_CALCULATOR(FaceGeometryPipelineCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

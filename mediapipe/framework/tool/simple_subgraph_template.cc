@@ -18,7 +18,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/subgraph.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // clang-format off
 static const char binary_graph[] =
@@ -42,4 +42,4 @@ class {{SUBGRAPH_CLASS_NAME}} : public Subgraph {
 REGISTER_MEDIAPIPE_GRAPH({{SUBGRAPH_CLASS_NAME}});
 // clang-format on
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -22,7 +22,7 @@ limitations under the License.
 
 #include "absl/strings/string_view.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace text {
 namespace tokenizers {
@@ -50,6 +50,6 @@ class Tokenizer {
 }  // namespace tokenizers
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_TOKENIZERS_TOKENIZER_H_

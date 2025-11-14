@@ -28,7 +28,7 @@ limitations under the License.
 #include "re2/re2.h"
 #include "tensorflow_text/core/kernels/wordpiece_tokenizer.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace text {
 namespace tokenizers {
@@ -87,7 +87,7 @@ class FlatHashMapBackedWordpiece : public tensorflow::text::WordpieceVocab {
 };
 
 // Wordpiece tokenizer for bert models. Initialized with a vocab file or vector.
-class BertTokenizer : public mediapipe_v01013_based::tasks::text::tokenizers::Tokenizer {
+class BertTokenizer : public hand_tracking_mp_lean::tasks::text::tokenizers::Tokenizer {
  public:
   // Initialize the tokenizer from vocab vector and tokenizer configs.
   explicit BertTokenizer(const std::vector<std::string>& vocab,
@@ -100,14 +100,14 @@ class BertTokenizer : public mediapipe_v01013_based::tasks::text::tokenizers::To
   // Initialize the tokenizer from file path to vocab and tokenizer configs.
   explicit BertTokenizer(const std::string& path_to_vocab,
                          const BertTokenizerOptions& options = {})
-      : BertTokenizer(mediapipe_v01013_based::tasks::text::LoadVocabFromFile(path_to_vocab),
+      : BertTokenizer(hand_tracking_mp_lean::tasks::text::LoadVocabFromFile(path_to_vocab),
                       options) {}
 
   // Initialize the tokenizer from buffer and size of vocab and tokenizer
   // configs.
   BertTokenizer(const char* vocab_buffer_data, size_t vocab_buffer_size,
                 const BertTokenizerOptions& options = {})
-      : BertTokenizer(mediapipe_v01013_based::tasks::text::LoadVocabFromBuffer(
+      : BertTokenizer(hand_tracking_mp_lean::tasks::text::LoadVocabFromBuffer(
                           vocab_buffer_data, vocab_buffer_size),
                       options) {}
 
@@ -137,7 +137,7 @@ class BertTokenizer : public mediapipe_v01013_based::tasks::text::tokenizers::To
   int VocabularySize() const { return vocab_.VocabularySize(); }
 
  private:
-  mediapipe_v01013_based::tasks::text::tokenizers::FlatHashMapBackedWordpiece vocab_;
+  hand_tracking_mp_lean::tasks::text::tokenizers::FlatHashMapBackedWordpiece vocab_;
   BertTokenizerOptions options_;
   RE2 delim_re_;
   RE2 include_delim_re_;
@@ -146,6 +146,6 @@ class BertTokenizer : public mediapipe_v01013_based::tasks::text::tokenizers::To
 }  // namespace tokenizers
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_TOKENIZERS_BERT_TOKENIZER_H_

@@ -25,7 +25,7 @@ input_stream: "ROI:roi"
 output_stream: "DETECTIONS:detections"
 
 graph_options: {
-  [type.googleapis.com/mediapipe_v01013_based.FaceDetectionOptions] {}
+  [type.googleapis.com/hand_tracking_mp_lean.FaceDetectionOptions] {}
 }
 
 # Converts the input CPU or GPU image to the multi-backend image type (Image).
@@ -45,7 +45,7 @@ node: {
   output_stream: "TENSORS:input_tensors"
   output_stream: "MATRIX:transform_matrix"
   options: {
-    [mediapipe_v01013_based.ImageToTensorCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.ImageToTensorCalculatorOptions.ext] {
         keep_aspect_ratio: true
         output_tensor_float_range {
           min: -1.0
@@ -67,7 +67,7 @@ node {
   input_stream: "TENSORS:input_tensors"
   output_stream: "TENSORS:detection_tensors"
   options: {
-    [mediapipe_v01013_based.InferenceCalculatorOptions.ext] {}
+    [hand_tracking_mp_lean.InferenceCalculatorOptions.ext] {}
   }
   option_value: "delegate:options/delegate"
   option_value: "model_path:options/model_path"
@@ -94,7 +94,7 @@ node {
   calculator: "SsdAnchorsCalculator"
   output_side_packet: "anchors"
   options: {
-    [mediapipe_v01013_based.SsdAnchorsCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.SsdAnchorsCalculatorOptions.ext] {
         num_layers: 1
         min_scale: 0.1484375
         max_scale: 0.75
@@ -120,7 +120,7 @@ node {
   input_side_packet: "ANCHORS:anchors"
   output_stream: "DETECTIONS:unfiltered_detections"
   options: {
-    [mediapipe_v01013_based.TensorsToDetectionsCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.TensorsToDetectionsCalculatorOptions.ext] {
       num_classes: 1
       num_coords: 16
       box_coord_offset: 0
@@ -146,7 +146,7 @@ node {
   input_stream: "unfiltered_detections"
   output_stream: "filtered_detections"
   options: {
-    [mediapipe_v01013_based.NonMaxSuppressionCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.NonMaxSuppressionCalculatorOptions.ext] {
       min_suppression_threshold: 0.3
       overlap_type: INTERSECTION_OVER_UNION
       algorithm: WEIGHTED

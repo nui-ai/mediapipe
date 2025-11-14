@@ -37,7 +37,7 @@
 #include "mediapipe/util/tflite/cpu_op_resolver.h"
 #include "tensorflow/lite/delegates/xnnpack/xnnpack_delegate.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 struct DetectionInferenceCalculatorCpu : public InferenceCalculator {
@@ -104,4 +104,4 @@ absl::Status DetectionInferenceCalculator::Close(CalculatorContext* cc) {
 
 MEDIAPIPE_REGISTER_NODE(DetectionInferenceCalculator);
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

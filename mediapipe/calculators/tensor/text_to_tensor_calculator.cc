@@ -27,7 +27,7 @@
 #include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/framework/memory_manager_service.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // Trivially converts an input string into a Tensor that stores a copy of
@@ -95,4 +95,4 @@ absl::Status TextToTensorCalculator::UpdateContract(CalculatorContract* cc) {
 MEDIAPIPE_REGISTER_NODE(TextToTensorCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

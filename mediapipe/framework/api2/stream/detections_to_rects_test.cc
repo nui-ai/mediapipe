@@ -12,11 +12,11 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 namespace {
 
 TEST(DetectionsToRects, ConvertAlignmentPointsDetectionToRect) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<Detection> detection = graph.In("DETECTION").Cast<Detection>();
   detection.SetName("detection");
@@ -30,7 +30,7 @@ TEST(DetectionsToRects, ConvertAlignmentPointsDetectionToRect) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "AlignmentPointsRectsCalculator"
           input_stream: "DETECTION:detection"
@@ -53,7 +53,7 @@ TEST(DetectionsToRects, ConvertAlignmentPointsDetectionToRect) {
 }
 
 TEST(DetectionsToRects, ConvertAlignmentPointsDetectionsToRect) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<std::vector<Detection>> detections =
       graph.In("DETECTIONS").Cast<std::vector<Detection>>();
@@ -68,7 +68,7 @@ TEST(DetectionsToRects, ConvertAlignmentPointsDetectionsToRect) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "AlignmentPointsRectsCalculator"
           input_stream: "DETECTIONS:detections"
@@ -91,7 +91,7 @@ TEST(DetectionsToRects, ConvertAlignmentPointsDetectionsToRect) {
 }
 
 TEST(DetectionsToRects, ConvertDetectionToRect) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<Detection> detection = graph.In("DETECTION").Cast<Detection>();
   detection.SetName("detection");
@@ -105,7 +105,7 @@ TEST(DetectionsToRects, ConvertDetectionToRect) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "DetectionsToRectsCalculator"
           input_stream: "DETECTION:detection"
@@ -128,7 +128,7 @@ TEST(DetectionsToRects, ConvertDetectionToRect) {
 }
 
 TEST(DetectionsToRects, ConvertDetectionsToRects) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<std::vector<Detection>> detections =
       graph.In("DETECTIONS").Cast<std::vector<Detection>>();
@@ -143,7 +143,7 @@ TEST(DetectionsToRects, ConvertDetectionsToRects) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "DetectionsToRectsCalculator"
           input_stream: "DETECTIONS:detections"
@@ -166,7 +166,7 @@ TEST(DetectionsToRects, ConvertDetectionsToRects) {
 }
 
 TEST(DetectionsToRects, ConvertDetectionsToRectUsingKeypoints) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<std::vector<Detection>> detections =
       graph.In("DETECTIONS").Cast<std::vector<Detection>>();
@@ -181,7 +181,7 @@ TEST(DetectionsToRects, ConvertDetectionsToRectUsingKeypoints) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "DetectionsToRectsCalculator"
           input_stream: "DETECTIONS:detections"
@@ -205,4 +205,4 @@ TEST(DetectionsToRects, ConvertDetectionsToRectUsingKeypoints) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

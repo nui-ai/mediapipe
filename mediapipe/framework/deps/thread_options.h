@@ -20,7 +20,7 @@
 #include <set>
 #include <string>
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Options to configure a thread.  Default values are listed in
 // the field descriptions.
@@ -66,5 +66,5 @@ class ThreadOptions {
   std::string name_prefix_;  // Name of the thread
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 #endif  // MEDIAPIPE_DEPS_THREAD_OPTIONS_H_

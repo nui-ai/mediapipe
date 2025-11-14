@@ -41,7 +41,7 @@
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace {
 
@@ -91,8 +91,8 @@ constexpr char kFeedbackTestWithStateCopyModelPath[] =
     "mediapipe/calculators/tensor/testdata/"
     "feedback_tensor_with_state_copy_model.tflite";
 
-using ::mediapipe_v01013_based::Packet;
-using ::mediapipe_v01013_based::tool::AddVectorSink;
+using ::hand_tracking_mp_lean::Packet;
+using ::hand_tracking_mp_lean::tool::AddVectorSink;
 using ::testing::HasSubstr;
 using ::tflite::InterpreterBuilder;
 using TfLiteDelegatePtr =
@@ -596,7 +596,7 @@ TEST_F(InferenceFeedbackManagerTest, ShouldRunE2ESmokeTest) {
     Tensor input_tensor = CreateSingleIntTensor(kRegularInputTensorValues[n]);
     MP_ASSERT_OK(graph.AddPacketToInputStream(
         "regular_int_input",
-        mediapipe_v01013_based::MakePacket<Tensor>(std::move(input_tensor))
+        hand_tracking_mp_lean::MakePacket<Tensor>(std::move(input_tensor))
             .At(Timestamp(n))));
   }
   MP_ASSERT_OK(graph.CloseAllInputStreams());
@@ -679,7 +679,7 @@ TEST_F(InferenceFeedbackManagerTest, ShouldRunE2EWithZeroIoCopiesSmokeTest) {
     Tensor input_tensor = CreateSingleIntTensor(kRegularInputTensorValues[n]);
     MP_ASSERT_OK(graph.AddPacketToInputStream(
         "regular_int_input",
-        mediapipe_v01013_based::MakePacket<Tensor>(std::move(input_tensor))
+        hand_tracking_mp_lean::MakePacket<Tensor>(std::move(input_tensor))
             .At(Timestamp(n))));
   }
   MP_ASSERT_OK(graph.CloseAllInputStreams());
@@ -756,13 +756,13 @@ TEST_F(InferenceFeedbackManagerTest,
         CreateSingleIntTensor(kRegularInputTensorValues[n]);
     MP_ASSERT_OK(graph.AddPacketToInputStream(
         "regular_int_input",
-        mediapipe_v01013_based::MakePacket<Tensor>(std::move(regular_int_input_tensor))
+        hand_tracking_mp_lean::MakePacket<Tensor>(std::move(regular_int_input_tensor))
             .At(Timestamp(n))));
     Tensor feedback_int_input_tensor =
         CreateSingleIntTensor(kFeedbackInputTensorValues[n]);
     MP_ASSERT_OK(graph.AddPacketToInputStream(
         "feedback_int_input",
-        mediapipe_v01013_based::MakePacket<Tensor>(std::move(feedback_int_input_tensor))
+        hand_tracking_mp_lean::MakePacket<Tensor>(std::move(feedback_int_input_tensor))
             .At(Timestamp(n))));
   }
 
@@ -794,4 +794,4 @@ TEST_F(InferenceFeedbackManagerTest,
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

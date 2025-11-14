@@ -27,7 +27,7 @@
 #include "mediapipe/util/tracking/flow_packager.h"
 #include "mediapipe/util/tracking/region_flow.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kCacheDirTag[] = "CACHE_DIR";
 constexpr char kCompleteTag[] = "COMPLETE";
@@ -36,11 +36,11 @@ constexpr char kTrackingTag[] = "TRACKING";
 constexpr char kCameraTag[] = "CAMERA";
 constexpr char kFlowTag[] = "FLOW";
 
-using mediapipe_v01013_based::CameraMotion;
-using mediapipe_v01013_based::FlowPackager;
-using mediapipe_v01013_based::RegionFlowFeatureList;
-using mediapipe_v01013_based::TrackingData;
-using mediapipe_v01013_based::TrackingDataChunk;
+using hand_tracking_mp_lean::CameraMotion;
+using hand_tracking_mp_lean::FlowPackager;
+using hand_tracking_mp_lean::RegionFlowFeatureList;
+using hand_tracking_mp_lean::TrackingData;
+using hand_tracking_mp_lean::TrackingDataChunk;
 
 // A calculator that packages input CameraMotion and RegionFlowFeatureList
 // into a TrackingData and optionally writes TrackingDataChunks to file.
@@ -285,4 +285,4 @@ void FlowPackagerCalculator::PrepareCurrentForNextChunk(
   ++chunk_idx_;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -20,7 +20,7 @@
 #include "tensorflow/lite/core/api/error_reporter.h"
 #include "tensorflow/lite/stateful_error_reporter.h"
 
-namespace mediapipe_v01013_based::util::tflite {
+namespace hand_tracking_mp_lean::util::tflite {
 
 // An ErrorReporter that logs to stderr and captures the last two messages.
 class ErrorReporter : public ::tflite::StatefulErrorReporter {
@@ -47,6 +47,6 @@ class ErrorReporter : public ::tflite::StatefulErrorReporter {
   char previous_message_[kBufferSize];
 };
 
-}  // namespace mediapipe_v01013_based::util::tflite
+}  // namespace hand_tracking_mp_lean::util::tflite
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_ERROR_REPORTER_H_

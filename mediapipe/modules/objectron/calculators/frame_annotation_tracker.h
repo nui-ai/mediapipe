@@ -23,7 +23,7 @@
 #include "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
 #include "mediapipe/util/tracking/box_tracker.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class FrameAnnotationTracker {
  public:
@@ -57,6 +57,6 @@ class FrameAnnotationTracker {
       detected_objects_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_MODULES_OBJECTRON_CALCULATORS_FRAME_ANNOTATION_TRACKER_H_

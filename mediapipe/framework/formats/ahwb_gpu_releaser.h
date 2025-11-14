@@ -19,7 +19,7 @@
 #include "mediapipe/gpu/gl_base.h"
 #include "mediapipe/gpu/gl_context.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // This class keeps tensor's resources while the tensor is in use on GPU or TPU
 // but is already released on CPU. When a regular OpenGL buffer is bound to the
@@ -86,7 +86,7 @@ inline constexpr GlContext::Attachment<AhwbGpuReleaser> kAhwbGpuReleaser(
       return GlContext::Attachment<AhwbGpuReleaser>::MakePtr();
     });
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TENSOR_USE_AHWB
 

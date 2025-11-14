@@ -66,7 +66,7 @@ constexpr float kPixelTolerance = 3;
 // Returns 'true' when camera is moving (pan/tilt/zoom) & 'false' for no motion.
 constexpr char kCameraActive[] = "CAMERA_ACTIVE";
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 using StateCacheType = ContentZoomingCalculatorStateCacheType;
 
@@ -84,35 +84,35 @@ class ContentZoomingCalculator : public CalculatorBase {
   ContentZoomingCalculator(const ContentZoomingCalculator&) = delete;
   ContentZoomingCalculator& operator=(const ContentZoomingCalculator&) = delete;
 
-  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc);
-  absl::Status Open(mediapipe_v01013_based::CalculatorContext* cc) override;
-  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override;
-  absl::Status Close(mediapipe_v01013_based::CalculatorContext* cc) override;
+  static absl::Status GetContract(hand_tracking_mp_lean::CalculatorContract* cc);
+  absl::Status Open(hand_tracking_mp_lean::CalculatorContext* cc) override;
+  absl::Status Process(hand_tracking_mp_lean::CalculatorContext* cc) override;
+  absl::Status Close(hand_tracking_mp_lean::CalculatorContext* cc) override;
 
  private:
   // Tries to load state from a state-cache, if provided. Fallsback to
   // initializing state if no cache or no value in the cache are available.
-  absl::Status MaybeLoadState(mediapipe_v01013_based::CalculatorContext* cc, int frame_width,
+  absl::Status MaybeLoadState(hand_tracking_mp_lean::CalculatorContext* cc, int frame_width,
                               int frame_height);
   // Saves state to a state-cache, if provided.
-  absl::Status SaveState(mediapipe_v01013_based::CalculatorContext* cc) const;
+  absl::Status SaveState(hand_tracking_mp_lean::CalculatorContext* cc) const;
   // Returns the factor for maximum zoom based on options and the
   // kMaxZoomFactorPercent input (if present).
-  double GetMaxZoomFactor(mediapipe_v01013_based::CalculatorContext* cc) const;
+  double GetMaxZoomFactor(hand_tracking_mp_lean::CalculatorContext* cc) const;
   // Returns the factor for scale based on options and the
   // kScaleFactorPercent input (if present).
-  double GetScaleFactor(mediapipe_v01013_based::CalculatorContext* cc) const;
+  double GetScaleFactor(hand_tracking_mp_lean::CalculatorContext* cc) const;
   // Initializes the calculator for the given frame size, creating path solvers
   // and resetting history like last measured values.
-  absl::Status InitializeState(mediapipe_v01013_based::CalculatorContext* cc,
+  absl::Status InitializeState(hand_tracking_mp_lean::CalculatorContext* cc,
                                int frame_width, int frame_height);
   // Adjusts state to work with an updated frame size.
-  absl::Status UpdateForResolutionChange(mediapipe_v01013_based::CalculatorContext* cc,
+  absl::Status UpdateForResolutionChange(hand_tracking_mp_lean::CalculatorContext* cc,
                                          int frame_width, int frame_height);
   // Returns true if we are animating to the first rect.
   bool IsAnimatingToFirstRect(const Timestamp& timestamp) const;
   // Builds the output rectangle when animating to the first rect.
-  absl::StatusOr<mediapipe_v01013_based::Rect> GetAnimationRect(
+  absl::StatusOr<hand_tracking_mp_lean::Rect> GetAnimationRect(
       int frame_width, int frame_height, const Timestamp& timestamp) const;
   // Converts bounds to tilt offset, pan offset and height.
   absl::Status ConvertToPanTiltZoom(float xmin, float xmax, float ymin,
@@ -126,7 +126,7 @@ class ContentZoomingCalculator : public CalculatorBase {
                                   float path_width, float path_height,
                                   float* path_offset_x, float* path_offset_y);
   // Compute box containing all detections.
-  absl::Status GetDetectionsBox(mediapipe_v01013_based::CalculatorContext* cc, float* xmin,
+  absl::Status GetDetectionsBox(hand_tracking_mp_lean::CalculatorContext* cc, float* xmin,
                                 float* xmax, float* ymin, float* ymax,
                                 bool* only_required_found,
                                 bool* has_detections);
@@ -147,7 +147,7 @@ class ContentZoomingCalculator : public CalculatorBase {
   // the value Timestamp::Done() instead of the time.
   Timestamp first_rect_timestamp_;
   // Stores the first crop rectangle.
-  mediapipe_v01013_based::NormalizedRect first_rect_;
+  hand_tracking_mp_lean::NormalizedRect first_rect_;
   // Stores the time of the last "only_required" input.
   int64_t last_only_required_detection_;
   // Rect values of last message with detection(s).
@@ -164,7 +164,7 @@ class ContentZoomingCalculator : public CalculatorBase {
 REGISTER_CALCULATOR(ContentZoomingCalculator);
 
 absl::Status ContentZoomingCalculator::GetContract(
-    mediapipe_v01013_based::CalculatorContract* cc) {
+    hand_tracking_mp_lean::CalculatorContract* cc) {
   RET_CHECK(
       !(cc->Inputs().HasTag(kVideoFrame) && cc->Inputs().HasTag(kVideoSize)))
       << "Provide only VIDEO or VIDEO_SIZE, not both.";
@@ -173,7 +173,7 @@ absl::Status ContentZoomingCalculator::GetContract(
   } else if (cc->Inputs().HasTag(kVideoSize)) {
     cc->Inputs().Tag(kVideoSize).Set<std::pair<int, int>>();
   } else {
-    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "Input VIDEO or VIDEO_SIZE must be provided.";
   }
   if (cc->Inputs().HasTag(kMaxZoomFactorPercent)) {
@@ -186,7 +186,7 @@ absl::Status ContentZoomingCalculator::GetContract(
     cc->Inputs().Tag(kSalientRegions).Set<DetectionSet>();
   }
   if (cc->Inputs().HasTag(kDetections)) {
-    cc->Inputs().Tag(kDetections).Set<std::vector<mediapipe_v01013_based::Detection>>();
+    cc->Inputs().Tag(kDetections).Set<std::vector<hand_tracking_mp_lean::Detection>>();
   }
   if (cc->Inputs().HasTag(kAnimateZoom)) {
     cc->Inputs().Tag(kAnimateZoom).Set<bool>();
@@ -195,13 +195,13 @@ absl::Status ContentZoomingCalculator::GetContract(
     cc->Outputs().Tag(kDetectedBorders).Set<StaticFeatures>();
   }
   if (cc->Outputs().HasTag(kCropRect)) {
-    cc->Outputs().Tag(kCropRect).Set<mediapipe_v01013_based::Rect>();
+    cc->Outputs().Tag(kCropRect).Set<hand_tracking_mp_lean::Rect>();
   }
   if (cc->Outputs().HasTag(kNormalizedCropRect)) {
-    cc->Outputs().Tag(kNormalizedCropRect).Set<mediapipe_v01013_based::NormalizedRect>();
+    cc->Outputs().Tag(kNormalizedCropRect).Set<hand_tracking_mp_lean::NormalizedRect>();
   }
   if (cc->Outputs().HasTag(kFirstCropRect)) {
-    cc->Outputs().Tag(kFirstCropRect).Set<mediapipe_v01013_based::NormalizedRect>();
+    cc->Outputs().Tag(kFirstCropRect).Set<hand_tracking_mp_lean::NormalizedRect>();
   }
   if (cc->InputSidePackets().HasTag(kStateCache)) {
     cc->InputSidePackets().Tag(kStateCache).Set<StateCacheType*>();
@@ -212,16 +212,16 @@ absl::Status ContentZoomingCalculator::GetContract(
   return absl::OkStatus();
 }
 
-absl::Status ContentZoomingCalculator::Open(mediapipe_v01013_based::CalculatorContext* cc) {
-  cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
+absl::Status ContentZoomingCalculator::Open(hand_tracking_mp_lean::CalculatorContext* cc) {
+  cc->SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
   options_ = cc->Options<ContentZoomingCalculatorOptions>();
   if (options_.has_kinematic_options()) {
-    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "Deprecated kinematic_options was set, please set "
               "kinematic_options_zoom and kinematic_options_tilt.";
   }
   if (options_.has_min_motion_to_reframe()) {
-    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "Deprecated min_motion_to_reframe was set, please set "
               "in kinematic_options_zoom and kinematic_options_tilt "
               "directly.";
@@ -229,7 +229,7 @@ absl::Status ContentZoomingCalculator::Open(mediapipe_v01013_based::CalculatorCo
   return absl::OkStatus();
 }
 
-absl::Status ContentZoomingCalculator::Close(mediapipe_v01013_based::CalculatorContext* cc) {
+absl::Status ContentZoomingCalculator::Close(hand_tracking_mp_lean::CalculatorContext* cc) {
   if (initialized_) {
     MP_RETURN_IF_ERROR(SaveState(cc));
   }
@@ -262,8 +262,8 @@ absl::Status ContentZoomingCalculator::ConvertToPanTiltZoom(
 }
 
 namespace {
-mediapipe_v01013_based::LocationData::RelativeBoundingBox ShiftDetection(
-    const mediapipe_v01013_based::LocationData::RelativeBoundingBox& relative_bounding_box,
+hand_tracking_mp_lean::LocationData::RelativeBoundingBox ShiftDetection(
+    const hand_tracking_mp_lean::LocationData::RelativeBoundingBox& relative_bounding_box,
     const float y_offset_percent, const float x_offset_percent) {
   auto shifted_bb = relative_bounding_box;
   shifted_bb.set_ymin(relative_bounding_box.ymin() +
@@ -272,8 +272,8 @@ mediapipe_v01013_based::LocationData::RelativeBoundingBox ShiftDetection(
                       relative_bounding_box.width() * x_offset_percent);
   return shifted_bb;
 }
-mediapipe_v01013_based::autoflip::RectF ShiftDetection(
-    const mediapipe_v01013_based::autoflip::RectF& relative_bounding_box,
+hand_tracking_mp_lean::autoflip::RectF ShiftDetection(
+    const hand_tracking_mp_lean::autoflip::RectF& relative_bounding_box,
     const float y_offset_percent, const float x_offset_percent) {
   auto shifted_bb = relative_bounding_box;
   shifted_bb.set_y(relative_bounding_box.y() +
@@ -288,7 +288,7 @@ absl::Status UpdateRanges(const SalientRegion& region,
                           const float pad_vertical, const float pad_horizontal,
                           float* xmin, float* xmax, float* ymin, float* ymax) {
   if (!region.has_location_normalized()) {
-    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "SalientRegion did not have location normalized set.";
   }
   auto location = ShiftDetection(region.location_normalized(), shift_vertical,
@@ -304,13 +304,13 @@ absl::Status UpdateRanges(const SalientRegion& region,
 
   return absl::OkStatus();
 }
-absl::Status UpdateRanges(const mediapipe_v01013_based::Detection& detection,
+absl::Status UpdateRanges(const hand_tracking_mp_lean::Detection& detection,
                           const float shift_vertical,
                           const float shift_horizontal,
                           const float pad_vertical, const float pad_horizontal,
                           float* xmin, float* xmax, float* ymin, float* ymax) {
   RET_CHECK(detection.location_data().format() ==
-            mediapipe_v01013_based::LocationData::RELATIVE_BOUNDING_BOX)
+            hand_tracking_mp_lean::LocationData::RELATIVE_BOUNDING_BOX)
       << "Face detection input is lacking required relative_bounding_box()";
   const auto& location =
       ShiftDetection(detection.location_data().relative_bounding_box(),
@@ -343,7 +343,7 @@ void MakeStaticFeatures(const int top_border, const int bottom_border,
   border_bottom->mutable_border_position()->set_width(frame_width);
   border_bottom->mutable_border_position()->set_height(bottom_border);
 }
-absl::Status GetVideoResolution(mediapipe_v01013_based::CalculatorContext* cc,
+absl::Status GetVideoResolution(hand_tracking_mp_lean::CalculatorContext* cc,
                                 int* frame_width, int* frame_height) {
   if (cc->Inputs().HasTag(kVideoFrame)) {
     *frame_width = cc->Inputs().Tag(kVideoFrame).Get<ImageFrame>().Width();
@@ -354,7 +354,7 @@ absl::Status GetVideoResolution(mediapipe_v01013_based::CalculatorContext* cc,
     *frame_height =
         cc->Inputs().Tag(kVideoSize).Get<std::pair<int, int>>().second;
   } else {
-    return mediapipe_v01013_based::UnknownErrorBuilder(MEDIAPIPE_LOC)
+    return hand_tracking_mp_lean::UnknownErrorBuilder(MEDIAPIPE_LOC)
            << "Input VIDEO or VIDEO_SIZE must be provided.";
   }
   return absl::OkStatus();
@@ -381,7 +381,7 @@ absl::Status ContentZoomingCalculator::UpdateAspectAndMax() {
 }
 
 absl::Status ContentZoomingCalculator::MaybeLoadState(
-    mediapipe_v01013_based::CalculatorContext* cc, int frame_width, int frame_height) {
+    hand_tracking_mp_lean::CalculatorContext* cc, int frame_width, int frame_height) {
   const auto* state_cache =
       cc->InputSidePackets().HasTag(kStateCache)
           ? cc->InputSidePackets().Tag(kStateCache).Get<StateCacheType*>()
@@ -411,7 +411,7 @@ absl::Status ContentZoomingCalculator::MaybeLoadState(
 }
 
 absl::Status ContentZoomingCalculator::SaveState(
-    mediapipe_v01013_based::CalculatorContext* cc) const {
+    hand_tracking_mp_lean::CalculatorContext* cc) const {
   auto* state_cache =
       cc->InputSidePackets().HasTag(kStateCache)
           ? cc->InputSidePackets().Tag(kStateCache).Get<StateCacheType*>()
@@ -437,7 +437,7 @@ absl::Status ContentZoomingCalculator::SaveState(
 }
 
 double ContentZoomingCalculator::GetMaxZoomFactor(
-    mediapipe_v01013_based::CalculatorContext* cc) const {
+    hand_tracking_mp_lean::CalculatorContext* cc) const {
   double max_zoom_value =
       options_.max_zoom_value_deg() / static_cast<double>(kFieldOfView);
   if (cc->Inputs().HasTag(kMaxZoomFactorPercent)) {
@@ -449,7 +449,7 @@ double ContentZoomingCalculator::GetMaxZoomFactor(
 }
 
 double ContentZoomingCalculator::GetScaleFactor(
-    mediapipe_v01013_based::CalculatorContext* cc) const {
+    hand_tracking_mp_lean::CalculatorContext* cc) const {
   const double min_scale_factor = options_.scale_factor();
   if (cc->Inputs().HasTag(kScaleFactorPercent)) {
     const double factor =
@@ -462,7 +462,7 @@ double ContentZoomingCalculator::GetScaleFactor(
 }
 
 absl::Status ContentZoomingCalculator::InitializeState(
-    mediapipe_v01013_based::CalculatorContext* cc, int frame_width, int frame_height) {
+    hand_tracking_mp_lean::CalculatorContext* cc, int frame_width, int frame_height) {
   frame_width_ = frame_width;
   frame_height_ = frame_height;
   path_solver_pan_ = std::make_unique<KinematicPathSolver>(
@@ -486,7 +486,7 @@ absl::Status ContentZoomingCalculator::InitializeState(
 }
 
 absl::Status ContentZoomingCalculator::UpdateForResolutionChange(
-    mediapipe_v01013_based::CalculatorContext* cc, int frame_width, int frame_height) {
+    hand_tracking_mp_lean::CalculatorContext* cc, int frame_width, int frame_height) {
   // Update state for change in input resolution.
   if (frame_width_ != frame_width || frame_height_ != frame_height) {
     double width_scale = frame_width / static_cast<double>(frame_width_);
@@ -534,7 +534,7 @@ double easeInOutQuad(double t) {
 double lerp(double a, double b, double i) { return a * (1 - i) + b * i; }
 }  // namespace
 
-absl::StatusOr<mediapipe_v01013_based::Rect> ContentZoomingCalculator::GetAnimationRect(
+absl::StatusOr<hand_tracking_mp_lean::Rect> ContentZoomingCalculator::GetAnimationRect(
     int frame_width, int frame_height, const Timestamp& timestamp) const {
   RET_CHECK(IsAnimatingToFirstRect(timestamp))
       << "Must only be called if animating to first rect.";
@@ -550,7 +550,7 @@ absl::StatusOr<mediapipe_v01013_based::Rect> ContentZoomingCalculator::GetAnimat
   const double width = lerp(1.0, first_rect_.width(), interpolation);
   const double height = lerp(1.0, first_rect_.height(), interpolation);
 
-  mediapipe_v01013_based::Rect gpu_rect;
+  hand_tracking_mp_lean::Rect gpu_rect;
   gpu_rect.set_x_center(x_center * frame_width);
   gpu_rect.set_width(width * frame_width);
   gpu_rect.set_y_center(y_center * frame_height);
@@ -559,7 +559,7 @@ absl::StatusOr<mediapipe_v01013_based::Rect> ContentZoomingCalculator::GetAnimat
 }
 
 absl::Status ContentZoomingCalculator::Process(
-    mediapipe_v01013_based::CalculatorContext* cc) {
+    hand_tracking_mp_lean::CalculatorContext* cc) {
   // For async subgraph support, return on empty video size packets.
   if (cc->Inputs().HasTag(kVideoSize) &&
       cc->Inputs().Tag(kVideoSize).IsEmpty()) {
@@ -726,14 +726,14 @@ absl::Status ContentZoomingCalculator::Process(
 
   // Transmit downstream to glcroppingcalculator in discrete int values.
   if (cc->Outputs().HasTag(kCropRect)) {
-    std::unique_ptr<mediapipe_v01013_based::Rect> gpu_rect;
+    std::unique_ptr<hand_tracking_mp_lean::Rect> gpu_rect;
     if (is_animating) {
       auto rect =
           GetAnimationRect(frame_width, frame_height, cc->InputTimestamp());
       MP_RETURN_IF_ERROR(rect.status());
-      gpu_rect = absl::make_unique<mediapipe_v01013_based::Rect>(*rect);
+      gpu_rect = absl::make_unique<hand_tracking_mp_lean::Rect>(*rect);
     } else {
-      gpu_rect = absl::make_unique<mediapipe_v01013_based::Rect>();
+      gpu_rect = absl::make_unique<hand_tracking_mp_lean::Rect>();
       gpu_rect->set_x_center(path_offset_x);
       gpu_rect->set_width(path_width);
       gpu_rect->set_y_center(path_offset_y);
@@ -743,8 +743,8 @@ absl::Status ContentZoomingCalculator::Process(
                                      Timestamp(cc->InputTimestamp()));
   }
   if (cc->Outputs().HasTag(kNormalizedCropRect)) {
-    std::unique_ptr<mediapipe_v01013_based::NormalizedRect> gpu_rect =
-        absl::make_unique<mediapipe_v01013_based::NormalizedRect>();
+    std::unique_ptr<hand_tracking_mp_lean::NormalizedRect> gpu_rect =
+        absl::make_unique<hand_tracking_mp_lean::NormalizedRect>();
     const float float_frame_width = static_cast<float>(frame_width_);
     const float float_frame_height = static_cast<float>(frame_height_);
     if (is_animating) {
@@ -769,7 +769,7 @@ absl::Status ContentZoomingCalculator::Process(
   if (cc->Outputs().HasTag(kFirstCropRect)) {
     cc->Outputs()
         .Tag(kFirstCropRect)
-        .Add(new mediapipe_v01013_based::NormalizedRect(first_rect_),
+        .Add(new hand_tracking_mp_lean::NormalizedRect(first_rect_),
              Timestamp(cc->InputTimestamp()));
   }
 
@@ -832,7 +832,7 @@ absl::Status ContentZoomingCalculator::SmoothAndClampPath(
 }
 
 absl::Status ContentZoomingCalculator::GetDetectionsBox(
-    mediapipe_v01013_based::CalculatorContext* cc, float* xmin, float* xmax, float* ymin,
+    hand_tracking_mp_lean::CalculatorContext* cc, float* xmin, float* xmax, float* ymin,
     float* ymax, bool* only_required_found, bool* has_detections) {
   if (cc->Inputs().HasTag(kSalientRegions)) {
     auto detection_set = cc->Inputs().Tag(kSalientRegions).Get<DetectionSet>();
@@ -855,7 +855,7 @@ absl::Status ContentZoomingCalculator::GetDetectionsBox(
         // If no detections are available and we never had any,
         // simply return the full-image rectangle as crop-rect.
         if (cc->Outputs().HasTag(kCropRect)) {
-          auto default_rect = absl::make_unique<mediapipe_v01013_based::Rect>();
+          auto default_rect = absl::make_unique<hand_tracking_mp_lean::Rect>();
           default_rect->set_x_center(frame_width_ / 2);
           default_rect->set_y_center(frame_height_ / 2);
           default_rect->set_width(frame_width_);
@@ -864,7 +864,7 @@ absl::Status ContentZoomingCalculator::GetDetectionsBox(
                                            Timestamp(cc->InputTimestamp()));
         }
         if (cc->Outputs().HasTag(kNormalizedCropRect)) {
-          auto default_rect = absl::make_unique<mediapipe_v01013_based::NormalizedRect>();
+          auto default_rect = absl::make_unique<hand_tracking_mp_lean::NormalizedRect>();
           default_rect->set_x_center(0.5);
           default_rect->set_y_center(0.5);
           default_rect->set_width(1.0);
@@ -877,7 +877,7 @@ absl::Status ContentZoomingCalculator::GetDetectionsBox(
         if (cc->Outputs().HasTag(kFirstCropRect)) {
           cc->Outputs()
               .Tag(kFirstCropRect)
-              .Add(new mediapipe_v01013_based::NormalizedRect(),
+              .Add(new hand_tracking_mp_lean::NormalizedRect(),
                    Timestamp(cc->InputTimestamp()));
         }
         *has_detections = false;
@@ -886,7 +886,7 @@ absl::Status ContentZoomingCalculator::GetDetectionsBox(
     } else {
       auto raw_detections = cc->Inputs()
                                 .Tag(kDetections)
-                                .Get<std::vector<mediapipe_v01013_based::Detection>>();
+                                .Get<std::vector<hand_tracking_mp_lean::Detection>>();
       for (const auto& detection : raw_detections) {
         *only_required_found = true;
         MP_RETURN_IF_ERROR(UpdateRanges(
@@ -901,4 +901,4 @@ absl::Status ContentZoomingCalculator::GetDetectionsBox(
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -21,7 +21,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/util/header_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kAllowTag[] = "ALLOW";
 constexpr char kMaxInFlightTag[] = "MAX_IN_FLIGHT";
@@ -159,7 +159,7 @@ class ABSL_DEPRECATED("Use FlowLimiterCalculator instead.")
         // TODO: if the packet is empty, the ts is unset, and we
         // cannot read the timestamp bound, even though we'd like to propagate
         // it.
-      } else if (mediapipe_v01013_based::ContainsKey(pending_ts_, ts)) {
+      } else if (hand_tracking_mp_lean::ContainsKey(pending_ts_, ts)) {
         // If we have already sent this timestamp (on another stream), send it
         // on this stream too.
         out.AddPacket(std::move(packet));
@@ -203,4 +203,4 @@ class ABSL_DEPRECATED("Use FlowLimiterCalculator instead.")
 };
 REGISTER_CALCULATOR(RealTimeFlowLimiterCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

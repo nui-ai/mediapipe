@@ -39,7 +39,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/tool/tag_map.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Indicates the operation the node is ready for.
 enum class NodeReadiness {
@@ -322,12 +322,12 @@ using InputStreamHandlerRegistry = GlobalFactoryRegistry<
     std::unique_ptr<InputStreamHandler>, std::shared_ptr<tool::TagMap>,
     CalculatorContextManager*, const MediaPipeOptions&, bool>;
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 // Macro for registering the input stream handler.
 #define REGISTER_INPUT_STREAM_HANDLER(name)                                    \
   REGISTER_FACTORY_FUNCTION_QUALIFIED(                                         \
-      mediapipe_v01013_based::InputStreamHandlerRegistry, input_handler_registration, name, \
+      hand_tracking_mp_lean::InputStreamHandlerRegistry, input_handler_registration, name, \
       std::make_unique<name, std::shared_ptr<tool::TagMap>,                    \
                        CalculatorContextManager*, const MediaPipeOptions&,     \
                        bool>)

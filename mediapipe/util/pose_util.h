@@ -18,16 +18,16 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/port/opencv_core_inc.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-void DrawPose(const mediapipe_v01013_based::NormalizedLandmarkList& pose, bool flip_y,
+void DrawPose(const hand_tracking_mp_lean::NormalizedLandmarkList& pose, bool flip_y,
               cv::Mat* image);
 
-void DrawFace(const mediapipe_v01013_based::NormalizedLandmarkList& face,
+void DrawFace(const hand_tracking_mp_lean::NormalizedLandmarkList& face,
               const std::pair<int, int>& image_size, const cv::Mat& affine,
               bool flip_y, bool draw_nose, int color_style, bool reverse_color,
               int draw_line_width, cv::Mat* image);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_POSE_UTIL_H_

@@ -12,7 +12,7 @@
 
 #include "absl/types/optional.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class Rect;
 class NormalizedRect;

@@ -20,7 +20,7 @@
 #include "mediapipe/framework/port/statusor.h"
 #include "mediapipe/framework/port/threadpool.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // A multithreaded executor based on a thread pool.
 class ThreadPoolExecutor : public Executor {
@@ -43,7 +43,7 @@ class ThreadPoolExecutor : public Executor {
   // Saves the value of the stack size option and starts the thread pool.
   void Start();
 
-  mediapipe_v01013_based::ThreadPool thread_pool_;
+  hand_tracking_mp_lean::ThreadPool thread_pool_;
 
   // Records the stack size in ThreadOptions right before we call
   // thread_pool_.StartWorkers().
@@ -58,6 +58,6 @@ class ThreadPoolExecutor : public Executor {
   size_t stack_size_ = 0;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_THREAD_POOL_EXECUTOR_H_

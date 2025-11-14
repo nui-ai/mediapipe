@@ -26,10 +26,10 @@
 #include "mediapipe/framework/collection_item_id.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
-using mediapipe_v01013_based::BypassCalculatorOptions;
+using hand_tracking_mp_lean::BypassCalculatorOptions;
 
 // Defines a "bypass" channel to use in place of a disabled feature subgraph.
 // By default, all inputs are discarded and all outputs are ignored.
@@ -61,7 +61,7 @@ using mediapipe_v01013_based::BypassCalculatorOptions;
 //
 class BypassCalculator : public Node {
  public:
-  static constexpr mediapipe_v01013_based::api2::Input<int>::Optional kNotNeeded{"N_N_"};
+  static constexpr hand_tracking_mp_lean::api2::Input<int>::Optional kNotNeeded{"N_N_"};
   MEDIAPIPE_NODE_CONTRACT(kNotNeeded);
   using IdMap = std::map<CollectionItemId, CollectionItemId>;
 
@@ -163,4 +163,4 @@ class BypassCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(BypassCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

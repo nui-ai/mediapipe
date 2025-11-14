@@ -20,15 +20,15 @@ limitations under the License.
 #include "absl/strings/substitute.h"
 #include "mediapipe/tasks/cc/text/utils/vocab_utils.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace text {
 namespace tokenizers {
 
 namespace {
 
-using ::mediapipe_v01013_based::tasks::text::LoadVocabAndIndexFromBuffer;
-using ::mediapipe_v01013_based::tasks::text::LoadVocabAndIndexFromFile;
+using ::hand_tracking_mp_lean::tasks::text::LoadVocabAndIndexFromBuffer;
+using ::hand_tracking_mp_lean::tasks::text::LoadVocabAndIndexFromFile;
 
 constexpr char kStart[] = "<START>";
 constexpr char kPad[] = "<PAD>";
@@ -126,4 +126,4 @@ bool RegexTokenizer::GetUnknownToken(int* unknown_token) {
 }  // namespace tokenizers
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

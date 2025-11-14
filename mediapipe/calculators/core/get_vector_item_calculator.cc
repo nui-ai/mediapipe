@@ -19,23 +19,23 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 using GetLandmarkListVectorItemCalculator =
-    GetVectorItemCalculator<mediapipe_v01013_based::LandmarkList>;
+    GetVectorItemCalculator<hand_tracking_mp_lean::LandmarkList>;
 REGISTER_CALCULATOR(GetLandmarkListVectorItemCalculator);
 
 using GetNormalizedLandmarkListVectorItemCalculator =
-    GetVectorItemCalculator<mediapipe_v01013_based::NormalizedLandmarkList>;
+    GetVectorItemCalculator<hand_tracking_mp_lean::NormalizedLandmarkList>;
 REGISTER_CALCULATOR(GetNormalizedLandmarkListVectorItemCalculator);
 
 using GetClassificationListVectorItemCalculator =
-    GetVectorItemCalculator<mediapipe_v01013_based::ClassificationList>;
+    GetVectorItemCalculator<hand_tracking_mp_lean::ClassificationList>;
 REGISTER_CALCULATOR(GetClassificationListVectorItemCalculator);
 
 using GetDetectionVectorItemCalculator =
-    GetVectorItemCalculator<mediapipe_v01013_based::Detection>;
+    GetVectorItemCalculator<hand_tracking_mp_lean::Detection>;
 REGISTER_CALCULATOR(GetDetectionVectorItemCalculator);
 
 using GetNormalizedRectVectorItemCalculator =
@@ -46,4 +46,4 @@ using GetRectVectorItemCalculator = GetVectorItemCalculator<Rect>;
 REGISTER_CALCULATOR(GetRectVectorItemCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

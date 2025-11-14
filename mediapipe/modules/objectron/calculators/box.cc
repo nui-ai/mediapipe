@@ -18,7 +18,7 @@
 #include "absl/log/absl_check.h"
 #include "mediapipe/framework/port/logging.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 constexpr int kFrontFaceId = 4;
@@ -253,4 +253,4 @@ template void Box::Fit<Vector3f>(const std::vector<Vector3f>&);
 template void Box::Fit<Map<Vector3f>>(const std::vector<Map<Vector3f>>&);
 template void Box::Fit<Map<const Vector3f>>(
     const std::vector<Map<const Vector3f>>&);
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

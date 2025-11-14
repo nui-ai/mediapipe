@@ -36,7 +36,7 @@
 
 using testing::ElementsAre;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -96,7 +96,7 @@ class SimulationClockTest : public ::testing::Test {
   }
 
   // Initialize the test clock as a RealClock.
-  void SetupRealClock() { clock_ = mediapipe_v01013_based::Clock::RealClock(); }
+  void SetupRealClock() { clock_ = hand_tracking_mp_lean::Clock::RealClock(); }
 
   // Return the values of the timestamps of a vector of Packets.
   static std::vector<int64_t> TimestampValues(
@@ -119,7 +119,7 @@ class SimulationClockTest : public ::testing::Test {
   std::shared_ptr<SimulationClock> simulation_clock_;
   CalculatorGraphConfig graph_config_;
   CalculatorGraph graph_;
-  mediapipe_v01013_based::Clock* clock_;
+  hand_tracking_mp_lean::Clock* clock_;
 };
 
 // Just directly calls SimulationClock::Sleep on several threads.
@@ -297,4 +297,4 @@ TEST_F(SimulationClockTest, DestroyClock) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -36,16 +36,16 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/environment.pb.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/face_geometry.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace face_geometry {
 namespace {
 
 using ::file::Defaults;
-using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::Environment;
-// using ::mediapipe_v01013_based::face_geometry::Environment;
-using ::mediapipe_v01013_based::tasks::vision::face_geometry::proto::FaceGeometry;
+using ::hand_tracking_mp_lean::tasks::vision::face_geometry::proto::Environment;
+// using ::hand_tracking_mp_lean::face_geometry::Environment;
+using ::hand_tracking_mp_lean::tasks::vision::face_geometry::proto::FaceGeometry;
 
 constexpr char kTestDataDirectory[] = "/mediapipe/tasks/testdata/vision/";
 constexpr char kFaceLandmarksFileName[] =
@@ -175,4 +175,4 @@ TEST(FaceGeometryFromLandmarksGraphTest, SideInEnvironment) {
 }  // namespace face_geometry
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

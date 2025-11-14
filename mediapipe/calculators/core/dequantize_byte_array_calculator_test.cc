@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/port/status_matchers.h"  // NOLINT
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kFloatVectorTag[] = "FLOAT_VECTOR";
 constexpr char kEncodedTag[] = "ENCODED";
@@ -145,4 +145,4 @@ TEST(DequantizeByteArrayCalculatorTest, TestDequantization) {
   EXPECT_EQ(Timestamp(0), outputs[0].Timestamp());
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

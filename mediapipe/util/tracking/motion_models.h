@@ -30,7 +30,7 @@
 #include "mediapipe/util/tracking/motion_models.pb.h"
 #include "mediapipe/util/tracking/region_flow.pb.h"  // NOLINT
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Abstract Camera Model, functionality that each model must support.
 template <class Model>
@@ -1846,6 +1846,6 @@ inline Vector2_f MixtureModelAdapter<HomographyTraits>::SolveForPointChecked(
   return HomographyAdapter::TransformPoint(inv_base_model, pt);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_MOTION_MODELS_H_

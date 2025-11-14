@@ -9,7 +9,7 @@
 #include <mutex>
 
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
     // global value definitions which previously came as input to the entire invocation of the root graph
     int SharedCalculatorState::counter_ = 0;
@@ -46,4 +46,4 @@ namespace mediapipe_v01013_based {
     // smooths out merging and refactoring.
     std::pair<int, int> image_size_;
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/util/color.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 using ::testing::HasSubstr;
@@ -287,4 +287,4 @@ TEST(FlatColorImageCalculatorTest, FailureSettingInputImageOnOutputSidePacket) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

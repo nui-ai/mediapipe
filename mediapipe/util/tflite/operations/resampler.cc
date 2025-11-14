@@ -9,7 +9,7 @@
 #include "tensorflow/lite/kernels/kernel_util.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tflite_operations {
 namespace {
 
@@ -149,4 +149,4 @@ TfLiteRegistration* RegisterResampler() {
 }
 
 }  // namespace tflite_operations
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -1,10 +1,10 @@
 // Proto messages related to latency measurement for Soapbox.
 syntax = "proto2";
 
-// TODO: Switch to package mediapipe_v01013_based.
-package mediapipe_v01013_based;
+// TODO: Switch to package hand_tracking_mp_lean.
+package hand_tracking_mp_lean;
 
-// Contains the latency information for a packet stream in mediapipe_v01013_based. The
+// Contains the latency information for a packet stream in hand_tracking_mp_lean. The
 // following are provided
 // 1. current latency
 // 2. running average

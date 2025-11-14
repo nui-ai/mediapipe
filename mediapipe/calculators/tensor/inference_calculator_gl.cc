@@ -42,7 +42,7 @@
 #include "tensorflow/lite/delegates/gpu/gl_delegate.h"
 #include "tensorflow/lite/interpreter.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 class InferenceCalculatorGlImpl
@@ -65,11 +65,11 @@ class InferenceCalculatorGlImpl
     absl::Status LoadModel(CalculatorContext* cc);
     absl::Status LoadDelegate(
         CalculatorContext* cc,
-        const mediapipe_v01013_based::InferenceCalculatorOptions::Delegate&
+        const hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate&
             delegate_options);
     absl::Status LoadDelegateAndAllocateTensors(
         CalculatorContext* cc,
-        const mediapipe_v01013_based::InferenceCalculatorOptions::Delegate&
+        const hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate&
             delegate_options);
     absl::Status Process(CalculatorContext* cc, const TensorSpan& input_tensors,
                          std::vector<Tensor>& output_tensors);
@@ -123,7 +123,7 @@ class InferenceCalculatorGlImpl
   absl::StatusOr<std::unique_ptr<GpuInferenceRunner>> CreateInferenceRunner(
       CalculatorContext* cc);
 
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
   std::unique_ptr<GpuInferenceRunner> gpu_inference_runner_;
 };
 
@@ -141,17 +141,17 @@ absl::Status InferenceCalculatorGlImpl::GpuInferenceRunner::Init(
     CalculatorContext* cc, std::shared_ptr<GlContext> gl_context) {
   init_gl_context_ = gl_context;
   MP_RETURN_IF_ERROR(LoadModel(cc));
-  const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
-  mediapipe_v01013_based::InferenceCalculatorOptions::Delegate delegate_options =
+  const auto& options = cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
+  hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate delegate_options =
       options.delegate();
   if (!kDelegate(cc).IsEmpty()) {
-    const mediapipe_v01013_based::InferenceCalculatorOptions::Delegate&
+    const hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate&
         input_side_packet_delegate = kDelegate(cc).Get();
     RET_CHECK(
         (input_side_packet_delegate.has_gpu() &&
          !input_side_packet_delegate.gpu().use_advanced_gpu_api()) ||
         input_side_packet_delegate.delegate_case() ==
-            mediapipe_v01013_based::InferenceCalculatorOptions::Delegate::DELEGATE_NOT_SET)
+            hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate::DELEGATE_NOT_SET)
         << "inference_calculator_gl only supports delegate input side packet "
         << "for Gpu (non advanced)";
     delegate_options.MergeFrom(input_side_packet_delegate);
@@ -181,7 +181,7 @@ absl::Status InferenceCalculatorGlImpl::GpuInferenceRunner::LoadModel(
       InferenceIoMapper::GetInputOutputTensorNamesFromInterpreter(
           *interpreter_));
   interpreter_->SetNumThreads(
-      cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>().cpu_num_thread());
+      cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>().cpu_num_thread());
 
   return absl::OkStatus();
 }
@@ -189,7 +189,7 @@ absl::Status InferenceCalculatorGlImpl::GpuInferenceRunner::LoadModel(
 absl::Status
 InferenceCalculatorGlImpl::GpuInferenceRunner::LoadDelegateAndAllocateTensors(
     CalculatorContext* cc,
-    const mediapipe_v01013_based::InferenceCalculatorOptions::Delegate& delegate_options) {
+    const hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate& delegate_options) {
   MP_RETURN_IF_ERROR(LoadDelegate(cc, delegate_options));
 
   // AllocateTensors() can be called only after ModifyGraphWithDelegate.
@@ -203,7 +203,7 @@ InferenceCalculatorGlImpl::GpuInferenceRunner::LoadDelegateAndAllocateTensors(
 
 absl::Status InferenceCalculatorGlImpl::GpuInferenceRunner::LoadDelegate(
     CalculatorContext* cc,
-    const mediapipe_v01013_based::InferenceCalculatorOptions::Delegate& delegate_options) {
+    const hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate& delegate_options) {
   // Configure and create the delegate.
   TfLiteGpuDelegateOptions options = TfLiteGpuDelegateOptionsDefault();
   options.compile_options.precision_loss_allowed =
@@ -299,12 +299,12 @@ InferenceCalculatorGlImpl::GpuInferenceRunner::GetInputOutputTensorNames()
 absl::Status InferenceCalculatorGlImpl::UpdateContract(CalculatorContract* cc) {
   MP_RETURN_IF_ERROR(TensorContractCheck(cc));
 
-  const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
+  const auto& options = cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
   RET_CHECK(!options.model_path().empty() ^ kSideInModel(cc).IsConnected() ^ kSideInModelPath(cc).IsConnected())
       << "One of: model path in options, MODEL side packet, or MODEL_PATH side packet is required.";
 
   WarnFeedbackTensorsUnsupported(cc);
-  return mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc);
+  return hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract(cc);
 }
 
 absl::Status InferenceCalculatorGlImpl::Open(CalculatorContext* cc) {
@@ -340,4 +340,4 @@ InferenceCalculatorGlImpl::CreateInferenceRunner(CalculatorContext* cc) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

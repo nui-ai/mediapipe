@@ -17,12 +17,12 @@ node {
   input_side_packet: "SELECT:model_complexity"
   output_side_packet: "PACKET:model_path"
   options: {
-    [mediapipe_v01013_based.SwitchContainerOptions.ext] {
+    [hand_tracking_mp_lean.SwitchContainerOptions.ext] {
       select: 1
       contained_node: {
         calculator: "ConstantSidePacketCalculator"
         options: {
-          [mediapipe_v01013_based.ConstantSidePacketCalculatorOptions.ext]: {
+          [hand_tracking_mp_lean.ConstantSidePacketCalculatorOptions.ext]: {
             packet {
               string_value: "mediapipe/modules/hand_landmark/hand_landmark_lite.tflite"
             }
@@ -32,7 +32,7 @@ node {
       contained_node: {
         calculator: "ConstantSidePacketCalculator"
         options: {
-          [mediapipe_v01013_based.ConstantSidePacketCalculatorOptions.ext]: {
+          [hand_tracking_mp_lean.ConstantSidePacketCalculatorOptions.ext]: {
             packet {
               string_value: "mediapipe/modules/hand_landmark/hand_landmark_full.tflite"
             }

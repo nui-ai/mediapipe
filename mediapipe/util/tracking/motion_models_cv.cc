@@ -16,7 +16,7 @@
 
 #include "absl/log/absl_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 void ModelCvConvert<TranslationModel>::ToCvMat(const TranslationModel& model,
                                                cv::Mat* matrix) {
@@ -56,4 +56,4 @@ void ModelCvConvert<Homography>::ToCvMat(const Homography& model,
   matrix->at<float>(2, 2) = 1.0;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

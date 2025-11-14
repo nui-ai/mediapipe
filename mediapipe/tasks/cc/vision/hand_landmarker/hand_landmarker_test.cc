@@ -43,7 +43,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/utils/image_utils.h"
 #include "tensorflow/lite/test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace hand_landmarker {
@@ -51,12 +51,12 @@ namespace hand_landmarker {
 namespace {
 
 using ::file::Defaults;
-using ::mediapipe_v01013_based::file::JoinPath;
-using ::mediapipe_v01013_based::tasks::components::containers::ConvertToClassifications;
-using ::mediapipe_v01013_based::tasks::components::containers::ConvertToNormalizedLandmarks;
-using ::mediapipe_v01013_based::tasks::components::containers::RectF;
-using ::mediapipe_v01013_based::tasks::containers::proto::LandmarksDetectionResult;
-using ::mediapipe_v01013_based::tasks::vision::core::ImageProcessingOptions;
+using ::hand_tracking_mp_lean::file::JoinPath;
+using ::hand_tracking_mp_lean::tasks::components::containers::ConvertToClassifications;
+using ::hand_tracking_mp_lean::tasks::components::containers::ConvertToNormalizedLandmarks;
+using ::hand_tracking_mp_lean::tasks::components::containers::RectF;
+using ::hand_tracking_mp_lean::tasks::containers::proto::LandmarksDetectionResult;
+using ::hand_tracking_mp_lean::tasks::vision::core::ImageProcessingOptions;
 using ::testing::HasSubstr;
 using ::testing::Optional;
 using ::testing::TestParamInfo;
@@ -532,4 +532,4 @@ INSTANTIATE_TEST_SUITE_P(
 }  // namespace hand_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

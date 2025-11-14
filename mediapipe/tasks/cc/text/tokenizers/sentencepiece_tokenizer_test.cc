@@ -19,12 +19,12 @@ limitations under the License.
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/tasks/cc/core/utils.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace text {
 namespace tokenizers {
 
-using ::mediapipe_v01013_based::tasks::core::LoadBinaryContent;
+using ::hand_tracking_mp_lean::tasks::core::LoadBinaryContent;
 using ::testing::ElementsAre;
 
 namespace {
@@ -82,4 +82,4 @@ TEST(SentencePieceTokenizerTest, TestLookupWord) {
 }  // namespace tokenizers
 }  // namespace text
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

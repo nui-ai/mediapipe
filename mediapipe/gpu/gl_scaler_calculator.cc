@@ -36,7 +36,7 @@ typedef int DimensionsPacketType[];
 typedef int DimensionsPacketType[2];
 #endif
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kLeftRightPaddingTag[] = "LEFT_RIGHT_PADDING";
 constexpr char kTopBottomPaddingTag[] = "TOP_BOTTOM_PADDING";
@@ -45,7 +45,7 @@ constexpr char kOutputDimensionsTag[] = "OUTPUT_DIMENSIONS";
 constexpr char kRotationTag[] = "ROTATION";
 constexpr char kImageTag[] = "IMAGE";
 
-using Image = mediapipe_v01013_based::Image;
+using Image = hand_tracking_mp_lean::Image;
 
 // Scales, rotates, horizontal or vertical flips the image.
 // See GlSimpleCalculatorBase for inputs, outputs and input side packets.
@@ -163,7 +163,7 @@ absl::Status GlScalerCalculator::GetContract(CalculatorContract* cc) {
 absl::Status GlScalerCalculator::Open(CalculatorContext* cc) {
   // Inform the framework that we always output at the same timestamp
   // as we receive a packet at.
-  cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
+  cc->SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
 
   // Let the helper access the GL context information.
   MP_RETURN_IF_ERROR(helper_.Open(cc));
@@ -434,4 +434,4 @@ GlScalerCalculator::~GlScalerCalculator() {
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

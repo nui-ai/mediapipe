@@ -22,11 +22,11 @@
 
 enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, NUM_ATTRIBUTES };
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-using ::mediapipe_v01013_based::MaskOverlayCalculatorOptions_MaskChannel_ALPHA;
-using ::mediapipe_v01013_based::MaskOverlayCalculatorOptions_MaskChannel_RED;
-using ::mediapipe_v01013_based::MaskOverlayCalculatorOptions_MaskChannel_UNKNOWN;
+using ::hand_tracking_mp_lean::MaskOverlayCalculatorOptions_MaskChannel_ALPHA;
+using ::hand_tracking_mp_lean::MaskOverlayCalculatorOptions_MaskChannel_RED;
+using ::hand_tracking_mp_lean::MaskOverlayCalculatorOptions_MaskChannel_UNKNOWN;
 
 // Mixes two frames using a third mask frame or constant value.
 //
@@ -278,4 +278,4 @@ MaskOverlayCalculator::~MaskOverlayCalculator() {
   });
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

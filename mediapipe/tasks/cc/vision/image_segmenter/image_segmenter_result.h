@@ -20,7 +20,7 @@ limitations under the License.
 
 #include "mediapipe/framework/formats/image.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace image_segmenter {
@@ -42,6 +42,6 @@ struct ImageSegmenterResult {
 }  // namespace image_segmenter
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_IMAGE_SEGMENTER_IMAGE_SEGMENTER_RESULT_H_

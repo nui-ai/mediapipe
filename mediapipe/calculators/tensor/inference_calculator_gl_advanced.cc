@@ -38,7 +38,7 @@
 #include "mediapipe/util/tflite/tflite_gpu_runner.h"
 #include "mediapipe/util/tflite/tflite_model_loader.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // Runs TFLite GPU delegate API2 directly, bypassing interpreter usage, and
@@ -79,7 +79,7 @@ class InferenceCalculatorGlAdvancedImpl
    private:
     absl::Status InitTFLiteGPURunner(
         CalculatorContext* cc,
-        const mediapipe_v01013_based::InferenceCalculatorOptions::Delegate& delegate);
+        const hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate& delegate);
 
     // TfLite requires us to keep the model alive as long as the interpreter
     // is.
@@ -101,7 +101,7 @@ class InferenceCalculatorGlAdvancedImpl
       CalculatorContext* cc);
 
   std::unique_ptr<InferenceRunner> inference_runner_;
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
 };
 
 InferenceCalculatorGlAdvancedImpl::GpuInferenceRunner::~GpuInferenceRunner() {
@@ -118,16 +118,16 @@ InferenceCalculatorGlAdvancedImpl::GpuInferenceRunner::~GpuInferenceRunner() {
 absl::Status InferenceCalculatorGlAdvancedImpl::GpuInferenceRunner::Init(
     CalculatorContext* cc, std::shared_ptr<GlContext> gl_context) {
   initialization_gl_context_ = gl_context;
-  const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
+  const auto& options = cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
 
-  mediapipe_v01013_based::InferenceCalculatorOptions::Delegate delegate = options.delegate();
+  hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate delegate = options.delegate();
   if (!kDelegate(cc).IsEmpty()) {
-    const mediapipe_v01013_based::InferenceCalculatorOptions::Delegate&
+    const hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate&
         input_side_packet_delegate = kDelegate(cc).Get();
     RET_CHECK(
         input_side_packet_delegate.has_gpu() ||
         input_side_packet_delegate.delegate_case() ==
-            mediapipe_v01013_based::InferenceCalculatorOptions::Delegate::DELEGATE_NOT_SET)
+            hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate::DELEGATE_NOT_SET)
         << "inference_calculator_gl_advanced only supports gpu delegate "
            "configuration through side packet.";
     delegate.MergeFrom(input_side_packet_delegate);
@@ -172,7 +172,7 @@ const InputOutputTensorNames& InferenceCalculatorGlAdvancedImpl::
 absl::Status
 InferenceCalculatorGlAdvancedImpl::GpuInferenceRunner::InitTFLiteGPURunner(
     CalculatorContext* cc,
-    const mediapipe_v01013_based::InferenceCalculatorOptions::Delegate& delegate) {
+    const hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate& delegate) {
   MP_ASSIGN_OR_RETURN(model_packet_, GetModelAsPacket(cc));
   const auto& model = *model_packet_.Get();
 
@@ -186,31 +186,31 @@ InferenceCalculatorGlAdvancedImpl::GpuInferenceRunner::InitTFLiteGPURunner(
   options.priority2 = tflite::gpu::InferencePriority::AUTO;
   options.priority3 = tflite::gpu::InferencePriority::AUTO;
   switch (delegate.gpu().usage()) {
-    case mediapipe_v01013_based::InferenceCalculatorOptions::Delegate::Gpu::
+    case hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate::Gpu::
         FAST_SINGLE_ANSWER: {
       options.usage = tflite::gpu::InferenceUsage::FAST_SINGLE_ANSWER;
       break;
     }
-    case mediapipe_v01013_based::InferenceCalculatorOptions::Delegate::Gpu::
+    case hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate::Gpu::
         SUSTAINED_SPEED: {
       options.usage = tflite::gpu::InferenceUsage::SUSTAINED_SPEED;
       break;
     }
-    case mediapipe_v01013_based::InferenceCalculatorOptions::Delegate::Gpu::UNSPECIFIED: {
+    case hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate::Gpu::UNSPECIFIED: {
       return absl::InternalError("inference usage need to be specified.");
     }
   }
   tflite_gpu_runner_ = std::make_unique<tflite::gpu::TFLiteGPURunner>(options);
   switch (delegate.gpu().api()) {
-    case mediapipe_v01013_based::InferenceCalculatorOptions::Delegate::Gpu::ANY: {
+    case hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate::Gpu::ANY: {
       // Do not need to force any specific API.
       break;
     }
-    case mediapipe_v01013_based::InferenceCalculatorOptions::Delegate::Gpu::OPENGL: {
+    case hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate::Gpu::OPENGL: {
       tflite_gpu_runner_->ForceOpenGL();
       break;
     }
-    case mediapipe_v01013_based::InferenceCalculatorOptions::Delegate::Gpu::OPENCL: {
+    case hand_tracking_mp_lean::InferenceCalculatorOptions::Delegate::Gpu::OPENCL: {
       tflite_gpu_runner_->ForceOpenCL();
       break;
     }
@@ -257,12 +257,12 @@ absl::Status InferenceCalculatorGlAdvancedImpl::UpdateContract(
     CalculatorContract* cc) {
   MP_RETURN_IF_ERROR(TensorContractCheck(cc));
 
-  const auto& options = cc->Options<mediapipe_v01013_based::InferenceCalculatorOptions>();
+  const auto& options = cc->Options<hand_tracking_mp_lean::InferenceCalculatorOptions>();
   RET_CHECK(!options.model_path().empty() ^ kSideInModel(cc).IsConnected())
       << "Either model as side packet or model path in options is required.";
 
   WarnFeedbackTensorsUnsupported(cc);
-  MP_RETURN_IF_ERROR(mediapipe_v01013_based::GlCalculatorHelper::UpdateContract(cc));
+  MP_RETURN_IF_ERROR(hand_tracking_mp_lean::GlCalculatorHelper::UpdateContract(cc));
   return absl::OkStatus();
 }
 
@@ -302,4 +302,4 @@ InferenceCalculatorGlAdvancedImpl::CreateInferenceRunner(
 }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -30,7 +30,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/core/image_processing_options.h"
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace face_stylizer {
@@ -44,7 +44,7 @@ struct FaceStylizerOptions {
   // The user-defined result callback for processing live stream data.
   // The result callback should only be specified when the running mode is set
   // to RunningMode::LIVE_STREAM.
-  std::function<void(absl::StatusOr<std::optional<mediapipe_v01013_based::Image>>,
+  std::function<void(absl::StatusOr<std::optional<hand_tracking_mp_lean::Image>>,
                      const Image&, int64_t)>
       result_callback = nullptr;
 };
@@ -76,8 +76,8 @@ class FaceStylizer : tasks::vision::core::BaseVisionTaskApi {
   // When no face is detected on the input image, the method returns a
   // std::nullopt. Otherwise, returns the stylized image of the most visible
   // face. The stylized output image size is the same as the model output size.
-  absl::StatusOr<std::optional<mediapipe_v01013_based::Image>> Stylize(
-      mediapipe_v01013_based::Image image,
+  absl::StatusOr<std::optional<hand_tracking_mp_lean::Image>> Stylize(
+      hand_tracking_mp_lean::Image image,
       std::optional<core::ImageProcessingOptions> image_processing_options =
           std::nullopt);
 
@@ -88,6 +88,6 @@ class FaceStylizer : tasks::vision::core::BaseVisionTaskApi {
 }  // namespace face_stylizer
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_FACE_STYLIZER_FACE_STYLIZER_H_

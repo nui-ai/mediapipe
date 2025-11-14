@@ -28,8 +28,8 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/framework/timestamp.h"
 
-using mediapipe_v01013_based::ImageFrame;
-using mediapipe_v01013_based::PacketTypeSet;
+using hand_tracking_mp_lean::ImageFrame;
+using hand_tracking_mp_lean::PacketTypeSet;
 
 // IO labels.
 constexpr char kVideoInputTag[] = "VIDEO";
@@ -42,7 +42,7 @@ const int kHistogramBinNum[] = {kSaturationBins, kSaturationBins,
 const float kRange[] = {0, 256};
 const float* kHistogramRange[] = {kRange, kRange, kRange};
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace autoflip {
 
 // This calculator computes a shot (or scene) change within a video.  It works
@@ -55,21 +55,21 @@ namespace autoflip {
 //    input_stream: "VIDEO:camera_frames"
 //    output_stream: "IS_SHOT_CHANGE:is_shot"
 //  }
-class ShotBoundaryCalculator : public mediapipe_v01013_based::CalculatorBase {
+class ShotBoundaryCalculator : public hand_tracking_mp_lean::CalculatorBase {
  public:
   ShotBoundaryCalculator() {}
   ShotBoundaryCalculator(const ShotBoundaryCalculator&) = delete;
   ShotBoundaryCalculator& operator=(const ShotBoundaryCalculator&) = delete;
 
-  static absl::Status GetContract(mediapipe_v01013_based::CalculatorContract* cc);
-  absl::Status Open(mediapipe_v01013_based::CalculatorContext* cc) override;
-  absl::Status Process(mediapipe_v01013_based::CalculatorContext* cc) override;
+  static absl::Status GetContract(hand_tracking_mp_lean::CalculatorContract* cc);
+  absl::Status Open(hand_tracking_mp_lean::CalculatorContext* cc) override;
+  absl::Status Process(hand_tracking_mp_lean::CalculatorContext* cc) override;
 
  private:
   // Computes the histogram of an image.
   void ComputeHistogram(const cv::Mat& image, cv::Mat* image_histogram);
   // Transmits signal to next calculator.
-  void Transmit(mediapipe_v01013_based::CalculatorContext* cc, bool is_shot_change);
+  void Transmit(hand_tracking_mp_lean::CalculatorContext* cc, bool is_shot_change);
   // Calculator options.
   ShotBoundaryCalculatorOptions options_;
   // Last time a shot was detected.
@@ -99,14 +99,14 @@ void ShotBoundaryCalculator::ComputeHistogram(const cv::Mat& image,
                kHistogramBinNum, kHistogramRange, true, false);
 }
 
-absl::Status ShotBoundaryCalculator::Open(mediapipe_v01013_based::CalculatorContext* cc) {
+absl::Status ShotBoundaryCalculator::Open(hand_tracking_mp_lean::CalculatorContext* cc) {
   options_ = cc->Options<ShotBoundaryCalculatorOptions>();
   last_shot_timestamp_ = Timestamp(0);
   init_ = false;
   return absl::OkStatus();
 }
 
-void ShotBoundaryCalculator::Transmit(mediapipe_v01013_based::CalculatorContext* cc,
+void ShotBoundaryCalculator::Transmit(hand_tracking_mp_lean::CalculatorContext* cc,
                                       bool is_shot_change) {
   if ((cc->InputTimestamp() - last_shot_timestamp_).Seconds() <
       options_.min_shot_span()) {
@@ -127,9 +127,9 @@ void ShotBoundaryCalculator::Transmit(mediapipe_v01013_based::CalculatorContext*
   }
 }
 
-absl::Status ShotBoundaryCalculator::Process(mediapipe_v01013_based::CalculatorContext* cc) {
+absl::Status ShotBoundaryCalculator::Process(hand_tracking_mp_lean::CalculatorContext* cc) {
   // Connect to input frame and make a mutable copy.
-  cv::Mat frame_org = mediapipe_v01013_based::formats::MatView(
+  cv::Mat frame_org = hand_tracking_mp_lean::formats::MatView(
       &cc->Inputs().Tag(kVideoInputTag).Get<ImageFrame>());
   cv::Mat frame = frame_org.clone();
 
@@ -179,11 +179,11 @@ absl::Status ShotBoundaryCalculator::Process(mediapipe_v01013_based::CalculatorC
 }
 
 absl::Status ShotBoundaryCalculator::GetContract(
-    mediapipe_v01013_based::CalculatorContract* cc) {
+    hand_tracking_mp_lean::CalculatorContract* cc) {
   cc->Inputs().Tag(kVideoInputTag).Set<ImageFrame>();
   cc->Outputs().Tag(kShotChangeTag).Set<bool>();
   return absl::OkStatus();
 }
 
 }  // namespace autoflip
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

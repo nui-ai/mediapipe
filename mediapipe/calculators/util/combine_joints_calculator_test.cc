@@ -28,11 +28,11 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace {
 
-using Node = ::mediapipe_v01013_based::CalculatorGraphConfig::Node;
+using Node = ::hand_tracking_mp_lean::CalculatorGraphConfig::Node;
 
 Joint MakeJoint(const std::vector<float>& rotation_6d,
                 std::optional<float> visibility) {
@@ -66,7 +66,7 @@ TEST_P(CombineJointsTest, CombineJointsTest) {
   }
 
   // Prepare graph.
-  mediapipe_v01013_based::CalculatorRunner runner(ParseTextProtoOrDie<Node>(absl::Substitute(
+  hand_tracking_mp_lean::CalculatorRunner runner(ParseTextProtoOrDie<Node>(absl::Substitute(
       R"(
       calculator: "CombineJointsCalculator"
       $0
@@ -93,7 +93,7 @@ TEST_P(CombineJointsTest, CombineJointsTest) {
     runner.MutableInputs()
         ->Get("JOINTS", i)
         .packets.push_back(MakePacket<JointList>(std::move(in_joints))
-                               .At(mediapipe_v01013_based::Timestamp(0)));
+                               .At(hand_tracking_mp_lean::Timestamp(0)));
   }
 
   // Run the graph.
@@ -171,4 +171,4 @@ INSTANTIATE_TEST_SUITE_P(
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

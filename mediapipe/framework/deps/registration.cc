@@ -16,7 +16,7 @@
 
 #include "absl/container/flat_hash_set.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -43,4 +43,4 @@ const absl::flat_hash_set<std::string>& NamespaceAllowlist::TopNamespaces() {
   return *result;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

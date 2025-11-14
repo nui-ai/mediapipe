@@ -15,7 +15,7 @@
 #ifndef MEDIAPIPE_GRAPHS_INSTANT_MOTION_TRACKING_CALCULATORS_TRANSFORMATIONS_H_
 #define MEDIAPIPE_GRAPHS_INSTANT_MOTION_TRACKING_CALCULATORS_TRANSFORMATIONS_H_
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Radians by which to rotate the object (Provided by UI input)
 struct UserRotation {
@@ -37,6 +37,6 @@ struct Anchor {
   int sticker_id;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GRAPHS_INSTANT_MOTION_TRACKING_CALCULATORS_TRANSFORMATIONS_H_

@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -64,7 +64,7 @@ TEST(ImageFilePropertiesCalculatorTest, ReadsFocalLengthFromJpegInStreams) {
   ASSERT_EQ(1, outputs.NumEntries());
   const std::vector<Packet>& packets = outputs.Index(0).packets;
   ASSERT_EQ(1, packets.size());
-  const auto& result = packets[0].Get<::mediapipe_v01013_based::ImageFileProperties>();
+  const auto& result = packets[0].Get<::hand_tracking_mp_lean::ImageFileProperties>();
   EXPECT_EQ(kExpectedWidth, result.image_width());
   EXPECT_EQ(kExpectedHeight, result.image_height());
   EXPECT_DOUBLE_EQ(kExpectedFocalLengthMm, result.focal_length_mm());
@@ -92,7 +92,7 @@ TEST(ImageFilePropertiesCalculatorTest, ReadsFocalLengthFromJpegInSidePackets) {
   const auto& outputs = runner.OutputSidePackets();
   EXPECT_EQ(1, outputs.NumEntries());
   const auto& packet = outputs.Index(0);
-  const auto& result = packet.Get<::mediapipe_v01013_based::ImageFileProperties>();
+  const auto& result = packet.Get<::hand_tracking_mp_lean::ImageFileProperties>();
   EXPECT_EQ(kExpectedWidth, result.image_width());
   EXPECT_EQ(kExpectedHeight, result.image_height());
   EXPECT_DOUBLE_EQ(kExpectedFocalLengthMm, result.focal_length_mm());
@@ -121,7 +121,7 @@ TEST(ImageFilePropertiesCalculatorTest,
   const auto& outputs = runner.OutputSidePackets();
   EXPECT_EQ(1, outputs.NumEntries());
   const auto& packet = outputs.Index(0);
-  const auto& result = packet.Get<::mediapipe_v01013_based::ImageFileProperties>();
+  const auto& result = packet.Get<::hand_tracking_mp_lean::ImageFileProperties>();
   EXPECT_EQ(kExpectedWidth, result.image_width());
   EXPECT_EQ(kExpectedHeight, result.image_height());
   EXPECT_DOUBLE_EQ(kExpectedFocalLengthMm, result.focal_length_mm());
@@ -131,4 +131,4 @@ TEST(ImageFilePropertiesCalculatorTest,
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -23,7 +23,7 @@
 #include "mediapipe/modules/objectron/calculators/annotation_data.pb.h"
 #include "mediapipe/modules/objectron/calculators/frame_annotation_to_rect_calculator.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 using Matrix3fRM = Eigen::Matrix<float, 3, 3, Eigen::RowMajor>;
 using Eigen::Vector2f;
@@ -34,7 +34,7 @@ namespace {
 constexpr char kInputFrameAnnotationTag[] = "FRAME_ANNOTATION";
 constexpr char kOutputNormRectsTag[] = "NORM_RECTS";
 
-using ::mediapipe_v01013_based::NormalizedRect;
+using ::hand_tracking_mp_lean::NormalizedRect;
 
 }  // namespace
 
@@ -176,4 +176,4 @@ float FrameAnnotationToRectCalculator::RotationAngleFromPose(
   return M_PI / 2 - std::atan2(dy, dx);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -31,27 +31,27 @@ namespace {
 
 TEST(MathUtil, Round) {
   // test float rounding
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::FastIntRound(0.7f), 1);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::FastIntRound(5.7f), 6);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::FastIntRound(6.3f), 6);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::FastIntRound(1000000.7f), 1000001);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::FastIntRound(0.7f), 1);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::FastIntRound(5.7f), 6);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::FastIntRound(6.3f), 6);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::FastIntRound(1000000.7f), 1000001);
 
   // test that largest representable number below 0.5 rounds to zero.
   // this is important because naive implementation of round:
   // static_cast<int>(r + 0.5f) is 1 due to implicit rounding in operator+
   float rf = std::nextafter(0.5f, .0f);
   EXPECT_LT(rf, 0.5f);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::Round<int>(rf), 0);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::Round<int>(rf), 0);
 
   // same test for double
   double rd = std::nextafter(0.5, 0.0);
   EXPECT_LT(rd, 0.5);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::Round<int>(rd), 0);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::Round<int>(rd), 0);
 
   // same test for long double
   long double rl = std::nextafter(0.5l, 0.0l);
   EXPECT_LT(rl, 0.5l);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::Round<int>(rl), 0);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::Round<int>(rl), 0);
 }
 
 static void BM_IntCast(benchmark::State& state) {
@@ -96,15 +96,15 @@ static void BM_IntRound(benchmark::State& state) {
   double x = 0.1;
   int sum = 0;
   for (auto _ : state) {
-    sum += mediapipe_v01013_based::MathUtil::Round<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<int>(x);
     x += 0.1;
   }
   EXPECT_NE(sum, 0);  // Don't let 'sum' get optimized away.
@@ -115,15 +115,15 @@ static void BM_FastIntRound(benchmark::State& state) {
   double x = 0.1;
   int sum = 0;
   for (auto _ : state) {
-    sum += mediapipe_v01013_based::MathUtil::FastIntRound(x);
+    sum += hand_tracking_mp_lean::MathUtil::FastIntRound(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::FastIntRound(x);
+    sum += hand_tracking_mp_lean::MathUtil::FastIntRound(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::FastIntRound(x);
+    sum += hand_tracking_mp_lean::MathUtil::FastIntRound(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::FastIntRound(x);
+    sum += hand_tracking_mp_lean::MathUtil::FastIntRound(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::FastIntRound(x);
+    sum += hand_tracking_mp_lean::MathUtil::FastIntRound(x);
     x += 0.1;
   }
   EXPECT_NE(sum, 0);  // Don't let 'sum' get optimized away.
@@ -134,15 +134,15 @@ static void BM_Int64Round(benchmark::State& state) {
   double x = 0.1;
   int sum = 0;
   for (auto _ : state) {
-    sum += mediapipe_v01013_based::MathUtil::Round<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<int64_t>(x);
     x += 0.1;
   }
   EXPECT_NE(sum, 0);  // Don't let 'sum' get optimized away.
@@ -153,15 +153,15 @@ static void BM_UintRound(benchmark::State& state) {
   double x = 0.1;
   int sum = 0;
   for (auto _ : state) {
-    sum += mediapipe_v01013_based::MathUtil::Round<uint32_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<uint32_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<uint32_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<uint32_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<uint32_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<uint32_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<uint32_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<uint32_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::Round<uint32_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::Round<uint32_t>(x);
     x += 0.1;
   }
   EXPECT_NE(sum, 0);  // Don't let 'sum' get optimized away.
@@ -172,15 +172,15 @@ static void BM_SafeIntCast(benchmark::State& state) {
   double x = 0.1;
   int sum = 0;
   for (auto _ : state) {
-    sum += mediapipe_v01013_based::MathUtil::SafeCast<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeCast<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeCast<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeCast<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeCast<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeCast<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeCast<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeCast<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeCast<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeCast<int>(x);
     x += 0.1;
   }
   EXPECT_NE(sum, 0);  // Don't let 'sum' get optimized away.
@@ -191,15 +191,15 @@ static void BM_SafeInt64Cast(benchmark::State& state) {
   double x = 0.1;
   int sum = 0;
   for (auto _ : state) {
-    sum += mediapipe_v01013_based::MathUtil::SafeCast<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeCast<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeCast<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeCast<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeCast<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeCast<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeCast<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeCast<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeCast<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeCast<int64_t>(x);
     x += 0.1;
   }
   EXPECT_NE(sum, 0);  // Don't let 'sum' get optimized away.
@@ -210,15 +210,15 @@ static void BM_SafeIntRound(benchmark::State& state) {
   double x = 0.1;
   int sum = 0;
   for (auto _ : state) {
-    sum += mediapipe_v01013_based::MathUtil::SafeRound<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeRound<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeRound<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeRound<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeRound<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeRound<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeRound<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeRound<int>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeRound<int>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeRound<int>(x);
     x += 0.1;
   }
   EXPECT_NE(sum, 0);  // Don't let 'sum' get optimized away.
@@ -229,15 +229,15 @@ static void BM_SafeInt64Round(benchmark::State& state) {
   double x = 0.1;
   int sum = 0;
   for (auto _ : state) {
-    sum += mediapipe_v01013_based::MathUtil::SafeRound<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeRound<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeRound<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeRound<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeRound<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeRound<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeRound<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeRound<int64_t>(x);
     x += 0.1;
-    sum += mediapipe_v01013_based::MathUtil::SafeRound<int64_t>(x);
+    sum += hand_tracking_mp_lean::MathUtil::SafeRound<int64_t>(x);
     x += 0.1;
   }
   EXPECT_NE(sum, 0);  // Don't let 'sum' get optimized away.
@@ -245,25 +245,25 @@ static void BM_SafeInt64Round(benchmark::State& state) {
 BENCHMARK(BM_SafeInt64Round);
 
 TEST(MathUtil, IntRound) {
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::Round<int>(0.0), 0);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::Round<int>(0.49), 0);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::Round<int>(1.49), 1);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::Round<int>(-0.49), 0);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::Round<int>(-1.49), -1);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::Round<int>(0.0), 0);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::Round<int>(0.49), 0);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::Round<int>(1.49), 1);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::Round<int>(-0.49), 0);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::Round<int>(-1.49), -1);
 
   // Either adjacent integer is an acceptable result.
-  EXPECT_EQ(fabs(mediapipe_v01013_based::MathUtil::Round<int>(0.5) - 0.5), 0.5);
-  EXPECT_EQ(fabs(mediapipe_v01013_based::MathUtil::Round<int>(1.5) - 1.5), 0.5);
-  EXPECT_EQ(fabs(mediapipe_v01013_based::MathUtil::Round<int>(-0.5) + 0.5), 0.5);
-  EXPECT_EQ(fabs(mediapipe_v01013_based::MathUtil::Round<int>(-1.5) + 1.5), 0.5);
+  EXPECT_EQ(fabs(hand_tracking_mp_lean::MathUtil::Round<int>(0.5) - 0.5), 0.5);
+  EXPECT_EQ(fabs(hand_tracking_mp_lean::MathUtil::Round<int>(1.5) - 1.5), 0.5);
+  EXPECT_EQ(fabs(hand_tracking_mp_lean::MathUtil::Round<int>(-0.5) + 0.5), 0.5);
+  EXPECT_EQ(fabs(hand_tracking_mp_lean::MathUtil::Round<int>(-1.5) + 1.5), 0.5);
 
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::Round<int>(static_cast<double>(0x76543210)),
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::Round<int>(static_cast<double>(0x76543210)),
             0x76543210);
 
   // A double-precision number has a 53-bit mantissa (52 fraction bits),
   // so the following value can be represented exactly.
   int64_t value64 = static_cast<int64_t>(0x1234567890abcd00);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::Round<int64_t>(static_cast<double>(value64)),
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::Round<int64_t>(static_cast<double>(value64)),
             value64);
 }
 
@@ -295,73 +295,73 @@ class SafeCastTester {
     }
 
     // Some basic tests.
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(0.0)),
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(0.0)),
               0);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-0.0)),
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-0.0)),
               0);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(0.99)),
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(0.99)),
               0);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(1.0)),
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(1.0)),
               1);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(1.01)),
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(1.01)),
               1);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(1.99)),
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(1.99)),
               1);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(2.0)),
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(2.0)),
               2);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(2.01)),
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(2.01)),
               2);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-0.99)), 0);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-1.0)),
+        hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-0.99)), 0);
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-1.0)),
               s ? -1 : 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-1.01)),
+        hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-1.01)),
         s ? -1 : 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-1.99)),
+        hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-1.99)),
         s ? -1 : 0);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-2.0)),
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-2.0)),
               s ? -2 : 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-2.01)),
+        hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-2.01)),
         s ? -2 : 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(117.9)),
+        hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(117.9)),
         117);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(118.0)),
+        hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(118.0)),
         118);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(118.1)),
+        hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(118.1)),
         118);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-117.9)),
+        hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-117.9)),
         s ? -117 : 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-118.0)),
+        hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-118.0)),
         s ? -118 : 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-118.1)),
+        hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(-118.1)),
         s ? -118 : 0);
 
     // Some edge cases.
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                   std::numeric_limits<FloatIn>::max()),
               imax);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                   -std::numeric_limits<FloatIn>::max()),
               imin);
     const FloatIn inf_val = std::numeric_limits<FloatIn>::infinity();
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(inf_val), imax);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(-inf_val), imin);
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(inf_val), imax);
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(-inf_val), imin);
     const FloatIn nan_val = inf_val - inf_val;
     EXPECT_TRUE(std::isnan(nan_val));
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(nan_val), 0);
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(nan_val), 0);
 
     // Some larger numbers.
     if (sizeof(IntOut) >= 32) {
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(0x76543210)),
                 0x76543210);
     }
@@ -373,7 +373,7 @@ class SafeCastTester {
       const IntOut expected =
           (sizeof(IntOut) >= 64) ? static_cast<IntOut>(value64) : imax;
       EXPECT_EQ(
-          mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(value64)),
+          hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(value64)),
           expected);
     }
 
@@ -384,8 +384,8 @@ class SafeCastTester {
       // Values greater than or equal to imax should convert to imax
       FloatIn v = static_cast<FloatIn>(imax);
       for (int i = 0; i < kLoopCount; i++) {
-        EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(v), imax);
-        EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+        EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(v), imax);
+        EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                       static_cast<FloatIn>(v + 10000.)),
                   imax);
         v = NextAfter(v, std::numeric_limits<FloatIn>::max());
@@ -396,8 +396,8 @@ class SafeCastTester {
       // Values less than or equal to imin should convert to imin
       FloatIn v = static_cast<FloatIn>(imin);
       for (int i = 0; i < kLoopCount; i++) {
-        EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(v), imin);
-        EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+        EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(v), imin);
+        EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                       static_cast<FloatIn>(v - 10000.)),
                   imin);
         v = NextAfter(v, -std::numeric_limits<FloatIn>::max());
@@ -413,7 +413,7 @@ class SafeCastTester {
                              NextAfter(static_cast<FloatIn>(v),
                                        -std::numeric_limits<FloatIn>::max()));
         EXPECT_EQ(
-            mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(v)), v);
+            hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(v)), v);
       }
     }
 
@@ -426,7 +426,7 @@ class SafeCastTester {
                              NextAfter(static_cast<FloatIn>(v),
                                        std::numeric_limits<FloatIn>::max()));
         EXPECT_EQ(
-            mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(v)), v);
+            hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(v)), v);
       }
     }
 
@@ -440,44 +440,44 @@ class SafeCastTester {
           v = NextAfter(static_cast<FloatIn>(v),
                         -std::numeric_limits<FloatIn>::max());
           EXPECT_EQ(
-              mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(v)),
+              hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(v)),
               imax - 1);
         }
       }
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) + 0.1)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) + 0.99)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) + 1.0)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) + 1.99)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) + 2.0)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 0.1)),
                 imax - 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 0.99)),
                 imax - 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 1.0)),
                 imax - 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 1.01)),
                 imax - 2);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 1.99)),
                 imax - 2);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 2.0)),
                 imax - 2);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 2.01)),
                 imax - 3);
     }
@@ -491,44 +491,44 @@ class SafeCastTester {
           v = NextAfter(static_cast<FloatIn>(v),
                         std::numeric_limits<FloatIn>::max());
           EXPECT_EQ(
-              mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(v)),
+              hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(static_cast<FloatIn>(v)),
               imin + 1);
         }
       }
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) - 0.1)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) - 0.99)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) - 1.0)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) - 0.99)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) - 2.0)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 0.1)),
                 imin + 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 0.99)),
                 imin + 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 1.0)),
                 imin + 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 1.01)),
                 imin + 2);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 1.99)),
                 imin + 2);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 2.0)),
                 imin + 2);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 2.01)),
                 imin + 3);
     }
@@ -554,17 +554,17 @@ TEST(MathUtil, SafeCast) {
   SafeCastTester<double, uint64_t>::Run();
 
   // Spot-check SafeCast<int>
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<int>(static_cast<float>(12345.678)),
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<int>(static_cast<float>(12345.678)),
             12345);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<int>(static_cast<float>(12345.4321)),
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<int>(static_cast<float>(12345.4321)),
             12345);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<int>(static_cast<double>(-12345.678)),
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<int>(static_cast<double>(-12345.678)),
             -12345);
   EXPECT_EQ(
-      mediapipe_v01013_based::MathUtil::SafeCast<int>(static_cast<double>(-12345.4321)),
+      hand_tracking_mp_lean::MathUtil::SafeCast<int>(static_cast<double>(-12345.4321)),
       -12345);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<int>(1E47), 2147483647);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeCast<int>(-1E47),
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<int>(1E47), 2147483647);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeCast<int>(-1E47),
             static_cast<int64_t>(-2147483648));
 }
 
@@ -583,98 +583,98 @@ class SafeRoundTester {
     }
 
     // Some basic tests.
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(0.0)),
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(0.0)),
               0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-0.0)), 0);
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-0.0)), 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(0.49)), 0);
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(0.49)), 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(0.51)), 1);
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(0.51)), 1);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(1.49)), 1);
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(1.49)), 1);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(1.51)), 2);
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(1.51)), 2);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-0.49)), 0);
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-0.49)), 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-0.51)),
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-0.51)),
         s ? -1 : 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-1.49)),
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-1.49)),
         s ? -1 : 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-1.51)),
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-1.51)),
         s ? -2 : 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(117.4)),
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(117.4)),
         117);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(117.6)),
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(117.6)),
         118);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-117.4)),
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-117.4)),
         s ? -117 : 0);
     EXPECT_EQ(
-        mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-117.6)),
+        hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-117.6)),
         s ? -118 : 0);
 
     // At the midpoint between ints, either adjacent int is an acceptable
     // result.
     EXPECT_EQ(
-        fabs(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(0.5)) -
+        fabs(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(0.5)) -
              0.5),
         0.5);
     EXPECT_EQ(
-        fabs(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(1.5)) -
+        fabs(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(1.5)) -
              1.5),
         0.5);
-    EXPECT_EQ(fabs(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+    EXPECT_EQ(fabs(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                        static_cast<FloatIn>(117.5)) -
                    117.5),
               0.5);
     if (s) {
-      EXPECT_EQ(fabs(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(fabs(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                          static_cast<FloatIn>(-0.5)) +
                      0.5),
                 0.5);
-      EXPECT_EQ(fabs(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(fabs(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                          static_cast<FloatIn>(-1.5)) +
                      1.5),
                 0.5);
-      EXPECT_EQ(fabs(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(fabs(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                          static_cast<FloatIn>(-117.5)) +
                      117.5),
                 0.5);
     } else {
       EXPECT_EQ(
-          mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-0.5)),
+          hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-0.5)),
           0);
       EXPECT_EQ(
-          mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-1.5)),
+          hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-1.5)),
           0);
       EXPECT_EQ(
-          mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-117.5)),
+          hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(-117.5)),
           0);
     }
 
     // Some edge cases.
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                   std::numeric_limits<FloatIn>::max()),
               imax);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                   -std::numeric_limits<FloatIn>::max()),
               imin);
     const FloatIn inf_val = std::numeric_limits<FloatIn>::infinity();
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(inf_val), imax);
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(-inf_val), imin);
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(inf_val), imax);
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(-inf_val), imin);
     const FloatIn nan_val = inf_val - inf_val;
     EXPECT_TRUE(std::isnan(nan_val));
-    EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(nan_val), 0);
+    EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(nan_val), 0);
 
     // Some larger numbers.
     if (sizeof(IntOut) >= 32) {
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(0x76543210)),
                 0x76543210);
     }
@@ -686,7 +686,7 @@ class SafeRoundTester {
       const IntOut expected =
           (sizeof(IntOut) >= 64) ? static_cast<IntOut>(value64) : imax;
       EXPECT_EQ(
-          mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(value64)),
+          hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(value64)),
           expected);
     }
 
@@ -697,8 +697,8 @@ class SafeRoundTester {
       // Values greater than or equal to imax should round to imax
       FloatIn v = static_cast<FloatIn>(imax);
       for (int i = 0; i < kLoopCount; i++) {
-        EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(v), imax);
-        EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+        EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(v), imax);
+        EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                       static_cast<FloatIn>(v + 10000.)),
                   imax);
         v = NextAfter(v, std::numeric_limits<FloatIn>::max());
@@ -709,8 +709,8 @@ class SafeRoundTester {
       // Values less than or equal to imin should round to imin
       FloatIn v = static_cast<FloatIn>(imin);
       for (int i = 0; i < kLoopCount; i++) {
-        EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(v), imin);
-        EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+        EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(v), imin);
+        EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                       static_cast<FloatIn>(v - 10000.)),
                   imin);
         v = NextAfter(v, -std::numeric_limits<FloatIn>::max());
@@ -726,7 +726,7 @@ class SafeRoundTester {
                              NextAfter(static_cast<FloatIn>(v),
                                        -std::numeric_limits<FloatIn>::max()));
         EXPECT_EQ(
-            mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(v)), v);
+            hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(v)), v);
       }
     }
 
@@ -739,7 +739,7 @@ class SafeRoundTester {
                              NextAfter(static_cast<FloatIn>(v),
                                        std::numeric_limits<FloatIn>::max()));
         EXPECT_EQ(
-            mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(v)), v);
+            hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(v)), v);
       }
     }
 
@@ -753,41 +753,41 @@ class SafeRoundTester {
           v = NextAfter(static_cast<FloatIn>(v),
                         -std::numeric_limits<FloatIn>::max());
           EXPECT_EQ(
-              mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(v)),
+              hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(v)),
               imax);
         }
       }
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) + 0.1)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) + 0.49)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) + 0.5)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) + 0.51)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) + 0.99)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 0.1)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 0.49)),
                 imax);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 0.51)),
                 imax - 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 0.99)),
                 imax - 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 1.49)),
                 imax - 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imax) - 1.51)),
                 imax - 2);
     }
@@ -801,41 +801,41 @@ class SafeRoundTester {
           v = NextAfter(static_cast<FloatIn>(v),
                         std::numeric_limits<FloatIn>::max());
           EXPECT_EQ(
-              mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(v)),
+              hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(static_cast<FloatIn>(v)),
               imin);
         }
       }
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) - 0.1)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) - 0.49)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) - 0.5)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) - 0.51)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) - 0.99)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 0.1)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 0.49)),
                 imin);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 0.51)),
                 imin + 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 0.99)),
                 imin + 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 1.49)),
                 imin + 1);
-      EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<IntOut>(
+      EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<IntOut>(
                     static_cast<FloatIn>(static_cast<FloatIn>(imin) + 1.51)),
                 imin + 2);
     }
@@ -861,18 +861,18 @@ TEST(MathUtil, SafeRound) {
   SafeRoundTester<double, uint64_t>::Run();
 
   // Spot-check SafeRound<int>
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<int>(static_cast<float>(12345.678)),
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<int>(static_cast<float>(12345.678)),
             12346);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<int>(static_cast<float>(12345.4321)),
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<int>(static_cast<float>(12345.4321)),
             12345);
   EXPECT_EQ(
-      mediapipe_v01013_based::MathUtil::SafeRound<int>(static_cast<double>(-12345.678)),
+      hand_tracking_mp_lean::MathUtil::SafeRound<int>(static_cast<double>(-12345.678)),
       -12346);
   EXPECT_EQ(
-      mediapipe_v01013_based::MathUtil::SafeRound<int>(static_cast<double>(-12345.4321)),
+      hand_tracking_mp_lean::MathUtil::SafeRound<int>(static_cast<double>(-12345.4321)),
       -12345);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<int>(1E47), 2147483647);
-  EXPECT_EQ(mediapipe_v01013_based::MathUtil::SafeRound<int>(-1E47),
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<int>(1E47), 2147483647);
+  EXPECT_EQ(hand_tracking_mp_lean::MathUtil::SafeRound<int>(-1E47),
             static_cast<int64_t>(-2147483648));
 }
 

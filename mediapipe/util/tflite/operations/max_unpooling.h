@@ -17,12 +17,12 @@
 
 #include "tensorflow/lite/kernels/kernel_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tflite_operations {
 
 TfLiteRegistration* RegisterMaxUnpooling2D();
 
 }  // namespace tflite_operations
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TFLITE_OPERATIONS_MAX_UNPOOLING_H_

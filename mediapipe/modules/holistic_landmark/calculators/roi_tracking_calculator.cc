@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/rectangle.h"
 #include "mediapipe/modules/holistic_landmark/calculators/roi_tracking_calculator.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -34,7 +34,7 @@ constexpr char kRecropRectTag[] = "RECROP_RECT";
 constexpr char kImageSizeTag[] = "IMAGE_SIZE";
 constexpr char kTrackingRectTag[] = "TRACKING_RECT";
 
-using ::mediapipe_v01013_based::NormalizedRect;
+using ::hand_tracking_mp_lean::NormalizedRect;
 
 // TODO: Use rect rotation.
 // Verifies that Intersection over Union of previous frame rect and current
@@ -357,4 +357,4 @@ absl::Status RoiTrackingCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -34,7 +34,7 @@
 #include "mediapipe/util/tracking/motion_models.pb.h"
 #include "mediapipe/util/tracking/tracking.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Useful helper functions.
 //
@@ -645,6 +645,6 @@ class MotionBox {
   MotionBoxState initial_state_;
 };
 
-}  // namespace mediapipe_v01013_based.
+}  // namespace hand_tracking_mp_lean.
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_TRACKING_H_

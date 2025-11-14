@@ -27,7 +27,7 @@
 #include "mediapipe/framework/port/status_matchers.h"  // NOLINT
 #include "mediapipe/framework/tool/validate_type.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr float kLocationVal = 3;
 
@@ -120,7 +120,7 @@ TEST_F(SplitNormalizedLandmarkListCalculatorTest, SmokeTest) {
 
   // Prepare a graph to use the SplitNormalizedLandmarkListCalculator.
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "landmarks_in"
             node {
@@ -169,7 +169,7 @@ TEST_F(SplitNormalizedLandmarkListCalculatorTest, SmokeTest) {
 TEST_F(SplitNormalizedLandmarkListCalculatorTest, InvalidRangeTest) {
   // Prepare a graph to use the SplitNormalizedLandmarkListCalculator.
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "landmarks_in"
             node {
@@ -194,7 +194,7 @@ TEST_F(SplitNormalizedLandmarkListCalculatorTest,
        InvalidOutputStreamCountTest) {
   // Prepare a graph to use the SplitNormalizedLandmarkListCalculator.
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "landmarks_in"
             node {
@@ -221,7 +221,7 @@ TEST_F(SplitNormalizedLandmarkListCalculatorTest,
        InvalidCombineOutputsMultipleOutputsTest) {
   // Prepare a graph to use the SplitNormalizedLandmarkListCalculator.
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "landmarks_in"
             node {
@@ -250,7 +250,7 @@ TEST_F(SplitNormalizedLandmarkListCalculatorTest,
        InvalidOverlappingRangesTest) {
   // Prepare a graph to use the SplitNormalizedLandmarkListCalculator.
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "landmarks_in"
             node {
@@ -279,7 +279,7 @@ TEST_F(SplitNormalizedLandmarkListCalculatorTest, SmokeTestElementOnly) {
 
   // Prepare a graph to use the SplitNormalizedLandmarkListCalculator.
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "landmarks_in"
             node {
@@ -332,7 +332,7 @@ TEST_F(SplitNormalizedLandmarkListCalculatorTest, SmokeTestCombiningOutputs) {
 
   // Prepare a graph to use the SplitNormalizedLandmarkListCalculator.
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "landmarks_in"
             node {
@@ -375,7 +375,7 @@ TEST_F(SplitNormalizedLandmarkListCalculatorTest,
        ElementOnlyDisablesVectorOutputs) {
   // Prepare a graph to use the SplitNormalizedLandmarkListCalculator.
   CalculatorGraphConfig graph_config =
-      mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(
           R"pb(
             input_stream: "landmarks_in"
             node {
@@ -400,4 +400,4 @@ TEST_F(SplitNormalizedLandmarkListCalculatorTest,
   ASSERT_FALSE(graph.Initialize(graph_config).ok());
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

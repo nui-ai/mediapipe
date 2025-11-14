@@ -27,10 +27,10 @@
 #include "mediapipe/framework/port/file_helpers.h"
 #endif
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
-using mediapipe_v01013_based::TimedBoxProto;
-using mediapipe_v01013_based::TimedBoxProtoList;
+using hand_tracking_mp_lean::TimedBoxProto;
+using hand_tracking_mp_lean::TimedBoxProtoList;
 
 // Takes a label map (from label IDs to names), and populate the label field in
 // TimedBoxProto according to it's ID.
@@ -70,7 +70,7 @@ absl::Status TimedBoxListIdToLabelCalculator::Open(CalculatorContext* cc) {
   cc->SetOffset(TimestampDiff(0));
 
   const auto& options =
-      cc->Options<::mediapipe_v01013_based::TimedBoxListIdToLabelCalculatorOptions>();
+      cc->Options<::hand_tracking_mp_lean::TimedBoxListIdToLabelCalculatorOptions>();
 
   std::string string_path;
   MP_ASSIGN_OR_RETURN(string_path,
@@ -102,4 +102,4 @@ absl::Status TimedBoxListIdToLabelCalculator::Process(CalculatorContext* cc) {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

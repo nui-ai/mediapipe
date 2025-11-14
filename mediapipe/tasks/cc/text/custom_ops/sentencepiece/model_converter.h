@@ -20,7 +20,7 @@ limitations under the License.
 
 #include "absl/status/statusor.h"
 
-namespace mediapipe_v01013_based::tflite_operations::sentencepiece {
+namespace hand_tracking_mp_lean::tflite_operations::sentencepiece {
 
 // Converts Sentencepiece configuration to flatbuffer format.
 // encoding_offset is used by some encoders that combine different encodings.
@@ -28,6 +28,6 @@ absl::StatusOr<std::string> ConvertSentencepieceModelToFlatBuffer(
     const std::string& model_config_str, int encoding_offset = 0);
 std::string ConvertSentencepieceModel(const std::string& model_string);
 
-}  // namespace mediapipe_v01013_based::tflite_operations::sentencepiece
+}  // namespace hand_tracking_mp_lean::tflite_operations::sentencepiece
 
 #endif  // MEDIAPIPE_TASKS_CC_TEXT_CUSTOM_OPS_SENTENCEPIECE_MODEL_CONVERTER_H_

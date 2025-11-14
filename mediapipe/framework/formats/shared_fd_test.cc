@@ -7,7 +7,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/util/fd_test_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 TEST(SharedFdTest, CanCreateFromUniqueFd) {
@@ -61,4 +61,4 @@ TEST(SharedFdTest, CanDup) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

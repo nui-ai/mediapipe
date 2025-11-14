@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/tool/validate_name.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace tool {
 
@@ -45,4 +45,4 @@ absl::Status ValidateInput(const InputCollection& input_collection) {
 }
 
 }  // namespace tool
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

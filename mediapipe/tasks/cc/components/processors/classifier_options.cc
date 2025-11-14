@@ -17,7 +17,7 @@ limitations under the License.
 
 #include "mediapipe/tasks/cc/components/processors/proto/classifier_options.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace components {
 namespace processors {
@@ -40,4 +40,4 @@ proto::ClassifierOptions ConvertClassifierOptionsToProto(
 }  // namespace processors
 }  // namespace components
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -22,7 +22,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 using ::testing::ElementsAre;
@@ -46,7 +46,7 @@ TEST(GetRoi, NoNormRect) {
 }
 
 TEST(GetRoi, WholeImageNormRect) {
-  mediapipe_v01013_based::NormalizedRect norm_rect;
+  hand_tracking_mp_lean::NormalizedRect norm_rect;
   norm_rect.set_width(1.0f);
   norm_rect.set_height(1.0f);
   norm_rect.set_x_center(0.5f);
@@ -57,7 +57,7 @@ TEST(GetRoi, WholeImageNormRect) {
 }
 
 TEST(GetRoi, ExpandedNormRect) {
-  mediapipe_v01013_based::NormalizedRect norm_rect;
+  hand_tracking_mp_lean::NormalizedRect norm_rect;
   norm_rect.set_width(4.0f);
   norm_rect.set_height(2.0f);
   norm_rect.set_x_center(0.5f);
@@ -180,13 +180,13 @@ constexpr char kValidNoTensorDimsProto[] = R"(
 
 TEST(ValidateOptionOutputDims, ImageToTensorCalcOptions) {
   const auto float_options =
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::ImageToTensorCalculatorOptions>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::ImageToTensorCalculatorOptions>(
           kValidFloatProto);
   MP_EXPECT_OK(ValidateOptionOutputDims(float_options));
 }
 
 TEST(ValidateOptionOutputDims, EmptyProto) {
-  mediapipe_v01013_based::ImageToTensorCalculatorOptions options;
+  hand_tracking_mp_lean::ImageToTensorCalculatorOptions options;
   // No output tensor range set.
   EXPECT_THAT(ValidateOptionOutputDims(options),
               StatusIs(absl::StatusCode::kInternal,
@@ -204,7 +204,7 @@ TEST(ValidateOptionOutputDims, EmptyProto) {
 TEST(GetOutputTensorParams, ImageToTensorCalcOptionsSetValues) {
   // Test int range with ImageToTensorCalculatorOptions.
   const auto int_options =
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::ImageToTensorCalculatorOptions>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::ImageToTensorCalculatorOptions>(
           kValidIntProto);
   const auto params2 = GetOutputTensorParams(int_options);
   EXPECT_EQ(params2.range_min, 0.0f);
@@ -218,7 +218,7 @@ TEST(GetOutputTensorParams, ImageToTensorCalcOptionsNoTensorDims) {
   // Test valid option for ImageToTensorCalculatorOptions without output
   // width/height.
   const auto options =
-      mediapipe_v01013_based::ParseTextProtoOrDie<mediapipe_v01013_based::ImageToTensorCalculatorOptions>(
+      hand_tracking_mp_lean::ParseTextProtoOrDie<hand_tracking_mp_lean::ImageToTensorCalculatorOptions>(
           kValidNoTensorDimsProto);
   const auto params3 = GetOutputTensorParams(options);
   EXPECT_EQ(params3.range_min, 0.0f);
@@ -231,12 +231,12 @@ TEST(GetOutputTensorParams, ImageToTensorCalcOptionsNoTensorDims) {
 TEST(GetBorderMode, GetBorderMode) {
   // Default to REPLICATE.
   auto border_mode =
-      mediapipe_v01013_based::ImageToTensorCalculatorOptions_BorderMode_BORDER_UNSPECIFIED;
+      hand_tracking_mp_lean::ImageToTensorCalculatorOptions_BorderMode_BORDER_UNSPECIFIED;
   EXPECT_EQ(BorderMode::kReplicate, GetBorderMode(border_mode));
 
   // Set to ZERO.
   border_mode =
-      mediapipe_v01013_based::ImageToTensorCalculatorOptions_BorderMode_BORDER_ZERO;
+      hand_tracking_mp_lean::ImageToTensorCalculatorOptions_BorderMode_BORDER_ZERO;
   EXPECT_EQ(BorderMode::kZero, GetBorderMode(border_mode));
 }
 
@@ -264,4 +264,4 @@ TEST(GetOutputTensorType, GetOutputTensorType) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

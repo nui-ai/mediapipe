@@ -29,7 +29,7 @@
 #include "mediapipe/gpu/multi_pool.h"
 #include "mediapipe/gpu/reusable_pool.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class GlTextureBufferPool : public ReusablePool<GlTextureBuffer> {
  public:
@@ -72,6 +72,6 @@ class GlTextureBufferPool : public ReusablePool<GlTextureBuffer> {
   const internal::GpuBufferSpec spec_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GL_TEXTURE_BUFFER_POOL_H_

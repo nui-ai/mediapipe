@@ -15,7 +15,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/canonical_errors.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // A Calculator that simply passes its input Packets and header through,
 // unchanged.  The inputs may be specified by tag or index.  The outputs
@@ -95,4 +95,4 @@ class PassThroughCalculator : public CalculatorBase {
 };
 REGISTER_CALCULATOR(PassThroughCalculator);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

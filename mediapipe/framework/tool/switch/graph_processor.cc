@@ -2,7 +2,7 @@
 
 #include "absl/synchronization/mutex.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // TODO: add support for input and output side packets.
 absl::Status GraphProcessor::Initialize(CalculatorGraphConfig graph_config) {
@@ -107,4 +107,4 @@ std::shared_ptr<tool::TagMap> GraphProcessor::SideInputTags() {
 // TODO
 void GraphProcessor::SetSideConsumer(SidePacketConsumer* consumer) {}
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -17,7 +17,7 @@
 
 #include "mediapipe/gpu/gl_base.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Leaves vertex and texture coordinates as they are.
 // Input attributes:
@@ -138,6 +138,6 @@ extern const GLchar* const kMediaPipeVertexShaderPreamble;
 // Used in fragment shaders to differentiate different versions of OpenGL.
 extern const GLchar* const kMediaPipeFragmentShaderPreamble;
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_GL_SIMPLE_SHADERS_H_

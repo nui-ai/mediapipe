@@ -36,7 +36,7 @@ node {
   }
   output_stream: "throttled_image"
   options: {
-    [mediapipe_v01013_based.FlowLimiterCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.FlowLimiterCalculatorOptions.ext] {
       max_in_flight: 1
       max_in_queue: 1
     }
@@ -48,7 +48,7 @@ node {
   input_stream: "IMAGE:throttled_image"
   output_stream: "DETECTIONS:detections"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.FaceDetectionOptions] {}
+    [type.googleapis.com/hand_tracking_mp_lean.FaceDetectionOptions] {}
   }
   option_value: "OPTIONS:options"
 }

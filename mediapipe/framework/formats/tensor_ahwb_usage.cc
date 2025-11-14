@@ -5,7 +5,7 @@
 
 #include "absl/log/absl_log.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 bool TensorAhwbUsage::IsComplete() const {
   if (is_complete_fn != nullptr &&
@@ -57,4 +57,4 @@ void CompleteAndEraseUsages(std::list<TensorAhwbUsage>& ahwb_usages) {
   ahwb_usages.clear();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

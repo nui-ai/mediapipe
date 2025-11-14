@@ -25,7 +25,7 @@ limitations under the License.
 #include "absl/base/internal/endian.h"
 #include "absl/base/optimization.h"
 
-namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops::hash {
+namespace hand_tracking_mp_lean::tasks::text::language_detector::custom_ops::hash {
 
 namespace {
 
@@ -91,4 +91,4 @@ unsigned long long MurmurHash64WithSeed(const char* buf,  // NOLINT
   return hash;
 }
 
-}  // namespace mediapipe_v01013_based::tasks::text::language_detector::custom_ops::hash
+}  // namespace hand_tracking_mp_lean::tasks::text::language_detector::custom_ops::hash

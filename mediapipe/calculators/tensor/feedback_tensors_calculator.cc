@@ -25,7 +25,7 @@
 #include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/framework/memory_manager_service.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 namespace {
@@ -61,7 +61,7 @@ class FeedbackTensorsCalculator : public Node {
       memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();
     }
     const auto& options =
-        cc->Options<mediapipe_v01013_based::FeedbackTensorsCalculatorOptions>();
+        cc->Options<hand_tracking_mp_lean::FeedbackTensorsCalculatorOptions>();
 
     const auto& shape_dims = options.feedback_tensor_shape().dims();
     feedback_tensor_shape_.dims.assign(shape_dims.begin(), shape_dims.end());
@@ -76,18 +76,18 @@ class FeedbackTensorsCalculator : public Node {
 
   absl::Status Process(CalculatorContext* cc) override {
     if (feedback_tensors_location_ ==
-        mediapipe_v01013_based::FeedbackTensorsCalculatorOptions::NONE) {
+        hand_tracking_mp_lean::FeedbackTensorsCalculatorOptions::NONE) {
       kTensorsOut(cc).Send(kInputTensorsIn(cc).packet().As<Tensors>());
       return absl::OkStatus();
     }
 
     std::vector<Tensor> outputs;
     switch (feedback_tensors_location_) {
-      case mediapipe_v01013_based::FeedbackTensorsCalculatorOptions::PREPENDED:
+      case hand_tracking_mp_lean::FeedbackTensorsCalculatorOptions::PREPENDED:
         MP_RETURN_IF_ERROR(AddFeedbackTensors(cc, outputs));
         MP_RETURN_IF_ERROR(AddInputTensors(cc, outputs));
         break;
-      case mediapipe_v01013_based::FeedbackTensorsCalculatorOptions::APPENDED:
+      case hand_tracking_mp_lean::FeedbackTensorsCalculatorOptions::APPENDED:
         MP_RETURN_IF_ERROR(AddInputTensors(cc, outputs));
         MP_RETURN_IF_ERROR(AddFeedbackTensors(cc, outputs));
         break;
@@ -160,7 +160,7 @@ class FeedbackTensorsCalculator : public Node {
 
   Tensor::Shape feedback_tensor_shape_;
   int num_feedback_tensors_ = 0;
-  mediapipe_v01013_based::FeedbackTensorsCalculatorOptions::FeedbackTensorsLocation
+  hand_tracking_mp_lean::FeedbackTensorsCalculatorOptions::FeedbackTensorsLocation
       feedback_tensors_location_;
 
   int feedback_tensor_size_ = 0;
@@ -173,4 +173,4 @@ class FeedbackTensorsCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(FeedbackTensorsCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

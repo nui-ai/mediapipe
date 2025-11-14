@@ -18,7 +18,7 @@
 #include "mediapipe/framework/packet_set.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Copies headers from |inputs| into |outputs| respectively. The size of
 // |inputs| and |outputs| must be equal.
@@ -28,6 +28,6 @@ absl::Status CopyInputHeadersToOutputs(const InputStreamSet& inputs,
 absl::Status CopyInputHeadersToOutputs(const InputStreamShardSet& inputs,
                                        OutputStreamShardSet* outputs);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_HEADER_UTIL_H_

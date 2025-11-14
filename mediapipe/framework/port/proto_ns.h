@@ -18,21 +18,21 @@
 #include <string>
 
 // Temporary forward declarations for proto2 support on portable targets.
-// Use proto_ns inside namespace mediapipe_v01013_based instead of proto2 namespace.
+// Use proto_ns inside namespace hand_tracking_mp_lean instead of proto2 namespace.
 #include "google/protobuf/message.h"
 #include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"
 #include "mediapipe/framework/port.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace proto_ns = ::google::protobuf;
 typedef ::std::string ProtoString;
-}  // namespace mediapipe_v01013_based.
+}  // namespace hand_tracking_mp_lean.
 
 // Legacy namespace support.
-namespace mediapipe_v01013_based {
-namespace proto_ns = mediapipe_v01013_based::proto_ns;
+namespace hand_tracking_mp_lean {
+namespace proto_ns = hand_tracking_mp_lean::proto_ns;
 typedef ::std::string ProtoString;
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_PORT_PROTO_NS_H_

@@ -17,7 +17,7 @@
 
 #include "pybind11/pybind11.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace python {
 
@@ -25,6 +25,6 @@ void TaskRunnerSubmodule(pybind11::module* module);
 
 }  // namespace python
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_PYTHON_CORE_PYBIND_TASK_RUNNER_H_

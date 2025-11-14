@@ -13,11 +13,11 @@
 #include "mediapipe/framework/formats/object_detection/anchor.pb.h"
 #include "mediapipe/framework/formats/tensor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
-using BoxFormat = ::mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::BoxFormat;
-using Anchor = ::mediapipe_v01013_based::Anchor;
+using BoxFormat = ::hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::BoxFormat;
+using Anchor = ::hand_tracking_mp_lean::Anchor;
 
 class DetectionsExtractionAndFiltering {
 public:
@@ -46,7 +46,7 @@ private:
   int num_boxes_ = 0;
   int num_coords_ = 0;
   int classes_per_detection_= 1;
-  BoxFormat box_output_format_ = mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::YXHW;
+  BoxFormat box_output_format_ = hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::YXHW;
 
   struct ClassIndexSet {
     absl::flat_hash_set<int> values;
@@ -65,7 +65,7 @@ private:
   NonMaxSuppressionCalculatorOptions nms_options_;
 
 #ifndef MEDIAPIPE_DISABLE_GL_COMPUTE
-  mediapipe_v01013_based::GlCalculatorHelper gpu_helper_;
+  hand_tracking_mp_lean::GlCalculatorHelper gpu_helper_;
   GLuint decode_program_;
   GLuint score_program_;
 #elif MEDIAPIPE_METAL_ENABLED
@@ -84,6 +84,6 @@ private:
 };
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_DETECTIONS_CALCULATOR_CORE_H_

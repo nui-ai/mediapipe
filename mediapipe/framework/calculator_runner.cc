@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 const char CalculatorRunner::kSourcePrefix[] = "source_for_";
 const char CalculatorRunner::kSinkPrefix[] = "sink_for_";
@@ -213,7 +213,7 @@ void CalculatorRunner::InitializeInputSidePackets(
   log_calculator_proto_ = true;
 }
 
-mediapipe_v01013_based::Counter* CalculatorRunner::GetCounter(const std::string& name) {
+hand_tracking_mp_lean::Counter* CalculatorRunner::GetCounter(const std::string& name) {
   return graph_->GetCounterFactory()->GetCounter(name);
 }
 
@@ -358,4 +358,4 @@ absl::Status CalculatorRunner::Run() {
   return absl::OkStatus();
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

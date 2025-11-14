@@ -31,7 +31,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/core/task_api_factory.h"
 #include "mediapipe/tasks/cc/text/text_embedder/proto/text_embedder_graph_options.pb.h"
 
-namespace mediapipe_v01013_based::tasks::text::text_embedder {
+namespace hand_tracking_mp_lean::tasks::text::text_embedder {
 namespace {
 
 constexpr char kTextTag[] = "TEXT";
@@ -41,8 +41,8 @@ constexpr char kEmbeddingsStreamName[] = "embeddings_out";
 constexpr char kGraphTypeName[] =
     "mediapipe.tasks.text.text_embedder.TextEmbedderGraph";
 
-using ::mediapipe_v01013_based::tasks::components::containers::ConvertToEmbeddingResult;
-using ::mediapipe_v01013_based::tasks::components::containers::proto::EmbeddingResult;
+using ::hand_tracking_mp_lean::tasks::components::containers::ConvertToEmbeddingResult;
+using ::hand_tracking_mp_lean::tasks::components::containers::proto::EmbeddingResult;
 
 // Creates a MediaPipe graph config that contains a single node of type
 // "mediapipe.tasks.text.text_embedder.TextEmbedderGraph".
@@ -101,4 +101,4 @@ absl::StatusOr<double> TextEmbedder::CosineSimilarity(
   return components::utils::CosineSimilarity(u, v);
 }
 
-}  // namespace mediapipe_v01013_based::tasks::text::text_embedder
+}  // namespace hand_tracking_mp_lean::tasks::text::text_embedder

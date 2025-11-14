@@ -28,7 +28,7 @@
 #include "mediapipe/framework/port/status.h"
 #include "mediapipe/calculators/util/detections_to_rects_calculator_core.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Dynamic options passed as calculator `input_stream` that can be used for
 // calculation of rectangle or rotation for given detection. Does not include
@@ -91,17 +91,17 @@ class PalmDetectionToHandRectStage1 : public CalculatorBase {
   absl::Status Process(CalculatorContext* cc) override;
 
  private:
-  absl::Status DetectionToRect(const ::mediapipe_v01013_based::Detection& detection,
+  absl::Status DetectionToRect(const ::hand_tracking_mp_lean::Detection& detection,
                                const DetectionSpec& detection_spec,
-                               ::mediapipe_v01013_based::Rect* rect);
+                               ::hand_tracking_mp_lean::Rect* rect);
   absl::Status DetectionToNormalizedRect(
-      const ::mediapipe_v01013_based::Detection& detection,
-      const DetectionSpec& detection_spec, ::mediapipe_v01013_based::NormalizedRect* rect);
+      const ::hand_tracking_mp_lean::Detection& detection,
+      const DetectionSpec& detection_spec, ::hand_tracking_mp_lean::NormalizedRect* rect);
   DetectionSpec GetDetectionSpec(const CalculatorContext* cc);
 
   // Core helper encapsulating rect computation logic and options.
   std::unique_ptr<DetectionsToOrientedRects> core_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 #endif  // MEDIAPIPE_CALCULATORS_UTIL_DETECTIONS_TO_RECTS_CALCULATOR_H_

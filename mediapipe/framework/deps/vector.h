@@ -35,7 +35,7 @@ class Vector3;
 template <typename T>
 class Vector4;
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace deps {
 namespace internal_vector {
 
@@ -310,14 +310,14 @@ VT2<T2> operator/(const K& k, const BasicVector<VT2, T2, N2>& a) {
 
 }  // namespace internal_vector
 }  // namespace deps
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 // ======================================================================
 template <typename T>
 class Vector2
-    : public mediapipe_v01013_based::deps::internal_vector::BasicVector<Vector2, T, 2> {
+    : public hand_tracking_mp_lean::deps::internal_vector::BasicVector<Vector2, T, 2> {
  private:
-  using Base = mediapipe_v01013_based::deps::internal_vector::BasicVector<::Vector2, T, 2>;
+  using Base = hand_tracking_mp_lean::deps::internal_vector::BasicVector<::Vector2, T, 2>;
   using VType = T;
 
  public:
@@ -385,9 +385,9 @@ class Vector2
 
 template <typename T>
 class Vector3
-    : public mediapipe_v01013_based::deps::internal_vector::BasicVector<Vector3, T, 3> {
+    : public hand_tracking_mp_lean::deps::internal_vector::BasicVector<Vector3, T, 3> {
  private:
-  using Base = mediapipe_v01013_based::deps::internal_vector::BasicVector<::Vector3, T, 3>;
+  using Base = hand_tracking_mp_lean::deps::internal_vector::BasicVector<::Vector3, T, 3>;
   using VType = T;
 
  public:
@@ -481,9 +481,9 @@ class Vector3
 
 template <typename T>
 class Vector4
-    : public mediapipe_v01013_based::deps::internal_vector::BasicVector<Vector4, T, 4> {
+    : public hand_tracking_mp_lean::deps::internal_vector::BasicVector<Vector4, T, 4> {
  private:
-  using Base = mediapipe_v01013_based::deps::internal_vector::BasicVector<::Vector4, T, 4>;
+  using Base = hand_tracking_mp_lean::deps::internal_vector::BasicVector<::Vector4, T, 4>;
   using VType = T;
 
  public:

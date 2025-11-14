@@ -14,14 +14,14 @@
 
 syntax = "proto2";
 
-package mediapipe_v01013_based.autoflip;
+package hand_tracking_mp_lean.autoflip;
 
 import "mediapipe/examples/desktop/autoflip/quality/visual_scorer.proto";
 import "mediapipe/framework/calculator.proto";
 
 // Next tag: 6
 message FaceToRegionCalculatorOptions {
-  extend mediapipe_v01013_based.CalculatorOptions {
+  extend hand_tracking_mp_lean.CalculatorOptions {
     optional FaceToRegionCalculatorOptions ext = 282401234;
   }
 

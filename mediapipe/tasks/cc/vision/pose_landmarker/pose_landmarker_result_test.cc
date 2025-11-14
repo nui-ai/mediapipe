@@ -25,7 +25,7 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/classification_result.h"
 #include "mediapipe/tasks/cc/components/containers/landmark.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace pose_landmarker {
@@ -33,15 +33,15 @@ namespace pose_landmarker {
 TEST(ConvertFromProto, Succeeds) {
   Image segmentation_mask;
 
-  mediapipe_v01013_based::NormalizedLandmarkList normalized_landmark_list_proto;
-  mediapipe_v01013_based::NormalizedLandmark& normalized_landmark_proto =
+  hand_tracking_mp_lean::NormalizedLandmarkList normalized_landmark_list_proto;
+  hand_tracking_mp_lean::NormalizedLandmark& normalized_landmark_proto =
       *normalized_landmark_list_proto.add_landmark();
   normalized_landmark_proto.set_x(0.1);
   normalized_landmark_proto.set_y(0.2);
   normalized_landmark_proto.set_z(0.3);
 
-  mediapipe_v01013_based::LandmarkList world_landmark_list_proto;
-  mediapipe_v01013_based::Landmark& landmark_proto =
+  hand_tracking_mp_lean::LandmarkList world_landmark_list_proto;
+  hand_tracking_mp_lean::Landmark& landmark_proto =
       *world_landmark_list_proto.add_landmark();
   landmark_proto.set_x(3.1);
   landmark_proto.set_y(5.2);
@@ -49,10 +49,10 @@ TEST(ConvertFromProto, Succeeds) {
 
   std::vector<Image> segmentation_masks_lists = {segmentation_mask};
 
-  std::vector<mediapipe_v01013_based::NormalizedLandmarkList> normalized_landmarks_lists = {
+  std::vector<hand_tracking_mp_lean::NormalizedLandmarkList> normalized_landmarks_lists = {
       normalized_landmark_list_proto};
 
-  std::vector<mediapipe_v01013_based::LandmarkList> world_landmarks_lists = {
+  std::vector<hand_tracking_mp_lean::LandmarkList> world_landmarks_lists = {
       world_landmark_list_proto};
 
   PoseLandmarkerResult pose_landmarker_result = ConvertToPoseLandmarkerResult(
@@ -77,4 +77,4 @@ TEST(ConvertFromProto, Succeeds) {
 }  // namespace pose_landmarker
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

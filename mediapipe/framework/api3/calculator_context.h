@@ -30,7 +30,7 @@
 #include "mediapipe/framework/resources.h"
 #include "mediapipe/framework/timestamp.h"
 
-namespace mediapipe_v01013_based::api3 {
+namespace hand_tracking_mp_lean::api3 {
 
 // Calculator context specialized for a specific node.
 //
@@ -39,7 +39,7 @@ namespace mediapipe_v01013_based::api3 {
 template <typename NodeT>
 class CalculatorContext : public NodeT::template Contract<ContextSpecializer> {
  public:
-  explicit CalculatorContext(mediapipe_v01013_based::CalculatorContext& generic_context) {
+  explicit CalculatorContext(hand_tracking_mp_lean::CalculatorContext& generic_context) {
     holder_ = std::make_unique<internal_port::CalculatorContextHolder>();
     holder_->context = &generic_context;
     typename NodeT::template Contract<ContextSpecializer>* ptr = this;
@@ -78,12 +78,12 @@ class CalculatorContext : public NodeT::template Contract<ContextSpecializer> {
     return holder_->context->GetResources();
   }
 
-  mediapipe_v01013_based::CalculatorContext& GetGenericContext() {
+  hand_tracking_mp_lean::CalculatorContext& GetGenericContext() {
     return *holder_->context;
   }
 
  private:
-  void Reset(mediapipe_v01013_based::CalculatorContext& generic_context) {
+  void Reset(hand_tracking_mp_lean::CalculatorContext& generic_context) {
     if (holder_->context != nullptr) {
       ABSL_LOG(DFATAL) << "Object must be cleared before resetting.";
     }
@@ -130,8 +130,8 @@ class Input<ContextSpecializer, PayloadT>
         .template Get<PayloadT>();
   }
 
-  mediapipe_v01013_based::api3::Packet<PayloadT> Packet() const {
-    return mediapipe_v01013_based::api3::Packet<PayloadT>(
+  hand_tracking_mp_lean::api3::Packet<PayloadT> Packet() const {
+    return hand_tracking_mp_lean::api3::Packet<PayloadT>(
         holder_->context->Inputs().Get(Tag(), Index()).Value());
   }
 };
@@ -155,8 +155,8 @@ class SideInput<ContextSpecializer, PayloadT>
         .template Get<PayloadT>();
   }
 
-  mediapipe_v01013_based::api3::Packet<PayloadT> Packet() const {
-    return mediapipe_v01013_based::api3::Packet<PayloadT>(
+  hand_tracking_mp_lean::api3::Packet<PayloadT> Packet() const {
+    return hand_tracking_mp_lean::api3::Packet<PayloadT>(
         holder_->context->InputSidePackets().Get(Tag(), Index()));
   }
 };
@@ -171,7 +171,7 @@ class Output<ContextSpecializer, PayloadT>
   void Send(const PayloadT& payload) const {
     holder_->context->Outputs()
         .Get(Tag(), Index())
-        .AddPacket(mediapipe_v01013_based::MakePacket<PayloadT>(payload).At(
+        .AddPacket(hand_tracking_mp_lean::MakePacket<PayloadT>(payload).At(
             holder_->context->InputTimestamp()));
   }
 
@@ -179,14 +179,14 @@ class Output<ContextSpecializer, PayloadT>
     holder_->context->Outputs()
         .Get(Tag(), Index())
         .AddPacket(
-            mediapipe_v01013_based::MakePacket<PayloadT>(std::forward<PayloadT>(payload))
+            hand_tracking_mp_lean::MakePacket<PayloadT>(std::forward<PayloadT>(payload))
                 .At(holder_->context->InputTimestamp()));
   }
 
   void Send(std::unique_ptr<PayloadT> payload) const {
     holder_->context->Outputs()
         .Get(Tag(), Index())
-        .AddPacket(mediapipe_v01013_based::Adopt(payload.release())
+        .AddPacket(hand_tracking_mp_lean::Adopt(payload.release())
                        .At(holder_->context->InputTimestamp()));
   }
 
@@ -219,13 +219,13 @@ class SideOutput<ContextSpecializer, PayloadT>
   void Set(const PayloadT& payload) const {
     holder_->context->OutputSidePackets()
         .Get(Tag(), Index())
-        .Set(mediapipe_v01013_based::MakePacket<PayloadT>(payload));
+        .Set(hand_tracking_mp_lean::MakePacket<PayloadT>(payload));
   }
 
   void Set(PayloadT&& payload) const {
     holder_->context->OutputSidePackets()
         .Get(Tag(), Index())
-        .Set(mediapipe_v01013_based::MakePacket<PayloadT>(std::forward<PayloadT>(payload)));
+        .Set(hand_tracking_mp_lean::MakePacket<PayloadT>(std::forward<PayloadT>(payload)));
   }
 };
 
@@ -248,6 +248,6 @@ class Options<ContextSpecializer, ProtoT> {
   internal_port::CalculatorContextHolder* holder_ = nullptr;
 };
 
-}  // namespace mediapipe_v01013_based::api3
+}  // namespace hand_tracking_mp_lean::api3
 
 #endif  // MEDIAPIPE_FRAMEWORK_API3_CALCULATOR_CONTEXT_H_

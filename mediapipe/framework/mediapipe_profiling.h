@@ -24,8 +24,8 @@
 
 #ifdef MEDIAPIPE_PROFILER_AVAILABLE
 #define MEDIAPIPE_PROFILER_SCOPE_INTERNAL(event_type, calculator_context) \
-  mediapipe_v01013_based::GraphProfiler::Scope graph_profiler_scope(                   \
-      mediapipe_v01013_based::TraceEvent::event_type, calculator_context,              \
+  hand_tracking_mp_lean::GraphProfiler::Scope graph_profiler_scope(                   \
+      hand_tracking_mp_lean::TraceEvent::event_type, calculator_context,              \
       calculator_context->GetProfilingContext())
 #else
 #define MEDIAPIPE_PROFILER_SCOPE_INTERNAL(method_name, calculator_context)
@@ -34,7 +34,7 @@
 #define MEDIAPIPE_PROFILING(method_name, calculator_context) \
   MEDIAPIPE_PROFILER_SCOPE_INTERNAL(method_name, calculator_context)
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Log a TraceEvent to the GraphTracer.
 inline void LogEvent(ProfilingContext* context, TraceEvent event) {
@@ -44,6 +44,6 @@ inline void LogEvent(ProfilingContext* context, TraceEvent event) {
   }
 #endif
 }
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_MEDIAPIPE_PROFILING_H_

@@ -19,7 +19,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 class RegistrationTokenTest : public testing::Test {
  public:
@@ -123,4 +123,4 @@ TEST_F(RegistrationTokenTest, TestMove) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

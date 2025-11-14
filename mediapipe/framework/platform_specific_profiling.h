@@ -22,10 +22,10 @@
 #endif
 
 // Enabling this flag, will require specific platform implementation for the
-// methods mediapipe_v01013_based::PlatformSpecificTraceEventBegin() and
-// mediapipe_v01013_based::PlatformSpecificTraceEventEnd().
+// methods hand_tracking_mp_lean::PlatformSpecificTraceEventBegin() and
+// hand_tracking_mp_lean::PlatformSpecificTraceEventEnd().
 #ifdef ENABLE_PLATFORM_SPECIFIC_PROFILING
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 const char kProfilingCategory[] = "Calculators";
 
@@ -78,19 +78,19 @@ class PlatformSpecificProfilingScope {
   int64_t id_;
   int64_t packet_timestamp_;
 };
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 // General profiling macro.
 #define PLATFORM_SPECIFIC_PROFILER(name, id, packet_timestamp)       \
-  mediapipe_v01013_based::PlatformSpecificProfilingScope platform_specific_scope( \
+  hand_tracking_mp_lean::PlatformSpecificProfilingScope platform_specific_scope( \
       name, id, packet_timestamp);
 
 // Automated profiling macro.
 // Filters out all methods except Calculator::Process().
 #define PLATFORM_SPECIFIC_PROCESS_PROFILER(name, id, method_name,    \
                                            packet_timestamp)         \
-  mediapipe_v01013_based::PlatformSpecificProfilingScope platform_specific_scope( \
-      name, id, packet_timestamp, mediapipe_v01013_based::TraceEvent::method_name);
+  hand_tracking_mp_lean::PlatformSpecificProfilingScope platform_specific_scope( \
+      name, id, packet_timestamp, hand_tracking_mp_lean::TraceEvent::method_name);
 
 #else
 #define PLATFORM_SPECIFIC_PROFILER(name, id, packet_timestamp)

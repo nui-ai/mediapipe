@@ -20,7 +20,7 @@
 #include "Eigen/Dense"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based::face_geometry {
+namespace hand_tracking_mp_lean::face_geometry {
 
 // Encapsulates a stateless solver for the Weighted Extended Orthogonal
 // Procrustes (WEOP) Problem, as defined in Section 2.4 of
@@ -65,6 +65,6 @@ class ProcrustesSolver {
 
 std::unique_ptr<ProcrustesSolver> CreateFloatPrecisionProcrustesSolver();
 
-}  // namespace mediapipe_v01013_based::face_geometry
+}  // namespace hand_tracking_mp_lean::face_geometry
 
 #endif  // MEDIAPIPE_FACE_GEOMETRY_LIBS_PROCRUSTES_SOLVER_H_

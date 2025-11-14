@@ -70,9 +70,9 @@ bool CanUseGpu() {
 }
 }  // namespace
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
-  using BoxFormat = ::mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::BoxFormat;
+  using BoxFormat = ::hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::BoxFormat;
 
   namespace {
 
@@ -140,9 +140,9 @@ namespace api2 {
       if (options.has_box_format()) {
         return options.box_format();
       } else if (options.reverse_output_order()) {
-        return mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::XYWH;
+        return hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::XYWH;
       }
-      return mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::YXHW;
+      return hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::YXHW;
     }
 
   }  // namespace
@@ -396,20 +396,20 @@ namespace api2 {
       float w = 0.0;
       // TODO
       switch (box_output_format_) {
-        case mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::UNSPECIFIED:
-        case mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::YXHW:
+        case hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::UNSPECIFIED:
+        case hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::YXHW:
           y_center = raw_boxes[box_offset];
           x_center = raw_boxes[box_offset + 1];
           h = raw_boxes[box_offset + 2];
           w = raw_boxes[box_offset + 3];
           break;
-        case mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::XYWH:
+        case hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::XYWH:
           x_center = raw_boxes[box_offset];
           y_center = raw_boxes[box_offset + 1];
           w = raw_boxes[box_offset + 2];
           h = raw_boxes[box_offset + 3];
           break;
-        case mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::XYXY:
+        case hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::XYXY:
           x_center = (-raw_boxes[box_offset] + raw_boxes[box_offset + 2]) / 2;
           y_center = (-raw_boxes[box_offset + 1] + raw_boxes[box_offset + 3]) / 2;
           w = raw_boxes[box_offset + 2] + raw_boxes[box_offset];
@@ -447,13 +447,13 @@ namespace api2 {
           float keypoint_y = 0.0;
           float keypoint_x = 0.0;
           switch (box_output_format_) {
-            case mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::UNSPECIFIED:
-            case mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::YXHW:
+            case hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::UNSPECIFIED:
+            case hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::YXHW:
               keypoint_y = raw_boxes[offset];
               keypoint_x = raw_boxes[offset + 1];
               break;
-            case mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::XYWH:
-            case mediapipe_v01013_based::TensorsToDetectionsCalculatorOptions::XYXY:
+            case hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::XYWH:
+            case hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::XYXY:
               keypoint_x = raw_boxes[offset];
               keypoint_y = raw_boxes[offset + 1];
               break;
@@ -546,4 +546,4 @@ namespace api2 {
   }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

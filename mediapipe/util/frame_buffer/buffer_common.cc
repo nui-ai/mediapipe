@@ -14,7 +14,7 @@
 
 #include "mediapipe/util/frame_buffer/buffer_common.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace frame_buffer {
 namespace common {
 
@@ -37,4 +37,4 @@ bool crop_buffer(int x0, int y0, int x1, int y1, halide_buffer_t* buffer) {
 
 }  // namespace common
 }  // namespace frame_buffer
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

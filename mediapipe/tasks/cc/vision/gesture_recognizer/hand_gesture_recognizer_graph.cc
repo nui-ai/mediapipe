@@ -46,24 +46,24 @@ limitations under the License.
 #include "mediapipe/tasks/cc/vision/gesture_recognizer/proto/hand_gesture_recognizer_graph_options.pb.h"
 #include "mediapipe/tasks/metadata/metadata_schema_generated.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace gesture_recognizer {
 
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::builder::Graph;
-using ::mediapipe_v01013_based::api2::builder::Source;
-using ::mediapipe_v01013_based::tasks::components::processors::
+using ::hand_tracking_mp_lean::NormalizedRect;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::builder::Graph;
+using ::hand_tracking_mp_lean::api2::builder::Source;
+using ::hand_tracking_mp_lean::tasks::components::processors::
     ConfigureTensorsToClassificationCalculator;
-using ::mediapipe_v01013_based::tasks::core::ModelAssetBundleResources;
-using ::mediapipe_v01013_based::tasks::core::proto::BaseOptions;
-using ::mediapipe_v01013_based::tasks::metadata::SetExternalFile;
-using ::mediapipe_v01013_based::tasks::vision::gesture_recognizer::proto::
+using ::hand_tracking_mp_lean::tasks::core::ModelAssetBundleResources;
+using ::hand_tracking_mp_lean::tasks::core::proto::BaseOptions;
+using ::hand_tracking_mp_lean::tasks::metadata::SetExternalFile;
+using ::hand_tracking_mp_lean::tasks::vision::gesture_recognizer::proto::
     HandGestureRecognizerGraphOptions;
 
 constexpr char kHandednessTag[] = "HANDEDNESS";
@@ -183,7 +183,7 @@ class SingleHandGestureRecognizerGraph : public core::ModelTaskGraph {
       MP_RETURN_IF_ERROR(SetSubTaskBaseOptions(
           *model_asset_bundle_resources,
           sc->MutableOptions<HandGestureRecognizerGraphOptions>(),
-          !sc->Service(::mediapipe_v01013_based::tasks::core::kModelResourcesCacheService)
+          !sc->Service(::hand_tracking_mp_lean::tasks::core::kModelResourcesCacheService)
                .IsAvailable()));
     }
     MP_ASSIGN_OR_RETURN(const auto sub_task_model_resources,
@@ -413,7 +413,7 @@ class SingleHandGestureRecognizerGraph : public core::ModelTaskGraph {
         options.classifier_options(), *model_resources->GetMetadataExtractor(),
         0,
         &tensors_to_classification.GetOptions<
-            mediapipe_v01013_based::TensorsToClassificationCalculatorOptions>()));
+            hand_tracking_mp_lean::TensorsToClassificationCalculatorOptions>()));
     gesture_inference_out_tensors >> tensors_to_classification.In(kTensorsTag);
     return tensors_to_classification.Out("CLASSIFICATIONS")
         .Cast<ClassificationList>();
@@ -424,7 +424,7 @@ class SingleHandGestureRecognizerGraph : public core::ModelTaskGraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe_v01013_based::tasks::vision::gesture_recognizer::SingleHandGestureRecognizerGraph);  // NOLINT
+  ::hand_tracking_mp_lean::tasks::vision::gesture_recognizer::SingleHandGestureRecognizerGraph);  // NOLINT
 // clang-format on
 
 // A
@@ -567,10 +567,10 @@ class MultipleHandGestureRecognizerGraph : public core::ModelTaskGraph {
 
 // clang-format off
 REGISTER_MEDIAPIPE_GRAPH(
-  ::mediapipe_v01013_based::tasks::vision::gesture_recognizer::MultipleHandGestureRecognizerGraph);  // NOLINT
+  ::hand_tracking_mp_lean::tasks::vision::gesture_recognizer::MultipleHandGestureRecognizerGraph);  // NOLINT
 // clang-format on
 
 }  // namespace gesture_recognizer
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

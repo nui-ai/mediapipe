@@ -9,14 +9,14 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe_v01013_based::api2::builder {
+namespace hand_tracking_mp_lean::api2::builder {
 
 namespace {
 
-using ::mediapipe_v01013_based::NormalizedRect;
+using ::hand_tracking_mp_lean::NormalizedRect;
 
 TEST(RectTransformation, ScaleAndMakeSquare) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<NormalizedRect> rect = graph.In("RECT").Cast<NormalizedRect>();
   Stream<std::pair<int, int>> size =
@@ -27,7 +27,7 @@ TEST(RectTransformation, ScaleAndMakeSquare) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "RectTransformationCalculator"
           input_stream: "IMAGE_SIZE:__stream_1"
@@ -47,7 +47,7 @@ TEST(RectTransformation, ScaleAndMakeSquare) {
 }
 
 TEST(RectTransformation, Scale) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<NormalizedRect> rect = graph.In("RECT").Cast<NormalizedRect>();
   Stream<std::pair<int, int>> size =
@@ -58,7 +58,7 @@ TEST(RectTransformation, Scale) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "RectTransformationCalculator"
           input_stream: "IMAGE_SIZE:__stream_1"
@@ -77,7 +77,7 @@ TEST(RectTransformation, Scale) {
 }
 
 TEST(RectTransformation, ScaleAndShift) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<NormalizedRect> rect = graph.In("RECT").Cast<NormalizedRect>();
   Stream<std::pair<int, int>> size =
@@ -89,7 +89,7 @@ TEST(RectTransformation, ScaleAndShift) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "RectTransformationCalculator"
           input_stream: "IMAGE_SIZE:__stream_1"
@@ -110,7 +110,7 @@ TEST(RectTransformation, ScaleAndShift) {
 }
 
 TEST(RectTransformation, ScaleAndShiftAndMakeSquareLong) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<NormalizedRect> rect = graph.In("RECT").Cast<NormalizedRect>();
   Stream<std::pair<int, int>> size =
@@ -122,7 +122,7 @@ TEST(RectTransformation, ScaleAndShiftAndMakeSquareLong) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "RectTransformationCalculator"
           input_stream: "IMAGE_SIZE:__stream_1"
@@ -144,7 +144,7 @@ TEST(RectTransformation, ScaleAndShiftAndMakeSquareLong) {
 }
 
 TEST(RectTransformation, ScaleAndShiftMultipleRects) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<std::vector<NormalizedRect>> rects =
       graph.In("RECTS").Cast<std::vector<NormalizedRect>>();
@@ -157,7 +157,7 @@ TEST(RectTransformation, ScaleAndShiftMultipleRects) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "RectTransformationCalculator"
           input_stream: "IMAGE_SIZE:__stream_1"
@@ -178,7 +178,7 @@ TEST(RectTransformation, ScaleAndShiftMultipleRects) {
 }
 
 TEST(RectTransformation, ScaleAndShiftAndMakeSquareLongMultipleRects) {
-  mediapipe_v01013_based::api2::builder::Graph graph;
+  hand_tracking_mp_lean::api2::builder::Graph graph;
 
   Stream<std::vector<NormalizedRect>> rects =
       graph.In("RECTS").Cast<std::vector<NormalizedRect>>();
@@ -192,7 +192,7 @@ TEST(RectTransformation, ScaleAndShiftAndMakeSquareLongMultipleRects) {
 
   EXPECT_THAT(
       graph.GetConfig(),
-      EqualsProto(mediapipe_v01013_based::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
+      EqualsProto(hand_tracking_mp_lean::ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
         node {
           calculator: "RectTransformationCalculator"
           input_stream: "IMAGE_SIZE:__stream_1"
@@ -214,4 +214,4 @@ TEST(RectTransformation, ScaleAndShiftAndMakeSquareLongMultipleRects) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based::api2::builder
+}  // namespace hand_tracking_mp_lean::api2::builder

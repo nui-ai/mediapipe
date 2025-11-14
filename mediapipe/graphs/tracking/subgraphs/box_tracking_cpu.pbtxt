@@ -12,7 +12,7 @@ node: {
   input_stream: "IMAGE:input_video"
   output_stream: "IMAGE:downscaled_input_video"
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.ImageTransformationCalculatorOptions] {
+    [type.googleapis.com/hand_tracking_mp_lean.ImageTransformationCalculatorOptions] {
       output_width: 320
       output_height: 240
     }
@@ -27,7 +27,7 @@ node: {
   output_stream: "FLOW:region_flow"
 
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.MotionAnalysisCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.MotionAnalysisCalculatorOptions]: {
       analysis_options {
         analysis_policy: ANALYSIS_POLICY_CAMERA_MOBILE
         flow_options {
@@ -63,7 +63,7 @@ node: {
   output_stream: "TRACKING:tracking_data"
 
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.FlowPackagerCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.FlowPackagerCalculatorOptions]: {
       flow_packager_options: {
         binary_tracking_data_support: false
       }
@@ -87,7 +87,7 @@ node: {
   input_stream_handler {
     input_stream_handler: "SyncSetInputStreamHandler"
     options {
-      [mediapipe_v01013_based.SyncSetInputStreamHandlerOptions.ext] {
+      [hand_tracking_mp_lean.SyncSetInputStreamHandlerOptions.ext] {
         sync_set {
           tag_index: "TRACKING"
           tag_index: "TRACK_TIME"
@@ -103,7 +103,7 @@ node: {
   }
 
   node_options: {
-    [type.googleapis.com/mediapipe_v01013_based.BoxTrackerCalculatorOptions]: {
+    [type.googleapis.com/hand_tracking_mp_lean.BoxTrackerCalculatorOptions]: {
       tracker_options: {
         track_step_options {
           track_object_and_camera: true

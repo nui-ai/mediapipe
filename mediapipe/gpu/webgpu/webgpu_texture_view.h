@@ -9,7 +9,7 @@
 
 #include "mediapipe/gpu/gpu_buffer_storage.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 class WebGpuTextureView {
  public:
@@ -45,6 +45,6 @@ class ViewProvider<WebGpuTextureView> {
 };
 
 }  // namespace internal
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_GPU_WEBGPU_WEBGPU_TEXTURE_VIEW_H_

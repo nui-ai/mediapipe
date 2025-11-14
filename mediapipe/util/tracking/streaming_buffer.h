@@ -28,7 +28,7 @@
 #include "absl/types/any.h"
 #include "mediapipe/framework/tool/type_util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Streaming buffer to store arbitrary data over a chunk of frames with overlap
 // between chunks.
@@ -509,6 +509,6 @@ std::unique_ptr<T> StreamingBuffer::ReleaseDatum(const std::string& tag,
   }
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_TRACKING_STREAMING_BUFFER_H_

@@ -40,7 +40,7 @@
 #include "tensorflow/lite/interpreter.h"
 #include "tensorflow/lite/kernels/register.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 namespace {
 
@@ -62,9 +62,9 @@ constexpr char kTwoSignaturesModelPath[] =
     "mediapipe/calculators/tensor/testdata/"
     "test_two_signature_keys_model.tflite";
 
-using ::mediapipe_v01013_based::MakePacket;
-using ::mediapipe_v01013_based::Packet;
-using ::mediapipe_v01013_based::tool::AddVectorSink;
+using ::hand_tracking_mp_lean::MakePacket;
+using ::hand_tracking_mp_lean::Packet;
+using ::hand_tracking_mp_lean::tool::AddVectorSink;
 using ::testing::HasSubstr;
 using ::tflite::impl::InterpreterBuilder;
 using ::tflite::ops::builtin::BuiltinOpResolverWithoutDefaultDelegates;
@@ -759,4 +759,4 @@ TEST(InferenceIoMapper, ShouldFailWhenMultipleSignaturesExist) {
 
 }  // namespace
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

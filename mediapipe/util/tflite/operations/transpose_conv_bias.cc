@@ -21,7 +21,7 @@
 #include "tensorflow/lite/kernels/internal/tensor.h"
 #include "tensorflow/lite/kernels/padding.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tflite_operations {
 namespace {
 
@@ -264,4 +264,4 @@ TfLiteRegistration* RegisterConvolution2DTransposeBias() {
 }
 
 }  // namespace tflite_operations
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

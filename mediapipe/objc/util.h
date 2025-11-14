@@ -38,7 +38,7 @@ inline vImage_Buffer vImageForCVPixelBuffer(CVPixelBufferRef pixel_buffer) {
 }
 
 /// Returns a vImage_Buffer describing the data inside the ImageFrame.
-inline vImage_Buffer vImageForImageFrame(const mediapipe_v01013_based::ImageFrame& frame) {
+inline vImage_Buffer vImageForImageFrame(const hand_tracking_mp_lean::ImageFrame& frame) {
   return {
       .data = reinterpret_cast<void*>(const_cast<uint8_t*>(frame.PixelData())),
       .height = static_cast<vImagePixelCount>(frame.Height()),
@@ -77,15 +77,15 @@ absl::StatusOr<CFHolder<CVPixelBufferRef>> CreateCVPixelBufferWithoutPool(
 /// If the optional can_overwrite parameter is true, the old buffer may be
 /// modified instead.
 absl::Status CreateCVPixelBufferForImageFramePacket(
-    const mediapipe_v01013_based::Packet& image_frame_packet,
+    const hand_tracking_mp_lean::Packet& image_frame_packet,
     CFHolder<CVPixelBufferRef>* out_buffer);
 absl::Status CreateCVPixelBufferForImageFramePacket(
-    const mediapipe_v01013_based::Packet& image_frame_packet, bool can_overwrite,
+    const hand_tracking_mp_lean::Packet& image_frame_packet, bool can_overwrite,
     CFHolder<CVPixelBufferRef>* out_buffer);
 absl::StatusOr<CFHolder<CVPixelBufferRef>> CreateCVPixelBufferCopyingImageFrame(
-    const mediapipe_v01013_based::ImageFrame& image_frame);
+    const hand_tracking_mp_lean::ImageFrame& image_frame);
 absl::StatusOr<CFHolder<CVPixelBufferRef>> CreateCVPixelBufferForImageFrame(
-    std::shared_ptr<mediapipe_v01013_based::ImageFrame> image_frame,
+    std::shared_ptr<hand_tracking_mp_lean::ImageFrame> image_frame,
     bool can_overwrite = false);
 
 /// Creates a CVPixelBuffer with a copy of the contents of the CGImage.
@@ -98,7 +98,7 @@ absl::Status CreateCGImageFromCVPixelBuffer(CVPixelBufferRef image_buffer,
 
 /// DEPRECATED: use the version that returns absl::Status instead.
 CVPixelBufferRef CreateCVPixelBufferForImageFramePacket(
-    const mediapipe_v01013_based::Packet& image_frame_packet);
+    const hand_tracking_mp_lean::Packet& image_frame_packet);
 
 /// Returns an ImageFrame that references the data inside the pixel_buffer.
 /// The ImageFrame retains the pixel_buffer and keeps it locked as long as it
@@ -113,9 +113,9 @@ CVPixelBufferRef CreateCVPixelBufferForImageFramePacket(
 /// channels to produce RGBA. But many graphs do not care about the order of
 /// the channels; in those cases, setting the optional bgr_as_rgb parameter
 /// to true skips the channel swap.
-std::unique_ptr<mediapipe_v01013_based::ImageFrame> CreateImageFrameForCVPixelBuffer(
+std::unique_ptr<hand_tracking_mp_lean::ImageFrame> CreateImageFrameForCVPixelBuffer(
     CVPixelBufferRef pixel_buffer);
-std::unique_ptr<mediapipe_v01013_based::ImageFrame> CreateImageFrameForCVPixelBuffer(
+std::unique_ptr<hand_tracking_mp_lean::ImageFrame> CreateImageFrameForCVPixelBuffer(
     CVPixelBufferRef pixel_buffer, bool can_overwrite, bool bgr_as_rgb);
 
 /// Returns a CFDictionaryRef that can be passed to CVPixelBufferCreate to

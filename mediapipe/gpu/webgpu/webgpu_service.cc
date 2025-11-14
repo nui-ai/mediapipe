@@ -30,7 +30,7 @@ EM_JS_DEPS(webgpu_service_deps, "$stringToNewUTF8")
 #include "mediapipe/gpu/webgpu/webgpu_device_registration.h"
 #endif  // __EMSCRIPTEN__
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 #ifdef __EMSCRIPTEN__
 namespace {
@@ -86,4 +86,4 @@ WebGpuService::WebGpuService()
 ABSL_CONST_INIT const GraphService<WebGpuService> kWebGpuService(
     "kWebGpuService", GraphServiceBase::kAllowDefaultInitialization);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

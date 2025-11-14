@@ -25,7 +25,7 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe/framework/port/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // A calculator to return an item from the vector by its index.
@@ -65,8 +65,8 @@ class GetVectorItemCalculator : public Node {
   MEDIAPIPE_NODE_CONTRACT(kIn, kIdx, kOut);
 
   absl::Status Open(CalculatorContext* cc) final {
-    cc->SetOffset(mediapipe_v01013_based::TimestampDiff(0));
-    auto& options = cc->Options<mediapipe_v01013_based::GetVectorItemCalculatorOptions>();
+    cc->SetOffset(hand_tracking_mp_lean::TimestampDiff(0));
+    auto& options = cc->Options<hand_tracking_mp_lean::GetVectorItemCalculatorOptions>();
     RET_CHECK(kIdx(cc).IsConnected() || options.has_item_index());
     return absl::OkStatus();
   }
@@ -78,7 +78,7 @@ class GetVectorItemCalculator : public Node {
 
     const std::vector<T>& items = kIn(cc).Get();
     const auto& options =
-        cc->Options<mediapipe_v01013_based::GetVectorItemCalculatorOptions>();
+        cc->Options<hand_tracking_mp_lean::GetVectorItemCalculatorOptions>();
 
     int idx = 0;
     if (kIdx(cc).IsConnected() && !kIdx(cc).IsEmpty()) {
@@ -103,6 +103,6 @@ class GetVectorItemCalculator : public Node {
 };
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_CORE_GET_VECTOR_ITEM_CALCULATOR_H_

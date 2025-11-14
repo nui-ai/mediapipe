@@ -19,7 +19,7 @@ limitations under the License.
 #include <cmath>
 #include <cstdlib>
 
-namespace mediapipe_v01013_based::tasks::components::containers {
+namespace hand_tracking_mp_lean::tasks::components::containers {
 
 inline constexpr float kRectFTolerance = 1e-4;
 
@@ -59,5 +59,5 @@ RectF ToRectF(const Rect& rect, int image_height, int image_width);
 
 Rect ToRect(const RectF& rect, int image_height, int image_width);
 
-}  // namespace mediapipe_v01013_based::tasks::components::containers
+}  // namespace hand_tracking_mp_lean::tasks::components::containers
 #endif  // MEDIAPIPE_TASKS_CC_COMPONENTS_CONTAINERS_RECT_H_

@@ -6,7 +6,7 @@
 #include "absl/base/attributes.h"
 #include "absl/status/statusor.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Implementation of a unique file descriptor wrapper inspired by
 // https://android.googlesource.com/platform/bionic/+/master/docs/fdsan.md
@@ -48,6 +48,6 @@ class UniqueFd {
   int fd_ = -1;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_ANDROID_UNIQUE_FD_H_

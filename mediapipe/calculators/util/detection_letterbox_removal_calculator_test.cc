@@ -24,7 +24,7 @@
 #include "mediapipe/framework/port/status_matchers.h"
 #include "mediapipe/framework/tool/validate_type.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 constexpr char kLetterboxPaddingTag[] = "LETTERBOX_PADDING";
 constexpr char kDetectionsTag[] = "DETECTIONS";
@@ -159,4 +159,4 @@ TEST(DetectionLetterboxRemovalCalculatorTest, PaddingTopBottom) {
               testing::FloatNear(0.5f, 1e-5));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

@@ -16,7 +16,7 @@
 
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 TEST(StatusBuilder, OkStatusLvalue) {
   StatusBuilder builder(absl::OkStatus(), MEDIAPIPE_LOC);
@@ -147,4 +147,4 @@ TEST(StatusBuilder, SetCodeRvalue) {
   EXPECT_EQ(status.message(), "original message");
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

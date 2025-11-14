@@ -18,7 +18,7 @@
 #include "mediapipe/framework/port/gtest.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 TEST(GraphTest, MinimumDefaultExecutorStackSizeExistingConfigSizeUnspecified) {
   CalculatorGraphConfig config =
@@ -118,4 +118,4 @@ TEST(GraphTest, MinimumDefaultExecutorStackSizeNumThreads) {
   EXPECT_THAT(config, EqualsProto(expected_config));
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

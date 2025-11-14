@@ -19,7 +19,7 @@
 #include "mediapipe/framework/api2/node.h"
 #include "mediapipe/framework/calculator_framework.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // A Calculator that shifts the timestamps of packets along a stream. Packets on
@@ -73,9 +73,9 @@ MEDIAPIPE_REGISTER_NODE(SequenceShiftCalculator);
 
 absl::Status SequenceShiftCalculator::Open(CalculatorContext* cc) {
   packet_offset_ = kOffset(cc).GetOr(
-      cc->Options<mediapipe_v01013_based::SequenceShiftCalculatorOptions>().packet_offset());
+      cc->Options<hand_tracking_mp_lean::SequenceShiftCalculatorOptions>().packet_offset());
   emit_empty_packets_before_first_packet_ =
-      cc->Options<mediapipe_v01013_based::SequenceShiftCalculatorOptions>()
+      cc->Options<hand_tracking_mp_lean::SequenceShiftCalculatorOptions>()
           .emit_empty_packets_before_first_packet();
   cache_size_ = abs(packet_offset_);
   // An offset of zero is a no-op, but someone might still request it.
@@ -119,4 +119,4 @@ void SequenceShiftCalculator::ProcessNegativeOffset(CalculatorContext* cc) {
 }
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

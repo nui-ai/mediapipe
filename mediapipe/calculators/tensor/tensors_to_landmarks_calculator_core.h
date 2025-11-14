@@ -20,7 +20,7 @@
 #include "mediapipe/framework/formats/tensor.h"
 #include "absl/status/status.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 class TensorsToLandmarksCore {
@@ -46,6 +46,6 @@ class TensorsToLandmarksCore {
 };
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_CALCULATORS_TENSOR_TENSORS_TO_LANDMARKS_CALCULATOR_CORE_H_

@@ -74,7 +74,7 @@
 #include "mediapipe/gpu/webgpu/webgpu_service.h"
 #endif  // MEDIAPIPE_USE_WEBGPU
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 // Tensor is a container of multi-dimensional data that supports sharing the
 // content across different backends and APIs, currently: CPU / Metal / OpenGL.
 // Texture2DView is limited to 4 dimensions.
@@ -566,7 +566,7 @@ class Tensor {
   void TrackAhwbUsage(uint64_t key) const;
 
 #if MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_30
-  mutable std::shared_ptr<mediapipe_v01013_based::GlContext> gl_context_;
+  mutable std::shared_ptr<hand_tracking_mp_lean::GlContext> gl_context_;
   mutable GLuint opengl_texture2d_ = GL_INVALID_INDEX;
   mutable GLuint frame_buffer_ = GL_INVALID_INDEX;
   mutable int texture_width_;
@@ -589,6 +589,6 @@ int BhwcHeightFromShape(const Tensor::Shape& shape);
 int BhwcWidthFromShape(const Tensor::Shape& shape);
 int BhwcDepthFromShape(const Tensor::Shape& shape);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_FRAMEWORK_FORMATS_TENSOR_H_

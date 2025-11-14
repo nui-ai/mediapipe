@@ -23,7 +23,7 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/port/status_matchers.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace {
 
 constexpr char kProjectionMatrixTag[] = "PROJECTION_MATRIX";
@@ -33,25 +33,25 @@ constexpr char kImageDimensionsTag[] = "IMAGE_DIMENSIONS";
 
 constexpr float kAbsError = 1e-6;
 
-using ::mediapipe_v01013_based::api3::Graph;
-using ::mediapipe_v01013_based::api3::Input;
-using ::mediapipe_v01013_based::api3::Output;
-using ::mediapipe_v01013_based::api3::Repeated;
-using ::mediapipe_v01013_based::api3::Stream;
+using ::hand_tracking_mp_lean::api3::Graph;
+using ::hand_tracking_mp_lean::api3::Input;
+using ::hand_tracking_mp_lean::api3::Output;
+using ::hand_tracking_mp_lean::api3::Repeated;
+using ::hand_tracking_mp_lean::api3::Stream;
 using ::testing::ElementsAre;
 
 template <typename S>
 struct ProjectLandmarksWithRect {
-  Repeated<Input<S, mediapipe_v01013_based::NormalizedLandmarkList>> in{"IN"};
+  Repeated<Input<S, hand_tracking_mp_lean::NormalizedLandmarkList>> in{"IN"};
   Input<S, NormalizedRect> in_rect{"IN_RECT"};
-  Repeated<Output<S, mediapipe_v01013_based::NormalizedLandmarkList>> out{"OUT"};
+  Repeated<Output<S, hand_tracking_mp_lean::NormalizedLandmarkList>> out{"OUT"};
 };
 
-absl::StatusOr<std::vector<mediapipe_v01013_based::NormalizedLandmarkList>>
+absl::StatusOr<std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>>
 RunLandmarkProjectionCalculator(std::vector<NormalizedLandmarkList> inputs,
                                 NormalizedRect rect) {
   const int num_inputs = inputs.size();
-  MP_ASSIGN_OR_RETURN(mediapipe_v01013_based::CalculatorGraphConfig config, [num_inputs]() {
+  MP_ASSIGN_OR_RETURN(hand_tracking_mp_lean::CalculatorGraphConfig config, [num_inputs]() {
     Graph<ProjectLandmarksWithRect> graph;
 
     // Graph inputs.
@@ -63,11 +63,11 @@ RunLandmarkProjectionCalculator(std::vector<NormalizedLandmarkList> inputs,
     }
 
     // Nodes.
-    std::vector<Stream<mediapipe_v01013_based::NormalizedLandmarkList>> output_streams =
+    std::vector<Stream<hand_tracking_mp_lean::NormalizedLandmarkList>> output_streams =
         [&]() {
           auto& node = graph.AddNode<api3::LandmarkProjectionNode>();
           node.norm_rect.Set(in_rect_stream);
-          std::vector<Stream<mediapipe_v01013_based::NormalizedLandmarkList>> output_streams;
+          std::vector<Stream<hand_tracking_mp_lean::NormalizedLandmarkList>> output_streams;
           for (int i = 0; i < in_streams.size(); ++i) {
             node.input_landmarks.Add(in_streams[i]);
             output_streams.push_back(node.output_landmarks.Add());
@@ -117,12 +117,12 @@ RunLandmarkProjectionCalculator(std::vector<NormalizedLandmarkList> inputs,
 }
 
 TEST(LandmarkProjectionCalculatorTest, ProjectingWithDefaultRect) {
-  mediapipe_v01013_based::NormalizedLandmarkList landmarks =
-      ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+  hand_tracking_mp_lean::NormalizedLandmarkList landmarks =
+      ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
         landmark { x: 10, y: 20, z: -0.5 }
       )pb");
-  mediapipe_v01013_based::NormalizedRect rect =
-      ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedRect>(
+  hand_tracking_mp_lean::NormalizedRect rect =
+      ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedRect>(
           R"pb(
             x_center: 0.5,
             y_center: 0.5,
@@ -137,26 +137,26 @@ TEST(LandmarkProjectionCalculatorTest, ProjectingWithDefaultRect) {
 
   EXPECT_THAT(result,
               ElementsAre(EqualsProto(
-                  ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+                  ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
                     landmark { x: 10, y: 20, z: -0.5 }
                   )pb"))));
 }
 
 TEST(LandmarkProjectionCalculatorTest, ProjectingMultipleListsWithDefaultRect) {
-  std::vector<mediapipe_v01013_based::NormalizedLandmarkList> landmarks = {
-      ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+  std::vector<hand_tracking_mp_lean::NormalizedLandmarkList> landmarks = {
+      ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
         landmark { x: 10, y: 20, z: -0.5 }
         landmark { x: 10, y: 20, z: -0.5 }
         landmark { x: 10, y: 20, z: -0.5 }
       )pb"),
-      ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+      ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
         landmark { x: 20, y: 30, z: 0.5 }
         landmark { x: 20, y: 30, z: 0.5 }
         landmark { x: 20, y: 30, z: 0.5 }
       )pb"),
   };
-  mediapipe_v01013_based::NormalizedRect rect =
-      ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedRect>(
+  hand_tracking_mp_lean::NormalizedRect rect =
+      ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedRect>(
           R"pb(
             x_center: 0.5,
             y_center: 0.5,
@@ -173,34 +173,34 @@ TEST(LandmarkProjectionCalculatorTest, ProjectingMultipleListsWithDefaultRect) {
       result,
       ElementsAre(
           EqualsProto(
-              ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+              ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
                 landmark { x: 10, y: 20, z: -0.5 }
                 landmark { x: 10, y: 20, z: -0.5 }
                 landmark { x: 10, y: 20, z: -0.5 }
               )pb")),
           EqualsProto(
-              ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+              ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
                 landmark { x: 20, y: 30, z: 0.5 }
                 landmark { x: 20, y: 30, z: 0.5 }
                 landmark { x: 20, y: 30, z: 0.5 }
               )pb"))));
 }
 
-mediapipe_v01013_based::NormalizedRect GetCroppedRect() {
-  return ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedRect>(
+hand_tracking_mp_lean::NormalizedRect GetCroppedRect() {
+  return ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedRect>(
       R"pb(
         x_center: 0.5, y_center: 0.5, width: 0.5, height: 2, rotation: 0.0
       )pb");
 }
 
-mediapipe_v01013_based::NormalizedLandmarkList GetCroppedRectTestInput() {
-  return ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+hand_tracking_mp_lean::NormalizedLandmarkList GetCroppedRectTestInput() {
+  return ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
     landmark { x: 1.0, y: 1.0, z: -0.5 }
   )pb");
 }
 
-mediapipe_v01013_based::NormalizedLandmarkList GetCroppedRectTestExpectedResult() {
-  return ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+hand_tracking_mp_lean::NormalizedLandmarkList GetCroppedRectTestExpectedResult() {
+  return ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
     landmark { x: 0.75, y: 1.5, z: -0.25 }
   )pb");
 }
@@ -215,11 +215,11 @@ TEST(LandmarkProjectionCalculatorTest,
               ElementsAre(EqualsProto(GetCroppedRectTestExpectedResult())));
 }
 
-absl::StatusOr<mediapipe_v01013_based::NormalizedLandmarkList> RunCalculator(
-    mediapipe_v01013_based::NormalizedLandmarkList input, mediapipe_v01013_based::NormalizedRect rect,
+absl::StatusOr<hand_tracking_mp_lean::NormalizedLandmarkList> RunCalculator(
+    hand_tracking_mp_lean::NormalizedLandmarkList input, hand_tracking_mp_lean::NormalizedRect rect,
     std::pair<int, int> image_dimensions) {
-  mediapipe_v01013_based::CalculatorRunner runner(
-      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(R"pb(
+  hand_tracking_mp_lean::CalculatorRunner runner(
+      ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig::Node>(R"pb(
         calculator: "LandmarkProjectionCalculator"
         input_stream: "NORM_LANDMARKS:landmarks"
         input_stream: "NORM_RECT:rect"
@@ -229,11 +229,11 @@ absl::StatusOr<mediapipe_v01013_based::NormalizedLandmarkList> RunCalculator(
   runner.MutableInputs()
       ->Tag(kNormLandmarksTag)
       .packets.push_back(
-          MakePacket<mediapipe_v01013_based::NormalizedLandmarkList>(std::move(input))
+          MakePacket<hand_tracking_mp_lean::NormalizedLandmarkList>(std::move(input))
               .At(Timestamp(1)));
   runner.MutableInputs()
       ->Tag(kNormRectTag)
-      .packets.push_back(MakePacket<mediapipe_v01013_based::NormalizedRect>(std::move(rect))
+      .packets.push_back(MakePacket<hand_tracking_mp_lean::NormalizedRect>(std::move(rect))
                              .At(Timestamp(1)));
   runner.MutableInputs()
       ->Tag(kImageDimensionsTag)
@@ -244,11 +244,11 @@ absl::StatusOr<mediapipe_v01013_based::NormalizedLandmarkList> RunCalculator(
   MP_RETURN_IF_ERROR(runner.Run());
   const auto& output_packets = runner.Outputs().Tag(kNormLandmarksTag).packets;
   RET_CHECK_EQ(output_packets.size(), 1);
-  return output_packets[0].Get<mediapipe_v01013_based::NormalizedLandmarkList>();
+  return output_packets[0].Get<hand_tracking_mp_lean::NormalizedLandmarkList>();
 }
 
-mediapipe_v01013_based::NormalizedRect GetCroppedRectWith90degreeRotation() {
-  return ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedRect>(
+hand_tracking_mp_lean::NormalizedRect GetCroppedRectWith90degreeRotation() {
+  return ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedRect>(
       R"pb(
         x_center: 0.5,
         y_center: 0.5,
@@ -258,8 +258,8 @@ mediapipe_v01013_based::NormalizedRect GetCroppedRectWith90degreeRotation() {
       )pb");
 }
 
-mediapipe_v01013_based::NormalizedLandmarkList GetCroppedRectTestInputForRotation() {
-  return ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+hand_tracking_mp_lean::NormalizedLandmarkList GetCroppedRectTestInputForRotation() {
+  return ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
     landmark { x: 0.5, y: 1, z: 0.0 }
   )pb");
 }
@@ -306,10 +306,10 @@ TEST(LandmarkProjectionCalculatorTest,
   EXPECT_NEAR(result.landmark(0).z(), 0.0, kAbsError);
 }
 
-absl::StatusOr<mediapipe_v01013_based::NormalizedLandmarkList> RunCalculator(
-    mediapipe_v01013_based::NormalizedLandmarkList input, std::array<float, 16> matrix) {
-  mediapipe_v01013_based::CalculatorRunner runner(
-      ParseTextProtoOrDie<mediapipe_v01013_based::CalculatorGraphConfig::Node>(R"pb(
+absl::StatusOr<hand_tracking_mp_lean::NormalizedLandmarkList> RunCalculator(
+    hand_tracking_mp_lean::NormalizedLandmarkList input, std::array<float, 16> matrix) {
+  hand_tracking_mp_lean::CalculatorRunner runner(
+      ParseTextProtoOrDie<hand_tracking_mp_lean::CalculatorGraphConfig::Node>(R"pb(
         calculator: "LandmarkProjectionCalculator"
         input_stream: "NORM_LANDMARKS:landmarks"
         input_stream: "PROJECTION_MATRIX:matrix"
@@ -318,7 +318,7 @@ absl::StatusOr<mediapipe_v01013_based::NormalizedLandmarkList> RunCalculator(
   runner.MutableInputs()
       ->Tag(kNormLandmarksTag)
       .packets.push_back(
-          MakePacket<mediapipe_v01013_based::NormalizedLandmarkList>(std::move(input))
+          MakePacket<hand_tracking_mp_lean::NormalizedLandmarkList>(std::move(input))
               .At(Timestamp(1)));
   runner.MutableInputs()
       ->Tag(kProjectionMatrixTag)
@@ -328,12 +328,12 @@ absl::StatusOr<mediapipe_v01013_based::NormalizedLandmarkList> RunCalculator(
   MP_RETURN_IF_ERROR(runner.Run());
   const auto& output_packets = runner.Outputs().Tag(kNormLandmarksTag).packets;
   RET_CHECK_EQ(output_packets.size(), 1);
-  return output_packets[0].Get<mediapipe_v01013_based::NormalizedLandmarkList>();
+  return output_packets[0].Get<hand_tracking_mp_lean::NormalizedLandmarkList>();
 }
 
 TEST(LandmarkProjectionCalculatorTest, ProjectingWithIdentityMatrix) {
-  mediapipe_v01013_based::NormalizedLandmarkList landmarks =
-      ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+  hand_tracking_mp_lean::NormalizedLandmarkList landmarks =
+      ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
         landmark { x: 10, y: 20, z: -0.5 }
       )pb");
   // clang-format off
@@ -351,7 +351,7 @@ TEST(LandmarkProjectionCalculatorTest, ProjectingWithIdentityMatrix) {
 
   EXPECT_THAT(
       status_or_result.value(),
-      EqualsProto(ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+      EqualsProto(ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
         landmark { x: 10, y: 20, z: -0.5 }
       )pb")));
 }
@@ -371,8 +371,8 @@ TEST(LandmarkProjectionCalculatorTest, ProjectingWithCroppedRectMatrix) {
 }
 
 TEST(LandmarkProjectionCalculatorTest, ProjectingWithScaleMatrix) {
-  mediapipe_v01013_based::NormalizedLandmarkList landmarks =
-      ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+  hand_tracking_mp_lean::NormalizedLandmarkList landmarks =
+      ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
         landmark { x: 10, y: 20, z: -0.5 }
         landmark { x: 5, y: 6, z: 7 }
       )pb");
@@ -391,15 +391,15 @@ TEST(LandmarkProjectionCalculatorTest, ProjectingWithScaleMatrix) {
 
   EXPECT_THAT(
       status_or_result.value(),
-      EqualsProto(ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+      EqualsProto(ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
         landmark { x: 100, y: 2000, z: -5 }
         landmark { x: 50, y: 600, z: 70 }
       )pb")));
 }
 
 TEST(LandmarkProjectionCalculatorTest, ProjectingWithTranslateMatrix) {
-  mediapipe_v01013_based::NormalizedLandmarkList landmarks =
-      ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+  hand_tracking_mp_lean::NormalizedLandmarkList landmarks =
+      ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
         landmark { x: 10, y: 20, z: -0.5 }
       )pb");
   // clang-format off
@@ -417,14 +417,14 @@ TEST(LandmarkProjectionCalculatorTest, ProjectingWithTranslateMatrix) {
 
   EXPECT_THAT(
       status_or_result.value(),
-      EqualsProto(ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+      EqualsProto(ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
         landmark { x: 11, y: 22, z: -0.5 }
       )pb")));
 }
 
 TEST(LandmarkProjectionCalculatorTest, ProjectingWithRotationMatrix) {
-  mediapipe_v01013_based::NormalizedLandmarkList landmarks =
-      ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+  hand_tracking_mp_lean::NormalizedLandmarkList landmarks =
+      ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
         landmark { x: 4, y: 0, z: -0.5 }
       )pb");
   // clang-format off
@@ -443,7 +443,7 @@ TEST(LandmarkProjectionCalculatorTest, ProjectingWithRotationMatrix) {
 
   EXPECT_THAT(
       status_or_result.value(),
-      EqualsProto(ParseTextProtoOrDie<mediapipe_v01013_based::NormalizedLandmarkList>(R"pb(
+      EqualsProto(ParseTextProtoOrDie<hand_tracking_mp_lean::NormalizedLandmarkList>(R"pb(
         landmark { x: 0, y: 4, z: -0.5 }
       )pb")));
 }
@@ -454,4 +454,4 @@ TEST(LandmarkProjectionCalculatorTest, HasCorrectRegistrationName) {
 }
 
 }  // namespace
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

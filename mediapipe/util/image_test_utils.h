@@ -9,7 +9,7 @@
 #include "mediapipe/framework/port/opencv_core_inc.h"
 #include "mediapipe/gpu/gpu_buffer.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 // Reads the image file into cv::Mat with RGB channels.
 cv::Mat GetRgb(const std::string& path);
@@ -21,7 +21,7 @@ cv::Mat GetRgba(const std::string& path);
 cv::Mat GetGray(const std::string& path);
 
 // Converts the image channels into corresponding ImageFormat.
-mediapipe_v01013_based::ImageFormat::Format GetImageFormat(int image_channels);
+hand_tracking_mp_lean::ImageFormat::Format GetImageFormat(int image_channels);
 
 // Converts the cv::Mat into ImageFrame packet.
 Packet MakeImageFramePacket(cv::Mat input, int timestamp = 0);
@@ -56,6 +56,6 @@ GpuBuffer CreateTestRgba8GpuBuffer(int width, int height);
 // Generates 3 channel uint8 RGB GpuBuffer with increasing [0,255] values.
 GpuBuffer CreateTestRgb8GpuBuffer(int width, int height);
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_UTIL_IMAGE_TEST_UTILS_H_

@@ -130,7 +130,7 @@ node {
   input_stream: "pose_landmarks"
   output_stream: "face_landmarks_from_pose"
   options: {
-    [mediapipe_v01013_based.SplitVectorCalculatorOptions.ext] {
+    [hand_tracking_mp_lean.SplitVectorCalculatorOptions.ext] {
       ranges: { begin: 0 end: 11 }
     }
   }

@@ -16,7 +16,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/port/ret_check.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace api2 {
 
 // Forwards the input packet to one of the n output streams "OUTPUT:0",
@@ -103,4 +103,4 @@ class RoundRobinDemuxCalculator : public Node {
 MEDIAPIPE_REGISTER_NODE(RoundRobinDemuxCalculator);
 
 }  // namespace api2
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

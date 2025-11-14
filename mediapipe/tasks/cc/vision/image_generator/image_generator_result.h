@@ -18,7 +18,7 @@ limitations under the License.
 
 #include "mediapipe/framework/formats/image.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace tasks {
 namespace vision {
 namespace image_generator {
@@ -36,6 +36,6 @@ struct ImageGeneratorResult {
 }  // namespace image_generator
 }  // namespace vision
 }  // namespace tasks
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_TASKS_CC_VISION_IMAGE_GENERATOR_IMAGE_GENERATOR_RESULT_H_

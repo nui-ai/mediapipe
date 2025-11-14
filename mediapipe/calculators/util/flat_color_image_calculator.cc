@@ -24,14 +24,14 @@
 #include "mediapipe/framework/formats/image_frame_opencv.h"
 #include "mediapipe/util/color.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
-using ::mediapipe_v01013_based::api2::Input;
-using ::mediapipe_v01013_based::api2::Node;
-using ::mediapipe_v01013_based::api2::Output;
-using ::mediapipe_v01013_based::api2::SideOutput;
+using ::hand_tracking_mp_lean::api2::Input;
+using ::hand_tracking_mp_lean::api2::Node;
+using ::hand_tracking_mp_lean::api2::Output;
+using ::hand_tracking_mp_lean::api2::SideOutput;
 }  // namespace
 
 // A calculator for generating an image filled with a single color.
@@ -159,11 +159,11 @@ FlatColorImageCalculator::CreateOutputFrame(CalculatorContext* cc) {
 
   auto output_frame = std::make_shared<ImageFrame>(ImageFormat::SRGB,
                                                    output_width, output_height);
-  cv::Mat output_mat = mediapipe_v01013_based::formats::MatView(output_frame.get());
+  cv::Mat output_mat = hand_tracking_mp_lean::formats::MatView(output_frame.get());
 
   output_mat.setTo(cv::Scalar(color.r(), color.g(), color.b()));
 
   return output_frame;
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

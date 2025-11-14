@@ -39,7 +39,7 @@
 #include "tensorflow/lite/interpreter_builder.h"
 #include "tensorflow/lite/util.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 namespace {
 
@@ -285,7 +285,7 @@ CreateInferenceInterpreterDelegateRunner(
     api2::Packet<TfLiteModelPtr> model,
     api2::Packet<tflite::OpResolver> op_resolver, TfLiteDelegatePtr delegate,
     int interpreter_num_threads,
-    const mediapipe_v01013_based::InferenceCalculatorOptions::InputOutputConfig* input_output_config,
+    const hand_tracking_mp_lean::InferenceCalculatorOptions::InputOutputConfig* input_output_config,
     bool enable_zero_copy_tensor_io) {
   InterpreterBuilder interpreter_builder(*model.Get(), op_resolver.Get());
   if (delegate) {
@@ -320,4 +320,4 @@ CreateInferenceInterpreterDelegateRunner(
       std::move(inference_feedback_manager), enable_zero_copy_tensor_io);
 }
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

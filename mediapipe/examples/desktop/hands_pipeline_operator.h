@@ -17,7 +17,7 @@
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/formats/classification.pb.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 
 /// class operating a MediaPipe pipeline from cpp code.
 /// this was not implemented in mediapipe v0.10.13 itself.
@@ -43,6 +43,6 @@ class HandsPipelineOperator {
   std::map<std::string, OutputStreamPoller> pollers_;
 };
 
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean
 
 #endif  // MEDIAPIPE_EXAMPLES_DESKTOP_HANDS_PIPELINE_OPERATOR_H_

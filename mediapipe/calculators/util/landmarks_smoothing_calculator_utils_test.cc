@@ -19,7 +19,7 @@ limitations under the License.
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
 
-namespace mediapipe_v01013_based {
+namespace hand_tracking_mp_lean {
 namespace landmarks_smoothing {
 namespace {
 
@@ -115,4 +115,4 @@ TEST(LandmarksSmoothingCalculatorUtilsTest,
 
 }  // namespace
 }  // namespace landmarks_smoothing
-}  // namespace mediapipe_v01013_based
+}  // namespace hand_tracking_mp_lean

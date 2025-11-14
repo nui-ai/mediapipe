@@ -24,11 +24,11 @@ limitations under the License.
 #include "mediapipe/tasks/cc/components/containers/category.h"
 #include "mediapipe/tasks/cc/components/containers/rect.h"
 
-namespace mediapipe_v01013_based::tasks::components::containers {
+namespace hand_tracking_mp_lean::tasks::components::containers {
 
 constexpr int kDefaultCategoryIndex = -1;
 
-Detection ConvertToDetection(const mediapipe_v01013_based::Detection& detection_proto) {
+Detection ConvertToDetection(const hand_tracking_mp_lean::Detection& detection_proto) {
   Detection detection;
   for (int idx = 0; idx < detection_proto.score_size(); ++idx) {
     detection.categories.push_back(
@@ -45,7 +45,7 @@ Detection ConvertToDetection(const mediapipe_v01013_based::Detection& detection_
   }
   Rect bounding_box;
   if (detection_proto.location_data().has_bounding_box()) {
-    mediapipe_v01013_based::LocationData::BoundingBox bounding_box_proto =
+    hand_tracking_mp_lean::LocationData::BoundingBox bounding_box_proto =
         detection_proto.location_data().bounding_box();
     bounding_box.left = bounding_box_proto.xmin();
     bounding_box.top = bounding_box_proto.ymin();
@@ -73,7 +73,7 @@ Detection ConvertToDetection(const mediapipe_v01013_based::Detection& detection_
 }
 
 DetectionResult ConvertToDetectionResult(
-    std::vector<mediapipe_v01013_based::Detection> detections_proto) {
+    std::vector<hand_tracking_mp_lean::Detection> detections_proto) {
   DetectionResult detection_result;
   detection_result.detections.reserve(detections_proto.size());
   for (const auto& detection_proto : detections_proto) {
@@ -81,4 +81,4 @@ DetectionResult ConvertToDetectionResult(
   }
   return detection_result;
 }
-}  // namespace mediapipe_v01013_based::tasks::components::containers
+}  // namespace hand_tracking_mp_lean::tasks::components::containers
