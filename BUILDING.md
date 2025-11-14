@@ -67,7 +67,7 @@ place an avi video file with hands motion in the project root path, to enable th
 
 # Initial Local Setup
 0. clone this repository and cd into it.
-1. [.bazelproject](.clwb/.bazelproject) controls which parts of the huge mediapipe codebase are built by bazel, and which files should be ignored by the bazel plugin to avoid over-indexing. 
+1. [.bazelproject](.clwb/.bazelproject) controls which parts of the huge mediapipe codebase are built by bazel, and which files should be ignored by the bazel plugin to avoid IDE over-indexing and superfluous rebuilding. 
     + review it, make sure you understand it, and update it wisely when needed. 
     + you can use the git version of it, but this requires active action in the case of JetBrains IDE:<br>
       the plugin generates it from scratch when you initally import the project, so you can only manually copy its git versioned copy into there after it has been generated automatically by the plugin on project initialization when first opening the repo as a bazel project in a bazel plugin enabled IDE.
