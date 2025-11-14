@@ -28,22 +28,29 @@ Currently successfully building with Bazel 6.5.0 as also seen in the [Dockerfile
 Unlike original mediapipe, this build builds a specific version of OpenCV from source which avoids [protobuf runtime issues](https://github.com/nui-ai/mediapipe/issues/18). This is also more responsible in the general case, as there is no reason to get an arbitrary version and build of OpenCV just because it is globally installed on the system.
 
 ### Jetbrains as IDE
-+ Consider installing the following JetBrains Plugins for proper IDE operation:
-  1. `Bazel for Clion` (in Clion) is a _must-have_ plugin if you use Clion as your C++ IDE, as it makes the IDE understand the project strutcture by running bazel info commands on its sync, which is super-essential for code navigation between bazel BUILD files and their respective C++ source files and vice versa by your normal "go to definition" keyboard shortcut and through its context option "go to corresponding BUILD file" on the context menus. without this plugin, most of the source code will be flagged red as unknown symbols, and you won't have other conveniences like run configurations for building and running through bazel and you basically aren't getting any proper IDE experience at all!
-      + https://www.youtube.com/watch?v=GV_KwWK3Qy8
-      + https://ij.bazel.build/docs/bazel-plugin.html
-      + [bazelproject](.clwb/.bazelproject) controls which parts of the huge mediapipe codebase are built by bazel, and which files should be ignored by the bazel plugin to avoid over-indexing. fill it wisely. you can take the git version of it, but the plugin generates it from scratch when you initally import the project, so you can only manually copy its content into there after it has been generated automatically.
-  2. `Bazel` for the equivalent support in PyCharm, but using Clion is more relevant most of the time.  
-  2. `Protocol Buffers` from Jetbrains (in Both IDE).
-  3. Only optionally add the `FlatBuffers` plugin from a 3rd party developer.
-+ Why plugins?
-  + Chiefly, the first two plugins make the editor aware of `pb.h` header files which are only generated during each bazel build, outside the codebase source-tree, from the underlying protobuf definitions which mediapipe uses for mostly all of its C++ classes; these `pb.h` are expected by C++ include statements, without which most code symbols are marked as unknown in the editor, rendering code editing noisy and unusable.
-  + The editing awareness through these plugins is only materialized after you trigger the "bazel Sync" action of the bazel plugin, from the Bazel menu, the IDE icon, or context menus ― it basically draws the bazel build graph into the IDE's project model to make the IDE understand the project code. You have to repeat this plugin sync after build file changes. this sync is not really related to the bazel sync commmand so
-    much, for the fine relationship of the plugin's sync operation to the bazel sync command see here ― https://chatgpt.com/s/t_6903a8d2adf08191ba71a9d65f4510c8.
-  + They also enable more fluency with bazel run configurations and stuff in the IDE.
-  + Case in point: jumping from a CC source file directly to its very build definition in the respective BAZEL file! (available as a right click option)
-  + Don't install conflicting Clion plugins for Protocol Buffers IDE support, they will make the IDE silently fail on many features and become defunct. Just use the JetBrains one.
+1. Installing the Bazel plugin for proper IDE operation in JetBrains IDEs:<br>
+    + a _must-have_ plugin if you use Clion as your C++ IDE, as it makes the IDE understand the project strutcture by running bazel info commands on its sync, which is super-essential for code navigation between bazel BUILD files and their respective C++ source files and vice versa by your normal "go to definition" keyboard shortcut and through its context option "go to corresponding BUILD file" on the context menus. without this plugin, most of the source code will be flagged red as unknown symbols, and you won't have other conveniences like run configurations for building and running through bazel and you basically aren't getting any proper IDE experience at all!
+    + https://www.youtube.com/watch?v=GV_KwWK3Qy8
+    + https://ij.bazel.build/docs/bazel-plugin.html
+    + Why this plugin?
+      + Chiefly, this plugin make the editor aware of `pb.h` header files which are only generated during each bazel build, outside the codebase source-tree, from the underlying protobuf definitions which mediapipe uses for mostly all of its C++ classes; these `pb.h` are expected by C++ include statements, without which most code symbols are marked as unknown in the editor, rendering code editing noisy and unusable.
+      + The editing awareness through these plugins is only materialized after you trigger the "bazel Sync" action of the bazel plugin, from the Bazel menu, the IDE icon, or context menus ― it basically draws the bazel build graph into the IDE's project model to make the IDE understand the project code. You have to repeat this plugin sync after build file changes. this sync is not really related to the bazel sync commmand so
+        much, for the fine relationship of the plugin's sync operation to the bazel sync command see here ― https://chatgpt.com/s/t_6903a8d2adf08191ba71a9d65f4510c8.
+      + They also enable bazel build and run configurations which you use for building, running, debugging ...
+      + Case in point: jumping from a CC source file directly to its very build definition in the respective BAZEL file and vice versa! (via left and right click options)
+<br><br>
+   + 👉 **Clion**: install the JetBrains plugin called `Bazel for Clion` (in Clion)
+<br><br>
+   + 👉 **PyCharm**: install the JetBrains `Bazel` for the equivalent support in PyCharm, but using Clion is more relevant most of the time.
+<br><br>   
 
+2. 👉 Install the `Protocol Buffers` plugin from Jetbrains (in Both IDE).
+3. 👉 Only optionally add the `FlatBuffers` plugin from a 3rd party developer.
+4. Do not install conflicting Clion plugins for Protocol Buffers IDE support, they will make the IDE silently fail on many features and become defunct, which is a known issue in the JetBrains plugin framework not marking them as conflicting plugins. Just use the JetBrains one.
+
+5. 👉 [Set-up preqrequisites for rust](rust/README.md).
+ 
+ 
 + Note: as a byproduct of the Bazel for Clion plugin, Clion uses the `.clwb` (Clion With Bazel Acronym) path as the working directory in many contexts; you usually want to revert to the project root path one level back upwards, for running stuff.
 
 ### VS Code as IDE
