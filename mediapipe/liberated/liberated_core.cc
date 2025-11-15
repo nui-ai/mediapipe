@@ -1,4 +1,4 @@
-#include "mediapipe/liberated/liberated.h"
+#include "mediapipe/liberated/liberated_core.h"
 
 namespace hand_tracking_mp_lean {
 

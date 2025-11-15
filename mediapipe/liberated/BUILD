@@ -9,7 +9,7 @@ cc_library(
     srcs = ["HandTrackingCalculator.cc"],
     hdrs = ["HandTrackingCalculator.h"],
     deps = [
-        ":liberated",
+        ":liberated_core",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework:memory_manager",
         "//mediapipe/framework:memory_manager_service",
@@ -27,9 +27,9 @@ cc_library(
 # as seen in deps below, the pipeline-liberated dependencies are still scattered around
 # by the original disparate locations of the original pipeline calculators they have been cored from.
 cc_library(
-    name = "liberated",
-    srcs = ["liberated.cc"],
-    hdrs = ["liberated.h"],
+    name = "liberated_core",
+    srcs = ["liberated_core.cc"],
+    hdrs = ["liberated_core.h"],
     deps = [
         "//mediapipe/calculators/core:split_vector_calculator_core",
         "//mediapipe/calculators/tensor:image_to_tensor_calculator_core",

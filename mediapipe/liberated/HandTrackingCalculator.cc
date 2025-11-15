@@ -13,7 +13,7 @@
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_calculator_core.h"
-#include "mediapipe/liberated/liberated.h"
+#include "mediapipe/liberated/liberated_core.h"
 
 namespace hand_tracking_mp_lean {
 
@@ -22,7 +22,7 @@ namespace hand_tracking_mp_lean {
   // this implementation was one-to-one verified to yield the same results over long videos.
   class HandTrackingCalculator : public CalculatorBase {
 
-      int max_hands_to_track = 3;
+      int max_hands_to_track = 2;
 
       std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
       std::unique_ptr<ImageToTensorConverter> gpu_converter_;
