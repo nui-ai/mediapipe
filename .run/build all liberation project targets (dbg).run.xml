@@ -6,6 +6,7 @@
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_pipeline_run_via_c_api</blaze-target>
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:compare_pipelines_output_data</blaze-target>
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_no_pipeline_run</blaze-target>
+      <blaze-target>//mediapipe/python:_framework_bindings</blaze-target>
       <blaze-user-flag>-c</blaze-user-flag>
       <blaze-user-flag>dbg</blaze-user-flag>
       <blaze-user-flag>--define</blaze-user-flag>
