@@ -22,7 +22,7 @@
 #include <string>
 
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
-#include "mediapipe/liberated/liberated.h"
+#include "mediapipe/liberated/liberated_core.h"
 
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/port/file_helpers.h"
