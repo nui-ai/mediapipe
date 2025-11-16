@@ -215,6 +215,7 @@ class GateCalculator : public CalculatorBase {
     // Process data streams.
     for (int i = 0; i < num_data_streams_; ++i) {
       if (!cc->Inputs().Get("", i).IsEmpty()) {
+        ABSL_LOG(INFO) << "GateCalculator is forwarding output stream " << cc->Outputs().Get("", i).Name();
         cc->Outputs().Get("", i).AddPacket(cc->Inputs().Get("", i).Value());
       }
     }

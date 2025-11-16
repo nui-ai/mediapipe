@@ -45,7 +45,7 @@ git_hash = subprocess.check_output(
     cwd = os.path.dirname(os.path.abspath(__file__))
     ).decode('utf-8').strip()
 
-__version__ = f"0.10.13.dev0"  # +{git_hash}"
+__version__ = f"0+{git_hash}"
 
 
 IS_WINDOWS = (platform.system() == 'Windows')
@@ -566,7 +566,7 @@ class Restore(setuptools.Command):
 
 
 setuptools.setup(
-    name='mediapipe',
+    name='mediapipe-v0.10.13-rebuildable',  # this is the package name
     version=__version__,
     url='https://github.com/google/mediapipe',
     description='MediaPipe is the simplest way for researchers and developers to build world-class ML solutions and applications for mobile, edge, cloud and the web.',

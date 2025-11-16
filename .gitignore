@@ -17,6 +17,7 @@ node_modules/
 .clwb/
 
 # Python ignores
+dist/
 __pycache__/
 *.py[cod]
 *.pyo

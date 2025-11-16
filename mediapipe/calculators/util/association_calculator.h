@@ -133,6 +133,15 @@ class AssociationCalculator : public CalculatorBase {
     CollectionItemId non_empty_id = cc->Inputs().BeginId();
     for (CollectionItemId id = cc->Inputs().BeginId();
          id < cc->Inputs().EndId(); ++id) {
+
+      if (cc->Inputs().Get(id).IsEmpty()) {
+        ABSL_LOG(INFO) << "AssociationCalculator input stream name " << cc->Inputs().Get(id).Name() << " is empty";
+      }
+      else {
+        ABSL_LOG(INFO) << "AssociationCalculator input stream name " << cc->Inputs().Get(id).Name()
+                        << " has " << cc->Inputs().Get(id).Get<std::vector<T>>().size() << " elements";
+      }
+
       if (id == prev_input_stream_id_ || cc->Inputs().Get(id).IsEmpty()) {
         continue;
       }
@@ -184,6 +193,7 @@ class AssociationCalculator : public CalculatorBase {
         // If prev_id.first is false when some element doesn't have an ID,
         // change_id and new_elem_id will not be updated.
         if (prev_id.first) {
+          ABSL_LOG(INFO) << "hand id: " << prev_id.second;
           change_id = prev_id.first;
           new_elem_id = prev_id.second;
         }
