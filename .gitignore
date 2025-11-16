@@ -39,6 +39,7 @@ pip-delete-this-directory.txt
 htmlcov/
 .ipynb_checkpoints/
 .DS_Store
+dist/
 
 # PyCharm ignores
 .idea/

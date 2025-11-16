@@ -12,23 +12,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Setup for MediaPipe package with setuptools.
+==================================================
 
-============================================
+Setup for the MediaPipe package via setuptools api,
+this setup.py is used by pip to build a python package (as a wheel)
+which uses the defined bazel build sources providing the underlying necessary C++ code and its accompanying artefact files like tflite modules.
+the python package's requirements recorded into the built wheel are taken by this script from the requirements.txt file.
 
 Notes:
 
 1. Modified in various ways to make it work for this v0.10.13 code version at the current time, see the commit log and readme.
-2. All attempts to make it make bazel only build incrementally failed (see https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35)
-to avoid it building the C++ parts from scratch even when no source code has changed.
-3. Modern pip swallows all bazel stdout/stderr output, unless you attach -v in the pip command """
+2. All attempts to make it make bazel only build incrementally initially failed (see https://chatgpt.com/c/68ce82f1-d284-8327-90a0-e4980994cf35)
+   but as we currently use a global bazel cache in our bazel build commands, that is no longer the case, i.e. it will reuse from there.
+3. Modern pip swallows all bazel stdout/stderr output, unless you attach -v in the pip command, so using -v is highly recommended for
+   orientation and traceability. """
 
-# print the value of the MEDIAPIPE_PYTHON_BIN env variable, which is used by pip do determine the target python env to install to
 import os
-print(f'target python environment: {os.environ.get("MEDIAPIPE_PYTHON_BIN")}', flush=True)
-
 import glob
-import os
 import platform
 import posixpath
 import re
@@ -43,12 +43,16 @@ from setuptools.command import build_ext
 from setuptools.command import build_py
 from setuptools.command import install
 
+# print the value of the MEDIAPIPE_PYTHON_BIN env variable, which is used by pip do determine the target python env to install to,
+# which was found to be insofar the most reliable way to accomplish that which is also simple.
+print(f'target python environment: {os.environ.get("MEDIAPIPE_PYTHON_BIN")}', flush=True)
+
 git_hash = subprocess.check_output(
     ['git', 'rev-parse', '--short', 'HEAD'],
     cwd = os.path.dirname(os.path.abspath(__file__))
     ).decode('utf-8').strip()
 
-__version__ = f"0.10.13.dev0"  # +{git_hash}"
+__version__ = f"0+{git_hash}"
 
 
 IS_WINDOWS = (platform.system() == 'Windows')
@@ -103,8 +107,7 @@ def _check_bazel():
   """Check Bazel binary as well as its version."""
 
   if not shutil.which('bazel'):
-    sys.stderr.write('could not find bazel executable. Please install bazel to'
-                     'build the MediaPipe Python package.')
+    sys.stderr.write('could not find a bazel executable.')
     sys.exit(-1)
   try:
     bazel_version_info = subprocess.check_output(['bazel', '--version'])
@@ -328,14 +331,10 @@ class BuildModules(build_ext.build_ext):
       self._download_external_file(external_file)
 
     binary_graphs = [
-        # 'face_detection/face_detection_short_range_cpu.binarypb',
-        # 'face_detection/face_detection_full_range_cpu.binarypb',
-        # 'face_landmark/face_landmark_front_cpu.binarypb',
+        # we still have a necessary bazel build target (building a binary of our pipeline definition file) named like below, so this line is still correct and required for the python api.
+        # this is required because unlike our C mains, our python implementation in Gesture Studio passes the binary form of the pipeline definition to the mediapipe api, though it may
+        # equally pass the text form like our C++ mains do. if we switch to pass the text form, we no longer need to build a binary pb of it, but this doesn't really matter.
         'hand_landmark/hand_landmark_tracking_cpu.binarypb',
-        # 'holistic_landmark/holistic_landmark_cpu.binarypb',
-        # 'objectron/objectron_cpu.binarypb',
-        # 'pose_landmark/pose_landmark_cpu.binarypb',
-        # 'selfie_segmentation/selfie_segmentation_cpu.binarypb'
     ]
     for elem in binary_graphs:
       binary_graph = os.path.join('mediapipe/modules/', elem)
@@ -571,7 +570,7 @@ class Restore(setuptools.Command):
 
 
 setuptools.setup(
-    name='mediapipe',
+    name='hand-tracking-mp-lean',  # this is the package name
     version=__version__,
     url='https://github.com/google/mediapipe',
     description='MediaPipe is the simplest way for researchers and developers to build world-class ML solutions and applications for mobile, edge, cloud and the web.',
