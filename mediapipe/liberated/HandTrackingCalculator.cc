@@ -22,8 +22,6 @@ namespace hand_tracking_mp_lean {
   // this implementation was one-to-one verified to yield the same results over long videos.
   class HandTrackingCalculator : public CalculatorBase {
 
-      int max_hands_to_track = 2;
-
       std::unique_ptr<api2::ImageToTensorCalculatorCore> image_to_tensor_core_;
       std::unique_ptr<ImageToTensorConverter> gpu_converter_;
       std::unique_ptr<ImageToTensorConverter> cpu_converter_;
@@ -59,7 +57,6 @@ namespace hand_tracking_mp_lean {
       }
 
       absl::Status Open(CalculatorContext* cc) override {
-        ABSL_LOG(INFO) << "tracking up to " << max_hands_to_track << " hands";
 
         MemoryManager* memory_manager_ = nullptr;
         if (cc->Service(kMemoryManagerService).IsAvailable()) {
@@ -67,6 +64,7 @@ namespace hand_tracking_mp_lean {
         }
 
         int max_hands_to_track = cc->InputSidePackets().Tag("NUM_HANDS").Get<int>();
+        ABSL_LOG(INFO) << "tracking up to " << max_hands_to_track << " hands";
 
         liberated_ = std::make_unique<HandTrackingCore>(max_hands_to_track, memory_manager_);
         return absl::OkStatus();

@@ -131,8 +131,22 @@ mediapipe_simple_subgraph(
     ],
 )
 
+# this build definition builds our new minimified pipeline into a binary binarypb file hand_landmark_tracking_cpu.binarypb,
+# and is invoked as a build target by our pip build (setup.py) since as long as we invoke our pipeline established in this fork/branch
+# from python, the mediapipe python api uses the binary form of a pipeline for initializing a graph (unlike the C++ api which instead
+# uses the pbtxt form for initializing a graph) and hence we must build this binary form of our graph, which this build target does.
+#
+# accoridngly, our pip build (setup.py) still looks for this name to package it into a binarypb file to be included in the produced package.
+#
+# circumstantially, this leftover naming means that code using the v0.10.13 mediaipe python api does not need to change the name
+# of the binarypb file it is providing to the mediapipe api ― when switching from the original v0.10.13 mediapipe to our package.
+#
+# that swap-in replacement facet is not really an objective of our fork (e.g. our fork won't provide other mediapipe graphs which the original mediapipe
+# package provides), and we can rename it later along with other small surface-level modifications which would be necessary for "swap in" compatibility
+# for the original mediapipe v0.10.13 package, such as reviving side packets (options) which our pipeline does not take into consideration
+# whereas the original v0.10.13 does.
 mediapipe_simple_subgraph(
-    name = "hand_landmark_tracking_cpu",
+    name = "hand_landmark_tracking_cpu",  # this is the build target name only, the above comment explains why it was left unchanged.
     graph = "hand_tracking_pipeline.pbtxt",
     register_as = "HandTrackingPipeline",
     deps = [
