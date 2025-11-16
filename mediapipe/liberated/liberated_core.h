@@ -39,7 +39,7 @@ namespace hand_tracking_mp_lean {
  class HandTrackingCore {
  public:
 
-  explicit HandTrackingCore(MemoryManager* memory_manager);
+  explicit HandTrackingCore(uint32_t max_hands_to_track, MemoryManager* memory_manager);
 
   ~HandTrackingCore() = default;
 
@@ -49,7 +49,7 @@ namespace hand_tracking_mp_lean {
   HandTrackingCore(HandTrackingCore&&) = default;
   HandTrackingCore& operator=(HandTrackingCore&&) = default;
 
-  [[nodiscard]] absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Process(std::shared_ptr<const hand_tracking_mp_lean::Image> image, uint32_t max_hands_to_track);
+  [[nodiscard]] absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> Process(std::shared_ptr<const hand_tracking_mp_lean::Image> image);
 
  private:
 
@@ -58,6 +58,7 @@ namespace hand_tracking_mp_lean {
   // neural network models have been trained should not really be
   // moved here as they cannot be fiddled.
   float hand_presence_in_landmarks_inference_threshold_ = 0.5f;
+  uint32_t max_hands_to_track_;
 
   // step implementations, some of which need initialization and hence an object,
   // and some don't and are just free functions.

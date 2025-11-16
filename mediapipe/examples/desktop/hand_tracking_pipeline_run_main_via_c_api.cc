@@ -49,6 +49,7 @@ constexpr char kInputStream[] = "image";
 constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";
 constexpr char kReferenceProtoFilename[] = "output_data_two_hands_num_hands_3_v0.10.13.pb";
 
+ABSL_FLAG(std::uint32_t, max_num_hands, 0, "maximum number of hands to track");
 ABSL_FLAG(std::string, graph_file, "", "Name of pipeline pbtxt file.");
 ABSL_FLAG(std::string, input_video_path, "", "Full path of video to load. If not provided, will attempt to use webcam input (not tested).");
 ABSL_FLAG(std::string, output_video_path, "", "Full path of where to save result (.mp4 only). If not provided, show result in a window (not tested).");
@@ -130,11 +131,18 @@ bool ReadReferenceData(const std::string& filename, std::vector<hand_tracking_mp
     return true;
 }
 
+/// runs the hands pipeline through it's C api, thus being an example of usage of our C api for pipeline running,
+/// and providing validation for the C API's operation. although this main is not strictly the C subset of C++,
+/// it uses many C++ language features, it drives the C api thus providing only soft exemplification and soft
+/// validation of usage of the C API which it drives.
+///
+/// a pure C language test (usage example) may also be written.
+/// the C API is currently actively consumed from rust FFI,
 int main(int argc, char** argv) {
 
     google::InitGoogleLogging(argv[0]);
 
-    ABSL_LOG(INFO) << "this is the c-api pipeline runner";
+    ABSL_LOG(INFO) << "this is the C api pipeline runner";
     ABSL_LOG(INFO) << "working directory: " << std::filesystem::current_path();
 
     absl::ParseCommandLine(argc, argv);
@@ -150,9 +158,11 @@ int main(int argc, char** argv) {
 
     // instantiate the graph operator object using file path
     HandsPipelineOperatorHandle pipeline_operator = hands_pipeline_operator_create(
-        GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)).c_str(), output_streams_csv.c_str());
+        absl::GetFlag(FLAGS_max_num_hands),
+        GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)).c_str(),
+        output_streams_csv.c_str());
     if (!pipeline_operator) {
-        std::cerr << "Failed to create HandsPipelineOperator via C API: " << hands_pipeline_operator_get_last_error() << std::endl;
+        std::cerr << "Failed to create HandsPipelineOperator via C api: " << hands_pipeline_operator_get_last_error() << std::endl;
         return EXIT_FAILURE;
     }
 

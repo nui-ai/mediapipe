@@ -18,7 +18,9 @@ use proto::pipeline_output::PipelineOutputData;
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 pub struct Args {
-    #[arg(long)]
+    #[arg(long, required=true, help = "maximum number of hands to track; we still need to explicitly provide this hand tracking argument")]
+    pub max_num_hands: u32,
+    #[arg(long, required=true)]
     pub graph_file: PathBuf,
     #[arg(long)]
     pub input_video_path: Option<PathBuf>,
@@ -166,6 +168,7 @@ fn main() -> anyhow::Result<()> {
     }
     let handle = unsafe {
         ffi::hands_pipeline_operator_create(
+            args.max_num_hands,
             graph_file_cstr.as_ptr(),
             output_streams_csv_cstr.as_ptr(),
         )

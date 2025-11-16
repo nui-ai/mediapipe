@@ -11,6 +11,7 @@
       <blaze-user-flag>--disk_cache=$USER_HOME$/.cache/bazel-disk-cache</blaze-user-flag>
       <blaze-user-flag>--fission=no</blaze-user-flag>
       <blaze-user-exe-flag>--input_video_path=sample-video-two-hands.avi</blaze-user-exe-flag>
+      <blaze-user-exe-flag>--max_num_hands=3</blaze-user-exe-flag>
       <blaze-user-exe-flag>--reference_data_path=output_data_two_hands_num_hands_3_v0.10.13.pb</blaze-user-exe-flag>
       <blaze-user-exe-flag>--output_video_path=output_video.mp4</blaze-user-exe-flag>
       <env_state>

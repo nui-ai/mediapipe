@@ -2,6 +2,7 @@
 
 extern "C" {
     pub fn hands_pipeline_operator_create(
+        max_num_hands: u32,
         graph_file_path: *const libc::c_char,
         output_streams_csv: *const libc::c_char,
     ) -> *mut std::ffi::c_void;

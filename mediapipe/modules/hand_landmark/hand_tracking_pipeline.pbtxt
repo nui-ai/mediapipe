@@ -1,4 +1,5 @@
 type: "HandTrackingPipeline"
+input_side_packet: "NUM_HANDS:num_hands"
 input_stream: "IMAGE:image"
 output_stream: "LANDMARKS:multi_hand_landmarks"
 output_stream: "WORLD_LANDMARKS:multi_hand_world_landmarks"
@@ -9,6 +10,7 @@ output_stream: "HANDEDNESS:multi_handedness"
 
 node {
   calculator: "HandTrackingCalculator"
+  input_side_packet: "NUM_HANDS:num_hands"
   input_stream: "IMAGE:image"
   output_stream: "LANDMARKS:multi_hand_landmarks"
   output_stream: "WORLD_LANDMARKS:multi_hand_world_landmarks"

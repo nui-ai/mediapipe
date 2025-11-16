@@ -1,3 +1,11 @@
+/// a class for succinctly operating our mediapipe pipeline of interest from cpp code.
+/// this was not explicitly implemented in mediapipe v0.10.13 itself other than use
+/// of the underlying graph object methods in its tests code.
+///
+/// in addition to wrapping around the mediapipe graph object, this class is additionally
+/// designed such that our C API can use it to expose the functionality to C and FFI code.
+/// see elaborated comment in the header file.
+
 // Copyright 2025 The MediaPipe Authors.
 // Licensed under the Apache License, Version 2.0.
 
@@ -10,60 +18,55 @@
 
 namespace hand_tracking_mp_lean {
 
-/// class operating a MediaPipe pipeline from cpp code.
-/// this was not implemented in mediapipe v0.10.13 itself.
+// factory method instantiating an instance of this class, initializing it,
+// providing ABSL upward error propagation, and returning the initialized instance
+// when successful.
 absl::StatusOr<std::unique_ptr<HandsPipelineOperator>> HandsPipelineOperator::Create(
+    const uint32_t max_hands_to_track,
     const std::string& graph_file_path,
     const std::vector<std::string>& output_streams) {
 
   std::string graph_content;
   absl::Status status = hand_tracking_mp_lean::file::GetContents(graph_file_path, &graph_content);
   if (!status.ok()) {
-    return absl::InvalidArgumentError(
-        absl::StrCat("Failed to read graph file: ", graph_file_path, " - ", status.message()));
-  } else ABSL_LOG(INFO) << "Read graph file: " << graph_file_path;
+    return absl::InvalidArgumentError(absl::StrCat("failed to read medaipipe graph file: ", graph_file_path, " - ", status.message()));
+  }
 
   CalculatorGraphConfig config;
   if (!hand_tracking_mp_lean::ParseTextProto<CalculatorGraphConfig>(graph_content, &config)) {
-    return absl::InvalidArgumentError(
-        absl::StrCat("Failed to parse graph file: ", graph_file_path));
-  } else ABSL_LOG(INFO) << "Successfully parsed graph file " << graph_file_path;
+    return absl::InvalidArgumentError(absl::StrCat("failed to parse the provided mediapipe graph file: ", graph_file_path));
+  }
+  ABSL_LOG(INFO) << "mediapipe graph " << graph_file_path << " successfully parsed";
 
-  auto op = std::unique_ptr<HandsPipelineOperator>(new HandsPipelineOperator(output_streams));
-  status = op->graph_.Initialize(config);
+  auto hands_pipeline_operator = std::make_unique<HandsPipelineOperator>(max_hands_to_track, output_streams);
 
-  if (!status.ok()) {
-    return absl::InternalError(
-        absl::StrCat("Graph initialization failed: ", status.message()));
-  } else ABSL_LOG(INFO) << "Successfully initialized the graph";
+  MP_RETURN_IF_ERROR(hands_pipeline_operator->graph_.Initialize(config, {{"num_hands", MakePacket<int>(static_cast<uint32_t>(max_hands_to_track))}}));
 
   for (const auto& stream : output_streams) {
-    auto poller_status = op->graph_.AddOutputStreamPoller(stream);
+    auto poller_status = hands_pipeline_operator->graph_.AddOutputStreamPoller(stream);
     if (poller_status.ok()) {
-      op->pollers_.emplace(stream, std::move(poller_status.value()));
+      hands_pipeline_operator->pollers_.emplace(stream, std::move(poller_status.value()));
     }
   }
-  status = op->graph_.StartRun({});
-  if (!status.ok()) {
-    return absl::InternalError(
-        absl::StrCat("Graph start failed: ", status.message()));
-  }
-  return op;
+
+  MP_RETURN_IF_ERROR(hands_pipeline_operator->graph_.StartRun({}));
+  ABSL_LOG(INFO) << "mediapipe graph " << graph_file_path << " started";
+  return hands_pipeline_operator;
 }
 
-HandsPipelineOperator::HandsPipelineOperator(const std::vector<std::string>& output_streams)
-    : output_streams_names_(output_streams) {}
+HandsPipelineOperator::HandsPipelineOperator(const uint32_t max_hands_to_track, const std::vector<std::string>& output_streams)
+    : max_hands_to_track_(max_hands_to_track), output_streams_names_(output_streams) {}
 
 HandsPipelineOperator::~HandsPipelineOperator() = default;
 
-absl::Status HandsPipelineOperator::push_image(const cv::Mat& input_frame, int64_t timestamp_us) {
+absl::Status HandsPipelineOperator::PushImage(const cv::Mat& input_frame, int64_t timestamp_us) {
   auto frame = absl::make_unique<ImageFrame>(ImageFormat::SRGB, input_frame.cols, input_frame.rows, ImageFrame::kDefaultAlignmentBoundary);
   cv::Mat frame_mat = formats::MatView(frame.get());
   input_frame.copyTo(frame_mat);
   return graph_.AddPacketToInputStream("image", Adopt(frame.release()).At(Timestamp(timestamp_us)));
 }
 
-absl::Status HandsPipelineOperator::wait_for_output(PipelineOutputData* output, int frame_number) {
+absl::Status HandsPipelineOperator::WaitForOutput(PipelineOutputData* output, int frame_number) {
   absl::Status status = graph_.WaitUntilIdle();
   if (!status.ok()) return status;
   std::vector<LandmarkList> hand_landmarks;
@@ -106,7 +109,7 @@ absl::Status HandsPipelineOperator::wait_for_output(PipelineOutputData* output, 
   return absl::OkStatus();
 }
 
-absl::Status HandsPipelineOperator::finalize() {
+absl::Status HandsPipelineOperator::Finalize() {
   absl::Status status = graph_.CloseInputStream("image");
   if (!status.ok()) return status;
   return graph_.WaitUntilDone();

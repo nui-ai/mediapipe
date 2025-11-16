@@ -7,6 +7,7 @@
 
 #ifndef MEDIAPIPE_EXAMPLES_DESKTOP_HANDS_PIPELINE_OPERATOR_C_API_H_
 #define MEDIAPIPE_EXAMPLES_DESKTOP_HANDS_PIPELINE_OPERATOR_C_API_H_
+#include "mediapipe/framework/deps/safe_int.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,6 +21,7 @@ typedef void* HandsPipelineOperatorHandle;
 
 // Create operator from graph file path and output stream names list (comma-separated string)
 HandsPipelineOperatorHandle hands_pipeline_operator_create(
+    uint max_hands_to_track,
     const char* graph_file_path,
     const char* output_streams_csv);
 

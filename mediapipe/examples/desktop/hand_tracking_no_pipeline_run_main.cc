@@ -21,11 +21,10 @@
 #include <filesystem>
 #include <string>
 
-#include "mediapipe/examples/desktop/pipeline_output.pb.h"
+#include "mediapipe/examples/desktop/pipeline_output.pb.h"  // only for reading persisted data (i.e. no mediapipe graph/pipeline api is used in the current source file
 #include "mediapipe/liberated/liberated_core.h"
 
 #include "mediapipe/framework/formats/image_frame.h"
-#include "mediapipe/framework/port/file_helpers.h"
 #include "mediapipe/framework/port/opencv_video_inc.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/formats/image_opencv.h"
@@ -142,7 +141,7 @@ absl::Status RunNoPipelineTrackingWithDiffing() {
   };
 
   auto memory_manager = MemoryManager();
-  auto hand_tracking = HandTrackingCore(&memory_manager);
+  auto hand_tracking = HandTrackingCore(3, &memory_manager);
 
   // initializing the camera or load the input video
   cv::VideoCapture capture;
@@ -202,7 +201,7 @@ absl::Status RunNoPipelineTrackingWithDiffing() {
 
     // pass the image to the hand tracking workflow
     absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> inference;
-    MP_ASSIGN_OR_RETURN(inference, hand_tracking.Process(mediapipe_image, 3));
+    MP_ASSIGN_OR_RETURN(inference, hand_tracking.Process(mediapipe_image));
 
     // put the result into protobuf format just in case we want to log it to file for offline juxtaposing to other runs' output
     // which is typically useful during development phases. we use protobuf format just because we already have code

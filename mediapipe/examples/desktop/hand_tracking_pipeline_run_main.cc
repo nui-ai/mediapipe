@@ -46,6 +46,8 @@ constexpr char kOutputProtoFilename[] = "output_data_cpp.pb";
 
 ABSL_FLAG(std::string, graph_file, "",
           "name of pipeline pbtxt file.");
+ABSL_FLAG(std::uint32_t, max_num_hands, 0,
+          "maximum number of hands to track");
 ABSL_FLAG(std::string, input_video_path, "",
           "video to load. "
           "if not provided, attempts to use a webcam (not tested).");
@@ -127,11 +129,18 @@ bool ReadReferenceData(const std::string& filename, std::vector<hand_tracking_mp
 /// and the run's inferences are written to the provided output path in the same format,
 /// so the output of different runs against a same input video may be always compared.
 absl::Status RunPipelineWithDiffing() {
+
+  if (absl::GetFlag(FLAGS_max_num_hands) == 0) {
+    std::cerr << "--max_num_hands must be provided and be greater than 0." << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  uint32_t max_num_hands = absl::GetFlag(FLAGS_max_num_hands);
+
   // Load reference data if a path to a reference data file has been provided as a program argument
   bool diffing = false;
   std::vector<hand_tracking_mp_lean::PipelineOutputData> reference_data;
   if (absl::GetFlag(FLAGS_reference_data_path).empty()) {
-    ABSL_LOG(WARNING) << "no reference data file path provided";
+    ABSL_LOG(WARNING) << "no reference data file path provided. use --reference_data_path to provide it.";
   } else {
     auto reference_data_path = GetProjectRootedPath(absl::GetFlag(FLAGS_reference_data_path));
     if (!ReadReferenceData(reference_data_path, reference_data)) { return absl::AbortedError(std::string("failed to load reference data from the given path ") + GetProjectRootedPath(absl::GetFlag(FLAGS_reference_data_path))); }
@@ -147,7 +156,7 @@ absl::Status RunPipelineWithDiffing() {
     // "hand_rects_from_palm_detections"
   };
 
-  auto status_or_op = hand_tracking_mp_lean::HandsPipelineOperator::Create(GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)), graph_output_streams_names);
+  auto status_or_op = hand_tracking_mp_lean::HandsPipelineOperator::Create(max_num_hands, GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)), graph_output_streams_names);
   if (!status_or_op.ok()) {
       std::cerr << "Failed to create HandsPipelineOperator: " << status_or_op.status().message() << std::endl;
       return status_or_op.status();
@@ -192,9 +201,9 @@ absl::Status RunPipelineWithDiffing() {
     if (!video_file_input) { cv::flip(input_frame, input_frame, /*flipcode=HORIZONTAL*/ 1); }
 
     size_t frame_timestamp_us = (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
-    MP_RETURN_IF_ERROR(pipeline_operator->push_image(input_frame, frame_timestamp_us));
+    MP_RETURN_IF_ERROR(pipeline_operator->PushImage(input_frame, frame_timestamp_us));
     hand_tracking_mp_lean::PipelineOutputData stream_data_msg;
-    MP_RETURN_IF_ERROR(pipeline_operator->wait_for_output(&stream_data_msg, i));
+    MP_RETURN_IF_ERROR(pipeline_operator->WaitForOutput(&stream_data_msg, i));
 
     // write the current frame output to file
     google::protobuf::util::SerializeDelimitedToOstream(stream_data_msg, &output_proto_file);
@@ -218,8 +227,8 @@ absl::Status RunPipelineWithDiffing() {
   output_proto_file.close();
   ABSL_LOG(INFO) << kOutputProtoFilename << " was written";
 
-  absl::Status finalize_status = pipeline_operator->finalize();
-  if (!pipeline_operator->finalize().ok()) {
+  absl::Status finalize_status = pipeline_operator->Finalize();
+  if (!finalize_status.ok()) {
     ABSL_LOG(ERROR) << "Error during mediapipe graph finalization: " << finalize_status.message();
     return finalize_status;
   }

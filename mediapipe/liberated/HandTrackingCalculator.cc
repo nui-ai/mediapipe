@@ -36,6 +36,12 @@ namespace hand_tracking_mp_lean {
     public:
       static absl::Status GetContract(CalculatorContract* cc) {
 
+        // take the maximum number of hands to track from pipeline side-packet input,
+        // as in the original pipeline, as we must have the pipeline owner be able
+        // to pass that value in.
+        RET_CHECK(cc->InputSidePackets().HasTag("NUM_HANDS"));
+        cc->InputSidePackets().Tag("NUM_HANDS").Set<int>();
+
         RET_CHECK(cc->Inputs().HasTag("IMAGE"));
         cc->Inputs().Tag("IMAGE").Set<ImageFrame>();
 
@@ -59,7 +65,10 @@ namespace hand_tracking_mp_lean {
         if (cc->Service(kMemoryManagerService).IsAvailable()) {
           memory_manager_ = &cc->Service(kMemoryManagerService).GetObject();
         }
-        liberated_ = std::make_unique<HandTrackingCore>(memory_manager_);
+
+        int max_hands_to_track = cc->InputSidePackets().Tag("NUM_HANDS").Get<int>();
+
+        liberated_ = std::make_unique<HandTrackingCore>(max_hands_to_track, memory_manager_);
         return absl::OkStatus();
       }
 
@@ -69,7 +78,7 @@ namespace hand_tracking_mp_lean {
         std::shared_ptr<const hand_tracking_mp_lean::Image> image;
         MP_ASSIGN_OR_RETURN(image, GetInputImage(kIn(cc)));
 
-        absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> resultOrStatus = liberated_->Process(image, max_hands_to_track);
+        absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> resultOrStatus = liberated_->Process(image);
         if (resultOrStatus.ok()) {
           cc->Outputs().Tag("LANDMARKS").Add(resultOrStatus.value()->viewport_landmarkss.release(), cc->InputTimestamp());
           cc->Outputs().Tag("WORLD_LANDMARKS").Add(resultOrStatus.value()->object_landmarkss.release(), cc->InputTimestamp());

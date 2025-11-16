@@ -95,6 +95,7 @@ struct HandsPipelineOperatorWrapper {
 };
 
 extern "C" HandsPipelineOperatorHandle hands_pipeline_operator_create(
+    const uint max_hands_to_track,
     const char* graph_file_path,
     const char* output_streams_csv) {
 
@@ -107,8 +108,8 @@ extern "C" HandsPipelineOperatorHandle hands_pipeline_operator_create(
     while (std::getline(ss, item, ',')) {
         if (!item.empty()) output_streams.push_back(item);
     }
-    HandsPipelineOperatorWrapper* wrapper = new HandsPipelineOperatorWrapper;
-    auto status_or_op = hand_tracking_mp_lean::HandsPipelineOperator::Create(std::string(graph_file_path), output_streams);
+    auto* wrapper = new HandsPipelineOperatorWrapper;
+    auto status_or_op = hand_tracking_mp_lean::HandsPipelineOperator::Create(max_hands_to_track, std::string(graph_file_path), output_streams);
     if (!status_or_op.ok()) {
         set_last_error(std::string(status_or_op.status().message()));
         delete wrapper;
@@ -135,7 +136,7 @@ extern "C" int hands_pipeline_operator_push_image(
     // Copy to avoid lifetime issues
     cv::Mat frame_copy = input_frame.clone();
     auto* wrapper = static_cast<HandsPipelineOperatorWrapper*>(handle);
-    absl::Status status = wrapper->impl->push_image(frame_copy, timestamp_us);
+    absl::Status status = wrapper->impl->PushImage(frame_copy, timestamp_us);
     if (!status.ok()) {
         set_last_error(std::string(status.message()));
         return -1;
@@ -154,7 +155,7 @@ extern "C" int hands_pipeline_operator_wait_for_output(
     }
     auto* wrapper = static_cast<HandsPipelineOperatorWrapper*>(handle);
     hand_tracking_mp_lean::PipelineOutputData output;
-    absl::Status status = wrapper->impl->wait_for_output(&output, frame_number);
+    absl::Status status = wrapper->impl->WaitForOutput(&output, frame_number);
     if (!status.ok()) {
         set_last_error(std::string(status.message()));
         return -1;
@@ -181,7 +182,7 @@ extern "C" int hands_pipeline_operator_finalize(HandsPipelineOperatorHandle hand
         return -1;
     }
     auto* wrapper = static_cast<HandsPipelineOperatorWrapper*>(handle);
-    absl::Status status = wrapper->impl->finalize();
+    absl::Status status = wrapper->impl->Finalize();
     if (!status.ok()) {
         set_last_error(std::string(status.message()));
         return -1;

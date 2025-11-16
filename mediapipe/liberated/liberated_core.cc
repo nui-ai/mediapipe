@@ -4,7 +4,9 @@ namespace hand_tracking_mp_lean {
 
 /// object for driving the entire processing of images from an image stream, for hand tracking and inference;
 /// formerly this was a mediapipe pipeline HandLandmarkTrackingCpu of mediapipe commit tag v0.10.13.
-HandTrackingCore::HandTrackingCore(MemoryManager* memory_manager) {
+HandTrackingCore::HandTrackingCore(uint32_t max_hands_to_track, MemoryManager* memory_manager) {
+
+  max_hands_to_track_ = max_hands_to_track;
 
   // initialize for converting the input image to a 192x192 grid for palm detection inference.
   // this cascade of argument setting can be simplified for less surface and the converters
@@ -248,7 +250,7 @@ void HandTrackingCore::landmarks_inference_debug_logging(std::vector<Tensor> lan
 /// not currently ported or implemented:
 /// - GPU inference.
 /// - Inference on platforms which do not have solid XNNPACK support.
-absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackingCore::Process(std::shared_ptr<const Image> image, uint32_t max_hands_to_track) {
+absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackingCore::Process(std::shared_ptr<const Image> image) {
 
   // initiate the result structure for the current image as empty vectors for all of its fields
   auto result = std::make_unique<ImageHandTrackingAndInferenceResult>(
@@ -264,15 +266,15 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
   auto merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>();
 
   ABSL_LOG(INFO) << "hand rectangles from the previous frame's landmarks inferences: " << hand_rects_from_previous_frame_.size();
-  if (hand_rects_from_previous_frame_.size() == max_hands_to_track) {
+  if (hand_rects_from_previous_frame_.size() == max_hands_to_track_) {
     ABSL_LOG(INFO) << "skipping palm detection inference";
-  } else if (hand_rects_from_previous_frame_.size() > max_hands_to_track) {
-    ABSL_LOG(INFO) << "(more hand rectangles from the previous frame's landmarks inferences than the number of hands to track " << max_hands_to_track << ")";
+  } else if (hand_rects_from_previous_frame_.size() > max_hands_to_track_) {
+    ABSL_LOG(INFO) << "(more hand rectangles from the previous frame's landmarks inferences than the number of hands to track " << max_hands_to_track_ << ")";
     ABSL_LOG(INFO) << "skipping palm detection inference";
   }
 
   // start the palm detection -> expanded oriented hand region for landmark inference path of computation
-  if (hand_rects_from_previous_frame_.size() < max_hands_to_track) {
+  if (hand_rects_from_previous_frame_.size() < max_hands_to_track_) {
 
     ABSL_LOG(INFO) << "palm detection inference is being invoked as there are not enough hand rectangles derived from the previous frame's landmarks inference";
 
@@ -313,10 +315,10 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
     //   ◎ the locations, presence scores, handedness confidence etc. of the current frame (i.e. don't clip so soon here).
     // ---------------------------------------------------------------------------------------------------------------------
     // further, the filtering does not have to be linear in time but may even look back in time in some downstream scenarios
-    auto excessive_detections_count = static_cast<long>(filtered_detections->size()) - static_cast<long>(max_hands_to_track);
+    auto excessive_detections_count = static_cast<long>(filtered_detections->size()) - static_cast<long>(max_hands_to_track_);
     if ( excessive_detections_count > 0) {
-      ABSL_LOG(INFO) << "naively discarded " << excessive_detections_count << "palm detections to keep only the same number of them as the set number of hands for tracking (" << max_hands_to_track << ")";
-      for (int i = 0; i < max_hands_to_track; ++i) {
+      ABSL_LOG(INFO) << "naively discarded " << excessive_detections_count << "palm detections to keep only the same number of them as the set number of hands for tracking (" << max_hands_to_track_ << ")";
+      for (int i = 0; i < max_hands_to_track_; ++i) {
         count_capped_detections->push_back(filtered_detections->at(i));
       }
     } else {
