@@ -6,7 +6,6 @@ output_data*
 # note that third_party/ is a directory where project dependencies are vendored to the build by the original mediapipe
 # project and it should remain part of the git view of the repo.
 bazel-*
-build/
 BUILD.backup
 mediapipe/MediaPipe.xcodeproj
 mediapipe/MediaPipe.tulsiproj/*.tulsiconf-user
@@ -40,6 +39,8 @@ htmlcov/
 .ipynb_checkpoints/
 .DS_Store
 dist/
+build/
+*.egg-info/
 
 # PyCharm ignores
 .idea/
