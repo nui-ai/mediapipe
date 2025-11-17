@@ -8,7 +8,7 @@ import numpy as np
 from pathlib import Path
 
 # implement safe importing of mediapipe. meaning, one that will successfully import it from the installed mediapipe package,
-# rather than fail to import it when running in debug mode via pydev:
+# rather than fail to import it when running in debug mode through pydev:
 #
 # Traceback (most recent call last):
 #   File "pycharm/plugins/python-ce/helpers/pydev/pydevd.py", line 1648, in _exec

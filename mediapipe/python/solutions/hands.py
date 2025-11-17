@@ -113,6 +113,7 @@ class Hands(SolutionBase):
     """
     super().__init__(
         binary_graph_path=_BINARYPB_FILE_PATH,
+        side_inputs = {'num_hands': max_num_hands},
         calculator_params={},
         outputs=[
             'multi_hand_landmarks',

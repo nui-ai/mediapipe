@@ -6,7 +6,7 @@ This branch has accomplishes a safe and parity-verified reduced mediapipe v0.10.
 
 This work was made possible by developing a set of verification mains which verified after each step of the gradual liberation process, that the output per frame of the current code is the same as that of the original pipeline:
 + a C++ main comparing the current code's output per frame to output yielded from the original v0.10.13 tag code's run over the same input video, through branch `buildable-reference`.
-+ `buildable-reference` still includes that main which produces an output file when running the original pipeline over a given input video, to enable these parity testing workflows mentioned, for repeating the same parity testing process over any new video file. 
++ [`buildable-reference`](https://github.com/nui-ai/mediapipe/tree/buildable-reference) still includes that main which produces an output file when running the original pipeline over a given input video, to enable these parity testing workflows mentioned, for repeating the same parity testing process over any new video file. 
 + a python main performing the same verification.
 + a C++ main utilizing newly made C API bindings for the same component, which is also performing the same verification.
 + a rust main which does the same, using rust FFI bindings made for the said C API facade wrapping the C++ component. 
@@ -17,9 +17,7 @@ This work was made possible by developing a set of verification mains which veri
 GPU support was not tested and not across all the many disparate code locations providing GPU support in mediapipe, in this branch, preserved.<br>
 That is because GPU support in this pipeline was originally scattered across many layers of the mediapipe stack: both many of its framework layers, and within many calculators themselves. The GPU supporting code elements have been preserved in this branch only on a best-effort basis and not where they significatnly hindered clarity and code surface; GPU support when applicable, should be better developed from scratch, with a lot of attention to detail. 
 
-# Development Environment and Build Guide
-
-## Build and Development Environment Setup
+# Environment Setup
 
 Successful building on Ubuntu 24.04 as well as building a Docker image (Ubuntu 22.04 based) that can build mediapipe at this revision have been accomplished, and reproducible as per below, as the basis for reducing the hand processing pipeline from mediapipe into liberation from use of mediapipe framework.
 
@@ -65,6 +63,8 @@ place an avi video file with hands motion in the project root path, to enable th
   + the builds per-se do not require this video file to be present, it is only used at runtime as hand tracking input.
   + you can use [Gesture Studio](https://github.com/nui-ai/core?tab=readme-ov-file#gesture-studio) to generate your own video, give or take using ffmpeg to convert to avi if needed. 
 
+---
+
 # Initial Local Setup
 0. clone this repository and cd into it.
 1. [.bazelproject](.clwb/.bazelproject) controls which parts of the huge mediapipe codebase are built by bazel, and which files should be ignored by the bazel plugin to avoid IDE over-indexing and superfluous rebuilding. 
@@ -73,9 +73,9 @@ place an avi video file with hands motion in the project root path, to enable th
       the plugin generates it from scratch when you initally import the project, so you can only manually copy its git versioned copy into there after it has been generated automatically by the plugin on project initialization when first opening the repo as a bazel project in a bazel plugin enabled IDE.
 2. replace all run configurations in your JetBrains IDE to use your own bazel cache path of choice instead of /home/matan/.cache/bazel-disk-cache. some of the git included run configurations build the targets, some run them. update all of them bazel run configs to use your own local bazel cache path, by a "find and replace" of their underlying xml files under [.run](.run). 
 
-# Build Verification Flow ― python oriented only
+# Build Verification Flow ― Python oriented only
 
-verify that the C++ build is fine:
+0. verify that the C++ build is fine:
    ```bash 
          bazel build \
          -c opt \
@@ -97,26 +97,58 @@ verify that the C++ build is fine:
     python3.12 -m venv .venv
     source .venv/bin/activate
     ```
-2. run the below `pip` command to both build a python package providing python api to the mediapipe C++ core as a python package, and to install that package to the currently active python environment. <br>
-   + [setup.py](setup.py), which is triggered to run by the below `pip` command, runs with PEP 517 isolation,
-   + it invokes bazel to build all required C++ bazel build targets before building the resulting python package.
-   + it may or may not reuse the bazel cache from the previous step (need to double-check that) despite its pip build isolation. 
-   + it builds all required C++ targets, plus the python bindings and cumbersome fiddles which [setup.py](setup.py) does for building the mediapipe python package and installing it to the current python environment. it is able to install it to the active python venv thanks to exporting the below environment variable prior to issuing the pip command. without the export preceding the below `pip install` command, mediapipe will fail to import in the active python environment.
-   + to reiterate: without the preceding export of the python environment variable, you are installing the built package to an arbitrary location (which may in edge cases also degrade the bazel building outside of the python use case). 
-   + to build and install the python package, run after activating your project's python venv:
-       ```bash
-       MEDIAPIPE_PYTHON_BIN=$(which python) pip install . -v
-       ```
-   + without `-v` stdout is swallowed unless pip fails entirely, but its stdout is useful when wishing to follow what it is doing.   
 
-3. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
-
-5. run the python verification main which should complete with exit code 0, it doesn't show any fancy results but only records the pipeline's output per input to a protobuf file:
+2. build the python package as a wheel:
     ```bash
-    python3 -P hand_tracking_pipeline_run.py
+    pip wheel . -w dist -v
     ```
 
-This concludes building and running the hand tracking from python.
+    What this yields:
+
+    | package wheel file                                                 | package name (e.g. in pip list) | python import name                                                                                   | 
+    |--------------------------------------------------------------------|---------------------------------|------------------------------------------------------------------------------------------------------|
+    | hand_tracking_mp_lean-0+<commit hash>-cp312-cp312-linux_x86_64.whl | hand-tracking-mp-lean           | mediapipe (hence cannot coexist with any other mediapipe package installed in the same environment!) |
+
+    this command builds a package of what's necessary for python code to use this repo's code as a python package. the package is built as a wheel file under the `dist/` subdirectory.
+    it also uses a `build/` subdirectory and yields some egg files in the project root directory (despite attempts to make it build in ephemeral dirs). you want to delete these after the build 
+    to avoid confusion and keep clean between builds, though it will just rewrite the same output wheel file even if you keep it full and dirty.
+
+    **note,** that the above command's output is conflating so lets disambiguate it:
+    ```txt
+    Building wheel for hand-tracking-mp-lean (pyproject.toml) ... done
+     Created wheel for hand-tracking-mp-lean: filename=hand_tracking_mp_lean-0+d555b076f-cp312-cp312-linux_x86_64.whl size=27608941 sha256=30391bf377297cb7358956167297821bbc59cd373761846a301971a8584b6a6d
+     Stored in directory: /tmp/pip-ephem-wheel-cache-1cb457k2/wheels/9e/e0/69/4db7a81297b94fa8361087f58d42535c69d04f6465fab8d748
+    Successfully built hand-tracking-mp-lean
+    ```
+
+    What it really leaves behind is the mentioned wheel name: hand_tracking_mp_lean-0+d555b076f-cp312-cp312-linux_x86_64.whl but under `dist/`.
+    We made the name include the latest commit hash, so the name varies per commit, the above only shows the pattern of its name.
+   
+3. now you can **install** this wheel-packaged package to the current repo's python environment which you initialized above, so that you can next verify its runtime use:
+    ```bash
+    pip install dist/<wheel name>.whl
+    ```
+
+3. **runtime verification**: install the package from the wheel, to your local python environment of the current repo, and run the python main verifying its runtime use:
+    ```bash
+    pip install dist/<wheel name>.whl
+    python3 -P hand_tracking_pipeline_run.py
+    ```
+   this verification main should complete with exit code 0, it doesn't show any fancy results but only records the pipeline's output per input to a protobuf file.
+
+## Deploying to Other Python Environments
+Unlike rust which just needs to find a lib built by C++ build, python can only use the built wheel package which `pip install .` installs into the active python environment.<br>
+When you work within the current repo, this is what pip installing does.
+<br><br>
+There's a pethora of ways to get the mediapipe python package built by this repo, into any other project environment, instead of stipulating one way, the full gamut of options is discussed here: https://chatgpt.com/s/t_6917132141d48191abdf9d9eb1e4217b.
+We suggest one of the simplest ways next:
+
+0. activate the target python environment you wish to install the built package into.
+1. `pip uninstall mediapipe` if you have a conflicting mediapipe package installed there already.
+2. use `pip install dist/<wheel name>.whl` same as above, but directing it to the built wheel file's location from your current path where you are in the other project most likely. this installs the wheel into the active python environment, as already mentioned, which is what you want.
+
+   
+This concludes building and running the liberated hand tracking from python.
 
 # Build Verification Flow ― Full  
 
@@ -142,6 +174,9 @@ and mimicking their build command:
     + each of the above bazel targets yields an executable or a shared library as per its name, the above command runs them all.  
     + Then, run the built C++ mains through their respective JetBrains run configurations from `.run/`, or by mimicking their bazel run commands, from under the project root path.
    <br>
+
+2. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
+
 2. build and run the rust main/s which are using the C++ based hand tracking and included in this repo, after you have built the above bazel targets: 
    + build:
        ```bash
@@ -173,12 +208,6 @@ Only for those rare cases where you don't trust any of the build systems' increm
     ```bash
     cargo clean
     ```
-  
-+ to clear the pip installed mediapipe package built by the setup.py of this repository from any target venv to which it was installed:
-    ```bash
-    cd <path to the target python venv> ...
-    pip uninstall mediapipe
-    ```
 
 ## Debugging
 
@@ -189,193 +218,7 @@ For being able to place breakpoints in the bazel built C++, it is necessary to u
 
 Running the built executables not directly but rather through bazel (by using a `bazel run` command, or the IDE's bazel plugin provided run configuration types) rather than directly running the executable, may be required for being able to set breakpoints. Running through the bazel command also makes ABSL_LOG messages more ergonomic (a hyperlink to the source code line where they are issued from is attached to each one of them in JetBrains IDE).
 
-## Deploying to Other Environments
-Unlike rust which just needs to find a lib built by C++ build, python can only use the built wheel package which `pip install .` installs into the active python environment.<br>
-When you work within the current repo, this is what pip installing does.
-<br><br>
-There's a pethora of ways to get the mediapipe python package built by this repo, into any other project environment, instead of stipulating one way, the full gamut of options is discussed here: https://chatgpt.com/s/t_6917132141d48191abdf9d9eb1e4217b.
-In general there are two ways to get the mediapipe python package built by this repo into any other project environment:
-
-1. reuse this repo's `pip install` process to rebuild and install the wheel it's building into your target other project environment.
-2. install the python wheel built by this repo into any other python environment like any local wheel installation, namely just install last wheel that `pip install` (the exact pip install command from above) has already built in this repo, into your target python environment.
-
-+ recall that our `pip install` command both re-builds the mediapipe python package and installs it into a target python environment.
-
 ## see also
 https://github.com/nui-ai/mediapipe/issues/18
 
----
 
-### ⚠️ Obsolete: Build Known Issue ⚠️  
-Sometimes you get this error from python, or a similar one from C++ mains:
-```
-Failed to load resource: mediapipe/modules/palm_detection/palm_detection_full.tflite
-```
-Probably only after doing a `pip uninstall mediapipe`, which seems to reproduce this behavior.
-
-**Solution:** rerun the pure bazel build, after repeating the `pip install` for the python environment's sake. somehow this places something where it needs to be to avoid this error happening.  
-
-Conclusions: 
-1. Something must be not perfect enough still, if this can happen.
-2. The pip installed mediapipe is not fully isolated from the (non-pip) Bazel-built mediapipe afterall, even though pip mostly uses build isolation for its bazel building.  
-
-**How to solve it from happening:**<br>
-The tflite model file actually used in the normal non-fail scenario is named `hand_landmark_full.tflite`. It contains both that palm detection model and the landmarks model, and when it's not found, the runtime tries looking for the palm model in default locations where it shouldn't be, and issues that error. This file is available both under the bazel `./build` and under the virtual environment directories alike, but it's not a symlink from one to the other.  
-
-```
-For a Python package installed via pip, the list of installed files is recorded in the package metadata, typically in a file named RECORD (for wheels) or installed-files.txt (for legacy setup.py install). These files are located in the package's .dist-info or .egg-info directory inside your Python environment's site-packages.
-For your mediapipe package, after installation, you will find a directory like mediapipe-0.10.13.dev0.dist-info in site-packages. Inside, the RECORD file lists all files installed by the package, including:
-All Python modules and packages (e.g., mediapipe/__init__.py, other .py files)
-Compiled extensions (e.g., .so files built by Bazel)
-Data files included via include_package_data=True
-Any other files specified in MANIFEST.in or by setuptools
-You can inspect the RECORD file directly to see the full list of installed files for your package.
-```
-
-`pip uninstall` removes `hand_landmark_full.tflite` file from the python venv as part of its action, but it doesn't remove the `./build` copy of it, so something deeper is preventing both non-python and python mediapipe from using that file in this fail scenario, which stems from the `pip uninstall` run (maybe it is leaking some action outside of the python environment domain).<br>
-This can be ironed out as part of the wider https://github.com/nui-ai/mediapipe/issues/18 where it is more important to avoid this file being a downloadable than fix this minor bump which has its full workaround above 🎯
-
-🛈 Notes:
-1. Reproducibility:
-   - The included Ubuntu 24.04-based [Dockerfile](Dockerfile) was created and tested to contain the OS-level dependencies needed for a successful mediapipe v0.10.13 build, and fully tested to reproduce a successful build, so this process is reproducible by this Dockerfile and not an artefact of special conditions on my machine ― the built docker image fully reproduces the error-less build of mediapipe at its v0.10.13 commit level, however for even more future proofing:
-   - A todo item is to upload that built docker image to future-proof it from reliance on Internet repositories of dependencies which may change or disappear in the future. 
-   - [The other included docker files](Dockerfile.md), provided originally by mediapipe's original codebase, were not tested.
-2. The changes having been made for current-day buildability are documented in the git commits trail. 
-3. Maybe `pip install` builds a bit more than we need as we didn't modify `setup.py` to only build only the hands target as `bazel build --config=cpu-only -c opt //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu` would, though most of the bazel build time is the shared mediapipe framework anyway. 
-
-# old deprecated comments (but has some gems in it to be extracted into above)
-
-This guide explains how to work towards reproducibly building MediaPipe v0.10.13 for just the hand tracking target, at revision tag v0.10.13 of mediapipe which this forked repository was reverted to.
-Judging from experience you need to work a few days to make it happen, as the build code will fail with modern Bazel, versions of dependencies it will fetch from the Internet which are not the same as when this build was originally working at the time of v0.10.13 release, and similar issues with its last-mile pip install for python proof of concept. Sometimes AI gets it right after just one day of careful iteration.
-
-This repository is also a codebase where a lot of voodoo took place on a first two-day run of this all ― but it contains the right build target commands named below, and a lean verification script `verify.py` that can be used to verify the build result when you get that far.
-
-Techically it's a fork of the original MediaPipe repository, reverted to the v0.10.13 tag commit, with some patches applied to make it buildable again which didn't go all the way and should be restarted from v0.10.13 from scratch.
-
-This repository would be between a prerequisite and a starting point for deriving a mediapipe-framework liberated C++ implementation of the hand tracking pipeline, which is the topic of the sibling repository [hand-tracking-cpp](https://github.com/nui-ai/mediapipe-liberation)
-
-- Success means:
-  - A build command that's more specific than the original MediaPipe build instructions to avoid build time or even errors from unnecessary build targets which the hand tracking pipeline does not require.
-  - Building a docker image to have the necessary OS dependencies for reproducibly running the build independently of the host system environment
-  - Actually running the build inside a docker container using that docker image
-  - Running the included Python verification script inside the container as well (if desired)
-
-# Why this is never 100% future proof (outside the case of a docker image)
-- The build process relies recursively on dependencies being fetched from over the internet. These dependencies may change, be removed, or otherwise become incompatible with the build process. Which is why we needed the changes comited on this forked repository, and why other changes may arise as necessary in the future. 
-- We can pin down specific versions all across and hope they keep served on the Internet for long enough, to change the tradeoff a little.
-- In a docker image built as per the docker image build command included below, all these dependencies become baked into the image and thus future proof one level more deeply ― as long as we can run that built image they are baked in, regardless their availability on the Internet or how newer versions of pip or bazel behave differently against the Internet repositories of dependencies where they come from.
-
-# Why this is hard
-Its a tug of war between old versions that can no longer install or work against the Internet repositories as they are today, and new versions that don't like elements of how the build (which was coded to old versions) is. this statement applies to both the Bazel and the pip parts in equal amounts! See also https://github.com/copilot/c/090b58a9-b989-4d7c-afaa-a7e0f5131239 for why it is hard (unstable tflite and tflite dependencies ecosystem in recent years).
-
-# Guidelines for Stabilizing the Build Process
-
-## Build Stabilization Recipe
-
-To stabilize the MediaPipe build process, follow this step-by-step approach:
-
-### 1. Stabilize the build on your Local Ubuntu Machine ― Done.
-
-Stabilizing it without docker means faster turn-over times. Done. You may choose to skip this step if you prefer to go directly to the Docker environment. Maybe that's a good idea. 
-
-### 2. Stabilize a Docker image that succeeds in building the target ― Done.
-
-Once a local build works, or if you think your local machine is dirty or just prefer to skip it:
-
-A Dockerfile already exists in this repository, which you can modify as needed or start from scratch.
-
-1. Different versions of Ubuntu can play out differently in which versions of what they agree to install ― meaning different complexities, different bugs.
-2. To build the Docker image:
-   ```bash
-   docker build --no-cache -t mediapipe-build .
-   ```
-3. To test the bazel build inside a container started from that image:
-   ```bash
-   docker run --rm -it -v "$PWD":/mediapipe mediapipe-build /bin/bash
-   ```
-   then inside the running container's interactive prompt:
-   ```bash
-   git config --global --add safe.directory /mediapipe
-   pip install .
-   ```
-5. you only need `pip install .`, which builds all necessary mediapipe targets as per the `setup.py` instructions. if it worked, you're done. no need to run a bazel build yourself.
-
-6. The resulting docker image is tagged as `mediapipe-build` and stored in your local machine's Docker image registry. The above does not push the image to any remote repository; it only exists on your local system unless you explicitly push it elsewhere, unless we uploaded it to e.g. serve from github's ghcr.io or dockerhub. Rebuilding it from the current repository takes only a few minutes, but having an image on the cloud can give more assurance because it does not rely on Internet servers being available to serve all OS, bazel and pip dependencies which it needs to fetch, which are already baked into a successfully built image. Actually, the image now prebuilds mediapipe as part of its Dockerfile, so that all Internet dependencies are baked into the image, and then rebuilding with only code changes does not need to fetch anything from the Internet ― this can make it stand the test of time as the Internet repositories of dependencies phase out old versions of dependencies. 
-
-### 3. Build and Use the MediaPipe Python Solution (Meaning, Stabilize that last step) 
-
-When we want to change the mediapipe original C++ pipeline such as for developing a non-mediapipe-framework port of it in C++, we only care about building mediapipe as above. But if we want to use the python solution for verification of its building python bindings, we need to also stabilize the last step of building and installing a python package ― the repository has its original implementation for this build, but it needs to be restabilized as per the reasoning of the beginning of this document about why that stability drifted away since v0.10.13 was released.
-
-**Modern pip restrictions**: You will have to address the consequence of stricter dependency handling in newer pip versions, which were not an issue at the time of v0.10.13's release.
-
-Building MediaPipe using the legacy `setup.py bdist_wheel` mechanism is deprecated and will be removed in a future version of pip. To future-proof your build process, use the standardized build interface by running:
-
-    pip install . --use-pep517
-
-see [pip issue #6334](https://github.com/pypa/pip/issues/6334).
-
-
-# Why this Recipe Matters
-
-By following this structured approach:
-1. We isolate build issues from dependency problems
-2. We create a reproducible build process
-3. We ensure both direct builds and containerized builds work consistently
-4. We maintain compatibility with Python packaging systems
-
-**Important**: Always start from the the v0.10.13 tag commit level of the originlal MediaPipe repository, which is our target version.
-
-## Prerequisites
-
-- **Docker** must be installed and ready for use on the host system.
-
-## Build the Docker Image
-
-From the project root (where the `Dockerfile` is located):
-
-```bash
-docker build --no-cache -t mediapipe-build .
-```
-
-- The `--no-cache` flag ensures all patches and updates are applied.
-
-## Start an Interactive Container
-
-Mount your project directory and start a shell:
-
-```bash
-docker run --rm -it -v "$PWD":/mediapipe mediapipe-build /bin/bash
-```
-
-- Your files are available at `/mediapipe` inside the container.
-
-## Build MediaPipe Targets (Inside Container)
-
-To build the Python hand landmarks solution (the only target built in the Docker image):
-
-```bash
-bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/python/solutions:hands
-```
-
-- This command builds only the hand landmarks solution for Python, matching the Docker image build step.
-
-> **Note:** Sandboxed Bazel builds (e.g., with `--sandbox_debug`) may fail due to upstream or environment issues. Use the regular build command above for reliable results.
-
-## Run the Python Example (Inside Container)
-
-To verify the built mediapipe with a video file (place `input.avi` in `mediapipe/python/`):
-
-```bash
-python3 mediapipe/python/verify.py
-```
-
-- Check `mediapipe/python/verified-detections.json` for results after running `verify.py`.
-
-# Python Package Versioning
-
-The Python package version is now automatically set at build time to `0.10.13+git.{commit_hash}` (where `{commit_hash}` is the current short git commit hash). This ensures every build is uniquely versioned and PEP 440 compliant. You can use AI to reproduce this feature, and add whether git is dirty or not to the version string. As much as versioning it is relevant for the use case.
-
-# Additional Notes
-
-- The Docker image can build all MediaPipe targets; adjust Bazel build targets as needed.
-- All patching and setup steps should be ultimately captured by a working Dockerfile for short-term reproducibility (up until the reasons for no 100% stability work for a long enough time again out there).
