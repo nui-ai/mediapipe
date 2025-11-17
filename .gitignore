@@ -38,6 +38,11 @@ htmlcov/
 .ipynb_checkpoints/
 .DS_Store
 
+# pip package building
+dist/
+build/
+*.egg-info/
+
 # PyCharm ignores
 .idea/
 *.iml
