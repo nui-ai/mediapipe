@@ -5,19 +5,9 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
 # Build and Development Environment Setup
 
 + Currently successfully building with Bazel 6.5.0 as also seen in the [Dockerfile](Dockerfile).
-+ Consider installing the following JetBrains Plugins for IDE support:
-  1. `Bazel for Clion` (in Clion) is a must-have plugin if you use Clion as your C++ IDE, as it makes the IDE aware of the bazel build graph and its generated files, which is essential for code navigation and understanding in a bazel-built project like this one.
-  2. `Bazel` for the equivalent support (in PyCharm).
-  2. `Protocol Buffers` from Jetbrains (in Both IDE).
-  3. Only optionally add the `FlatBuffers` from a 3rd party developer.
-+ Why plugins?
-  + Chiefly, the first two plugins make the editor aware of `pb.h` header files which are only generated during each bazel build, outside the codebase source-tree, from the underlying protobuf definitions which mediapipe uses for mostly all of its C++ classes; these `pb.h` are expected by C++ include statements, without which most code symbols are marked as unknown in the editor, rendering code editing noisy and unusable.
-  + The editing awareness through these plugins is only materialized after you perform the "Sync" action in the Bazel menu or in context menus ― it basically draws the bazel build graph into the IDE's project model to make the IDE understand the project code.
-  + They also enable more fluency with bazel run configurations and stuff in the IDE.
-  + Don't install conflicting Clion plugins for Protocol Buffers IDE support, they will make the IDE silently fail on many features and become defunct. Just use the JetBrains one.
-+ As a byproduct of the Bazel for Clion plugin, Clion may use the `.clwb` (Clion With Bazel Acronym) path as the working directory or the console home directory; you usually want to revert to the project root path for running stuff.
++ See the readme of branch [liberation](https://github.com/nui-ai/mediapipe/blob/liberation/BUILDING.md) for development environment setup ― it's practically the same ― only the current branch may still use the original v0.10.13 .bazelproject file. branch [liberation](https://github.com/nui-ai/mediapipe/blob/liberation/BUILDING.md) otherwise reflects a lot of development work and its source code is significantly different from the current branch of course.
 
-# Building 
+# Building for Python Use
 
 0. clone this repository and cd into it.
 
@@ -27,6 +17,8 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     //mediapipe/examples/desktop/hand_tracking:hand_tracking_tflite \
     //mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
     ```
+
+2. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
 
 8. above we dealt with one example C++ main which runs the hands pipeline. but there are three C++ example mains which build and use the hand tracking pipeline, all of which run it over an input video. 
    + their build commands and run commands are originally described in [their shared build file](mediapipe/examples/desktop/hand_tracking/BUILD)
@@ -50,7 +42,6 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
     pip install . -v 
     ```
     `-v` should be used as otherwise due to pip's build isolation stdout is swallowed when the build does not fail altogether, making its steps hard to trace if needed.
-4. verbose bazel analysis logs created when running under this pip command become available at `/tmp/bazel.explain`, they explain some of bazel's caching decisions.
 
 5. place a video file with hands in the project root path, as `sample-video.avi`, and run both of the following tests:<br>
    + typically the video files are too large for git/github, so bring your own by using Gesture Studio. 
@@ -59,18 +50,20 @@ The current commit reflects the exact code revision of git tag v0.10.13 of the o
         bazel-bin/mediapipe/examples/desktop/hand_tracking/hand_tracking_tflite --calculator_graph_config_file=./mediapipe/graphs/hand_tracking/hand_tracking_desktop.pbtxt --input_side_packets=input_video_path=sample-video.avi,output_video_path=output_video.mp4 
        ```
      this verifies the C++ built hands pipeline without relying on any python-targeting parts of the build.<br>
-   + python test which should complete with exit code 0, it doesn't show any fancy results but record the pipeline's per input output to a protobuf file.
+   + python verification script which should complete with exit code 0, it doesn't show any fancy results but record the pipeline's per input output to a protobuf file.
         ```bash
         python3 -P hand_tracking_pipeline_run.py
         ``` 
         note that without `-P` python will try loading python modules from the `mediapipe` directory under the project's tree root, which is essentially our python "source directory", which is a horrible entanglement, and is also bound to fail since some of the mediapipe python modules are only dynamically built & placed (into the active python environment) by the pip install process ― because most of mediapipe python-exposed sub-packages are either pybind generated or bazel generated from protobuf definitions or both (e.g. mediapipe.python._framework_bindings). So the python source tree _never_ contains all the modules that the mediapipe python api expects to find, but it can sure throw you off track with cryptic module loading errors if you try to run without -P and thus let python first look for modules under the python source directory `mediapipe`. With this project you only want python to run from the active python environment, not from its "source" path, which is what `-P` does.
    
-6. **to install the same built package into another target python environments:** the former pip command only built the mediapipe python package (which itself uses the necessary C++ bazel built lib files) and installed it into the active python environment (the venv you created and activated above). **to install the same built package into another target python environment** for example one associated only to a downstream project's venv, use the following steps:
+# installing the built package into other python environments
+**to install the same built package into another target python environments:** the former pip command only built the mediapipe python package (which itself uses the necessary C++ bazel built lib files) and installed it into the active python environment (the venv you created and activated above). **to install the same built package into another target python environment** for example one associated only to a downstream project's venv, use the following steps:
     + use pip to rebuild in a way not throwing away the wheel file, but keeping it under the `dist/` directory:
     ```bash
     python -m pip wheel . -w dist 
     ```
-    + this leaves the wheel file under `dist/`, so after this you can run `pip install ...dist/mediapipe-0.10.13.dev0-py3-none-any.whl` in any target python environment to install the built mediapipe package from here into that environment (if the package .whl file name changes, replace with its name as given by the pip install output). the `...` portion is only a placehoder to substitute: you should replace the relative path to the wheel file in the command just given, to one that points to the wheel file from the target environment's perspective, before running that command. you typically want to `pip uninstall mediapipe`in the target python environment before this step.  
+    + this leaves a wheel file under `dist/`, whose name beings with `mediapipe-v0.10.13-rebuildable`. so after this you can run `pip install ...dist/mediapipe-v0.10.13-rebuildable....whl` in any target python environment to install the built mediapipe package from here into that environment (if the package .whl file name changes, replace with its name as given by the pip install output). the `...` portion is only a placehoder to substitute: you should replace the relative path to the wheel file in the command just given, to one that points to the wheel file from the target environment's perspective, before running that command. you typically want to `pip uninstall mediapipe`in the target python environment before this step.  
+ 
 
 # ⚠️ Build Known Issue in this branch ⚠️  
 You get this error from python, or a similar one from C++ mains. this only happens on this branch and solved by radical changes in the liberation branch:
