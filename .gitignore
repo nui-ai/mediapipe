@@ -38,6 +38,9 @@ pip-delete-this-directory.txt
 htmlcov/
 .ipynb_checkpoints/
 .DS_Store
+
+# pip package building
+# https://chatgpt.com/s/t_691addbfd0b08191b96a5bbab162cf75 suggests a cleaner modern setup, but that's a lot of testing right now and I'm unsure whether our pip build does currently run isolated or not in each of our two branches to this repo (liberation, buildable-reference).
 dist/
 build/
 *.egg-info/
