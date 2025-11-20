@@ -53,6 +53,19 @@ cc_binary(
     ],
 )
 
+cc_binary(
+    name = "hand_tracking_run_via_c_api",
+    data = [
+        "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
+        "//mediapipe/modules/hand_landmark:handedness.txt",
+        "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
+    ],
+    deps = [
+        "//mediapipe/examples/desktop:hand_tracking_run_via_c_api",
+        "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
+    ],
+)
+
 # from the same c api wrapping around the C++ HandsPipelineOperatorfor pipeline driving class,
 # which the above binary target also uses ―
 # also build a shared library that can be loaded by rust.
@@ -65,6 +78,22 @@ cc_binary(
     visibility = ["//visibility:public"],
     deps = [
         "//mediapipe/examples/desktop:hands_pipeline_operator_c_api",
+        "//third_party:opencv_cmake",  # build OpenCV to provide is directly rather than entangle with the arbitrary system OpenCV version, as per https://github.com/nui-ai/mediapipe/issues/22.
+    ],
+)
+
+# from the same c api wrapping around the C++ HandsPipelineOperatorfor pipeline driving class,
+# which the above binary target also uses ―
+# also build a shared library that can be loaded by rust.
+# the name of the library that this rule builds will start with the standard "lib" prefix which common scenarios expect, and ends with the standard ".so" suffix.
+cc_binary(
+    name = "libhand_tracking_c_api.so",
+    linkopts = ["-Wl,--no-as-needed"],
+    linkshared = 1,
+    linkstatic = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//mediapipe/examples/desktop:no_pipeline_c_api",
         "//third_party:opencv_cmake",  # build OpenCV to provide is directly rather than entangle with the arbitrary system OpenCV version, as per https://github.com/nui-ai/mediapipe/issues/22.
     ],
 )

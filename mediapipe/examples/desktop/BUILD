@@ -146,6 +146,31 @@ cc_library(
 )
 
 cc_library(
+    name = "hand_tracking_run_via_c_api",
+    srcs = ["hand_tracking_run_main_via_c_api.cc"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":no_pipeline_c_api",
+        ":pipeline_output_cc_proto",
+        "//mediapipe/calculators/util:detection_model_provider",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/formats:detection_cc_proto",
+        "//mediapipe/framework/formats:image_frame",
+        "//mediapipe/framework/formats:image_frame_opencv",
+        "//mediapipe/framework/port:file_helpers",
+        "//mediapipe/framework/port:opencv_highgui",
+        "//mediapipe/framework/port:opencv_imgproc",
+        "//mediapipe/framework/port:opencv_video",
+        "//mediapipe/framework/port:parse_text_proto",
+        "//mediapipe/framework/port:status",
+        "//mediapipe/util:resource_util",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/log:absl_log",
+    ],
+)
+
+cc_library(
     name = "hands_pipeline_operator_c_api",
     srcs = ["hands_pipeline_operator_c_api.cc"],
     hdrs = ["hands_pipeline_operator_c_api.h"],
@@ -160,12 +185,15 @@ cc_library(
 
 cc_library(
     name = "no_pipeline_c_api",
-    srcs = ["no_pipeline_c_api.cc"],
-    hdrs = ["no_pipeline_c_api.h"],
+    srcs = ["hand_tracking_c_api.cc"],
+    hdrs = ["hand_tracking_c_api.h"],
     linkstatic = True,
     visibility = ["//visibility:public"],
     deps = [
         ":pipeline_output_cc_proto",
+        "//mediapipe/framework/deps:intops",
+        "//mediapipe/liberated:liberated_core",
+        "@com_google_absl//absl/status",
     ],
     alwayslink = 1,
 )

@@ -70,14 +70,15 @@ fn main() {
     // and their own dependencies too as this requirement is recursively transitive, which is typically intractable or extremely
     // hard to accoplish in dependency chains which aren't very small, so dynamic linking the C API library is our only option.
     //
-    // theoretically we could alternatively directly feed in an object file from the Bazel build to the rust build instead of
-    // using the bazel built library of the C API as the object of integration for rust to consume,
-    // but such C++ object files may likely not play well in rust's mechanics of linking as that would be a non-standard mix.
-    // also in terms of build lifecycle mechanics bazel does not in its default behavior leave behind object files for cargo
-    // to consume nor trigger cargo once it is done building its part.
-    //
     // therefor, the object of integration providing the C library to rust is the bazel built library file of the C API,
     // and it is dynamically linked by the rust binary due to the above reason.
+    //
+    //
+    // Theoretically we could alternatively directly feed in an object file from the Bazel build to the rust build instead of
+    // using the bazel built library of the C API as the object of integration for rust to consume, but such C++ object files
+    // may likely not play well in rust's mechanics of linking as that would be a non-standard mix. also in terms of build
+    // lifecycle mechanics bazel does not in its default behavior leave behind object files for cargo to consume nor trigger
+    // cargo once it is done building its part.
 
     let hand_tracking_so_dir = format!("{}/../bazel-bin/mediapipe/examples/desktop/hand_tracking", env!("CARGO_MANIFEST_DIR"));
     // direct rustc to find the lib file (.so) during compilation and linking when building the rust binary
@@ -86,9 +87,9 @@ fn main() {
     // the built binary will essentially hold a dynamic linking definition saying to load it from there when run:
     println!("cargo:rustc-link-search=native={}", hand_tracking_so_dir);
 
+    // Step 3a: link our pipeline-backed C api for hand tracking
     println!("cargo:rustc-link-lib=dylib=hands_pipeline_operator_c_api");
 
-    // Step 4:
-    // Dynamically link our C API library which provides access to our hand tracking fully liberated non-pipeline based API.
-    println!("cargo:rustc-link-lib=dylib=hands_pipeline_operator_c_api");
+    // Step 3b: link our no-pipeline-backed C api for hand tracking
+    // println!("cargo:rustc-link-lib=dylib=hands_pipeline_operator_c_api");
 }

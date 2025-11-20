@@ -90,28 +90,28 @@ void safe_init_protobuf() {
     check_protobuf_linking();
 }
 
-// Error handling (thread-local) to follow and replace C++ exceptions by the underlying C++ implementation
+// C-style error state management (thread-local)
 static thread_local std::string g_last_error;
 static void set_last_error(const std::string& err) { g_last_error = err; }
 extern "C" const char* hands_pipeline_operator_get_last_error() { return g_last_error.c_str(); }
 
-// this struct is the heart of enabling the API.
-// it is a C++ struct type definition encapsulating only a pointer to a HandsPipelineOperator instance,
-// which is only used by the C++ part of the C api, and on the C facade of the api is seen as merely
-// an opaque pointer (void *) of type HandsPipelineOperatorHandle.
-//
-// how this plays out in more detail:
-//
-// C facade:
-//   the C api consumer only sees a HandsPipelineOperatorHandle (a.k.a in this context an opaque handler)
-//   which it gets back from calling the C api's instantiation proxy function hands_pipeline_operator_create.
-//   the C api consumer then passes that opaque handle back on each subsequent api call. for the c code
-//   it's just a pointer.
-//
-// API implementation functions:
-//   within the function implementations of the C api, that opaque handler is cast back
-//   to this C++ struct type thus enabling the C api functions to operate the C++ object.
-//   this pattern enables C code to operate a C++ object.
+/// this struct is the heart of enabling the API.
+/// it is a C++ struct type definition encapsulating only a pointer to a HandsPipelineOperator instance,
+/// which is only used by the C++ part of the C api, and on the C facade of the api is seen as merely
+/// an opaque pointer (void *) of type HandsPipelineOperatorHandle.
+///
+/// how this plays out in more detail:
+///
+/// C facade:
+///   the C api consumer only sees a HandsPipelineOperatorOpaqueHandle (a.k.a in this context an opaque handler)
+///   which it gets back from calling the C api's instantiation proxy function hands_pipeline_operator_create.
+///   the C api consumer then passes that opaque handle back on each subsequent api call. for the c code
+///   it's just a pointer.
+///
+/// API implementation functions:
+///   within the function implementations of the C api, that opaque handler is cast back
+///   to this C++ struct type thus enabling the C api functions to operate the C++ object.
+///   this pattern enables C code to operate a C++ object.
 struct CppInstanceWrapper {
     std::unique_ptr<hand_tracking_mp_lean::HandsPipelineOperator> cpp_impl;
 };
@@ -146,7 +146,7 @@ extern "C" int hands_pipeline_operator_push_image(
     const uint8_t* image_data, int width, int height, int channels,
     int64_t timestamp_us) {
 
-    auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);
+    auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);  // casts the opaque pointer back to C++
 
     set_last_error("");
     if (!opaque_handle || !image_data || width <= 0 || height <= 0 || channels <= 0) {
@@ -176,7 +176,7 @@ extern "C" int hands_pipeline_operator_wait_for_output(
         set_last_error("Invalid arguments to wait_for_output");
         return -1;
     }
-    auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);
+    auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);  // casts the opaque pointer back to C++
     hand_tracking_mp_lean::PipelineOutputData output;
     absl::Status status = cpp_instance_wrapper->cpp_impl->WaitForOutput(&output, frame_number);
     if (!status.ok()) {
@@ -198,19 +198,21 @@ extern "C" int hands_pipeline_operator_wait_for_output(
     return 0;
 }
 
-// destroy a created instance, this function is internal and not exposed as API
+// destruct a created instance, this function is internal and not exposed as API
 static void hands_pipeline_operator_destroy(HandsPipelineOperatorOpaqueHandle opaque_handle) {
+    /// delete runs the destructor of the struct which opaque_handle points at,
+    /// after calling the destructor of its contained C++ instance.
     if (opaque_handle) delete static_cast<CppInstanceWrapper*>(opaque_handle);
 }
 
-// call the underlying C++ class's finalization method, and then free (delete) its C++ instance from memory.
+/// call the underlying C++ class's finalization method, and then free (delete) its C++ instance from memory.
 extern "C" int hands_pipeline_operator_finalize(HandsPipelineOperatorOpaqueHandle opaque_handle) {
     set_last_error("");
     if (!opaque_handle) {
-        set_last_error("Invalid handle to finalize");
+        set_last_error("nullptr passed to finalize");
         return -1;
     }
-    auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);
+    auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);  // casts the opaque pointer back to C++
     absl::Status status = cpp_instance_wrapper->cpp_impl->Finalize();
     hands_pipeline_operator_destroy(opaque_handle);
 

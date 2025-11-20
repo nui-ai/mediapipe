@@ -7,6 +7,7 @@
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:compare_pipelines_output_data</blaze-target>
       <blaze-target>//mediapipe/examples/desktop/hand_tracking:hand_tracking_no_pipeline_run</blaze-target>
       <blaze-target>//mediapipe/python:_framework_bindings</blaze-target>
+      <blaze-target>//mediapipe/examples/desktop/hand_tracking:libhand_tracking_c_api.so</blaze-target>
       <blaze-user-flag>-c</blaze-user-flag>
       <blaze-user-flag>opt</blaze-user-flag>
       <blaze-user-flag>--define</blaze-user-flag>
