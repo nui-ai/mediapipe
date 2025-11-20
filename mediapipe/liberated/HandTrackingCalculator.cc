@@ -66,7 +66,7 @@ namespace hand_tracking_mp_lean {
         int max_hands_to_track = cc->InputSidePackets().Tag("NUM_HANDS").Get<int>();
         ABSL_LOG(INFO) << "tracking up to " << max_hands_to_track << " hands";
 
-        liberated_ = std::make_unique<HandTrackingCore>(max_hands_to_track, memory_manager_);
+        liberated_ = std::make_unique<HandTrackingCore>(max_hands_to_track);
         return absl::OkStatus();
       }
 

@@ -156,17 +156,14 @@ int main(int argc, char** argv) {
     // output stream names as single string for c api simplicity
     const std::string output_streams_csv = "multi_hand_landmarks,multi_hand_world_landmarks,multi_handedness";
 
-    // instantiate the graph operator object using file path
-    HandsPipelineOperatorHandle pipeline_operator = hands_pipeline_operator_create(
-        absl::GetFlag(FLAGS_max_num_hands),
-        GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)).c_str(),
-        output_streams_csv.c_str());
-    if (!pipeline_operator) {
-        std::cerr << "Failed to create HandsPipelineOperator via C api: " << hands_pipeline_operator_get_last_error() << std::endl;
+    // open an output file for the inferences
+    std::ofstream output_proto_file(kOutputProtoFilename, std::ios::binary | std::ios::trunc);
+    if (!output_proto_file.is_open()) {
+        std::cerr << "Failed to open output proto file: " << kOutputProtoFilename << std::endl;
         return EXIT_FAILURE;
     }
 
-    // Open video/camera
+    // open the input video stream
     cv::VideoCapture capture;
     const bool video_file_input = !absl::GetFlag(FLAGS_input_video_path).empty();
     if (video_file_input) {
@@ -176,14 +173,16 @@ int main(int argc, char** argv) {
     }
     if (!capture.isOpened()) {
         std::cerr << "Failed to open video/camera" << std::endl;
-        hands_pipeline_operator_destroy(pipeline_operator);
         return EXIT_FAILURE;
     }
 
-    std::ofstream output_proto_file(kOutputProtoFilename, std::ios::binary | std::ios::trunc);
-    if (!output_proto_file.is_open()) {
-        std::cerr << "Failed to open output proto file: " << kOutputProtoFilename << std::endl;
-        hands_pipeline_operator_destroy(pipeline_operator);
+    // instantiate a pipeline operator from the C api
+    HandsPipelineOperatorOpaqueHandle pipeline_operator = hands_pipeline_operator_create(
+        absl::GetFlag(FLAGS_max_num_hands),
+        GetProjectRootedPath(absl::GetFlag(FLAGS_graph_file)).c_str(),
+        output_streams_csv.c_str());
+    if (!pipeline_operator) {
+        std::cerr << "Failed to create HandsPipelineOperator via C api: " << hands_pipeline_operator_get_last_error() << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -250,11 +249,10 @@ int main(int argc, char** argv) {
         }
     }
     output_proto_file.close();
-    int finalize_status = hands_pipeline_operator_finalize(pipeline_operator);
-    if (finalize_status != 0) {
-        std::cerr << "Error during mediapipe graph finalization: " << hands_pipeline_operator_get_last_error() << std::endl;
+    int pipeline_finalize_status = hands_pipeline_operator_finalize(pipeline_operator);
+    if (pipeline_finalize_status != 0) {
+        std::cerr << "error encountered during C API finalization of mediapipe pipeline wrapper: " << hands_pipeline_operator_get_last_error() << std::endl;
     }
-    hands_pipeline_operator_destroy(pipeline_operator);
     ABSL_LOG(INFO) << "done processing all input";
     return EXIT_SUCCESS;
 }

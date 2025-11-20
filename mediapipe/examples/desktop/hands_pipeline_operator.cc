@@ -1,10 +1,20 @@
 /// a class for succinctly operating our mediapipe pipeline of interest from cpp code.
-/// this was not explicitly implemented in mediapipe v0.10.13 itself other than use
-/// of the underlying graph object methods in its tests code.
+/// this was not explicitly implemented in mediapipe v0.10.13 itself other than direct
+/// use of the underlying graph object methods in its tests code, which is a little
+/// more detailed than a bottom-line api for pipeline use should be ― the current
+/// class provides that clean surface for pipeline use which direct use of
+/// the graph object is not.
 ///
 /// in addition to wrapping around the mediapipe graph object, this class is additionally
-/// designed such that our C API can use it to expose the functionality to C and FFI code.
-/// see elaborated comment in the header file.
+/// designed in some ways to be conducive to our C API being based on wrapping this class,
+/// for its designation of exposing pipeline use to C and FFI code consumers safely.
+///
+/// this convergence of concerns can be opted out by a refactor making our C API drive
+/// the pipeline on its own and this class be left as only catering to providing
+/// a succinct safe facade over the hairy way of interacting with a pipeline only
+/// for use from C++ code.
+///
+/// either way, c.f. the elaborated comment in the header file.
 
 // Copyright 2025 The MediaPipe Authors.
 // Licensed under the Apache License, Version 2.0.

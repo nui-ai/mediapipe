@@ -1,4 +1,8 @@
-// FFI bindings for mediapipe C API
+/// FFI bindings for our mediapipe pipeline driving C API
+/// that C API caters for using a mediapipe pipeline,
+/// or at least the one we use in its final minified form
+/// where the entire pipeline has been reduced to just
+/// a single calculator.
 
 extern "C" {
     pub fn hands_pipeline_operator_create(
@@ -24,6 +28,5 @@ extern "C" {
     ) -> i32;
 
     pub fn hands_pipeline_operator_finalize(handle: *mut std::ffi::c_void) -> i32;
-    pub fn hands_pipeline_operator_destroy(handle: *mut std::ffi::c_void);
     pub fn hands_pipeline_operator_get_last_error() -> *const libc::c_char;
 }

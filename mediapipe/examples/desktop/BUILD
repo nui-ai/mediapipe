@@ -159,6 +159,18 @@ cc_library(
 )
 
 cc_library(
+    name = "no_pipeline_c_api",
+    srcs = ["no_pipeline_c_api.cc"],
+    hdrs = ["no_pipeline_c_api.h"],
+    linkstatic = True,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":pipeline_output_cc_proto",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
     name = "compare_pipelines_output_data_main",
     srcs = ["compare_pipelines_output_data_main.cc"],
     deps = [

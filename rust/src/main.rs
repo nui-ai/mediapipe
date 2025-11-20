@@ -277,6 +277,5 @@ fn main() -> anyhow::Result<()> {
         let err = unsafe { CStr::from_ptr(ffi::hands_pipeline_operator_get_last_error()) }.to_string_lossy();
         eprintln!("Error during mediapipe graph finalization: {}", err);
     }
-    unsafe { ffi::hands_pipeline_operator_destroy(handle); }
     Ok(())
 }

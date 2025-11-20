@@ -11,6 +11,11 @@
 #include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
 
+/// this is C API for operating a mediapipe pipeline (or rather, the only one we operate)
+/// it wraps around our C++ HandsPipelineOperator class by supplying pure C functions either
+/// generate, destroy, or take as input a handle, representing an instance of the latter C++ class,
+/// such that the C++ object is fully operated by the C-style function calls provided by it.
+
 void check_protobuf_linking() {
     // force the protocol buffers registration process to happen at initialization of the C API (rather than on first protobuf object access)
     // in order to fail early and informatively if the protobuf types are missing or not the same version as those used during compilation,
@@ -90,11 +95,28 @@ static thread_local std::string g_last_error;
 static void set_last_error(const std::string& err) { g_last_error = err; }
 extern "C" const char* hands_pipeline_operator_get_last_error() { return g_last_error.c_str(); }
 
-struct HandsPipelineOperatorWrapper {
-    std::unique_ptr<hand_tracking_mp_lean::HandsPipelineOperator> impl;
+// this struct is the heart of enabling the API.
+// it is a C++ struct type definition encapsulating only a pointer to a HandsPipelineOperator instance,
+// which is only used by the C++ part of the C api, and on the C facade of the api is seen as merely
+// an opaque pointer (void *) of type HandsPipelineOperatorHandle.
+//
+// how this plays out in more detail:
+//
+// C facade:
+//   the C api consumer only sees a HandsPipelineOperatorHandle (a.k.a in this context an opaque handler)
+//   which it gets back from calling the C api's instantiation proxy function hands_pipeline_operator_create.
+//   the C api consumer then passes that opaque handle back on each subsequent api call. for the c code
+//   it's just a pointer.
+//
+// API implementation functions:
+//   within the function implementations of the C api, that opaque handler is cast back
+//   to this C++ struct type thus enabling the C api functions to operate the C++ object.
+//   this pattern enables C code to operate a C++ object.
+struct CppInstanceWrapper {
+    std::unique_ptr<hand_tracking_mp_lean::HandsPipelineOperator> cpp_impl;
 };
 
-extern "C" HandsPipelineOperatorHandle hands_pipeline_operator_create(
+extern "C" HandsPipelineOperatorOpaqueHandle hands_pipeline_operator_create(
     const uint max_hands_to_track,
     const char* graph_file_path,
     const char* output_streams_csv) {
@@ -108,35 +130,33 @@ extern "C" HandsPipelineOperatorHandle hands_pipeline_operator_create(
     while (std::getline(ss, item, ',')) {
         if (!item.empty()) output_streams.push_back(item);
     }
-    auto* wrapper = new HandsPipelineOperatorWrapper;
+    auto* cpp_instance_wrapper = new CppInstanceWrapper;
     auto status_or_op = hand_tracking_mp_lean::HandsPipelineOperator::Create(max_hands_to_track, std::string(graph_file_path), output_streams);
     if (!status_or_op.ok()) {
         set_last_error(std::string(status_or_op.status().message()));
-        delete wrapper;
+        delete cpp_instance_wrapper;
         return nullptr;
     }
-    wrapper->impl = std::move(status_or_op.value());
-    return wrapper;
-}
-
-extern "C" void hands_pipeline_operator_destroy(HandsPipelineOperatorHandle handle) {
-    if (handle) delete static_cast<HandsPipelineOperatorWrapper*>(handle);
+    cpp_instance_wrapper->cpp_impl = std::move(status_or_op.value());
+    return cpp_instance_wrapper;
 }
 
 extern "C" int hands_pipeline_operator_push_image(
-    HandsPipelineOperatorHandle handle,
+    HandsPipelineOperatorOpaqueHandle opaque_handle,
     const uint8_t* image_data, int width, int height, int channels,
     int64_t timestamp_us) {
+
+    auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);
+
     set_last_error("");
-    if (!handle || !image_data || width <= 0 || height <= 0 || channels <= 0) {
+    if (!opaque_handle || !image_data || width <= 0 || height <= 0 || channels <= 0) {
         set_last_error("Invalid arguments to push_image");
         return -1;
     }
+
     cv::Mat input_frame(height, width, channels == 3 ? CV_8UC3 : CV_8UC1, (void*)image_data);
-    // Copy to avoid lifetime issues
-    cv::Mat frame_copy = input_frame.clone();
-    auto* wrapper = static_cast<HandsPipelineOperatorWrapper*>(handle);
-    absl::Status status = wrapper->impl->PushImage(frame_copy, timestamp_us);
+    cv::Mat frame_copy = input_frame.clone();  // copy to simplistically avoid lifetime issues for now
+    absl::Status status = cpp_instance_wrapper->cpp_impl->PushImage(frame_copy, timestamp_us);
     if (!status.ok()) {
         set_last_error(std::string(status.message()));
         return -1;
@@ -144,18 +164,21 @@ extern "C" int hands_pipeline_operator_push_image(
     return 0;
 }
 
+/// the output is returned as serialized protobuf (into char** output_data)
+/// just because the original pipeline did so, and because we have diffing
+/// code for protobuf.
 extern "C" int hands_pipeline_operator_wait_for_output(
-    HandsPipelineOperatorHandle handle,
+    HandsPipelineOperatorOpaqueHandle opaque_handle,
     int frame_number,
     char** output_data, size_t* output_size) {
     set_last_error("");
-    if (!handle || !output_data || !output_size) {
+    if (!opaque_handle || !output_data || !output_size) {
         set_last_error("Invalid arguments to wait_for_output");
         return -1;
     }
-    auto* wrapper = static_cast<HandsPipelineOperatorWrapper*>(handle);
+    auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);
     hand_tracking_mp_lean::PipelineOutputData output;
-    absl::Status status = wrapper->impl->WaitForOutput(&output, frame_number);
+    absl::Status status = cpp_instance_wrapper->cpp_impl->WaitForOutput(&output, frame_number);
     if (!status.ok()) {
         set_last_error(std::string(status.message()));
         return -1;
@@ -175,17 +198,26 @@ extern "C" int hands_pipeline_operator_wait_for_output(
     return 0;
 }
 
-extern "C" int hands_pipeline_operator_finalize(HandsPipelineOperatorHandle handle) {
+// destroy a created instance, this function is internal and not exposed as API
+static void hands_pipeline_operator_destroy(HandsPipelineOperatorOpaqueHandle opaque_handle) {
+    if (opaque_handle) delete static_cast<CppInstanceWrapper*>(opaque_handle);
+}
+
+// call the underlying C++ class's finalization method, and then free (delete) its C++ instance from memory.
+extern "C" int hands_pipeline_operator_finalize(HandsPipelineOperatorOpaqueHandle opaque_handle) {
     set_last_error("");
-    if (!handle) {
+    if (!opaque_handle) {
         set_last_error("Invalid handle to finalize");
         return -1;
     }
-    auto* wrapper = static_cast<HandsPipelineOperatorWrapper*>(handle);
-    absl::Status status = wrapper->impl->Finalize();
+    auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);
+    absl::Status status = cpp_instance_wrapper->cpp_impl->Finalize();
+    hands_pipeline_operator_destroy(opaque_handle);
+
     if (!status.ok()) {
         set_last_error(std::string(status.message()));
         return -1;
     }
+
     return 0;
 }

@@ -50,6 +50,8 @@ ABSL_FLAG(std::string, input_video_path, "",
           "if not provided, attempts to use a webcam (not tested).");
 ABSL_FLAG(std::string, reference_data_path, "",
           "reference data file");
+ABSL_FLAG(std::uint32_t, max_num_hands, 0,
+          "maximum number of hands to track");
 ABSL_FLAG(std::string, output_video_path, "",
           "output video file path (.mp4 only). "
           "if not provided, shows the result images in a window without saving them to an output video file.");
@@ -140,8 +142,7 @@ absl::Status RunNoPipelineTrackingWithDiffing() {
     // "hand_rects_from_palm_detections"
   };
 
-  auto memory_manager = MemoryManager();
-  auto hand_tracking = HandTrackingCore(3, &memory_manager);
+  auto hand_tracking = HandTrackingCore(absl::GetFlag(FLAGS_max_num_hands));
 
   // initializing the camera or load the input video
   cv::VideoCapture capture;
@@ -176,7 +177,7 @@ absl::Status RunNoPipelineTrackingWithDiffing() {
     }
     ABSL_LOG(WARNING) << "processing frame number " << i;
 
-    // convert to mediapipe image color space and flip
+    // convert the opencv acquired image to mediapipe image color space and flip
     cv::Mat image;
     cv::cvtColor(raw_image, image, cv::COLOR_BGR2RGB);  // this is a copy operation in OpenCV
     if (!video_file_input) { cv::flip(image, image, /*flipcode=HORIZONTAL*/ 1); }
@@ -284,7 +285,7 @@ int main(int argc, char** argv) {
   ValidateProjectRootDirectoryOrExit();
 
   google::InitGoogleLogging(argv[0]);
-  ABSL_LOG(INFO) << "this is the pure c++ pipeline runner";
+  ABSL_LOG(INFO) << "this is the pure c++ no-pipeline hand tracking runner";
   ABSL_LOG(INFO) << "working directory: " << std::filesystem::current_path();
 
   absl::ParseCommandLine(argc, argv);
@@ -292,6 +293,13 @@ int main(int argc, char** argv) {
   if (!absl::GetFlag(FLAGS_input_video_path).empty()) {
     CheckFileExistsOrExit(GetProjectRootedPath(absl::GetFlag(FLAGS_input_video_path)), "input_video_path");
   }
+
+  if (absl::GetFlag(FLAGS_max_num_hands) == 0) {
+    std::cerr << "--max_num_hands must be provided and be greater than 0." << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  uint32_t max_num_hands = absl::GetFlag(FLAGS_max_num_hands);
+
   // Optionally check reference proto file if you want to require its existence
   // CheckFileExistsOrExit(GetProjectRootedPath(kReferenceProtoFilename), "reference_proto_filename");
 

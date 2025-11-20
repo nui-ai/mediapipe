@@ -4,7 +4,20 @@ namespace hand_tracking_mp_lean {
 
 /// object for driving the entire processing of images from an image stream, for hand tracking and inference;
 /// formerly this was a mediapipe pipeline HandLandmarkTrackingCpu of mediapipe commit tag v0.10.13.
-HandTrackingCore::HandTrackingCore(uint32_t max_hands_to_track, MemoryManager* memory_manager) {
+HandTrackingCore::HandTrackingCore(uint32_t max_hands_to_track) {
+
+  // MemoryManager is a class reusing memory one-time allocated from the OS, meant for making more performant repeat tensor allocations.
+  // we carried forward and persevere its use from the original pipeline implementation, as indeed its use still trickles down into cored
+  // components that we employ by the current class.
+  //
+  // our execution time is by far dominated by the tensorflow inference steps ― which may or may not benefit as much from this optimization
+  // outside of resource-constrained embedded environments which we don't do yet.
+  //
+  // reusing this component in place of plain mallocs probably doesn't hurt, unless instantiating one per HandTrackingCore
+  // is somehow non-optimal in more parallelized setups using multiple HandTrackingCore inference engines in parallel.
+  // MemoryManager is a simple pass-through facade over platoform-specific such memory allocation implementations
+  // (so it's a nice to have for future platform support as such, but can be avoided if necessary).
+  auto memory_manager = MemoryManager();
 
   max_hands_to_track_ = max_hands_to_track;
 
@@ -21,7 +34,7 @@ HandTrackingCore::HandTrackingCore(uint32_t max_hands_to_track, MemoryManager* m
   auto params = GetOutputTensorParams(image_to_palm_detection_input_options);
   image_to_palm_detection_input_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
       image_to_palm_detection_input_options, 192, 192, params,
-      palm_detection_gpu_converter_, palm_detection_cpu_converter_, memory_manager);
+      palm_detection_gpu_converter_, palm_detection_cpu_converter_, &memory_manager);
 
   // initialize for palm detection inference
   const std::string& palm_detection_model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
@@ -57,7 +70,7 @@ HandTrackingCore::HandTrackingCore(uint32_t max_hands_to_track, MemoryManager* m
   auto params_ = GetOutputTensorParams(sub_image_extraction_options);
   sub_image_for_landmarks_inference_extractor_ = std::make_unique<api2::ImageToTensorCalculatorCore>(
       sub_image_extraction_options, 224, 224, params_,
-      landmarks_inference_gpu_converter_, landmarks_inference_cpu_converter_, memory_manager);
+      landmarks_inference_gpu_converter_, landmarks_inference_cpu_converter_, &memory_manager);
 
   // initialize for landmarks inference
   const std::string& landmarks_infernce_model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
@@ -250,7 +263,7 @@ void HandTrackingCore::landmarks_inference_debug_logging(std::vector<Tensor> lan
 /// not currently ported or implemented:
 /// - GPU inference.
 /// - Inference on platforms which do not have solid XNNPACK support.
-absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackingCore::Process(std::shared_ptr<const Image> image) {
+absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackingCore::Process(const std::shared_ptr<const Image>& image) {
 
   // initiate the result structure for the current image as empty vectors for all of its fields
   auto result = std::make_unique<ImageHandTrackingAndInferenceResult>(
