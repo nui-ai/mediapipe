@@ -19,3 +19,11 @@ protobuf = "3.7.2"
 [build-dependencies]
 # builds rust code from the protobuf definitions of our mediapipe input and output types which we still rely on in our C API for the mediapipe pipeline.
 protobuf-codegen = "3.7.2"
+
+[[bin]]
+name = "pipeline-api-runner"
+path = "src/pipeline_api_runner_main.rs"
+
+[[bin]]
+name = "no-pipeline-api-runner"
+path = "src/no_pipeline_api_runner_main.rs"

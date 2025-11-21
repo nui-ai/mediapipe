@@ -91,5 +91,5 @@ fn main() {
     println!("cargo:rustc-link-lib=dylib=hands_pipeline_operator_c_api");
 
     // Step 3b: link our no-pipeline-backed C api for hand tracking
-    // println!("cargo:rustc-link-lib=dylib=hands_pipeline_operator_c_api");
+    println!("cargo:rustc-link-lib=dylib=hand_tracking_c_api");
 }

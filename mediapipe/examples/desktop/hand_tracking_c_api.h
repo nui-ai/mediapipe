@@ -22,7 +22,7 @@ HandTrackingCoreOpaqueHandle hand_tracking_core_create(uint max_hands_to_track);
 
 int hand_tracking_core_process(
     HandTrackingCoreOpaqueHandle opaque_handle,
-    const std::shared_ptr<const hand_tracking_mp_lean::Image>& image);
+    const uint8_t* data, size_t width, size_t height, size_t stride_row, size_t stride_col);  // the image as a pointer to its numpy array bytes, plus the shape and strides of this array
 
 /// function implementations for the above signatures return non-zero and set a "last_error"
 /// string value if they fail. This function should be used by the caller, to retrieve that

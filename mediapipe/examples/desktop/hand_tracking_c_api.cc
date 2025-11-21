@@ -1,4 +1,6 @@
 #include "mediapipe/examples/desktop/hand_tracking_c_api.h"
+#include "mediapipe/framework/port/opencv_imgproc_inc.h"
+#include <opencv2/opencv.hpp>
 
 // C-style error state management (thread-local)
 static thread_local std::string g_last_error;
@@ -36,10 +38,31 @@ extern "C" HandTrackingCoreOpaqueHandle hand_tracking_core_create(const uint max
 
 extern "C" int hand_tracking_core_process(
   HandTrackingCoreOpaqueHandle opaque_handle,
-  const std::shared_ptr<const hand_tracking_mp_lean::Image>& image) {
+  const uint8_t* data, size_t width, size_t height, size_t stride_row, size_t stride_col) {  // the image as a pointer to its numpy array bytes, plus the shape and strides of this array
 
   auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);  // casts the opaque pointer back to C++
-  absl::StatusOr<std::unique_ptr<hand_tracking_mp_lean::ImageHandTrackingAndInferenceResult>> result = cpp_instance_wrapper->cpp_impl->Process(image);
+
+  // no-copy wrap the image data as a CV::Mat object and provide it as a reference to downstream api
+  assert(stride_row == stride_col && "stride_row and stride_col must be equal for directly wrapping image data as a cv::Mat object"); // there's no OpenCV direct constructor that takes different stride size for cols and rows
+  cv::Mat image(height, width, CV_8UC3, const_cast<uint8_t*>(data), stride_row);
+  auto image_ptr = std::make_shared<cv::Mat>(std::move(image));  // wrap the cv::Mat image by a shared pointer, as the builder requires a reference type
+  auto image_frame_ptr = std::make_shared<hand_tracking_mp_lean::ImageFrame>(
+      hand_tracking_mp_lean::ImageFormat::SRGB,
+      image_ptr->cols, image_ptr->rows,
+      image_ptr->step[0],
+      image_ptr->data,
+      [image_ptr](uint8_t*) {
+        // underlying image data lifetime management:
+        // the role of the current explicit deleter lambda is only to hold a reference to the shared pointer to the cv::Mat object,
+        // thus preventing the deletion of the original cv2::Mat image object up until the current ImageFrame dervied from it, is destroyed itself,
+        // thus ensuring that the image data has the expected lifespan;
+        // it would otherwise get freed before the ImageFrame object is actually used.
+        // this is the intended scenario for the ImageFrame constructor being used here.
+      });
+  auto const hand_tracking_input_image_object = std::make_shared<const hand_tracking_mp_lean::Image>(image_frame_ptr);
+
+  // pass the image to the hand tracking instance
+  absl::StatusOr<std::unique_ptr<hand_tracking_mp_lean::ImageHandTrackingAndInferenceResult>> result = cpp_instance_wrapper->cpp_impl->Process(hand_tracking_input_image_object);
   if (!result.ok()) {
     set_last_error(std::string(result.status().message()));
     return -1;

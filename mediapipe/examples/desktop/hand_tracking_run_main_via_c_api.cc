@@ -1,21 +1,4 @@
-// Copyright 2019 The MediaPipe Authors.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-// drives the C API of operating our mediapipe pipeline:
-// practically a clone of hand_tracking_pipeline_run_main.cc,
-// which unlike the former does not directly use the C++ implementation of the pipeline operator,
-// but the C api for it.
+/// drives the C API of our cored no-pipeline hand tracking:
 
 #include <cstdlib>
 #include <fstream>
@@ -28,11 +11,9 @@
 #include "mediapipe/examples/desktop/hand_tracking_c_api.h" // the C api header
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
 
-#include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
-#include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe/util/resource_util.h"
 
 #include <google/protobuf/util/delimited_message_util.h>
@@ -195,26 +176,22 @@ int main(int argc, char** argv) {
         cv::cvtColor(input_frame_raw, image, cv::COLOR_BGR2RGB);
         if (!video_file_input) { cv::flip(image, image, 1); }
 
-        // no-copy convert the cv::Mat image object to the image type which our tracker expects due to it having been cored out of the original mediapipe pipeline,
-        // which happens to be a mediapipe Image type ― which can only be built from a cv::Mat using the mediapipe ImageFrame type builder type as we do below
-        auto image_ptr = std::make_shared<cv::Mat>(std::move(image));  // wrap the cv::Mat image by a shared pointer, as the builder requires a reference type
-        auto image_frame_ptr = std::make_shared<hand_tracking_mp_lean::ImageFrame>(
-            hand_tracking_mp_lean::ImageFormat::SRGB,
-            image_ptr->cols, image_ptr->rows,
-            image_ptr->step[0],
-            image_ptr->data,
-            [image_ptr](uint8_t*) {
-              // underlying image data lifetime management:
-              // the role of the current explicit deleter lambda is only to hold a reference to the shared pointer to the cv::Mat object,
-              // thus preventing the deletion of the original cv2::Mat image object up until the current ImageFrame dervied from it, is destroyed itself,
-              // thus ensuring that the image data has the expected lifespan;
-              // it would otherwise get freed before the ImageFrame object is actually used.
-              // this is the intended scenario for the ImageFrame constructor being used here.
-            });
-        auto api_image = std::make_shared<const hand_tracking_mp_lean::Image>(image_frame_ptr);
+        // assert that the OpenCV sourced image is contiguous in memory
+        if (!image.isContinuous()) { throw std::runtime_error("image must be a contiguous memory layout for qualifying as a numpy-compatible data layout, which our C api expects."); }
+        // assert that the OpenCV sourced image type is CV_8UC3 (uint8, 3 channels)
+        if (image.type() != CV_8UC3) { throw std::runtime_error("Expected CV_8UC3 (uint8, 3 channels) image type"); }
 
-        int push_status = hand_tracking_core_process(core, api_image);
-        if (push_status != 0) {
+        // pass the OpenCV sourced image to the C api as a raw data pointer with metadata
+        size_t height = static_cast<size_t>(image.rows);
+        size_t width = static_cast<size_t>(image.cols);
+        size_t stride_row = static_cast<size_t>(image.step1(0));
+        size_t stride_col = static_cast<size_t>(image.elemSize());
+        const unsigned char* image_data_ptr = image.data;
+        int status = hand_tracking_core_process(
+            core,
+            image_data_ptr, width, height, stride_row, stride_col);
+
+        if (status != 0) {
             std::cerr << "push_image failed: " << hand_tracking_get_last_error() << std::endl;
             break;
         }
