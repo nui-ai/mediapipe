@@ -3,11 +3,11 @@
 extern "C" {
     pub fn hand_tracking_core_create(max_num_hands: u32) -> *mut std::ffi::c_void;
 
-    pub fn process_numpy_image_from_rust(
+    pub fn hand_tracking_core_process(
         opaque_handle: *mut std::ffi::c_void,
         data: *const u8,
-        height: libc::size_t,
         width: libc::size_t,
+        height: libc::size_t,
         stride_row: libc::size_t,
         stride_col: libc::size_t,
     ) -> i32;

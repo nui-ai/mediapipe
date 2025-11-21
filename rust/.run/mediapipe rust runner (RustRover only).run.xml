@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="mediapipe rust runner (RustRover only)" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
     <option name="buildProfileId" value="release" />
-    <option name="command" value="run -- --graph-file mediapipe/modules/hand_landmark/hand_tracking_pipeline.pbtxt --input-video-path ../sample-video-two-hands.avi --max-num-hands 3" />
+    <option name="command" value="run --bin no-pipeline-api-runner -- --max-num-hands 3 --input-video-path ../sample-video-two-hands.avi" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$" />
     <envs />
     <option name="emulateTerminal" value="true" />

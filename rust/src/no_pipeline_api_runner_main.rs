@@ -23,8 +23,6 @@ pub struct Args {
     #[arg(long, required=true, help = "maximum number of hands to track; we still need to explicitly provide this hand tracking argument")]
     pub max_num_hands: u32,
     #[arg(long, required=true)]
-    pub graph_file: PathBuf,
-    #[arg(long)]
     pub input_video_path: Option<PathBuf>,
     #[arg(long)]
     pub output_video_path: Option<PathBuf>,
@@ -154,20 +152,9 @@ fn main() -> anyhow::Result<()> {
     println!("reference output data file '{}' found and is non-empty.", reference_proto_path);
     let reference_data = read_reference_data(reference_proto_path)?;
 
-    // Create the pipeline operator via FFI
-    let graph_file_cstr = CString::new(args.graph_file.to_str().unwrap())?;
-    let output_streams_csv_cstr = CString::new("multi_hand_landmarks,multi_hand_world_landmarks,multi_handedness")?;
-
-    // temporarily change the working directory to the project-wide project root directory,
-    // so that relative paths to pbtxt files expected by our mediapipe pipeline are resolved correctly,
-    // as the mediapipe pipeline's loading of the pbtxt and other resource files can only search from a fixed base path ―
-    // and it does not take a variable for its base path for model loading from rust, while our rust runs under our `rust`
-    // directory, not the project-wide root directory (only because it's convenient in RustRover).
+    // temporarily change the working directory to that loading the tflite models works as expected.
     cwdir().expect("failed setting the working directory for the mediapipe current pipeline");
-    if graph_file_cstr.as_ptr().is_null() {
-        eprintln!("Error: graph_file_cstr is a null pointer");
-        std::process::exit(1);
-    }
+
     let hand_tracking_handle = unsafe {
         no_pipeline_api_ffi::hand_tracking_core_create(args.max_num_hands)
     };
@@ -241,11 +228,11 @@ fn main() -> anyhow::Result<()> {
         let stride_col = input_frame.elem_size()?.try_into().context("stride_col conversion failed")?;
         let image_data_ptr = input_frame.data();
         let push_status = unsafe {
-            no_pipeline_api_ffi::process_numpy_image_from_rust(
+            no_pipeline_api_ffi::hand_tracking_core_process(
                 hand_tracking_handle,
                 image_data_ptr,
-                height,
                 width,
+                height,
                 stride_row,
                 stride_col,
             )
