@@ -9,6 +9,7 @@
 #include <memory>
 
 #include "mediapipe/examples/desktop/hand_tracking_c_api.h" // the C api header
+#include "mediapipe/examples/desktop/hand_tracking_c_types.h"
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
 
 #include "mediapipe/framework/formats/image_frame.h"
@@ -184,15 +185,17 @@ int main(int argc, char** argv) {
         // pass the OpenCV sourced image to the C api as a raw data pointer with metadata
         size_t height = static_cast<size_t>(image.rows);
         size_t width = static_cast<size_t>(image.cols);
-        size_t stride_row = static_cast<size_t>(image.step1(0));
-        size_t stride_col = static_cast<size_t>(image.elemSize());
+        size_t row_stride = static_cast<size_t>(image.step1(0));  // total bytes per array row
+        size_t pixel_stride = static_cast<size_t>(image.elemSize());  // bytes per pixel
         const unsigned char* image_data_ptr = image.data;
+
+        HandTrackingResultC* result_out = nullptr;
         int status = hand_tracking_core_process(
             core,
-            image_data_ptr, width, height, stride_row, stride_col);
+            image_data_ptr, width, height, row_stride, &result_out);
 
         if (status != 0) {
-            std::cerr << "push_image failed: " << hand_tracking_get_last_error() << std::endl;
+            std::cerr << "hand tracking failed for current image: " << hand_tracking_get_last_error() << std::endl;
             break;
         }
 
@@ -214,6 +217,7 @@ int main(int argc, char** argv) {
         //         std::cerr << "warning: could not compare pipeline output for frame " << i << ":the reference output data file doesn't have data for frame " << i << std::endl;
         //     }
         // }
+        hand_tracking_result_destroy(result_out);
     }
     output_proto_file.close();
     int pipeline_finalize_status = hand_tracking_core_finalize(core);

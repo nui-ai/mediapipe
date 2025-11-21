@@ -1,6 +1,9 @@
 #include "mediapipe/examples/desktop/hand_tracking_c_api.h"
+#include "mediapipe/examples/desktop/hand_tracking_c_types.h"
+#include "mediapipe/examples/desktop/hand_tracking_c_conversion.h"
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include <opencv2/opencv.hpp>
+
 
 /// C-style error state management (thread-local)
 static thread_local std::string g_last_error;
@@ -40,16 +43,20 @@ extern "C" HandTrackingCoreOpaqueHandle hand_tracking_core_create(const uint max
   return cpp_instance_wrapper;
 }
 
+/// C api for obtaining hand tracking results for an image being given to it.
+/// destroying the result object passed by reference is the responsibility of the caller,
+/// for which sake the additional api function `hand_tracking_result_destroy` is provided
+/// as part of the api (from a different source file).
 extern "C" int hand_tracking_core_process(
   HandTrackingCoreOpaqueHandle opaque_handle,
-  const uint8_t* data, size_t width, size_t height, size_t stride_row, size_t stride_col) {  // the image as a pointer to its numpy array bytes, plus the shape and strides of this array
+  const uint8_t* data, size_t width, size_t height, size_t row_stride,
+  HandTrackingResultC** hand_tracking_result) {
 
-  auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);  // casts the opaque pointer back to C++
+  auto* cpp_instance_wrapper = static_cast<CppInstanceWrapper*>(opaque_handle);
 
-  // no-copy wrap the image data as a CV::Mat object and provide it as a reference to downstream api
-  assert(stride_row == stride_col && "stride_row and stride_col must be equal for directly wrapping image data as a cv::Mat object"); // there's no OpenCV direct constructor that takes different stride size for cols and rows
-  cv::Mat image(height, width, CV_8UC3, const_cast<uint8_t*>(data), stride_row);
-  auto image_ptr = std::make_shared<cv::Mat>(std::move(image));  // wrap the cv::Mat image by a shared pointer, as the builder requires a reference type
+  // wrap the image array data as the input type expected by the downstream hand tracking function being used
+  cv::Mat image(height, width, CV_8UC3, const_cast<uint8_t*>(data), row_stride);
+  auto image_ptr = std::make_shared<cv::Mat>(std::move(image));
   auto image_frame_ptr = std::make_shared<hand_tracking_mp_lean::ImageFrame>(
       hand_tracking_mp_lean::ImageFormat::SRGB,
       image_ptr->cols, image_ptr->rows,
@@ -65,12 +72,22 @@ extern "C" int hand_tracking_core_process(
       });
   auto const hand_tracking_input_image_object = std::make_shared<const hand_tracking_mp_lean::Image>(image_frame_ptr);
 
-  // pass the image to the hand tracking instance
+  // perform hand tracking for the wrapped image
   absl::StatusOr<std::unique_ptr<hand_tracking_mp_lean::ImageHandTrackingAndInferenceResult>> result = cpp_instance_wrapper->cpp_impl->Process(hand_tracking_input_image_object);
   if (!result.ok()) {
     set_last_error(std::string(result.status().message()));
+    *hand_tracking_result = nullptr;
     return -1;
   }
+
+  // convert the hand tracking result structure to a strict-C one
+  *hand_tracking_result = (HandTrackingResultC*)calloc(1, sizeof(HandTrackingResultC));
+  if (ConvertCppResultToCNestedStruct(*result.value(), *hand_tracking_result, set_last_error) != 0) {
+    free(*hand_tracking_result);
+    *hand_tracking_result = nullptr;
+    return -1;
+  }
+
   return 0;
 }
 
@@ -99,4 +116,3 @@ extern "C" int hand_tracking_core_finalize(HandTrackingCoreOpaqueHandle opaque_h
 const char* hand_tracking_core_version() {
   return "1.0.0";
 }
-

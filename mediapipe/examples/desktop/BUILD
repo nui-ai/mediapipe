@@ -185,8 +185,16 @@ cc_library(
 
 cc_library(
     name = "no_pipeline_c_api",
-    srcs = ["hand_tracking_c_api.cc"],
-    hdrs = ["hand_tracking_c_api.h"],
+    srcs = [
+        "hand_tracking_c_api.cc",
+        "hand_tracking_c_conversion.cc",
+        "hand_tracking_c_types.cc",
+    ],
+    hdrs = [
+        "hand_tracking_c_api.h",
+        "hand_tracking_c_conversion.h",
+        "hand_tracking_c_types.h",
+    ],
     linkstatic = True,
     visibility = ["//visibility:public"],
     deps = [

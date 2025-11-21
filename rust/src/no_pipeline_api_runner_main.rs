@@ -16,6 +16,7 @@ mod no_pipeline_api_ffi;
 mod proto;
 
 use proto::pipeline_output::PipelineOutputData;
+use crate::no_pipeline_api_ffi::HandTrackingResultC;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
@@ -199,7 +200,7 @@ fn main() -> anyhow::Result<()> {
 
         // if the below assertion fails in a future scenario where we manipulate the image by additional OpenCV operations
         // before it is ready to pass forward, then we can only make it contiguous again by cloning it, a la `input_frame = input_frame.clone()`
-        // or similarly to that, in order to get the image back to a contiguous data layout after such OpenCV operations which return non-continguous
+        // or similarly to that, in order to get the image back to a contiguous data layout after such OpenCV operations which return non-contiguous
         // image data, if we will use any. since we don't currently perform such operations, we only *assert* contiguity now.
         assert!(input_frame.is_continuous(), "input_frame must be a contiguous memory layout for qualifying as a numpy-compatible data layout, which our C api expects.");
 
@@ -224,24 +225,27 @@ fn main() -> anyhow::Result<()> {
         // so that C code knows how to read it.
         let height = input_frame.rows() as libc::size_t;
         let width = input_frame.cols() as libc::size_t;
-        let stride_row = input_frame.step1(0)?.try_into().context("stride_row conversion failed")?;
-        let stride_col = input_frame.elem_size()?.try_into().context("stride_col conversion failed")?;
+        let row_stride = input_frame.step1(0)?.try_into().context("stride_row conversion failed")?;
         let image_data_ptr = input_frame.data();
+
+        let mut result_out: *mut HandTrackingResultC = std::ptr::null_mut();
         let push_status = unsafe {
             no_pipeline_api_ffi::hand_tracking_core_process(
                 hand_tracking_handle,
                 image_data_ptr,
                 width,
                 height,
-                stride_row,
-                stride_col,
+                row_stride,
+                &mut result_out,
             )
         };
         if push_status != 0 {
             let err = unsafe { CStr::from_ptr(no_pipeline_api_ffi::hand_tracking_get_last_error()) }.to_string_lossy();
+            // result_out is nullptr or invalid, no need to free
             anyhow::bail!("pushing an image to the pipeline failed: {}", err);
         }
-
+        // ... use result_out ...
+        unsafe { no_pipeline_api_ffi::hand_tracking_result_destroy(result_out); }
     }
     output_proto_file.flush()?;
     let finalize_status = unsafe { no_pipeline_api_ffi::hand_tracking_core_finalize(hand_tracking_handle) };
