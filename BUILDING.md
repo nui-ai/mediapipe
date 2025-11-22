@@ -1,10 +1,24 @@
-# About this Branch
+# About this Submodule Repository
 
-This branch has accomplishes a safe and parity-verified reduced mediapipe v0.10.13 hands pipeline, namely it reproduces its work with performance no lesser, having been safely and gradually having been reduced to:
-1. a no-pipeline single-component implementation of the same as the original.
-2. a single-calculator mediapipe pipeline, which merely wraps the former component.  
+This repository is now a submodule of the [nui-ai/core](https://github.com/nui-ai/core) repository!
+
+It has accomplishes a safe parity-verified reduced mediapipe v0.10.13 hands pipeline, namely it reproduces the original pipline's work by a no-pipeline implementation.
+It provides via a built lib file implementing:
+
+1. a no-pipeline single-component implementation of the same hand tracking as the original mediapipe v0.10.13 hand tracking cpu pipeline.
+2. a single-calculator mediapipe pipeline, which merely wraps the former component, which was used for the pipeline-liberation process ... and is no longer extremely interesting to use.   
+
+Parity claims:
++ The performance of this implementation is no lesser and no better than the original's performance, but just the same, as the neural network model inference times dominate the runtime and have not been changed.
++ The code is 99% as safe as the original, as the ABSL approach to error propagation has been in general maintained across the changes leading to the new form.
+
+# Branch Information
+While this repo has multiple branches, the current one (['liberation'](https://github.com/nui-ai/mediapipe/tree/liberation)) is the one which provides the mediapipe-pipeline liberated hand tracking implementation.
+
+# Liberation Process Overview
 
 This work was made possible by developing a set of verification mains which verified after each step of the gradual liberation process, that the output per frame of the current code is the same as that of the original pipeline:
+
 + a C++ main comparing the current code's output per frame to output yielded from the original v0.10.13 tag code's run over the same input video, through branch `buildable-reference`.
 + [`buildable-reference`](https://github.com/nui-ai/mediapipe/tree/buildable-reference) still includes that main which produces an output file when running the original pipeline over a given input video, to enable these parity testing workflows mentioned, for repeating the same parity testing process over any new video file. 
 + a python main performing the same verification.
@@ -14,6 +28,7 @@ This work was made possible by developing a set of verification mains which veri
 1. These quickly ascertained after each pipeline reduction step, that the pipeline still produces the same output as before, thus safely facilitating the liberation development process. They can be reused for verifying other pipelines' liberation work if applicable (e.g. face landmarks tracking).
 2. They can be repurposed or evolved to juxtapose results rather than strictly compare output for equality. 
 
+# Limitations / Out-of-Scope
 GPU support was not tested and not across all the many disparate code locations providing GPU support in mediapipe, in this branch, preserved.<br>
 That is because GPU support in this pipeline was originally scattered across many layers of the mediapipe stack: both many of its framework layers, and within many calculators themselves. The GPU supporting code elements have been preserved in this branch only on a best-effort basis and not where they significatnly hindered clarity and code surface; GPU support when applicable, should be better developed from scratch, with a lot of attention to detail. 
 
