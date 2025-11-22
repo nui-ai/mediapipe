@@ -82,10 +82,9 @@ cc_binary(
     ],
 )
 
-# from the same c api wrapping around the C++ HandsPipelineOperatorfor pipeline driving class,
-# which the above binary target also uses ―
-# also build a shared library that can be loaded by rust.
-# the name of the library that this rule builds will start with the standard "lib" prefix which common scenarios expect, and ends with the standard ".so" suffix.
+# builds our hand tracking C API into a library that can be loaded by e.g. our rust code.
+# this build rule also builds the underlying OpenCV libs still used by it internally a little.
+# the name of the library file that this rule builds (on linux) will start with the standard "lib" prefix which common scenarios expect, and end with the standard ".so" linux suffix.
 cc_binary(
     name = "libhand_tracking_c_api.so",
     linkopts = ["-Wl,--no-as-needed"],
