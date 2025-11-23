@@ -30,6 +30,14 @@
 namespace hand_tracking_mp_lean {
  class DetectionsToOrientedRects;  // forward declaration hack that will ultimately be unnecessary
 
+ /// hand tracking result type for a single input image used as hand tracking input.
+ ///
+ /// it is currently structured such that each sub-field is populated per hand graduating the hand tracking processing in a call to HandTrackingCore::Process,
+ /// so to get just one hand's results out of potentially many ― you have to collect its elements from across each of the sub-fields ― i.e. for the 3rd hand,
+ /// you have to take viewport_landmarkss[2], object_landmarkss[2], handedness_classifications[2].
+ ///
+ /// this just follows the original pipeline's output shape and can be easily flipped to return a vector of hands.
+ /// when we start tracking hand identity, this structure is even more bound to change.
  struct ImageHandTrackingAndInferenceResult {
   std::unique_ptr<std::vector<NormalizedLandmarkList>> viewport_landmarkss;
   std::unique_ptr<std::vector<LandmarkList>> object_landmarkss;

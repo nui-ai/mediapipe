@@ -1,3 +1,8 @@
+/// runs our minified mediapipe hands pipeline.
+/// this can only be useful if we run mediapipelines again (e.g. repurposed for other pipelines, 
+/// or used in the process of liberating another mediapipe pipeline) as otherwise we don't need
+/// to run mediapipe pipelines.   
+
 use clap::Parser;
 use opencv::core::Mat;
 use opencv::imgproc;
@@ -11,7 +16,7 @@ use std::io::{BufWriter, Write}; // removed Read
 use std::path::PathBuf;
 use anyhow::Context;
 
-mod pipeline_api_ffi;
+mod hand_tracking_pipeline_api_ffi;
 mod proto;
 
 use proto::pipeline_output::PipelineOutputData;
@@ -168,14 +173,14 @@ fn main() -> anyhow::Result<()> {
         std::process::exit(1);
     }
     let handle = unsafe {
-        pipeline_api_ffi::hands_pipeline_operator_create(
+        hand_tracking_pipeline_api_ffi::hands_pipeline_operator_create(
             args.max_num_hands,
             graph_file_cstr.as_ptr(),
             output_streams_csv_cstr.as_ptr(),
         )
     };
     if handle.is_null() {
-        let err = unsafe { std::ffi::CStr::from_ptr(pipeline_api_ffi::hands_pipeline_operator_get_last_error()) };
+        let err = unsafe { std::ffi::CStr::from_ptr(hand_tracking_pipeline_api_ffi::hands_pipeline_operator_get_last_error()) };
         eprintln!("Error: Failed to create HandsPipelineOperator via its C API: {}", err.to_string_lossy());
         std::process::exit(1);
     }
@@ -218,7 +223,7 @@ fn main() -> anyhow::Result<()> {
         let tick_freq = opencv::core::get_tick_frequency()?;
         let timestamp_us = (tick_count as f64 / tick_freq * 1e6) as usize;
         let push_status = unsafe {
-            pipeline_api_ffi::hands_pipeline_operator_push_image(
+            hand_tracking_pipeline_api_ffi::hands_pipeline_operator_push_image(
                 handle,
                 input_frame.data(),
                 input_frame.cols(),
@@ -228,7 +233,7 @@ fn main() -> anyhow::Result<()> {
             )
         };
         if push_status != 0 {
-            let err = unsafe { CStr::from_ptr(pipeline_api_ffi::hands_pipeline_operator_get_last_error()) }.to_string_lossy();
+            let err = unsafe { CStr::from_ptr(hand_tracking_pipeline_api_ffi::hands_pipeline_operator_get_last_error()) }.to_string_lossy();
             anyhow::bail!("pushing an image to the pipeline failed: {}", err);
         }
 
@@ -236,7 +241,7 @@ fn main() -> anyhow::Result<()> {
         let mut output_data: *mut i8 = std::ptr::null_mut();
         let mut output_size: usize = 0;
         let wait_status = unsafe {
-            pipeline_api_ffi::hands_pipeline_operator_wait_for_output(
+            hand_tracking_pipeline_api_ffi::hands_pipeline_operator_wait_for_output(
                 handle,
                 i as i32,
                 &mut output_data,
@@ -244,7 +249,7 @@ fn main() -> anyhow::Result<()> {
             )
         };
         if wait_status != 0 {
-            let err = unsafe { CStr::from_ptr(pipeline_api_ffi::hands_pipeline_operator_get_last_error()) }.to_string_lossy();
+            let err = unsafe { CStr::from_ptr(hand_tracking_pipeline_api_ffi::hands_pipeline_operator_get_last_error()) }.to_string_lossy();
             anyhow::bail!("waiting for pipeline output failed: {}", err);
         }
 
@@ -273,9 +278,9 @@ fn main() -> anyhow::Result<()> {
         }
     }
     output_proto_file.flush()?;
-    let finalize_status = unsafe { pipeline_api_ffi::hands_pipeline_operator_finalize(handle) };
+    let finalize_status = unsafe { hand_tracking_pipeline_api_ffi::hands_pipeline_operator_finalize(handle) };
     if finalize_status != 0 {
-        let err = unsafe { CStr::from_ptr(pipeline_api_ffi::hands_pipeline_operator_get_last_error()) }.to_string_lossy();
+        let err = unsafe { CStr::from_ptr(hand_tracking_pipeline_api_ffi::hands_pipeline_operator_get_last_error()) }.to_string_lossy();
         eprintln!("Error during mediapipe graph finalization: {}", err);
     }
     Ok(())

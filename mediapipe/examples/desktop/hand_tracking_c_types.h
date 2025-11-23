@@ -57,9 +57,9 @@ typedef struct {
 
 // Top-level result struct
 typedef struct {
-    NormalizedLandmarkListC* normalized_landmarks;
-    LandmarkListC* landmarks;
-    ClassificationListC* classifications;
+    NormalizedLandmarkListC* normalized_landmarkss;
+    LandmarkListC* landmarkss;
+    ClassificationListC* classificationss;
 } HandTrackingResultC;
 
 #ifdef __cplusplus

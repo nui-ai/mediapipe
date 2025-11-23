@@ -12,11 +12,11 @@ use std::path::PathBuf;
 use std::convert::TryInto;
 use anyhow::Context;
 
-mod no_pipeline_api_ffi;
+mod hand_tracking_no_pipeline_api_ffi;
 mod proto;
 
 use proto::pipeline_output::PipelineOutputData;
-use crate::no_pipeline_api_ffi::HandTrackingResultC;
+use crate::hand_tracking_no_pipeline_api_ffi::HandTrackingResultC;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
@@ -157,10 +157,10 @@ fn main() -> anyhow::Result<()> {
     cwdir().expect("failed setting the working directory for the mediapipe current pipeline");
 
     let hand_tracking_handle = unsafe {
-        no_pipeline_api_ffi::hand_tracking_core_create(args.max_num_hands)
+        hand_tracking_no_pipeline_api_ffi::hand_tracking_core_create(args.max_num_hands)
     };
     if hand_tracking_handle.is_null() {
-        let err = unsafe { std::ffi::CStr::from_ptr(no_pipeline_api_ffi::hand_tracking_get_last_error()) };
+        let err = unsafe { std::ffi::CStr::from_ptr(hand_tracking_no_pipeline_api_ffi::hand_tracking_get_last_error()) };
         eprintln!("Error: Failed to create HandsPipelineOperator via its C API: {}", err.to_string_lossy());
         std::process::exit(1);
     }
@@ -230,7 +230,7 @@ fn main() -> anyhow::Result<()> {
 
         let mut result_out: *mut HandTrackingResultC = std::ptr::null_mut();
         let push_status = unsafe {
-            no_pipeline_api_ffi::hand_tracking_core_process(
+            hand_tracking_no_pipeline_api_ffi::hand_tracking_core_process(
                 hand_tracking_handle,
                 image_data_ptr,
                 width,
@@ -240,17 +240,17 @@ fn main() -> anyhow::Result<()> {
             )
         };
         if push_status != 0 {
-            let err = unsafe { CStr::from_ptr(no_pipeline_api_ffi::hand_tracking_get_last_error()) }.to_string_lossy();
+            let err = unsafe { CStr::from_ptr(hand_tracking_no_pipeline_api_ffi::hand_tracking_get_last_error()) }.to_string_lossy();
             // result_out is nullptr or invalid, no need to free
-            anyhow::bail!("pushing an image to the pipeline failed: {}", err);
+            anyhow::bail!("processing an image for hand tracking failed: {}", err);
         }
         // ... use result_out ...
-        unsafe { no_pipeline_api_ffi::hand_tracking_result_destroy(result_out); }
+        unsafe { hand_tracking_no_pipeline_api_ffi::hand_tracking_result_destroy(result_out); }
     }
     output_proto_file.flush()?;
-    let finalize_status = unsafe { no_pipeline_api_ffi::hand_tracking_core_finalize(hand_tracking_handle) };
+    let finalize_status = unsafe { hand_tracking_no_pipeline_api_ffi::hand_tracking_core_finalize(hand_tracking_handle) };
     if finalize_status != 0 {
-        let err = unsafe { CStr::from_ptr(no_pipeline_api_ffi::hand_tracking_get_last_error()) }.to_string_lossy();
+        let err = unsafe { CStr::from_ptr(hand_tracking_no_pipeline_api_ffi::hand_tracking_get_last_error()) }.to_string_lossy();
         eprintln!("Error during mediapipe graph finalization: {}", err);
     }
     Ok(())

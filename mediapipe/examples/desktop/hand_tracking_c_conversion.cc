@@ -5,54 +5,54 @@
 #include <string.h>
 
 /// deep copy the landmark lists
-static void ConvertViewportLandmarksCppToCArray(const std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>* cpp_lists, NormalizedLandmarkListC** out_lists) {
-    size_t n_hands = cpp_lists ? cpp_lists->size() : 0;
-    *out_lists = (NormalizedLandmarkListC*)calloc(n_hands, sizeof(NormalizedLandmarkListC));
+static void ConvertViewportLandmarksCppToCArray(const std::vector<hand_tracking_mp_lean::NormalizedLandmarkList>* cpp_hand_results, NormalizedLandmarkListC** c_hand_results) {
+    size_t n_hands = cpp_hand_results ? cpp_hand_results->size() : 0;
+    *c_hand_results = (NormalizedLandmarkListC*)calloc(n_hands, sizeof(NormalizedLandmarkListC));
     for (size_t i = 0; i < n_hands; ++i) {
-        const auto& norm_list = (*cpp_lists)[i];
+        const auto& norm_list = (*cpp_hand_results)[i];
         for (size_t j = 0; j < NUM_LANDMARKS; ++j) {
             const auto& lm = norm_list.landmark(j);
-            (*out_lists)[i].landmark[j].x = lm.x();
-            (*out_lists)[i].landmark[j].y = lm.y();
-            (*out_lists)[i].landmark[j].z = lm.z();
-            (*out_lists)[i].landmark[j].visibility = lm.visibility();
-            (*out_lists)[i].landmark[j].presence = lm.presence();
+            (*c_hand_results)[i].landmark[j].x = lm.x();
+            (*c_hand_results)[i].landmark[j].y = lm.y();
+            (*c_hand_results)[i].landmark[j].z = lm.z();
+            (*c_hand_results)[i].landmark[j].visibility = lm.visibility();
+            (*c_hand_results)[i].landmark[j].presence = lm.presence();
         }
     }
 }
 
 /// deep copy the landmark lists
-static void ConvertObjectLandmarksCppToCArray(const std::vector<hand_tracking_mp_lean::LandmarkList>* cpp_lists, LandmarkListC** out_lists) {
-    size_t n_hands = cpp_lists ? cpp_lists->size() : 0;
-    *out_lists = (LandmarkListC*)calloc(n_hands, sizeof(LandmarkListC));
+static void ConvertObjectLandmarksCppToCArray(const std::vector<hand_tracking_mp_lean::LandmarkList>* cpp_hand_results, LandmarkListC** c_hand_results) {
+    size_t n_hands = cpp_hand_results ? cpp_hand_results->size() : 0;
+    *c_hand_results = (LandmarkListC*)calloc(n_hands, sizeof(LandmarkListC));
     for (size_t i = 0; i < n_hands; ++i) {
-        const auto& obj_list = (*cpp_lists)[i];
+        const auto& obj_list = (*cpp_hand_results)[i];
         for (size_t j = 0; j < NUM_LANDMARKS; ++j) {
             const auto& lm = obj_list.landmark(j);
-            (*out_lists)[i].landmark[j].x = lm.x();
-            (*out_lists)[i].landmark[j].y = lm.y();
-            (*out_lists)[i].landmark[j].z = lm.z();
-            (*out_lists)[i].landmark[j].visibility = lm.visibility();
-            (*out_lists)[i].landmark[j].presence = lm.presence();
+            (*c_hand_results)[i].landmark[j].x = lm.x();
+            (*c_hand_results)[i].landmark[j].y = lm.y();
+            (*c_hand_results)[i].landmark[j].z = lm.z();
+            (*c_hand_results)[i].landmark[j].visibility = lm.visibility();
+            (*c_hand_results)[i].landmark[j].presence = lm.presence();
         }
     }
 }
 
 // deep copy the handedness classification
-static void ConvertClassificationsCppToC(const std::vector<hand_tracking_mp_lean::ClassificationList>* cpp_lists, ClassificationListC** out_lists) {
-    size_t n_classes = cpp_lists ? cpp_lists->size() : 0;
-    *out_lists = (ClassificationListC*)calloc(n_classes, sizeof(ClassificationListC));
+static void ConvertClassificationsCppToC(const std::vector<hand_tracking_mp_lean::ClassificationList>* cpp_hand_results, ClassificationListC** c_hand_results) {
+    size_t n_classes = cpp_hand_results ? cpp_hand_results->size() : 0;
+    *c_hand_results = (ClassificationListC*)calloc(n_classes, sizeof(ClassificationListC));
     for (size_t i = 0; i < n_classes; ++i) {
-        const auto& cls_list = (*cpp_lists)[i];
+        const auto& cls_list = (*cpp_hand_results)[i];
         size_t n_c = cls_list.classification_size();
-        (*out_lists)[i].classification = (ClassificationC*)calloc(n_c, sizeof(ClassificationC));
-        (*out_lists)[i].classification_count = n_c;
+        (*c_hand_results)[i].classification = (ClassificationC*)calloc(n_c, sizeof(ClassificationC));
+        (*c_hand_results)[i].classification_count = n_c;
         for (size_t j = 0; j < n_c; ++j) {
             const auto& c = cls_list.classification(j);
-            (*out_lists)[i].classification[j].index = c.index();
-            (*out_lists)[i].classification[j].score = c.score();
-            (*out_lists)[i].classification[j].label = strdup(c.label().c_str());
-            (*out_lists)[i].classification[j].display_name = strdup(c.display_name().c_str());
+            (*c_hand_results)[i].classification[j].index = c.index();
+            (*c_hand_results)[i].classification[j].score = c.score();
+            (*c_hand_results)[i].classification[j].label = strdup(c.label().c_str());
+            (*c_hand_results)[i].classification[j].display_name = strdup(c.display_name().c_str());
         }
     }
 }
