@@ -35,6 +35,9 @@ struct CppInstanceWrapper {
   std::unique_ptr<hand_tracking_mp_lean::HandTrackingCore> cpp_impl;
 };
 
+/// a models path is taken as argument since being used as a lib entails that a relative path to where to get the model files
+/// becomes insufficient as each binary client of the lib may have its own. embedding the models within the lib itself is not
+/// an economic alternative (https://chatgpt.com/s/t_692463e5f8c081919c5437bc2d885dd1).
 extern "C" HandTrackingCoreOpaqueHandle hand_tracking_core_create(const uint max_hands_to_track, const char* models_path) {
   set_last_error("");
   auto* cpp_instance_wrapper = new CppInstanceWrapper;
