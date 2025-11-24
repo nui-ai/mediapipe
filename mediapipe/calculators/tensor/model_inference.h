@@ -32,15 +32,18 @@ namespace api2 {
 
 class ModelInference {
  public:
-  ModelInference(const std::string& model_path, int32_t XNNPackDelegate_threads=1);
+  ModelInference(const std::string& model_path, const std::string* models_path = nullptr, int32_t XNNPackDelegate_threads = 1);
   ~ModelInference() = default;
 
   absl::StatusOr<std::vector<Tensor>> Process(const TensorSpan& tensor_span) const;
 
  private:
   std::unique_ptr<InferenceRunner> inference_runner_;
+  std::string loaded_model_path_;
   mutable int inference_count_ = 0;
 };
+
+
 
 }  // namespace api2
 }  // namespace hand_tracking_mp_lean

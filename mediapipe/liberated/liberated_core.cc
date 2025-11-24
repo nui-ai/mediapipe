@@ -4,7 +4,7 @@ namespace hand_tracking_mp_lean {
 
 /// object for driving the entire processing of images from an image stream, for hand tracking and inference;
 /// formerly this was a mediapipe pipeline HandLandmarkTrackingCpu of mediapipe commit tag v0.10.13.
-HandTrackingCore::HandTrackingCore(uint32_t max_hands_to_track) {
+HandTrackingCore::HandTrackingCore(uint32_t max_hands_to_track, const std::string* models_path) {
 
   // MemoryManager is a class reusing memory one-time allocated from the OS, meant for making more performant repeat tensor allocations.
   // we carried forward and persevere its use from the original pipeline implementation, as indeed its use still trickles down into cored
@@ -38,7 +38,7 @@ HandTrackingCore::HandTrackingCore(uint32_t max_hands_to_track) {
 
   // initialize for palm detection inference
   const std::string& palm_detection_model_path = "mediapipe/modules/palm_detection/palm_detection_full.tflite";
-  palm_detection_inference_ = std::make_unique<api2::ModelInference>(palm_detection_model_path);
+  palm_detection_inference_ = std::make_unique<api2::ModelInference>(palm_detection_model_path, models_path);
 
   // initialize for extracting the raw palm detections inference outputs, and also for filtering them
   palm_detection_inference_filter_ = std::make_unique<api2::DetectionsExtractionAndFiltering>(0.5);
@@ -74,7 +74,7 @@ HandTrackingCore::HandTrackingCore(uint32_t max_hands_to_track) {
 
   // initialize for landmarks inference
   const std::string& landmarks_infernce_model_path = "mediapipe/modules/hand_landmark/hand_landmark_full.tflite";
-  landmarks_inference_ = std::make_unique<api2::ModelInference>(landmarks_infernce_model_path);
+  landmarks_inference_ = std::make_unique<api2::ModelInference>(landmarks_infernce_model_path, models_path);
 
   // initialize for splitting the output tensors of the landmarks inference output by topic
   landmarks_inference_splitter_ = std::make_unique<InferenceOutputTensorSplitting<Tensor, false>>(SplitVectorCalculatorOptions());
@@ -500,7 +500,7 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
     // explicit effort to associate hands detected ― across frames ― other than perhaps as only an artefact of SSD
     // detection boxes ordering when the hands are kept each at its distinct region of the viewport.
     //
-    // this implicit indexing *is* only technically consistent within the humble scope of the current pipeline result:
+    // this implicit indexing *IS* only technically consistent within the humble scope of the current pipeline result:
     //   • each index across the contained result vectors corresponds to the same detected hand,
     //     or at least arises from the implicit indexing of the model's inference outputs as such.
     result->viewport_landmarkss->push_back(final_viewport_landmarks);

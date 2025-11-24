@@ -155,7 +155,7 @@ int main(int argc, char** argv) {
     }
 
     // instantiate a pipeline operator from the C api
-    HandTrackingCoreOpaqueHandle core = hand_tracking_core_create(absl::GetFlag(FLAGS_max_num_hands));
+    HandTrackingCoreOpaqueHandle core = hand_tracking_core_create(absl::GetFlag(FLAGS_max_num_hands), NULL);
     if (!core) {
         std::cerr << "Failed to create HandsPipelineOperator via C api: " << hand_tracking_get_last_error() << std::endl;
         return EXIT_FAILURE;

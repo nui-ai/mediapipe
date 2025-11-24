@@ -47,7 +47,7 @@ namespace hand_tracking_mp_lean {
  class HandTrackingCore {
  public:
 
-  explicit HandTrackingCore(uint32_t max_hands_to_track);
+  explicit HandTrackingCore(uint32_t max_hands_to_track, const std::string* models_path = nullptr);
 
   ~HandTrackingCore() = default;
 

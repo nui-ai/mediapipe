@@ -19,7 +19,7 @@ extern "C" {
 typedef void* HandTrackingCoreOpaqueHandle;
 
 /// C api creation of an instance of the underlying C++ class
-HandTrackingCoreOpaqueHandle hand_tracking_core_create(uint max_hands_to_track);
+HandTrackingCoreOpaqueHandle hand_tracking_core_create(uint max_hands_to_track, const char* models_path);
 
 /// C api for obtaining hand tracking results for an image being given to it.
 /// Destroying the result object passed by reference is the responsibility of the caller.

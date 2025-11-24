@@ -32,22 +32,22 @@ namespace api2 {
 /// a tensorflow interpreter, which is always using the XNNPACK delegate for CPU inference.
 /// see https://github.com/nui-ai/tflite-analysis/blob/8e6f4e7b4211dc78fa4c6d9c0f77aa783fdf669a/readme.md
 /// as a starting point for performance analysis of any tflite model used.
-ModelInference::ModelInference(const std::string& model_path, int32_t XNNPackDelegate_threads) {
+ModelInference::ModelInference(const std::string& model_path, const std::string* models_path, int32_t XNNPackDelegate_threads) {
+  loaded_model_path_ = models_path ? (*models_path + "/" + model_path) : model_path;
 
-  // load the model
   auto default_resources = CreateDefaultResources();
-  auto model_packet_status = TfLiteModelLoader::LoadFromPath(*default_resources, model_path, false);
+  auto model_packet_status = TfLiteModelLoader::LoadFromPath(*default_resources, loaded_model_path_, false);
   if (!model_packet_status.ok()) {
-    ABSL_LOG(ERROR) << "failed to load model from path: " << model_path;
+    ABSL_LOG(ERROR) << "failed to load model from path: " << loaded_model_path_;
     throw std::runtime_error(model_packet_status.status().ToString());
   }
   auto model_packet = model_packet_status.value();
   ABSL_CHECK(!model_packet.IsEmpty());
   ABSL_LOG(INFO) << absl::StrFormat(
-    "successfully loaded model from path: %s. Model size: %ld bytes",
-    model_path, model_packet.Get()->allocation()->bytes());
+    "model loaded from path: %s. Model size: %ld bytes",
+    loaded_model_path_, model_packet.Get()->allocation()->bytes());
 
-  // set the tflite interpreter to use the mediapipe default CPU ops resolver,
+// set the tflite interpreter to use the mediapipe default CPU ops resolver,
   // for any ops which are not claimed by our XNNPACK delegate, if any.
   // as seen in XNNPack logging, juxtapose with https://github.com/nui-ai/tflite-analysis,
   // XNNPack satisfies all ops which are included in our two model graphs:
