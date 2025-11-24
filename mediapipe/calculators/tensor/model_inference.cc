@@ -30,8 +30,14 @@ namespace hand_tracking_mp_lean {
 namespace api2 {
 
 /// a tensorflow interpreter, which is always using the XNNPACK delegate for CPU inference.
-/// see https://github.com/nui-ai/tflite-analysis/blob/8e6f4e7b4211dc78fa4c6d9c0f77aa783fdf669a/readme.md
-/// as a starting point for performance analysis of any tflite model used.
+/// as a starting point for performance analysis of the tflite model used, always first use
+/// https://github.com/nui-ai/tflite-analysis/blob/8e6f4e7b4211dc78fa4c6d9c0f77aa783fdf669a/readme.md
+///
+/// XNNPACK weight caching was dropped, and can provide some boost by hypotetically improvining average CPU cache residency,
+/// esp. with large CPU cache sizes, tight-looping inference, core pinning, etc. for inspiration see either other code
+/// comments about XNNPACK, https://github.com/search?q=repo%3Agoogle-ai-edge%2Fmediapipe%20PackWeightsCache&type=code,
+/// or a simple AI Chat, as the changes for integrating one are not much beyond benign. the effect may not be so
+/// noticeable outside of a fine-tune among the variuos factors above mentioned.
 ModelInference::ModelInference(const std::string& model_path, const std::string* models_path, int32_t XNNPackDelegate_threads) {
   loaded_model_path_ = models_path ? (*models_path + "/" + model_path) : model_path;
 
@@ -47,7 +53,7 @@ ModelInference::ModelInference(const std::string& model_path, const std::string*
     "model loaded from path: %s. Model size: %ld bytes",
     loaded_model_path_, model_packet.Get()->allocation()->bytes());
 
-// set the tflite interpreter to use the mediapipe default CPU ops resolver,
+  // set the tflite interpreter to use the mediapipe default CPU ops resolver,
   // for any ops which are not claimed by our XNNPACK delegate, if any.
   // as seen in XNNPack logging, juxtapose with https://github.com/nui-ai/tflite-analysis,
   // XNNPack satisfies all ops which are included in our two model graphs:
