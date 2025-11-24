@@ -83,8 +83,8 @@ int ConvertCppResultToCNestedStruct(const hand_tracking_mp_lean::ImageHandTracki
         }
     }
 
-    ConvertViewportLandmarksCppToCArray(norm_lists, &c_result_out->normalized_landmarks);
-    ConvertObjectLandmarksCppToCArray(obj_lists, &c_result_out->landmarks);
-    ConvertClassificationsCppToC(cpp_result.handedness_classifications.get(), &c_result_out->classifications);
+    ConvertViewportLandmarksCppToCArray(norm_lists, &c_result_out->normalized_landmarkss);
+    ConvertObjectLandmarksCppToCArray(obj_lists, &c_result_out->landmarkss);
+    ConvertClassificationsCppToC(cpp_result.handedness_classifications.get(), &c_result_out->classificationss);
     return 0;
 }
