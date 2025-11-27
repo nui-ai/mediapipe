@@ -1,6 +1,6 @@
 #include "mediapipe/examples/desktop/hand_tracking_c_types.h"
 #include "mediapipe/examples/desktop/hand_tracking_c_conversion.h"
-#include "mediapipe/liberated/liberated_core.h"
+#include "mediapipe/liberated/hand_tracking.h"
 #include <stdlib.h>
 #include <string.h>
 

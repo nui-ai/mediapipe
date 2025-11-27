@@ -1,4 +1,4 @@
-#include "mediapipe/liberated/liberated_core.h"
+#include "mediapipe/liberated/hand_tracking.h"
 
 namespace hand_tracking_mp_lean {
 
@@ -278,18 +278,18 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
   auto merged_hand_rectangles_list = absl::make_unique<std::list<NormalizedRect>>();
   auto merged_hand_rectangles = absl::make_unique<std::vector<NormalizedRect>>();
 
-  ABSL_LOG(INFO) << "hand rectangles from the previous frame's landmarks inferences: " << hand_rects_from_previous_frame_.size();
+  // ABSL_LOG(INFO) << "hand tracking lifecycle: hand rectangles from the previous frame's landmarks inferences: " << hand_rects_from_previous_frame_.size();
   if (hand_rects_from_previous_frame_.size() == max_hands_to_track_) {
-    ABSL_LOG(INFO) << "skipping palm detection inference";
+    //ABSL_LOG(INFO) << "hand tracking lifecycle: skipping palm detection inference";
   } else if (hand_rects_from_previous_frame_.size() > max_hands_to_track_) {
-    ABSL_LOG(INFO) << "(more hand rectangles from the previous frame's landmarks inferences than the number of hands to track " << max_hands_to_track_ << ")";
-    ABSL_LOG(INFO) << "skipping palm detection inference";
+    //ABSL_LOG(INFO) << "hand tracking lifecycle: (more hand rectangles from the previous frame's landmarks inferences than the number of hands to track " << max_hands_to_track_ << ")";
+    //ABSL_LOG(INFO) << "hand tracking lifecycle: skipping palm detection inference";
   }
 
   // start the palm detection -> expanded oriented hand region for landmark inference path of computation
   if (hand_rects_from_previous_frame_.size() < max_hands_to_track_) {
 
-    ABSL_LOG(INFO) << "palm detection inference is being invoked as there are not enough hand rectangles derived from the previous frame's landmarks inference";
+    // ABSL_LOG(INFO) << "hand tracking lifecycle: palm detection inference is being invoked as there are not enough hand rectangles derived from the previous frame's landmarks inference";
 
     // turn the input image to a Tensor of the right size for the palm detection model ― this typically involves letterboxing as in the input image is typically not square
     api2::ImageToTensorCoreResult image_as_tensor;
@@ -307,7 +307,7 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
     MP_ASSIGN_OR_RETURN(palm_detection_inference_output, palm_detection_inference_->Process(image_as_tensor_span));
     auto palm_end_time = std::chrono::high_resolution_clock::now();
     auto palm_duration_us = std::chrono::duration_cast<std::chrono::microseconds>(palm_end_time - palm_start_time).count();
-    ABSL_LOG(INFO) << "palm detection inference took (ms): " << (static_cast<double>(palm_duration_us) / 1000.0);
+    ABSL_LOG(INFO) << "hand tracking lifecycle: palm detection inference took (ms): " << (static_cast<double>(palm_duration_us) / 1000.0);
 
     // extract-decode the detection inference output
     std::unique_ptr<std::vector<Detection>> letterboxed_detections;
@@ -330,7 +330,7 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
     // further, the filtering does not have to be linear in time but may even look back in time in some downstream scenarios
     auto excessive_detections_count = static_cast<long>(filtered_detections->size()) - static_cast<long>(max_hands_to_track_);
     if ( excessive_detections_count > 0) {
-      ABSL_LOG(INFO) << "naively discarded " << excessive_detections_count << "palm detections to keep only the same number of them as the set number of hands for tracking (" << max_hands_to_track_ << ")";
+      ABSL_LOG(INFO) << "hand tracking lifecycle: naively discarded " << excessive_detections_count << "palm detections to keep only the same number of them as the set number of hands for tracking (" << max_hands_to_track_ << ")";
       for (int i = 0; i < max_hands_to_track_; ++i) {
         count_capped_detections->push_back(filtered_detections->at(i));
       }
@@ -338,6 +338,11 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
       for (int i = 0; i < filtered_detections->size(); ++i) {
         count_capped_detections->push_back(filtered_detections->at(i));
       }
+    }
+
+    // loop over the detections logging their single score each
+    for (auto &detection: *count_capped_detections) {
+      ABSL_LOG(INFO) << "hand tracking lifecycle: palm detection has confidence score " << detection.score()[0];
     }
 
     // orient the palm detections all by one function call which takes all of them
@@ -389,7 +394,7 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
     auto end_time = std::chrono::high_resolution_clock::now();
     auto end_time_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time.time_since_epoch()).count();
     auto duration_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
-    ABSL_LOG(INFO) << "landmarks inference over the given sub-image took (ms): " << (static_cast<double>(duration_us) / 1000.0);
+    ABSL_LOG(INFO) << "hand tracking lifecycle: landmarks inference over the given sub-image took (ms): " << (static_cast<double>(duration_us) / 1000.0);
     // debug logging: landmarks_inference_debug_logging(landmarks_inference_output_tensors);
 
     // get a unique pointer to output_tensors that can be passed to a function expecting std::unique_ptr<std::vector<T>>*
@@ -436,9 +441,9 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
     //
     // well, as we know, good baselines are hard to beat without very disciplined effort;
     // further, what isn't explicitly harmonized may still be near optimal.
-    ABSL_LOG(INFO) << "hand rectangle presence validation score from landmarks inference is " << hand_presence_in_landmarks_inference;
+    ABSL_LOG(INFO) << "hand tracking lifecycle: hand rectangle presence validation score from landmarks inference is " << hand_presence_in_landmarks_inference;
     if (hand_presence_in_landmarks_inference < hand_presence_in_landmarks_inference_threshold_) {
-      ABSL_LOG(INFO) << "hand rectangle failed in presence validation by landmarks inference and is being ignored";
+      ABSL_LOG(INFO) << "hand tracking lifecycle: hand rectangle failed in presence validation by landmarks inference and is being ignored";
       continue;
     }
 

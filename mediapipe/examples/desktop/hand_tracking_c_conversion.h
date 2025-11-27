@@ -2,7 +2,7 @@
 #define HAND_TRACKING_C_CONVERSION_H_
 
 #include "mediapipe/examples/desktop/hand_tracking_c_types.h"
-#include "mediapipe/liberated/liberated_core.h"
+#include "mediapipe/liberated/hand_tracking.h"
 #include <stddef.h>
 
 #ifdef __cplusplus

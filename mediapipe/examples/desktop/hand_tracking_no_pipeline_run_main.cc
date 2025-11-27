@@ -22,7 +22,7 @@
 #include <string>
 
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"  // only for reading persisted data (i.e. no mediapipe graph/pipeline api is used in the current source file
-#include "mediapipe/liberated/liberated_core.h"
+#include "mediapipe/liberated/hand_tracking.h"
 
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/port/opencv_video_inc.h"

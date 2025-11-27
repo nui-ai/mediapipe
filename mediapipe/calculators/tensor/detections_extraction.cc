@@ -199,11 +199,11 @@ namespace api2 {
         score_thresholded_detections->emplace_back(detection);
       }
     }
-    ABSL_LOG(INFO) << "palm detections surviving detection score threshold filtering:  " << score_thresholded_detections->size();
+    // ABSL_LOG(INFO) << "hand tracking lifecycle: palm detections surviving detection score threshold filtering:  " << score_thresholded_detections->size();
 
     // filter them by Non-Maximum Suppression
     auto nms_surviving_detections = FilterDetectionsByNonMaximumSuppression(*score_thresholded_detections, nms_options_, false, 0, 0);
-    ABSL_LOG(INFO) << "palm detections surviving Non-Maximum Suppression filtering: " << nms_surviving_detections->size();
+    // ABSL_LOG(INFO) << "hand tracking lifecycle: palm detections surviving Non-Maximum Suppression filtering: " << nms_surviving_detections->size();
 
     return nms_surviving_detections;
   }

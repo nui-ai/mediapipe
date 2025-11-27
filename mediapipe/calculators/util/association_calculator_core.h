@@ -47,7 +47,7 @@ namespace hand_tracking_mp_lean {
     /// existing instances which have overlap with it above the given IoU threshold.
     inline absl::Status AddWhileDiscardingByIoU(const NormalizedRect& new_normalized_rect, std::list<NormalizedRect>* normalized_rects, float iou_similarity_threshold) {
 
-    ABSL_LOG(INFO) << "filter-merging hand rectangles is adding hand rectangle " << new_normalized_rect.ShortDebugString();
+    // ABSL_LOG(INFO) << "hand tracking lifecycle: filter-merging hand rectangles is adding hand rectangle " << new_normalized_rect.ShortDebugString();
 
     // check IoU of the new rect with the each rect of the list, transforming them from NormalizedRect to Rect for the IoU checking
     MP_ASSIGN_OR_RETURN(Rectangle_f new_rectangle, ::hand_tracking_mp_lean::RectangleFromNormalizedRect(new_normalized_rect));

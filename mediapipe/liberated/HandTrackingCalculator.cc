@@ -13,7 +13,7 @@
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/formats/tensor.h"
 #include "mediapipe/calculators/tensor/image_to_tensor_calculator_core.h"
-#include "mediapipe/liberated/liberated_core.h"
+#include "mediapipe/liberated/hand_tracking.h"
 
 namespace hand_tracking_mp_lean {
 

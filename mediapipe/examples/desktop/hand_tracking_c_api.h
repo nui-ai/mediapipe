@@ -3,7 +3,7 @@
 #ifndef NO_PIPELINE_C_API_H_
 #define NO_PIPELINE_C_API_H_
 
-#include "mediapipe/liberated/liberated_core.h"
+#include "mediapipe/liberated/hand_tracking.h"
 #include "mediapipe/framework/deps/safe_int.h"
 #include "hand_tracking_c_types.h"
 #include <stddef.h>
