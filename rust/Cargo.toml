@@ -1,5 +1,18 @@
 [package]
-name = "mediapipe-rust-runner"
+name = "hand-tracking-wrappers"
+description = """
+    rust wrappers of the liberated original mediapipe hands pipeline, both the no-pipeline api derived from it, and the single-calculator pipeline api of it.
+    this rust source tree is the initial ffi implementation for their C api of the current repository, plus mains demonstrating use of those two api over an input video file.
+
+    this is part of the c++ repository codebase, which is a git submodule to the core repository. the actual ffi bindings used by our core repository are defined
+    outside of here and do not depend on those defined here but instead have been derived-ported from them. rather, think about this source tree as a minimal api sandbox
+    and proof of concept remnant of the original pipeline liberation work, which should be kept in-place for as long as this repository is a self-contained repository
+    demonstrating rust usage and not merged into the core repository itself.
+
+    BOTTOM LINE:
+      • the core repository defines its own ffi bindings to the hand tracking C API which have been ported from here to it, and directly depends on the same underlying C++ and C api lib.
+      • hence DO NOT add this rust source tree as a dependency in the core repository in any way, it is not necessary for the core repository and can only cause conflicts and duplication there.
+"""
 version = "0.1.0"
 edition = "2021"
 
