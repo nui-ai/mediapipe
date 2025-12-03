@@ -362,13 +362,38 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
       // collect raw rect values and score prior to expansion
       DetectionDetails det;
       det.score = count_capped_detections->at(i).score().empty() ? 0.0f : count_capped_detections->at(i).score()[0];
-      det.raw.width = oriented_palm_norm_rects[i].width();
-      det.raw.height = oriented_palm_norm_rects[i].height();
-      det.raw.rotation = oriented_palm_norm_rects[i].rotation();
+      // detected: initial axis-aligned detection bbox in normalized coordinates
+      if (count_capped_detections->at(i).has_location_data() &&
+          count_capped_detections->at(i).location_data().has_relative_bounding_box()) {
+        const auto& rbb = count_capped_detections->at(i).location_data().relative_bounding_box();
+        const float xmin = rbb.xmin();
+        const float ymin = rbb.ymin();
+        const float w = rbb.width();
+        const float h = rbb.height();
+        det.detected.x_center = xmin + w * 0.5f;
+        det.detected.y_center = ymin + h * 0.5f;
+        det.detected.width = w;
+        det.detected.height = h;
+        det.detected.rotation = 0.0f;
+      } else {
+        det.detected.x_center = 0.0f;
+        det.detected.y_center = 0.0f;
+        det.detected.width = 0.0f;
+        det.detected.height = 0.0f;
+        det.detected.rotation = 0.0f;
+      }
+      // oriented: pre-expansion oriented palm rect
+      det.oriented.x_center = oriented_palm_norm_rects[i].x_center();
+      det.oriented.y_center = oriented_palm_norm_rects[i].y_center();
+      det.oriented.width = oriented_palm_norm_rects[i].width();
+      det.oriented.height = oriented_palm_norm_rects[i].height();
+      det.oriented.rotation = oriented_palm_norm_rects[i].rotation();
       // expand the rectangle
       auto it = hand_rects_from_detections->begin() + i;
       oriented_palm_rect_to_hand_rect_expander_->ExpandNormalizedRect(&(*it), image->width(), image->height());
       // collect expanded rect values
+      det.expanded.x_center = it->x_center();
+      det.expanded.y_center = it->y_center();
       det.expanded.width = it->width();
       det.expanded.height = it->height();
       det.expanded.rotation = it->rotation();

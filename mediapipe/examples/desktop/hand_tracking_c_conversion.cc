@@ -57,6 +57,35 @@ static void ConvertClassificationsCppToC(const std::vector<hand_tracking_mp_lean
     }
 }
 
+// deep copy detection details
+static void ConvertDetectionDetailsCppToCArray(const std::vector<hand_tracking_mp_lean::DetectionDetails>* cpp_details,
+                                               DetectionDetailsC** c_details_out,
+                                               size_t* count_out) {
+    size_t n = cpp_details ? cpp_details->size() : 0;
+    *count_out = n;
+    if (n == 0) { *c_details_out = nullptr; return; }
+    *c_details_out = (DetectionDetailsC*)calloc(n, sizeof(DetectionDetailsC));
+    for (size_t i = 0; i < n; ++i) {
+        const auto& d = (*cpp_details)[i];
+        (*c_details_out)[i].score = d.score;
+        (*c_details_out)[i].detected.x_center = d.detected.x_center;
+        (*c_details_out)[i].detected.y_center = d.detected.y_center;
+        (*c_details_out)[i].detected.width = d.detected.width;
+        (*c_details_out)[i].detected.height = d.detected.height;
+        (*c_details_out)[i].detected.rotation = d.detected.rotation;
+        (*c_details_out)[i].oriented.x_center = d.oriented.x_center;
+        (*c_details_out)[i].oriented.y_center = d.oriented.y_center;
+        (*c_details_out)[i].oriented.width = d.oriented.width;
+        (*c_details_out)[i].oriented.height = d.oriented.height;
+        (*c_details_out)[i].oriented.rotation = d.oriented.rotation;
+        (*c_details_out)[i].expanded.x_center = d.expanded.x_center;
+        (*c_details_out)[i].expanded.y_center = d.expanded.y_center;
+        (*c_details_out)[i].expanded.width = d.expanded.width;
+        (*c_details_out)[i].expanded.height = d.expanded.height;
+        (*c_details_out)[i].expanded.rotation = d.expanded.rotation;
+    }
+}
+
 /// converts the cpp struct to a strict-C struct by copy, while alternatively setting an error message and returning an error indication in case any landmark list isn't the right length.
 /// this extra safety is taken so that the C api is robust to use, though the test for the size of the array could be made earlier on and not during this last stage of conversion.
 int ConvertCppResultToCNestedStruct(const hand_tracking_mp_lean::ImageHandTrackingAndInferenceResult& cpp_result, HandTrackingResultC* c_result_out, void (*set_last_error)(const std::string& err)) {
@@ -86,5 +115,7 @@ int ConvertCppResultToCNestedStruct(const hand_tracking_mp_lean::ImageHandTracki
     ConvertViewportLandmarksCppToCArray(norm_lists, &c_result_out->normalized_landmarkss);
     ConvertObjectLandmarksCppToCArray(obj_lists, &c_result_out->landmarkss);
     ConvertClassificationsCppToC(cpp_result.handedness_classifications.get(), &c_result_out->classificationss);
+    // additional outputs
+    ConvertDetectionDetailsCppToCArray(cpp_result.detection_details.get(), &c_result_out->detection_details, &c_result_out->detection_details_count);
     return 0;
 }

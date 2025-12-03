@@ -52,15 +52,34 @@ pub struct ClassificationListC {
 }
 
 #[repr(C)]
+pub struct RectValuesC {
+    pub x_center: f32,
+    pub y_center: f32,
+    pub width: f32,
+    pub height: f32,
+    pub rotation: f32,
+}
+
+#[repr(C)]
+pub struct DetectionDetailsC {
+    pub score: f32,
+    pub detected: RectValuesC,
+    pub oriented: RectValuesC,
+    pub expanded: RectValuesC,
+}
+
+#[repr(C)]
 pub struct HandTrackingResultC {
-    pub normalized_landmarks: *mut NormalizedLandmarkListC,
-    pub landmarks: *mut LandmarkListC,
-    pub classifications: *mut ClassificationListC,
+    pub normalized_landmarkss: *mut NormalizedLandmarkListC,
+    pub landmarkss: *mut LandmarkListC,
+    pub classificationss: *mut ClassificationListC,
+    pub detection_details: *mut DetectionDetailsC,
+    pub detection_details_count: libc::size_t,
 }
 
 /// C API functions
 extern "C" {
-    pub fn hand_tracking_core_create(max_num_hands: u32) -> *mut std::ffi::c_void;
+    pub fn hand_tracking_core_create(max_num_hands: u32, models_path: *const libc::c_char) -> *mut std::ffi::c_void;
 
     /// function for processing a single image frame, returning a pointer to a HandTrackingResultC struct
     /// in the provided output argument `result_out`. after each call to this function, the caller is responsible

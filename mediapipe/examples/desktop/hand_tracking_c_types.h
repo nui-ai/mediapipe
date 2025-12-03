@@ -55,11 +55,29 @@ typedef struct {
     size_t classification_count;
 } ClassificationListC;
 
+// Details for detection debug/analysis
+typedef struct {
+    float x_center;
+    float y_center;
+    float width;
+    float height;
+    float rotation;
+} RectValuesC;
+
+typedef struct {
+    float score;
+    RectValuesC detected; // initial axis-aligned palm detection
+    RectValuesC oriented; // oriented detection rect (pre-expansion)
+    RectValuesC expanded; // values after expansion
+} DetectionDetailsC;
+
 // Top-level result struct
 typedef struct {
     NormalizedLandmarkListC* normalized_landmarkss;
     LandmarkListC* landmarkss;
     ClassificationListC* classificationss;
+    DetectionDetailsC* detection_details; // per-detection raw/expanded details
+    size_t detection_details_count;
 } HandTrackingResultC;
 
 #ifdef __cplusplus

@@ -33,12 +33,15 @@ namespace hand_tracking_mp_lean {
  /// additional debug/analysis info per palm detection used to derive a hand rect
  struct DetectionDetails {
   struct RectValues {
+    float x_center;
+    float y_center;
     float width;
     float height;
     float rotation;
   };
   float score;
-  RectValues raw;       // values prior to expansion
+  RectValues detected;  // initial axes-aligned palm detection rectangle
+  RectValues oriented;  // oriented rectangle derived from the detection (pre-expansion)
   RectValues expanded;  // values after expansion
  };
 
