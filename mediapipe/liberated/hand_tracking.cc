@@ -270,7 +270,8 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
   ImageHandTrackingAndInferenceResult{
       std::make_unique<std::vector<NormalizedLandmarkList>>(),
       std::make_unique<std::vector<LandmarkList>>(),
-      std::make_unique<std::vector<ClassificationList>>()
+      std::make_unique<std::vector<ClassificationList>>(),
+      std::make_unique<std::vector<DetectionDetails>>()
   });
 
   auto count_capped_detections = absl::make_unique<std::vector<Detection>>();
@@ -354,12 +355,24 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
     // expand the now oriented palm detections such that they will likely contain the entire hand (meaning palm + fingers).
     // technically speaking unlike the former step, we loop each rect here rather than inside the expanding function.
     hand_rects_from_detections = absl::make_unique<std::vector<NormalizedRect>>(oriented_palm_rects.size());
+    result->detection_details->reserve(oriented_palm_rects.size());
     for (int i = 0; i < oriented_palm_rects.size(); ++i) {
       // copy the rectangle
       hand_rects_from_detections->at(i) = oriented_palm_norm_rects[i];
+      // collect raw rect values and score prior to expansion
+      DetectionDetails det;
+      det.score = count_capped_detections->at(i).score().empty() ? 0.0f : count_capped_detections->at(i).score()[0];
+      det.raw.width = oriented_palm_norm_rects[i].width();
+      det.raw.height = oriented_palm_norm_rects[i].height();
+      det.raw.rotation = oriented_palm_norm_rects[i].rotation();
       // expand the rectangle
       auto it = hand_rects_from_detections->begin() + i;
       oriented_palm_rect_to_hand_rect_expander_->ExpandNormalizedRect(&(*it), image->width(), image->height());
+      // collect expanded rect values
+      det.expanded.width = it->width();
+      det.expanded.height = it->height();
+      det.expanded.rotation = it->rotation();
+      result->detection_details->push_back(det);
     }
   }
 

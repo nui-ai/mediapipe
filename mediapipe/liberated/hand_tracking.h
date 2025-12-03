@@ -30,6 +30,18 @@
 namespace hand_tracking_mp_lean {
  class DetectionsToOrientedRects;  // forward declaration hack that will ultimately be unnecessary
 
+ /// additional debug/analysis info per palm detection used to derive a hand rect
+ struct DetectionDetails {
+  struct RectValues {
+    float width;
+    float height;
+    float rotation;
+  };
+  float score;
+  RectValues raw;       // values prior to expansion
+  RectValues expanded;  // values after expansion
+ };
+
  /// hand tracking result type for a single input image used as hand tracking input.
  ///
  /// it is currently structured such that each sub-field is populated per hand graduating the hand tracking processing in a call to HandTrackingCore::Process,
@@ -42,6 +54,7 @@ namespace hand_tracking_mp_lean {
   std::unique_ptr<std::vector<NormalizedLandmarkList>> viewport_landmarkss;
   std::unique_ptr<std::vector<LandmarkList>> object_landmarkss;
   std::unique_ptr<std::vector<ClassificationList>> handedness_classifications;
+  std::unique_ptr<std::vector<DetectionDetails>> detection_details;
  };
 
  class HandTrackingCore {
