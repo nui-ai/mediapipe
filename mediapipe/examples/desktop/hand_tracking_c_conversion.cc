@@ -67,7 +67,8 @@ static void ConvertDetectionDetailsCppToCArray(const std::vector<hand_tracking_m
     *c_details_out = (DetectionDetailsC*)calloc(n, sizeof(DetectionDetailsC));
     for (size_t i = 0; i < n; ++i) {
         const auto& d = (*cpp_details)[i];
-        (*c_details_out)[i].score = d.score;
+        (*c_details_out)[i].palm_detection_score = d.palm_detection_score;
+        (*c_details_out)[i].hand_presence_score = d.hand_presence_score;
         (*c_details_out)[i].detected.x_center = d.detected.x_center;
         (*c_details_out)[i].detected.y_center = d.detected.y_center;
         (*c_details_out)[i].detected.width = d.detected.width;
@@ -83,6 +84,11 @@ static void ConvertDetectionDetailsCppToCArray(const std::vector<hand_tracking_m
         (*c_details_out)[i].expanded.width = d.expanded.width;
         (*c_details_out)[i].expanded.height = d.expanded.height;
         (*c_details_out)[i].expanded.rotation = d.expanded.rotation;
+        (*c_details_out)[i].hand_rect_for_next_frame.x_center = d.hand_rect_for_next_frame.x_center;
+        (*c_details_out)[i].hand_rect_for_next_frame.y_center = d.hand_rect_for_next_frame.y_center;
+        (*c_details_out)[i].hand_rect_for_next_frame.width = d.hand_rect_for_next_frame.width;
+        (*c_details_out)[i].hand_rect_for_next_frame.height = d.hand_rect_for_next_frame.height;
+        (*c_details_out)[i].hand_rect_for_next_frame.rotation = d.hand_rect_for_next_frame.rotation;
     }
 }
 

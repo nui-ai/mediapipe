@@ -55,7 +55,8 @@ typedef struct {
     size_t classification_count;
 } ClassificationListC;
 
-// Details for detection debug/analysis
+// Details for detection debug/analysis. Image-normalized rectangle:
+// x,y are center in [0,1] left->right, top->bottom; width/height in [0,1]; rotation in radians CCW.
 typedef struct {
     float x_center;
     float y_center;
@@ -65,10 +66,12 @@ typedef struct {
 } RectValuesC;
 
 typedef struct {
-    float score;
+    float palm_detection_score;   // SSD palm detection score
+    float hand_presence_score;    // landmarks-inference presence score
     RectValuesC detected; // initial axis-aligned palm detection
     RectValuesC oriented; // oriented detection rect (pre-expansion)
     RectValuesC expanded; // values after expansion
+    RectValuesC hand_rect_for_next_frame; // predicted rect for next frame after expansion
 } DetectionDetailsC;
 
 // Top-level result struct

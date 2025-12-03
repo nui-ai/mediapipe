@@ -62,10 +62,12 @@ pub struct RectValuesC {
 
 #[repr(C)]
 pub struct DetectionDetailsC {
-    pub score: f32,
+    pub palm_detection_score: f32,
+    pub hand_presence_score: f32,
     pub detected: RectValuesC,
     pub oriented: RectValuesC,
     pub expanded: RectValuesC,
+    pub hand_rect_for_next_frame: RectValuesC,
 }
 
 #[repr(C)]

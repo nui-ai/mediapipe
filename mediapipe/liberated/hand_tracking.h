@@ -32,6 +32,9 @@ namespace hand_tracking_mp_lean {
 
  /// additional debug/analysis info per palm detection used to derive a hand rect
  struct DetectionDetails {
+  /// A full image-normalized rectangle.
+  /// Coordinates are normalized to image size: x in [0,1] left→right, y in [0,1] top→bottom.
+  /// Rotation is in radians, counter-clockwise, normalized to [-pi, pi).
   struct RectValues {
     float x_center;
     float y_center;
@@ -39,10 +42,12 @@ namespace hand_tracking_mp_lean {
     float height;
     float rotation;
   };
-  float score;
-  RectValues detected;  // initial axes-aligned palm detection rectangle
-  RectValues oriented;  // oriented rectangle derived from the detection (pre-expansion)
-  RectValues expanded;  // values after expansion
+  float palm_detection_score;  // confidence score from palm detection (SSD) for this detection
+  float hand_presence_score;   // presence score from the landmarks inference output corresponding to this hand
+  RectValues detected;         // initial axis-aligned palm detection rectangle
+  RectValues oriented;         // oriented rectangle derived from the detection (pre-expansion)
+  RectValues expanded;         // rectangle after expansion used for landmarks inference input
+  RectValues hand_rect_for_next_frame; // rectangle predicted from current landmarks for use in next frame (after its own expansion step)
  };
 
  /// hand tracking result type for a single input image used as hand tracking input.
