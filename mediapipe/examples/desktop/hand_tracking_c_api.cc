@@ -41,8 +41,12 @@ struct CppInstanceWrapper {
 extern "C" HandTrackingCoreOpaqueHandle hand_tracking_core_create(const uint max_hands_to_track, const char* models_path) {
   set_last_error("");
   auto* cpp_instance_wrapper = new CppInstanceWrapper;
-  auto models_path_str = std::make_unique<std::string>(models_path);
-  cpp_instance_wrapper->cpp_impl = std::make_unique<hand_tracking_mp_lean::HandTrackingCore>(max_hands_to_track, models_path_str.get());
+  if (models_path == nullptr) {
+    cpp_instance_wrapper->cpp_impl = std::make_unique<hand_tracking_mp_lean::HandTrackingCore>(max_hands_to_track, nullptr);
+  } else {
+    auto models_path_str = std::make_unique<std::string>(models_path);
+    cpp_instance_wrapper->cpp_impl = std::make_unique<hand_tracking_mp_lean::HandTrackingCore>(max_hands_to_track, models_path_str.get());
+  }
   return cpp_instance_wrapper;
 }
 

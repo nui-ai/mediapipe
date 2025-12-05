@@ -27,6 +27,7 @@
 
 #include "mediapipe/examples/desktop/hands_pipeline_operator_c_api.h" // the C api header
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
+#include "mediapipe/examples/desktop/pipeline_output_util.h"
 
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/image_frame.h"

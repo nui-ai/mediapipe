@@ -24,6 +24,7 @@
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/examples/desktop/hands_pipeline_operator.h"
+#include "mediapipe/examples/desktop/pipeline_output_util.h"
 
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/image_frame.h"
@@ -195,17 +196,13 @@ absl::Status RunPipelineWithDiffing() {
     }
 
     ABSL_LOG(WARNING) << "processing frame number " << i;
-
     cv::Mat input_frame;
     cv::cvtColor(input_frame_raw, input_frame, cv::COLOR_BGR2RGB);
     if (!video_file_input) { cv::flip(input_frame, input_frame, /*flipcode=HORIZONTAL*/ 1); }
-
     size_t frame_timestamp_us = (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
     MP_RETURN_IF_ERROR(pipeline_operator->PushImage(input_frame, frame_timestamp_us));
     hand_tracking_mp_lean::PipelineOutputData stream_data_msg;
     MP_RETURN_IF_ERROR(pipeline_operator->WaitForOutput(&stream_data_msg, i));
-
-    // write the current frame output to file
     google::protobuf::util::SerializeDelimitedToOstream(stream_data_msg, &output_proto_file);
 
     // Compare with reference data if provided

@@ -16,6 +16,17 @@ mediapipe_proto_library(
     ],
 )
 
+cc_library(
+    name = "pipeline_output_util",
+    srcs = ["pipeline_output_util.cc"],
+    hdrs = ["pipeline_output_util.h"],
+    deps = [
+        ":no_pipeline_c_api",
+        ":pipeline_output_cc_proto",
+        "//mediapipe/liberated:liberated_core",
+    ],
+)
+
 # builds a class operating the hand tracking pipeline from cpp,
 # which the original mediapipe v0.10.13 did not provide or have.
 # stuffs many calculators as direct dependencies, in order to make them "alwayslink",
@@ -77,6 +88,7 @@ cc_library(
     deps = [
         ":hands_pipeline_operator",
         ":pipeline_output_cc_proto",
+        ":pipeline_output_util",
         "//mediapipe/calculators/util:detection_model_provider",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/formats:detection_cc_proto",
@@ -102,6 +114,7 @@ cc_library(
     deps = [
         ":hands_pipeline_operator",
         ":pipeline_output_cc_proto",
+        ":pipeline_output_util",
         "//mediapipe/calculators/util:detection_model_provider",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/formats:detection_cc_proto",
@@ -127,6 +140,7 @@ cc_library(
     deps = [
         ":hands_pipeline_operator_c_api",
         ":pipeline_output_cc_proto",
+        ":pipeline_output_util",
         "//mediapipe/calculators/util:detection_model_provider",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/formats:detection_cc_proto",
@@ -152,6 +166,7 @@ cc_library(
     deps = [
         ":no_pipeline_c_api",
         ":pipeline_output_cc_proto",
+        ":pipeline_output_util",
         "//mediapipe/calculators/util:detection_model_provider",
         "//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/formats:detection_cc_proto",

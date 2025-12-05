@@ -11,6 +11,7 @@
 #include "mediapipe/examples/desktop/hand_tracking_c_api.h" // the C api header
 #include "mediapipe/examples/desktop/hand_tracking_c_types.h"
 #include "mediapipe/examples/desktop/pipeline_output.pb.h"
+#include "mediapipe/examples/desktop/pipeline_output_util.h"
 
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/port/opencv_imgproc_inc.h"
@@ -199,24 +200,10 @@ int main(int argc, char** argv) {
             break;
         }
 
+        hand_tracking_mp_lean::PipelineOutputData stream_data_msg;
+        hand_tracking_mp_lean::FillPipelineOutputDataFromCResult(result_out, &stream_data_msg, i);
         // write the current frame's pipeline output to file
-        // google::protobuf::util::SerializeDelimitedToOstream(stream_data_msg, &output_proto_file);
-
-        // compare it with the corresponding frame's output from the reference output data file
-        // if (!reference_data.empty()) {
-        //     if (i < reference_data.size()) {
-        //         google::protobuf::util::MessageDifferencer differ;
-        //         std::string diff;
-        //         differ.ReportDifferencesToString(&diff);
-        //         if (!differ.Compare(stream_data_msg, reference_data[i])) {
-        //             std::cerr << "Pipeline output at frame " << i << " is different than the reference output:\n" << diff << std::endl;
-        //             std::cerr << "Terminating early due to difference in output at frame " << i << std::endl;
-        //             break;
-        //         }
-        //     } else {
-        //         std::cerr << "warning: could not compare pipeline output for frame " << i << ":the reference output data file doesn't have data for frame " << i << std::endl;
-        //     }
-        // }
+        google::protobuf::util::SerializeDelimitedToOstream(stream_data_msg, &output_proto_file);
         hand_tracking_result_destroy(result_out);
     }
     output_proto_file.close();
