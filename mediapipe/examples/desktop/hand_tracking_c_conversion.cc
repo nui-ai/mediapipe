@@ -69,26 +69,50 @@ static void ConvertDetectionDetailsCppToCArray(const std::vector<hand_tracking_m
         const auto& d = (*cpp_details)[i];
         (*c_details_out)[i].palm_detection_score = d.palm_detection_score;
         (*c_details_out)[i].hand_presence_score = d.hand_presence_score;
-        (*c_details_out)[i].detected.x_center = d.detected.x_center;
-        (*c_details_out)[i].detected.y_center = d.detected.y_center;
-        (*c_details_out)[i].detected.width = d.detected.width;
-        (*c_details_out)[i].detected.height = d.detected.height;
-        (*c_details_out)[i].detected.rotation = d.detected.rotation;
-        (*c_details_out)[i].oriented.x_center = d.oriented.x_center;
-        (*c_details_out)[i].oriented.y_center = d.oriented.y_center;
-        (*c_details_out)[i].oriented.width = d.oriented.width;
-        (*c_details_out)[i].oriented.height = d.oriented.height;
-        (*c_details_out)[i].oriented.rotation = d.oriented.rotation;
-        (*c_details_out)[i].expanded.x_center = d.expanded.x_center;
-        (*c_details_out)[i].expanded.y_center = d.expanded.y_center;
-        (*c_details_out)[i].expanded.width = d.expanded.width;
-        (*c_details_out)[i].expanded.height = d.expanded.height;
-        (*c_details_out)[i].expanded.rotation = d.expanded.rotation;
-        (*c_details_out)[i].hand_rect_for_next_frame.x_center = d.hand_rect_for_next_frame.x_center;
-        (*c_details_out)[i].hand_rect_for_next_frame.y_center = d.hand_rect_for_next_frame.y_center;
-        (*c_details_out)[i].hand_rect_for_next_frame.width = d.hand_rect_for_next_frame.width;
-        (*c_details_out)[i].hand_rect_for_next_frame.height = d.hand_rect_for_next_frame.height;
-        (*c_details_out)[i].hand_rect_for_next_frame.rotation = d.hand_rect_for_next_frame.rotation;
+        if (d.detected.has_value()) {
+            (*c_details_out)[i].has_detected = 1;
+            const auto& rv = d.detected.value();
+            (*c_details_out)[i].detected.x_center = rv.x_center;
+            (*c_details_out)[i].detected.y_center = rv.y_center;
+            (*c_details_out)[i].detected.width = rv.width;
+            (*c_details_out)[i].detected.height = rv.height;
+            (*c_details_out)[i].detected.rotation = rv.rotation;
+        } else {
+            (*c_details_out)[i].has_detected = 0;
+        }
+        if (d.oriented.has_value()) {
+            (*c_details_out)[i].has_oriented = 1;
+            const auto& rv = d.oriented.value();
+            (*c_details_out)[i].oriented.x_center = rv.x_center;
+            (*c_details_out)[i].oriented.y_center = rv.y_center;
+            (*c_details_out)[i].oriented.width = rv.width;
+            (*c_details_out)[i].oriented.height = rv.height;
+            (*c_details_out)[i].oriented.rotation = rv.rotation;
+        } else {
+            (*c_details_out)[i].has_oriented = 0;
+        }
+        if (d.expanded.has_value()) {
+            (*c_details_out)[i].has_expanded = 1;
+            const auto& rv = d.expanded.value();
+            (*c_details_out)[i].expanded.x_center = rv.x_center;
+            (*c_details_out)[i].expanded.y_center = rv.y_center;
+            (*c_details_out)[i].expanded.width = rv.width;
+            (*c_details_out)[i].expanded.height = rv.height;
+            (*c_details_out)[i].expanded.rotation = rv.rotation;
+        } else {
+            (*c_details_out)[i].has_expanded = 0;
+        }
+        if (d.hand_rect_for_next_frame.has_value()) {
+            (*c_details_out)[i].has_hand_rect_for_next_frame = 1;
+            const auto& rv = d.hand_rect_for_next_frame.value();
+            (*c_details_out)[i].hand_rect_for_next_frame.x_center = rv.x_center;
+            (*c_details_out)[i].hand_rect_for_next_frame.y_center = rv.y_center;
+            (*c_details_out)[i].hand_rect_for_next_frame.width = rv.width;
+            (*c_details_out)[i].hand_rect_for_next_frame.height = rv.height;
+            (*c_details_out)[i].hand_rect_for_next_frame.rotation = rv.rotation;
+        } else {
+            (*c_details_out)[i].has_hand_rect_for_next_frame = 0;
+        }
     }
 }
 

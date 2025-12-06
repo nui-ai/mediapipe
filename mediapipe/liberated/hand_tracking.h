@@ -2,6 +2,7 @@
 #define MEDIAPIPE_LIBERATED_H
 
 #include <memory>
+#include <optional>
 
 #include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/framework/formats/tensor.h"
@@ -44,11 +45,12 @@ namespace hand_tracking_mp_lean {
   };
   float palm_detection_score;  // confidence score from palm detection (SSD) for this detection
   float hand_presence_score;   // presence score from the landmarks inference output corresponding to this hand
-  RectValues detected;         // initial axis-aligned palm detection rectangle
-  RectValues oriented;         // oriented rectangle derived from the detection (pre-expansion)
-  RectValues expanded;         // rectangle after expansion used for landmarks inference input
-  RectValues hand_rect_for_next_frame; // rectangle predicted from current landmarks for use in next frame (after its own expansion step)
- };
+  // Each rectangle is now optional and will only be populated if such a rectangle was actually built.
+  std::optional<RectValues> detected;                 // initial axis-aligned palm detection rectangle
+  std::optional<RectValues> oriented;                 // oriented rectangle derived from the detection (pre-expansion)
+  std::optional<RectValues> expanded;                 // rectangle after expansion used for landmarks inference input
+  std::optional<RectValues> hand_rect_for_next_frame; // rectangle predicted from current landmarks for use in next frame (after its own expansion step)
+  };
 
  /// hand tracking result type for a single input image used as hand tracking input.
  ///

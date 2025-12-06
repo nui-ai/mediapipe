@@ -68,9 +68,14 @@ typedef struct {
 typedef struct {
     float palm_detection_score;   // SSD palm detection score
     float hand_presence_score;    // landmarks-inference presence score
+    // Each rectangle is optional; a corresponding has_* flag indicates presence (1) or absence (0)
+    uint8_t has_detected;
     RectValuesC detected; // initial axis-aligned palm detection
+    uint8_t has_oriented;
     RectValuesC oriented; // oriented detection rect (pre-expansion)
+    uint8_t has_expanded;
     RectValuesC expanded; // values after expansion
+    uint8_t has_hand_rect_for_next_frame;
     RectValuesC hand_rect_for_next_frame; // predicted rect for next frame after expansion
 } DetectionDetailsC;
 

@@ -362,8 +362,8 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
       // collect raw rect values and score prior to expansion
       DetectionDetails det;
       det.palm_detection_score = count_capped_detections->at(i).score().empty() ? 0.0f : count_capped_detections->at(i).score()[0];
-      det.hand_presence_score = 0.0f; // will be set later if matched with a landmarks inference
-      // detected: initial axis-aligned detection bbox in normalized coordinates
+      det.hand_presence_score = 0.0f; // not known at this stage
+      // detected: initial axis-aligned detection bbox in normalized coordinates (optional)
       if (count_capped_detections->at(i).has_location_data() &&
           count_capped_detections->at(i).location_data().has_relative_bounding_box()) {
         const auto& rbb = count_capped_detections->at(i).location_data().relative_bounding_box();
@@ -371,39 +371,22 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
         const float ymin = rbb.ymin();
         const float w = rbb.width();
         const float h = rbb.height();
-        det.detected.x_center = xmin + w * 0.5f;
-        det.detected.y_center = ymin + h * 0.5f;
-        det.detected.width = w;
-        det.detected.height = h;
-        det.detected.rotation = 0.0f;
-      } else {
-        det.detected.x_center = 0.0f;
-        det.detected.y_center = 0.0f;
-        det.detected.width = 0.0f;
-        det.detected.height = 0.0f;
-        det.detected.rotation = 0.0f;
+        det.detected = DetectionDetails::RectValues{ xmin + w * 0.5f, ymin + h * 0.5f, w, h, 0.0f };
       }
-      // oriented: pre-expansion oriented palm rect
-      det.oriented.x_center = oriented_palm_norm_rects[i].x_center();
-      det.oriented.y_center = oriented_palm_norm_rects[i].y_center();
-      det.oriented.width = oriented_palm_norm_rects[i].width();
-      det.oriented.height = oriented_palm_norm_rects[i].height();
-      det.oriented.rotation = oriented_palm_norm_rects[i].rotation();
+      // oriented: pre-expansion oriented palm rect (always available here)
+      det.oriented = DetectionDetails::RectValues{
+        oriented_palm_norm_rects[i].x_center(),
+        oriented_palm_norm_rects[i].y_center(),
+        oriented_palm_norm_rects[i].width(),
+        oriented_palm_norm_rects[i].height(),
+        oriented_palm_norm_rects[i].rotation()
+      };
       // expand the rectangle
       auto it = hand_rects_from_detections->begin() + i;
       oriented_palm_rect_to_hand_rect_expander_->ExpandNormalizedRect(&(*it), image->width(), image->height());
       // collect expanded rect values
-      det.expanded.x_center = it->x_center();
-      det.expanded.y_center = it->y_center();
-      det.expanded.width = it->width();
-      det.expanded.height = it->height();
-      det.expanded.rotation = it->rotation();
-      // initialize next-frame rect to zeros for now; will be filled after landmarks inference
-      det.hand_rect_for_next_frame.x_center = 0.0f;
-      det.hand_rect_for_next_frame.y_center = 0.0f;
-      det.hand_rect_for_next_frame.width = 0.0f;
-      det.hand_rect_for_next_frame.height = 0.0f;
-      det.hand_rect_for_next_frame.rotation = 0.0f;
+      det.expanded = DetectionDetails::RectValues{ it->x_center(), it->y_center(), it->width(), it->height(), it->rotation() };
+      // do not set hand_rect_for_next_frame here; it will be populated when landmarks inference is available (optional)
       result->detection_details->push_back(det);
     }
   }
@@ -544,65 +527,18 @@ absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> HandTrackin
     // to the pixel sizes of hands showing in its 224x224 input, which depends (we can't know how much) on the same sizes in its training data.
     expand_rect_for_next_frame_->ExpandNormalizedRect(hand_rect_for_next_frame.get(), image->width(), image->height());
 
-    // Try to associate this landmarks-based rect back to one of the expanded rects from detections
-    auto compute_iou_aabb = [](const NormalizedRect& a, const NormalizedRect& b) -> float {
-      // axis-aligned boxes based on center/size, ignoring rotation
-      const float ax0 = a.x_center() - a.width() * 0.5f;
-      const float ay0 = a.y_center() - a.height() * 0.5f;
-      const float ax1 = a.x_center() + a.width() * 0.5f;
-      const float ay1 = a.y_center() + a.height() * 0.5f;
-      const float bx0 = b.x_center() - b.width() * 0.5f;
-      const float by0 = b.y_center() - b.height() * 0.5f;
-      const float bx1 = b.x_center() + b.width() * 0.5f;
-      const float by1 = b.y_center() + b.height() * 0.5f;
-      const float ix0 = std::max(ax0, bx0);
-      const float iy0 = std::max(ay0, by0);
-      const float ix1 = std::min(ax1, bx1);
-      const float iy1 = std::min(ay1, by1);
-      const float iw = std::max(0.0f, ix1 - ix0);
-      const float ih = std::max(0.0f, iy1 - iy0);
-      const float inter = iw * ih;
-      const float area_a = (ax1 - ax0) * (ay1 - ay0);
-      const float area_b = (bx1 - bx0) * (by1 - by0);
-      const float uni = area_a + area_b - inter;
-      return uni > 0.0f ? (inter / uni) : 0.0f;
+    // Always append a new entry with only presence + next-frame rect populated (no association logic)
+    DetectionDetails dd{};
+    dd.palm_detection_score = 0.0f;
+    dd.hand_presence_score = hand_presence_in_landmarks_inference;
+    dd.hand_rect_for_next_frame = DetectionDetails::RectValues{
+      hand_rect_for_next_frame->x_center(),
+      hand_rect_for_next_frame->y_center(),
+      hand_rect_for_next_frame->width(),
+      hand_rect_for_next_frame->height(),
+      hand_rect_for_next_frame->rotation()
     };
-
-    int best_match_idx = -1;
-    float best_iou = 0.0f;
-    if (hand_rects_from_detections) {
-      for (int idx = 0; idx < hand_rects_from_detections->size(); ++idx) {
-        float iou = compute_iou_aabb(rectangle_for_landmarks_inference, hand_rects_from_detections->at(idx));
-        if (iou > best_iou) { best_iou = iou; best_match_idx = idx; }
-      }
-    }
-
-    auto fill_next_rect = [&](DetectionDetails& dd) {
-      dd.hand_presence_score = hand_presence_in_landmarks_inference;
-      dd.hand_rect_for_next_frame.x_center = hand_rect_for_next_frame->x_center();
-      dd.hand_rect_for_next_frame.y_center = hand_rect_for_next_frame->y_center();
-      dd.hand_rect_for_next_frame.width = hand_rect_for_next_frame->width();
-      dd.hand_rect_for_next_frame.height = hand_rect_for_next_frame->height();
-      dd.hand_rect_for_next_frame.rotation = hand_rect_for_next_frame->rotation();
-    };
-
-    if (best_match_idx >= 0 && best_iou > 0.0f && result->detection_details && best_match_idx < result->detection_details->size()) {
-      fill_next_rect(result->detection_details->at(best_match_idx));
-    } else {
-      // No detection-based rect to associate to; append a new entry with only presence + next-frame rect populated
-      DetectionDetails dd{};
-      dd.palm_detection_score = 0.0f;
-      dd.hand_presence_score = hand_presence_in_landmarks_inference;
-      dd.detected = {0,0,0,0,0};
-      dd.oriented = {0,0,0,0,0};
-      dd.expanded = {0,0,0,0,0};
-      dd.hand_rect_for_next_frame.x_center = hand_rect_for_next_frame->x_center();
-      dd.hand_rect_for_next_frame.y_center = hand_rect_for_next_frame->y_center();
-      dd.hand_rect_for_next_frame.width = hand_rect_for_next_frame->width();
-      dd.hand_rect_for_next_frame.height = hand_rect_for_next_frame->height();
-      dd.hand_rect_for_next_frame.rotation = hand_rect_for_next_frame->rotation();
-      if (result->detection_details) result->detection_details->push_back(dd);
-    }
+    if (result->detection_details) result->detection_details->push_back(dd);
 
     // accumulate into vectors of results that we return to the caller -> like the original pipeline, like so:
     // each result type is a vector and all those result vectors are implicitly indexed by the hand to which they apply.
