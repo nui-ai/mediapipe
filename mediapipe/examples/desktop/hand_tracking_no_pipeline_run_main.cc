@@ -201,7 +201,7 @@ absl::Status RunNoPipelineTrackingWithDiffing() {
     auto mediapipe_image = std::make_shared<const Image>(image_frame_ptr);
 
     // pass the image to the hand tracking workflow
-    absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> inference;
+    absl::StatusOr<std::unique_ptr<ImageHandTrackingResult>> inference;
     MP_ASSIGN_OR_RETURN(inference, hand_tracking.Process(mediapipe_image));
 
     // put the result into protobuf format just in case we want to log it to file for offline juxtaposing to other runs' output

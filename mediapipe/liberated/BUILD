@@ -28,8 +28,14 @@ cc_library(
 # by the original disparate locations of the original pipeline calculators they have been cored from.
 cc_library(
     name = "liberated_core",
-    srcs = ["hand_tracking.cc"],
-    hdrs = ["hand_tracking.h"],
+    srcs = [
+        "hand_tracking.cc",
+        "hand_tracking_debug.cc",
+    ],
+    hdrs = [
+        "hand_tracking.h",
+        "hand_tracking_debug.h",
+    ],
     deps = [
         "//mediapipe/calculators/core:split_vector_calculator_core",
         "//mediapipe/calculators/tensor:image_to_tensor_calculator_core",

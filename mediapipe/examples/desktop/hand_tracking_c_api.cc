@@ -80,7 +80,7 @@ extern "C" int hand_tracking_core_process(
   auto const hand_tracking_input_image_object = std::make_shared<const hand_tracking_mp_lean::Image>(image_frame_ptr);
 
   // perform hand tracking for the wrapped image
-  absl::StatusOr<std::unique_ptr<hand_tracking_mp_lean::ImageHandTrackingAndInferenceResult>> result = cpp_instance_wrapper->cpp_impl->Process(hand_tracking_input_image_object);
+  absl::StatusOr<std::unique_ptr<hand_tracking_mp_lean::ImageHandTrackingResult>> result = cpp_instance_wrapper->cpp_impl->Process(hand_tracking_input_image_object);
   if (!result.ok()) {
     set_last_error(std::string(result.status().message()));
     *hand_tracking_result = nullptr;

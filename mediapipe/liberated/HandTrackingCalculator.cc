@@ -76,7 +76,7 @@ namespace hand_tracking_mp_lean {
         std::shared_ptr<const hand_tracking_mp_lean::Image> image;
         MP_ASSIGN_OR_RETURN(image, GetInputImage(kIn(cc)));
 
-        absl::StatusOr<std::unique_ptr<ImageHandTrackingAndInferenceResult>> resultOrStatus = liberated_->Process(image);
+        absl::StatusOr<std::unique_ptr<ImageHandTrackingResult>> resultOrStatus = liberated_->Process(image);
         if (resultOrStatus.ok()) {
           cc->Outputs().Tag("LANDMARKS").Add(resultOrStatus.value()->viewport_landmarkss.release(), cc->InputTimestamp());
           cc->Outputs().Tag("WORLD_LANDMARKS").Add(resultOrStatus.value()->object_landmarkss.release(), cc->InputTimestamp());

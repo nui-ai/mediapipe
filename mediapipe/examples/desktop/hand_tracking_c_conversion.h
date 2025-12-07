@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-int ConvertCppResultToCNestedStruct(const hand_tracking_mp_lean::ImageHandTrackingAndInferenceResult& cpp_result, HandTrackingResultC* c_result_out, void (*set_last_error)(const std::string& err));
+int ConvertCppResultToCNestedStruct(const hand_tracking_mp_lean::ImageHandTrackingResult& cpp_result, HandTrackingResultC* c_result_out, void (*set_last_error)(const std::string& err));
 
 #ifdef __cplusplus
 }

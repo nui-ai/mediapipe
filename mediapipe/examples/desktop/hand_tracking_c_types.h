@@ -2,8 +2,8 @@
 #ifndef HAND_TRACKING_C_TYPES_H_
 #define HAND_TRACKING_C_TYPES_H_
 
-#include <stddef.h>
-#include <stdint.h>
+#include <cstddef>
+#include <cstdint>
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,28 +63,38 @@ typedef struct {
     float width;
     float height;
     float rotation;
-} RectValuesC;
+} RectGeometryC;
 
 typedef struct {
     float palm_detection_score;   // SSD palm detection score
-    float hand_presence_score;    // landmarks-inference presence score
     // Each rectangle is optional; a corresponding has_* flag indicates presence (1) or absence (0)
     uint8_t has_detected;
-    RectValuesC detected; // initial axis-aligned palm detection
+    RectGeometryC detected; // initial axis-aligned palm detection
     uint8_t has_oriented;
-    RectValuesC oriented; // oriented detection rect (pre-expansion)
+    RectGeometryC oriented; // oriented detection rect (pre-expansion)
     uint8_t has_expanded;
-    RectValuesC expanded; // values after expansion
-    uint8_t has_hand_rect_for_next_frame;
-    RectValuesC hand_rect_for_next_frame; // predicted rect for next frame after expansion
+    RectGeometryC expanded; // values after expansion
 } DetectionDetailsC;
 
 // Top-level result struct
-typedef struct {
-    NormalizedLandmarkListC* normalized_landmarkss;
-    LandmarkListC* landmarkss;
-    ClassificationListC* classificationss;
-    DetectionDetailsC* detection_details; // per-detection raw/expanded details
+typedef struct HandTrackingResultC {
+
+    NormalizedLandmarkListC* viewport_landmarkss; // array, one per hand
+    size_t viewport_landmarkss_count;
+
+    LandmarkListC* object_landmarkss; // array, one per hand
+    size_t object_landmarkss_count;
+
+    ClassificationListC* classificationss; // array, one per hand
+    size_t classificationss_count;
+
+    float* hand_presence_scores; // array, one per hand
+    size_t hand_presence_scores_count;
+
+    RectGeometryC* hand_rects_from_landmarks; // array, one per hand
+    size_t hand_rects_from_landmarks_count;
+
+    DetectionDetailsC* detections_details; // array, one per detection
     size_t detection_details_count;
 } HandTrackingResultC;
 
