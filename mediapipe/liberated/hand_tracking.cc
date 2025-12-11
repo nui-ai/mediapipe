@@ -1,3 +1,9 @@
+#if !defined(HAND_TRACKING_VERBOSE_LOGGING)
+#define HAND_TRACKING_VERBOSE_LOGGING 0
+#endif
+#define HAND_TRACKING_LOG(msg) \
+  do { if (HAND_TRACKING_VERBOSE_LOGGING) { ABSL_LOG(INFO) << msg; } } while(0)
+
 #include "mediapipe/liberated/hand_tracking.h"
 #include "mediapipe/liberated/hand_tracking_debug.h"
 
@@ -192,7 +198,7 @@ namespace hand_tracking_mp_lean {
     }
     if (hand_rects_from_previous_frame_.size() < max_hands_to_track_) {
 
-      ABSL_LOG(INFO) << "hand tracking lifecycle: palm detection inference is being invoked as there are not enough hand rectangles derived from the previous frame's landmarks inference";
+      HAND_TRACKING_LOG("hand tracking lifecycle: palm detection inference is being invoked as there are not enough hand rectangles derived from the previous frame's landmarks inference");
 
       auto surviving_detections = absl::make_unique<std::vector<Detection>>();
 
@@ -211,7 +217,7 @@ namespace hand_tracking_mp_lean {
       MP_ASSIGN_OR_RETURN(palm_detection_inference_output, palm_detection_inference_->Process(image_as_tensor_span));
       auto palm_end_time = std::chrono::high_resolution_clock::now();
       auto palm_duration_us = std::chrono::duration_cast<std::chrono::microseconds>(palm_end_time - palm_start_time).count();
-      ABSL_LOG(INFO) << "hand tracking lifecycle: palm detection inference took (ms): " << (static_cast<double>(palm_duration_us) / 1000.0);
+      HAND_TRACKING_LOG(std::string("hand tracking lifecycle: palm detection inference took (ms): ") + std::to_string(static_cast<double>(palm_duration_us) / 1000.0));
 
       // extract-decode the detection inference output
       std::unique_ptr<std::vector<Detection>> letterboxed_detections;
@@ -235,14 +241,14 @@ namespace hand_tracking_mp_lean {
       // this step is both subject-matter naive and not memory optimized.
       auto excessive_detections_count = static_cast<long>(filtered_detections->size()) - static_cast<long>(max_hands_to_track_);
       if ( excessive_detections_count > 0) {
-        ABSL_LOG(INFO) << "hand tracking lifecycle: naively discarded " << excessive_detections_count << "palm detections to keep only the same number of them as the set number of hands for tracking (" << max_hands_to_track_ << ")";
+        HAND_TRACKING_LOG(std::string("hand tracking lifecycle: naively discarded ") + std::to_string(excessive_detections_count) + "palm detections to keep only the same number of them as the set number of hands for tracking (" + std::to_string(max_hands_to_track_) + ")");
         for (int i = 0; i < max_hands_to_track_; ++i) { surviving_detections->push_back(filtered_detections->at(i)); }
       } else {
         for (int i = 0; i < filtered_detections->size(); ++i) { surviving_detections->push_back(filtered_detections->at(i)); }
       }
 
       auto surviving_detections_count = surviving_detections->size();
-      for (auto &detection: *surviving_detections) { ABSL_LOG(INFO) << "hand tracking lifecycle: palm detection has confidence score " << detection.score()[0]; }
+      for (auto &detection: *surviving_detections) { HAND_TRACKING_LOG(std::string("hand tracking lifecycle: palm detection has confidence score ") + std::to_string(detection.score()[0])); }
 
       // a struct to hold the information being derived from the current detection
       auto detection_information = DetectionInformation();
@@ -340,7 +346,7 @@ namespace hand_tracking_mp_lean {
       auto end_time = std::chrono::high_resolution_clock::now();
       auto end_time_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time.time_since_epoch()).count();
       auto duration_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
-      ABSL_LOG(INFO) << "hand tracking lifecycle: landmarks inference over the given sub-image took (ms): " << (static_cast<double>(duration_us) / 1000.0);
+      HAND_TRACKING_LOG(std::string("hand tracking lifecycle: landmarks inference over the given sub-image took (ms): ") + std::to_string(static_cast<double>(duration_us) / 1000.0));
       // debug logging: landmarks_inference_debug_logging(landmarks_inference_output_tensors);
 
       // get a unique pointer to output_tensors that can be passed to a function expecting std::unique_ptr<std::vector<T>>*
@@ -361,35 +367,9 @@ namespace hand_tracking_mp_lean {
       ABSL_ASSERT(hand_presence_raw.status.ok() && hand_presence_raw.num_values == 1);
       float hand_presence_in_landmarks_inference = hand_presence_raw.output_floats->at(0);
 
-      // gate naively by the hand presence detection which is part of the landmarks inference.
-      // the palm detection phase v.s. this phase:
-      //
-      //   • palm detection seeks to detect a palm, it's currently hard to tell how much seeing fingers helps with that ―
-      //     a tentative intuition might be that a lot, yet we don't really know how it was trained other than picking inside
-      //     sneaky papers of detection models leading to mediapipe's palm detection model, and we don't a-priori know for now.
-      //   • presence detection as part of the landmarks inference model assumes to see an entire hand sans allowing occlusions,
-      //     we haven't assessed how accurate it thus far is in any way.
-      //
-      // currently, the latter is by the cascade from palm detection fed by the former's input and a naive tuned expansion of it.
-      // elaborated flows and feedback loops can be envisioned which stage this differently and not necessarily in a linear
-      // forward-in-time way only ― which can only be addressed as overall tracking improvement research under firm desiderata ―
-      // first step would be to quantify and qualify fail cases into categories in a very intelligent manner ―
-      // one that gives immediate rise to an evaluation metric which tracks flows between error categories
-      // and the soft nature of the presence scoring which the current model yields.
-      //
-      // the current flow is a good (great) baseline of notably relatively few moving parts;
-      // furthermore it's expansion ratios transitioning between the bouding rectangles may have been finely optimized.
-      //
-      // at the same time it feels a little brittle in e.g. not being more explicitly stateful across frames, in:
-      //   - not taking exploit of kinematics (which hinges on anatomy here)
-      //   - not being more explicitly stateful in perhaps other ways
-      //   - not explicitly harmonizing the various bounding rectangle filtering stages
-      //
-      // well, as we know, good baselines are hard to beat without very disciplined effort;
-      // further, what isn't explicitly harmonized may still be near optimal.
-      ABSL_LOG(INFO) << "hand tracking lifecycle: hand rectangle presence validation score from landmarks inference is " << hand_presence_in_landmarks_inference;
+      HAND_TRACKING_LOG(std::string("hand tracking lifecycle: hand rectangle presence validation score from landmarks inference is ") + std::to_string(hand_presence_in_landmarks_inference));
       if (hand_presence_in_landmarks_inference < hand_presence_in_landmarks_inference_threshold_) {
-        ABSL_LOG(INFO) << "hand tracking lifecycle: hand rectangle failed in presence validation by landmarks inference and is being ignored";
+        HAND_TRACKING_LOG("hand tracking lifecycle: hand rectangle failed in presence validation by landmarks inference and is being ignored");
         continue;
       }
 
@@ -409,7 +389,7 @@ namespace hand_tracking_mp_lean {
       NormalizedLandmarkList inferred_landmarks_unletterboxed = AdjustLandmarkListToLetterboxRemoval(inferred_landmarks, extracted_sub_image_struct.padding);
 
       // translate and rotate the (possibly unletterboxed) coordinates of the viewport landmarks to their viewport coordinates.
-      // rotation is applied counter to the rotation applied when passing the sub-image for landmarks inference to landmarks inference.
+      // rotation is applied counter to the rotation applied when passing the sub-image for landmarks inference.
       NormalizedLandmarkList final_viewport_landmarks;
       ToViewportCoordinates(inferred_landmarks_unletterboxed, &rectangle_for_landmarks_inference, &final_viewport_landmarks);
 
