@@ -216,6 +216,9 @@ OPENCV_SO_SONAME = "410"
 # most comments to this cmake are from the original mediapipe build of mediapipe version v0.10.13.
 cmake(
     name = "opencv_cmake",
+    # OpenCV 4 installs its public headers under include/opencv4. Export that nested
+    # directory so dependents resolving <opencv2/...> use this source-built OpenCV.
+    includes = ["opencv4"],
     # Values to be passed as -Dkey=value on the CMake command line;
     cache_entries = {
         "CMAKE_BUILD_TYPE": "Release",
