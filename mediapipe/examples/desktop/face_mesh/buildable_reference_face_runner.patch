@@ -1,0 +1,196 @@
+diff --git a/mediapipe/examples/desktop/face_parity/face_tracking_output.proto b/mediapipe/examples/desktop/face_parity/face_tracking_output.proto
+new file mode 100644
+--- /dev/null
++++ b/mediapipe/examples/desktop/face_parity/face_tracking_output.proto
+@@ -0,0 +1,10 @@
++syntax = "proto3";
++
++package mediapipe;
++
++import "mediapipe/framework/formats/landmark.proto";
++
++message FaceTrackingOutputData {
++  int32 frame_number = 1;
++  repeated NormalizedLandmarkList multi_face_landmarks = 2;
++}
+diff --git a/mediapipe/examples/desktop/face_parity/BUILD b/mediapipe/examples/desktop/face_parity/BUILD
+new file mode 100644
+--- /dev/null
++++ b/mediapipe/examples/desktop/face_parity/BUILD
+@@ -0,0 +1,33 @@
++load("//mediapipe/framework/port:build_config.bzl", "mediapipe_proto_library")
++
++licenses(["notice"])
++
++mediapipe_proto_library(
++    name = "face_tracking_output_proto",
++    srcs = ["face_tracking_output.proto"],
++    deps = ["//mediapipe/framework/formats:landmark_proto"],
++)
++
++cc_binary(
++    name = "reference_face_tracking_run",
++    srcs = ["reference_face_tracking_run.cc"],
++    data = [
++        "//mediapipe/modules/face_detection:face_detection_short_range.tflite",
++        "//mediapipe/modules/face_landmark:face_landmark.tflite",
++        "//mediapipe/modules/face_landmark:face_landmark_with_attention.tflite",
++    ],
++    deps = [
++        ":face_tracking_output_cc_proto",
++        "//mediapipe/framework:calculator_framework",
++        "//mediapipe/framework/formats:image_frame",
++        "//mediapipe/framework/formats:image_frame_opencv",
++        "//mediapipe/framework/port:opencv_imgproc",
++        "//mediapipe/framework/port:opencv_video",
++        "//mediapipe/framework/port:parse_text_proto",
++        "//mediapipe/framework/port:status",
++        "//mediapipe/modules/face_landmark:face_landmark_front_cpu",
++        "@com_google_absl//absl/flags:flag",
++        "@com_google_absl//absl/flags:parse",
++        "@com_google_protobuf//:protobuf",
++    ],
++)
+diff --git a/mediapipe/examples/desktop/face_parity/reference_face_tracking_run.cc b/mediapipe/examples/desktop/face_parity/reference_face_tracking_run.cc
+new file mode 100644
+--- /dev/null
++++ b/mediapipe/examples/desktop/face_parity/reference_face_tracking_run.cc
+@@ -0,0 +1,138 @@
++// Copyright 2026 The MediaPipe Authors.
++//
++// Licensed under the Apache License, Version 2.0 (the "License");
++// you may not use this file except in compliance with the License.
++// You may obtain a copy of the License at
++//
++//      http://www.apache.org/licenses/LICENSE-2.0
++//
++// Unless required by applicable law or agreed to in writing, software
++// distributed under the License is distributed on an "AS IS" BASIS,
++// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++// See the License for the specific language governing permissions and
++// limitations under the License.
++
++#include <cstdint>
++#include <cstdlib>
++#include <fstream>
++#include <memory>
++#include <string>
++#include <vector>
++
++#include "absl/flags/flag.h"
++#include "absl/flags/parse.h"
++#include "mediapipe/examples/desktop/face_parity/face_tracking_output.pb.h"
++#include "mediapipe/framework/calculator_framework.h"
++#include "mediapipe/framework/formats/image_frame.h"
++#include "mediapipe/framework/formats/image_frame_opencv.h"
++#include "mediapipe/framework/port/opencv_imgproc_inc.h"
++#include "mediapipe/framework/port/opencv_video_inc.h"
++#include "mediapipe/framework/port/parse_text_proto.h"
++#include "mediapipe/framework/port/ret_check.h"
++#include "mediapipe/framework/port/status_macros.h"
++
++#include <google/protobuf/util/delimited_message_util.h>
++
++ABSL_FLAG(std::string, input_video_path, "", "Input video.");
++ABSL_FLAG(std::string, output_data_path, "", "Delimited output protobuf.");
++ABSL_FLAG(std::uint32_t, max_num_faces, 1,
++          "Maximum number of faces to detect and track.");
++ABSL_FLAG(bool, refine_landmarks, true,
++          "Use the 478-landmark attention model.");
++ABSL_FLAG(bool, static_image_mode, false,
++          "Disable reuse of landmark-derived regions between frames.");
++
++namespace mediapipe {
++namespace {
++
++absl::Status Run() {
++  RET_CHECK_GT(absl::GetFlag(FLAGS_max_num_faces), 0);
++  const CalculatorGraphConfig config =
++      ParseTextProtoOrDie<CalculatorGraphConfig>(R"pb(
++        input_stream: "input_video"
++        input_side_packet: "num_faces"
++        input_side_packet: "with_attention"
++        input_side_packet: "use_previous_landmarks"
++        output_stream: "multi_face_landmarks"
++        node {
++          calculator: "FaceLandmarkFrontCpu"
++          input_stream: "IMAGE:input_video"
++          input_side_packet: "NUM_FACES:num_faces"
++          input_side_packet: "WITH_ATTENTION:with_attention"
++          input_side_packet: "USE_PREV_LANDMARKS:use_previous_landmarks"
++          output_stream: "LANDMARKS:multi_face_landmarks"
++        }
++      )pb");
++
++  CalculatorGraph graph;
++  MP_RETURN_IF_ERROR(graph.Initialize(config));
++  MP_ASSIGN_OR_RETURN(
++      OutputStreamPoller landmark_poller,
++      graph.AddOutputStreamPoller("multi_face_landmarks"));
++  MP_RETURN_IF_ERROR(graph.StartRun({
++      {"num_faces",
++       MakePacket<int>(
++           static_cast<int>(absl::GetFlag(FLAGS_max_num_faces)))},
++      {"with_attention",
++       MakePacket<bool>(absl::GetFlag(FLAGS_refine_landmarks))},
++      {"use_previous_landmarks",
++       MakePacket<bool>(!absl::GetFlag(FLAGS_static_image_mode))},
++  }));
++
++  cv::VideoCapture capture(absl::GetFlag(FLAGS_input_video_path));
++  RET_CHECK(capture.isOpened());
++  std::ofstream output(
++      absl::GetFlag(FLAGS_output_data_path),
++      std::ios::binary | std::ios::trunc);
++  RET_CHECK(output.is_open());
++
++  int frame_number = 0;
++  while (true) {
++    cv::Mat bgr;
++    capture >> bgr;
++    if (bgr.empty()) {
++      break;
++    }
++    cv::Mat rgb;
++    cv::cvtColor(bgr, rgb, cv::COLOR_BGR2RGB);
++
++    auto frame = std::make_unique<ImageFrame>(
++        ImageFormat::SRGB, rgb.cols, rgb.rows,
++        ImageFrame::kDefaultAlignmentBoundary);
++    rgb.copyTo(formats::MatView(frame.get()));
++    MP_RETURN_IF_ERROR(graph.AddPacketToInputStream(
++        "input_video",
++        Adopt(frame.release()).At(Timestamp(frame_number))));
++    MP_RETURN_IF_ERROR(graph.WaitUntilIdle());
++    RET_CHECK_LE(landmark_poller.QueueSize(), 1);
++
++    FaceTrackingOutputData frame_output;
++    frame_output.set_frame_number(frame_number);
++    if (landmark_poller.QueueSize() == 1) {
++      Packet packet;
++      RET_CHECK(landmark_poller.Next(&packet));
++      for (const auto& landmarks :
++           packet.Get<std::vector<NormalizedLandmarkList>>()) {
++        *frame_output.add_multi_face_landmarks() = landmarks;
++      }
++    }
++    RET_CHECK(google::protobuf::util::SerializeDelimitedToOstream(
++        frame_output, &output));
++    ++frame_number;
++  }
++
++  MP_RETURN_IF_ERROR(graph.CloseInputStream("input_video"));
++  MP_RETURN_IF_ERROR(graph.WaitUntilDone());
++  output.close();
++  RET_CHECK(output.good());
++  return absl::OkStatus();
++}
++
++}  // namespace
++}  // namespace mediapipe
++
++int main(int argc, char** argv) {
++  absl::ParseCommandLine(argc, argv);
++  const absl::Status status = mediapipe::Run();
++  return status.ok() ? EXIT_SUCCESS : EXIT_FAILURE;
++}

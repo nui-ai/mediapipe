@@ -14,6 +14,44 @@
 
 licenses(["notice"])
 
+# CalculatorGraph-free CPU face landmarks/mesh runner. This is a face-only
+# artifact: it links neither the hand core nor hand model assets.
+cc_binary(
+    name = "face_tracking_no_pipeline_run",
+    data = [
+        "//mediapipe/modules/face_detection:face_detection_short_range.tflite",
+        "//mediapipe/modules/face_landmark:face_landmark.tflite",
+        "//mediapipe/modules/face_landmark:face_landmark_with_attention.tflite",
+    ],
+    deps = ["//mediapipe/examples/desktop:face_tracking_no_pipeline_run_main"],
+)
+
+# Face-only shared library consumed through the strict-C facade. Model files
+# remain external runtime inputs selected by the facade's models_path.
+cc_binary(
+    name = "libface_tracking_c_api.so",
+    data = [
+        "//mediapipe/modules/face_detection:face_detection_short_range.tflite",
+        "//mediapipe/modules/face_landmark:face_landmark.tflite",
+        "//mediapipe/modules/face_landmark:face_landmark_with_attention.tflite",
+    ],
+    linkopts = ["-Wl,--no-as-needed"],
+    linkshared = 1,
+    linkstatic = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//mediapipe/examples/desktop:face_tracking_c_api",
+        "//third_party:opencv_cmake",
+    ],
+)
+
+cc_binary(
+    name = "compare_face_tracking_output_data",
+    deps = [
+        "//mediapipe/examples/desktop:compare_face_tracking_output_data_main",
+    ],
+)
+
 # BUILD:
 # bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 \
 #   //mediapipe/examples/desktop/face_mesh:face_mesh_tflite

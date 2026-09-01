@@ -166,8 +166,9 @@ namespace api2 {
   // Output:
   //  DETECTIONS - Result MediaPipe detections.
   //
-  DetectionsExtractionAndFiltering::DetectionsExtractionAndFiltering(float score_threshold) {
-    ABSL_CHECK_OK(SetDecodingParameters(score_threshold));
+  DetectionsExtractionAndFiltering::DetectionsExtractionAndFiltering(
+      float score_threshold, DetectionModel model) {
+    ABSL_CHECK_OK(SetDecodingParameters(score_threshold, model));
     ABSL_CHECK_OK(SetNmsParameters());
 
     if (CanUseGpu()) {
@@ -273,16 +274,18 @@ namespace api2 {
     return absl::OkStatus();
   }
 
-  absl::Status DetectionsExtractionAndFiltering::SetDecodingParameters(float score_threshold) {
-    MP_RETURN_IF_ERROR(SetSsdAnchors());
-    MP_RETURN_IF_ERROR(SetSsdDecodingOptions(score_threshold));
+  absl::Status DetectionsExtractionAndFiltering::SetDecodingParameters(
+      float score_threshold, DetectionModel model) {
+    MP_RETURN_IF_ERROR(SetSsdAnchors(model));
+    MP_RETURN_IF_ERROR(SetSsdDecodingOptions(score_threshold, model));
     return absl::OkStatus();
   }
 
   // Configure to extract the detections from the neural network output in compliance to the detection neural network's
   // shapes, strides, scales, etc. which must be known here in order to extract the neural network's output. so these
   // just replicate the anchors which the neural network was trained with/for.
-  absl::Status DetectionsExtractionAndFiltering::SetSsdAnchors() {
+  absl::Status DetectionsExtractionAndFiltering::SetSsdAnchors(
+      DetectionModel model) {
 
     // The SSD anchors parameters of the detection neural network
     // see https://chatgpt.com/s/t_6900bef5d9788191946d78b7ac6e27c9 regarding the sizes, and overlaps, of the trained anchors,
@@ -292,8 +295,10 @@ namespace api2 {
     ssd_anchors.set_num_layers(4);
     ssd_anchors.set_min_scale(0.1484375);
     ssd_anchors.set_max_scale(0.75);
-    ssd_anchors.set_input_size_width(192);
-    ssd_anchors.set_input_size_height(192);
+    const int input_size =
+        model == DetectionModel::kFaceShortRange ? 128 : 192;
+    ssd_anchors.set_input_size_width(input_size);
+    ssd_anchors.set_input_size_height(input_size);
     ssd_anchors.set_anchor_offset_x(0.5);
     ssd_anchors.set_anchor_offset_y(0.5);
     ssd_anchors.add_strides(8);
@@ -327,27 +332,31 @@ namespace api2 {
 
   // Configure specific post-SSD decoding parameters and options ― hardwired for coupling to the class itself.
   // (originally these values were given as mediapipe graph calculator node "options")
-  absl::Status DetectionsExtractionAndFiltering::SetSsdDecodingOptions(const float score_threshold) {
+  absl::Status DetectionsExtractionAndFiltering::SetSsdDecodingOptions(
+      const float score_threshold, DetectionModel model) {
 
     ABSL_ASSERT((0.0f < score_threshold) && (score_threshold < 1.0f));
 
     ssd_decoding_options_ = TensorsToDetectionsCalculatorOptions();
 
-    // the palm detection model is a single class model, so all class index filtering which our code still carries forward
-    // are effectively no-ops and can be cleaned away on next sweeps.
+    // Both supported detector models are single-class models, so all class
+    // index filtering which this code still carries forward is effectively a
+    // no-op.
     ssd_decoding_options_.set_num_classes(1);
-    ssd_decoding_options_.set_num_boxes(2016);
-    ssd_decoding_options_.set_num_coords(18);
+    const bool face_model = model == DetectionModel::kFaceShortRange;
+    const int input_size = face_model ? 128 : 192;
+    ssd_decoding_options_.set_num_boxes(face_model ? 896 : 2016);
+    ssd_decoding_options_.set_num_coords(face_model ? 16 : 18);
     ssd_decoding_options_.set_box_coord_offset(0);
     ssd_decoding_options_.set_keypoint_coord_offset(4);
-    ssd_decoding_options_.set_num_keypoints(7);
+    ssd_decoding_options_.set_num_keypoints(face_model ? 6 : 7);
     ssd_decoding_options_.set_num_values_per_keypoint(2);
 
     ssd_decoding_options_.set_reverse_output_order(true);
-    ssd_decoding_options_.set_x_scale(192.0);
-    ssd_decoding_options_.set_y_scale(192.0);
-    ssd_decoding_options_.set_w_scale(192.0);
-    ssd_decoding_options_.set_h_scale(192.0);
+    ssd_decoding_options_.set_x_scale(input_size);
+    ssd_decoding_options_.set_y_scale(input_size);
+    ssd_decoding_options_.set_w_scale(input_size);
+    ssd_decoding_options_.set_h_scale(input_size);
 
     // Applies sigmoid activation to raw scores. Can be toggled at inference if model outputs logits.
     ssd_decoding_options_.set_sigmoid_score(true);

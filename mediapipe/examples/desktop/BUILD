@@ -16,6 +16,71 @@ mediapipe_proto_library(
     ],
 )
 
+mediapipe_proto_library(
+    name = "face_tracking_output_proto",
+    srcs = ["face_tracking_output.proto"],
+    deps = [
+        "//mediapipe/framework/formats:landmark_proto",
+        "//mediapipe/framework/formats:rect_proto",
+    ],
+)
+
+cc_library(
+    name = "face_tracking_no_pipeline_run_main",
+    srcs = ["face_tracking_no_pipeline_run_main.cc"],
+    deps = [
+        ":face_tracking_output_cc_proto",
+        "//mediapipe/framework/formats:image",
+        "//mediapipe/framework/formats:image_frame",
+        "//mediapipe/framework/port:opencv_imgproc",
+        "//mediapipe/framework/port:status",
+        "//mediapipe/liberated:face_liberated_core",
+        "//third_party:opencv",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/log:absl_log",
+        "@com_google_protobuf//:protobuf",
+    ],
+)
+
+# Strict-C facade around the stateful graph-free face tracking implementation.
+# It is kept independent from the hand C facade so consumers can link either
+# modality without acquiring the other's public API or model assets.
+cc_library(
+    name = "face_tracking_c_api",
+    srcs = [
+        "face_tracking_c_api.cc",
+        "face_tracking_c_conversion.cc",
+        "face_tracking_c_types.cc",
+    ],
+    hdrs = [
+        "face_tracking_c_api.h",
+        "face_tracking_c_conversion.h",
+        "face_tracking_c_types.h",
+    ],
+    alwayslink = 1,
+    linkstatic = True,
+    deps = [
+        "//mediapipe/framework/formats:image",
+        "//mediapipe/framework/formats:image_frame",
+        "//mediapipe/liberated:face_liberated_core",
+    ],
+)
+
+cc_test(
+    name = "face_tracking_c_api_test",
+    srcs = ["face_tracking_c_api_test.cc"],
+    data = [
+        "//mediapipe/modules/face_detection:face_detection_short_range.tflite",
+        "//mediapipe/modules/face_landmark:face_landmark.tflite",
+        "//mediapipe/modules/face_landmark:face_landmark_with_attention.tflite",
+    ],
+    deps = [
+        ":face_tracking_c_api",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
 cc_library(
     name = "pipeline_output_util",
     srcs = ["pipeline_output_util.cc"],
@@ -226,6 +291,17 @@ cc_library(
     srcs = ["compare_pipelines_output_data_main.cc"],
     deps = [
         ":pipeline_output_cc_proto",
+        "@com_google_protobuf//:protobuf",
+    ],
+)
+
+cc_library(
+    name = "compare_face_tracking_output_data_main",
+    srcs = ["compare_face_tracking_output_data_main.cc"],
+    deps = [
+        ":face_tracking_output_cc_proto",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
         "@com_google_protobuf//:protobuf",
     ],
 )

@@ -32,6 +32,11 @@ class DetectionsToOrientedRects {
   explicit DetectionsToOrientedRects(
     float target_angle_radians,
     bool output_zero_rect_for_empty_detections=false);
+  DetectionsToOrientedRects(
+      int start_keypoint_index, int end_keypoint_index,
+      float target_angle_radians,
+      bool output_zero_rect_for_empty_detections = false);
+
 
   bool NeedsImageSize() const;
 

@@ -18,18 +18,30 @@ namespace api2 {
 
 using BoxFormat = ::hand_tracking_mp_lean::TensorsToDetectionsCalculatorOptions::BoxFormat;
 using Anchor = ::hand_tracking_mp_lean::Anchor;
+// Identifies the fixed tensor/anchor layout of a detector model. These values
+// are not tuning knobs: they must match the layout with which each model was
+// trained and exported.
+enum class DetectionModel {
+  kPalm,
+  kFaceShortRange,
+};
+
 
 class DetectionsExtractionAndFiltering {
 public:
-  explicit DetectionsExtractionAndFiltering(float score_threshold);
+  explicit DetectionsExtractionAndFiltering(
+      float score_threshold,
+      DetectionModel model = DetectionModel::kPalm);
   absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Extract(const std::vector<Tensor>& input_tensors);
   absl::StatusOr<std::unique_ptr<std::vector<Detection>>> Filter(const std::vector<Detection>& detections);
 
 private:
   absl::Status ExtractDo(std::vector<Detection>* output_detections, const std::vector<Tensor>& input_tensors);
-  absl::Status SetDecodingParameters(float score_threshold);
-  absl::Status SetSsdAnchors();
-  absl::Status SetSsdDecodingOptions(float score_threshold);
+  absl::Status SetDecodingParameters(float score_threshold,
+                                     DetectionModel model);
+  absl::Status SetSsdAnchors(DetectionModel model);
+  absl::Status SetSsdDecodingOptions(float score_threshold,
+                                     DetectionModel model);
   absl::Status SetNmsParameters();
   absl::Status DecodeSsdBoxes(const float* raw_boxes,
                            const std::vector<Anchor>& anchors,

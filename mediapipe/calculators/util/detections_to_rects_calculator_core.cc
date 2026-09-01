@@ -19,6 +19,12 @@ static float NormalizeRadians(float angle) {
 static absl::Status ComputeRotation(const Detection& detection, const DetectionsToRectsCoreConfig& config, const absl::optional<std::pair<int, int>>& image_size, float* rotation) {
   const auto& location_data = detection.location_data();
   RET_CHECK(image_size) << "Image size is required to calculate rotation";
+  RET_CHECK_GE(config.start_keypoint_index, 0);
+  RET_CHECK_GE(config.end_keypoint_index, 0);
+  RET_CHECK_LT(config.start_keypoint_index,
+               location_data.relative_keypoints_size());
+  RET_CHECK_LT(config.end_keypoint_index,
+               location_data.relative_keypoints_size());
   const float x0 = location_data.relative_keypoints(config.start_keypoint_index).x() * image_size->first;
   const float y0 = location_data.relative_keypoints(config.start_keypoint_index).y() * image_size->second;
   const float x1 = location_data.relative_keypoints(config.end_keypoint_index).x() * image_size->first;
@@ -51,10 +57,15 @@ static absl::Status DetectionToNormalizedRect(const Detection& detection, Normal
 
 
 /// from a raw axes parallel detection rect of the SSD model, orients a rectangle based on the detected keypoints inferred as part of the palm detection neural network!
-DetectionsToOrientedRects::DetectionsToOrientedRects(float target_angle_radians, bool output_zero_rect_for_empty_detections) {
+DetectionsToOrientedRects::DetectionsToOrientedRects(
+    float target_angle_radians, bool output_zero_rect_for_empty_detections)
+    : DetectionsToOrientedRects(
+          0, 2, target_angle_radians,
+          output_zero_rect_for_empty_detections) {}
 
-  const int start_keypoint_index = 0;  // Center of wrist.
-  const int end_keypoint_index = 2;    // MCP of middle finger.
+DetectionsToOrientedRects::DetectionsToOrientedRects(
+    int start_keypoint_index, int end_keypoint_index,
+    float target_angle_radians, bool output_zero_rect_for_empty_detections) {
 
   // Initialize options_ similarly to the previous code path in Open().
   options_ = DetectionsToRectsCalculatorOptions();

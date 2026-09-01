@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package hand_tracking_mp_lean;
+
+import "mediapipe/framework/formats/landmark.proto";
+import "mediapipe/framework/formats/rect.proto";
+
+// One frame of output from either the legacy FaceLandmarkFrontCpu graph or
+// FaceTrackingCore. Keeping this face-specific avoids coupling face consumers
+// to the hand runner's historical PipelineOutputData schema.
+message FaceTrackingOutputData {
+  int32 frame_number = 1;
+  repeated NormalizedLandmarkList multi_face_landmarks = 2;
+  repeated float face_presence_scores = 3;
+  repeated NormalizedRect face_rects_from_landmarks = 4;
+}
