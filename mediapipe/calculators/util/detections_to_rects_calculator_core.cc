@@ -19,12 +19,24 @@ static float NormalizeRadians(float angle) {
 static absl::Status ComputeRotation(const Detection& detection, const DetectionsToRectsCoreConfig& config, const absl::optional<std::pair<int, int>>& image_size, float* rotation) {
   const auto& location_data = detection.location_data();
   RET_CHECK(image_size) << "Image size is required to calculate rotation";
-  RET_CHECK_GE(config.start_keypoint_index, 0);
-  RET_CHECK_GE(config.end_keypoint_index, 0);
+  RET_CHECK_GE(config.start_keypoint_index, 0)
+      << ". Detection rotation requires a non-negative start keypoint index, "
+         "but received "
+      << config.start_keypoint_index << ".";
+  RET_CHECK_GE(config.end_keypoint_index, 0)
+      << ". Detection rotation requires a non-negative end keypoint index, "
+         "but received "
+      << config.end_keypoint_index << ".";
   RET_CHECK_LT(config.start_keypoint_index,
-               location_data.relative_keypoints_size());
+               location_data.relative_keypoints_size())
+      << ". Detection rotation requires start keypoint index "
+      << config.start_keypoint_index << ", but the detection has "
+      << location_data.relative_keypoints_size() << " relative keypoints.";
   RET_CHECK_LT(config.end_keypoint_index,
-               location_data.relative_keypoints_size());
+               location_data.relative_keypoints_size())
+      << ". Detection rotation requires end keypoint index "
+      << config.end_keypoint_index << ", but the detection has "
+      << location_data.relative_keypoints_size() << " relative keypoints.";
   const float x0 = location_data.relative_keypoints(config.start_keypoint_index).x() * image_size->first;
   const float y0 = location_data.relative_keypoints(config.start_keypoint_index).y() * image_size->second;
   const float x1 = location_data.relative_keypoints(config.end_keypoint_index).x() * image_size->first;

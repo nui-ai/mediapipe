@@ -570,6 +570,19 @@ cc_library(
     alwayslink = 1,
 )
 
+cc_test(
+    name = "detections_to_rects_calculator_core_test",
+    size = "small",
+    srcs = ["detections_to_rects_calculator_core_test.cc"],
+    deps = [
+        ":detections_to_rects_calculator_core",
+        "//mediapipe/framework/formats:detection_cc_proto",
+        "//mediapipe/framework/formats:location_data_cc_proto",
+        "//mediapipe/framework/formats:rect_cc_proto",
+        "//mediapipe/framework/port:gtest_main",
+    ],
+)
+
 cc_library(
     name = "detections_to_rects_calculator",
     srcs = [
