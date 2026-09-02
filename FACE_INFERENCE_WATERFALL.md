@@ -1,6 +1,6 @@
 # Face inference waterfall
 
-This document follows one image through the graph-free face-tracking implementation, from an RGB frame to the face landmarks visible to a caller. It explains how face detection and landmark inference cooperate, how regions of interest carry tracking across frames, where confidence gates remove candidates, and what crosses the C ABI into Rust.
+This document delineates the graph-free face inference workflow from an input RGB frame to the face landmarks visible to a caller. It follows each processing stage in causal order: how face detection supplies candidate regions, how landmark inference processes them, how regions of interest carry tracking across frames, where confidence gates remove candidates, and what crosses the C ABI into Rust.
 
 It also records why the face inference API may eventually need a clean way to expose the confidence and landmarks from every landmark-model invocation, including an invocation which does not pass the tracking-confidence threshold.
 
@@ -37,7 +37,7 @@ A **landmark attempt** in this document means one invocation of the landmark mod
 
 An **accepted face** is a landmark attempt whose global presence score is at least `min_tracking_confidence`. Only accepted faces currently enter `ImageFaceTrackingResult::face_landmarks`, cross the C ABI as `FaceInferenceC`, and become Rust `FaceInference` values.
 
-The global landmark-model presence score is distinct from the `presence` field carried by each individual landmark. The global score controls the gate described below.
+The global landmark-model presence score controls the gate described below. MediaPipe's generic landmark representation additionally provides a per-landmark `visibility` field and a per-landmark `presence` confidence field, but the current face models emit only coordinate values for each landmark. The decoder therefore leaves those optional fields unset, and the C ABI's protobuf getters expose their unset values as zero. They must not be treated as meaningful face-confidence signals.
 
 ## Configuration and model setup
 
@@ -236,7 +236,7 @@ For a rejected Base attempt, the early return avoids:
 - allocating and copying 468 landmarks into C ABI storage; and
 - allocating and copying those landmarks again into owned Rust values.
 
-For a rejected Attention attempt, the early return additionally avoids decoding six landmark tensors, constructing the refined 478-point topology, overlaying the lips and eyes, and deriving iris depth values.
+For a rejected Attention attempt, the early return additionally avoids decoding six landmark tensors, constructing the refined 478-point topology, overlaying the lips and eyes, and assigning iris landmark Z values from the surrounding eye landmarks.
 
 Omitting rejected landmarks also reduces result memory, allocator activity, and C++-to-C-to-Rust memory traffic. Returning only the rejected confidence would have much less incremental computational cost because the score is already decoded, although representing and transporting rejected attempts would still require API storage and bookkeeping.
 
