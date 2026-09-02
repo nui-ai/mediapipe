@@ -41,6 +41,20 @@ const char* face_tracking_get_last_error(void);
 // Returns a semantic version whose major identifies the C struct ABI.
 const char* face_tracking_core_version(void);
 
+// Returns the full nui.ai MediaPipe Git commit compiled into this library, or
+// an explanatory unavailable value when the build invocation did not supply
+// source provenance. The returned pointer is owned by the library and remains
+// valid for the lifetime of the loaded library.
+const char* face_tracking_nui_ai_mediapipe_source_commit(void);
+
+// Returns whether the nui.ai MediaPipe source tree was dirty when this library
+// was built: 0 means clean, 1 means dirty, and -1 means unavailable.
+int face_tracking_nui_ai_mediapipe_source_dirty(void);
+
+// Returns 1 only when Core's build.rs marked the Bazel invocation which
+// compiled this library; other Bazel build entry points return 0.
+int face_tracking_nui_ai_mediapipe_library_built_by_core_build_rs(void);
+
 #ifdef __cplusplus
 }
 #endif

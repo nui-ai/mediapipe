@@ -97,4 +97,23 @@ TEST(FaceTrackingCApiTest, ReportsBreakingAbiVersion) {
   EXPECT_STREQ(face_tracking_core_version(), "2.0.0");
 }
 
+TEST(FaceTrackingCApiTest, ReportsSelfContainedBuildProvenance) {
+  ASSERT_NE(face_tracking_nui_ai_mediapipe_source_commit(), nullptr);
+  const int dirty = face_tracking_nui_ai_mediapipe_source_dirty();
+  EXPECT_GE(dirty, -1);
+  EXPECT_LE(dirty, 1);
+  const int built_by_core =
+      face_tracking_nui_ai_mediapipe_library_built_by_core_build_rs();
+  EXPECT_GE(built_by_core, 0);
+  EXPECT_LE(built_by_core, 1);
+
+  // Core supplies the source fields and its marker together. A Core-marked
+  // artifact must consequently never claim that source provenance is unknown.
+  if (built_by_core == 1) {
+    EXPECT_NE(dirty, -1);
+    EXPECT_STRNE(face_tracking_nui_ai_mediapipe_source_commit(),
+                 "unavailable (not supplied by the build invocation)");
+  }
+}
+
 }  // namespace

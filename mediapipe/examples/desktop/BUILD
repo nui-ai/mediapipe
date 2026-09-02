@@ -52,6 +52,7 @@ cc_library(
         "face_tracking_c_api.cc",
         "face_tracking_c_conversion.cc",
         "face_tracking_c_types.cc",
+        "nui_mediapipe_source_provenance.h",
     ],
     hdrs = [
         "face_tracking_c_api.h",
@@ -270,6 +271,7 @@ cc_library(
         "hand_tracking_c_api.cc",
         "hand_tracking_c_conversion.cc",
         "hand_tracking_c_types.cc",
+        "nui_mediapipe_source_provenance.h",
     ],
     hdrs = [
         "hand_tracking_c_api.h",

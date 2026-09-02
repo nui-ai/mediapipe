@@ -45,6 +45,22 @@ int hand_tracking_core_finalize(HandTrackingCoreOpaqueHandle opaque_handle);
 /// and hence version compatibility becomes a thing.
 const char* hand_tracking_core_version();
 
+/// Returns the full nui.ai MediaPipe Git commit compiled into this library, or
+/// an explanatory unavailable value when the build invocation did not supply
+/// source provenance. The returned pointer is owned by the library and remains
+/// valid for the lifetime of the loaded library.
+const char* hand_tracking_nui_ai_mediapipe_source_commit(void);
+
+/// Returns whether the nui.ai MediaPipe source tree was dirty when this
+/// library was built: 0 means clean, 1 means dirty, and -1 means the build
+/// invocation did not supply that information.
+int hand_tracking_nui_ai_mediapipe_source_dirty(void);
+
+/// Returns 1 only when Core's build.rs marked the Bazel invocation which
+/// compiled this library; a direct or otherwise initiated Bazel build returns
+/// 0 because it does not carry that compiler definition.
+int hand_tracking_nui_ai_mediapipe_library_built_by_core_build_rs(void);
+
 /// Destroys a HandTrackingResultC and all its nested allocations.
 /// In the future, we may switch to preallocate a fixed amount of memory and reuse the same memory on all calls
 /// to the Process method, at which point the caller will no longer need to manage the lifecycle (destruction)

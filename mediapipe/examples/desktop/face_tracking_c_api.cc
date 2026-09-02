@@ -7,6 +7,7 @@
 #include <string>
 
 #include "mediapipe/examples/desktop/face_tracking_c_conversion.h"
+#include "mediapipe/examples/desktop/nui_mediapipe_source_provenance.h"
 #include "mediapipe/framework/formats/image.h"
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/liberated/face_tracking.h"
@@ -159,3 +160,15 @@ extern "C" int face_tracking_core_finalize(
 }
 
 extern "C" const char* face_tracking_core_version() { return "2.0.0"; }
+
+extern "C" const char* face_tracking_nui_ai_mediapipe_source_commit() {
+  return nui_ai_mediapipe_source_provenance::SourceCommit();
+}
+
+extern "C" int face_tracking_nui_ai_mediapipe_source_dirty() {
+  return nui_ai_mediapipe_source_provenance::SourceDirty();
+}
+
+extern "C" int face_tracking_nui_ai_mediapipe_library_built_by_core_build_rs() {
+  return nui_ai_mediapipe_source_provenance::LibraryBuiltByCoreBuildRs();
+}
