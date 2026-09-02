@@ -18,6 +18,11 @@ typedef struct FaceTrackingOptionsC {
   float min_detection_confidence;
   float min_tracking_confidence;
   int32_t xnnpack_num_threads;
+  // Non-zero runs face geometry for every accepted face and requests its pose.
+  uint8_t estimate_pose;
+  // Virtual camera vertical field of view. This must be finite and within
+  // (0, 180) degrees when estimate_pose is non-zero; otherwise it is unused.
+  float vertical_fov_degrees;
 } FaceTrackingOptionsC;
 
 // One image-normalized face landmark. x and y use the input viewport; z uses
@@ -39,6 +44,14 @@ typedef struct FaceRectC {
   float rotation;
 } FaceRectC;
 
+// Canonical-face to runtime-metric similarity transform. The upper 3x3 block
+// contains uniform scale multiplied by a proper rotation, and the rightmost
+// column contains translation. Values use column-major storage and the matrix
+// acts on homogeneous column vectors.
+typedef struct FacePoseTransformC {
+  float canonical_to_runtime_column_major[16];
+} FacePoseTransformC;
+
 // Bottom-line inference for one face. landmark_count is 468 for the base
 // model and 478 for the attention model.
 typedef struct FaceInferenceC {
@@ -46,10 +59,14 @@ typedef struct FaceInferenceC {
   size_t landmark_count;
   float presence_score;
   FaceRectC rect_from_landmarks;
+  // Non-zero means pose_transform contains the fit for this face. Zero means
+  // pose was disabled or this accepted face was too compact for a stable fit.
+  uint8_t has_pose_transform;
+  FacePoseTransformC pose_transform;
 } FaceInferenceC;
 
-// Results for one input image. Face ordering is consistent among fields in
-// this result but does not represent persistent identities across images.
+// Results for one input image. Face array positions do not represent
+// persistent identities across images.
 typedef struct FaceTrackingResultC {
   FaceInferenceC* faces;
   size_t face_count;

@@ -114,28 +114,25 @@ absl::Status Run(FaceTrackingCore* tracker) {
     }
 
     MP_ASSIGN_OR_RETURN(auto result, tracker->Process(MakeImage(rgb_image)));
-    frames_with_faces += !result->face_landmarks.empty();
+    frames_with_faces += !result->faces.empty();
     detector_runs += result->face_detector_ran;
     if (frame_number == 0 || (frame_number + 1) % 30 == 0) {
       ABSL_LOG(INFO) << "Frame " << frame_number << ": "
-                     << result->face_landmarks.size() << " face(s), "
-                     << (result->face_landmarks.empty()
+                     << result->faces.size() << " face(s), "
+                     << (result->faces.empty()
                              ? 0
-                             : result->face_landmarks.front().landmark_size())
+                             : result->faces.front().landmarks.landmark_size())
                      << " landmarks per first face";
     }
 
     if (output.is_open()) {
       FaceTrackingOutputData frame_output;
       frame_output.set_frame_number(frame_number);
-      for (const auto& landmarks : result->face_landmarks) {
-        *frame_output.add_multi_face_landmarks() = landmarks;
-      }
-      for (float score : result->face_presence_scores) {
-        frame_output.add_face_presence_scores(score);
-      }
-      for (const auto& rect : result->face_rects_from_landmarks) {
-        *frame_output.add_face_rects_from_landmarks() = rect;
+      for (const auto& face : result->faces) {
+        *frame_output.add_multi_face_landmarks() = face.landmarks;
+        frame_output.add_face_presence_scores(face.presence_score);
+        *frame_output.add_face_rects_from_landmarks() =
+            face.rect_from_landmarks;
       }
       RET_CHECK(google::protobuf::util::SerializeDelimitedToOstream(
           frame_output, &output))

@@ -40,12 +40,17 @@
 namespace hand_tracking_mp_lean::tasks::vision::face_geometry {
 namespace {
 
+// Holds the image-aspect-specific bounds of the configured virtual camera.
 struct PerspectiveCameraFrustum {
   // NOTE: all arguments must be validated prior to calling this constructor.
   PerspectiveCameraFrustum(const proto::PerspectiveCamera& perspective_camera,
                            int frame_width, int frame_height) {
     static constexpr float kDegreesToRadians = 3.14159265358979323846f / 180.f;
 
+    // The virtual camera is at the origin. Its vertical field of view determines
+    // the near-plane height at the configured near distance; the input image's
+    // aspect ratio then determines the near-plane width. Screen X/Y coordinates
+    // are mapped onto this rectangle before perspective unprojection.
     const float height_at_near =
         2.f * perspective_camera.near() *
         std::tan(0.5f * kDegreesToRadians *
@@ -69,6 +74,7 @@ struct PerspectiveCameraFrustum {
   float far;
 };
 
+// Performs one face's screen-to-metric reconstruction and canonical-face fit.
 class ScreenToMetricSpaceConverter {
  public:
   ScreenToMetricSpaceConverter(
@@ -83,43 +89,31 @@ class ScreenToMetricSpaceConverter {
         landmark_weights_(std::move(landmark_weights)),
         procrustes_solver_(std::move(procrustes_solver)) {}
 
-  // Converts `screen_landmark_list` into `metric_landmark_list` and estimates
-  // the `pose_transform_mat`.
+  // Reconstructs a runtime metric cloud and its canonical-to-runtime transform.
   //
-  // Here's the algorithm summary:
+  // The network input provides image-normalized X/Y and relative Z whose scale
+  // follows image X. It does not provide camera-space depth. The conversion must
+  // therefore infer the missing scale before perspective X/Y can be recovered:
   //
-  // (1) Project X- and Y- screen landmark coordinates at the Z near plane.
+  // 1. Map normalized X/Y onto the virtual camera's near plane. Map Z with the
+  //    same horizontal scale so its weak-perspective relation to X is retained.
+  // 2. Fit the canonical face directly to that projected cloud. The fitted
+  //    uniform scale supplies a first estimate of the depth conversion without
+  //    yet treating relative Z as an absolute perspective depth.
+  // 3. Recenter and rescale Z with that estimate, perspective-unproject X/Y,
+  //    and fit again. This second scale measures the multiplicative correction
+  //    revealed by the provisional perspective reconstruction.
+  // 4. Repeat the Z conversion and unprojection with the product of both scale
+  //    estimates. The result is the final runtime metric landmark cloud.
+  // 5. Fit the canonical face to that cloud with the configured landmark
+  //    weights. This produces the canonical-to-runtime pose transform.
+  // 6. Apply the inverse transform to the runtime cloud. The returned mesh is
+  //    thereby expressed in the canonical face's local metric frame, while the
+  //    separately returned pose matrix places that mesh back in runtime space.
   //
-  // (2) Estimate a canonical-to-runtime landmark set scale by running the
-  //     Procrustes solver using the screen runtime landmarks.
-  //
-  //     On this iteration, screen landmarks are used instead of unprojected
-  //     metric landmarks as it is not safe to unproject due to the relative
-  //     nature of the input screen landmark Z coordinate.
-  //
-  // (3) Use the canonical-to-runtime scale from (2) to unproject the screen
-  //     landmarks. The result is referenced as "intermediate landmarks" because
-  //     they are the first estimation of the resulting metric landmarks,but are
-  //     not quite there yet.
-  //
-  // (4) Estimate a canonical-to-runtime landmark set scale by running the
-  //     Procrustes solver using the intermediate runtime landmarks.
-  //
-  // (5) Use the product of the scale factors from (2) and (4) to unproject
-  //     the screen landmarks the second time. This is the second and the final
-  //     estimation of the metric landmarks.
-  //
-  // (6) Multiply each of the metric landmarks by the inverse pose
-  //     transformation matrix to align the runtime metric face landmarks with
-  //     the canonical metric face landmarks.
-  //
-  // Note: the input screen landmarks are in the left-handed coordinate system,
-  //       however any metric landmarks - including the canonical metric
-  //       landmarks, the final runtime metric landmarks and any intermediate
-  //       runtime metric landmarks - are in the right-handed coordinate system.
-  //
-  //       To keep the logic correct, the landmark set handedness is changed any
-  //       time the screen-to-metric semantic barrier is passed.
+  // Screen landmarks use a left-handed depth convention. Canonical, provisional,
+  // and final metric landmarks use a right-handed convention, so each projected
+  // screen cloud crosses that coordinate-system boundary by negating Z once.
   absl::Status Convert(
       const hand_tracking_mp_lean::NormalizedLandmarkList& screen_landmark_list,  //
       const PerspectiveCameraFrustum& pcf,                            //
@@ -133,13 +127,15 @@ class ScreenToMetricSpaceConverter {
     Eigen::Matrix3Xf screen_landmarks;
     ConvertLandmarkListToEigenMatrix(screen_landmark_list, screen_landmarks);
 
+    // ProjectXY maps X/Y to the virtual near-plane rectangle and applies that
+    // rectangle's horizontal scale to relative Z. The mean projected Z is an
+    // arbitrary network depth origin, not the face's camera-space distance.
     ProjectXY(pcf, screen_landmarks);
     const float depth_offset = screen_landmarks.row(2).mean();
 
-    // 1st iteration: don't unproject XY because it's unsafe to do so due to
-    //                the relative nature of the Z coordinate. Instead, run the
-    //                first estimation on the projected XY and use that scale to
-    //                unproject for the 2nd iteration.
+    // First fit: use near-plane X/Y and relative Z as a weak-perspective cloud.
+    // Perspective unprojection needs a depth for every point, so it cannot run
+    // until this fit has supplied an initial canonical-to-runtime scale.
     Eigen::Matrix3Xf intermediate_landmarks(screen_landmarks);
     ChangeHandedness(intermediate_landmarks);
 
@@ -147,7 +143,9 @@ class ScreenToMetricSpaceConverter {
                         EstimateScale(intermediate_landmarks),
                         _ << "Failed to estimate first iteration scale!");
 
-    // 2nd iteration: unproject XY using the scale from the 1st iteration.
+    // Provisional reconstruction: the first scale turns centered relative Z
+    // into a depth estimate. Unprojection then moves each near-plane X/Y point
+    // along its camera ray to that estimated depth.
     intermediate_landmarks = screen_landmarks;
     MoveAndRescaleZ(pcf, depth_offset, first_iteration_scale,
                     intermediate_landmarks);
@@ -172,13 +170,16 @@ class ScreenToMetricSpaceConverter {
                         EstimateScale(intermediate_landmarks),
                         _ << "Failed to estimate second iteration scale!");
 
-    // Use the total scale to unproject the screen landmarks.
+    // The second fit measures the scale correction introduced by provisional
+    // unprojection. Applying both multiplicative estimates to the original
+    // projected landmarks produces the final runtime metric cloud.
     const float total_scale = first_iteration_scale * second_iteration_scale;
     MoveAndRescaleZ(pcf, depth_offset, total_scale, screen_landmarks);
     UnprojectXY(pcf, screen_landmarks);
     ChangeHandedness(screen_landmarks);
 
-    // At this point, screen landmarks are converted into metric landmarks.
+    // From this point onward, the matrix contains right-handed runtime metric
+    // coordinates rather than normalized screen coordinates.
     Eigen::Matrix3Xf& metric_landmarks = screen_landmarks;
 
     MP_RETURN_IF_ERROR(procrustes_solver_->SolveWeightedOrthogonalProblem(
@@ -200,9 +201,9 @@ class ScreenToMetricSpaceConverter {
           << "Failed to estimate pose transform matrix!";
     }
 
-    // Multiply each of the metric landmarks by the inverse pose
-    // transformation matrix to align the runtime metric face landmarks with
-    // the canonical metric face landmarks.
+    // Separate non-rigid face shape from global placement: applying the inverse
+    // fitted similarity transform moves the runtime cloud into the canonical
+    // face's local coordinate frame. The forward matrix remains the face pose.
     metric_landmarks = (pose_transform_mat.inverse() *
                         metric_landmarks.colwise().homogeneous())
                            .topRows(3);
@@ -221,9 +222,14 @@ class ScreenToMetricSpaceConverter {
     float y_translation = pcf.bottom;
 
     if (origin_point_location_ == proto::OriginPointLocation::TOP_LEFT_CORNER) {
+      // The virtual camera uses bottom-up Y, whereas a top-left image origin
+      // supplies downward-growing normalized Y.
       landmarks.row(1) = 1.f - landmarks.row(1).array();
     }
 
+    // Map normalized X/Y onto the virtual camera's near-plane rectangle. Z is
+    // relative rather than normalized, but the landmark model defines it in the
+    // same scale as X, so it receives the near plane's horizontal scale too.
     landmarks =
         landmarks.array().colwise() * Eigen::Array3f(x_scale, y_scale, x_scale);
     landmarks.colwise() += Eigen::Vector3f(x_translation, y_translation, 0.f);
@@ -236,18 +242,26 @@ class ScreenToMetricSpaceConverter {
         transform_mat))
         << "Failed to estimate canonical-to-runtime landmark set transform!";
 
+    // A similarity transform's upper 3x3 block is sR. Every rotation column has
+    // unit length, so the first transformed basis column has norm s.
     return transform_mat.col(0).norm();
   }
 
   static void MoveAndRescaleZ(const PerspectiveCameraFrustum& pcf,
                               float depth_offset, float scale,
                               Eigen::Matrix3Xf& landmarks) {
+    // Subtract the network's arbitrary common depth offset, add the virtual near
+    // distance, and divide that complete depth expression by the current
+    // canonical-to-runtime scale estimate.
     landmarks.row(2) =
         (landmarks.array().row(2) - depth_offset + pcf.near) / scale;
   }
 
   static void UnprojectXY(const PerspectiveCameraFrustum& pcf,
                           Eigen::Matrix3Xf& landmarks) {
+    // X/Y currently describe where each camera ray intersects the near plane.
+    // Similar triangles move that point along the ray to its estimated Z by the
+    // ratio Z / near.
     landmarks.row(0) =
         landmarks.row(0).cwiseProduct(landmarks.row(2)) / pcf.near;
     landmarks.row(1) =
@@ -255,6 +269,8 @@ class ScreenToMetricSpaceConverter {
   }
 
   static void ChangeHandedness(Eigen::Matrix3Xf& landmarks) {
+    // Screen relative depth and the runtime metric camera convention point Z in
+    // opposite directions. X and Y already use the intended metric orientation.
     landmarks.row(2) *= -1.f;
   }
 
@@ -291,6 +307,7 @@ class ScreenToMetricSpaceConverter {
   std::unique_ptr<ProcrustesSolver> procrustes_solver_;
 };
 
+// Owns immutable camera and canonical data shared by independent frame calls.
 class GeometryPipelineImpl : public GeometryPipeline {
  public:
   GeometryPipelineImpl(
@@ -315,26 +332,23 @@ class GeometryPipelineImpl : public GeometryPipeline {
     MP_RETURN_IF_ERROR(ValidateFrameDimensions(frame_width, frame_height))
         << "Invalid frame dimensions!";
 
-    // Create a perspective camera frustum to be shared for geometry estimation
-    // per each face.
+    // Frame dimensions determine the virtual camera's aspect ratio. The same
+    // resulting frustum applies to every face reconstructed from this frame.
     PerspectiveCameraFrustum pcf(perspective_camera_, frame_width,
                                  frame_height);
 
     std::vector<proto::FaceGeometry> multi_face_geometry;
 
-    // From this point, the meaning of "face landmarks" is clarified further as
-    // "screen face landmarks". This is done do distinguish from "metric face
-    // landmarks" that are derived during the face geometry estimation process.
     for (const hand_tracking_mp_lean::NormalizedLandmarkList& screen_face_landmarks :
          multi_face_landmarks) {
-      // Having a too compact screen landmark list will result in numerical
-      // instabilities, therefore such faces are filtered.
+      // A cloud with negligible image-space extent cannot determine a stable
+      // scale or rotation. Omit that face rather than emitting an arbitrary fit.
       if (IsScreenLandmarkListTooCompact(screen_face_landmarks)) {
         continue;
       }
 
-      // Convert the screen landmarks into the metric landmarks and get the pose
-      // transformation matrix.
+      // Convert the neural output into a canonical-local metric mesh and obtain
+      // the forward transform which places that mesh in runtime metric space.
       hand_tracking_mp_lean::LandmarkList metric_face_landmarks;
       Eigen::Matrix4f pose_transform_mat;
       MP_RETURN_IF_ERROR(space_converter_->Convert(screen_face_landmarks, pcf,
@@ -342,12 +356,11 @@ class GeometryPipelineImpl : public GeometryPipeline {
                                                    pose_transform_mat))
           << "Failed to convert landmarks from the screen to the metric space!";
 
-      // Pack geometry data for this face.
       proto::FaceGeometry face_geometry;
       proto::Mesh3d* mutable_mesh = face_geometry.mutable_mesh();
-      // Copy the canonical face mesh as the face geometry mesh.
+      // Reuse the canonical topology and UV coordinates, then replace only its
+      // canonical XYZ values with this face's canonical-local reconstruction.
       mutable_mesh->CopyFrom(canonical_mesh_);
-      // Replace XYZ vertex mesh coordinates with the metric landmark positions.
       for (int i = 0; i < canonical_mesh_num_vertices_; ++i) {
         uint32_t vertex_buffer_offset = canonical_mesh_vertex_size_ * i +
                                         canonical_mesh_vertex_position_offset_;
@@ -359,7 +372,8 @@ class GeometryPipelineImpl : public GeometryPipeline {
         mutable_mesh->set_vertex_buffer(vertex_buffer_offset + 2,
                                         metric_face_landmarks.landmark(i).z());
       }
-      // Populate the face pose transformation matrix.
+      // The pose matrix maps homogeneous canonical-local column vectors into
+      // the runtime metric coordinate system used by the virtual camera.
       hand_tracking_mp_lean::MatrixDataProtoFromMatrix(
           pose_transform_mat, face_geometry.mutable_pose_transform_matrix());
 
@@ -408,7 +422,7 @@ absl::StatusOr<std::unique_ptr<GeometryPipeline>> CreateGeometryPipeline(
   MP_RETURN_IF_ERROR(ValidateEnvironment(environment))
       << "Invalid environment!";
   MP_RETURN_IF_ERROR(ValidateGeometryPipelineMetadata(metadata))
-      << "Invalid geometry pipeline metadata!";
+      << "Invalid input-source, canonical-face, or fitting-basis configuration!";
 
   const auto& canonical_mesh = metadata.canonical_mesh();
   RET_CHECK(HasVertexComponent(canonical_mesh.vertex_type(),
@@ -427,7 +441,9 @@ absl::StatusOr<std::unique_ptr<GeometryPipeline>> CreateGeometryPipeline(
                                VertexComponent::POSITION)
           .value();
 
-  // Put the Procrustes landmark basis into Eigen matrices for an easier access.
+  // Store every canonical vertex as one point-cloud column. The weight vector
+  // has the same indexing as the 468 canonical vertices; vertices outside the
+  // configured fitting basis retain weight zero and do not affect the pose fit.
   Eigen::Matrix3Xf canonical_metric_landmarks =
       Eigen::Matrix3Xf::Zero(3, canonical_mesh_num_vertices);
   Eigen::VectorXf landmark_weights =

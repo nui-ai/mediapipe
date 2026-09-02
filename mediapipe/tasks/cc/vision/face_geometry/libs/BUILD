@@ -40,6 +40,19 @@ cc_library(
 )
 
 cc_library(
+    name = "geometry_pipeline_metadata_loader",
+    srcs = ["geometry_pipeline_metadata_loader.cc"],
+    hdrs = ["geometry_pipeline_metadata_loader.h"],
+    deps = [
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:statusor",
+        "//mediapipe/tasks/cc/core:external_file_handler",
+        "//mediapipe/tasks/cc/core/proto:external_file_cc_proto",
+        "//mediapipe/tasks/cc/vision/face_geometry/proto:geometry_pipeline_metadata_cc_proto",
+    ],
+)
+
+cc_library(
     name = "mesh_3d_utils",
     srcs = ["mesh_3d_utils.cc"],
     hdrs = ["mesh_3d_utils.h"],

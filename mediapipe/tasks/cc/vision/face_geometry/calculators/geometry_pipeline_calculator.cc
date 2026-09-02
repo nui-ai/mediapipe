@@ -26,10 +26,10 @@
 #include "mediapipe/framework/port/status_macros.h"
 #include "mediapipe/framework/port/statusor.h"
 #include "mediapipe/tasks/cc/common.h"
-#include "mediapipe/tasks/cc/core/external_file_handler.h"
 #include "mediapipe/tasks/cc/core/proto/external_file.pb.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/calculators/geometry_pipeline_calculator.pb.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/libs/geometry_pipeline.h"
+#include "mediapipe/tasks/cc/vision/face_geometry/libs/geometry_pipeline_metadata_loader.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/libs/validation_utils.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/environment.pb.h"
 #include "mediapipe/tasks/cc/vision/face_geometry/proto/face_geometry.pb.h"
@@ -150,7 +150,7 @@ class GeometryPipelineCalculator : public CalculatorBase {
 
     MP_ASSIGN_OR_RETURN(
         GeometryPipelineMetadata metadata,
-        ReadMetadataFromFile(options.metadata_file()),
+        ReadGeometryPipelineMetadata(options.metadata_file()),
         _ << "Failed to read the geometry pipeline metadata from file!");
 
     MP_RETURN_IF_ERROR(ValidateGeometryPipelineMetadata(metadata))
@@ -237,20 +237,6 @@ class GeometryPipelineCalculator : public CalculatorBase {
   }
 
  private:
-  static absl::StatusOr<GeometryPipelineMetadata> ReadMetadataFromFile(
-      const core::proto::ExternalFile& metadata_file) {
-    MP_ASSIGN_OR_RETURN(
-        const auto file_handler,
-        core::ExternalFileHandler::CreateFromExternalFile(&metadata_file));
-
-    GeometryPipelineMetadata metadata;
-    RET_CHECK(
-        metadata.ParseFromString(std::string(file_handler->GetFileContent())))
-        << "Failed to parse a metadata proto from a binary blob!";
-
-    return metadata;
-  }
-
   std::unique_ptr<GeometryPipeline> geometry_pipeline_;
 };
 

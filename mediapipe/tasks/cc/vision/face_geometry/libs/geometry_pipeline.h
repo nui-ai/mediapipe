@@ -26,25 +26,30 @@
 
 namespace hand_tracking_mp_lean::tasks::vision::face_geometry {
 
-// Encapsulates a stateless estimator of facial geometry in a Metric space based
-// on the normalized face landmarks in the Screen space.
+// Reconstructs runtime facial geometry from normalized screen landmarks.
+//
+// The configured canonical mesh supplies the local coordinate system and scale.
+// The configured virtual camera supplies the perspective projection model. For
+// each input face, the pipeline reconstructs a right-handed metric landmark
+// cloud, fits a canonical-to-runtime similarity transform, and returns both the
+// transform and a mesh expressed in the canonical face's local coordinates.
+// The estimator retains no state between calls.
 class GeometryPipeline {
  public:
   virtual ~GeometryPipeline() = default;
 
-  // Estimates geometry data for multiple faces.
+  // Reconstructs geometry for each numerically usable input face.
   //
   // Returns an error status if any of the passed arguments is invalid.
   //
-  // The result includes face geometry data for a subset of the input faces,
-  // however geometry data for some faces might be missing. This may happen if
-  // it'd be unstable to estimate the facial geometry based on a corresponding
-  // face landmark list for any reason (for example, if the landmark list is too
-  // compact).
+  // Each returned `FaceGeometry` contains a canonical-local metric mesh and a
+  // 4x4 similarity transform which maps that mesh into the virtual camera's
+  // runtime metric coordinate system. The result may omit an input face when
+  // its landmarks have too little image-space extent for a stable fit. Callers
+  // must therefore not assume that result indices retain input indices.
   //
-  // Each face landmark list must have the same number of landmarks as was
-  // passed upon initialization via the canonical face mesh (as a part of the
-  // geometry pipeline metadata).
+  // Each face landmark list must contain the same number of points as the
+  // canonical mesh supplied when this pipeline was created.
   //
   // Both `frame_width` and `frame_height` must be positive.
   virtual absl::StatusOr<std::vector<proto::FaceGeometry>> EstimateFaceGeometry(
@@ -53,13 +58,13 @@ class GeometryPipeline {
       int frame_width, int frame_height) const = 0;
 };
 
-// Creates an instance of `GeometryPipeline`.
+// Creates a reusable geometry estimator for one canonical mesh and camera
+// configuration.
 //
-// Both `environment` and `metadata` must be valid (for details, please refer to
-// the proto message definition comments and/or `validation_utils.h/cc`).
-//
-// Canonical face mesh (defined as a part of `metadata`) must have the
-// `POSITION` and the `TEX_COORD` vertex components.
+// `environment` must define a valid image origin and virtual perspective
+// camera. `metadata` must define the input landmark source, canonical face mesh,
+// and weighted Procrustes fitting basis. The canonical mesh must contain the
+// `POSITION` and `TEX_COORD` vertex components.
 absl::StatusOr<std::unique_ptr<GeometryPipeline>> CreateGeometryPipeline(
     const proto::Environment& environment,
     const proto::GeometryPipelineMetadata& metadata);

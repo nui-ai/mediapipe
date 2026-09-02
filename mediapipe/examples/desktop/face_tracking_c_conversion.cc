@@ -1,5 +1,6 @@
 #include "mediapipe/examples/desktop/face_tracking_c_conversion.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <string>
 
@@ -27,16 +28,7 @@ int ConvertFaceTrackingResultToC(
     return -1;
   }
 
-  const size_t face_count = cpp_result.face_landmarks.size();
-  if (cpp_result.face_presence_scores.size() != face_count ||
-      cpp_result.face_rects_from_landmarks.size() != face_count) {
-    if (set_last_error != nullptr) {
-      set_last_error(
-          "face landmarks, presence scores, and landmark-derived rectangles "
-          "do not have matching counts");
-    }
-    return -1;
-  }
+  const size_t face_count = cpp_result.faces.size();
 
   c_result->face_detector_ran = cpp_result.face_detector_ran ? 1 : 0;
   c_result->face_count = face_count;
@@ -55,7 +47,8 @@ int ConvertFaceTrackingResultToC(
   }
 
   for (size_t face_index = 0; face_index < face_count; ++face_index) {
-    const auto& source_landmarks = cpp_result.face_landmarks[face_index];
+    const auto& source_face = cpp_result.faces[face_index];
+    const auto& source_landmarks = source_face.landmarks;
     const int landmark_count = source_landmarks.landmark_size();
     if (landmark_count != 468 && landmark_count != 478) {
       if (set_last_error != nullptr) {
@@ -86,10 +79,15 @@ int ConvertFaceTrackingResultToC(
       target->visibility = source.visibility();
       target->presence = source.presence();
     }
-    destination->presence_score =
-        cpp_result.face_presence_scores[face_index];
-    CopyRect(cpp_result.face_rects_from_landmarks[face_index],
-             &destination->rect_from_landmarks);
+    destination->presence_score = source_face.presence_score;
+    CopyRect(source_face.rect_from_landmarks, &destination->rect_from_landmarks);
+    if (source_face.pose_transform.has_value()) {
+      destination->has_pose_transform = 1;
+      std::copy(
+          source_face.pose_transform->canonical_to_runtime_column_major.begin(),
+          source_face.pose_transform->canonical_to_runtime_column_major.end(),
+          destination->pose_transform.canonical_to_runtime_column_major);
+    }
   }
   return 0;
 }

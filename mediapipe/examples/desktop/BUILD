@@ -74,6 +74,7 @@ cc_test(
         "//mediapipe/modules/face_detection:face_detection_short_range.tflite",
         "//mediapipe/modules/face_landmark:face_landmark.tflite",
         "//mediapipe/modules/face_landmark:face_landmark_with_attention.tflite",
+        "//mediapipe/tasks/cc/vision/face_geometry/data:geometry_pipeline_metadata_landmarks",
     ],
     deps = [
         ":face_tracking_c_api",

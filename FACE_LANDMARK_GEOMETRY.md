@@ -1,6 +1,6 @@
 # Face landmark geometry and its interpretation
 
-The graph-free face tracker returns a dense, useful description of facial shape, but its coordinates span several different kinds of geometry with different guarantees. This document explains what the landmark model actually predicts, how it learns relative depth, what MediaPipe can derive from those predictions, which pieces are present in the current liberated implementation, and which results would be worthwhile to carry through its C ABI to downstream users.
+The graph-free face tracker returns a dense, useful description of facial shape, but its coordinates span several different kinds of geometry with different guarantees. This document explains what the landmark model predicts, how it learns relative depth, how MediaPipe derives metric geometry and pose, and which results the liberated implementation carries through its C ABI to downstream users.
 
 ## Table of contents
 
@@ -18,7 +18,7 @@ The graph-free face tracker returns a dense, useful description of facial shape,
 - [Iris-based camera distance](#iris-based-camera-distance)
 - [Blendshape coefficients](#blendshape-coefficients)
 - [What currently crosses the ABI](#what-currently-crosses-the-abi)
-- [A useful ABI evolution](#a-useful-abi-evolution)
+- [Current pose integration and possible later outputs](#current-pose-integration-and-possible-later-outputs)
 - [Practical interpretation](#practical-interpretation)
 - [Sources](#sources)
 
@@ -144,15 +144,18 @@ Topology, UVs, and canonical positions should generally be published once as a v
 
 MediaPipe’s Face Geometry library converts screen landmarks into a right-handed metric coordinate system configured by a virtual perspective camera. Its default environment uses a top-left image origin, a vertical field of view of 63 degrees, a near plane of 1 centimetre, and a far plane of 100 metres.
 
-The reconstruction proceeds approximately as follows:
+The reconstruction proceeds as follows:
 
-1. Project normalized screen X and Y onto the virtual camera’s near plane.
-2. Fit the screen landmark set against the canonical face to obtain an initial scale.
-3. Use that scale to rescale relative Z and unproject X and Y.
-4. Fit a second scale using the intermediate metric landmarks.
-5. Repeat the unprojection using the combined scale.
-6. Solve a weighted Procrustes problem from canonical landmarks to reconstructed runtime landmarks.
-7. Remove the fitted pose to express the reconstructed mesh in a canonical-local metric frame.
+1. The vertical field of view and near distance define the virtual camera’s near-plane height. The input frame’s aspect ratio defines its width.
+2. Map normalized screen X and Y onto that near-plane rectangle. Scale relative Z like X, preserving the landmark model’s weak-perspective convention.
+3. Fit the canonical face directly to this projected cloud. The fit’s uniform scale provides an initial conversion for relative Z without first pretending that Z is an absolute camera-space depth.
+4. Subtract the landmark cloud’s mean Z offset, add the virtual near distance, and divide that complete depth expression by the initial scale. Perspective-unproject each near-plane X/Y point along its camera ray to the resulting provisional depth.
+5. Fit the canonical face to this provisional metric cloud. The resulting second scale is the multiplicative correction exposed by the first perspective reconstruction.
+6. Repeat the Z conversion and perspective unprojection with the product of the first and second scales. This produces the final right-handed runtime metric landmark cloud.
+7. Solve a weighted Procrustes problem from the canonical landmarks to the runtime metric landmarks. The static geometry asset identifies which canonical vertices participate in the fitting basis and assigns each selected vertex its influence weight.
+8. Apply the inverse fitted transform to the runtime cloud. This expresses the returned mesh in the canonical face’s local metric frame; applying the separately returned forward transform places it back in runtime metric space.
+
+The Procrustes fit minimizes the weighted squared distances between corresponding canonical and runtime points under one uniform scale, one proper rotation, and one translation. Internally, square-root weights turn that objective into ordinary matrix least squares. Weighted centering removes translation, a singular-value decomposition of the cross-covariance supplies the best rotation without reflection, scalar projection supplies scale, and the weighted mean residual supplies translation.
 
 The resulting mesh contains 468 XYZ vertex positions with the canonical UV coordinates and triangle indices. Applying its pose transform and the matching virtual-camera projection reproduces the original screen-space X and Y positions.
 
@@ -162,7 +165,7 @@ Supplying a vertical field of view close to that of the real camera improves the
 
 ### The facial pose transformation matrix
 
-The public Face Landmarker API calls this optional output the `facial_transformation_matrixes`; internally `FaceGeometry` calls it the `pose_transform_matrix`.
+The public Face Landmarker API calls this optional output the `facial_transformation_matrixes`; internally `FaceGeometry` calls it the `pose_transform_matrix`. “Pose” is the standard name here for the fitted global placement of the canonical face. The transform contains scale and translation as well as orientation, so it is more specifically a similarity transform rather than a rotation-only pose.
 
 It is a 4 by 4 canonical-to-runtime similarity transform containing:
 
@@ -185,7 +188,7 @@ When `with_attention` is false, which is the default, the tracker uses the Base 
 
 The current implementation does not calculate iris diameter, camera distance, eye orientation, or gaze direction. It does not instantiate `IrisToDepthCalculator` or a graph-free equivalent. Its iris Z values are derived from neighboring eye landmarks rather than independently inferred.
 
-The standard Tasks face-geometry path also discards iris points before reconstruction and operates on the first 468 landmarks. A legacy Face Geometry metadata variant exists with interpolated iris vertices and UVs, but the current Tasks graph does not use it. For most applications it is cleaner to keep the 468-point face surface and the ten specialized iris points as related but distinct geometry.
+The standard Tasks face-geometry path also discards iris points before reconstruction and operates on the first 468 landmarks. A legacy Face Geometry asset variant extends the canonical mesh with interpolated iris vertices and UVs, but the current Tasks graph does not use it. For most applications it is cleaner to keep the 468-point face surface and the ten specialized iris points as related but distinct geometry.
 
 ## Iris-based camera distance
 
@@ -218,30 +221,36 @@ Blendshapes are semantic expression controls rather than additional geometric me
 For each accepted face, the current C ABI exposes:
 
 - 468 Base or 478 Attention screen landmarks;
-- the face-wide presence score; and
-- the landmark-derived rectangle intended for tracking.
+- the face-wide presence score;
+- the landmark-derived rectangle intended for tracking; and
+- an optional canonical-to-runtime face pose transform when pose estimation is configured and the fit is numerically stable.
 
 At the top level it also reports whether the face detector ran on that frame.
 
-The C++ result internally retains detector results and detector-derived rectangles, but the C conversion does not expose those diagnostic collections. It also does not expose crop matrices, metric mesh vertices, a facial pose matrix, topology, UVs, blendshapes, iris distance, or the geometry environment.
+`FaceTrackingOptionsC::estimate_pose` controls the extra work. When it is zero, tracker construction does not load the canonical mesh and weighted fitting basis or create a geometry estimator, and every face reports `has_pose_transform == 0`. When it is nonzero, `vertical_fov_degrees` configures the virtual perspective camera. Tracker construction requires a finite value strictly between 0 and 180 degrees. Frame width and height supply the camera aspect ratio for every inference call.
 
-The face collections are aligned within one returned frame, but their ordering is not a persistent face identity across frames. This limitation matters for any downstream temporal filter, including pose smoothing and iris-distance smoothing.
+`FaceInferenceC::pose_transform` contains 16 inline `float` values. The values use column-major storage, the matrix acts on homogeneous column vectors, and it maps the canonical face into MediaPipe’s right-handed runtime metric space. `has_pose_transform` states whether those values may be read. A face can pass the landmark presence threshold yet receive no pose when its projected landmark cloud is too compact for a stable geometry fit. Other geometry errors fail the frame instead of silently removing pose.
 
-## A useful ABI evolution
+Core’s Rust wrapper converts that validity flag and matrix into `Option<FacePoseTransform>`. The Rust name emphasizes the matrix’s caller-visible role. Its documentation and `canonical_to_runtime_matrix` accessor state the exact transform direction and representation; a longer type name such as `CanonicalToRuntimeTransform` is unnecessary.
 
-The pose transformation matrix is the highest-value geometry addition. A sensible next version would attach optional geometry directly to each accepted face rather than maintaining new parallel arrays.
+The C++ result internally retains detector results and detector-derived rectangles, but the C conversion does not expose those diagnostic collections. It also does not expose crop matrices, metric mesh vertices, topology, UVs, blendshapes, iris distance, or the complete geometry environment.
 
-A per-face geometry result could contain:
+The returned faces have no persistent identity across frames. This limitation matters for any downstream temporal filter, including pose smoothing and iris-distance smoothing.
 
-- an explicit validity flag or status;
-- a 4 by 4 `canonical_to_runtime_metric` matrix;
-- a declared matrix storage and multiplication convention;
-- the environment parameters used to produce it;
-- an optional 468-point canonical-local metric mesh;
-- optional left and right iris distances in millimetres; and
-- optional blendshape coefficients when the extra model is configured.
+The pose fields changed the C layouts in ABI major version 2. `face_tracking_core_version()` reports `2.0.0`, and Core verifies the major version before creating a tracker. This repository changed the structures in place because the graph-free face ABI had no external consumers requiring compatibility with its earlier experimental layout. Future incompatible layout changes should increment the major version so that existing consumers fail explicitly.
 
-Geometry estimation can omit a numerically degenerate or extremely compact face even when screen landmarks exist. Processing each face separately and representing geometry as optional would preserve association with the originating face instead of allowing a filtered geometry vector to lose index alignment.
+## Current pose integration and possible later outputs
+
+`FaceTrackingCore` creates one `FaceGeometryEstimator` during tracker construction when `estimate_pose` is enabled. Creation reads the canonical mesh and the weighted Procrustes basis once, then creates MediaPipe’s reusable graph-independent `GeometryPipeline`. The pipeline still performs the screen-to-metric reconstruction and weighted pose fit for every accepted face on every frame; only virtual-camera configuration and canonical mesh and fitting-basis loading are one-time work.
+
+Base inference supplies all 468 landmarks. Attention inference supplies the final refined first 468 landmarks and omits its ten iris points from geometry calculation because the configured canonical mesh has 468 vertices. This matches the standard Tasks geometry path: refined lip and eye coordinates participate in the fit, while iris-only points do not.
+
+MediaPipe’s full `FaceGeometry` result contains the pose matrix and a 468-point canonical-local metric mesh. The graph-free adapter deliberately retains only the matrix: pose was the required caller-facing result, while copying the full mesh through C storage on every frame would add data and ownership surface without a current consumer. The following outputs remain possible later additions:
+
+- the canonical-local metric mesh;
+- optional left and right iris distances in millimetres;
+- optional blendshape coefficients when the extra model is configured; and
+- a topology or canonical-model identifier if callers need to correlate results with static geometry assets.
 
 The topology and UV data should remain static. An ABI can expose a topology identifier and provide a separate accessor or bundled asset for the canonical mesh. This also gives callers a way to detect future landmark-layout or canonical-model revisions.
 
@@ -252,9 +261,7 @@ It would be helpful to describe coordinate spaces in types or field names rather
 - canonical-local metric mesh coordinates; and
 - the runtime metric coordinate frame configured by the virtual camera.
 
-Changing the size of an existing public C structure can break binary consumers. Geometry is therefore better introduced through a versioned result structure, an opaque accessor API, or a feature-negotiated extension rather than silently appending fields to a structure whose size callers may have compiled into their binaries.
-
-The existing Face Geometry implementation is already exposed as a graph-independent library through `CreateGeometryPipeline`. `FaceTrackingCore` could create one pipeline at construction, parse the canonical metadata once, and invoke it after accepting and projecting each landmark result. Attention results would be sliced to their first 468 points for parity with the Tasks pipeline. Users who need only screen landmarks should be able to leave the feature disabled and avoid its computation and output payload.
+Changing the size of an existing public C structure can break binary consumers. Any later incompatible additions must therefore accompany an ABI-major increment, or use an opaque accessor or feature-negotiated extension whose binary contract permits growth.
 
 ## Practical interpretation
 
@@ -276,8 +283,10 @@ None of these outputs should be described as a direct depth-camera measurement. 
 
 - [`mediapipe/liberated/face_tracking.h`](mediapipe/liberated/face_tracking.h) — current graph-free options and C++ result shape.
 - [`mediapipe/liberated/face_tracking.cc`](mediapipe/liberated/face_tracking.cc) — Base and Attention inference, landmark refinement, iris Z construction, tracking rectangles, and result assembly.
+- [`mediapipe/liberated/face_geometry_estimator.cc`](mediapipe/liberated/face_geometry_estimator.cc) — graph-free adapter from accepted landmarks to the Tasks GeometryPipeline pose result.
 - [`mediapipe/examples/desktop/face_tracking_c_types.h`](mediapipe/examples/desktop/face_tracking_c_types.h) — current public C types.
 - [`mediapipe/examples/desktop/face_tracking_c_conversion.cc`](mediapipe/examples/desktop/face_tracking_c_conversion.cc) — data currently copied through the C ABI.
+- [`../core/src/modalities/face.rs`](../core/src/modalities/face.rs) — Rust `FaceInference` and `FacePoseTransform` domain values.
 - [`mediapipe/calculators/tensor/tensors_to_landmarks_calculator.proto`](mediapipe/calculators/tensor/tensors_to_landmarks_calculator.proto) — weak-perspective Z normalization contract.
 - [`mediapipe/calculators/tensor/tensors_to_landmarks_calculator_core.cc`](mediapipe/calculators/tensor/tensors_to_landmarks_calculator_core.cc) — raw XYZ tensor decoding and normalization.
 - [`mediapipe/calculators/util/landmark_projection_calculator_core.cc`](mediapipe/calculators/util/landmark_projection_calculator_core.cc) — crop-to-viewport landmark projection and Z scaling.
@@ -287,6 +296,7 @@ None of these outputs should be described as a direct depth-camera measurement. 
 - [`mediapipe/tasks/cc/vision/face_geometry/proto/face_geometry.proto`](mediapipe/tasks/cc/vision/face_geometry/proto/face_geometry.proto) — metric mesh and pose-matrix semantics.
 - [`mediapipe/tasks/cc/vision/face_geometry/proto/environment.proto`](mediapipe/tasks/cc/vision/face_geometry/proto/environment.proto) — virtual-camera environment.
 - [`mediapipe/tasks/cc/vision/face_geometry/libs/geometry_pipeline.cc`](mediapipe/tasks/cc/vision/face_geometry/libs/geometry_pipeline.cc) — screen-to-metric conversion, scale estimation, and geometry packing.
+- [`mediapipe/tasks/cc/vision/face_geometry/libs/geometry_pipeline_metadata_loader.cc`](mediapipe/tasks/cc/vision/face_geometry/libs/geometry_pipeline_metadata_loader.cc) — shared loading of the binary canonical mesh, topology, UV coordinates, input-source mode, and fitting basis.
 - [`mediapipe/tasks/cc/vision/face_geometry/libs/procrustes_solver.cc`](mediapipe/tasks/cc/vision/face_geometry/libs/procrustes_solver.cc) — weighted similarity-transform solution.
 - [`mediapipe/tasks/cc/vision/face_geometry/face_geometry_from_landmarks_graph.cc`](mediapipe/tasks/cc/vision/face_geometry/face_geometry_from_landmarks_graph.cc) — default camera parameters and removal of iris landmarks before geometry estimation.
 - [`mediapipe/tasks/cc/vision/face_landmarker/face_landmarker_graph.cc`](mediapipe/tasks/cc/vision/face_landmarker/face_landmarker_graph.cc) — optional Face Geometry integration in the Tasks graph.

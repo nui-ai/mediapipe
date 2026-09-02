@@ -27,8 +27,9 @@ message FaceGeometry {
   // Defines a mesh surface for a face. The face mesh vertex IDs are the same as
   // the face landmark IDs.
   //
-  // XYZ coordinates exist in the right-handed Metric 3D space configured by an
-  // environment. UV coordinates are taken from the canonical face mesh model.
+  // XYZ coordinates use the canonical face's local frame and the right-handed
+  // metric scale configured by the geometry pipeline. UV coordinates and
+  // triangle indices come from the canonical face mesh.
   //
   // XY coordinates are guaranteed to match the screen positions of
   // the input face landmarks after (1) being multiplied by the face pose
@@ -45,10 +46,11 @@ message FaceGeometry {
   //       (keypoints) for the face pose transformation matrix, not the mesh.
   optional Mesh3d mesh = 1;
 
-  // Defines a face pose transformation matrix, which provides mapping from
-  // the static canonical face model to the runtime face. Tries to distinguish
-  // a head pose change from a facial expression change and to only reflect the
-  // former.
+  // Maps the canonical-local mesh into the runtime metric coordinate system of
+  // the configured virtual camera. A weighted fit chooses the single global
+  // placement which best aligns the canonical face with the reconstructed
+  // runtime landmarks. This lets local expression deformation remain in the
+  // mesh rather than forcing it into the global transform.
   //
   // Is a 4x4 matrix and contains only the following components:
   //   * Uniform scale

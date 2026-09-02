@@ -27,6 +27,7 @@
 namespace hand_tracking_mp_lean::tasks::vision::face_geometry {
 namespace {
 
+// Implements the weighted similarity fit with single-precision Eigen matrices.
 class FloatPrecisionProcrustesSolver : public ProcrustesSolver {
  public:
   FloatPrecisionProcrustesSolver() = default;
@@ -43,10 +44,10 @@ class FloatPrecisionProcrustesSolver : public ProcrustesSolver {
         ValidatePointWeights(source_points.cols(), point_weights))
         << "Failed to validate weighted orthogonal problem point weights!";
 
-    // Extract square root from the point weights.
+    // Scaling each residual by sqrt(weight) makes its squared norm contribute
+    // exactly `weight * squared_residual` to the least-squares objective.
     Eigen::VectorXf sqrt_weights = ExtractSquareRoot(point_weights);
 
-    // Try to solve the WEOP problem.
     MP_RETURN_IF_ERROR(InternalSolveWeightedOrthogonalProblem(
         source_points, target_points, sqrt_weights, transform_mat))
         << "Failed to solve the WEOP problem!";
@@ -112,28 +113,23 @@ class FloatPrecisionProcrustesSolver : public ProcrustesSolver {
     return result;
   }
 
-  // The weighted problem is thoroughly addressed in Section 2.4 of:
+  // `sources` and `targets` store corresponding 3D points in matrix columns.
+  // This method finds scale s, proper rotation R, and translation t which
+  // minimize sum_i w_i * ||s R sources_i + t - targets_i||^2.
+  //
+  // Multiplication by sqrt(w_i) converts that weighted objective into an
+  // ordinary matrix least-squares norm. Weighted centering first removes the
+  // translation term. An SVD of the centered cross-covariance then supplies the
+  // best proper rotation. With rotation fixed, scalar projection supplies the
+  // best uniform scale, and the weighted mean residual supplies translation.
+  //
+  // The derivation follows Section 2.4 of:
   // D. Akca, Generalized Procrustes analysis and its applications
   // in photogrammetry, 2003, https://doi.org/10.3929/ethz-a-004656648
   //
-  // Notable differences in the code presented here are:
-  //
-  //   * In the paper, the weights matrix W_p is Cholesky-decomposed as Q^T Q.
-  //     Our W_p is diagonal (equal to diag(sqrt_weights^2)),
-  //     so we can just set Q = diag(sqrt_weights) instead.
-  //
-  //   * In the paper, the problem is presented as
-  //     (for W_k = I and W_p = tranposed(Q) Q):
-  //     || Q (c A T + j tranposed(t) - B) || -> min.
-  //
-  //     We reformulate it as an equivalent minimization of the transpose's
-  //     norm:
-  //     || (c tranposed(T) tranposed(A) - tranposed(B)) tranposed(Q) || -> min,
-  //     where tranposed(A) and tranposed(B) are the source and the target point
-  //     clouds, respectively, c tranposed(T) is the rotation+scaling R sought
-  //     for, and Q is diag(sqrt_weights).
-  //
-  //     Most of the derivations are therefore transposed.
+  // The paper stores points in rows and uses W_p = Q^T Q. Here points are
+  // columns, W_p is diagonal, and Q is `diag(sqrt_weights)`. The implemented
+  // matrix expressions are therefore transposes of the paper's equations.
   //
   // Note: the output `transform_mat` argument is used instead of `StatusOr<>`
   // return type in order to avoid Eigen memory alignment issues. Details:
@@ -141,32 +137,29 @@ class FloatPrecisionProcrustesSolver : public ProcrustesSolver {
   static absl::Status InternalSolveWeightedOrthogonalProblem(
       const Eigen::Matrix3Xf& sources, const Eigen::Matrix3Xf& targets,
       const Eigen::VectorXf& sqrt_weights, Eigen::Matrix4f& transform_mat) {
-    // tranposed(A_w).
+    // Multiply point column i by sqrt(w_i). A later squared Frobenius norm then
+    // gives point i its requested weight w_i.
     Eigen::Matrix3Xf weighted_sources =
         sources.array().rowwise() * sqrt_weights.array().transpose();
-    // tranposed(B_w).
     Eigen::Matrix3Xf weighted_targets =
         targets.array().rowwise() * sqrt_weights.array().transpose();
 
-    // w = tranposed(j_w) j_w.
+    // sqrt(w_i)^2 recovers each original weight.
     float total_weight = sqrt_weights.cwiseProduct(sqrt_weights).sum();
 
-    // Let C = (j_w tranposed(j_w)) / (tranposed(j_w) j_w).
-    // Note that C = tranposed(C), hence (I - C) = tranposed(I - C).
-    //
-    // tranposed(A_w) C = tranposed(A_w) j_w tranposed(j_w) / w =
-    // (tranposed(A_w) j_w) tranposed(j_w) / w = c_w tranposed(j_w),
-    //
-    // where c_w = tranposed(A_w) j_w / w is a k x 1 vector calculated here:
+    // Compute the source centroid as sum_i(w_i * source_i) / sum_i(w_i).
+    // Centering the weighted source cloud removes translation from the rotation
+    // and scale subproblem. The sqrt weights remain on the centered columns.
     Eigen::Matrix3Xf twice_weighted_sources =
         weighted_sources.array().rowwise() * sqrt_weights.array().transpose();
     Eigen::Vector3f source_center_of_mass =
         twice_weighted_sources.rowwise().sum() / total_weight;
-    // tranposed((I - C) A_w) = tranposed(A_w) (I - C) =
-    // tranposed(A_w) - tranposed(A_w) C = tranposed(A_w) - c_w tranposed(j_w).
     Eigen::Matrix3Xf centered_weighted_sources =
         weighted_sources - source_center_of_mass * sqrt_weights.transpose();
 
+    // This product is the weighted cross-covariance between target points and
+    // centered source points. Its SVD determines the rotation which maximizes
+    // their alignment without permitting a mirror reflection.
     Eigen::Matrix3f rotation;
     MP_RETURN_IF_ERROR(ComputeOptimalRotation(
         weighted_targets * centered_weighted_sources.transpose(), rotation))
@@ -177,16 +170,14 @@ class FloatPrecisionProcrustesSolver : public ProcrustesSolver {
                             weighted_targets, rotation),
         _ << "Failed to compute the optimal scale!");
 
-    // R = c tranposed(T).
+    // The homogeneous transform stores sR in its upper 3x3 block.
     Eigen::Matrix3f rotation_and_scale = scale * rotation;
 
-    // Compute optimal translation for the weighted problem.
-
-    // tranposed(B_w - c A_w T) = tranposed(B_w) - R tranposed(A_w) in (54).
+    // Once scale and rotation are fixed, translation is the weighted mean of
+    // `target_i - s R source_i`. Both clouds already contain one sqrt(weight),
+    // so multiplying their residual by sqrt(weight) once more supplies weight.
     const auto pointwise_diffs =
         weighted_targets - rotation_and_scale * weighted_sources;
-    // Multiplication by j_w is a respectively weighted column sum.
-    // (54) from the paper.
     const auto weighted_pointwise_diffs =
         pointwise_diffs.array().rowwise() * sqrt_weights.array().transpose();
     Eigen::Vector3f translation =
@@ -197,7 +188,7 @@ class FloatPrecisionProcrustesSolver : public ProcrustesSolver {
     return absl::OkStatus();
   }
 
-  // `design_matrix` is a transposed LHS of (51) in the paper.
+  // Computes the proper rotation from the weighted cross-covariance matrix.
   //
   // Note: the output `rotation` argument is used instead of `StatusOr<>`
   // return type in order to avoid Eigen memory alignment issues. Details:
@@ -213,19 +204,16 @@ class FloatPrecisionProcrustesSolver : public ProcrustesSolver {
     Eigen::Matrix3f postrotation = svd.matrixU();
     Eigen::Matrix3f prerotation = svd.matrixV().transpose();
 
-    // Disallow reflection by ensuring that det(`rotation`) = +1 (and not -1),
-    // see "4.6 Constrained orthogonal Procrustes problems"
-    // in the Gower & Dijksterhuis's book "Procrustes Analysis".
-    // We flip the sign of the least singular value along with a column in W.
-    //
-    // Note that now the sum of singular values doesn't work for scale
-    // estimation due to this sign flip.
+    // U V^T is the unconstrained optimal orthogonal alignment. If its
+    // determinant is negative, it contains a reflection. Flip U's column for
+    // the least singular direction to obtain the nearest proper rotation with
+    // determinant +1. This is the constrained orthogonal Procrustes correction
+    // described in section 4.6 of Gower and Dijksterhuis, Procrustes Problems.
     if (postrotation.determinant() * prerotation.determinant() <
         static_cast<float>(0)) {
       postrotation.col(2) *= static_cast<float>(-1);
     }
 
-    // Transposed (52) from the paper.
     rotation = postrotation * prerotation;
     return absl::OkStatus();
   }
@@ -235,12 +223,13 @@ class FloatPrecisionProcrustesSolver : public ProcrustesSolver {
       const Eigen::Matrix3Xf& weighted_sources,
       const Eigen::Matrix3Xf& weighted_targets,
       const Eigen::Matrix3f& rotation) {
-    // tranposed(T) tranposed(A_w) (I - C).
+    // Project the centered source cloud through the chosen rotation. The ratio
+    // of its correlation with the target cloud to its own squared magnitude is
+    // the least-squares uniform scale for that fixed rotation.
     const auto rotated_centered_weighted_sources =
         rotation * centered_weighted_sources;
-    // Use the identity trace(A B) = sum(A * B^T)
-    // to avoid building large intermediate matrices (* is Hadamard product).
-    // (53) from the paper.
+    // A coefficient-wise product and sum evaluates the required inner products
+    // without constructing the larger trace expressions from the derivation.
     float numerator =
         rotated_centered_weighted_sources.cwiseProduct(weighted_targets).sum();
     float denominator =

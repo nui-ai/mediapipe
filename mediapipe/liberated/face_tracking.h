@@ -19,6 +19,7 @@
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/formats/rect.pb.h"
 #include "mediapipe/framework/memory_manager.h"
+#include "mediapipe/liberated/face_geometry_estimator.h"
 
 namespace hand_tracking_mp_lean {
 
@@ -31,14 +32,27 @@ struct FaceTrackingOptions {
   float min_detection_confidence = 0.5f;
   float min_tracking_confidence = 0.5f;
   int xnnpack_num_threads = 1;
+  // Runs face geometry for every accepted face and requests its pose transform.
+  bool estimate_pose = false;
+  // Virtual camera vertical field of view. This must be finite and within
+  // (0, 180) degrees when pose estimation is enabled; otherwise it is unused.
+  float vertical_fov_degrees = 63.0f;
 };
 
-// Result for one input image. Face indices agree across the first three fields
-// within this result, but are not persistent identities across frames.
+// Accepted inference for one face. Its position in ImageFaceTrackingResult::faces
+// is not a persistent identity across frames.
+struct FaceInference {
+  NormalizedLandmarkList landmarks;
+  float presence_score = 0.0f;
+  NormalizedRect rect_from_landmarks;
+  // Present when pose was requested and this landmark cloud admitted a stable
+  // canonical-to-runtime fit. Compact clouds remain accepted without a pose.
+  std::optional<FacePoseTransform> pose_transform;
+};
+
+// Result for one input image.
 struct ImageFaceTrackingResult {
-  std::vector<NormalizedLandmarkList> face_landmarks;
-  std::vector<float> face_presence_scores;
-  std::vector<NormalizedRect> face_rects_from_landmarks;
+  std::vector<FaceInference> faces;
 
   // Detection-derived diagnostics are populated only on frames where the
   // detector ran. Tracking normally skips detection while enough previous
@@ -56,7 +70,7 @@ class FaceTrackingCore {
  public:
   explicit FaceTrackingCore(
       FaceTrackingOptions options = {},
-      const std::string* models_path = nullptr);
+      const std::string* assets_path = nullptr);
   ~FaceTrackingCore() = default;
 
   FaceTrackingCore(const FaceTrackingCore&) = delete;
@@ -70,14 +84,14 @@ class FaceTrackingCore {
   void Reset();
 
  private:
-  struct LandmarkInference {
+  struct LandmarkModelResult {
     NormalizedLandmarkList landmarks;
     float presence_score = 0.0f;
   };
 
   absl::StatusOr<std::vector<NormalizedRect>> DetectFaces(
       const Image& image, ImageFaceTrackingResult* result);
-  absl::StatusOr<std::optional<LandmarkInference>> InferLandmarks(
+  absl::StatusOr<std::optional<LandmarkModelResult>> InferLandmarks(
       const Image& image, const NormalizedRect& face_rect);
   absl::StatusOr<NormalizedRect> FaceRectFromLandmarks(
       const NormalizedLandmarkList& landmarks, int image_width,
@@ -113,6 +127,8 @@ class FaceTrackingCore {
   std::unique_ptr<DetectionsToOrientedRects>
       landmarks_to_oriented_face_rect_;
   std::unique_ptr<RectTransformation> landmark_face_rect_expander_;
+
+  std::unique_ptr<FaceGeometryEstimator> face_geometry_estimator_;
 
   std::vector<NormalizedRect> face_rects_from_previous_frame_;
 };

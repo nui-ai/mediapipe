@@ -33,6 +33,8 @@ hand_tracking_mp_lean::FaceTrackingOptions ConvertOptions(
   converted.min_detection_confidence = options->min_detection_confidence;
   converted.min_tracking_confidence = options->min_tracking_confidence;
   converted.xnnpack_num_threads = options->xnnpack_num_threads;
+  converted.estimate_pose = options->estimate_pose != 0;
+  converted.vertical_fov_degrees = options->vertical_fov_degrees;
   return converted;
 }
 
@@ -43,17 +45,17 @@ extern "C" const char* face_tracking_get_last_error() {
 }
 
 extern "C" FaceTrackingCoreOpaqueHandle face_tracking_core_create(
-    const FaceTrackingOptionsC* options, const char* models_path) {
+    const FaceTrackingOptionsC* options, const char* assets_path) {
   SetLastError("");
   try {
-    const std::string models_path_storage =
-        models_path == nullptr ? std::string() : std::string(models_path);
-    const std::string* models_path_pointer =
-        models_path == nullptr ? nullptr : &models_path_storage;
+    const std::string assets_path_storage =
+        assets_path == nullptr ? std::string() : std::string(assets_path);
+    const std::string* assets_path_pointer =
+        assets_path == nullptr ? nullptr : &assets_path_storage;
     auto wrapper = std::make_unique<FaceTrackingCoreWrapper>();
     wrapper->implementation =
         std::make_unique<hand_tracking_mp_lean::FaceTrackingCore>(
-            ConvertOptions(options), models_path_pointer);
+            ConvertOptions(options), assets_path_pointer);
     return wrapper.release();
   } catch (const std::exception& error) {
     SetLastError(error.what());
@@ -156,4 +158,4 @@ extern "C" int face_tracking_core_finalize(
   return 0;
 }
 
-extern "C" const char* face_tracking_core_version() { return "1.0.0"; }
+extern "C" const char* face_tracking_core_version() { return "2.0.0"; }

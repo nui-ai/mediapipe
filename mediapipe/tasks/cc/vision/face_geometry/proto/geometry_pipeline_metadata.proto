@@ -46,7 +46,7 @@ message GeometryPipelineMetadata {
   // coordinate, which is scaled as the X coordinate assuming the weak
   // perspective projection camera model.
   //
-  // Face landmark pipeline is expected to produce 2D landmarks with Z
+  // Face detection pipeline is expected to produce 2D landmarks with Z
   // coordinate being equal to 0.
   optional InputSource input_source = 3;
   // Defines a mesh surface for a canonical face. The canonical face mesh vertex
@@ -57,7 +57,10 @@ message GeometryPipelineMetadata {
   // Defines a weighted landmark basis for running the Procrustes solver
   // algorithm inside the geometry pipeline.
   //
-  // A good basis sets face landmark weights in way to distinguish a head pose
-  // change from a facial expression change and to only respond to the former.
+  // Each entry identifies a canonical vertex and states how strongly that
+  // vertex influences the fitted global scale, rotation, and translation.
+  // Vertices absent from the basis have weight zero. The chosen basis should
+  // make the global fit respond to head placement while leaving expression
+  // deformation in the reconstructed mesh.
   repeated WeightedLandmarkRef procrustes_landmark_basis = 2;
 }

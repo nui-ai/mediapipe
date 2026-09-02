@@ -22,24 +22,21 @@
 
 namespace hand_tracking_mp_lean::tasks::vision::face_geometry {
 
-// Encapsulates a stateless solver for the Weighted Extended Orthogonal
-// Procrustes (WEOP) Problem, as defined in Section 2.4 of
+// Fits one weighted 3D point cloud to another with a similarity transform.
+// This is the Weighted Extended Orthogonal Procrustes (WEOP) problem defined in
+// Section 2.4 of
 // https://doi.org/10.3929/ethz-a-004656648.
 //
-// Given the source and the target point clouds, the algorithm estimates
-// a 4x4 transformation matrix featuring the following semantic components:
-//
-//   * Uniform scale
-//   * Rotation
-//   * Translation
-//
-// The matrix maps the source point cloud into the target point cloud minimizing
-// the Mean Squared Error.
+// Each matrix column is one 3D point. The returned 4x4 matrix acts on
+// homogeneous column vectors and maps source points to target points. Its upper
+// 3x3 block contains one uniform scale multiplied by a proper rotation; its
+// rightmost column contains translation. The solution minimizes the sum of each
+// point's squared residual multiplied by that point's weight.
 class ProcrustesSolver {
  public:
   virtual ~ProcrustesSolver() = default;
 
-  // Solves the Weighted Extended Orthogonal Procrustes (WEOP) Problem.
+  // Fits `source_points` to `target_points` under `point_weights`.
   //
   // All `source_points`, `target_points` and `point_weights` must define the
   // same number of points. Elements of `point_weights` must be non-negative.

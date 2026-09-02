@@ -73,6 +73,23 @@ cc_library(
     alwayslink = 1,
 )
 
+# Graph-independent adapter around MediaPipe's Face Geometry implementation.
+cc_library(
+    name = "face_geometry_estimator",
+    srcs = ["face_geometry_estimator.cc"],
+    hdrs = ["face_geometry_estimator.h"],
+    deps = [
+        "//mediapipe/framework/formats:landmark_cc_proto",
+        "//mediapipe/framework/formats:matrix_data_cc_proto",
+        "//mediapipe/framework/port:status",
+        "//mediapipe/tasks/cc/vision/face_geometry/libs:geometry_pipeline",
+        "//mediapipe/tasks/cc/vision/face_geometry/libs:geometry_pipeline_metadata_loader",
+        "//mediapipe/tasks/cc/vision/face_geometry/proto:environment_cc_proto",
+        "//mediapipe/tasks/cc/vision/face_geometry/proto:face_geometry_cc_proto",
+        "@com_google_absl//absl/status:statusor",
+    ],
+)
+
 # Graph-free face tracking is a separate artifact from hand tracking. Both use
 # the generalized calculator cores above, but consumers of this target do not
 # link the hand API or hand model assets.
@@ -81,6 +98,7 @@ cc_library(
     srcs = ["face_tracking.cc"],
     hdrs = ["face_tracking.h"],
     deps = [
+        ":face_geometry_estimator",
         "//mediapipe/calculators/tensor:image_to_tensor_calculator_core",
         "//mediapipe/calculators/tensor:image_to_tensor_utils",
         "//mediapipe/calculators/tensor:model_inference",
@@ -102,4 +120,16 @@ cc_library(
         "@com_google_absl//absl/status:statusor",
     ],
     alwayslink = 1,
+)
+
+cc_test(
+    name = "face_geometry_estimator_test",
+    srcs = ["face_geometry_estimator_test.cc"],
+    data = [
+        "//mediapipe/tasks/cc/vision/face_geometry/data:geometry_pipeline_metadata_landmarks",
+    ],
+    deps = [
+        ":face_geometry_estimator",
+        "@com_google_googletest//:gtest_main",
+    ],
 )

@@ -27,13 +27,14 @@ cc_binary(
 )
 
 # Face-only shared library consumed through the strict-C facade. Model files
-# remain external runtime inputs selected by the facade's models_path.
+# remain external runtime inputs selected by the facade's assets_path.
 cc_binary(
     name = "libface_tracking_c_api.so",
     data = [
         "//mediapipe/modules/face_detection:face_detection_short_range.tflite",
         "//mediapipe/modules/face_landmark:face_landmark.tflite",
         "//mediapipe/modules/face_landmark:face_landmark_with_attention.tflite",
+        "//mediapipe/tasks/cc/vision/face_geometry/data:geometry_pipeline_metadata_landmarks",
     ],
     linkopts = ["-Wl,--no-as-needed"],
     linkshared = 1,

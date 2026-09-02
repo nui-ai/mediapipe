@@ -14,9 +14,9 @@ extern "C" {
 typedef void* FaceTrackingCoreOpaqueHandle;
 
 // Creates one stateful tracker. A null options pointer selects the C++ API's
-// defaults; a null models_path resolves repository-relative model paths.
+// defaults; a null assets_path resolves repository-relative runtime assets.
 FaceTrackingCoreOpaqueHandle face_tracking_core_create(
-    const FaceTrackingOptionsC* options, const char* models_path);
+    const FaceTrackingOptionsC* options, const char* assets_path);
 
 // Processes one borrowed RGB8 sRGB image. The caller retains the pixel memory
 // for the duration of this call and owns result_out on success.
@@ -38,7 +38,7 @@ void face_tracking_result_destroy(FaceTrackingResultC* result);
 // library and is invalidated by the next face API call on the same thread.
 const char* face_tracking_get_last_error(void);
 
-// Returns the ABI version implemented by this library.
+// Returns a semantic version whose major identifies the C struct ABI.
 const char* face_tracking_core_version(void);
 
 #ifdef __cplusplus

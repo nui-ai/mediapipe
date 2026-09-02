@@ -265,7 +265,7 @@ absl::StatusOr<NormalizedLandmarkList> RefineAttentionLandmarks(
 }  // namespace
 
 FaceTrackingCore::FaceTrackingCore(
-    FaceTrackingOptions options, const std::string* models_path)
+    FaceTrackingOptions options, const std::string* assets_path)
     : options_(std::move(options)) {
   if (options_.max_faces == 0) {
     throw std::invalid_argument("max_faces must be greater than zero");
@@ -279,6 +279,15 @@ FaceTrackingCore::FaceTrackingCore(
         options_.min_tracking_confidence < 1.0f)) {
     throw std::invalid_argument(
         "min_tracking_confidence must be between zero and one");
+  }
+
+  if (options_.estimate_pose) {
+    auto estimator = FaceGeometryEstimator::Create(
+        options_.vertical_fov_degrees, assets_path);
+    if (!estimator.ok()) {
+      throw std::runtime_error(estimator.status().ToString());
+    }
+    face_geometry_estimator_ = std::move(estimator.value());
   }
 
   ImageToTensorCalculatorOptions detector_options;
@@ -298,7 +307,7 @@ FaceTrackingCore::FaceTrackingCore(
 
   detector_inference_ = std::make_unique<api2::ModelInference>(
       "mediapipe/modules/face_detection/face_detection_short_range.tflite",
-      models_path, options_.xnnpack_num_threads);
+      assets_path, options_.xnnpack_num_threads);
   detector_output_decoder_ =
       std::make_unique<api2::DetectionsExtractionAndFiltering>(
           options_.min_detection_confidence,
@@ -331,7 +340,7 @@ FaceTrackingCore::FaceTrackingCore(
             "face_landmark_with_attention.tflite"
           : "mediapipe/modules/face_landmark/face_landmark.tflite";
   landmark_inference_ = std::make_unique<api2::ModelInference>(
-      landmark_model, models_path, options_.xnnpack_num_threads);
+      landmark_model, assets_path, options_.xnnpack_num_threads);
 
   TensorsToLandmarksCalculatorOptions decode_options;
   mesh_decoder_ = std::make_unique<api2::TensorsToLandmarksCore>(
@@ -410,7 +419,7 @@ absl::StatusOr<std::vector<NormalizedRect>> FaceTrackingCore::DetectFaces(
   return face_rects;
 }
 
-absl::StatusOr<std::optional<FaceTrackingCore::LandmarkInference>>
+absl::StatusOr<std::optional<FaceTrackingCore::LandmarkModelResult>>
 FaceTrackingCore::InferLandmarks(
     const Image& image, const NormalizedRect& face_rect) {
   api2::ImageToTensorCoreResult landmark_input;
@@ -460,7 +469,7 @@ FaceTrackingCore::InferLandmarks(
             mesh, lips, left_eye, right_eye, left_iris, right_iris));
   }
 
-  LandmarkInference inference;
+  LandmarkModelResult inference;
   inference.presence_score = presence_score;
   ToViewportCoordinates(
       roi_landmarks, &face_rect, &inference.landmarks);
@@ -521,9 +530,20 @@ FaceTrackingCore::Process(const std::shared_ptr<const Image>& image) {
         NormalizedRect next_face_rect,
         FaceRectFromLandmarks(
             inference->landmarks, image->width(), image->height()));
-    result->face_landmarks.push_back(inference->landmarks);
-    result->face_presence_scores.push_back(inference->presence_score);
-    result->face_rects_from_landmarks.push_back(next_face_rect);
+    std::optional<FacePoseTransform> pose_transform;
+    if (face_geometry_estimator_ != nullptr) {
+      MP_ASSIGN_OR_RETURN(
+          pose_transform,
+          face_geometry_estimator_->Estimate(
+              inference->landmarks, image->width(), image->height()));
+    }
+
+    FaceInference face;
+    face.landmarks = std::move(inference->landmarks);
+    face.presence_score = inference->presence_score;
+    face.rect_from_landmarks = next_face_rect;
+    face.pose_transform = std::move(pose_transform);
+    result->faces.push_back(std::move(face));
     if (options_.use_previous_landmarks) {
       face_rects_from_previous_frame_.push_back(next_face_rect);
     }

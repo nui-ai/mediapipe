@@ -21,7 +21,7 @@ package(default_visibility = ["//visibility:public"])
 encode_binary_proto(
     name = "geometry_pipeline_metadata_detection",
     input = "geometry_pipeline_metadata_detection.pbtxt",
-    message_type = "mediapipe.tasks.vision.face_geometry.proto.GeometryPipelineMetadata",
+    message_type = "hand_tracking_mp_lean.tasks.vision.face_geometry.proto.GeometryPipelineMetadata",
     output = "geometry_pipeline_metadata_detection.binarypb",
     deps = [
         "//mediapipe/tasks/cc/vision/face_geometry/proto:geometry_pipeline_metadata_proto",
@@ -31,7 +31,7 @@ encode_binary_proto(
 encode_binary_proto(
     name = "geometry_pipeline_metadata_landmarks",
     input = "geometry_pipeline_metadata_landmarks.pbtxt",
-    message_type = "mediapipe.tasks.vision.face_geometry.proto.GeometryPipelineMetadata",
+    message_type = "hand_tracking_mp_lean.tasks.vision.face_geometry.proto.GeometryPipelineMetadata",
     output = "geometry_pipeline_metadata_landmarks.binarypb",
     deps = [
         "//mediapipe/tasks/cc/vision/face_geometry/proto:geometry_pipeline_metadata_proto",
@@ -43,7 +43,7 @@ encode_binary_proto(
 encode_binary_proto(
     name = "geometry_pipeline_metadata",
     input = "geometry_pipeline_metadata_landmarks.pbtxt",
-    message_type = "mediapipe.tasks.vision.face_geometry.proto.GeometryPipelineMetadata",
+    message_type = "hand_tracking_mp_lean.tasks.vision.face_geometry.proto.GeometryPipelineMetadata",
     output = "geometry_pipeline_metadata.binarypb",
     deps = [
         "//mediapipe/tasks/cc/vision/face_geometry/proto:geometry_pipeline_metadata_proto",
