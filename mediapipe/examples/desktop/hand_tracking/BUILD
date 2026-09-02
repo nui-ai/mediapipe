@@ -14,6 +14,9 @@
 
 licenses(["notice"])
 
+# Keep this parity runner graph-free. Its main target declares the liberated
+# inference dependencies directly; depending on desktop_tflite_calculators here
+# would rebuild the original graph calculators and their unrelated OpenCV APIs.
 cc_binary(
     name = "hand_tracking_no_pipeline_run",
     data = [
@@ -23,7 +26,6 @@ cc_binary(
     ],
     deps = [
         "//mediapipe/examples/desktop:hand_tracking_no_pipeline_run_main",
-        "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
     ],
 )
 

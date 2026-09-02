@@ -25,12 +25,14 @@
 #include "mediapipe/liberated/hand_tracking.h"
 
 #include "mediapipe/framework/formats/image_frame.h"
-#include "mediapipe/framework/port/opencv_video_inc.h"
+#include "mediapipe/framework/port/opencv_imgproc_inc.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/formats/image_opencv.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/framework/memory_manager.h"
 #include "mediapipe/util/resource_util.h"
+
+#include <opencv2/videoio.hpp>
 
 #include <google/protobuf/util/delimited_message_util.h>
 #include <google/protobuf/util/message_differencer.h>
