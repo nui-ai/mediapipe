@@ -1,19 +1,22 @@
-# About this Submodule Repository
+# About this Branch
 
-This repository is now a submodule of the [nui-ai/core](https://github.com/nui-ai/core) repository!
+This branch is now used as a submodule of the [nui-ai/core](https://github.com/nui-ai/core) repository!
 
-It has accomplishes a safe parity-verified reduced mediapipe v0.10.13 hands pipeline, namely it reproduces the original pipline's work by a no-pipeline implementation.
-It provides via a built lib file implementing:
+Note that for reasons of core's build strategies, it typically checks out this branch's latest commit as detached head, rather than checkout this branch as a branch. 
+
+It has accomplishes a safe parity-verified reduced mediapipe v0.10.13 hands pipeline, namely it reproduces the original pipline's work by a no-pipeline implementation. It provides via a built lib file implementing:
 
 1. a no-pipeline single-component implementation of the same hand tracking as the original mediapipe v0.10.13 hand tracking cpu pipeline.
-2. a single-calculator mediapipe pipeline, which merely wraps the former component, which was used for the pipeline-liberation process ... and is no longer extremely interesting to use.   
+2. a single-calculator mediapipe pipeline, which merely wraps the former component, which was used for the pipeline-liberation process ... and is no longer extremely interesting to use.
+3. equivalent face landmark tracking 
 
 Parity claims:
 + The performance of this implementation is no lesser and no better than the original's performance, but just the same, as the neural network model inference times dominate the runtime and have not been changed.
 + The code is 99% as safe as the original, as the ABSL approach to error propagation has been in general maintained across the changes leading to the new form.
++ This parity testing was applied to the hand tracking, not necessarily to the face tracking.
 
 # Branch Information
-While this repo has multiple branches, the current one (['liberation'](https://github.com/nui-ai/mediapipe/tree/liberation)) is the one which provides the mediapipe-pipeline liberated hand tracking implementation.
+While this repo has multiple branches, the current one is the one which provides the mediapipe-pipeline liberated hand tracking implementation.
 
 # Liberation Process Overview
 
