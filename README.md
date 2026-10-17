@@ -1,10 +1,9 @@
-# Branches to use in this repo:
+# Branches of interest in this repo:
 
 + buildable-reference
 + buildable-reference-transparent
-+ liberation
++ liberated
 
-See each branch's role in its main readme. 
+See each branch's role in its own readme by checking it out. 
 
-# Single role of the Current Branch
-This branch is where Github looks for copilot workflow yaml files, and probably also for repository definitions for any future Github Actions in general.
+This current branch, master, is where Github would look for copilot workflow yaml files, and probably also for repository definitions for any future Github Actions in general. It should not otherwise be used for its code contents which are obsolete!
