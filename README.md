@@ -1,8 +1,11 @@
 # About this Branch
 
-This branch is now used as a submodule of the [nui-ai/core](https://github.com/nui-ai/core) repository!
+The [nui-ai/core](https://github.com/nui-ai/core) repository includes this repository as its `hand_tracking` Git submodule.
 
-Note that for reasons of core's build strategies, it typically checks out this branch's latest commit as detached head, rather than checkout this branch as a branch. 
+Core records an exact commit from the `core-current` branch's history. Git initializes or updates the submodule at
+that recorded commit in **detached HEAD** state: `HEAD` points directly to the commit, with no branch checked out.
+The commit can still belong to `core-current`'s history. Advancing or renaming the branch does not change Core's
+recorded commit, and Cargo builds do not automatically fetch or select the branch's latest commit.
 
 It has accomplishes a safe parity-verified reduced mediapipe v0.10.13 hands pipeline, namely it reproduces the original pipline's work by a no-pipeline implementation. It provides via a built lib file implementing:
 
@@ -16,7 +19,7 @@ Parity claims:
 + This parity testing was applied to the hand tracking, not necessarily to the face tracking.
 
 # Branch Information
-While this repo has multiple branches, the current one is the one which provides the mediapipe-pipeline liberated hand tracking implementation.
+The [`core-current`](https://github.com/nui-ai/mediapipe/tree/core-current) branch is maintained for Core's hand and face inference. It provides the mediapipe-pipeline liberated hand tracking implementation and equivalent face landmark tracking.
 
 # Liberation Process Overview
 
